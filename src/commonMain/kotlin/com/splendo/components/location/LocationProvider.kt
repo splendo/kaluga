@@ -1,9 +1,12 @@
 package com.splendo.components.location
 
 interface LocationProvider {
-    fun getLocation()
-}
+    val location: Location?
+    fun requestLocation()
 
-expect open class DefaultLocationProvider: LocationProvider {
+    fun addListener(listener: LocationListener)
+    fun removeListener(listener: LocationListener)
 
+    fun startListening()
+    fun stopListening()
 }
