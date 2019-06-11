@@ -1,4 +1,4 @@
-package location
+package com.splendo.components.location
 
 interface LocationProvider {
     fun getLocation()

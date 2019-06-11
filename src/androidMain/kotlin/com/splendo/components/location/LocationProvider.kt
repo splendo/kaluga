@@ -1,4 +1,4 @@
-package location
+package com.splendo.components.location
 
 actual open class DefaultLocationProvider: LocationProvider {
     override fun getLocation() {
