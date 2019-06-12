@@ -1,3 +1,3 @@
 package com.splendo.components.location
 
-expect class DefaultLocationProvider : LocationProvider {}
+expect class DefaultLocationProvider : LocationProvider

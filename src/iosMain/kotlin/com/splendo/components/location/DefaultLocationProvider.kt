@@ -1,4 +1,5 @@
 package com.splendo.components.location
+import platform.CoreLocation.*
 
 actual open class DefaultLocationProvider: LocationProvider {
     override val location: Location?
