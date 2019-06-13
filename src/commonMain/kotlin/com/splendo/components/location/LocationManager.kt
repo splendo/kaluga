@@ -1,7 +1,7 @@
 package com.splendo.components.location
 
 interface LocationManager {
-    val location: Location?
+    var location: Location?
     var availability: Availability
 
     fun requestLocation()
@@ -10,6 +10,6 @@ interface LocationManager {
     fun addListener(listener: LocationListener)
     fun removeListener(listener: LocationListener)
 
-    fun startListening()
-    fun stopListening()
+    fun start()
+    fun stop()
 }

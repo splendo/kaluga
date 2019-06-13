@@ -1,14 +1,13 @@
 package com.splendo.components.location
 
-actual open class DefaultLocationManager: LocationManager {
+actual class DefaultLocationManager: LocationManager {
     actual constructor(configuration: Configuration) {
 
     }
 
     override var availability = Availability.NOT_DETERMINED
 
-    override val location: Location?
-        get() = TODO("not implemented")
+    override var location: Location? = null
 
     override fun requestLocation() {
         TODO("not implemented")
@@ -26,11 +25,11 @@ actual open class DefaultLocationManager: LocationManager {
         TODO("not implemented")
     }
 
-    override fun startListening() {
+    override fun start() {
         TODO("not implemented")
     }
 
-    override fun stopListening() {
+    override fun stop() {
         TODO("not implemented")
     }
 }
