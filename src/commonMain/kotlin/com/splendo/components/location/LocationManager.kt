@@ -4,7 +4,6 @@ interface LocationManager {
     var location: Location?
     var availability: Availability
 
-    fun requestLocation()
     fun requestAccess()
 
     fun addListener(listener: LocationListener)

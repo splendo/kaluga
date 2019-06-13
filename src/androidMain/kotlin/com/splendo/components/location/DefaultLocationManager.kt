@@ -9,10 +9,6 @@ actual class DefaultLocationManager: LocationManager {
 
     override var location: Location? = null
 
-    override fun requestLocation() {
-        TODO("not implemented")
-    }
-
     override fun requestAccess() {
         TODO("not implemented")
     }
