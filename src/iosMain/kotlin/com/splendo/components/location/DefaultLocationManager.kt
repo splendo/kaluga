@@ -9,12 +9,9 @@ actual class DefaultLocationManager actual constructor(
 ) : LocationManager {
 
     override var availability = Availability.NOT_DETERMINED
-    private val locationManager = CLLocationManager().apply {
-        delegate = locationManagerDelegate
-    }
+    private val locationManager = CLLocationManager()
     override var location: Location? = null
 
-    // CLLocationManagerDelegateProtocol
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             location = (didUpdateLocations.last() as? CLLocation)?.location()
@@ -22,18 +19,16 @@ actual class DefaultLocationManager actual constructor(
             println("🛣location: $location")
         }
 
-        /*
-         0 - notDetermined
-         1 - restricted
-         2 - denied
-         3 - authorizedAlways
-         4 - authorizedWhenInUse
-        */
         override fun locationManager(
             manager: CLLocationManager,
             didChangeAuthorizationStatus: CLAuthorizationStatus
         ) {
-            println("🛣didChangeAuthorizationStatus: $didChangeAuthorizationStatus")
+
+            // 0 - notDetermined
+            // 1 - restricted
+            // 2 - denied
+            // 3 - authorizedAlways
+            // 4 - authorizedWhenInUse
             availability = when (didChangeAuthorizationStatus) {
                 1, 2 -> Availability.DISABLED
                 3, 4 -> Availability.AVAILABLE
@@ -42,10 +37,13 @@ actual class DefaultLocationManager actual constructor(
         }
     }
 
-    // LocationManager}
+    init {
+        locationManager.delegate = locationManagerDelegate
+    }
+
+    // LocationManager
 
     override fun requestAccess() {
-//        locationManager.delegate = locationManagerDelegate
         when (configuration.accessOptions) {
             AccessOptions.WHEN_IN_USE -> locationManager.requestWhenInUseAuthorization()
             AccessOptions.ALWAYS -> locationManager.requestAlwaysAuthorization()
@@ -61,8 +59,6 @@ actual class DefaultLocationManager actual constructor(
     }
 
     override fun start() {
-        println("🛣 start ${CLLocationManager.authorizationStatus()} / delegate: $locationManagerDelegate")
-        println("location: ${locationManager.location?.location()}")
         locationManager.startUpdatingLocation()
     }
 
