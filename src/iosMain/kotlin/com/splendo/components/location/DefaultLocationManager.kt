@@ -8,15 +8,16 @@ actual class DefaultLocationManager actual constructor(
     private val configuration: Configuration
 ) : LocationManager {
 
+    var listeners = mutableListOf<LocationListener>()
     override var availability = Availability.NOT_DETERMINED
     private val locationManager = CLLocationManager()
     override var location: Location? = null
 
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
-            location = (didUpdateLocations.last() as? CLLocation)?.location()
-
-            println("🛣location: $location")
+            location = (didUpdateLocations.last() as? CLLocation)?.location()?.also { location ->
+                listeners.forEach { it.onLocationUpdate(location) }
+            }
         }
 
         override fun locationManager(
@@ -34,6 +35,8 @@ actual class DefaultLocationManager actual constructor(
                 3, 4 -> Availability.AVAILABLE
                 else -> Availability.NOT_DETERMINED
             }
+
+            listeners.forEach { it.onAvailabilityUpdate(availability) }
         }
     }
 
@@ -51,11 +54,11 @@ actual class DefaultLocationManager actual constructor(
     }
 
     override fun addListener(listener: LocationListener) {
-        TODO("not implemented")
+        listeners.add(listener)
     }
 
     override fun removeListener(listener: LocationListener) {
-        TODO("not implemented")
+        listeners.remove(listener)
     }
 
     override fun start() {
