@@ -3,7 +3,8 @@
           package="sample">
 
     <application
-            android:label="android">
+            android:label="android"
+            android:packageName="common">
     </application>
 
 </manifest>
