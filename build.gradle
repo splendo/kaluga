@@ -1,4 +1,13 @@
-
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.0'
+    }
+}
 
 plugins {
     id 'kotlin-multiplatform' version '1.3.31'
@@ -14,11 +23,41 @@ repositories {
     mavenCentral()
 }
 
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 28
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
+            java.srcDirs = ['src/androidMain/kotlin']
+            res.srcDirs = ['src/androidMain/resources']
+        }
+        test {
+            java.srcDirs = ['src/androidTest/kotlin']
+            res.srcDirs = ['src/androidTest/resources']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+}
+
 kotlin {
     iosArm32()
     iosArm64()
     iosX64()
-    jvm('android')
+    androidNativeArm32()
+    androidNativeArm64()
 
     sourceSets {
         commonMain {
@@ -42,20 +81,16 @@ kotlin {
             resources.srcDir('src/iosTest/resources')
         }
         iosArm32Main {
-            kotlin.srcDir('src/iosMain/kotlin')
-            resources.srcDir('src/iosMain/resources')
+            dependsOn iosX64Main
         }
         iosArm32Test {
-            kotlin.srcDir('src/iosTest/kotlin')
-            resources.srcDir('src/iosTest/resources')
+            dependsOn iosX64Test
         }
         iosArm64Main {
-            kotlin.srcDir('src/iosMain/kotlin')
-            resources.srcDir('src/iosMain/resources')
+            dependsOn iosX64Main
         }
         iosArm64Test {
-            kotlin.srcDir('src/iosTest/kotlin')
-            resources.srcDir('src/iosTest/resources')
+            dependsOn iosX64Test
         }
 
         androidMain {
@@ -68,6 +103,22 @@ kotlin {
                 implementation kotlin('test')
                 implementation kotlin('test-junit')
             }
+        }
+
+        androidNativeArm32Main {
+            dependsOn androidMain
+        }
+
+        androidNativeArm32Test {
+            dependsOn androidTest
+        }
+
+        androidNativeArm64Main {
+            dependsOn androidMain
+        }
+
+        androidNativeArm64Test {
+            dependsOn androidTest
         }
 
     }
