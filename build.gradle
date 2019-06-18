@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.0'
+        classpath 'com.android.tools.build:gradle:3.4.1'
     }
 }
 
@@ -24,6 +24,7 @@ repositories {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 28
@@ -56,8 +57,8 @@ kotlin {
     iosArm32()
     iosArm64()
     iosX64()
-    androidNativeArm32()
-    androidNativeArm64()
+//    androidNativeArm32()
+//    androidNativeArm64()
 
     sourceSets {
         commonMain {
@@ -106,19 +107,28 @@ kotlin {
         }
 
         androidNativeArm32Main {
-            dependsOn androidMain
+//            dependsOn androidMain
+
+            dependencies {
+                implementation kotlin('stdlib')
+            }
         }
 
         androidNativeArm32Test {
-            dependsOn androidTest
+//            dependsOn androidTest
+
+            dependencies {
+                implementation kotlin('test')
+                implementation kotlin('test-junit')
+            }
         }
 
         androidNativeArm64Main {
-            dependsOn androidMain
+            dependsOn androidNativeArm32Main
         }
 
         androidNativeArm64Test {
-            dependsOn androidTest
+            dependsOn androidNativeArm32Test
         }
 
     }
