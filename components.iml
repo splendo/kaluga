@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="FacetManager">
+    <facet type="android-gradle" name="Android-Gradle">
+      <configuration>
+        <option name="GRADLE_PROJECT_PATH" value=":" />
+      </configuration>
+    </facet>
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="SELECTED_BUILD_VARIANT" value="debug" />
+        <option name="ASSEMBLE_TASK_NAME" value="assembleDebug" />
+        <option name="COMPILE_JAVA_TASK_NAME" value="compileDebugSources" />
+        <afterSyncTasks>
+          <task>generateDebugSources</task>
+        </afterSyncTasks>
+        <option name="ALLOW_USER_CONFIGURATION" value="false" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/androidMain/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/src/androidMain/resources" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/androidMain/resources" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
+        <option name="PROJECT_TYPE" value="1" />
+      </configuration>
+    </facet>
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 1.6" useProjectSettings="false" isTestModule="false" externalProjectId="components">
+        <sourceSets>
+          <sourceSet>com.splendo.components.components.commonMain</sourceSet>
+        </sourceSets>
+        <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
+        <compilerSettings />
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/build/tmp/kotlin-classes/debug" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-android-extensions-runtime/1.3.31/721b62ccbafe51a284ca0d1c5dcfdce8cedd4255/kotlin-android-extensions-runtime-1.3.31.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.31/11289d20fd95ae219333f3456072be9f081c30cc/kotlin-stdlib-1.3.31.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.31/20c34a04ea25cb1ef0139598bd67c764562cb170/kotlin-stdlib-common-1.3.31.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/9dd9258c28d83c1c4c77a0b07284298d/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/60f7a6e8a2d328fbf6d895210a2190f9/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/5c1b4df3bbd1694868f92bda6e4e0442/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/05d463df76e17dd0b3cf521e7a4eb6c8/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/1381674d48e12d678aa01474e733d0bd/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/03e61dbe36554a242c85d113f29e8d5a/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/54898f45976e0a523fd4d70af8fce5eb/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/adf53d8b8309b793590d902c184627f7/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/ff8835ea5b0898a150a29136d148e511/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/f3479333c52b34e526aa768333e8c87c/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/abab0e64d16eda1aa4b104543029ac95/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/fee9642052666a9a5567b33b22dc27d2/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/1f4566d99ac04f647019982f525094a8/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/24f7ec80a328977bfa650b3234fb98af/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/db06c9eb94a54b885daf5ce52d0024bf/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/d7ad892440ea70f9ce881b8383a3314d/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/2be3ae9365589a6126f1f0389df8e396/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/a23510e08b4c6343f209560170a588ef/jars/classes.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/com.android.support/collections/28.0.0/c1bcdade4d3cc2836130424a3f3e4182c666a745/collections-28.0.0.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/1191b011e49b16f9f4267d6a2e1c9c30/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/092ee33b18a347d1b89be98e24b1caf0/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/5b26069dc99376bbe4661b41a464fcfd/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/3c1229f3268d0be96f3f097741397737/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/47177f1ddaebe64fa1f302a5b69a467b/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/82401742c3a604963b6e9b5dea774a36/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/1766d8cd9a33caee742502d76c379746/jars/classes.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/5adeced712ddf00db668e1f14f47287d/jars/classes.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/android.arch.lifecycle/common/1.1.1/207a6efae6a3555e326de41f76bdadd9a239cbce/common-1.1.1.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/70a17566d7a97895cb81ce3f4847ad4c/jars/classes.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/android.arch.core/common/1.1.1/e55b70d1f5620db124b3e85a7f4bdc7bd48d9f95/common-1.1.1.jar:/Users/dennisskokov/.gradle/caches/transforms-2/files-2.1/dd0cfe5b7b18724472bd34c9e7799d23/jars/classes.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/com.android.support/support-annotations/28.0.0/ed73f5337a002d1fd24339d5fb08c2c9d9ca60d8/support-annotations-28.0.0.jar:/Users/dennisskokov/.gradle/caches/modules-2/files-2.1/com.android.support.constraint/constraint-layout-solver/2.0.0-beta1/a18feafbff8daa896c5136e20a37a2cc8292b258/constraint-layout-solver-2.0.0-beta1.jar:/Users/dennisskokov/Library/Android/sdk/platforms/android-28/android.jar" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="components_debug" />
+          <option name="addCompilerBuiltIns" value="true" />
+          <option name="loadBuiltInsFromDependencies" value="true" />
+          <option name="languageVersion" value="1.3" />
+          <option name="apiVersion" value="1.3" />
+          <option name="pluginOptions">
+            <array>
+              <option value="plugin:org.jetbrains.kotlin.android:experimental=false" />
+              <option value="plugin:org.jetbrains.kotlin.android:enabled=true" />
+              <option value="plugin:org.jetbrains.kotlin.android:defaultCacheImplementation=hashMap" />
+            </array>
+          </option>
+          <option name="pluginClasspaths">
+            <array>
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-android-extensions/1.3.31/57bdeb88c9265052448a7a8422ed64ad92e9b262/kotlin-android-extensions-1.3.31.jar" />
+            </array>
+          </option>
+          <option name="multiPlatform" value="true" />
+          <option name="errors">
+            <ArgumentParseErrors />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+</module>

@@ -1,14 +1,13 @@
 
 buildscript {
     repositories {
-//        mavenLocal()
         google()
         jcenter()
         mavenCentral()
     }
-    
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
 
@@ -38,12 +37,24 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
     }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
+            java.srcDirs = ['src/androidMain/kotlin']
+            res.srcDirs = ['src/androidMain/resources']
+        }
+        test {
+            java.srcDirs = ['src/androidTest/kitlin']
+            res.srcDirs = ['src/androidTest/resources']
+        }
+    }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
@@ -52,10 +63,7 @@ kotlin {
     iosArm32()
     iosArm64()
     iosX64()
-
-    targets {
-        fromPreset(presets.android, 'android')
-    }
+    androidNativeArm64("android")
     
     sourceSets {
         commonMain {
@@ -91,12 +99,16 @@ kotlin {
             dependsOn iosX64Test
         }
 
-        main {
+        androidMain {
+//            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
+//            kotlin.srcDirs('src/androidMain/java')
+//            resources.srcDirs('src/androidMain/resources')
+
             dependencies {
                 implementation kotlin('stdlib')
             }
         }
-        test {
+        androidTest {
             dependencies {
                 implementation kotlin('test')
                 implementation kotlin('test-junit')

@@ -4,11 +4,11 @@
     <facet type="kotlin-language" name="Kotlin">
       <configuration version="3" platform="Native " useProjectSettings="false" isTestModule="true" externalProjectId="components">
         <sourceSets>
-          <sourceSet>com.splendo.components.components.iosArm64Main</sourceSet>
-          <sourceSet>com.splendo.components.components.iosX64Test</sourceSet>
-          <sourceSet>com.splendo.components.components.iosX64Main</sourceSet>
           <sourceSet>com.splendo.components.components.commonTest</sourceSet>
+          <sourceSet>com.splendo.components.components.iosX64Main</sourceSet>
           <sourceSet>com.splendo.components.components.commonMain</sourceSet>
+          <sourceSet>com.splendo.components.components.iosX64Test</sourceSet>
+          <sourceSet>com.splendo.components.components.iosArm64Main</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <compilerSettings />
