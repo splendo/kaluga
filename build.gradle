@@ -41,13 +41,13 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'src/androidMain/AndroidManifest.xml'
-            java.srcDirs = ['src/androidMain/kotlin']
-            res.srcDirs = ['src/androidMain/resources']
+//            java.srcDirs = ['src/androidMain/kotlin']
+//            res.srcDirs = ['src/androidMain/resources']
         }
-        test {
-            java.srcDirs = ['src/androidTest/kitlin']
-            res.srcDirs = ['src/androidTest/resources']
-        }
+//        test {
+//            java.srcDirs = ['src/androidTest/kitlin']
+//            res.srcDirs = ['src/androidTest/resources']
+//        }
     }
 
 }
@@ -63,7 +63,7 @@ kotlin {
     iosArm32()
     iosArm64()
     iosX64()
-    androidNativeArm64("android")
+    jvm("android")
     
     sourceSets {
         commonMain {
