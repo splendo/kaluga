@@ -4,10 +4,11 @@ package com.splendo.components.location
 //import android.content.Context
 
 actual data class Configuration (
-    val context: String//Context
+    val context: String //Context
+
 ) {
     actual companion object {
-        actual val default = Configuration(context = "context")
+        actual val default = Configuration(context = "")//instance!!)
     }
 }
 

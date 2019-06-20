@@ -16,8 +16,6 @@
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="components" />
-          <option name="addCompilerBuiltIns" value="true" />
-          <option name="loadBuiltInsFromDependencies" value="true" />
           <option name="friendPaths">
             <array>
               <option value="$MODULE_DIR$/build/classes/kotlin/android/main" />

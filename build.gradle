@@ -23,8 +23,6 @@ repositories {
 }
 
 apply plugin: 'com.android.library'
-//apply plugin: 'kotlin-android-extensions'
-//apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android-extensions'
 
 group 'com.splendo.components'
@@ -41,29 +39,40 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'src/androidMain/AndroidManifest.xml'
-//            java.srcDirs = ['src/androidMain/kotlin']
-//            res.srcDirs = ['src/androidMain/resources']
+            java.srcDirs = ['src/androidMain/kotlin']
+            res.srcDirs = ['src/androidMain/resources']
         }
-//        test {
-//            java.srcDirs = ['src/androidTest/kitlin']
-//            res.srcDirs = ['src/androidTest/resources']
-//        }
+        test {
+            java.srcDirs = ['src/androidTest/kitlin']
+            res.srcDirs = ['src/androidTest/resources']
+        }
     }
 
+    buildTypes {
+        staging {
+            matchingFallbacks = ['release', 'debug']
+        }
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 }
+
 
 kotlin {
     iosArm32()
     iosArm64()
     iosX64()
     jvm("android")
+    
+//    targets {
+//        fromPreset(presets.androidNativeArm32, 'android32')
+//    }
     
     sourceSets {
         commonMain {
@@ -100,12 +109,10 @@ kotlin {
         }
 
         androidMain {
-//            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
-//            kotlin.srcDirs('src/androidMain/java')
-//            resources.srcDirs('src/androidMain/resources')
-
             dependencies {
                 implementation kotlin('stdlib')
+//                implementation 'com.android.support:appcompat-v7:28.0.0'
+//                implementation fileTree(dir: 'libs', include: ['*.jar'])
             }
         }
         androidTest {
@@ -114,5 +121,12 @@ kotlin {
                 implementation kotlin('test-junit')
             }
         }
+
+//        android32Main {
+//            dependsOn androidMain
+//        }
+//        android32Test {
+//            dependsOn androidTest
+//        }
     }
 }
