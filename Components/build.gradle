@@ -1,0 +1,138 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+}
+
+group = 'com.splendo.kotlin.components.android'
+version = 1.0
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 28
+        targetSdkVersion 28
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+            java.srcDirs = ['src/androidLibMain/kotlin']
+            res.srcDirs = ['src/androidLibMain/res']
+        }
+
+        test {
+            java.srcDirs = ['src/androidLibTest/kotlin']
+        }
+
+    }
+
+}
+
+
+
+kotlin {
+
+    targets.fromPreset(presets.android, 'androidLibrary')
+    targetFromPreset(presets.iosX64, 'iosX64')
+    targetFromPreset(presets.iosArm32, 'iosArm32')
+    targetFromPreset(presets.iosArm32, 'iosArm64')
+    jvm()
+    js {
+        browser()
+        configure([compilations.main, compilations.test]) {
+            tasks.getByName(compileKotlinTaskName).kotlinOptions {
+                metaInfo = true
+                sourceMap = true
+                moduleKind = 'umd'
+            }
+        }
+    }
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin("stdlib")
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation kotlin("test")
+                implementation kotlin("test-junit")
+//                implementation 'junit:junit:4.12'
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test-js')
+            }
+        }
+        nativeMain {
+            dependencies {
+                implementation kotlin('stdlib')
+            }
+        }
+
+        // Android source sets are handeled by Android plugin below
+
+    }
+
+    configure([targets.iosX64, targets.iosArm32, targets.iosArm64]) {
+        compilations.main.source(sourceSets.nativeMain)
+    }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+    testImplementation 'junit:junit:4.12'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+task iosTest {
+    def device = project.findProperty("iosDevice")?.toString() ?: "iPhone 8"
+    dependsOn 'linkDebugTestIosX64'
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Runs tests for target 'ios' on an iOS simulator"
+
+    doLast {
+        def binary = kotlin.targets.iosX64.binaries.getTest('DEBUG').outputFile
+        exec {
+            commandLine 'xcrun', 'simctl', 'spawn', device, binary.absolutePath
+        }
+    }
+}
+
+// workaround for https://youtrack.jetbrains.com/issue/KT-27170
+configurations {
+    compileClasspath
+}
