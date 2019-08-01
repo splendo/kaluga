@@ -1,3 +1,22 @@
 steps:
-  - name: 'gcr.io/cloud-builders/gradle'
-    args: ['build']
+  - name: 'gcr.io/$PROJECT_ID/android:28'
+    id: build
+    args: ["./gradlew", "build"]
+    env:
+      - 'TERM=dumb'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
+      - 'GRADLE_USER_HOME=/build_cache/.gradle'
+      - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+#
+# In future we have to save the build cache for faster builds:
+#    volumes:
+#      - name: 'build_cache'
+#        path: '/build_cache'
+#  - name: 'gcr.io/$PROJECT_ID/tar'
+#    id: compress_cache
+#    args: ['cpvzf', '/build_cache/cache.tgz', '-C', '/build_cache', '/build_cache/.gradle']
+#    waitFor: ['build']
+#    volumes:
+#      - name: 'build_cache'
+#        path: '/build_cache'
