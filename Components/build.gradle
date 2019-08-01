@@ -35,8 +35,6 @@ android {
 
 }
 
-
-
 kotlin {
 
     targets.fromPreset(presets.android, 'androidLibrary')
@@ -96,7 +94,7 @@ kotlin {
             }
         }
 
-        // Android source sets are handeled by Android plugin below
+        // Android source sets are handled by Android plugin below
 
     }
 

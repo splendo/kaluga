@@ -43,7 +43,10 @@ playground.xcworkspace
 
 #Pods/
 
+#IDE
 .idea/
+*.iml
+/local.properties
 
 #*.xcworkspace
-/local.properties
+
