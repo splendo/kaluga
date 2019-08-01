@@ -1,132 +1,165 @@
-
 buildscript {
+    // KOTLIN_VERSION
+    ext.kotlin_version = '1.3.41'
+
     repositories {
         google()
         jcenter()
-        mavenCentral()
-    }
 
+// uncomment for early access / dev releases
+//        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
+//        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
-plugins {
-    id 'kotlin-multiplatform' version '1.3.31'
-    id 'maven-publish'
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
+// uncomment for early access / dev releases
+//        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
+//        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
 }
 
-repositories {
-    google()
-    jcenter()
-    mavenCentral()
-}
-
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
-
-group 'com.splendo.components'
+group 'com.splendo.mpp'
 version '0.0.1'
 
-android {
-    compileSdkVersion 28
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
-            java.srcDirs = ['src/androidMain/kotlin']
-            res.srcDirs = ['src/androidMain/resources']
-        }
-        test {
-            java.srcDirs = ['src/androidTest/kitlin']
-            res.srcDirs = ['src/androidTest/resources']
-        }
-    }
-
-    buildTypes {
-        staging {
-            matchingFallbacks = ['release', 'debug']
-        }
-    }
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta1'
-
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-}
-
-
-kotlin {
-    iosArm32()
-    iosArm64()
-    iosX64()
-    jvm("android")
-    
-//    targets {
-//        fromPreset(presets.androidNativeArm32, 'android32')
+//
+//buildscript {
+//    repositories {
+//        google()
+//        jcenter()
+//        mavenCentral()
 //    }
-    
-    sourceSets {
-        commonMain {
-            dependencies {
-                implementation kotlin('stdlib-common')
-            }
-        }
-        commonTest {
-            dependencies {
-                implementation kotlin('test-common')
-                implementation kotlin('test-annotations-common')
-            }
-        }
-        
-        iosX64Main {
-            kotlin.srcDir('src/iosMain/kotlin')
-            resources.srcDir('src/iosMain/resources')
-        }
-        iosX64Test {
-            kotlin.srcDir('src/iosTest/kotlin')
-            resources.srcDir('src/iosTest/resources')
-        }
-        iosArm32Main {
-            dependsOn iosX64Main
-        }
-        iosArm32Test {
-            dependsOn iosX64Test
-        }
-        iosArm64Main {
-            dependsOn iosX64Main
-        }
-        iosArm64Test {
-            dependsOn iosX64Test
-        }
+//
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:3.4.2'
+//    }
+//}
+//
+//plugins {
+//    id 'kotlin-multiplatform' version '1.3.41'
+//    id 'maven-publish'
+//}
+//
+//repositories {
+//    google()
+//    jcenter()
+//    mavenCentral()
+//}
 
-        androidMain {
-            dependencies {
-                implementation kotlin('stdlib')
-//                implementation 'com.android.support:appcompat-v7:28.0.0'
-//                implementation fileTree(dir: 'libs', include: ['*.jar'])
-            }
-        }
-        androidTest {
-            dependencies {
-                implementation kotlin('test')
-                implementation kotlin('test-junit')
-            }
-        }
-
-//        android32Main {
-//            dependsOn androidMain
+//apply plugin: 'kotlin-android-extensions'
+//apply plugin: 'com.android.library'
+//
+//
+//android {
+//    compileSdkVersion 28
+//
+//    defaultConfig {
+//        minSdkVersion 15
+//        targetSdkVersion 28
+//    }
+//
+//    sourceSets {
+//        main {
+//            manifest.srcFile 'src/androidMain/AndroidManifest.xml'
+//            java.srcDirs = ['src/androidMain/kotlin']
+//            res.srcDirs = ['src/androidMain/resources']
 //        }
-//        android32Test {
-//            dependsOn androidTest
+//        test {
+//            java.srcDirs = ['src/androidTest/kotlin']
+//            res.srcDirs = ['src/androidTest/resources']
 //        }
-    }
-}
+//    }
+//
+//    buildTypes {
+//        staging {
+//            matchingFallbacks = ['release', 'debug']
+//        }
+//    }
+//}
+//
+//dependencies {
+//    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    implementation 'com.android.support:appcompat-v7:28.0.0'
+//    implementation 'com.android.support.constraint:constraint-layout:2.0.0-beta2'
+//
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+//}
+//
+//
+//kotlin {
+//    iosArm32()
+//    iosArm64()
+//    iosX64()
+//
+//    targets.fromPreset(presets.android, 'androidLibrary')
+//
+//
+//
+////    targets {
+////        fromPreset(presets.androidNativeArm32, 'android32')
+////    }
+//
+//    sourceSets {
+//        commonMain {
+//            dependencies {
+//                implementation kotlin('stdlib-common')
+//            }
+//        }
+//        commonTest {
+//            dependencies {
+//                implementation kotlin('test-common')
+//                implementation kotlin('test-annotations-common')
+//            }
+//        }
+//
+//        iosX64Main {
+//            kotlin.srcDir('src/iosMain/kotlin')
+//            resources.srcDir('src/iosMain/resources')
+//        }
+//        iosX64Test {
+//            kotlin.srcDir('src/iosTest/kotlin')
+//            resources.srcDir('src/iosTest/resources')
+//        }
+//        iosArm32Main {
+//            dependsOn iosX64Main
+//        }
+//        iosArm32Test {
+//            dependsOn iosX64Test
+//        }
+//        iosArm64Main {
+//            dependsOn iosX64Main
+//        }
+//        iosArm64Test {
+//            dependsOn iosX64Test
+//        }
+//
+//        androidMain {
+//            dependencies {
+//                implementation kotlin('stdlib')
+////                implementation 'com.android.support:appcompat-v7:28.0.0'
+////                implementation fileTree(dir: 'libs', include: ['*.jar'])
+//            }
+//        }
+//        androidTest {
+//            dependencies {
+//                implementation kotlin('test')
+//                implementation kotlin('test-junit')
+//            }
+//        }
+//
+////        android32Main {
+////            dependsOn androidMain
+////        }
+////        android32Test {
+////            dependsOn androidTest
+////        }
+//    }
+//}

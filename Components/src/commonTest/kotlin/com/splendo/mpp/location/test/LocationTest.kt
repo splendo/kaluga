@@ -1,6 +1,6 @@
-package com.splendo.kotlin.components.location.test
+package com.splendo.mpp.location.test
 
-import com.splendo.kotlin.components.location.Location
+import com.splendo.mpp.Location
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

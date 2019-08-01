@@ -4,10 +4,25 @@ pluginManagement {
             if (requested.id.id == "kotlin-multiplatform") {
                 useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
             }
+            if (requested.id.id == "com.android.library") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
+            if (requested.id.id == "com.android.application") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
         }
+    }
+
+    repositories {
+        google()
+        jcenter()
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
+        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 }
 
-rootProject.name = 'components'
+rootProject.name = 'SplendoMPP'
 
 enableFeaturePreview('GRADLE_METADATA')
+
+include ':Components'

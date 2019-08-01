@@ -1,8 +1,8 @@
 package com.splendo.components.location
 
-//import android.content.Context.LOCATION_SERVICE
-//import android.location.LocationManager.GPS_PROVIDER
-//import android.location.LocationProvider
+import android.content.Context.LOCATION_SERVICE
+import android.location.LocationManager.GPS_PROVIDER
+import android.location.LocationProvider
 
 actual class DefaultLocationManager: LocationManager {
 

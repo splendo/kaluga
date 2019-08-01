@@ -7,9 +7,6 @@
 # BlueJ files
 *.ctxt
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
 # Package Files #
 *.jar
 *.war
@@ -58,3 +55,4 @@ playground.xcworkspace
 .idea/
 
 #*.xcworkspace
+/local.properties
