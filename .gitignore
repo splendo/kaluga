@@ -50,3 +50,10 @@ playground.xcworkspace
 
 #*.xcworkspace
 
+# IntelliJ files we want to version
+!/.idea/dictionaries/*
+!/.idea/codeStyles/*
+!/.idea/inspectionProfiles/*
+
+# for now supply your own
+google-services.json

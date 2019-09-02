@@ -1,0 +1,205 @@
+group = "com.splendo.mpp"
+version = gradle.library_version
+
+android {
+
+    compileSdkVersion gradle.android_version
+
+    defaultConfig {
+        minSdkVersion gradle.android_version
+        targetSdkVersion gradle.android_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+        }
+        androidTest {
+            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+    }
+}
+
+kotlin {
+
+    targets.fromPreset(presets.android, 'androidLib') {
+        //publishAllLibraryVariants()
+    }
+
+    targetFromPreset(presets.iosX64, 'ios')
+
+    if (!gradle.one_ios_sourceset) {
+        targetFromPreset(presets.iosX64, 'ios')
+        targetFromPreset(presets.iosX64, 'iosX64')
+        targetFromPreset(presets.iosArm32, 'iosArm32')
+        targetFromPreset(presets.iosArm32, 'iosArm64')
+    }
+
+    jvm()
+    js {
+        browser()
+        configure([compilations.main, compilations.test]) {
+            tasks.getByName(compileKotlinTaskName).kotlinOptions {
+                metaInfo = true
+                sourceMap = true
+                moduleKind = 'umd'
+            }
+        }
+    }
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$gradle.kotlinx_corountines_version"
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_corountines_version"
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin("stdlib")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_corountines_version"
+            }
+        }
+        jvmTest {
+            dependsOn commonTest
+            dependencies {
+                implementation kotlin("test")
+                implementation kotlin("test-junit")
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$gradle.kotlinx_corountines_version"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test-js')
+            }
+        }
+        iosMain {
+            dependencies {
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                implementation kotlin('stdlib')
+            }
+        }
+        iosTest {
+            dependsOn commonTest
+            dependencies {
+                implementation kotlin('test')
+            }
+        }
+
+        if (!gradle.one_ios_sourceset) {
+
+            iosX64Main {
+                dependsOn iosMain
+            }
+
+            iosX64Test {
+                dependsOn iosTest
+            }
+
+            iosArm32Main {
+                dependsOn iosMain
+            }
+            iosArm32Test {
+                dependsOn iosTest
+            }
+
+            iosArm64Main {
+                dependsOn iosMain
+            }
+            iosArm64Test {
+                dependsOn iosTest
+            }
+        }
+
+        sourceSets.all {
+            languageSettings {
+                useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
+            }
+        }
+
+        // Android dependencies must be declared below
+
+    }
+}
+
+configurations {
+    // workaround for https://youtrack.jetbrains.com/issue/KT-27170
+    compileClasspath
+
+}
+
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_corountines_version"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_corountines_version"
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+
+    androidTestImplementation 'androidx.test:core:1.2.1-alpha02'
+    androidTestImplementation 'androidx.test:core-ktx:1.2.1-alpha02'
+    androidTestImplementation 'androidx.test:rules:1.3.0-alpha02'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2-alpha02'
+    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2-alpha02'
+    androidTestImplementation 'androidx.test:runner:1.3.0-alpha02'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha02'
+    androidTestImplementation 'org.jetbrains.kotlin:kotlin-test'
+    androidTestImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
+
+task iosTest {
+    def device = project.findProperty("iosDevice")?.toString() ?: "iPhone 8"
+    dependsOn 'linkDebugTestIosX64'
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Runs tests for target 'ios' on an iOS simulator"
+
+    doLast {
+        def binary = kotlin.targets.iosX64.binaries.getTest('DEBUG').outputFile
+        exec {
+            commandLine 'xcrun', 'simctl', 'spawn', device, binary.absolutePath
+        }
+    }
+}
+
+publishing {
+    publications {
+        kotlinMultiplatform {
+            artifactId = "$module.name"
+        }
+    }
+}
+
+apply from: "../gradle/jacoco.gradle"
+

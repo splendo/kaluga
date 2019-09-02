@@ -1,2 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.splendo.kotlin.components"/>
+<manifest package="com.splendo.mpp"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        >
+    <uses-permission android:name="ACCESS_FINE_LOCATION" />
+
+    <application android:label="Component"/>
+</manifest>
+
+
