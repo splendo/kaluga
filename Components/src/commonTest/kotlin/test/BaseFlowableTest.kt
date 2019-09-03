@@ -1,4 +1,4 @@
-package com.splendo.mpptest
+package com.splendo.mpp.test
 
 import com.splendo.mpp.flow.BaseFlowable
 import com.splendo.mpp.runBlocking

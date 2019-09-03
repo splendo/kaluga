@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/$PROJECT_ID/android:28'
     id: build
-    args: ["./gradlew", "build"]
+    args: ["./gradlew", "Components:build"]
     env:
       - 'TERM=dumb'
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
