@@ -29,7 +29,9 @@ Consider using a Gradle task configuration to run JVM tests (you can use the `--
 ### iOS tests
 
 iOs tests can be run using the `iosTest` task in gradle which uses XCTest. 
-Make sure you have the Simulator setup with a target device. For now you might have to change the simulator name in `components.gradle`.
+Make sure you have the Simulator setup with a working target device. For now you can change the target device inside the gradle build file.
+
+The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
  
 ## Architecture
 
