@@ -3,7 +3,7 @@ package com.splendo.mpp.state
 import com.splendo.mpp.flow.BaseFlowable
 import kotlinx.coroutines.*
 
-open class State<T:State<T>>(open val repo:StateRepo<T>) {
+open class State<T:State<T>>(open val repo:StateRepo<T>){
     open fun done() {}
 }
 
@@ -17,6 +17,10 @@ abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope 
             }
         }
     abstract fun initialState():T
+
+    init {
+        setBlocking(this.initialState())
+    }
 
     private fun state():T {
         return changedState ?: initialState()

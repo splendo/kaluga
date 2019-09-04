@@ -29,7 +29,7 @@ rootProject.name = 'SplendoMPP'
 gradle.ext {
     kotlin_version = '1.3.50' // when changing this also change the build.gradle multiplatform plugin version
     kotlinx_corountines_version = '1.3.0'
-    library_version = '0.0.1'
+    library_version = '0.0.2'
     android_version = 28
 }
 
