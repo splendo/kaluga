@@ -12,7 +12,7 @@ open class State<T:State<T>>(open val repo:StateRepo<T>){
 /**
  * The state repo can change holds the current state (which can be accessed as a flow), and can be used to change the current state
  *
- * Make sure that if you pass a coroutine scope
+ * Make sure that if you pass a coroutine scope that has sequential execution if you do not want simultaneous state changes. The default MainScope meets these criteria.
  */
 abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope = MainScope()): BaseFlowable<T>(), CoroutineScope by coroutineScope {
 
