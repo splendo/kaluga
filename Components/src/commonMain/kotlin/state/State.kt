@@ -4,36 +4,54 @@ import com.splendo.mpp.flow.BaseFlowable
 import kotlinx.coroutines.*
 
 open class State<T:State<T>>(open val repo:StateRepo<T>){
-    open fun done() {}
+    open suspend fun beforeCreatingNewState() {}
+    open suspend fun afterCreatingNewState() {}
+    open suspend fun afterNewStateIsSet() {}
 }
 
+/**
+ * The state repo can change holds the current state (which can be accessed as a flow), and can be used to change the current state
+ *
+ * Make sure that if you pass a coroutine scope
+ */
 abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope = MainScope()): BaseFlowable<T>(), CoroutineScope by coroutineScope {
 
-    private var changedState:T? = null
+    @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
+    private var changedState:T = initialState()
         private set(value) {
             field = value
-            value?.let {
-                launch { set(it) }
+            launch {
+                set(value)
             }
         }
-    abstract fun initialState():T
+
 
     init {
-        setBlocking(this.initialState())
+        setBlocking(changedState)
     }
+
+    abstract fun initialState():T
 
     private fun state():T {
-        return changedState ?: initialState()
+        return changedState
     }
 
-    fun changeState(action: (state:T) -> T):T {
-        val currentState = state()
-        val newState = action(currentState)
-        currentState.done()
-        if (currentState is CoroutineScope)
-            currentState.cancel("new state is active")
-        this.changedState = newState
-        return currentState
+    suspend fun changeState(action: (state:T) -> T):T {
+        val result = CompletableDeferred<T>()
+        coroutineScope {
+            launch {
+                val beforeState = state()
+                beforeState.beforeCreatingNewState()
+                if (beforeState is CoroutineScope)
+                    beforeState.cancel("this state will end. New state will be created")
+                val newState = action(beforeState)
+                beforeState.afterCreatingNewState()
+                changedState = newState
+                beforeState.afterNewStateIsSet()
+                result.complete(newState)
+            }
+        }
+        return result.await()
     }
 
 }

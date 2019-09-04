@@ -3,6 +3,10 @@ package com.splendo.mpp
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 
+fun EmptyCompletableDeferred.complete() {
+    complete(Unit)
+}
+
 typealias EmptyCompletableDeferred = CompletableDeferred<Unit>
 
 @Suppress("FunctionName") // Kotlin convention to provide package methods that look like constructors
@@ -12,3 +16,5 @@ typealias EmptyCompletableDeferred = CompletableDeferred<Unit>
  * It is optionally a child of a [parent] job.
  */
 fun EmptyCompletableDeferred(parent: Job? = null): EmptyCompletableDeferred = CompletableDeferred(parent)
+
+
