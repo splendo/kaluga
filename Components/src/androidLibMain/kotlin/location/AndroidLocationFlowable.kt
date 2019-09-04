@@ -73,7 +73,7 @@ actual class LocationFlowable:
     private var stateRepo = LocationManagerStateRepo(this)
 
     fun setFusedLocationProviderClient(provider: FusedLocationProviderClient) {
-        stateRepo.changeState {
+        stateRepo.changeStateBlocking {
             when (it) {
                 is NoLocationClient -> it + provider
                 is LocationFlowableState.HasFusedLocationProvider -> it.removeFusedLocationProvider() + provider

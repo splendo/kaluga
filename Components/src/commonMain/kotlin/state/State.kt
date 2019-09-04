@@ -1,6 +1,7 @@
 package com.splendo.mpp.state
 
 import com.splendo.mpp.flow.BaseFlowable
+import com.splendo.mpp.runBlocking
 import kotlinx.coroutines.*
 
 open class State<T:State<T>>(open val repo:StateRepo<T>){
@@ -25,7 +26,6 @@ abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope 
             }
         }
 
-
     init {
         setBlocking(changedState)
     }
@@ -34,6 +34,12 @@ abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope 
 
     private fun state():T {
         return changedState
+    }
+
+    fun changeStateBlocking(action: (state:T) -> T):T {
+        return runBlocking {
+            changeState(action)
+        }
     }
 
     suspend fun changeState(action: (state:T) -> T):T {
