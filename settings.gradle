@@ -47,3 +47,5 @@ println explain.stripIndent().trim()
 enableFeaturePreview('GRADLE_METADATA')
 
 include ':Components'
+include ':example'
+include ':example:android'

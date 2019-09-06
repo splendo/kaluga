@@ -46,7 +46,7 @@ playground.xcworkspace
 #IDE
 .idea/
 *.iml
-/local.properties
+local.properties
 
 #*.xcworkspace
 

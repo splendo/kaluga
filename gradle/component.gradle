@@ -1,42 +1,10 @@
 group = "com.splendo.mpp"
 version = gradle.library_version
 
-android {
-
-    compileSdkVersion gradle.android_version
-
-    defaultConfig {
-        minSdkVersion gradle.android_version
-        targetSdkVersion gradle.android_version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-        }
-        androidTest {
-            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
-        }
-    }
-
-    packagingOptions {
-        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
-    }
-}
 
 kotlin {
-
-    targets.fromPreset(presets.android, 'androidLib') {
-        //publishAllLibraryVariants()
+    android("androidLib") {
+        publishAllLibraryVariants()
     }
 
     targetFromPreset(presets.iosX64, 'ios')
@@ -152,6 +120,41 @@ kotlin {
     }
 }
 
+android {
+
+    defaultPublishConfig = "debug"
+
+    compileSdkVersion gradle.android_version
+
+    defaultConfig {
+        minSdkVersion gradle.android_version
+        targetSdkVersion gradle.android_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+        }
+        androidTest {
+            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+    }
+}
+
+
 configurations {
     // workaround for https://youtrack.jetbrains.com/issue/KT-27170
     compileClasspath
@@ -196,10 +199,12 @@ task iosTest {
 publishing {
     publications {
         kotlinMultiplatform {
-            artifactId = "$module.name"
+            artifactId = module.name
         }
     }
 }
 
 apply from: "../gradle/jacoco.gradle"
+
+apply from: "../gradle/publish.gradle"
 
