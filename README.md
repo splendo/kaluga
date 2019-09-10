@@ -1,9 +1,22 @@
 ## Build instructions
 
 This project uses Android Studio. You might need a canary version at times. 
+______
+Both idea and android studio (at time of writing 10.09.2019) will report warning 'blah-blah latest IDE kotlin plugin version is 1.3.41, but 1.3.50 is required'. 
 
+Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
+______
 Some components use Google Play services. For this you will need to supply your own `google-services.json` file.
+______
+Konan issue:
+```xcrun: error: SDK "iphonesimulator" cannot be located
+xcrun: error: unable to lookup item 'Path' in SDK 'iphonesimulator'
+e: org.jetbrains.kotlin.konan.KonanExternalToolFailure: The /usr/bin/xcrun command returned non-zero exit code: 1.
+```
+Go to `XCode` -> `Preferences` -> `Locations tab` -> `Command Line Tools` dropdown. 
 
+It should show none selected, so select any item.
+______
 ## Tests
 
 The main tests are in `commonTest`. These test should be able to run in iOS, Android and JVM scopes. JS is not yet properly supported.
