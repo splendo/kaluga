@@ -1,1 +1,30 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "kotlin-multiplatform") {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version ?: '1.3.50'}")
+            }
+            if (requested.id.id == "com.android.library") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
+            if (requested.id.id == "com.android.application") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
+        }
+    }
+}
+
+enableFeaturePreview("GRADLE_METADATA")
+
+gradle.ext {
+    kotlin_version = '1.3.50'   // when changing this also change the settings.gradle in the root folder
+    kotlinx_corountines_version = '1.3.0'
+    library_version = '0.0.2'
+    android_version = 28
+
+}
+
 include ':android'
+include ':shared'
+
+gradle.ext.exampleAsRoot = true

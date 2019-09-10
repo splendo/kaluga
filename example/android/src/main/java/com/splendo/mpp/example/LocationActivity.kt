@@ -9,8 +9,10 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
+import com.splendo.mpp.example.shared.helloAndroid
 import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.LocationFlowable
+import helloCommon
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -24,6 +26,8 @@ class LocationActivity : AppCompatActivity() {
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         setContentView(R.layout.activity_main)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -31,6 +35,8 @@ class LocationActivity : AppCompatActivity() {
         } else {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE);
         }
+
+        info.text = helloAndroid() + " " + helloCommon()
     }
 
     companion object {const val LOCATION_PERMISSION_REQUEST_CODE = 1}
@@ -53,7 +59,7 @@ class LocationActivity : AppCompatActivity() {
     }
 
 
-    fun flowLocation() {
+    private fun flowLocation() {
         lifecycle.coroutineScope.launch {
             val client = LocationServices.getFusedLocationProviderClient(
                 this@LocationActivity

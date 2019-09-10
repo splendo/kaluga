@@ -8,6 +8,9 @@ plugins {
 
 apply from: "../gradle/component.gradle"
 
+group = "com.splendo.mpp"
+version = gradle.library_version
+
 dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$gradle.kotlinx_corountines_version"

@@ -2,7 +2,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "kotlin-multiplatform") {
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version ?: '1.3.50'}")
             }
             if (requested.id.id == "com.android.library") {
                 useModule("com.android.tools.build:gradle:${requested.version}")
@@ -27,7 +27,8 @@ rootProject.name = 'SplendoMPP'
 
 // Version
 gradle.ext {
-    kotlin_version = '1.3.50' // when changing this also change the build.gradle multiplatform plugin version
+    kotlin_version = '1.3.50' // when changing this also change the build.gradle multiplatform plugin version,
+                              // and the settings.gradle in the example folder
     kotlinx_corountines_version = '1.3.0'
     library_version = '0.0.2'
     android_version = 28
@@ -44,8 +45,10 @@ String explain = gradle.ext.one_ios_sourceset ? """
     """
 println explain.stripIndent().trim()
 
-enableFeaturePreview('GRADLE_METADATA')
-
 include ':Components'
+
+gradle.ext.exampleAsRoot = false
+
 include ':example'
 include ':example:android'
+include ':example:shared'

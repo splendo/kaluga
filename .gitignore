@@ -43,6 +43,8 @@ playground.xcworkspace
 
 #Pods/
 
+
+
 #IDE
 .idea/
 *.iml
@@ -51,9 +53,10 @@ local.properties
 #*.xcworkspace
 
 # IntelliJ files we want to version
-!/.idea/dictionaries/*
-!/.idea/codeStyles/*
-!/.idea/inspectionProfiles/*
+!.idea/dictionaries/*
+!.idea/codeStyles/*
+!.idea/inspectionProfiles/*
+!.idea/runConfigurations/*
 
 # for now supply your own
 google-services.json

@@ -1,30 +1,31 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext.kotlin_version = '1.3.50'
+
     repositories {
+        mavenCentral()
         google()
         jcenter()
-        
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0-alpha09'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.android.tools.build:gradle:3.6.0-alpha10'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$gradle.ext.kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.1'
     }
 }
+plugins {
+    //"org.jetbrains.kotlin:kotlin-gradle-plugin"
+    // id 'kotlin-multiplatform'  // when changing this also change the build.gradle multiplatform plugin version'
+}
+
+group 'com.splendo.mpp.example'
+version "0.0.1"
+
+
 
 allprojects {
     repositories {
         mavenLocal()
+        mavenCentral()
         google()
         jcenter()
-        
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }

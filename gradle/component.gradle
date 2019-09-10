@@ -1,6 +1,8 @@
-group = "com.splendo.mpp"
-version = gradle.library_version
-
+repositories {
+    google()
+    mavenCentral()
+    jcenter()
+}
 
 kotlin {
     android("androidLib") {
@@ -204,7 +206,9 @@ publishing {
     }
 }
 
-apply from: "../gradle/jacoco.gradle"
+if ((new File("../jacoco.gradle")).exists())
+    apply from: "../jacoco.gradle"
 
-apply from: "../gradle/publish.gradle"
+if ((new File("../publish.gradle")).exists())
+    apply from: "publish.gradle"
 
