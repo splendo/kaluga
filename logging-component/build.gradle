@@ -1,0 +1,26 @@
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+    id 'com.google.gms.google-services'
+}
+
+apply from: "../gradle/component.gradle"
+
+version "0.0.1"
+
+repositories {
+    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
+}
+
+android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+dependencies {
+    commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.1'
+}
+

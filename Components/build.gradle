@@ -5,12 +5,22 @@ plugins {
     id 'maven-publish'
     id 'com.google.gms.google-services'
 }
+//TODO: remove this with multiple source ios source sets dependency resolution issue will be resolved
+gradle.ext.one_ios_sourceset = true
 
 apply from: "../gradle/component.gradle"
+
+group = "com.splendo.mpp"
+version = gradle.library_version
 
 dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$gradle.kotlinx_corountines_version"
 }
 
-
+repositories {
+    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
+}
+dependencies {
+    commonMainImplementation project(":logging-component")
+}
