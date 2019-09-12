@@ -3,6 +3,7 @@ package com.splendo.mpp.test
 import com.splendo.mpp.flow.BaseFlowable
 import com.splendo.mpp.runBlocking
 import com.splendo.mpp.test.FlowableTest
+import com.splendo.mpp.util.debug
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
@@ -26,7 +27,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     fun testConflatedFlow() = runBlocking {
         val c = ConflatedBroadcastChannel<String>()
         c.send("Foo")
-        var r:String? = null
+        var r: String? = null
         var flow: Flow<String>?
         MainScope().launch {
             flow = c.asFlow()
@@ -60,26 +61,23 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testExceptionBeingThrown()  = runBlockingWithFlow {
+    fun testExceptionBeingThrown() = runBlockingWithFlow {
 
         action {
             flowable.set("Test")
         }
         try {
             test {
-                println("cause an exception")
+                debug("cause an exception")
                 throw Exception("some error!")
             }
             awaitTestBlocks()
             fail("No throwable was thrown, even though we caused an exception")
-        } catch (t:Throwable) {
-            assertEquals("some error!", t.message )
-            println("We got the throwable ($t) we expected")
+        } catch (t: Throwable) {
+            assertEquals("some error!", t.message)
+            debug("We got the throwable ($t) we expected")
         }
     }
-
-
-
 
 
 }

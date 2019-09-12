@@ -3,6 +3,7 @@ package com.splendo.mpp.location
 import android.os.Looper
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
+import com.splendo.mpp.util.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -14,15 +15,15 @@ fun FusedLocationProviderClient.onLocation(
 ): Pair<Task<Void>, LocationCallback> {
     val locationCallback = object: LocationCallback() {
         override fun onLocationAvailability(availability: LocationAvailability?) {
-            println("Availability: $availability")
+            debug("Availability: $availability")
             availability?.let {
                 coroutineScope.launch {
-                    println("Availability inside scope: $availability")
+                    debug("Availability inside scope: $availability")
                     available(it) } }
         }
 
         override fun onLocationResult(result: LocationResult?) {
-            println("Result: $result")
+            debug("Result: $result")
             result?.let { coroutineScope.launch { location(it)}}
         }
     }

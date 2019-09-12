@@ -124,11 +124,11 @@ android {
 
     defaultPublishConfig = "debug"
 
-    compileSdkVersion gradle.android_version
+    compileSdkVersion gradle.android_target_version
 
     defaultConfig {
         minSdkVersion gradle.android_version
-        targetSdkVersion gradle.android_version
+        targetSdkVersion gradle.android_target_version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

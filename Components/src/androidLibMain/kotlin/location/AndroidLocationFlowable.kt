@@ -4,6 +4,7 @@ import com.google.android.gms.location.*
 import com.splendo.mpp.location.LocationFlowableState.NoLocationClient
 import com.splendo.mpp.state.State
 import com.splendo.mpp.state.StateRepo
+import com.splendo.mpp.util.debug
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
@@ -36,15 +37,15 @@ sealed class LocationFlowableState(override val repo: LocationManagerStateRepo) 
                 coroutineScope = this,
                 locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY),
                 available = {
-                    println("available in listener: $it")
+                    debug("available in listener: $it")
                     if (!it.isLocationAvailable) {
-                        println("set location unknown..")
+                        debug("set location unknown..")
                         repo.locationFlowable.setUnknownLocation()
                     }
                 },
                 location = { result ->
                     result.toKnownLocations().forEach {
-                        println("known locations: $it")
+                        debug("known locations: $it")
                         repo.locationFlowable.set(it)
                     }
 
@@ -54,7 +55,7 @@ sealed class LocationFlowableState(override val repo: LocationManagerStateRepo) 
             launch {
                 fusedLocationProviderClient.lastLocation.await()?.let {
                     repo.locationFlowable.set(it.toKnownLocation())
-                    println("last location sent: $it")
+                    debug("last location sent: $it")
                 }
                 task.await()
             }

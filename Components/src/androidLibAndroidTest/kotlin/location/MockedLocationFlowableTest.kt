@@ -8,6 +8,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.splendo.mpp.location.test.LocationFlowableTest
 import com.splendo.mpp.runBlocking
+import com.splendo.mpp.util.debug
 import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +25,7 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
     // we want to set an initial location, but not have it be included in the test. So we filter it from the test.
     var allowInFilter = false
     override val filter: suspend (Location) -> Boolean = {
-        println("allow $allowInFilter for $it")
+        debug("allow $allowInFilter for $it")
         allowInFilter }
 
     override fun assertSameLocation(expected: Location, actual: Location) {
@@ -42,16 +43,16 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
     }
     private fun filterCheck() {
         if (!allowInFilter) {
-            println("not allowing locations, wait 0,5s")
+            debug("not allowing locations, wait 0,5s")
             Thread.sleep(500) // filter out initial locations
             allowInFilter = true
-            println("now allowing locations")
+            debug("now allowing locations")
         }
     }
 
     override suspend fun setLocation(location: Location.KnownLocation) {
         filterCheck()
-        println("Mock location $location")
+        debug("Mock location $location")
 
         setFusedLocation(location.latitude, location.longitude)
     }
