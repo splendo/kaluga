@@ -23,7 +23,7 @@ open class BaseLocationFlowable : BaseFlowable<Location>() {
     }
 
     companion object {
-        val TAG = BaseLocationFlowable::class.simpleName
+        const val TAG = "BaseLocationFlowable"
     }
 
 }

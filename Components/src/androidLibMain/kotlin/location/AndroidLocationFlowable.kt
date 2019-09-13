@@ -70,7 +70,7 @@ sealed class LocationFlowableState(override val repo: LocationManagerStateRepo) 
         }
 
         companion object {
-            val TAG = HasFusedLocationProvider::class.simpleName
+            val TAG = "HasFusedLocationProvider"
         }
     }
 }

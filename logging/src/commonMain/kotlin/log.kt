@@ -3,19 +3,6 @@ package com.splendo.mpp.log
 import ru.pocketbyte.hydra.log.HydraLog
 
 /**
- * This class hide HydraLog dependencies.
- */
-private class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger {
-    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, message: String) {
-        logger.log(Logger.getLoggingComponentLogLevel(level), tag, message)
-    }
-
-    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, exception: Throwable) {
-        logger.log(Logger.getLoggingComponentLogLevel(level), tag, exception)
-    }
-}
-
-/**
  * Initializes HydraLog with given logger.
  *
  * Be aware that once initialized HydraLog cannot be initialised with new loggers. You will get first logger you have used for initialisation.

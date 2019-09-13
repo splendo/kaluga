@@ -3,7 +3,7 @@ package com.splendo.mpp.test
 import com.splendo.mpp.EmptyCompletableDeferred
 import com.splendo.mpp.runBlocking
 import com.splendo.mpp.log.debug
-import com.splendo.mpp.log.flow.Flowable
+import com.splendo.mpp.util.flow.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect

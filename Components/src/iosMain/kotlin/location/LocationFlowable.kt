@@ -4,7 +4,7 @@ import com.splendo.mpp.location.Location.Time.*
 import com.splendo.mpp.location.Location.UnknownReason.NO_PERMISSION_GRANTED
 import com.splendo.mpp.location.Location.UnknownReason.PERMISSION_DENIED
 import com.splendo.mpp.location.LocationFlowable.CLAuthorizationStatusKotlin.*
-import com.splendo.mpp.log.byOrdinalOrDefault
+import com.splendo.mpp.util.byOrdinalOrDefault
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import platform.CoreLocation.*
