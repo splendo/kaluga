@@ -2,8 +2,7 @@ package com.splendo.mpp.test
 
 import com.splendo.mpp.flow.BaseFlowable
 import com.splendo.mpp.runBlocking
-import com.splendo.mpp.test.FlowableTest
-import com.splendo.mpp.util.debug
+import com.splendo.mpp.log.debug
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay

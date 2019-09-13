@@ -1,6 +1,6 @@
-package com.splendo.mpp.util.common
+package com.splendo.mpp.log.common
 
-import com.splendo.mpp.util.*
+import com.splendo.mpp.log.*
 import kotlin.test.*
 
 internal class LogTest {
@@ -9,7 +9,7 @@ internal class LogTest {
 
     @BeforeTest
     fun BeforeClass() {
-        logger() ?: initLogger(LoggerMock())
+        initLogger(LoggerMock())
         mockLogger = logger() as LoggerMock
     }
 

@@ -4,7 +4,7 @@ import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.Location.*
 import com.splendo.mpp.location.LocationFlowable
 import com.splendo.mpp.test.FlowableTest
-import com.splendo.mpp.util.debug
+import com.splendo.mpp.log.debug
 import kotlin.test.*
 
 open class LocationFlowableTest : FlowableTest<Location>() {

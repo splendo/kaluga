@@ -1,10 +1,9 @@
 package com.splendo.mpp.test
 
 import com.splendo.mpp.EmptyCompletableDeferred
-import com.splendo.mpp.location.LocationFlowable
 import com.splendo.mpp.runBlocking
-import com.splendo.mpp.util.debug
-import com.splendo.mpp.util.flow.Flowable
+import com.splendo.mpp.log.debug
+import com.splendo.mpp.log.flow.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect

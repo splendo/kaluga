@@ -47,7 +47,7 @@ println explain.stripIndent().trim()
 
 enableFeaturePreview('GRADLE_METADATA')
 
-include ':logging-component'
+include ':logging'
 include ':Components'
 
 include ':example'

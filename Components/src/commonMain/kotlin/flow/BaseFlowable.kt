@@ -1,7 +1,7 @@
 package com.splendo.mpp.flow
 
 import com.splendo.mpp.runBlocking
-import com.splendo.mpp.util.flow.Flowable
+import com.splendo.mpp.log.flow.Flowable
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow

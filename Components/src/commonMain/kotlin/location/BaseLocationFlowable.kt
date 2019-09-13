@@ -2,7 +2,7 @@ package com.splendo.mpp.location
 
 import com.splendo.mpp.flow.BaseFlowable
 import com.splendo.mpp.location.Location.UnknownReason
-import com.splendo.mpp.util.debug
+import com.splendo.mpp.log.debug
 
 open class BaseLocationFlowable : BaseFlowable<Location>() {
 
@@ -17,9 +17,13 @@ open class BaseLocationFlowable : BaseFlowable<Location>() {
         val location = lastLocation?.let {
             Location.UnknownLocationWithLastLocation(it, reason)
         } ?: Location.UnknownLocationWithNoLastLocation(reason)
-        debug("Send to channel: $location")
+        debug(TAG, "Send to channel: $location")
         set(location)
-        debug("unknown location sent")
+        debug(TAG, "unknown location sent")
+    }
+
+    companion object {
+        val TAG = BaseLocationFlowable::class.simpleName
     }
 
 }

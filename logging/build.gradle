@@ -8,7 +8,8 @@ plugins {
 
 apply from: "../gradle/component.gradle"
 
-version "0.0.1"
+group = "com.splendo.mpp"
+version = gradle.library_version
 
 repositories {
     maven { url "https://dl.bintray.com/pocketbyte/hydra/" }

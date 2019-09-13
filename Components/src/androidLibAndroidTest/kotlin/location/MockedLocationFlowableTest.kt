@@ -8,7 +8,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.splendo.mpp.location.test.LocationFlowableTest
 import com.splendo.mpp.runBlocking
-import com.splendo.mpp.util.debug
+import com.splendo.mpp.log.debug
 import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Rule

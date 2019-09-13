@@ -22,5 +22,5 @@ repositories {
     maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
 }
 dependencies {
-    commonMainImplementation project(":logging-component")
+    commonMainImplementation project(':logging')
 }

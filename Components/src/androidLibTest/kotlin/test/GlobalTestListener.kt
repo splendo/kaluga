@@ -1,8 +1,8 @@
 package com.splendo.mpp.test
 
-import com.splendo.mpp.util.LogLevel
-import com.splendo.mpp.util.Logger
-import com.splendo.mpp.util.initLogger
+import com.splendo.mpp.log.LogLevel
+import com.splendo.mpp.log.Logger
+import com.splendo.mpp.log.initLogger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain

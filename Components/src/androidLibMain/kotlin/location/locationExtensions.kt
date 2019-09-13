@@ -3,28 +3,32 @@ package com.splendo.mpp.location
 import android.os.Looper
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
-import com.splendo.mpp.util.debug
+import com.splendo.mpp.log.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+const val ON_LOCATION_TAG = "onLocation"
 
 fun FusedLocationProviderClient.onLocation(
     coroutineScope: CoroutineScope,
     locationRequest: LocationRequest,
-    available:suspend(LocationAvailability)->Unit,
-    location:suspend(LocationResult)->Unit
+    available: suspend (LocationAvailability) -> Unit,
+    location: suspend (LocationResult) -> Unit
 ): Pair<Task<Void>, LocationCallback> {
-    val locationCallback = object: LocationCallback() {
+    val locationCallback = object : LocationCallback() {
         override fun onLocationAvailability(availability: LocationAvailability?) {
-            debug("Availability: $availability")
+            debug(ON_LOCATION_TAG, "Availability: $availability")
             availability?.let {
                 coroutineScope.launch {
-                    debug("Availability inside scope: $availability")
-                    available(it) } }
+                    debug(ON_LOCATION_TAG, "Availability inside scope: $availability")
+                    available(it)
+                }
+            }
         }
 
         override fun onLocationResult(result: LocationResult?) {
-            debug("Result: $result")
-            result?.let { coroutineScope.launch { location(it)}}
+            debug(ON_LOCATION_TAG, "Result: $result")
+            result?.let { coroutineScope.launch { location(it) } }
         }
     }
 

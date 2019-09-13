@@ -1,4 +1,4 @@
-package com.splendo.mpp.util
+package com.splendo.mpp.log
 
 enum class LogLevel(val logLevel: ru.pocketbyte.hydra.log.LogLevel) {
 

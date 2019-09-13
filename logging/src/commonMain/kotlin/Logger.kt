@@ -1,6 +1,4 @@
-package com.splendo.mpp.util
-
-import ru.pocketbyte.hydra.log.Logger
+package com.splendo.mpp.log
 
 interface Logger {
 

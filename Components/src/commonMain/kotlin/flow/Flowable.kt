@@ -1,4 +1,4 @@
-package com.splendo.mpp.util.flow
+package com.splendo.mpp.log.flow
 
 import com.splendo.mpp.flow.FlowConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi

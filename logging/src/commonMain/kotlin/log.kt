@@ -1,30 +1,43 @@
-package com.splendo.mpp.util
+package com.splendo.mpp.log
 
 import ru.pocketbyte.hydra.log.HydraLog
 
-private var wasLoggerInitialized: Boolean = false
-private var acceptedLogger: Logger? = null
-
-fun initLogger(logger: Logger): Logger? {
-    if (!wasLoggerInitialized) {
-        wasLoggerInitialized = true
-        acceptedLogger = logger
-        HydraLog.init(object : ru.pocketbyte.hydra.log.Logger {
-            override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, message: String) {
-                logger.log(Logger.getLoggingComponentLogLevel(level), tag, message)
-            }
-
-            override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, exception: Throwable) {
-                logger.log(Logger.getLoggingComponentLogLevel(level), tag, exception)
-            }
-        })
+/**
+ * This class hide HydraLog dependencies.
+ */
+private class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger {
+    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, message: String) {
+        logger.log(Logger.getLoggingComponentLogLevel(level), tag, message)
     }
 
-    return acceptedLogger
+    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, exception: Throwable) {
+        logger.log(Logger.getLoggingComponentLogLevel(level), tag, exception)
+    }
 }
 
+/**
+ * Initializes HydraLog with given logger.
+ *
+ * Be aware that once initialized HydraLog cannot be initialised with new loggers. You will get first logger you have used for initialisation.
+ *
+ * @param logger - logged to be used for log output
+ * @return first logger used for initialisation.
+ */
+fun initLogger(logger: Logger): Logger? {
+    try {
+        HydraLog.init(InternalLogger(logger))
+    } catch (e: IllegalStateException) {
+        println("LOG: HydraLog was already initialised. {${e.message}}")
+    }
+
+    return logger()
+}
+
+/**
+ * @return first logger you have used for initialisation.
+ */
 fun logger(): Logger? {
-    return acceptedLogger
+    return (HydraLog.logger as InternalLogger).logger
 }
 
 /**

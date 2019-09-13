@@ -1,4 +1,4 @@
-package com.splendo.mpp.util
+package com.splendo.mpp.log
 
 class LoggerMock : Logger {
 
