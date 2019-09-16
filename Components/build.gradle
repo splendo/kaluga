@@ -3,7 +3,6 @@ plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.multiplatform'
     id 'maven-publish'
-    id 'com.google.gms.google-services'
 }
 //TODO: remove this with multiple source ios source sets dependency resolution issue will be resolved
 gradle.ext.one_ios_sourceset = true
