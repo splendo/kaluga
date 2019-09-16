@@ -10,14 +10,12 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
 
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    // KNFKotlinNativeFramework class is located in the framework that is generated during build.
-    // If it is not resolved, try building for the device (not simulator) and reopening the project
+
+        
 
                   
     return true

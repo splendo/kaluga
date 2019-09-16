@@ -1,6 +1,8 @@
+import com.splendo.mpp.example.shared.Shared
 import com.splendo.mpp.location.LocationFlowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import platform.UIKit.UILabel
 
 //
 //  KotlinNativeFramework.kt
@@ -11,33 +13,29 @@ import kotlinx.coroutines.flow.collect
 //
 
 class KotlinNativeFramework {
-    fun helloFromKotlin() = "Hello from Kotlin!"
-    fun helloFromKotlinLocation() {
-        "Hello from Kotlin!"
-    }
-
     val loc = LocationFlowable()
 
     init {
-        println("yo")
-        println("yay")
+        println(Shared().helloCommon())
     }
 
-    fun location() {
+    fun location(label:UILabel) {
 
-        MainScope()
-        .launch {
-            println("main..")
-            loc.flow().collect {
-                println("location: $it")
-//                delay(600000000)
-            }
-            //delay(600000000)
+
+
+
+
+
+        runBlocking {
+            MainScope()
+                .launch {
+                    println("main..")
+                    loc.flow().collect {
+                        println("collecting...")
+                        label.text = "location: $it"
+                        println("location: $it")
+                    }
+                }
+        }
     }
-}
-
-
-
-
-
 }

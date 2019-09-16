@@ -323,6 +323,11 @@
 			isa = PBXProject;
 			attributes = {
 				ORGANIZATIONNAME = Splendo;
+				TargetAttributes = {
+					74555136E1B2BB715E50195E = {
+						DevelopmentTeam = 2732HQPVJP;
+					};
+				};
 			};
 			buildConfigurationList = 742F13205C35E0F5E5498808 /* Build configuration list for PBXProject "Demo" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -387,7 +392,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -z \"$KOTLIN_NATIVE_BUILD_CAPABLE\" ]; then\ncd \"$SRCROOT/Supporting Files\"\nsh -c \". gradlew buildForXcode\"\nfi\n            \n";
+			shellScript = "if [ -z \"$KOTLIN_NATIVE_BUILD_CAPABLE\" ]; then\necho \"arch: $ARCHS\"\ncd \"$SRCROOT/Supporting Files\"\nsh -c \". gradlew buildForXcode\"\nfi\n            \n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -563,6 +568,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -678,6 +684,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

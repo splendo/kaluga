@@ -8,14 +8,29 @@
 
 import UIKit
 import KotlinNativeFramework
-
+import CoreLocation
 
 class ViewController: UIViewController {
 
+    //MARK: Properties
+
+    @IBOutlet weak var label: UILabel!
+    
     override func viewDidLoad() {
-    super.viewDidLoad()
+        super.viewDidLoad()
     // Do any additional setup after loading the view.
-        NSLog("%@", KotlinNativeFramework().helloFromKotlin())
+//        NSLog("%@", KotlinNativeFramework().helloFromKotlin())
+        
+        label.text = ""
+
+        KotlinNativeFramework().location(label: label)
+        
+        let lm = CLLocationManager()
+        lm.requestWhenInUseAuthorization()
+
+        let cl = ComponentsLocationFlowable()
+        cl.addCLLocationManager(locationManager: lm)
+
     }
 
 

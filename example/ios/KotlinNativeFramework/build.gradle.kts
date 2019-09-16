@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform") //version "1.3.50"
+    kotlin("multiplatform")
     kotlin("xcode-compat") version "0.2.3"
 }
 
@@ -16,13 +16,22 @@ kotlin {
 
     sourceSets {
         getByName("KotlinNativeFrameworkMain") {
-            dependencies {
-                implementation(project(":shared"))
 
-                // use this to import modules directly from the project
-//                implementation(project(":Components"))
-                // or use this to import them using maven.
-                implementation("com.splendo.mpp:Components-iOS:0.0.2")
+
+            val singleSet = (gradle as ExtensionAware).extra["ios_one_sourceset"] as Boolean
+            var iosArch = (gradle as ExtensionAware).extra["ios_arch"]
+            if (singleSet)
+                iosArch = "ios"
+
+            dependencies {
+
+                implementation(project(":shared", "${iosArch}Default"))
+
+                if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
+                    implementation(project(":Components", "${iosArch}Default"))
+                } else {
+                    implementation("com.splendo.mpp:Components-iOS:0.0.2")
+                }
 
             }
         }

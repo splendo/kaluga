@@ -9,13 +9,13 @@ kotlin {
         publishAllLibraryVariants()
     }
 
-    targetFromPreset(presets.iosX64, 'ios')
+    // XCode / Appcode set this variable
+    targetFromPreset(presets."$gradle.ext.ios_arch", 'ios')
 
-    if (!gradle.one_ios_sourceset) {
-        targetFromPreset(presets.iosX64, 'ios')
+    if (!gradle.ext.ios_one_sourceset) {
         targetFromPreset(presets.iosX64, 'iosX64')
         targetFromPreset(presets.iosArm32, 'iosArm32')
-        targetFromPreset(presets.iosArm32, 'iosArm64')
+        targetFromPreset(presets.iosArm64, 'iosArm64')
     }
 
     jvm()
@@ -84,7 +84,7 @@ kotlin {
             }
         }
 
-        if (!gradle.one_ios_sourceset) {
+        if (!gradle.ext.ios_one_sourceset) {
 
             iosX64Main {
                 dependsOn iosMain
@@ -198,13 +198,8 @@ task iosTest {
     }
 }
 
-publishing {
-    publications {
-        kotlinMultiplatform {
-            artifactId = module.name
-        }
-    }
-}
+// uncomment to print all available configurations, useful to debug sourceSets and dependencies
+//configurations.each { println it }
 
 if ((new File("../jacoco.gradle")).exists())
     apply from: "../jacoco.gradle"

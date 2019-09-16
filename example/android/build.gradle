@@ -2,6 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+    google()
+    jcenter()
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -40,10 +47,10 @@ dependencies {
     }
     else {
         implementation project(':Components')
-        implementation project(':example:shared')
+        implementation project(':shared')
     }
 
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha03'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

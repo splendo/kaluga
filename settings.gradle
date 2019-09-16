@@ -2,6 +2,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "kotlin-multiplatform") {
+                // The version here must be kept in sync with gradle/ext.gradle and /example/ios/Supporting Files/settings.gradle
                 useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version ?: '1.3.50'}")
             }
             if (requested.id.id == "com.android.library") {
@@ -16,39 +17,18 @@ pluginManagement {
     repositories {
         google()
         jcenter()
-
-        // uncomment this for using experimental versions
-        //maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
-        //maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 }
 
+/***********************************************
+ *
+ * Changes made to this file should also be reflected in the `settings.gradle` under [example/ios/Supporting Files]
+ *
+ ***********************************************/
+
 rootProject.name = 'SplendoMPP'
 
-// Version
-gradle.ext {
-    kotlin_version = '1.3.50' // when changing this also change the build.gradle multiplatform plugin version,
-                              // and the settings.gradle in the example folder
-    kotlinx_corountines_version = '1.3.0'
-    library_version = '0.0.2'
-    android_version = 28
-}
-
-gradle.ext.one_ios_sourceset = ext.properties.containsKey("android.injected.invoked.from.ide") && !gradle.startParameter.taskNames.any { it.contains("publish") || it.contains("Test")}
-
-println "Single iOS sourceset: $gradle.ext.one_ios_sourceset"
-String explain = gradle.ext.one_ios_sourceset ? """    
-    This is done when running from Android Studio, in order to work around https://youtrack.jetbrains.net/issue/KT-27678. 
-    If the build is not from the IDE or the task set includes any task with the word "publish" or "Test" in it, this is not used.
-    """ : """
-    Running with all sourcesets (arm32, arm64) included, because we are outside of the IDE or publishing/testing.
-    """
-println explain.stripIndent().trim()
+apply from: "gradle/ext.gradle"
 
 include ':Components'
 
-gradle.ext.exampleAsRoot = false
-
-include ':example'
-include ':example:android'
-include ':example:shared'

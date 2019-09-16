@@ -1,3 +1,12 @@
+publishing {
+    publications {
+        kotlinMultiplatform {
+            artifactId = module.name
+        }
+    }
+}
+
+
 def pomConfig = {
     licenses {
         license {

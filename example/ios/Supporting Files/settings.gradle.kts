@@ -7,6 +7,7 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id == "kotlin-multiplatform") {
+                // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
                 val default_version = "1.3.50"
                 useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version ?: default_version}")
             }
@@ -20,20 +21,22 @@ pluginManagement {
     }
 }
 
+/***********************************************
+ *
+ * Changes made to this file should also be reflected in the `settings.gradle` in the root of the project
+ *
+ ***********************************************/
 
 
-enableFeaturePreview("GRADLE_METADATA")
+apply("../../../gradle/ext.gradle")
 
-if (gradle is ExtensionAware) {
-    val extension = gradle as ExtensionAware
-    extension.extra["kotlin_version"] = "1.3.50" // when changing this also change the build.gradle multiplatform plugin version,
-    extension.extra["kotlinx_corountines_version"] = "1.3.0"
-    extension.extra["library_version"] = "0.0.2"
-    extension.extra["android_version"] = 28
-    extension.extra["one_ios_sourceset"] = true
+if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
+    include(":Components")
+    project(":Components").projectDir = file("../../../Components")
 }
 
-
+include (":android")
+project(":android").projectDir = file("../../android")
 
 include(":KotlinNativeFramework")
 project(":KotlinNativeFramework").projectDir = file("../KotlinNativeFramework")
@@ -41,15 +44,6 @@ project(":KotlinNativeFramework").projectDir = file("../KotlinNativeFramework")
 include(":shared")
 project(":shared").projectDir = file("../../shared")
 
-/* uncomment this to also include the main project in the build. This way a direct dependency can be made
-
-include(":root")
-project(":root").projectDir = file("../../..")
-
-include(":Components")
-project(":Components").projectDir = file("../../../Components")
-
-/**/
 
 
 

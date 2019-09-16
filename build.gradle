@@ -1,7 +1,4 @@
 buildscript {
-    ext {
-        one_ios_sourceset = true
-    }
     repositories {
         google()
         jcenter()
