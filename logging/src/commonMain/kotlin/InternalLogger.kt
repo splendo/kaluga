@@ -22,5 +22,5 @@ inline class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger
     }
 }
 
-expect fun transformTag(tag: String?): String?
-expect fun transformMessage(message: String): String
+internal expect fun transformTag(tag: String?): String?
+internal expect fun transformMessage(message: String): String

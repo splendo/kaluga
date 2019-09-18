@@ -6,7 +6,7 @@ import android.os.Build
 const val TAG_LENGTH_LIMIT = 23
 
 @SuppressLint("ObsoleteSdkInt")
-actual fun transformTag(tag: String?): String? {
+internal actual fun transformTag(tag: String?): String? {
     return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
         tag?.substring(0, 23)
     } else {
@@ -14,6 +14,6 @@ actual fun transformTag(tag: String?): String? {
     }
 }
 
-actual fun transformMessage(message: String): String {
+internal actual fun transformMessage(message: String): String {
     return message
 }
