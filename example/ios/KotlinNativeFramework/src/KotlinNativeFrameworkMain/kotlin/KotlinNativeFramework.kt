@@ -1,7 +1,9 @@
 import com.splendo.mpp.example.shared.Shared
+import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.LocationFlowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
+import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
 
 //
@@ -13,29 +15,28 @@ import platform.UIKit.UILabel
 //
 
 class KotlinNativeFramework {
-    val loc = LocationFlowable()
+    private val loc = LocationFlowable()
 
     init {
         println(Shared().helloCommon())
     }
 
-    fun location(label:UILabel) {
+    fun location(label:UILabel, locationManager: CLLocationManager) {
+        loc.addCLLocationManager()
 
+       runBlocking {
+           MainScope()
+                   .launch {
+                       println("main..")
+                       loc.flow().collect {
+                           println("collecting...")
+                           label.text = "received location: $it"
+                           println("location: $it")
+                       }
+                       println("bye main")
+                   }
 
+       }
 
-
-
-
-        runBlocking {
-            MainScope()
-                .launch {
-                    println("main..")
-                    loc.flow().collect {
-                        println("collecting...")
-                        label.text = "location: $it"
-                        println("location: $it")
-                    }
-                }
-        }
     }
 }

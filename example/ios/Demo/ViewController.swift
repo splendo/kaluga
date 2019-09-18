@@ -23,13 +23,13 @@ class ViewController: UIViewController {
         
         label.text = ""
 
-        KotlinNativeFramework().location(label: label)
-        
+
         let lm = CLLocationManager()
         lm.requestWhenInUseAuthorization()
 
-        let cl = ComponentsLocationFlowable()
-        cl.addCLLocationManager(locationManager: lm)
+
+        KotlinNativeFramework().location(label: label, locationManager: lm)
+
 
     }
 

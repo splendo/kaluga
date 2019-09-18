@@ -33,6 +33,8 @@ apply("../../../gradle/ext.gradle")
 if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
     include(":Components")
     project(":Components").projectDir = file("../../../Components")
+
+
 }
 
 include (":android")

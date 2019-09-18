@@ -18,7 +18,7 @@ open class BaseFlowable<T>(private val channel:BroadcastChannel<T> = ConflatedBr
     }
 
     fun setBlocking(value:T) {
-        // conflated broadcast channels always accept input non-blocking (provided they are open)
+        // if a conflated broadcast channel is used it always accepts input non-blocking (provided the channel is not closed)
         runBlocking {
             channel.send(value)
         }
