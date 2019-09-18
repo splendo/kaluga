@@ -1,20 +1,26 @@
 package com.splendo.mpp.log
 
 /**
- * This class hide HydraLog dependencies.
+ * This class is used to hide HydraLog dependency.
  */
-internal class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger {
+inline class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger {
 
     override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, message: String) {
-        logger.log(Logger.getLoggingComponentLogLevel(level), tag, message)
+        logger.log(
+            level.getLogLevel(),
+            transformTag(tag),
+            transformMessage(message)
+        )
     }
 
     override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, exception: Throwable) {
-        logger.log(Logger.getLoggingComponentLogLevel(level), tag, exception)
+        logger.log(
+            level.getLogLevel(),
+            transformTag(tag),
+            exception
+        )
     }
 }
 
-expect class LogTransformer {
-    fun transformTag(tag: String?): String?
-    fun transformMessage(message: String): String
-}
+expect fun transformTag(tag: String?): String?
+expect fun transformMessage(message: String): String

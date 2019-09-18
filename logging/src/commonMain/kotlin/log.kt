@@ -10,7 +10,7 @@ import ru.pocketbyte.hydra.log.HydraLog
  * @param logger - logged to be used for log output
  * @return first logger used for initialisation.
  */
-fun initLogger(logger: Logger): Logger? {
+fun initLogger(logger: Logger): Logger {
     try {
         HydraLog.init(InternalLogger(logger))
     } catch (e: IllegalStateException) {
@@ -23,7 +23,7 @@ fun initLogger(logger: Logger): Logger? {
 /**
  * @return first logger you have used for initialisation.
  */
-fun logger(): Logger? {
+fun logger(): Logger {
     return (HydraLog.logger as InternalLogger).logger
 }
 

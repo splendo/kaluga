@@ -18,14 +18,13 @@ interface Logger {
      */
     fun log(level: LogLevel, tag: String?, exception: Throwable)
 
-    companion object {
-        fun getLoggingComponentLogLevel(logLevel: ru.pocketbyte.hydra.log.LogLevel): LogLevel {
-            return when (logLevel) {
-                ru.pocketbyte.hydra.log.LogLevel.DEBUG -> LogLevel.DEBUG
-                ru.pocketbyte.hydra.log.LogLevel.INFO -> LogLevel.INFO
-                ru.pocketbyte.hydra.log.LogLevel.WARNING -> LogLevel.WARNING
-                ru.pocketbyte.hydra.log.LogLevel.ERROR -> LogLevel.ERROR
-            }
-        }
+}
+
+internal inline fun ru.pocketbyte.hydra.log.LogLevel.getLogLevel(): LogLevel {
+    return when (this) {
+        ru.pocketbyte.hydra.log.LogLevel.DEBUG -> LogLevel.DEBUG
+        ru.pocketbyte.hydra.log.LogLevel.INFO -> LogLevel.INFO
+        ru.pocketbyte.hydra.log.LogLevel.WARNING -> LogLevel.WARNING
+        ru.pocketbyte.hydra.log.LogLevel.ERROR -> LogLevel.ERROR
     }
 }

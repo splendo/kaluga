@@ -7,7 +7,6 @@ plugins {
 
 apply from: "../gradle/component.gradle"
 
-group = "com.splendo.mpp"
 version = gradle.library_version
 
 repositories {
@@ -22,5 +21,12 @@ android {
 
 dependencies {
     commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.1'
+}
+kotlin {
+    sourceSets {
+        all {
+            languageSettings.enableLanguageFeature("InlineClasses")
+        }
+    }
 }
 
