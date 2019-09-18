@@ -30,7 +30,8 @@ gradle.ext {
     kotlin_version = '1.3.50' // when changing this also change the build.gradle multiplatform plugin version
     kotlinx_corountines_version = '1.3.0'
     library_version = '0.0.2'
-    android_version = 28
+    android_version = 27
+    android_target_version = 29
 }
 
 gradle.ext.one_ios_sourceset = ext.properties.containsKey("android.injected.invoked.from.ide") && !gradle.startParameter.taskNames.any { it.contains("publish") || it.contains("Test")}
@@ -46,6 +47,8 @@ println explain.stripIndent().trim()
 
 enableFeaturePreview('GRADLE_METADATA')
 
+include ':logging'
 include ':Components'
+
 include ':example'
 include ':example:android'

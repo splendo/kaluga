@@ -4,6 +4,7 @@ import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.Location.*
 import com.splendo.mpp.location.LocationFlowable
 import com.splendo.mpp.test.FlowableTest
+import com.splendo.mpp.log.debug
 import kotlin.test.*
 
 open class LocationFlowableTest : FlowableTest<Location>() {
@@ -18,7 +19,7 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     }
 
     open suspend fun setLocation(location:KnownLocation) {
-        println("Send location directly to channel for test: $location")
+        debug("Send location directly to channel for test: $location")
         flowable.set(location)
     }
 
@@ -31,7 +32,7 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     fun testKnownLocation() = runBlockingWithFlow {
         action {
             setLocation(location1)
-            println("sent location2")
+            debug("sent location2")
         }
         test {
             assertSameLocation(location1, it )
@@ -42,10 +43,10 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     fun testSingleUnknownLocation() = runBlockingWithFlow {
         action {
             setLocationUnknown()
-            println("sent location")
+            debug("sent location")
         }
         test {
-            println("unknown? : $it")
+            debug("unknown? : $it")
             assertSameLocation(UnknownLocationWithNoLastLocation(reason = UnknownReason.NOT_CLEAR), it )
         }
     }
@@ -54,7 +55,7 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     fun testSingleUnknownLocationWithReason()  = runBlockingWithFlow {
         action {
             setLocationUnknown(reason = UnknownReason.PERMISSION_DENIED)
-            println("sent location unknown")
+            debug("sent location unknown")
         }
         test {
             assertSameLocation(UnknownLocationWithNoLastLocation(reason = UnknownReason.PERMISSION_DENIED), it )

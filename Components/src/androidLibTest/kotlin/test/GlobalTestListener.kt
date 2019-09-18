@@ -1,5 +1,8 @@
 package com.splendo.mpp.test
 
+import com.splendo.mpp.log.LogLevel
+import com.splendo.mpp.log.Logger
+import com.splendo.mpp.log.initLogger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -12,6 +15,16 @@ actual class GlobalTestListener {
 
     actual fun beforeTest() {
         Dispatchers.setMain(mainDispatcher)
+        initLogger(object : Logger {
+            override fun log(level: LogLevel, tag: String?, message: String) {
+                println("${level.name}\t:$tag\t:$message")
+            }
+
+            override fun log(level: LogLevel, tag: String?, exception: Throwable) {
+                println("${level.name}\t:$tag\t:${exception.message}")
+                exception.printStackTrace()
+            }
+        })
     }
 
     actual fun afterTest() {
