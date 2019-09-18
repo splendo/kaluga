@@ -24,7 +24,11 @@ fun initLogger(logger: Logger): Logger {
  * @return first logger you have used for initialisation.
  */
 fun logger(): Logger {
-    return (HydraLog.logger as InternalLogger).logger
+    try {
+        return (HydraLog.logger as InternalLogger).logger
+    } catch (e: Exception) {
+        throw IllegalStateException("You should use initLogger for logging initialisation", e)
+    }
 }
 
 /**
