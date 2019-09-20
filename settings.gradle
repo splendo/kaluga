@@ -30,5 +30,5 @@ rootProject.name = 'SplendoMPP'
 
 apply from: "gradle/ext.gradle"
 
+include ':logging'
 include ':Components'
-

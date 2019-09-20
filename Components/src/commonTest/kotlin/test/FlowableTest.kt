@@ -1,8 +1,8 @@
 package com.splendo.mpp.test
 
 import com.splendo.mpp.EmptyCompletableDeferred
-import com.splendo.mpp.location.LocationFlowable
 import com.splendo.mpp.runBlocking
+import com.splendo.mpp.log.debug
 import com.splendo.mpp.util.flow.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
@@ -28,9 +28,9 @@ abstract class FlowableTest<T>:BaseTest() {
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
-        println("Ending flow")
+        debug("Ending flow")
         testChannel.close()
-        println("test channel closed")
+        debug("test channel closed")
         job.cancel()
         tests.clear()
     }
@@ -40,7 +40,7 @@ abstract class FlowableTest<T>:BaseTest() {
     suspend fun awaitTestBlocks() {
         withTimeout(waitForTestToSucceed) {// only wait for one minute
             tests.removeAll { !it.isActive }
-            println("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
+            debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
             tests.awaitAll()
 
         }
@@ -55,30 +55,30 @@ abstract class FlowableTest<T>:BaseTest() {
     }
 
     private suspend fun startFlow() {
-        println("start flow...")
+        debug("start flow...")
         job = mainScope.launch {
-            println("main scope launched, about to flow")
+            debug("main scope launched, about to flow")
             flowable.flow().filter(filter).collect { value ->
-                println("in flow received $value")
+                debug("in flow received $value")
                 val test = testChannel.receive()
-                println("receive test $test")
+                debug("receive test $test")
                 try {
                     test.first(value)
                     test.second.complete(Unit)
                 } catch (e: Throwable) {
-                    println("Exception when testing...")
+                    debug("Exception when testing...")
                     test.second.completeExceptionally(e)
                 }
-                println("flow completed")
+                debug("flow completed")
             }
-            println("flow start scope launched")
+            debug("flow start scope launched")
         }
     }
 
     suspend fun action(action:ActionBlock) {
         awaitTestBlocks()
         action()
-        println("did action")
+        debug("did action")
     }
 
     fun test(skip:Int=0, test:TestBlock<T>) {
