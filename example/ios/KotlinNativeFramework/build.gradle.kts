@@ -21,6 +21,8 @@ kotlin {
 
             val singleSet = (gradle as ExtensionAware).extra["ios_one_sourceset"] as Boolean
             var iosArch = (gradle as ExtensionAware).extra["ios_arch"]
+            val orgArch = iosArch
+
             if (singleSet)
                 iosArch = "ios"
 
@@ -31,7 +33,7 @@ kotlin {
                 if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", "${iosArch}Default"))
                 } else {
-                    implementation("com.splendo.mpp:Components-iOS:0.0.2")
+                    implementation("com.splendo.mpp:Components-$orgArch:0.0.2")
                 }
 
             }
