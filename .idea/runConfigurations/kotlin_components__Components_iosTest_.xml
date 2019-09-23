@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="IOS_ONE_SOURCESET" value="false" />
+          <entry key="IOS_ONE_SOURCESET" value="true" />
         </map>
       </option>
       <option name="executionName" />

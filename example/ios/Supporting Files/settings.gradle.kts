@@ -34,6 +34,8 @@ if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
     include(":Components")
     project(":Components").projectDir = file("../../../Components")
 
+    include(":logging")
+    project(":logging").projectDir = file("../../../logging")
 
 }
 
@@ -45,8 +47,5 @@ project(":KotlinNativeFramework").projectDir = file("../KotlinNativeFramework")
 
 include(":shared")
 project(":shared").projectDir = file("../../shared")
-
-
-
 
 rootProject.name = file("..").name

@@ -7,6 +7,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
+    maven("https://dl.bintray.com/pocketbyte/hydra/")
 }
 
 kotlin {
