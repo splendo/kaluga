@@ -70,7 +70,8 @@ class BaseFlowableTest : FlowableTest<String>() {
                 debug("cause an exception")
                 throw Exception("some error!")
             }
-            awaitTestBlocks()
+            debug("wait for the exception..")
+            action {}
             fail("No throwable was thrown, even though we caused an exception")
         } catch (t: Throwable) {
             assertEquals("some error!", t.message)
