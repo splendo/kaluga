@@ -27,6 +27,8 @@ def pomConfig = {
 }
 
 //bintray {
+
+// template from the multiplatform-settings project, here for reference (thanks!)
 //    def keyProps = new Properties()
 //    def keyFile = file("../keys.properties")
 //    if (keyFile.exists()) keyFile.withInputStream { keyProps.load(it) }

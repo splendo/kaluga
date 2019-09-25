@@ -232,12 +232,6 @@ task iosTest {
     }
 }
 
-// uncomment to print all available configurations, useful to debug sourceSets and dependencies
-//configurations.each { println it }
-
-if ((new File("../jacoco.gradle")).exists())
-    apply from: "../jacoco.gradle"
-
-if ((new File("../publish.gradle")).exists())
-    apply from: "publish.gradle"
-
+task printConfigurations {
+    configurations.each { println it }
+}

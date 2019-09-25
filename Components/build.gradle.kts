@@ -5,10 +5,12 @@ plugins {
     id("com.android.library")
 }
 
-apply(from = "../gradle/component.gradle")
+val ext =  (gradle as ExtensionAware).extra
+
+apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.mpp"
-version = "0.0.2"
+version = ext["library_version"]!!
 
 
 repositories {
@@ -30,7 +32,7 @@ kotlin {
     }
 }
 
-val singleSet = (gradle as ExtensionAware).extra["ios_one_sourceset"] as Boolean
+val singleSet =ext["ios_one_sourceset"] as Boolean
 
 if (singleSet) {
 
