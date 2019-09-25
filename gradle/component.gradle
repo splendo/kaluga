@@ -233,5 +233,7 @@ task iosTest {
 }
 
 task printConfigurations {
-    configurations.each { println it }
+    doLast {
+        configurations.each { println it }
+    }
 }
