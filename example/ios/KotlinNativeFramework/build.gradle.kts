@@ -31,7 +31,7 @@ kotlin {
 
                 implementation(project(":shared", "${iosArch}Default"))
 
-                if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
+                if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", "${iosArch}Default"))
                 } else {
                     val libraryVersion = ext["library_version"]
