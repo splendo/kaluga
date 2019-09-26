@@ -22,11 +22,3 @@ android {
 dependencies {
     commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.1'
 }
-kotlin {
-    sourceSets {
-        all {
-            languageSettings.enableLanguageFeature("InlineClasses")
-        }
-    }
-}
-

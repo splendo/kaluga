@@ -18,9 +18,10 @@ kotlin {
     sourceSets {
         getByName("KotlinNativeFrameworkMain") {
 
+            val ext = (gradle as ExtensionAware).extra
 
-            val singleSet = (gradle as ExtensionAware).extra["ios_one_sourceset"] as Boolean
-            var iosArch = (gradle as ExtensionAware).extra["ios_arch"]
+            val singleSet = ext["ios_one_sourceset"] as Boolean
+            var iosArch = ext["ios_arch"]
             val orgArch = iosArch
 
             if (singleSet)
@@ -33,7 +34,8 @@ kotlin {
                 if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", "${iosArch}Default"))
                 } else {
-                    implementation("com.splendo.mpp:Components-$orgArch:0.0.2")
+                    val libraryVersion = ext["library_version"]
+                    implementation("com.splendo.mpp:Components-$orgArch:$libraryVersion")
                 }
 
             }

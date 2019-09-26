@@ -1,14 +1,39 @@
 steps:
   - name: 'gcr.io/$PROJECT_ID/android:28'
     id: build
-    args: ["./gradlew", "build", "check"]
+    args: ["./gradlew", "build"]
     env:
       - 'TERM=dumb'
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
-      - 'GRADLE_USER_HOME=/build_cache/.gradle'
+      - 'GRADLE_USER_HOME=/workspace/.gradle'
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
-#
+
+  - name: 'gcr.io/$PROJECT_ID/android:28'
+    id: check
+    args: ["./gradlew", "check"]
+    env:
+      - 'TERM=dumb'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
+      # can only use one gradle home concurrently
+      - 'GRADLE_USER_HOME=/workspace/.gradle_check'
+      - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    waitFor:
+      - build
+
+  - name: 'gcr.io/$PROJECT_ID/android:28'
+    id: localPublish
+    args: ["./gradlew", "publishToMavenLocal"]
+    env:
+      - 'TERM=dumb'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
+      - 'GRADLE_USER_HOME=/workspace/.gradle'
+      - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+    waitFor:
+      - build
+
 # In future we have to save the build cache for faster builds:
 #    volumes:
 #      - name: 'build_cache'
