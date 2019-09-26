@@ -33,6 +33,7 @@ steps:
       - 'BRANCH_NAME=$BRANCH_NAME'
     waitFor:
       - build
+timeout: 1200s
 
 # In future we have to save the build cache for faster builds:
 #    volumes:
