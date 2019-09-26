@@ -18,11 +18,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    // Do any additional setup after loading the view.
-//        NSLog("%@", KotlinNativeFramework().helloFromKotlin())
-        
-        label.text = ""
 
+        label.text = ""
 
         let lm = CLLocationManager()
         lm.requestWhenInUseAuthorization()
