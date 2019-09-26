@@ -54,7 +54,6 @@ actual class LocationFlowable:
                     restricted -> setUnknownLocation(NO_PERMISSION_GRANTED)
                     denied -> setUnknownLocation(PERMISSION_DENIED)
                     authorizedAlways, authorizedWhenInUse -> {
-                        println("authorized!")
                         manager.startUpdatingLocation()
                     } // do nothing, a location should be published on it's own
                     else -> setUnknownLocation()
