@@ -9,8 +9,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
-import com.splendo.mpp.example.shared.Shared
 import com.splendo.mpp.example.shared.helloAndroid
+import com.splendo.mpp.example.shared.helloCommon
 import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.LocationFlowable
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -36,7 +36,7 @@ class LocationActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE);
         }
 
-        info.text = helloAndroid() + " " + Shared().helloCommon()
+        info.text = helloAndroid() + " " + helloCommon()
     }
 
     companion object {const val LOCATION_PERMISSION_REQUEST_CODE = 1}
