@@ -1,5 +1,6 @@
 import com.splendo.mpp.location.Location
 import com.splendo.mpp.location.LocationFlowable
+import com.splendo.mpp.log.debug
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -24,16 +25,17 @@ class KotlinNativeFramework {
        runBlocking {
            MainScope()
                    .launch {
-                       println("main..")
+                       debug("main..")
                        loc.flow().collect {
-                           println("collecting...")
+                           debug("collecting...")
                            label.text = "received location: $it"
-                           println("location: $it")
+                           debug("location: $it")
                        }
-                       println("bye main")
+                       debug("bye main")
                    }
 
-       }
+        }
+        debug("proceed executing after launching coroutine")
 
     }
 }

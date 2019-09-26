@@ -28,7 +28,6 @@ actual class LocationFlowable:
 
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>
         ) {
-            println("locations:$didUpdateLocations")
             runBlocking {
                 (didUpdateLocations.last() as? CLLocation)?.mppLocation()?.also { location ->
                     set(location)
