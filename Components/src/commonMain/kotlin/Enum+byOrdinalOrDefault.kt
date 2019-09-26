@@ -9,7 +9,7 @@ package com.splendo.mpp.util
  *
  */
 inline fun <reified T: Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal:Int, defaultValue:T): T {
-    return if (ordinal < 0 || ordinal >= enumValues<T>().size)
+    return if (ordinal !in enumValues<T>().indices)
         defaultValue
     else
         enumValues<T>()[ordinal]
