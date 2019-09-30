@@ -1,0 +1,101 @@
+package com.splendo.mpp.permissions
+
+import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
+import android.content.pm.PackageManager
+import kotlinx.coroutines.*
+
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+
+class BluetoothPermissionManagerTest {
+    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
+
+    private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
+    private lateinit var mockContext: Context
+    private lateinit var mockBluetoothAdapterWrapper: BluetoothPermissionManager.BluetoothAdapterWrapper
+
+    @Before
+    fun before() {
+        Dispatchers.setMain(mainThreadSurrogate)
+        mockContext = mock(Context::class.java)
+        mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
+        bluetoothPermissionManager = BluetoothPermissionManager(mockContext, mockBluetoothAdapterWrapper)
+    }
+
+    @After
+    fun after() {
+        Dispatchers.resetMain()
+    }
+
+    @Test
+    fun testBluetoothSupportAndAdapterIsNullThenNotSupported() {
+        `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(false)
+
+        val permit: Support = runBlocking {
+            return@runBlocking bluetoothPermissionManager.checkSupport()
+        }
+
+        assertNotNull(permit)
+        assertEquals(Support.NOT_SUPPORTED, permit)
+    }
+
+    @Test
+    fun testBluetoothSupportAndAdapterIsEnabledThenSupportPowerOn() {
+        `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(true)
+        `when`(mockBluetoothAdapterWrapper.isEnabled()).thenReturn(true)
+
+        val permit: Support = runBlocking {
+            return@runBlocking bluetoothPermissionManager.checkSupport()
+        }
+
+        assertNotNull(permit)
+        assertEquals(Support.POWER_ON, permit)
+    }
+
+    @Test
+    fun testBluetoothSupportAndAdapterIsDisabledThenSupportPowerOff() {
+        `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(true)
+        `when`(mockBluetoothAdapterWrapper.isEnabled()).thenReturn(false)
+
+        val permit: Support = runBlocking {
+            return@runBlocking bluetoothPermissionManager.checkSupport()
+        }
+
+        assertNotNull(permit)
+        assertEquals(Support.POWER_OFF, permit)
+    }
+
+    @Test
+    fun testBluetoothPermitCheckAndPermissionGrantedThenPermitAllowed() {
+        `when`(mockContext.checkSelfPermission(Manifest.permission.BLUETOOTH)).thenReturn(PackageManager.PERMISSION_GRANTED)
+
+        val permit: Permit = runBlocking {
+            return@runBlocking bluetoothPermissionManager.checkPermit()
+        }
+
+        assertNotNull(permit)
+        assertEquals(Permit.ALLOWED, permit)
+    }
+
+    @Test
+    fun testBluetoothPermitCheckAndPermissionDeniedThenPermitDenied() {
+        `when`(mockContext.checkSelfPermission(Manifest.permission.BLUETOOTH)).thenReturn(PackageManager.PERMISSION_DENIED)
+
+        val permit: Permit = runBlocking {
+            return@runBlocking bluetoothPermissionManager.checkPermit()
+        }
+
+        assertNotNull(permit)
+        assertEquals(Permit.DENIED, permit)
+    }
+}

@@ -1,0 +1,32 @@
+apply plugin: 'com.android.library'
+apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
+
+apply from: "../gradle/component.gradle"
+
+version = gradle.library_version
+
+repositories {
+    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_corountines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_corountines_version"
+    androidTestImplementation 'org.mockito:mockito-core:2.28.2'
+    androidTestImplementation 'org.mockito:mockito-android:2.28.2'
+
+    iosTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+}
+
+kotlin {
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+}
