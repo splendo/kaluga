@@ -1,13 +1,13 @@
 package com.splendo.mpp.location
 
 import com.splendo.mpp.location.Location.Time.*
-import com.splendo.mpp.location.Location.UnknownReason.NO_PERMISSION_GRANTED
-import com.splendo.mpp.location.Location.UnknownReason.PERMISSION_DENIED
+import com.splendo.mpp.location.Location.UnknownReason.*
 import com.splendo.mpp.location.LocationFlowable.CLAuthorizationStatusKotlin.*
 import com.splendo.mpp.util.byOrdinalOrDefault
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import platform.CoreLocation.*
+import platform.Foundation.NSError
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSObject
 
@@ -27,12 +27,21 @@ actual class LocationFlowable:
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>
-        ) = runBlocking<Unit> {
-             (didUpdateLocations.last() as? CLLocation)?.mppLocation()?.also { location ->
-                set(location)
+        ) {
+            runBlocking {
+                (didUpdateLocations.last() as? CLLocation)?.mppLocation()?.also { location ->
+                    set(location)
+                }
             }
         }
 
+        override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) = runBlocking {
+            set(didUpdateToLocation.mppLocation())
+        }
+
+        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) = runBlocking {
+            setUnknownLocation()
+        }
 
         override fun locationManager(
             manager: CLLocationManager,
@@ -43,7 +52,9 @@ actual class LocationFlowable:
                 )) {
                     restricted -> setUnknownLocation(NO_PERMISSION_GRANTED)
                     denied -> setUnknownLocation(PERMISSION_DENIED)
-                    authorizedAlways, authorizedWhenInUse -> {} // do nothing, a location should be published on it's own
+                    authorizedAlways, authorizedWhenInUse -> {
+                        manager.startUpdatingLocation()
+                    } // do nothing, a location should be published on it's own
                     else -> setUnknownLocation()
                 }
             }

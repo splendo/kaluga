@@ -41,19 +41,25 @@ xcuserdata/
 timeline.xctimeline
 playground.xcworkspace
 
-#Pods/
-
 #IDE
-.idea/
+**/.idea/*
 *.iml
 local.properties
+projectFilesBackup*/
 
 #*.xcworkspace
 
 # IntelliJ files we want to version
-!/.idea/dictionaries/*
-!/.idea/codeStyles/*
-!/.idea/inspectionProfiles/*
+!**/.idea/dictionaries/
+!**/.idea/dictionaries/*
+!**/.idea/codeStyles/
+!**/.idea/codeStyles/*
+!**/.idea/inspectionProfiles/
+!**/.idea/inspectionProfiles/*
+!**/.idea/runConfigurations/
+!**/.idea/runConfigurations/*
 
 # for now supply your own
 google-services.json
+
+*.framework

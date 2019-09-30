@@ -39,9 +39,12 @@ abstract class FlowableTest<T>:BaseTest() {
 
     suspend fun awaitTestBlocks() {
         withTimeout(waitForTestToSucceed) {// only wait for one minute
-            tests.removeAll { !it.isActive }
-            debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
-            tests.awaitAll()
+            try {
+                debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
+                tests.awaitAll()
+            } finally {
+                tests.removeAll { !it.isActive }
+            }
 
         }
     }

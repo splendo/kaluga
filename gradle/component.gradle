@@ -1,19 +1,24 @@
-group = "com.splendo.mpp"
-version = gradle.library_version
-
+repositories {
+    google()
+    mavenCentral()
+    jcenter()
+}
 
 kotlin {
     android("androidLib") {
         publishAllLibraryVariants()
     }
 
-    targetFromPreset(presets.iosX64, 'ios')
 
-    if (!gradle.one_ios_sourceset) {
-        targetFromPreset(presets.iosX64, 'ios')
+    if (!gradle.ext.ios_one_sourceset) {
         targetFromPreset(presets.iosX64, 'iosX64')
         targetFromPreset(presets.iosArm32, 'iosArm32')
-        targetFromPreset(presets.iosArm32, 'iosArm64')
+        targetFromPreset(presets.iosArm64, 'iosArm64')
+    }
+    else {
+        // XCode / Appcode set this variable
+        targetFromPreset(presets."$gradle.ext.ios_arch", 'ios')
+
     }
 
     jvm()
@@ -69,42 +74,73 @@ kotlin {
                 implementation kotlin('test-js')
             }
         }
-        iosMain {
-            dependencies {
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
-                implementation kotlin('stdlib')
-            }
-        }
-        iosTest {
-            dependsOn commonTest
-            dependencies {
-                implementation kotlin('test')
-            }
-        }
 
-        if (!gradle.one_ios_sourceset) {
+        if (!gradle.ext.ios_one_sourceset) {
+
 
             iosX64Main {
-                dependsOn iosMain
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                }
+                //dependsOn iosMain
             }
 
             iosX64Test {
-                dependsOn iosTest
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+                //dependsOn iosTest
             }
 
             iosArm32Main {
-                dependsOn iosMain
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                }
+                //dependsOn iosMain
             }
             iosArm32Test {
-                dependsOn iosTest
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+                //dependsOn iosTest
             }
 
             iosArm64Main {
-                dependsOn iosMain
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                }
+                //dependsOn iosMain
             }
             iosArm64Test {
-                dependsOn iosTest
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+                //dependsOn iosTest
             }
+        }
+        else {
+            iosMain {
+                dependencies {
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                    implementation kotlin('stdlib')
+                }
+            }
+            iosTest {
+                dependsOn commonTest
+                dependencies {
+                    implementation kotlin('test')
+                }
+            }
+
         }
 
         sourceSets.all {
@@ -112,6 +148,8 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
+                enableLanguageFeature("InlineClasses")
+
             }
         }
 
@@ -184,27 +222,20 @@ dependencies {
 
 task iosTest {
     def device = project.findProperty("iosDevice")?.toString() ?: "iPhone 8"
-    dependsOn 'linkDebugTestIosX64'
+    dependsOn 'linkDebugTestIos'
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Runs tests for target 'ios' on an iOS simulator"
 
     doLast {
-        def binary = kotlin.targets.iosX64.binaries.getTest('DEBUG').outputFile
+        def binary = kotlin.targets.ios.binaries.getTest('DEBUG').outputFile
         exec {
             commandLine 'xcrun', 'simctl', 'spawn', device, binary.absolutePath
         }
     }
 }
 
-publishing {
-    publications {
-        kotlinMultiplatform {
-            artifactId = module.name
-        }
+task printConfigurations {
+    doLast {
+        configurations.each { println it }
     }
 }
-
-apply from: "../gradle/jacoco.gradle"
-
-apply from: "../gradle/publish.gradle"
-
