@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="kotlin-components [logging:publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
@@ -24,3 +25,4 @@
     <method v="2" />
   </configuration>
 </component>
+

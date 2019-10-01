@@ -1,8 +1,16 @@
+## Kaluga
+
+This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
+
+It's main goal is to provide access to common multiplatform features used in mobile app development, such as location, permissions, bluetooth etc.
+
+Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
+
 ## Build instructions
 
 This project uses Android Studio. You might need a canary version at times. 
 ______
-Both idea and android studio (at time of writing 10.09.2019) will report warning 'blah-blah latest IDE kotlin plugin version is 1.3.41, but 1.3.50 is required'. 
+Both idea and android studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
 
 Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
 ______

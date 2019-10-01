@@ -58,6 +58,8 @@ projectFilesBackup*/
 !**/.idea/inspectionProfiles/*
 !**/.idea/runConfigurations/
 !**/.idea/runConfigurations/*
+!**/.idea/fileTemplates/
+!**/.idea/fileTemplates/*
 
 # for now supply your own
 google-services.json
