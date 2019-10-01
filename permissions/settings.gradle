@@ -1,4 +1,0 @@
-rootProject.name = 'permissions'
-
-
-enableFeaturePreview('GRADLE_METADATA')
