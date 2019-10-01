@@ -1,24 +1,20 @@
 package com.splendo.mpp.permissions
 
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBPeripheralManager
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
-import platform.darwin.NSObject
 
-class BluetoothPermissionManager : PermissionManager() {
+class BluetoothPermissionManager(
+    private val cbCentralManager: CBCentralManager,
+    private val cbPeripheralManager: CBPeripheralManager
+) : PermissionManager() {
+
     override suspend fun openSettings() {
         UIApplication.sharedApplication.openURL(NSURL(string = "App-Prefs:root=General"))
     }
 
     override suspend fun checkSupport(): Support {
-        val cbCentralManagerDelegate = CBCentralManagerDelegate({ cbCentaralManager -> println("@@@@ state:${cbCentaralManager.state}") })
-        val cbCentralManager = CBCentralManager(
-            cbCentralManagerDelegate,
-            null
-        )
-
         return when (cbCentralManager.state.toLong()) {
             STATE_UNKNOWN -> Support.NOT_SUPPORTED
             STATE_RESETTING -> Support.RESETTING
@@ -32,7 +28,7 @@ class BluetoothPermissionManager : PermissionManager() {
 
     override suspend fun checkPermit(): Permit {
         //TODO: Add support for iOS 13. `authorizationStatus` is being deprecated
-        return when (CBPeripheralManager.authorizationStatus().toLong()) {
+        return when (cbPeripheralManager.authorizationStatus().toLong()) {
             AUTHORIZATION_STATUS_NOT_DETERMINED -> Permit.UNDEFINED
             AUTHORIZATION_STATUS_RESTRICTED -> Permit.RESTRICTED
             AUTHORIZATION_STATUS_DENIED -> Permit.DENIED
@@ -57,8 +53,9 @@ class BluetoothPermissionManager : PermissionManager() {
 
 }
 
-private class CBCentralManagerDelegate(val onStateUpdate: (central: CBCentralManager) -> Unit) : NSObject(), CBCentralManagerDelegateProtocol {
-    override fun centralManagerDidUpdateState(central: CBCentralManager) {
-        onStateUpdate(central)
-    }
+/**
+ * Extension for mocking support
+ */
+public fun CBPeripheralManager.authorizationStatus(): platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus {
+    return CBPeripheralManager.authorizationStatus()
 }

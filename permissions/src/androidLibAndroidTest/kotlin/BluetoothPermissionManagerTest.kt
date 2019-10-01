@@ -1,17 +1,16 @@
 package com.splendo.mpp.permissions
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.pm.PackageManager
-import kotlinx.coroutines.*
-
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import kotlin.test.assertEquals
@@ -41,12 +40,12 @@ class BluetoothPermissionManagerTest {
     fun testBluetoothSupportAndAdapterIsNullThenNotSupported() {
         `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(false)
 
-        val permit: Support = runBlocking {
+        val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
         }
 
-        assertNotNull(permit)
-        assertEquals(Support.NOT_SUPPORTED, permit)
+        assertNotNull(support)
+        assertEquals(Support.NOT_SUPPORTED, support)
     }
 
     @Test
@@ -54,12 +53,12 @@ class BluetoothPermissionManagerTest {
         `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(true)
         `when`(mockBluetoothAdapterWrapper.isEnabled()).thenReturn(true)
 
-        val permit: Support = runBlocking {
+        val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
         }
 
-        assertNotNull(permit)
-        assertEquals(Support.POWER_ON, permit)
+        assertNotNull(support)
+        assertEquals(Support.POWER_ON, support)
     }
 
     @Test
@@ -67,12 +66,12 @@ class BluetoothPermissionManagerTest {
         `when`(mockBluetoothAdapterWrapper.isAvailable()).thenReturn(true)
         `when`(mockBluetoothAdapterWrapper.isEnabled()).thenReturn(false)
 
-        val permit: Support = runBlocking {
+        val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
         }
 
-        assertNotNull(permit)
-        assertEquals(Support.POWER_OFF, permit)
+        assertNotNull(support)
+        assertEquals(Support.POWER_OFF, support)
     }
 
     @Test
