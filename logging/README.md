@@ -1,6 +1,6 @@
 ## Logging
 
-This is logging simplification support for in `kotlin-mpp` wrapping the [Hydra-log](https://github.com/PocketByte/kotlin-hydra-log).
+This module provided simplified access to logging capabilities of [Hydra-log](https://github.com/PocketByte/kotlin-hydra-log).
 
 ### How to
 

@@ -14,7 +14,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
-        applicationId "com.splendo.mpp.example"
+        applicationId "com.splendo.kaluga.example"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1
@@ -43,7 +43,7 @@ dependencies {
 
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
-        implementation "com.splendo.mpp:Components:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:Components:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {

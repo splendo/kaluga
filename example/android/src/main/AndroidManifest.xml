@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.splendo.mpp.example">
+    package="com.splendo.kaluga.example">
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:allowBackup="true"
@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.splendo.mpp.example.LocationActivity">
+        <activity android:name="com.splendo.kaluga.example.LocationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

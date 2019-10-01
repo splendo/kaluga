@@ -9,7 +9,7 @@ val ext =  (gradle as ExtensionAware).extra
 
 apply(from = "../gradle/publishable_component.gradle")
 
-group = "com.splendo.mpp"
+group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 

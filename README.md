@@ -39,7 +39,7 @@ Android has two test targets, unit and integration. Both should be able to run t
 
 The integration tests also extends some base test (like for location) to test the specific android implementation. 
 
-To run the location tests, the `Splendo MPP Tests` app needs to be set as the mock location app in developer settings (on lower platform levels just allowing mock locations might suffice)
+To run the location tests, the `Kaluga Tests` app needs to be set as the mock location app in developer settings (on lower platform levels just allowing mock locations might suffice)
 
 If running the tests times out (according to Android Studio), try running the tests in debug mode.
 
@@ -64,4 +64,4 @@ The libraries are not published on any hosted repository yet, but can be publish
  
 ## Code conventions
 
-The project uses regular Kotlin code conventions. This includes not creating `com/splendo/mpp` directories, since they are common to all other folders.
+The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.

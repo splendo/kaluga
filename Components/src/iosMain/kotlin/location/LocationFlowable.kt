@@ -1,9 +1,26 @@
-package com.splendo.mpp.location
+package com.splendo.kaluga.location
+/*
 
-import com.splendo.mpp.location.Location.Time.*
-import com.splendo.mpp.location.Location.UnknownReason.*
-import com.splendo.mpp.location.LocationFlowable.CLAuthorizationStatusKotlin.*
-import com.splendo.mpp.util.byOrdinalOrDefault
+Copyright 2019 Splendo Consulting B.V. The Netherlands
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+*/
+
+import com.splendo.kaluga.location.Location.Time.*
+import com.splendo.kaluga.location.Location.UnknownReason.*
+import com.splendo.kaluga.location.LocationFlowable.CLAuthorizationStatusKotlin.*
+import com.splendo.kaluga.util.byOrdinalOrDefault
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import platform.CoreLocation.*
@@ -29,14 +46,14 @@ actual class LocationFlowable:
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>
         ) {
             runBlocking {
-                (didUpdateLocations.last() as? CLLocation)?.mppLocation()?.also { location ->
+                (didUpdateLocations.last() as? CLLocation)?.kalugaLocation()?.also { location ->
                     set(location)
                 }
             }
         }
 
         override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) = runBlocking {
-            set(didUpdateToLocation.mppLocation())
+            set(didUpdateToLocation.kalugaLocation())
         }
 
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) = runBlocking {
@@ -68,7 +85,7 @@ actual class LocationFlowable:
     }
 }
 
-fun CLLocation.mppLocation(): Location.KnownLocation {
+fun CLLocation.kalugaLocation(): Location.KnownLocation {
     return coordinate.useContents {
         Location.KnownLocation(
             latitude = latitude,
