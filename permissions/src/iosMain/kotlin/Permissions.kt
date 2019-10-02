@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBPeripheralManager
 
 actual class Permissions {
     actual fun getBluetoothManager(): PermissionManager {

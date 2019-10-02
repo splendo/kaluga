@@ -23,7 +23,10 @@ import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusAuthorized
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusDenied
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermined
 import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class BluetoothPermissionMangerTest {
 
