@@ -1,6 +1,8 @@
 package com.splendo.mpp.permissions
 
+import com.splendo.mpp.permissions.BluetoothPermissionManager.CBCentralManagerState.*
 import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBManagerState
 import platform.CoreBluetooth.CBPeripheralManager
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
@@ -15,19 +17,19 @@ class BluetoothPermissionManager(
     }
 
     override suspend fun checkSupport(): Support {
-        return when (cbCentralManager.state.toLong()) {
-            STATE_UNKNOWN -> Support.NOT_SUPPORTED
-            STATE_RESETTING -> Support.RESETTING
-            STATE_UNSUPPORTED -> Support.NOT_SUPPORTED
-            STATE_UNAUTHORIZED -> Support.UNAUTHORIZED
-            STATE_POWERED_OFF -> Support.POWER_OFF
-            STATE_POWERED_ON -> Support.POWER_ON
-            else -> Support.NOT_SUPPORTED
+        return when (CBCentralManagerState.byCBManagerState(cbCentralManager.state)) {
+            unsupported -> Support.NOT_SUPPORTED
+            resetting -> Support.RESETTING
+            unknown -> Support.NOT_SUPPORTED
+            unauthorized -> Support.UNAUTHORIZED
+            powerOff -> Support.POWER_OFF
+            powerOn -> Support.POWER_ON
         }
     }
 
     override suspend fun checkPermit(): Permit {
         //TODO: Add support for iOS 13. `authorizationStatus` is being deprecated
+        //https://github.com/splendo/kaluga/issues/21
         return when (cbPeripheralManager.authorizationStatus().toLong()) {
             AUTHORIZATION_STATUS_NOT_DETERMINED -> Permit.UNDEFINED
             AUTHORIZATION_STATUS_RESTRICTED -> Permit.RESTRICTED
@@ -37,13 +39,27 @@ class BluetoothPermissionManager(
         }
     }
 
+    //https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerstate
+    enum class CBCentralManagerState {
+        unknown,
+        resetting,
+        unsupported,
+        unauthorized,
+        powerOff,
+        powerOn;
+
+        companion object {
+            fun byCBManagerState(state: CBManagerState): CBCentralManagerState {
+                val values = values()
+                val ordinal = state.toInt()
+
+                return values[ordinal]
+            }
+        }
+    }
+
     companion object {
-        const val STATE_UNKNOWN = 0L
-        const val STATE_RESETTING = 1L
-        const val STATE_UNSUPPORTED = 2L
-        const val STATE_UNAUTHORIZED = 3L
-        const val STATE_POWERED_OFF = 4L
-        const val STATE_POWERED_ON = 5L
+
 
         const val AUTHORIZATION_STATUS_NOT_DETERMINED = 0L
         const val AUTHORIZATION_STATUS_RESTRICTED = 1L

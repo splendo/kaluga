@@ -4,28 +4,26 @@ import android.content.Context
 
 actual class Permissions {
 
-    lateinit var context: Context
+    internal lateinit var context: Context
 
     actual fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager(context)
     }
 
-    actual companion object {
-        actual fun builder(): Builder {
-            return AndroidPermissionBuilder()
+    actual open class Builder {
+        private lateinit var context: Context
+
+        fun context(context: Context) = apply { this.context = context }
+
+        actual open fun build(): Permissions {
+            val permissions = Permissions()
+
+            with(permissions) {
+                this.context = this@Builder.context
+            }
+
+            return permissions
         }
-    }
-
-}
-
-class AndroidPermissionBuilder : Builder() {
-
-    lateinit var context: Context
-
-    override fun build(): Permissions {
-        val permissions = Permissions()
-        permissions.context = context
-        return permissions
     }
 
 }

@@ -1,13 +1,8 @@
-package com.splendo.mpp.permissions
-
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
+import com.splendo.mpp.permissions.*
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +12,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class BluetoothPermissionManagerTest {
-    private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
     private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
     private lateinit var mockContext: Context
@@ -25,15 +19,19 @@ class BluetoothPermissionManagerTest {
 
     @Before
     fun before() {
-        Dispatchers.setMain(mainThreadSurrogate)
         mockContext = mock(Context::class.java)
+
+        Permissions.Builder()
+            .context(mockContext)
+            .build()
+
         mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
         bluetoothPermissionManager = BluetoothPermissionManager(mockContext, mockBluetoothAdapterWrapper)
+
     }
 
     @After
     fun after() {
-        Dispatchers.resetMain()
     }
 
     @Test

@@ -8,9 +8,9 @@ actual class Permissions {
         return BluetoothPermissionManager(CBCentralManager(), CBPeripheralManager())
     }
 
-    actual companion object {
-        actual fun builder(): Builder {
-            return Builder()
+    actual open class Builder {
+        actual open fun build(): Permissions {
+            return Permissions()
         }
     }
 
