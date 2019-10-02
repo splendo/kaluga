@@ -35,7 +35,7 @@ kotlin {
                     implementation(project(":Components", "${iosArch}Default"))
                 } else {
                     val libraryVersion = ext["library_version"]
-                    implementation("com.splendo.mpp:Components-$orgArch:$libraryVersion")
+                    implementation("com.splendo.kaluga:Components-$orgArch:$libraryVersion")
                 }
 
             }

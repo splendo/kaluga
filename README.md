@@ -1,8 +1,16 @@
+## Kaluga
+
+This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
+
+It's main goal is to provide access to common multiplatform features used in mobile app development, such as location, permissions, bluetooth etc.
+
+Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
+
 ## Build instructions
 
 This project uses Android Studio. You might need a canary version at times. 
 ______
-Both idea and android studio (at time of writing 10.09.2019) will report warning 'blah-blah latest IDE kotlin plugin version is 1.3.41, but 1.3.50 is required'. 
+Both idea and android studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
 
 Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
 ______
@@ -31,7 +39,7 @@ Android has two test targets, unit and integration. Both should be able to run t
 
 The integration tests also extends some base test (like for location) to test the specific android implementation. 
 
-To run the location tests, the `Splendo MPP Tests` app needs to be set as the mock location app in developer settings (on lower platform levels just allowing mock locations might suffice)
+To run the location tests, the `Kaluga Tests` app needs to be set as the mock location app in developer settings (on lower platform levels just allowing mock locations might suffice)
 
 If running the tests times out (according to Android Studio), try running the tests in debug mode.
 
@@ -56,4 +64,4 @@ The libraries are not published on any hosted repository yet, but can be publish
  
 ## Code conventions
 
-The project uses regular Kotlin code conventions. This includes not creating `com/splendo/mpp` directories, since they are common to all other folders.
+The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.

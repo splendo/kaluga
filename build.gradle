@@ -30,18 +30,18 @@ allprojects {
     }
 }
 
-group 'com.splendo.mpp'
+group 'com.splendo.kaluga'
 version gradle.ext.library_version
 
 
 publishing {
     publications {
         kotlinMultiplatform {
-            artifactId = "components"
+            artifactId = "kaluga"
 
             pom {
-                name = 'Splendo Kotlin MPP Library'
-                description = 'A set of Kotlin Multi Platform Project components'
+                name = 'Splendo Kaluga Library'
+                description = 'A set of Kotlin multiplatform components'
                 url = 'https://splendo.com'
             }
         }

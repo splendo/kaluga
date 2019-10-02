@@ -26,7 +26,7 @@ pluginManagement {
  *
  ***********************************************/
 
-rootProject.name = 'SplendoMPP'
+rootProject.name = 'Kaluga'
 
 apply from: "gradle/ext.gradle"
 

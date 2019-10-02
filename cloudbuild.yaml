@@ -1,5 +1,5 @@
 steps:
-  - name: 'gcr.io/$PROJECT_ID/android:28'
+  - name: 'gcr.io/$PROJECT_ID/android:29'
     id: build
     args: ["./gradlew", "build"]
     env:
@@ -9,7 +9,7 @@ steps:
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
 
-  - name: 'gcr.io/$PROJECT_ID/android:28'
+  - name: 'gcr.io/$PROJECT_ID/android:29'
     id: check
     args: ["./gradlew", "check"]
     env:
@@ -22,7 +22,7 @@ steps:
     waitFor:
       - build
 
-  - name: 'gcr.io/$PROJECT_ID/android:28'
+  - name: 'gcr.io/$PROJECT_ID/android:29'
     id: localPublish
     args: ["./gradlew", "publishToMavenLocal"]
     env:
