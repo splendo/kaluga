@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,7 +23,7 @@ import platform.CoreBluetooth.CBPeripheralManager
 
 actual class Permissions {
     actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager(CBCentralManager(), CBPeripheralManager())
+        return BluetoothPermissionManager(CBCentralManager())
     }
 
     actual open class Builder {

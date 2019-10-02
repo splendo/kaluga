@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,16 +18,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.mpp.permissions.BluetoothPermissionManager.CBCentralManagerState.*
-import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBManagerState
-import platform.CoreBluetooth.CBPeripheralManager
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.log.error
+import platform.CoreBluetooth.*
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
 class BluetoothPermissionManager(
     private val cbCentralManager: CBCentralManager,
-    private val cbPeripheralManager: CBPeripheralManager
+    internal var authorizationStatusProvider: () -> platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus = {
+        CBPeripheralManager.authorizationStatus()
+    }
 ) : PermissionManager() {
 
     override suspend fun openSettings() {
@@ -35,60 +37,71 @@ class BluetoothPermissionManager(
 
     override suspend fun checkSupport(): Support {
         return when (CBCentralManagerState.byCBManagerState(cbCentralManager.state)) {
-            unsupported -> Support.NOT_SUPPORTED
-            resetting -> Support.RESETTING
-            unknown -> Support.NOT_SUPPORTED
-            unauthorized -> Support.UNAUTHORIZED
-            powerOff -> Support.POWER_OFF
-            powerOn -> Support.POWER_ON
+            CBCentralManagerState.UNSUPPORTED -> Support.NOT_SUPPORTED
+            CBCentralManagerState.RESETTING -> Support.RESETTING
+            CBCentralManagerState.UNKNOWN -> Support.NOT_SUPPORTED
+            CBCentralManagerState.UNAUTHORIZED -> Support.UNAUTHORIZED
+            CBCentralManagerState.POWER_OFF -> Support.POWER_OFF
+            CBCentralManagerState.POWER_ON -> Support.POWER_ON
         }
     }
 
     override suspend fun checkPermit(): Permit {
         //TODO: Add support for iOS 13. `authorizationStatus` is being deprecated
         //https://github.com/splendo/kaluga/issues/21
-        return when (cbPeripheralManager.authorizationStatus().toLong()) {
-            AUTHORIZATION_STATUS_NOT_DETERMINED -> Permit.UNDEFINED
-            AUTHORIZATION_STATUS_RESTRICTED -> Permit.RESTRICTED
-            AUTHORIZATION_STATUS_DENIED -> Permit.DENIED
-            AUTHORIZATION_STATUS_AUTHORIZED -> Permit.ALLOWED
-            else -> Permit.UNDEFINED
+        return when (CBPeripheralManagerAuthorizationStatus.byCBPeripheralManagerAuthorizationStatus(authorizationStatusProvider())) {
+            CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusNotDetermined -> Permit.UNDEFINED
+            CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusRestricted -> Permit.RESTRICTED
+            CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusDenied -> Permit.DENIED
+            CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusAuthorized -> Permit.ALLOWED
         }
     }
 
     //https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerstate
     enum class CBCentralManagerState {
-        unknown,
-        resetting,
-        unsupported,
-        unauthorized,
-        powerOff,
-        powerOn;
+        UNKNOWN,
+        RESETTING,
+        UNSUPPORTED,
+        UNAUTHORIZED,
+        POWER_OFF,
+        POWER_ON;
 
         companion object {
             fun byCBManagerState(state: CBManagerState): CBCentralManagerState {
                 val values = values()
                 val ordinal = state.toInt()
 
-                return values[ordinal]
+                return if (values.size <= ordinal) {
+                    error("BluetoothPermissionManager", "Unknown CBCentralManagerState state={$state}")
+
+                    UNKNOWN
+                } else {
+                    values[ordinal]
+                }
             }
         }
     }
 
-    companion object {
+    //https://developer.apple.com/documentation/corebluetooth/cbperipheralmanagerauthorizationstatus
+    enum class CBPeripheralManagerAuthorizationStatus {
+        CBPeripheralManagerAuthorizationStatusNotDetermined,
+        CBPeripheralManagerAuthorizationStatusRestricted,
+        CBPeripheralManagerAuthorizationStatusDenied,
+        CBPeripheralManagerAuthorizationStatusAuthorized;
 
+        companion object {
+            fun byCBPeripheralManagerAuthorizationStatus(state: platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus): CBPeripheralManagerAuthorizationStatus {
+                val values = values()
+                val ordinal = state.toInt()
 
-        const val AUTHORIZATION_STATUS_NOT_DETERMINED = 0L
-        const val AUTHORIZATION_STATUS_RESTRICTED = 1L
-        const val AUTHORIZATION_STATUS_DENIED = 2L
-        const val AUTHORIZATION_STATUS_AUTHORIZED = 3L
+                return if (values.size <= ordinal) {
+                    error("BluetoothPermissionManager", "Unknown CBPeripheralManagerAuthorizationStatus status={$state}")
+
+                    CBPeripheralManagerAuthorizationStatusNotDetermined
+                } else {
+                    values[ordinal]
+                }
+            }
+        }
     }
-
-}
-
-/**
- * Extension for mocking support
- */
-public fun CBPeripheralManager.authorizationStatus(): platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus {
-    return CBPeripheralManager.authorizationStatus()
 }

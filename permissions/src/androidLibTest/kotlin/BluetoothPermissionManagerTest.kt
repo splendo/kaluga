@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,16 +21,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import com.splendo.mpp.permissions.*
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@RunWith(MockitoJUnitRunner::class)
 class BluetoothPermissionManagerTest {
 
     private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
