@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class BluetoothPermissionManager : PermissionManager() {
+class BluetoothPermissionManager : PermissionManager {
     override suspend fun openSettings() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -27,7 +28,7 @@ import android.content.pm.PackageManager
 open class BluetoothPermissionManager(
     private val context: Context,
     private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper()
-) : PermissionManager() {
+) : PermissionManager {
 
     override suspend fun openSettings() {
         context.startActivity(Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS))

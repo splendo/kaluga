@@ -30,7 +30,7 @@ class BluetoothPermissionManager(
     internal var authorizationStatusProvider: () -> platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus = {
         CBPeripheralManager.authorizationStatus()
     }
-) : PermissionManager() {
+) : PermissionManager {
 
     override suspend fun openSettings() {
         UIApplication.sharedApplication.openURL(NSURL(string = "App-Prefs:root=General"))
