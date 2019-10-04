@@ -19,14 +19,22 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.UIAlertPresenter
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
+import platform.UIKit.UIViewController
 
 class KotlinNativeFramework {
     private val loc = LocationFlowable()
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
+
+    fun showAlert(alert: Alert, parent: UIViewController, animated: Boolean) {
+        UIAlertPresenter(parent).show(alert, animated) { }
+    }
 
     fun location(label:UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager()

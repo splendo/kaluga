@@ -24,12 +24,21 @@ class ViewController: UIViewController {
         let lm = CLLocationManager()
         lm.requestWhenInUseAuthorization()
 
-
         KotlinNativeFramework().location(label: label, locationManager: lm)
-
-
     }
 
-
-
+    class AlertIdentifier: ComponentsAlertIdentifier { }
+    
+    @IBAction func onShowAlert(_ sender: Any) {
+        let action = ComponentsAlert.Action(title: "OK", style: .default_) {
+            debugPrint("Handler called!")
+        }
+        let alert = ComponentsAlert(
+            identifier: AlertIdentifier(),
+            title: "Hello",
+            message: "World",
+            actions: [action]
+        )
+        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true)
+    }
 }
