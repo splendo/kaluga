@@ -15,6 +15,8 @@ class ViewController: UIViewController {
     //MARK: Properties
 
     @IBOutlet weak var label: UILabel!
+
+    lazy var alertPresenter = KotlinNativeFramework().alertPresenter(parent: self)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,36 +29,39 @@ class ViewController: UIViewController {
         KotlinNativeFramework().location(label: label, locationManager: lm)
     }
 
-    class AlertIdentifier: ComponentsAlertIdentifier { }
+    enum AlertIdentifier: String {
+        case basic
+        case awaiting
+    }
 
     @IBAction func onShowAlert(_ sender: Any) {
         let action = ComponentsAlert.Action(title: "OK", style: .default_) {
             debugPrint("Handler called!")
         }
         let alert = ComponentsAlert(
-            identifier: AlertIdentifier(),
+            identifier: AlertIdentifier.basic.rawValue,
             title: "Hello",
             message: "World",
             style: .alert,
             actions: [action]
         )
-        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true) {
+        alertPresenter.show(alert: alert, animated: true) {
             debugPrint("Presenting completed")
         }
     }
 
     @IBAction func onShowWithDismiss(_ sender: Any) {
         let alert = ComponentsAlert(
-            identifier: AlertIdentifier(),
+            identifier: AlertIdentifier.awaiting.rawValue,
             title: "Alert",
             message: "Waiting...",
             style: .alert,
             actions: []
         )
 
-        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true) {
+        alertPresenter.show(alert: alert, animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                KotlinNativeFramework().hideAlert(identifier: alert.identifier, parent: self, animated: true)
+                self.alertPresenter.dismiss(identifier: alert.identifier, animated: true)
             }
         }
     }

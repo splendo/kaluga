@@ -23,6 +23,8 @@ class UIAlertPresenter(
     private val parent: UIViewController
 ): AlertPresenter() {
 
+    var latestAlertIdentifier: String? = null
+
     override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
 
         fun convertAlertStyle(style: Alert.Style): UIAlertControllerStyle {
@@ -51,14 +53,21 @@ class UIAlertPresenter(
                 UIAlertAction.actionWithTitle(
                     action.title,
                     convertActionStyle(action.style)
-                ) { action.handler() }
+                ) {
+                    action.handler()
+                    latestAlertIdentifier = null
+                }
             )
         }
 
         parent.presentViewController(uiAlert, animated) { completion?.invoke() }
+        latestAlertIdentifier = alert.identifier
     }
 
-    override fun dismiss(identifier: Alert.Identifier, animated: Boolean) {
-        parent.dismissModalViewControllerAnimated(animated)
+    override fun dismiss(identifier: String, animated: Boolean) {
+        if (latestAlertIdentifier == identifier) {
+            parent.dismissModalViewControllerAnimated(animated)
+            latestAlertIdentifier = null
+        }
     }
 }

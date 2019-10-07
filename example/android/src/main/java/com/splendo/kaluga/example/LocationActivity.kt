@@ -96,13 +96,13 @@ class LocationActivity : AppCompatActivity() {
         }
     }
 
-    enum class Identifier: Alert.Identifier {
-        BASIC
+    enum class Identifier(val rawValue: String) {
+        BASIC("Basic")
     }
 
     private fun showAlert() {
         val alert = Alert(
-            Identifier.BASIC, "Hello", "World", Alert.Style.ALERT, listOf(
+            Identifier.BASIC.rawValue, "Hello", "World", Alert.Style.ALERT, listOf(
                 Alert.Action(
                     "OK",
                     Alert.Action.Style.DEFAULT

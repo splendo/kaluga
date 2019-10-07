@@ -24,6 +24,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class AlertDialogPresenter(private val context: Context): AlertPresenter() {
 
+    var latestAlertIdentifier: String? = null
+    var latestDialog: AlertDialog? = null
+
     override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
 
         fun convertActionStyle(style: Alert.Action.Style): Int {
@@ -38,14 +41,23 @@ class AlertDialogPresenter(private val context: Context): AlertPresenter() {
         alertDialog.setTitle(alert.title)
         alertDialog.setMessage(alert.message)
         alert.actions.forEach { action ->
-            alertDialog.setButton(convertActionStyle(action.style), action.title) { _, _ ->
+            alertDialog.setButton(convertActionStyle(action.style), action.title) { dialog, _ ->
                 action.handler()
-                alertDialog.dismiss()
+                dialog.dismiss()
+                latestDialog = null
+                latestAlertIdentifier = null
             }
         }
         alertDialog.show()
+        latestAlertIdentifier = alert.identifier
+        latestDialog = alertDialog
     }
 
-    override fun dismiss(identifier: Alert.Identifier, animated: Boolean) {
+    override fun dismiss(identifier: String, animated: Boolean) {
+        if (latestAlertIdentifier == identifier) {
+            latestDialog?.dismiss()
+            latestDialog = null
+            latestAlertIdentifier = null
+        }
     }
 }

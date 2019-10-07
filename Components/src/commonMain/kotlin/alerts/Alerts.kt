@@ -1,7 +1,5 @@
 package com.splendo.kaluga.alerts
 
-import kotlinx.coroutines.CompletionHandler
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -21,14 +19,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 data class Alert(
-    val identifier: Identifier,
+    val identifier: String,
     val title: String?,
     val message: String?,
     val style: Style = Style.ALERT,
     val actions: List<Action>
 ) {
-
-    interface Identifier
 
     enum class Style {
         ALERT,
@@ -50,7 +46,7 @@ data class Alert(
 
 interface AlertActions {
     fun show(alert: Alert, animated: Boolean = true, completion: (() -> Unit)? = null)
-    fun dismiss(identifier: Alert.Identifier, animated: Boolean = true)
+    fun dismiss(identifier: String, animated: Boolean = true)
 }
 
 abstract class AlertPresenter: AlertActions

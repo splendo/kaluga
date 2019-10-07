@@ -32,13 +32,7 @@ class KotlinNativeFramework {
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
-    fun showAlert(alert: Alert, parent: UIViewController, animated: Boolean, completion: (() -> Unit)?) {
-        UIAlertPresenter(parent).show(alert, animated, completion)
-    }
-
-    fun hideAlert(identifier: Alert.Identifier, parent: UIViewController, animated: Boolean = true) {
-        UIAlertPresenter(parent).dismiss(identifier, animated)
-    }
+    fun alertPresenter(parent: UIViewController) = UIAlertPresenter(parent)
 
     fun location(label:UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager(locationManager)
