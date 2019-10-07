@@ -22,10 +22,15 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.AlertDialogPresenter
 import com.splendo.kaluga.example.shared.helloAndroid
 import com.splendo.kaluga.example.shared.helloCommon
 import com.splendo.kaluga.location.Location
@@ -70,11 +75,43 @@ class LocationActivity : AppCompatActivity() {
             ) {
                 flowLocation()
             } else {
-                info.setText("You must grant the location permission for this example to work")
+                info.text = "You must grant the location permission for this example to work"
             }
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater: MenuInflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.show_alert -> {
+                showAlert()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    enum class Identifier: Alert.Identifier {
+        BASIC
+    }
+
+    private fun showAlert() {
+        val alert = Alert(
+            Identifier.BASIC, "Hello", "World", Alert.Style.ALERT, listOf(
+                Alert.Action(
+                    "OK",
+                    Alert.Action.Style.DEFAULT
+                ) { }
+            )
+        )
+        val presenter = AlertDialogPresenter(this)
+        presenter.show(alert, true) { }
+    }
 
     private fun flowLocation() {
         lifecycle.coroutineScope.launch {
@@ -89,7 +126,6 @@ class LocationActivity : AppCompatActivity() {
                 info.animate().withEndAction {
                     info.animate().setDuration(10000).alpha(0.12f).start()
                 }.alpha(1f).setDuration(100).start()
-
             }
         }
     }
