@@ -29,13 +29,22 @@
                                     <action selector="onShowAlert:" destination="BYZ-38-t0r" eventType="touchUpInside" id="jaF-u3-ddN"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dU2-1e-Xhs">
+                                <rect key="frame" x="93" y="556" width="228" height="30"/>
+                                <state key="normal" title="Show Alert with automatic dimiss"/>
+                                <connections>
+                                    <action selector="onShowWithDismiss:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nsh-OH-Eh2"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="N09-wk-m9R" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="AqD-Pg-RgE"/>
                             <constraint firstItem="kv4-Gw-Dfq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Gjr-vE-2Rk"/>
+                            <constraint firstItem="dU2-1e-Xhs" firstAttribute="top" secondItem="kv4-Gw-Dfq" secondAttribute="bottom" constant="8" id="JV4-Q7-OIx"/>
                             <constraint firstItem="kv4-Gw-Dfq" firstAttribute="top" secondItem="N09-wk-m9R" secondAttribute="bottom" constant="70" id="VDf-lh-cYa"/>
                             <constraint firstItem="N09-wk-m9R" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="20" id="cOF-po-VVP"/>
+                            <constraint firstItem="dU2-1e-Xhs" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="jnB-9h-rdq"/>
                             <constraint firstAttribute="trailingMargin" secondItem="N09-wk-m9R" secondAttribute="trailing" constant="20" id="r8O-Jm-dEs"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>

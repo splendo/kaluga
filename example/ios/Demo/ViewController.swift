@@ -44,4 +44,20 @@ class ViewController: UIViewController {
             debugPrint("Presenting completed")
         }
     }
+
+    @IBAction func onShowWithDismiss(_ sender: Any) {
+        let alert = ComponentsAlert(
+            identifier: AlertIdentifier(),
+            title: "Alert",
+            message: "Waiting...",
+            style: .alert,
+            actions: []
+        )
+
+        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                KotlinNativeFramework().hideAlert(identifier: alert.identifier, parent: self, animated: true)
+            }
+        }
+    }
 }
