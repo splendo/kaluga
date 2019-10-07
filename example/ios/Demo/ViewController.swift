@@ -37,8 +37,11 @@ class ViewController: UIViewController {
             identifier: AlertIdentifier(),
             title: "Hello",
             message: "World",
+            style: .alert,
             actions: [action]
         )
-        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true)
+        KotlinNativeFramework().showAlert(alert: alert, parent: self, animated: true) {
+            debugPrint("Presenting completed")
+        }
     }
 }

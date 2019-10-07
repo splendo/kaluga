@@ -32,25 +32,24 @@ class KotlinNativeFramework {
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
-    fun showAlert(alert: Alert, parent: UIViewController, animated: Boolean) {
-        UIAlertPresenter(parent).show(alert, animated) { }
+    fun showAlert(alert: Alert, parent: UIViewController, animated: Boolean, completion: (() -> Unit)?) {
+        UIAlertPresenter(parent).show(alert, animated, completion)
     }
 
     fun location(label:UILabel, locationManager: CLLocationManager) {
-        loc.addCLLocationManager()
+        loc.addCLLocationManager(locationManager)
 
-       runBlocking {
-           MainScope()
-                   .launch {
-                       debug("main..")
-                       loc.flow().collect {
-                           debug("collecting...")
-                           label.text = "received location: $it"
-                           debug("location: $it")
-                       }
-                       debug("bye main")
-                   }
-
+        runBlocking {
+            MainScope()
+                .launch {
+                    debug("main..")
+                    loc.flow().collect {
+                        debug("collecting...")
+                        label.text = "received location: $it"
+                        debug("location: $it")
+                    }
+                    debug("bye main")
+                }
         }
         debug("proceed executing after launching coroutine")
 

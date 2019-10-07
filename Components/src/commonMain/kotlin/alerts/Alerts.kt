@@ -49,7 +49,7 @@ data class Alert(
 }
 
 interface AlertActions {
-    fun show(alert: Alert, animated: Boolean = true, completion: (() -> Unit)?)
+    fun show(alert: Alert, animated: Boolean = true, completion: (() -> Unit)? = null)
     fun dismiss(identifier: Alert.Identifier, animated: Boolean = true)
 }
 
