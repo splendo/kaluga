@@ -24,10 +24,16 @@ data class Alert(
     val identifier: Identifier,
     val title: String?,
     val message: String?,
+    val style: Style = Style.ALERT,
     val actions: List<Action>
 ) {
 
     interface Identifier
+
+    enum class Style {
+        ALERT,
+        ACTION_SHEET
+    }
 
     data class Action(
         val title: String,
@@ -36,7 +42,8 @@ data class Alert(
     ) {
         enum class Style {
             DEFAULT,
-            DESTRUCTIVE
+            DESTRUCTIVE,
+            CANCEL
         }
     }
 }

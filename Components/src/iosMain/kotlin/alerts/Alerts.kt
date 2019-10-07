@@ -25,17 +25,32 @@ class UIAlertPresenter(
 
     override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
 
+        fun convertAlertStyle(style: Alert.Style): UIAlertControllerStyle {
+            return when (style) {
+                Alert.Style.ALERT -> UIAlertControllerStyleAlert
+                Alert.Style.ACTION_SHEET -> UIAlertControllerStyleActionSheet
+            }
+        }
+
+        fun convertActionStyle(style: Alert.Action.Style): UIAlertActionStyle {
+            return when (style) {
+                Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
+                Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
+                Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
+            }
+        }
+
         val uiAlert = UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
-            UIAlertControllerStyleAlert
+            convertAlertStyle(alert.style)
         )
 
         alert.actions.forEach { action ->
             uiAlert.addAction(
                 UIAlertAction.actionWithTitle(
                     action.title,
-                    UIAlertActionStyleDefault
+                    convertActionStyle(action.style)
                 ) { action.handler() }
             )
         }
