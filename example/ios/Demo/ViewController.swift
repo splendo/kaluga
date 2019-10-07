@@ -28,7 +28,7 @@ class ViewController: UIViewController {
     }
 
     class AlertIdentifier: ComponentsAlertIdentifier { }
-    
+
     @IBAction func onShowAlert(_ sender: Any) {
         let action = ComponentsAlert.Action(title: "OK", style: .default_) {
             debugPrint("Handler called!")

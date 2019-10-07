@@ -47,6 +47,5 @@ class AlertDialogPresenter(private val context: Context): AlertPresenter() {
     }
 
     override fun dismiss(identifier: Alert.Identifier, animated: Boolean) {
-        
     }
 }
