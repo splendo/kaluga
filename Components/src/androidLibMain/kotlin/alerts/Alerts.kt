@@ -50,6 +50,7 @@ class AlertDialogPresenter(private val context: Context): AlertPresenter() {
         alertDialog.show()
         latestAlertIdentifier = alert.identifier
         latestDialog = alertDialog
+        completion?.invoke()
     }
 
     override fun dismiss(identifier: String, animated: Boolean) {
