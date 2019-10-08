@@ -1,4 +1,7 @@
 package com.splendo.kaluga.alerts
+
+import platform.UIKit.*
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,13 +20,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import platform.UIKit.*
 
 class UIAlertPresenter(
     private val parent: UIViewController
 ): AlertPresenter() {
 
-    var latestAlertIdentifier: String? = null
+    private var latestAlertIdentifier: String? = null
 
     override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
 
@@ -60,8 +62,9 @@ class UIAlertPresenter(
             )
         }
 
-        parent.presentViewController(uiAlert, animated) { completion?.invoke() }
+        parent.showViewController(uiAlert, this)
         latestAlertIdentifier = alert.identifier
+        completion?.invoke()
     }
 
     override fun dismiss(identifier: String, animated: Boolean) {

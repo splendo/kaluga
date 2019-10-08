@@ -2,7 +2,6 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 
 /*
 
@@ -24,8 +23,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class AlertDialogPresenter(private val context: Context): AlertPresenter() {
 
-    var latestAlertIdentifier: String? = null
-    var latestDialog: AlertDialog? = null
+    private var latestAlertIdentifier: String? = null
+    private var latestDialog: AlertDialog? = null
 
     override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
 
