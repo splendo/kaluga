@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -44,6 +45,7 @@ import kotlinx.android.synthetic.main.activity_main.info
 class LocationActivity : AppCompatActivity() {
 
     private val location = LocationFlowable()
+    private val alertPresenter = AlertDialogPresenter(this)
 
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,12 +94,17 @@ class LocationActivity : AppCompatActivity() {
                 showAlert()
                 true
             }
+            R.id.dismissible_alert -> {
+                showDismissibleAlert()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
     enum class Identifier(val rawValue: String) {
-        BASIC("Basic")
+        BASIC("Basic"),
+        DISMISSIBLE("Dismissible")
     }
 
     private fun showAlert() {
@@ -109,8 +116,19 @@ class LocationActivity : AppCompatActivity() {
                 ) { }
             )
         )
-        val presenter = AlertDialogPresenter(this)
-        presenter.show(alert, true) { }
+
+        alertPresenter.show(alert, true)
+    }
+
+    private fun showDismissibleAlert() {
+        val alert = Alert(
+            Identifier.DISMISSIBLE.rawValue, "Hello", "Wait...", Alert.Style.NOT_CANCELABLE, emptyList()
+        )
+        alertPresenter.show(alert, true)
+
+        Handler().postDelayed({
+            alertPresenter.dismiss(Identifier.DISMISSIBLE.rawValue)
+        }, 3000)
     }
 
     private fun flowLocation() {

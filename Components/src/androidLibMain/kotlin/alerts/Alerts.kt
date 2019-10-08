@@ -39,6 +39,7 @@ class AlertDialogPresenter(private val context: Context): AlertPresenter() {
         val alertDialog = AlertDialog.Builder(context).create()
         alertDialog.setTitle(alert.title)
         alertDialog.setMessage(alert.message)
+        alertDialog.setCancelable(alert.style != Alert.Style.NOT_CANCELABLE)
         alert.actions.forEach { action ->
             alertDialog.setButton(convertActionStyle(action.style), action.title) { dialog, _ ->
                 action.handler()

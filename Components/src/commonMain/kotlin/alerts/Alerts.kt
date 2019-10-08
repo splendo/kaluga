@@ -28,7 +28,8 @@ data class Alert(
 
     enum class Style {
         ALERT,
-        ACTION_SHEET
+        ACTION_SHEET,
+        NOT_CANCELABLE
     }
 
     data class Action(
