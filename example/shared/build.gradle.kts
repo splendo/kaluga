@@ -12,3 +12,4 @@ repositories {
 
 apply from: "../../gradle/component.gradle"
 
+kor
