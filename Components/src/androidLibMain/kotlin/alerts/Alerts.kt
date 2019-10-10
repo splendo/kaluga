@@ -39,8 +39,8 @@ actual class AlertInterface(
         fun convertActionStyle(style: Alert.Action.Style): Int {
             return when (style) {
                 Alert.Action.Style.DEFAULT -> AlertDialog.BUTTON_POSITIVE
-                Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEGATIVE
-                Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEUTRAL
+                Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEUTRAL
+                Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
             }
         }
 
@@ -50,9 +50,8 @@ actual class AlertInterface(
             .create()
 
         alert.actions.forEach { action ->
-            alertDialog.setButton(convertActionStyle(action.style), action.title) { dialog, _ ->
+            alertDialog.setButton(convertActionStyle(action.style), action.title) { _, _ ->
                 action.handler()
-                dialog.dismiss()
                 latestDialog = null
             }
         }

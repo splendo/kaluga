@@ -102,8 +102,7 @@ class LocationActivity : AppCompatActivity() {
 
     private fun showAlert() {
         AlertBuilder(this)
-            .setTitle("Hello")
-            .setMessage("World")
+            .setTitle("Hello, Kaluga")
             .setPositiveButton("OK") { println("OK pressed") }
             .setNegativeButton("Cancel") { println("Cancel pressed") }
             .setNeutralButton("Details") { println("Details pressed") }
@@ -115,6 +114,7 @@ class LocationActivity : AppCompatActivity() {
 
         val presenter = AlertBuilder(this)
             .setTitle("Hello")
+            .setMessage("Wait for 3 sec...")
             .setPositiveButton("OK") {}
             .create()
 
