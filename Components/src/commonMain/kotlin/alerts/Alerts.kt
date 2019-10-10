@@ -60,9 +60,7 @@ abstract class BaseAlertBuilder: AlertBuilderActions {
 
     fun setTitle(title: String?) = apply { this.title = title }
 
-    fun setMessage(message: String) = apply { this.message = message }
-
-    fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
+    fun setMessage(message: String?) = apply { this.message = message }
 
     fun setPositiveButton(title: String, handler: AlertActionHandler) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.DEFAULT, handler))
@@ -75,6 +73,14 @@ abstract class BaseAlertBuilder: AlertBuilderActions {
     fun setNeutralButton(title: String, handler: AlertActionHandler) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.DESTRUCTIVE, handler))
     }
+
+    fun addAction(title: String, style: Alert.Action.Style, handler: AlertActionHandler) = apply {
+        addAction(Alert.Action(title, style, handler))
+    }
+
+    fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
+
+    private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
     internal fun createAlert(): Alert {
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }

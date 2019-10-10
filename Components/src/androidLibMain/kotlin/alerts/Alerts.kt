@@ -21,6 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
+
     override fun create(): AlertInterface {
         return AlertInterface(createAlert(), context)
     }

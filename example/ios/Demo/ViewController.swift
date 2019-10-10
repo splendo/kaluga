@@ -28,13 +28,19 @@ class ViewController: UIViewController {
     }
 
     @IBAction func onShowAlert(_ sender: Any) {
-        KotlinNativeFramework().makeAlert(from: self, title: "Hello, Kaluga", buttonText: "OK") {
-            debugPrint("OK")
-        }.show(animated: true, completion: nil)
+        KotlinNativeFramework()
+            .makeAlert(from: self, title: "Hello, Kaluga", message: nil, actions: [
+                ComponentsAlert.Action(title: "Default", style: .default_) { debugPrint("OK") },
+                ComponentsAlert.Action(title: "Destructive", style: .destructive) { debugPrint("Not OK") },
+                ComponentsAlert.Action(title: "Cancel", style: .cancel) { debugPrint("Cancel") },
+            ])
+            .show(animated: true, completion: nil)
     }
 
     @IBAction func onShowWithDismiss(_ sender: Any) {
-        let presenter = KotlinNativeFramework().makeAlert(from: self, title: "Hello, Kaluga", buttonText: "Wait for 3 sec") { }
+        let presenter = KotlinNativeFramework().makeAlert(from: self, title: "Wait for 3 sec...", message: "Automatic dismissible", actions: [
+            ComponentsAlert.Action(title: "OK", style: .cancel) {},
+        ])
         presenter.show(animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 presenter.dismiss(animated: true)

@@ -59,8 +59,7 @@ actual class AlertInterface(
             )
         }
 
-        parent.showViewController(uiAlert, this)
-        completion?.invoke()
+        parent.presentViewController(uiAlert, animated, completion)
     }
 
     override fun dismiss(animated: Boolean) {
