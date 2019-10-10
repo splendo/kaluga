@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 
 /*
-
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +20,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AlertDialogPresenter(private val context: Context): AlertPresenter() {
+actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
+    override fun create(): AlertInterface {
+        return AlertInterface(createAlert(), context)
+    }
+}
 
-    private var latestAlertIdentifier: String? = null
+actual class AlertInterface(
+    private val alert: Alert,
+    private val context: Context
+): BaseAlertPresenter(alert) {
+
     private var latestDialog: AlertDialog? = null
 
-    override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
+    override fun show(animated: Boolean, completion: (() -> Unit)?) {
 
         fun convertActionStyle(style: Alert.Action.Style): Int {
             return when (style) {
@@ -36,29 +43,25 @@ class AlertDialogPresenter(private val context: Context): AlertPresenter() {
             }
         }
 
-        val alertDialog = AlertDialog.Builder(context).create()
-        alertDialog.setTitle(alert.title)
-        alertDialog.setMessage(alert.message)
-        alertDialog.setCancelable(alert.style != Alert.Style.NOT_CANCELABLE)
+        val alertDialog = AlertDialog.Builder(context)
+            .setTitle(alert.title)
+            .setMessage(alert.message)
+            .create()
+
         alert.actions.forEach { action ->
             alertDialog.setButton(convertActionStyle(action.style), action.title) { dialog, _ ->
                 action.handler()
                 dialog.dismiss()
                 latestDialog = null
-                latestAlertIdentifier = null
             }
         }
         alertDialog.show()
-        latestAlertIdentifier = alert.identifier
         latestDialog = alertDialog
         completion?.invoke()
     }
 
-    override fun dismiss(identifier: String, animated: Boolean) {
-        if (latestAlertIdentifier == identifier) {
-            latestDialog?.dismiss()
-            latestDialog = null
-            latestAlertIdentifier = null
-        }
+    override fun dismiss(animated: Boolean) {
+        latestDialog?.dismiss()
+        latestDialog = null
     }
 }

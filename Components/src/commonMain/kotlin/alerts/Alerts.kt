@@ -18,24 +18,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+typealias AlertActionHandler = () -> Unit
+
 data class Alert(
-    val identifier: String,
     val title: String?,
     val message: String?,
-    val style: Style = Style.ALERT,
     val actions: List<Action>
 ) {
-
-    enum class Style {
-        ALERT,
-        ACTION_SHEET,
-        NOT_CANCELABLE
-    }
 
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
-        val handler: () -> Unit
+        val handler: AlertActionHandler
     ) {
         enum class Style {
             DEFAULT,
@@ -46,8 +40,48 @@ data class Alert(
 }
 
 interface AlertActions {
-    fun show(alert: Alert, animated: Boolean = true, completion: (() -> Unit)? = null)
-    fun dismiss(identifier: String, animated: Boolean = true)
+    fun show(animated: Boolean = true, completion: (() -> Unit)? = null)
+    fun dismiss(animated: Boolean = true)
 }
 
-abstract class AlertPresenter: AlertActions
+abstract class BaseAlertPresenter(private val alert: Alert): AlertActions
+
+expect class AlertInterface: BaseAlertPresenter
+
+interface AlertBuilderActions {
+    fun create(): AlertInterface
+}
+
+abstract class BaseAlertBuilder: AlertBuilderActions {
+
+    private var title: String? = null
+    private var message: String? = null
+    private var actions: MutableList<Alert.Action> = mutableListOf()
+
+    fun setTitle(title: String?) = apply { this.title = title }
+
+    fun setMessage(message: String) = apply { this.message = message }
+
+    fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
+
+    fun setPositiveButton(title: String, handler: AlertActionHandler) = apply {
+        addAction(Alert.Action(title, Alert.Action.Style.DEFAULT, handler))
+    }
+
+    fun setNegativeButton(title: String, handler: AlertActionHandler) = apply {
+        addAction(Alert.Action(title, Alert.Action.Style.CANCEL, handler))
+    }
+
+    fun setNeutralButton(title: String, handler: AlertActionHandler) = apply {
+        addAction(Alert.Action(title, Alert.Action.Style.DESTRUCTIVE, handler))
+    }
+
+    internal fun createAlert(): Alert {
+        require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
+        require(title != null || message != null) { "Please set title or message for the Alert" }
+
+        return Alert(title, message, actions)
+    }
+}
+
+expect class AlertBuilder: BaseAlertBuilder

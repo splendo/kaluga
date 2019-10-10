@@ -20,21 +20,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+actual class AlertBuilder(private val viewController: UIViewController): BaseAlertBuilder() {
 
-class UIAlertPresenter(
+    override fun create(): AlertInterface {
+        return AlertInterface(createAlert(), viewController)
+    }
+}
+
+actual class AlertInterface(
+    private val alert: Alert,
     private val parent: UIViewController
-): AlertPresenter() {
+): BaseAlertPresenter(alert) {
 
-    private var latestAlertIdentifier: String? = null
-
-    override fun show(alert: Alert, animated: Boolean, completion: (() -> Unit)?) {
-
-        fun convertAlertStyle(style: Alert.Style): UIAlertControllerStyle {
-            return when (style) {
-                Alert.Style.ALERT -> UIAlertControllerStyleAlert
-                Alert.Style.ACTION_SHEET -> UIAlertControllerStyleActionSheet
-            }
-        }
+    override fun show(animated: Boolean, completion: (() -> Unit)?) {
 
         fun convertActionStyle(style: Alert.Action.Style): UIAlertActionStyle {
             return when (style) {
@@ -47,7 +45,7 @@ class UIAlertPresenter(
         val uiAlert = UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
-            convertAlertStyle(alert.style)
+            UIAlertControllerStyleAlert
         )
 
         alert.actions.forEach { action ->
@@ -57,20 +55,15 @@ class UIAlertPresenter(
                     convertActionStyle(action.style)
                 ) {
                     action.handler()
-                    latestAlertIdentifier = null
                 }
             )
         }
 
         parent.showViewController(uiAlert, this)
-        latestAlertIdentifier = alert.identifier
         completion?.invoke()
     }
 
-    override fun dismiss(identifier: String, animated: Boolean) {
-        if (latestAlertIdentifier == identifier) {
-            parent.dismissModalViewControllerAnimated(animated)
-            latestAlertIdentifier = null
-        }
+    override fun dismiss(animated: Boolean) {
+        parent.dismissModalViewControllerAnimated(animated)
     }
 }

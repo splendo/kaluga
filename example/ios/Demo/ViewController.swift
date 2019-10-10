@@ -7,8 +7,8 @@
 //
 
 import UIKit
-import KotlinNativeFramework
 import CoreLocation
+import KotlinNativeFramework
 
 class ViewController: UIViewController {
 
@@ -16,8 +16,6 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var label: UILabel!
 
-    lazy var alertPresenter = KotlinNativeFramework().alertPresenter(parent: self)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -29,39 +27,17 @@ class ViewController: UIViewController {
         KotlinNativeFramework().location(label: label, locationManager: lm)
     }
 
-    enum AlertIdentifier: String {
-        case basic
-        case awaiting
-    }
-
     @IBAction func onShowAlert(_ sender: Any) {
-        let action = ComponentsAlert.Action(title: "OK", style: .default_) {
-            debugPrint("Handler called!")
-        }
-        let alert = ComponentsAlert(
-            identifier: AlertIdentifier.basic.rawValue,
-            title: "Hello",
-            message: "World",
-            style: .alert,
-            actions: [action]
-        )
-        alertPresenter.show(alert: alert, animated: true) {
-            debugPrint("Presenting completed")
-        }
+        KotlinNativeFramework().makeAlert(from: self, title: "Hello, Kaluga", buttonText: "OK") {
+            debugPrint("OK")
+        }.show(animated: true, completion: nil)
     }
 
     @IBAction func onShowWithDismiss(_ sender: Any) {
-        let alert = ComponentsAlert(
-            identifier: AlertIdentifier.awaiting.rawValue,
-            title: "Alert",
-            message: "Waiting...",
-            style: .alert,
-            actions: []
-        )
-
-        alertPresenter.show(alert: alert, animated: true) {
+        let presenter = KotlinNativeFramework().makeAlert(from: self, title: "Hello, Kaluga", buttonText: "Wait for 3 sec") { }
+        presenter.show(animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                self.alertPresenter.dismiss(identifier: alert.identifier, animated: true)
+                presenter.dismiss(animated: true)
             }
         }
     }

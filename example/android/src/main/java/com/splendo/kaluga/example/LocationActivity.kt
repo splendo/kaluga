@@ -1,6 +1,6 @@
 package com.splendo.kaluga.example
-/*
 
+/*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,8 +30,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertDialogPresenter
+import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.shared.helloAndroid
 import com.splendo.kaluga.example.shared.helloCommon
 import com.splendo.kaluga.location.Location
@@ -45,7 +44,6 @@ import kotlinx.android.synthetic.main.activity_main.info
 class LocationActivity : AppCompatActivity() {
 
     private val location = LocationFlowable()
-    private val alertPresenter = AlertDialogPresenter(this)
 
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,32 +100,28 @@ class LocationActivity : AppCompatActivity() {
         }
     }
 
-    enum class Identifier(val rawValue: String) {
-        BASIC("Basic"),
-        DISMISSIBLE("Dismissible")
-    }
-
     private fun showAlert() {
-        val alert = Alert(
-            Identifier.BASIC.rawValue, "Hello", "World", Alert.Style.ALERT, listOf(
-                Alert.Action(
-                    "OK",
-                    Alert.Action.Style.DEFAULT
-                ) { }
-            )
-        )
-
-        alertPresenter.show(alert, true)
+        AlertBuilder(this)
+            .setTitle("Hello")
+            .setMessage("World")
+            .setPositiveButton("OK") { println("OK pressed") }
+            .setNegativeButton("Cancel") { println("Cancel pressed") }
+            .setNeutralButton("Details") { println("Details pressed") }
+            .create()
+            .show()
     }
 
     private fun showDismissibleAlert() {
-        val alert = Alert(
-            Identifier.DISMISSIBLE.rawValue, "Hello", "Wait...", Alert.Style.NOT_CANCELABLE, emptyList()
-        )
-        alertPresenter.show(alert, true)
+
+        val presenter = AlertBuilder(this)
+            .setTitle("Hello")
+            .setPositiveButton("OK") {}
+            .create()
+
+        presenter.show()
 
         Handler().postDelayed({
-            alertPresenter.dismiss(Identifier.DISMISSIBLE.rawValue)
+            presenter.dismiss()
         }, 3000)
     }
 

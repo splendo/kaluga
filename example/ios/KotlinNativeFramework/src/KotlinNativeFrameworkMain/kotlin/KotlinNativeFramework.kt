@@ -16,11 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.debug
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.UIAlertPresenter
+import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.alerts.AlertActionHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -32,7 +32,12 @@ class KotlinNativeFramework {
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
-    fun alertPresenter(parent: UIViewController) = UIAlertPresenter(parent)
+    fun makeAlert(from: UIViewController, title: String, buttonText: String, handler: AlertActionHandler): AlertInterface {
+        return AlertBuilder(from)
+                .setTitle(title)
+                .setPositiveButton(buttonText, handler)
+                .create()
+    }
 
     fun location(label:UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager(locationManager)
