@@ -42,20 +42,19 @@ actual class AlertInterface(
             Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
         }
 
-        val alertDialog = AlertDialog.Builder(context)
+        latestDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
             .create()
-
-        alert.actions.forEach { action ->
-            alertDialog.setButton(transform(action.style), action.title) { _, _ ->
-                action.handler()
-                latestDialog = null
+            .apply {
+                alert.actions.forEach { action ->
+                    setButton(transform(action.style), action.title) { _, _ ->
+                        action.handler()
+                        latestDialog = null
+                    }
+                }
+                show()
             }
-        }
-
-        alertDialog.show()
-        latestDialog = alertDialog
         completion?.invoke()
     }
 

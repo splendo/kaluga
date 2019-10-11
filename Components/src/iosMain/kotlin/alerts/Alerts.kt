@@ -40,24 +40,24 @@ actual class AlertInterface(
             Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
         }
 
-        val uiAlert = UIAlertController.alertControllerWithTitle(
+        UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
             UIAlertControllerStyleAlert
-        )
-
-        alert.actions.forEach { action ->
-            uiAlert.addAction(
-                UIAlertAction.actionWithTitle(
-                    action.title,
-                    transform(action.style)
-                ) {
-                    action.handler()
-                }
-            )
+        ).apply {
+            alert.actions.forEach { action ->
+                addAction(
+                    UIAlertAction.actionWithTitle(
+                        action.title,
+                        transform(action.style)
+                    ) {
+                        action.handler()
+                    }
+                )
+            }
+        }.run {
+            parent.presentViewController(this, animated, completion)
         }
-
-        parent.presentViewController(uiAlert, animated, completion)
     }
 
     override fun dismiss(animated: Boolean) {
