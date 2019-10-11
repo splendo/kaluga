@@ -36,12 +36,10 @@ actual class AlertInterface(
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {
 
-        fun convertActionStyle(style: Alert.Action.Style): Int {
-            return when (style) {
-                Alert.Action.Style.DEFAULT -> AlertDialog.BUTTON_POSITIVE
-                Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEUTRAL
-                Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
-            }
+        fun transform(style: Alert.Action.Style): Int = when (style) {
+            Alert.Action.Style.DEFAULT -> AlertDialog.BUTTON_POSITIVE
+            Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEUTRAL
+            Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
         }
 
         val alertDialog = AlertDialog.Builder(context)
@@ -50,11 +48,12 @@ actual class AlertInterface(
             .create()
 
         alert.actions.forEach { action ->
-            alertDialog.setButton(convertActionStyle(action.style), action.title) { _, _ ->
+            alertDialog.setButton(transform(action.style), action.title) { _, _ ->
                 action.handler()
                 latestDialog = null
             }
         }
+
         alertDialog.show()
         latestDialog = alertDialog
         completion?.invoke()

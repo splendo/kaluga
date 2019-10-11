@@ -34,12 +34,10 @@ actual class AlertInterface(
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {
 
-        fun convertActionStyle(style: Alert.Action.Style): UIAlertActionStyle {
-            return when (style) {
-                Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
-                Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
-                Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
-            }
+        fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
+            Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
+            Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
+            Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
         }
 
         val uiAlert = UIAlertController.alertControllerWithTitle(
@@ -52,7 +50,7 @@ actual class AlertInterface(
             uiAlert.addAction(
                 UIAlertAction.actionWithTitle(
                     action.title,
-                    convertActionStyle(action.style)
+                    transform(action.style)
                 ) {
                     action.handler()
                 }
