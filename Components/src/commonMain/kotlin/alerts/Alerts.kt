@@ -74,10 +74,6 @@ abstract class BaseAlertBuilder: AlertBuilderActions {
         addAction(Alert.Action(title, Alert.Action.Style.DESTRUCTIVE, handler))
     }
 
-    fun addAction(title: String, style: Alert.Action.Style, handler: AlertActionHandler) = apply {
-        addAction(Alert.Action(title, style, handler))
-    }
-
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
