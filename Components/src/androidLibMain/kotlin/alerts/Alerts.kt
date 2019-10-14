@@ -50,9 +50,9 @@ actual class AlertInterface(
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
                         action.handler()
-                        latestDialog = null
                     }
                 }
+                setOnDismissListener { latestDialog = null }
                 show()
             }
         completion?.invoke()
@@ -60,6 +60,5 @@ actual class AlertInterface(
 
     override fun dismiss(animated: Boolean) {
         latestDialog?.dismiss()
-        latestDialog = null
     }
 }

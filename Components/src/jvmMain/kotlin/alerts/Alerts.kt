@@ -25,7 +25,7 @@ actual class AlertBuilder: BaseAlertBuilder() {
 }
 
 actual class AlertInterface(
-    private val alert: Alert
+    alert: Alert
 ): BaseAlertPresenter(alert) {
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {

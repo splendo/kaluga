@@ -79,8 +79,8 @@ abstract class BaseAlertBuilder: AlertBuilderActions {
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
     internal fun createAlert(): Alert {
+        require(title != null || message != null) { "Please set title and/or message for the Alert" }
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
-        require(title != null || message != null) { "Please set title or message for the Alert" }
 
         return Alert(title, message, actions)
     }
