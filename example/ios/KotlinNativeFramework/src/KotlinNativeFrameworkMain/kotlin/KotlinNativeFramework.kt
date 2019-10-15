@@ -16,11 +16,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.location.Location
+import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.debug
-import kotlinx.coroutines.*
-import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
 
 class KotlinNativeFramework {
@@ -28,23 +26,13 @@ class KotlinNativeFramework {
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
-    fun location(label:UILabel, locationManager: CLLocationManager) {
+    fun location(label:UILabel) {
         loc.addCLLocationManager()
 
-       runBlocking {
-           MainScope()
-                   .launch {
-                       debug("main..")
-                       loc.flow().collect {
-                           debug("collecting...")
-                           label.text = "received location: $it"
-                           debug("location: $it")
-                       }
-                       debug("bye main")
-                   }
-
+        LocationPrinter(loc).printTo {
+            label.text = it
         }
-        debug("proceed executing after launching coroutine")
+        debug("proceed executing after location coroutines")
 
     }
 }
