@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.helloAndroid
 import com.splendo.kaluga.example.shared.helloCommon
 import com.splendo.kaluga.location.Location
@@ -126,19 +127,17 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun flowLocation() {
-        lifecycle.coroutineScope.launch {
-            val client = LocationServices.getFusedLocationProviderClient(
-                this@LocationActivity
-            )
+        val client = LocationServices.getFusedLocationProviderClient(
+            this@LocationActivity
+        )
+        location.setFusedLocationProviderClient(client)
+        
+        LocationPrinter(location).printTo {
+            info.text = "location: $it"
+            info.animate().withEndAction {
+                info.animate().setDuration(10000).alpha(0.12f).start()
+            }.alpha(1f).setDuration(100).start()
 
-            location.set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
-            location.setFusedLocationProviderClient(client)
-            location.flow().collect { value ->
-                info.text = "location: $value"
-                info.animate().withEndAction {
-                    info.animate().setDuration(10000).alpha(0.12f).start()
-                }.alpha(1f).setDuration(100).start()
-            }
         }
     }
 }
