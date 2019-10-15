@@ -25,7 +25,7 @@ class ViewController: UIViewController {
         lm.requestWhenInUseAuthorization()
 
 
-        KotlinNativeFramework().location(label: label, locationManager: lm)
+        KotlinNativeFramework().location(label: label)
 
 
     }
