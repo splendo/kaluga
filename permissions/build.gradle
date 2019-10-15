@@ -18,7 +18,14 @@ dependencies {
     androidTestImplementation 'org.mockito:mockito-core:2.28.2'
     androidTestImplementation 'org.mockito:mockito-android:2.28.2'
 
-    iosTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+    if (gradle.ext.ios_one_sourceset) {
+        iosTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+    }
+    else {
+        iosArm32TestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+        iosArm64TestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+        iosX64TestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+    }
 }
 
 kotlin {

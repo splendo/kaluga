@@ -18,13 +18,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationFlowable
+import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
 import platform.UIKit.UILabel
+import ru.pocketbyte.hydra.log.HydraLog
 
 class KotlinNativeFramework {
     private val loc = LocationFlowable()
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
+
+    // expose a dependency to Swift as an example
+    fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
     fun location(label:UILabel) {
         loc.addCLLocationManager()
