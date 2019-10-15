@@ -18,7 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class BluetoothPermissionManager : PermissionManager {
+actual class BluetoothPermissionManager : PermissionManager {
+    override suspend fun requestPermissions() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override suspend fun openSettings() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

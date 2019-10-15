@@ -25,12 +25,16 @@ import platform.CoreBluetooth.CBPeripheralManager
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
-class BluetoothPermissionManager(
+actual class BluetoothPermissionManager(
     private val cbCentralManager: CBCentralManager,
     internal var authorizationStatusProvider: () -> platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus = {
         CBPeripheralManager.authorizationStatus()
     }
 ) : PermissionManager {
+
+    override suspend fun requestPermissions() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     override suspend fun openSettings() {
         UIApplication.sharedApplication.openURL(NSURL(string = "App-Prefs:root=General"))

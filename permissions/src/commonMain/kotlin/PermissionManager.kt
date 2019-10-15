@@ -22,6 +22,7 @@ interface PermissionManager {
     suspend fun checkSupport(): Support
     suspend fun checkPermit(): Permit
     suspend fun openSettings()
+    suspend fun requestPermissions()
 }
 
 enum class Support {

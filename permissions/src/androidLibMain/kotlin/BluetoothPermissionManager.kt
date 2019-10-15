@@ -25,13 +25,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 
 
-open class BluetoothPermissionManager(
+actual open class BluetoothPermissionManager(
     private val context: Context,
     private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper()
 ) : PermissionManager {
 
+    override suspend fun requestPermissions() {
+        Permissions.requestPermissions(context, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN)
+    }
+
     override suspend fun openSettings() {
-        context.startActivity(Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS))
+        val intent = Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intent)
     }
 
     override suspend fun checkSupport(): Support {
@@ -41,7 +47,6 @@ open class BluetoothPermissionManager(
             else -> Support.POWER_OFF
         }
     }
-
 
     override suspend fun checkPermit(): Permit {
         //this is non-dangerous permission so it should be always available
