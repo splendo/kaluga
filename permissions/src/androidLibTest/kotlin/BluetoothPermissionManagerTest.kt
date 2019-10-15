@@ -42,6 +42,7 @@ class BluetoothPermissionManagerTest {
     @Before
     fun before() {
         mockContext = mock(Context::class.java)
+        `when`(mockContext.applicationContext).thenReturn(mockContext)
 
         Permissions.Builder()
             .context(mockContext)
@@ -49,7 +50,6 @@ class BluetoothPermissionManagerTest {
 
         mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
         bluetoothPermissionManager = BluetoothPermissionManager(mockContext, mockBluetoothAdapterWrapper)
-
     }
 
     @After
