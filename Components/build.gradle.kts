@@ -27,6 +27,7 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
+                implementation(project(":alerts", ""))
             }
         }
     }
@@ -41,6 +42,7 @@ if (singleSet) {
             getByName("iosMain") {
                 dependencies {
                     implementation(project(":logging", "iosDefault"))
+                    implementation(project(":alerts", "iosDefault"))
                 }
             }
         }
@@ -52,6 +54,7 @@ if (singleSet) {
             getByName("iosX64Main") {
                 dependencies {
                     implementation(project(":logging", "iosX64Default"))
+                    implementation(project(":alerts", "iosX64Default"))
                 }
             }
         }
@@ -59,6 +62,7 @@ if (singleSet) {
             getByName("iosArm64Main") {
                 dependencies {
                     implementation(project(":logging", "iosArm64Default"))
+                    implementation(project(":alerts", "iosArm64Default"))
                 }
             }
         }
@@ -66,6 +70,7 @@ if (singleSet) {
             getByName("iosArm32Main") {
                 dependencies {
                     implementation(project(":logging", "iosArm32Default"))
+                    implementation(project(":alerts", "iosArm32Default"))
                 }
             }
         }

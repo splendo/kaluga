@@ -1,4 +1,5 @@
 package com.splendo.kaluga.alerts
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands

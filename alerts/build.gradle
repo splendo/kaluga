@@ -1,0 +1,16 @@
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply from: "../gradle/publishable_component.gradle"
+
+version = gradle.library_version
+
+android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}

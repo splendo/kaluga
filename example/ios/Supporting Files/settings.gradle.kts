@@ -37,9 +37,11 @@ if (!((gradle as ExtensionAware).extra["exampleAsRoot"] as Boolean)) {
     include(":logging")
     project(":logging").projectDir = file("../../../logging")
 
+    include(":alerts")
+    project(":alerts").projectDir = file("../../../alerts")
 }
 
-include (":android")
+include(":android")
 project(":android").projectDir = file("../../android")
 
 include(":KotlinNativeFramework")
