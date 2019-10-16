@@ -11,7 +11,7 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: check
-    args: ["./gradlew", "check"]
+    args: ["./gradlew", "check", "connectedCheck"]
     env:
       - 'TERM=dumb'
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
