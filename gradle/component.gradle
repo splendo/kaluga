@@ -184,6 +184,7 @@ android {
         }
         androidTest {
             manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+            java.srcDir 'src/androidLibAndroidTest/kotlin'
         }
     }
 
