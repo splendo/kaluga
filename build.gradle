@@ -20,9 +20,11 @@ plugins {
 }
 
 allprojects {
+
     repositories {
         google()
         jcenter()
+        mavenLocal()
 
 // uncomment for early access / dev releases
 //        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
