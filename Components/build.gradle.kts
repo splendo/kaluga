@@ -49,7 +49,9 @@ kotlin {
 if (!singleSet)  {
 
     kotlin {
+
         sourceSets {
+            val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
@@ -57,6 +59,7 @@ if (!singleSet)  {
             }
         }
         sourceSets {
+            val ext =  (gradle as ExtensionAware).extra
             getByName("iosarm32Main") {
                 dependencies {
                     implementation(project(":logging", "iosarm32Default"))

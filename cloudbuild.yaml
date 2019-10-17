@@ -48,6 +48,7 @@ steps:
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
+      - 'IOS_ONE_SOURCESET=false'
     waitFor:
       - assemble
 

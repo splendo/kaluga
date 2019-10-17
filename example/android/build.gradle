@@ -45,8 +45,9 @@ dependencies {
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
         implementation "com.splendo.kaluga:Components:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation project(':shared')
-        implementation project(":alerts")
     }
     else {
         implementation project(':Components')
