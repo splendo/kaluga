@@ -1,5 +1,12 @@
 package com.splendo.kaluga.alerts
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -28,7 +35,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class MockAlertsTest {
 
-    @Rule @JvmField var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+    @get:Rule var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
 
     @Test
     fun testAlertBuilderExceptionNoActions() {
@@ -52,10 +59,13 @@ class MockAlertsTest {
     fun testAlertShow() {
         GlobalScope.launch(Dispatchers.Main) {
             AlertBuilder(activityRule.activity)
-                .setTitle("OK")
+                .setTitle("Hello")
                 .setPositiveButton("OK") { }
                 .create()
                 .show()
         }
+        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("OK")).perform(click())
+        onView(withText("Hello")).check(doesNotExist())
     }
 }
