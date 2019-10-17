@@ -1,10 +1,12 @@
 package com.splendo.kaluga.alerts
 
-import android.content.Context
-import org.junit.Before
+import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertFailsWith
-import org.mockito.Mockito.mock
 import java.lang.IllegalArgumentException
 
 /*
@@ -26,17 +28,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class MockAlertsTest {
 
-    private lateinit var mockContext: Context
-
-    @Before
-    fun before() {
-        mockContext = mock(Context::class.java)
-    }
+    @Rule @JvmField var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
 
     @Test
     fun testAlertBuilderExceptionNoActions() {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(mockContext)
+            AlertBuilder(activityRule.activity)
                 .setTitle("OK")
                 .create()
         }
@@ -45,9 +42,20 @@ class MockAlertsTest {
     @Test
     fun testAlertBuilderExceptionNoTitleOrMessage() {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(mockContext)
+            AlertBuilder(activityRule.activity)
                 .setPositiveButton("OK") { }
                 .create()
+        }
+    }
+
+    @Test
+    fun testAlertShow() {
+        GlobalScope.launch(Dispatchers.Main) {
+            AlertBuilder(activityRule.activity)
+                .setTitle("OK")
+                .setPositiveButton("OK") { }
+                .create()
+                .show()
         }
     }
 }

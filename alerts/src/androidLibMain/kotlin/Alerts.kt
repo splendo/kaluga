@@ -1,7 +1,7 @@
 package com.splendo.kaluga.alerts
 
+import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,16 +20,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
+actual class AlertBuilder(private val activity: Activity): BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
-        return AlertInterface(createAlert(), context)
+        return AlertInterface(createAlert(), activity)
     }
 }
 
 actual class AlertInterface(
     private val alert: Alert,
-    private val context: Context
+    private val activity: Activity
 ): BaseAlertPresenter(alert) {
 
     private var latestDialog: AlertDialog? = null
@@ -42,7 +42,7 @@ actual class AlertInterface(
             Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
         }
 
-        latestDialog = AlertDialog.Builder(context)
+        latestDialog = AlertDialog.Builder(activity)
             .setTitle(alert.title)
             .setMessage(alert.message)
             .create()
