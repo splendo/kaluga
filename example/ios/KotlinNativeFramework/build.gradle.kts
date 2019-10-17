@@ -19,14 +19,10 @@ kotlin {
         getByName("KotlinNativeFrameworkMain") {
 
             val ext = (gradle as ExtensionAware).extra
-
-            val singleSet = ext["ios_one_sourceset"] as Boolean
-            var iosArch = ext["ios_arch"]
-            if (singleSet)
-                iosArch = "ios"
+            var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-                implementation(project(":shared", "${iosArch}Default"))
+                implementation(project(":shared", "${primaryIosArch}Default"))
             }
         }
     }

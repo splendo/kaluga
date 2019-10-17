@@ -34,38 +34,31 @@ kotlin {
 
 val singleSet =ext["ios_one_sourceset"] as Boolean
 
-if (singleSet) {
-
-    kotlin {
-        sourceSets {
-            getByName("iosMain") {
-                dependencies {
-                    implementation(project(":logging", "iosDefault"))
-                }
+kotlin {
+    sourceSets {
+        val ext =  (gradle as ExtensionAware).extra
+        getByName("${ext["ios_primary_arch"]}Main") {
+            dependencies {
+                implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
             }
         }
     }
-} else {
+}
+
+if (!singleSet)  {
 
     kotlin {
         sourceSets {
-            getByName("iosX64Main") {
+            getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":logging", "iosX64Default"))
+                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
         sourceSets {
-            getByName("iosArm64Main") {
+            getByName("iosarm32Main") {
                 dependencies {
-                    implementation(project(":logging", "iosArm64Default"))
-                }
-            }
-        }
-        sourceSets {
-            getByName("iosArm32Main") {
-                dependencies {
-                    implementation(project(":logging", "iosArm32Default"))
+                    implementation(project(":logging", "iosarm32Default"))
                 }
             }
         }

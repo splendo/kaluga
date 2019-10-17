@@ -9,16 +9,12 @@ kotlin {
         publishAllLibraryVariants()
     }
 
+    if (gradle.ios_primary_arch == "iosx64")
+        targetFromPreset(gradle.ios_primary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_primary_arch)
 
     if (!gradle.ext.ios_one_sourceset) {
-        targetFromPreset(presets.iosX64, 'iosX64')
-        targetFromPreset(presets.iosArm32, 'iosArm32')
-        targetFromPreset(presets.iosArm64, 'iosArm64')
-    }
-    else {
-        // XCode / Appcode set this variable
-        targetFromPreset(presets."$gradle.ext.ios_arch", 'ios')
-
+        targetFromPreset(presets.iosArm32, 'iosarm32')
+        targetFromPreset(gradle.ios_secondary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_secondary_arch)
     }
 
     jvm()
@@ -75,72 +71,50 @@ kotlin {
             }
         }
 
-        if (!gradle.ext.ios_one_sourceset) {
-
-
-            iosX64Main {
-                kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
-                }
-                //dependsOn iosMain
-            }
-
-            iosX64Test {
-                kotlin.srcDirs("src/iosTest")
-                dependencies {
-                    implementation kotlin('test')
-                }
-                //dependsOn iosTest
-            }
-
-            iosArm32Main {
-                kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
-                }
-                //dependsOn iosMain
-            }
-            iosArm32Test {
-                kotlin.srcDirs("src/iosTest")
-                dependencies {
-                    implementation kotlin('test')
-                }
-                //dependsOn iosTest
-            }
-
-            iosArm64Main {
-                kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
-                }
-                //dependsOn iosMain
-            }
-            iosArm64Test {
-                kotlin.srcDirs("src/iosTest")
-                dependencies {
-                    implementation kotlin('test')
-                }
-                //dependsOn iosTest
+        "${gradle.ios_primary_arch}Main" {
+            kotlin.srcDirs("src/iosMain")
+            dependencies {
+                implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
             }
         }
-        else {
-            iosMain {
+
+        "${gradle.ios_primary_arch}Test" {
+            kotlin.srcDirs("src/iosTest")
+            dependencies {
+                implementation kotlin('test')
+            }
+        }
+
+
+        if (!gradle.ext.ios_one_sourceset) {
+
+            iosarm32Main {
+                kotlin.srcDirs("src/iosMain")
                 dependencies {
+                    implementation kotlin("stdlib-common")
                     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
-                    implementation kotlin('stdlib')
                 }
             }
-            iosTest {
-                dependsOn commonTest
+            iosarm32Test {
+                kotlin.srcDirs("src/iosTest")
                 dependencies {
                     implementation kotlin('test')
                 }
             }
-
+            "${gradle.ios_secondary_arch}Main" {
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                }
+            }
+            "${gradle.ios_secondary_arch}Test" {
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+            }
         }
 
         sourceSets.all {
@@ -189,6 +163,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'META-INF/shared_debug.kotlin_module'
     }
 }
 
