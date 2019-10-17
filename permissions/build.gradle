@@ -7,18 +7,21 @@ apply from: "../gradle/component.gradle"
 
 version = gradle.library_version
 
-repositories {
-    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
-}
+group = "com.splendo.kaluga"
 
 dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_corountines_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_corountines_version"
-    androidTestImplementation 'org.mockito:mockito-core:2.28.2'
-    androidTestImplementation 'org.mockito:mockito-android:2.28.2'
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+
+    implementation 'androidx.appcompat:appcompat:1.1.0'
 
     commonTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$gradle.kotlinx_corountines_version"
+
+}
+
+repositories {
+    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
 }
 
 kotlin {
@@ -26,6 +29,13 @@ kotlin {
         configure([]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
+            }
+        }
+    }
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation project(":logging", "")
             }
         }
     }

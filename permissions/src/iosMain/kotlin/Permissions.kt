@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,17 +18,60 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.log.error
 import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBPeripheralManager
+import platform.Foundation.NSBundle
+import platform.posix.remove
 
 actual class Permissions {
+
+    private lateinit var bundle: NSBundle
+
     actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager(CBCentralManager(), CBPeripheralManager())
+        return BluetoothPermissionManager(CBCentralManager())
     }
 
-    actual companion object {
-        actual fun builder(): Builder {
-            return Builder()
+    actual open class Builder {
+        private lateinit var bundle: NSBundle
+
+        fun bundle(bundle: NSBundle) = apply { this.bundle = bundle }
+
+        actual open fun build(): Permissions {
+            val permissions = Permissions()
+
+            with(permissions) {
+                this.bundle = bundle
+            }
+
+            return permissions
+        }
+    }
+
+    companion object {
+        const val TAG = "Permissions"
+
+        fun checkDeclarationInPList(bundle: NSBundle, vararg permissionName: String): MutableList<String> {
+
+            val missingPermissions = permissionName.toMutableList()
+            missingPermissions.forEach { permission ->
+                try {
+
+                    val objectForInfoDictionaryKey = NSBundle.mainBundle.objectForInfoDictionaryKey(permission)
+
+                    if (objectForInfoDictionaryKey == null) {
+                        error(TAG, "$permission was not declared")
+                    } else {
+                        debug(TAG, "$permission was declared")
+                        missingPermissions.remove(permission)
+                    }
+
+                } catch (error: Exception) {
+                    error(TAG, error)
+                }
+            }
+
+            return missingPermissions
         }
     }
 

@@ -22,9 +22,9 @@ actual class Permissions {
         return BluetoothPermissionManager()
     }
 
-    actual companion object {
-        actual fun builder(): Builder {
-            return Builder()
+    actual open class Builder private actual constructor() {
+        actual open fun build(): Permissions {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
 

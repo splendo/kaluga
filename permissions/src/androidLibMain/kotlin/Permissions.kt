@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,31 +19,75 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.log.warn
+import com.splendo.kaluga.log.error
 
 actual class Permissions {
 
-    lateinit var context: Context
+    internal lateinit var context: Context
 
     actual fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager(context)
     }
 
-    actual companion object {
-        actual fun builder(): Builder {
-            return AndroidPermissionBuilder()
+    actual open class Builder {
+        private lateinit var context: Context
+
+        fun context(context: Context) = apply { this.context = context.applicationContext }
+
+        actual open fun build(): Permissions {
+            val permissions = Permissions()
+
+            with(permissions) {
+                this.context = this@Builder.context
+            }
+
+            return permissions
         }
     }
 
-}
+    companion object {
+        fun requestPermissions(context: Context, vararg permissions: String) {
+            val intent = PermissionsActivity.intent(context, *permissions)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(intent)
+        }
 
-class AndroidPermissionBuilder : Builder() {
+        fun checkPermissionsDeclaration(context: Context, vararg requestedPermissionNames: String = emptyArray()): List<String> {
+            val pm = context.packageManager
 
-    lateinit var context: Context
+            val missingPermissions = requestedPermissionNames.toList().toMutableList()
 
-    override fun build(): Permissions {
-        val permissions = Permissions()
-        permissions.context = context
-        return permissions
+            try {
+                val packageInfo = pm.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS)
+
+                var declaredPermissions: List<String> = mutableListOf()
+
+                if (packageInfo != null && declaredPermissions.isEmpty()) {
+                    declaredPermissions = packageInfo.requestedPermissions.toList()
+                }
+
+                if (declaredPermissions.isNotEmpty()) {
+                    missingPermissions.toList().forEach { requestedPermissionName ->
+                        if (declaredPermissions.contains(requestedPermissionName)) {
+                            debug(TAG, "Permission $requestedPermissionName was declared in manifest")
+                            missingPermissions.remove(requestedPermissionName)
+                        } else {
+                            warn(TAG, "Permission $requestedPermissionName was not declared in manifest")
+                        }
+                    }
+                }
+            } catch (e: PackageManager.NameNotFoundException) {
+                error(TAG, e)
+            }
+
+            return missingPermissions
+        }
+
+        const val TAG = "Permissions"
     }
 
 }

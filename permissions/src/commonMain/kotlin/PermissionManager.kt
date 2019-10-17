@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,10 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-abstract class PermissionManager {
-    abstract suspend fun checkSupport(): Support
-    abstract suspend fun checkPermit(): Permit
-    abstract suspend fun openSettings()
+interface PermissionManager {
+    suspend fun checkSupport(): Support
+    suspend fun checkPermit(): Permit
+    suspend fun openSettings()
+    suspend fun requestPermissions()
 }
 
 enum class Support {

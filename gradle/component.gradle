@@ -155,9 +155,11 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+            res.srcDir 'src/androidLibMain/resources'
         }
         androidTest {
             manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+            java.srcDir 'src/androidLibAndroidTest/kotlin'
         }
     }
 

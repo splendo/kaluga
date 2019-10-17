@@ -1,4 +1,5 @@
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.alerts
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,15 +18,22 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class Permissions {
-    actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager()
+actual class AlertBuilder: BaseAlertBuilder() {
+
+    override fun create(): AlertInterface {
+        return AlertInterface(createAlert())
+    }
+}
+
+actual class AlertInterface(
+    alert: Alert
+): BaseAlertPresenter(alert) {
+
+    override fun show(animated: Boolean, completion: (() -> Unit)?) {
+        TODO("not implemented")
     }
 
-    actual open class Builder {
-        actual open fun build(): Permissions {
-            return Permissions()
-        }
+    override fun dismiss(animated: Boolean) {
+        TODO("not implemented")
     }
-
 }

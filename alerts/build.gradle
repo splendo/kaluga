@@ -7,19 +7,16 @@ plugins {
 
 apply from: "../gradle/publishable_component.gradle"
 
-group = "com.splendo.kaluga"
 version = gradle.library_version
 
-repositories {
-    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
+
+dependencies {
+    androidTestImplementation 'org.mockito:mockito-core:2.28.2'
+    androidTestImplementation 'org.mockito:mockito-android:2.28.2'
 }
 
 android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
-}
-
-dependencies {
-    commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.1'
 }
