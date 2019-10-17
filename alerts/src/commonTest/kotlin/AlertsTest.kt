@@ -5,7 +5,6 @@ import kotlin.test.*
 
 class AlertsTest {
 
-    @Ignore
     @Test
     fun testAlertBaseInitialization() {
 

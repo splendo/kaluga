@@ -25,7 +25,7 @@ steps:
       - assemble
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: compileExampleAndroidUsingModules
-    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_project_example_modules", "-x",  "compileKotlinIosx64", "build"]
+    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_project_example_modules", "-x",  "compileKotlinIosx64", "assemble"]
     env:
       - 'GRADLE_USER_HOME=/workspace/gradle_home_example_modules'
       - 'KONAN_DATA_DIR=/workspace/konan'
@@ -54,7 +54,7 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: compileExampleAndroidUsingM2
-    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_example_project_m2","-Dmaven.repo.local=/workspace/m2", "-x",  "compileKotlinIosx64", "build", ]
+    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_example_project_m2","-Dmaven.repo.local=/workspace/m2", "-x",  "compileKotlinIosx64", "assemble", ]
     env:
       - 'GRADLE_USER_HOME=/workspace/gradle_home_example_m2'
       - 'KONAN_DATA_DIR=/workspace/konan'
