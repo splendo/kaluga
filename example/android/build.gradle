@@ -45,10 +45,12 @@ dependencies {
         // if the example is the root we use a maven dependency instead of the project
         implementation "com.splendo.kaluga:Components:$gradle.ext.library_version"
         implementation project(':shared')
+        implementation project(":alerts")
     }
     else {
         implementation project(':Components')
         implementation project(':shared')
+        implementation project(":alerts")
     }
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha05'

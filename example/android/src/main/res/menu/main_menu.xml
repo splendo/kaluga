@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/show_alert"
+        android:title="@string/show_alert"/>
+    <item android:id="@+id/dismissible_alert"
+        android:title="@string/dismissible_alert"/>
+</menu>
