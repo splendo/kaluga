@@ -67,7 +67,9 @@ steps:
         - localPublish
         - compileExampleAndroidUsingModules
 
-timeout: 1200s
+timeout: 2000s
+options:
+  machineType: 'N1_HIGHCPU_8'
 
 # In future we have to save the build cache for faster builds:
 #    volumes:
