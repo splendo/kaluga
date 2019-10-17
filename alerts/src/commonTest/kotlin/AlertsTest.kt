@@ -1,13 +1,11 @@
 package com.splendo.kaluga.test
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import com.splendo.kaluga.alerts.Alert
+import kotlin.test.*
 
 class AlertsTest {
 
+    @Ignore
     @Test
     fun testAlertBaseInitialization() {
 
