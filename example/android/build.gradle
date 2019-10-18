@@ -30,6 +30,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'META-INF/shared_debug.kotlin_module'
     }
 
 }
@@ -48,7 +49,8 @@ dependencies {
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation project(':shared')
-    } else {
+    }
+    else {
         implementation project(':Components')
         implementation project(':shared')
         implementation project(":permissions")
