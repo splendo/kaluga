@@ -41,6 +41,7 @@ data class Alert(
 
 interface AlertActions {
     fun show(animated: Boolean = true, completion: (() -> Unit)? = null)
+    suspend fun show(): Alert.Action?
     fun dismiss(animated: Boolean = true)
 }
 

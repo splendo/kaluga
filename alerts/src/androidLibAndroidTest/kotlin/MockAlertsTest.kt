@@ -8,13 +8,15 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.junit.Rule
 import org.junit.Test
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
-import java.lang.IllegalArgumentException
+import kotlin.test.assertFalse
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -67,5 +69,23 @@ class MockAlertsTest {
         onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
         onView(withText("OK")).perform(click())
         onView(withText("Hello")).check(doesNotExist())
+    }
+
+    @Test
+    fun testAlertFlowWithCoroutines() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch {
+            val action = Alert.Action("OK") { }
+            val presenter = AlertBuilder(activityRule.activity)
+                .setTitle("Hello")
+                .addActions(listOf(action))
+                .create()
+
+            val result = withContext(Dispatchers.Main) { presenter.show() }
+            assertEquals(result, action)
+        }
+        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        onView(withText("OK")).perform(click())
+        onView(withText("Hello")).check(doesNotExist())
+        Unit
     }
 }

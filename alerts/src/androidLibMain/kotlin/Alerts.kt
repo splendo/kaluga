@@ -2,6 +2,8 @@ package com.splendo.kaluga.alerts
 
 import android.app.Activity
 import android.app.AlertDialog
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -35,13 +37,26 @@ actual class AlertInterface(
     private var latestDialog: AlertDialog? = null
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {
+        show(null, completion)
+    }
 
+    override suspend fun show(): Alert.Action? = suspendCoroutine { coroutine ->
+        show(afterHandler = { coroutine.resume(it) }, completion = null)
+    }
+
+    override fun dismiss(animated: Boolean) {
+        latestDialog?.dismiss()
+    }
+
+    private companion object {
         fun transform(style: Alert.Action.Style): Int = when (style) {
             Alert.Action.Style.DEFAULT -> AlertDialog.BUTTON_POSITIVE
             Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEUTRAL
             Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
         }
+    }
 
+    private fun show(afterHandler: ((Alert.Action?) -> Unit)?, completion: (() -> Unit)?) {
         latestDialog = AlertDialog.Builder(activity)
             .setTitle(alert.title)
             .setMessage(alert.message)
@@ -50,15 +65,13 @@ actual class AlertInterface(
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
                         action.handler()
+                        afterHandler?.invoke(action)
                     }
                 }
                 setOnDismissListener { latestDialog = null }
+                setOnCancelListener { afterHandler?.invoke(null) }
                 show()
             }
         completion?.invoke()
-    }
-
-    override fun dismiss(animated: Boolean) {
-        latestDialog?.dismiss()
     }
 }

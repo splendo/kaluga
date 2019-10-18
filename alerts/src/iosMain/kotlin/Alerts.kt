@@ -1,6 +1,8 @@
 package com.splendo.kaluga.alerts
 
 import platform.UIKit.*
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /*
 
@@ -33,13 +35,26 @@ actual class AlertInterface(
 ): BaseAlertPresenter(alert) {
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {
+        show(animated, completion = completion)
+    }
 
+    override suspend fun show(): Alert.Action? = suspendCoroutine { coroutine ->
+        show(afterHandler = { coroutine.resume(it) })
+    }
+
+    override fun dismiss(animated: Boolean) {
+        parent.dismissModalViewControllerAnimated(animated)
+    }
+
+    private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
             Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
             Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
         }
+    }
 
+    private fun show(animated: Boolean = true, afterHandler: ((Alert.Action) -> Unit)? = null, completion: (() -> Unit)? = null) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -52,15 +67,12 @@ actual class AlertInterface(
                         transform(action.style)
                     ) {
                         action.handler()
+                        afterHandler?.invoke(action)
                     }
                 )
             }
         }.run {
             parent.presentViewController(this, animated, completion)
         }
-    }
-
-    override fun dismiss(animated: Boolean) {
-        parent.dismissModalViewControllerAnimated(animated)
     }
 }
