@@ -1,4 +1,5 @@
 package com.splendo.kaluga.example.shared
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands

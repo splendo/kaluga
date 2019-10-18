@@ -7,6 +7,7 @@ plugins {
 
 apply from: "../gradle/publishable_component.gradle"
 
+group = "com.splendo.kaluga"
 version = gradle.library_version
 
 
