@@ -2,6 +2,7 @@ package com.splendo.kaluga.alerts
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.*
@@ -58,10 +59,9 @@ class MockAlertsTest {
                 .create()
                 .show()
         }
-        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
+        assertNotNull(device.findObject(By.text("Hello")))
         device.findObject(UiSelector().text("OK")).click()
-        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
-        Unit
+        assertNull(device.findObject(By.text("Hello")))
     }
 
     @Test
@@ -76,10 +76,9 @@ class MockAlertsTest {
             val result = withContext(coroutineContext) { presenter.show() }
             assertEquals(result, action)
         }
-        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
+        assertNotNull(device.findObject(By.text("Hello")))
         device.findObject(UiSelector().text("OK")).click()
-        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
-        Unit
+        assertNull(device.findObject(By.text("Hello")))
     }
 
     @Test
@@ -94,10 +93,9 @@ class MockAlertsTest {
             val result = coroutineContext.run { presenter.show() }
             assertNull(result)
         }
-        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
+        assertNotNull(device.findObject(By.text("Hello")))
         // On cancel we expect dialog to be dismissed
         coroutine.cancel()
-        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
-        Unit
+        assertNull(device.findObject(By.text("Hello")))
     }
 }
