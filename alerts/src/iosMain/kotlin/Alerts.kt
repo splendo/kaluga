@@ -35,8 +35,8 @@ actual class AlertInterface(
     private val parent: UIViewController
 ): BaseAlertPresenter(alert) {
 
-    override fun show(animated: Boolean, completion: (() -> Unit)?) {
-        show(animated, completion = completion)
+    override fun show(animated: Boolean, completion: (() -> Unit)) {
+        showAlert(completion = completion)
     }
 
     override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
@@ -44,7 +44,7 @@ actual class AlertInterface(
             dismiss()
             continuation.resume(null)
         }
-        show(afterHandler = { continuation.resume(it) })
+        showAlert(afterHandler = { continuation.resume(it) })
     }
 
     override fun dismiss(animated: Boolean) {
@@ -59,7 +59,7 @@ actual class AlertInterface(
         }
     }
 
-    private fun show(animated: Boolean = true, afterHandler: ((Alert.Action) -> Unit)? = null, completion: (() -> Unit)? = null) {
+    private fun showAlert(animated: Boolean = true, afterHandler: ((Alert.Action) -> Unit) = {}, completion: (() -> Unit) = {}) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -72,7 +72,7 @@ actual class AlertInterface(
                         transform(action.style)
                     ) {
                         action.handler()
-                        afterHandler?.invoke(action)
+                        afterHandler(action)
                     }
                 )
             }

@@ -37,15 +37,15 @@ actual class AlertInterface(
 
     private var alertDialog: AlertDialog? = null
 
-    override fun show(animated: Boolean, completion: (() -> Unit)?) {
-        show(null, completion)
+    override fun show(animated: Boolean, completion: (() -> Unit)) {
+        showDialog(completion = completion)
     }
 
     override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
         continuation.invokeOnCancellation {
             alertDialog?.cancel()
         }
-        show(afterHandler = { continuation.resume(it) }, completion = null)
+        showDialog(afterHandler = { continuation.resume(it) })
     }
 
     override fun dismiss(animated: Boolean) {
@@ -60,7 +60,7 @@ actual class AlertInterface(
         }
     }
 
-    private fun show(afterHandler: ((Alert.Action?) -> Unit)?, completion: (() -> Unit)?) {
+    private fun showDialog(afterHandler: ((Alert.Action?) -> Unit) = {}, completion: (() -> Unit) = {}) {
         alertDialog = AlertDialog.Builder(activity)
             .setTitle(alert.title)
             .setMessage(alert.message)
@@ -69,13 +69,13 @@ actual class AlertInterface(
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
                         action.handler()
-                        afterHandler?.invoke(action)
+                        afterHandler(action)
                     }
                 }
                 setOnDismissListener { alertDialog = null }
-                setOnCancelListener { afterHandler?.invoke(null) }
+                setOnCancelListener { afterHandler(null) }
                 show()
             }
-        completion?.invoke()
+        completion()
     }
 }

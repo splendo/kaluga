@@ -1,20 +1,13 @@
 package com.splendo.kaluga.alerts
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.*
 import org.junit.*
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
+import org.junit.Test
+import kotlin.test.*
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -65,9 +58,9 @@ class MockAlertsTest {
                 .create()
                 .show()
         }
-        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
         device.findObject(UiSelector().text("OK")).click()
-        onView(withText("Hello")).check(doesNotExist())
+        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
         Unit
     }
 
@@ -83,9 +76,9 @@ class MockAlertsTest {
             val result = withContext(coroutineContext) { presenter.show() }
             assertEquals(result, action)
         }
-        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
         device.findObject(UiSelector().text("OK")).click()
-        onView(withText("Hello")).check(doesNotExist())
+        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
         Unit
     }
 
@@ -101,10 +94,10 @@ class MockAlertsTest {
             val result = coroutineContext.run { presenter.show() }
             assertNull(result)
         }
-        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        assertTrue(device.findObject(UiSelector().text("Hello")).exists())
         // On cancel we expect dialog to be dismissed
         coroutine.cancel()
-        onView(withText("Hello")).check(doesNotExist())
+        assertFalse(device.findObject(UiSelector().text("Hello")).exists())
         Unit
     }
 }

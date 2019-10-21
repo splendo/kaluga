@@ -29,7 +29,7 @@ actual class AlertInterface(
     alert: Alert
 ): BaseAlertPresenter(alert) {
 
-    override fun show(animated: Boolean, completion: (() -> Unit)?) {
+    override fun show(animated: Boolean, completion: (() -> Unit)) {
         TODO("not implemented")
     }
 
