@@ -2,6 +2,7 @@ package com.splendo.kaluga.alerts
 
 import android.app.Activity
 import android.app.AlertDialog
+import kotlinx.coroutines.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
@@ -34,18 +35,21 @@ actual class AlertInterface(
     private val activity: Activity
 ): BaseAlertPresenter(alert) {
 
-    private var latestDialog: AlertDialog? = null
+    private var alertDialog: AlertDialog? = null
 
     override fun show(animated: Boolean, completion: (() -> Unit)?) {
         show(null, completion)
     }
 
-    override suspend fun show(): Alert.Action? = suspendCoroutine { coroutine ->
-        show(afterHandler = { coroutine.resume(it) }, completion = null)
+    override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            alertDialog?.cancel()
+        }
+        show(afterHandler = { continuation.resume(it) }, completion = null)
     }
 
     override fun dismiss(animated: Boolean) {
-        latestDialog?.dismiss()
+        alertDialog?.dismiss()
     }
 
     private companion object {
@@ -57,7 +61,7 @@ actual class AlertInterface(
     }
 
     private fun show(afterHandler: ((Alert.Action?) -> Unit)?, completion: (() -> Unit)?) {
-        latestDialog = AlertDialog.Builder(activity)
+        alertDialog = AlertDialog.Builder(activity)
             .setTitle(alert.title)
             .setMessage(alert.message)
             .create()
@@ -68,7 +72,7 @@ actual class AlertInterface(
                         afterHandler?.invoke(action)
                     }
                 }
-                setOnDismissListener { latestDialog = null }
+                setOnDismissListener { alertDialog = null }
                 setOnCancelListener { afterHandler?.invoke(null) }
                 show()
             }

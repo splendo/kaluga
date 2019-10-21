@@ -1,5 +1,6 @@
 package com.splendo.kaluga.alerts
 
+import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -38,8 +39,12 @@ actual class AlertInterface(
         show(animated, completion = completion)
     }
 
-    override suspend fun show(): Alert.Action? = suspendCoroutine { coroutine ->
-        show(afterHandler = { coroutine.resume(it) })
+    override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
+        continuation.invokeOnCancellation {
+            dismiss()
+            continuation.resume(null)
+        }
+        show(afterHandler = { continuation.resume(it) })
     }
 
     override fun dismiss(animated: Boolean) {

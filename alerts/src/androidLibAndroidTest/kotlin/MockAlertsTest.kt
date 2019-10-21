@@ -1,22 +1,20 @@
 package com.splendo.kaluga.alerts
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import kotlinx.coroutines.*
-import org.junit.Rule
-import org.junit.Test
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import org.junit.*
 import kotlin.test.assertEquals
-import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
+import kotlin.test.assertNull
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -38,6 +36,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class MockAlertsTest {
 
     @get:Rule var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     @Test
     fun testAlertBuilderExceptionNoActions() {
@@ -58,7 +57,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertShow() {
+    fun testAlertShow() = runBlocking {
         GlobalScope.launch(Dispatchers.Main) {
             AlertBuilder(activityRule.activity)
                 .setTitle("Hello")
@@ -67,8 +66,9 @@ class MockAlertsTest {
                 .show()
         }
         onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("OK")).perform(click())
+        device.findObject(UiSelector().text("OK")).click()
         onView(withText("Hello")).check(doesNotExist())
+        Unit
     }
 
     @Test
@@ -80,11 +80,30 @@ class MockAlertsTest {
                 .addActions(listOf(action))
                 .create()
 
-            val result = withContext(Dispatchers.Main) { presenter.show() }
+            val result = withContext(coroutineContext) { presenter.show() }
             assertEquals(result, action)
         }
         onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
-        onView(withText("OK")).perform(click())
+        device.findObject(UiSelector().text("OK")).click()
+        onView(withText("Hello")).check(doesNotExist())
+        Unit
+    }
+
+    @Test
+    fun testAlertFlowCancel() = runBlocking {
+        val coroutine = CoroutineScope(Dispatchers.Main).launch {
+            val action = Alert.Action("OK") { }
+            val presenter = AlertBuilder(activityRule.activity)
+                .setTitle("Hello")
+                .addActions(listOf(action))
+                .create()
+
+            val result = coroutineContext.run { presenter.show() }
+            assertNull(result)
+        }
+        onView(withText("Hello")).inRoot(isDialog()).check(matches(isDisplayed()))
+        // On cancel we expect dialog to be dismissed
+        coroutine.cancel()
         onView(withText("Hello")).check(doesNotExist())
         Unit
     }
