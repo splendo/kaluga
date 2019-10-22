@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
+actual class AlertBuilder(private val context: Context) : BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
         return AlertInterface(createAlert(), context)
@@ -32,24 +32,9 @@ actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
 actual class AlertInterface(
     private val alert: Alert,
     private val context: Context
-): BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert) {
 
     private var alertDialog: AlertDialog? = null
-
-    override fun show(animated: Boolean, completion: (() -> Unit)) {
-        showDialog(completion = completion)
-    }
-
-    override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
-        continuation.invokeOnCancellation {
-            alertDialog?.cancel()
-        }
-        showDialog(afterHandler = { continuation.resume(it) })
-    }
-
-    override fun dismiss(animated: Boolean) {
-        alertDialog?.dismiss()
-    }
 
     private companion object {
         fun transform(style: Alert.Action.Style): Int = when (style) {
@@ -59,7 +44,15 @@ actual class AlertInterface(
         }
     }
 
-    private fun showDialog(afterHandler: ((Alert.Action?) -> Unit) = {}, completion: (() -> Unit) = {}) {
+    override fun dismissAlert(animated: Boolean) {
+        alertDialog?.dismiss()
+    }
+
+    override fun showAlert(
+        animated: Boolean,
+        afterHandler: (Alert.Action?) -> Unit,
+        completion: () -> Unit
+    ) {
         alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)

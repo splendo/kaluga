@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val viewController: UIViewController): BaseAlertBuilder() {
+actual class AlertBuilder(private val viewController: UIViewController) : BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
         return AlertInterface(createAlert(), viewController)
@@ -32,23 +32,7 @@ actual class AlertBuilder(private val viewController: UIViewController): BaseAle
 actual class AlertInterface(
     private val alert: Alert,
     private val parent: UIViewController
-): BaseAlertPresenter(alert) {
-
-    override fun show(animated: Boolean, completion: (() -> Unit)) {
-        showAlert(completion = completion)
-    }
-
-    override suspend fun show(): Alert.Action? = suspendCancellableCoroutine { continuation ->
-        continuation.invokeOnCancellation {
-            dismiss()
-            continuation.resume(null)
-        }
-        showAlert(afterHandler = { continuation.resume(it) })
-    }
-
-    override fun dismiss(animated: Boolean) {
-        parent.dismissModalViewControllerAnimated(animated)
-    }
+) : BaseAlertPresenter(alert) {
 
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
@@ -58,7 +42,15 @@ actual class AlertInterface(
         }
     }
 
-    private fun showAlert(animated: Boolean = true, afterHandler: ((Alert.Action) -> Unit) = {}, completion: (() -> Unit) = {}) {
+    override fun dismissAlert(animated: Boolean) {
+        parent.dismissModalViewControllerAnimated(animated)
+    }
+
+    override fun showAlert(
+        animated: Boolean,
+        afterHandler: (Alert.Action?) -> Unit,
+        completion: () -> Unit
+    ) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,

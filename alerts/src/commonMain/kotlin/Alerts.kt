@@ -1,5 +1,8 @@
 package com.splendo.kaluga.alerts
 
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -40,20 +43,46 @@ data class Alert(
 }
 
 interface AlertActions {
-    fun show(animated: Boolean = true, completion: (() -> Unit) = {})
-    suspend fun show(): Alert.Action?
+    fun show(animated: Boolean = true, completion: () -> Unit = {})
+    suspend fun show(animated: Boolean = true): Alert.Action?
     fun dismiss(animated: Boolean = true)
 }
 
-abstract class BaseAlertPresenter(private val alert: Alert): AlertActions
+abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
-expect class AlertInterface: BaseAlertPresenter
+    override fun show(animated: Boolean, completion: () -> Unit) {
+        showAlert(animated, completion = completion)
+    }
+
+    override suspend fun show(animated: Boolean): Alert.Action? =
+        suspendCancellableCoroutine { continuation ->
+            continuation.invokeOnCancellation {
+                dismissAlert(animated)
+                continuation.resume(null)
+            }
+            showAlert(animated, afterHandler = { continuation.resume(it) })
+        }
+
+    override fun dismiss(animated: Boolean) {
+        dismissAlert(animated)
+    }
+
+    protected abstract fun dismissAlert(animated: Boolean = true)
+
+    protected abstract fun showAlert(
+        animated: Boolean = true,
+        afterHandler: (Alert.Action?) -> Unit = {},
+        completion: () -> Unit = {}
+    )
+}
+
+expect class AlertInterface : BaseAlertPresenter
 
 interface AlertBuilderActions {
     fun create(): AlertInterface
 }
 
-abstract class BaseAlertBuilder: AlertBuilderActions {
+abstract class BaseAlertBuilder : AlertBuilderActions {
 
     private var title: String? = null
     private var message: String? = null
@@ -87,4 +116,4 @@ abstract class BaseAlertBuilder: AlertBuilderActions {
     }
 }
 
-expect class AlertBuilder: BaseAlertBuilder
+expect class AlertBuilder : BaseAlertBuilder
