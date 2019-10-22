@@ -1,10 +1,9 @@
 package com.splendo.kaluga.alerts
 
-import android.app.Activity
 import android.app.AlertDialog
+import android.content.Context
 import kotlinx.coroutines.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -23,16 +22,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val activity: Activity): BaseAlertBuilder() {
+actual class AlertBuilder(private val context: Context): BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
-        return AlertInterface(createAlert(), activity)
+        return AlertInterface(createAlert(), context)
     }
 }
 
 actual class AlertInterface(
     private val alert: Alert,
-    private val activity: Activity
+    private val context: Context
 ): BaseAlertPresenter(alert) {
 
     private var alertDialog: AlertDialog? = null
@@ -61,7 +60,7 @@ actual class AlertInterface(
     }
 
     private fun showDialog(afterHandler: ((Alert.Action?) -> Unit) = {}, completion: (() -> Unit) = {}) {
-        alertDialog = AlertDialog.Builder(activity)
+        alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
             .create()
