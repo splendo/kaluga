@@ -3,7 +3,6 @@ package com.splendo.kaluga.alerts
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /*
 
