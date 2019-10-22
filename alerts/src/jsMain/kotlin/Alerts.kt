@@ -33,7 +33,7 @@ actual class AlertInterface(
         TODO("not implemented")
     }
 
-    override suspend fun show(animated: Boolean = true): Alert.Action? {
+    override suspend fun show(animated: Boolean): Alert.Action? {
         TODO("not implemented")
     }
 
