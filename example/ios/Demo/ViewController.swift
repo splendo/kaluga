@@ -34,7 +34,7 @@ class ViewController: UIViewController {
                 AlertsAlert.Action(title: "Destructive", style: .destructive) { debugPrint("Not OK") },
                 AlertsAlert.Action(title: "Cancel", style: .cancel) { debugPrint("Cancel") },
             ])
-            .show(animated: true, completion: nil)
+            .show(animated: true) { }
     }
 
     @IBAction func onShowWithDismiss(_ sender: Any) {
