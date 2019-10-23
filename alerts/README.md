@@ -14,13 +14,13 @@ It has methods:
 - `addActions(actions: List<Alert.Action>)` - adds a list of actions for the alert
 - `create(): AlertInterface` - returns created `AlertInterface`
 
-On Android this builder needs a `Context` object
+On Android this builder needs a `Context` object:
 
 ```kotlin
 val builder = AlertBuilder(context)
 ```
 
-On iOS this builder should be instantiated with `UIViewController`
+On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
 let builder = AlertsAlertBuilder(viewController)
