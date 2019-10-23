@@ -1,11 +1,12 @@
 steps:
   - name: 'gcr.io/$PROJECT_ID/android:29'
-    id: build
-    args: ["./gradlew", "build"]
+    id: assemble
+    args: ["./gradlew", "assemble"]
     env:
       - 'TERM=dumb'
+      - 'GRADLE_USER_HOME=/workspace/gradle_home'
+      - 'KONAN_DATA_DIR=/workspace/konan'
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
-      - 'GRADLE_USER_HOME=/workspace/.gradle'
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
 
@@ -14,26 +15,62 @@ steps:
     args: ["./gradlew", "check"]
     env:
       - 'TERM=dumb'
-      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
       # can only use one gradle home concurrently
-      - 'GRADLE_USER_HOME=/workspace/.gradle_check'
+      - 'GRADLE_USER_HOME=/workspace/gradle_home_check'
+      - 'KONAN_DATA_DIR=/workspace/konan'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
     waitFor:
-      - build
+      - assemble
+  - name: 'gcr.io/$PROJECT_ID/android:29'
+    id: compileExampleAndroidUsingModules
+    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_project_example_modules", "-x",  "compileKotlinIosx64", "assemble"]
+    env:
+      - 'GRADLE_USER_HOME=/workspace/gradle_home_example_modules'
+      - 'KONAN_DATA_DIR=/workspace/konan'
+      - 'TERM=dumb'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
+      - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+      - 'EXAMPLE_AS_ROOT=false'
+    dir: "example/ios/Supporting Files"
+    waitFor:
+      - assemble
 
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: localPublish
-    args: ["./gradlew", "publishToMavenLocal"]
+    args: ["./gradlew", "--stacktrace", "-Dmaven.repo.local=/workspace/m2", "publishToMavenLocal"]
     env:
+      - 'GRADLE_USER_HOME=/workspace/gradle_home'
+      - 'KONAN_DATA_DIR=/workspace/konan'
       - 'TERM=dumb'
       - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
-      - 'GRADLE_USER_HOME=/workspace/.gradle'
       - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
       - 'BRANCH_NAME=$BRANCH_NAME'
+      - 'IOS_ONE_SOURCESET=false'
     waitFor:
-      - build
-timeout: 1200s
+      - assemble
+
+  - name: 'gcr.io/$PROJECT_ID/android:29'
+    id: compileExampleAndroidUsingM2
+    args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_example_project_m2","-Dmaven.repo.local=/workspace/m2", "-x",  "compileKotlinIosx64", "assemble", ]
+    env:
+      - 'GRADLE_USER_HOME=/workspace/gradle_home_example_m2'
+      - 'KONAN_DATA_DIR=/workspace/konan'
+      - 'TERM=dumb'
+      - 'JAVA_TOOL_OPTIONS="-Xmx3g"'
+      - 'GRADLE_OPTS="-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=8 -Dkotlin.incremental=false"'
+      - 'BRANCH_NAME=$BRANCH_NAME'
+      - 'EXAMPLE_AS_ROOT=true'
+    dir: "example/ios/Supporting Files"
+    waitFor:
+        - localPublish
+        - compileExampleAndroidUsingModules
+
+timeout: 2000s
+options:
+  machineType: 'N1_HIGHCPU_8'
 
 # In future we have to save the build cache for faster builds:
 #    volumes:

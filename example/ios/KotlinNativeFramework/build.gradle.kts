@@ -19,25 +19,10 @@ kotlin {
         getByName("KotlinNativeFrameworkMain") {
 
             val ext = (gradle as ExtensionAware).extra
-
-            val singleSet = ext["ios_one_sourceset"] as Boolean
-            var iosArch = ext["ios_arch"]
-            val orgArch = iosArch
-
-            if (singleSet)
-                iosArch = "ios"
+            var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-
-                implementation(project(":shared", "${iosArch}Default"))
-
-                if (!(ext["exampleAsRoot"] as Boolean)) {
-                    implementation(project(":Components", "${iosArch}Default"))
-                } else {
-                    val libraryVersion = ext["library_version"]
-                    implementation("com.splendo.kaluga:Components-$orgArch:$libraryVersion")
-                }
-
+                implementation(project(":shared", "${primaryIosArch}Default"))
             }
         }
     }
