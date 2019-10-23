@@ -5,6 +5,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
+import androidx.test.uiautomator.Until
 import kotlinx.coroutines.*
 import org.junit.*
 import org.junit.Test
@@ -29,8 +30,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class MockAlertsTest {
 
-    @get:Rule var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+    @get:Rule
+    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+    companion object {
+        const val DEFAULT_TIMEOUT = 1_000L
+    }
 
     @Test
     fun testAlertBuilderExceptionNoActions() {
@@ -52,16 +59,16 @@ class MockAlertsTest {
 
     @Test
     fun testAlertShow() = runBlocking {
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             AlertBuilder(activityRule.activity)
                 .setTitle("Hello")
                 .setPositiveButton("OK") { }
                 .create()
                 .show()
         }
-        assertNotNull(device.findObject(By.text("Hello")))
-        device.findObject(UiSelector().text("OK")).click()
-        assertNull(device.findObject(By.text("Hello")))
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        assertTrue(device.findObject(UiSelector().text("OK")).click())
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
     @Test
@@ -76,9 +83,9 @@ class MockAlertsTest {
             val result = withContext(coroutineContext) { presenter.show() }
             assertEquals(result, action)
         }
-        assertNotNull(device.findObject(By.text("Hello")))
-        device.findObject(UiSelector().text("OK")).click()
-        assertNull(device.findObject(By.text("Hello")))
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        assertTrue(device.findObject(UiSelector().text("OK")).click())
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
     @Test
@@ -93,9 +100,9 @@ class MockAlertsTest {
             val result = coroutineContext.run { presenter.show() }
             assertNull(result)
         }
-        assertNotNull(device.findObject(By.text("Hello")))
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
         // On cancel we expect dialog to be dismissed
         coroutine.cancel()
-        assertNull(device.findObject(By.text("Hello")))
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 }

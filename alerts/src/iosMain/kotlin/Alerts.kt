@@ -1,8 +1,6 @@
 package com.splendo.kaluga.alerts
 
-import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.UIKit.*
-import kotlin.coroutines.resume
 
 /*
 
@@ -36,9 +34,9 @@ actual class AlertInterface(
 
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
-            Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
-            Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
-            Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
+            Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault
+            Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDestructive
+            Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
         }
     }
 

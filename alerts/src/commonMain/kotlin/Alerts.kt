@@ -32,12 +32,15 @@ data class Alert(
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
-        val handler: AlertActionHandler
+        val handler: AlertActionHandler = {}
     ) {
-        enum class Style {
-            DEFAULT,
-            DESTRUCTIVE,
-            CANCEL
+        enum class Style(val value: Int) {
+            DEFAULT(0),
+            POSITIVE(DEFAULT.value),
+            DESTRUCTIVE(1),
+            NEUTRAL(DESTRUCTIVE.value),
+            CANCEL(2),
+            NEGATIVE(CANCEL.value)
         }
     }
 }
@@ -93,15 +96,15 @@ abstract class BaseAlertBuilder : AlertBuilderActions {
     fun setMessage(message: String?) = apply { this.message = message }
 
     fun setPositiveButton(title: String, handler: AlertActionHandler) = apply {
-        addAction(Alert.Action(title, Alert.Action.Style.DEFAULT, handler))
+        addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
     }
 
     fun setNegativeButton(title: String, handler: AlertActionHandler) = apply {
-        addAction(Alert.Action(title, Alert.Action.Style.CANCEL, handler))
+        addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
     }
 
     fun setNeutralButton(title: String, handler: AlertActionHandler) = apply {
-        addAction(Alert.Action(title, Alert.Action.Style.DESTRUCTIVE, handler))
+        addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
     }
 
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }

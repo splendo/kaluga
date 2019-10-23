@@ -2,8 +2,6 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
-import kotlinx.coroutines.*
-import kotlin.coroutines.resume
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -38,9 +36,9 @@ actual class AlertInterface(
 
     private companion object {
         fun transform(style: Alert.Action.Style): Int = when (style) {
-            Alert.Action.Style.DEFAULT -> AlertDialog.BUTTON_POSITIVE
-            Alert.Action.Style.DESTRUCTIVE -> AlertDialog.BUTTON_NEUTRAL
-            Alert.Action.Style.CANCEL -> AlertDialog.BUTTON_NEGATIVE
+            Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> AlertDialog.BUTTON_POSITIVE
+            Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> AlertDialog.BUTTON_NEUTRAL
+            Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> AlertDialog.BUTTON_NEGATIVE
         }
     }
 
