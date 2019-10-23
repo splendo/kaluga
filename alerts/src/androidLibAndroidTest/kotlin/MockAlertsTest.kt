@@ -73,7 +73,7 @@ class MockAlertsTest {
     @Test
     fun testAlertFlowWithCoroutines() = runBlocking {
         CoroutineScope(Dispatchers.Main).launch {
-            val action = Alert.Action("OK") { }
+            val action = Alert.Action("OK")
             val presenter = AlertBuilder(activityRule.activity)
                 .setTitle("Hello")
                 .addActions(listOf(action))
@@ -90,10 +90,10 @@ class MockAlertsTest {
     @Test
     fun testAlertFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val action = Alert.Action("OK") { }
             val presenter = AlertBuilder(activityRule.activity)
                 .setTitle("Hello")
-                .addActions(listOf(action))
+                .setPositiveButton("OK") { }
+                .setNegativeButton("Cancel") { }
                 .create()
 
             val result = coroutineContext.run { presenter.show() }

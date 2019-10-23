@@ -28,20 +28,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.helloAndroid
 import com.splendo.kaluga.example.shared.helloCommon
-import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.android.synthetic.main.activity_main.info
 import kotlinx.coroutines.MainScope
-import kotlin.coroutines.coroutineContext
 
 @SuppressLint("SetTextI18n")
 class LocationActivity : AppCompatActivity() {
@@ -130,7 +126,7 @@ class LocationActivity : AppCompatActivity() {
             val presenter = AlertBuilder(this@LocationActivity)
                 .setTitle("Hello")
                 .setMessage("Wait for 3 sec...")
-                .setPositiveButton("OK") {}
+                .setPositiveButton("OK") { println("OK pressed") }
                 .create()
 
             presenter.show()

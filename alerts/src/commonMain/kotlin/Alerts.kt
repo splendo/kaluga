@@ -36,7 +36,7 @@ data class Alert(
     val actions: List<Action>
 ) {
     /**
-     * An action than represents a button in an alert
+     * An action than represents a button in the alert
      *
      * @property title The title of the action's button
      * @property style The style that is applied to the action's button
@@ -58,6 +58,9 @@ data class Alert(
     }
 }
 
+/**
+ * Interface that defines an actions that can be applied to the alert.
+ */
 interface AlertActions {
     /**
      * Presents an alert
@@ -71,8 +74,8 @@ interface AlertActions {
      * Presents an alert and suspends
      *
      * @param animated
-     * @return Returns the action that was performed by button click
-     * Returns `null` if the alert was cancelled by pressing back (on Android)
+     * @return The action that was performed by button click
+     *         or `null` if the alert was cancelled by pressing back (on Android)
      */
     suspend fun show(animated: Boolean = true): Alert.Action?
 
@@ -84,6 +87,12 @@ interface AlertActions {
     fun dismiss(animated: Boolean = true)
 }
 
+/**
+ * Base alert presenter class that used to show and dismiss given [alert]
+ * Abstract methods should be implemented on platform-specific side
+ *
+ * @property alert The alert to present (and dismiss if needed)
+ */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
     override fun show(animated: Boolean, completion: () -> Unit) {
@@ -114,6 +123,12 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
 expect class AlertInterface : BaseAlertPresenter
 
+/**
+ * Base alert builder class that used to create an alert that can be shown and dismissed
+ * later on using AlertInterface object
+ *
+ * @see AlertInterface
+ */
 abstract class BaseAlertBuilder {
 
     private var title: String? = null
@@ -121,14 +136,14 @@ abstract class BaseAlertBuilder {
     private var actions: MutableList<Alert.Action> = mutableListOf()
 
     /**
-     * Sets the title displayed in the alert
+     * Sets the [title] displayed in the alert
      *
      * @param title The title of the alert
      */
     fun setTitle(title: String?) = apply { this.title = title }
 
     /**
-     * Sets the message displayed in the alert
+     * Sets the [message] displayed in the alert
      *
      * @param message The message of the alert
      */
@@ -168,21 +183,21 @@ abstract class BaseAlertBuilder {
     }
 
     /**
-     * Adds a list of action in the alert
+     * Adds a list of [actions] to the alert
      *
      * @param actions The list of action objects
      */
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     /**
-     * Adds an action in the alert
+     * Adds an [action] to the alert
      *
      * @param action The action object
      */
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
     /**
-     * Creates an alert based of title, message and actions properties
+     * Creates an alert based on [title], [message] and [actions] properties
      *
      * @return The alert object
      * @throws IllegalArgumentException in case missing title and/or message or actions
