@@ -150,8 +150,8 @@ abstract class BaseAlertBuilder {
     fun setMessage(message: String?) = apply { this.message = message }
 
     /**
-     * Sets button with id BUTTON_POSITIVE on Android
-     * and action with style UIAlertActionStyleDefault on iOS
+     * Sets button with id `BUTTON_POSITIVE` on Android
+     * and action with style `UIAlertActionStyleDefault` on iOS
      *
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
@@ -161,8 +161,8 @@ abstract class BaseAlertBuilder {
     }
 
     /**
-     * Sets button with id BUTTON_NEGATIVE on Android
-     * and action with style UIAlertActionStyleCancel on iOS
+     * Sets button with id `BUTTON_NEGATIVE` on Android
+     * and action with style `UIAlertActionStyleCancel` on iOS
      *
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
@@ -172,8 +172,8 @@ abstract class BaseAlertBuilder {
     }
 
     /**
-     * Sets button with id BUTTON_NEUTRAL on Android
-     * and action with style UIAlertActionStyleDestructive on iOS
+     * Sets button with id `BUTTON_NEUTRAL` on Android
+     * and action with style `UIAlertActionStyleDestructive` on iOS
      *
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
