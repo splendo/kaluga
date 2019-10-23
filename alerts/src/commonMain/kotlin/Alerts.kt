@@ -23,12 +23,25 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 typealias AlertActionHandler = () -> Unit
 
+/**
+ * An object that represents an alert with title and/or message and actions (button)
+ *
+ * @property title The title of the alert
+ * @property message The descriptive text that provides more details
+ * @property actions The list of action objects that the user can take in response to the alert
+ */
 data class Alert(
     val title: String?,
     val message: String?,
     val actions: List<Action>
 ) {
-
+    /**
+     * An action than represents a button in an alert
+     *
+     * @property title The title of the action's button
+     * @property style The style that is applied to the action's button
+     * @property handler The block to execute when the user taps a button
+     */
     data class Action(
         val title: String,
         val style: Style = Style.DEFAULT,
@@ -46,8 +59,28 @@ data class Alert(
 }
 
 interface AlertActions {
+    /**
+     * Presents an alert
+     *
+     * @param animated Pass `true` to animate the presentation
+     * @param completion The block to execute after the presentation finishes
+     */
     fun show(animated: Boolean = true, completion: () -> Unit = {})
+
+    /**
+     * Presents an alert and suspends
+     *
+     * @param animated
+     * @return Returns the action that was performed by button click
+     * Returns `null` if the alert was cancelled by pressing back (on Android)
+     */
     suspend fun show(animated: Boolean = true): Alert.Action?
+
+    /**
+     * Dismisses the alert that was presented previously
+     *
+     * @param animated Pass `true` to animate the transition
+     */
     fun dismiss(animated: Boolean = true)
 }
 
@@ -91,24 +124,65 @@ abstract class BaseAlertBuilder : AlertBuilderActions {
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
 
+    /**
+     * Sets the title displayed in the alert
+     *
+     * @param title The title of the alert
+     */
     fun setTitle(title: String?) = apply { this.title = title }
 
+    /**
+     * Sets the message displayed in the alert
+     *
+     * @param message The message of the alert
+     */
     fun setMessage(message: String?) = apply { this.message = message }
 
+    /**
+     * Sets button with id BUTTON_POSITIVE on Android
+     * and action with style UIAlertActionStyleDefault on iOS
+     *
+     * @param title The title of the button
+     * @param handler The block to execute after user taps a button
+     */
     fun setPositiveButton(title: String, handler: AlertActionHandler) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
     }
 
+    /**
+     * Sets button with id BUTTON_NEGATIVE on Android
+     * and action with style UIAlertActionStyleCancel on iOS
+     *
+     * @param title The title of the button
+     * @param handler The block to execute after user taps a button
+     */
     fun setNegativeButton(title: String, handler: AlertActionHandler) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
     }
 
+    /**
+     * Sets button with id BUTTON_NEUTRAL on Android
+     * and action with style UIAlertActionStyleDestructive on iOS
+     *
+     * @param title The title of the button
+     * @param handler The block to execute after user taps a button
+     */
     fun setNeutralButton(title: String, handler: AlertActionHandler) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
     }
 
+    /**
+     * Adds a list of action in the alert
+     *
+     * @param actions The list of action objects
+     */
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
+    /**
+     * Adds an action in the alert
+     *
+     * @param action The action object
+     */
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
     internal fun createAlert(): Alert {
