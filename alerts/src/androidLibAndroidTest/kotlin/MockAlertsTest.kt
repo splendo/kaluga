@@ -4,7 +4,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.*
 import org.junit.*
@@ -67,7 +66,7 @@ class MockAlertsTest {
                 .show()
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        assertTrue(device.findObject(UiSelector().text("OK")).click())
+        device.findObject(By.text("OK")).click()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
@@ -84,7 +83,7 @@ class MockAlertsTest {
             assertEquals(result, action)
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        assertTrue(device.findObject(UiSelector().text("OK")).click())
+        device.findObject(By.text("OK")).click()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
