@@ -114,11 +114,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
 expect class AlertInterface : BaseAlertPresenter
 
-interface AlertBuilderActions {
-    fun create(): AlertInterface
-}
-
-abstract class BaseAlertBuilder : AlertBuilderActions {
+abstract class BaseAlertBuilder {
 
     private var title: String? = null
     private var message: String? = null
@@ -185,12 +181,25 @@ abstract class BaseAlertBuilder : AlertBuilderActions {
      */
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
+    /**
+     * Creates an alert based of title, message and actions properties
+     *
+     * @return The alert object
+     * @throws IllegalArgumentException in case missing title and/or message or actions
+     */
     internal fun createAlert(): Alert {
         require(title != null || message != null) { "Please set title and/or message for the Alert" }
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
 
         return Alert(title, message, actions)
     }
+
+    /**
+     * Creates AlertInterface object
+     *
+     * @return The AlertInterface object
+     */
+    abstract fun create(): AlertInterface
 }
 
 expect class AlertBuilder : BaseAlertBuilder
