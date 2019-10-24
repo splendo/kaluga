@@ -68,7 +68,7 @@ steps:
         - localPublish
         - compileExampleAndroidUsingModules
 
-timeout: 2000s
+timeout: 3000s
 options:
   machineType: 'N1_HIGHCPU_8'
 
