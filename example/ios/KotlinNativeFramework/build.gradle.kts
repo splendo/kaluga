@@ -33,9 +33,15 @@ kotlin {
 
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", "${iosArch}Default"))
+                    implementation(project(":alerts", "${iosArch}Default"))
+                    implementation(project(":logging", "${iosArch}Default"))
+                    implementation(project(":permissions", "${iosArch}Default"))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:Components-$orgArch:$libraryVersion")
+                    implementation("com.splendo.kaluga:logging-$orgArch:$libraryVersion")
+                    implementation("com.splendo.kaluga:alerts-$orgArch:$libraryVersion")
+                    implementation("com.splendo.kaluga:permissions-$orgArch:$libraryVersion")
                 }
 
             }

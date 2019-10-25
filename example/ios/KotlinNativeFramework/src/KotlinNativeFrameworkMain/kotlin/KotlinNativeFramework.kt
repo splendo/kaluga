@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
@@ -26,6 +27,7 @@ import com.splendo.kaluga.alerts.AlertActionHandler
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
+import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
 import platform.UIKit.UIViewController
 
@@ -42,7 +44,7 @@ class KotlinNativeFramework {
                 .create()
     }
 
-    fun location(label:UILabel, locationManager: CLLocationManager) {
+    fun location(label: UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager(locationManager)
 
         LocationPrinter(loc).printTo {
@@ -51,4 +53,11 @@ class KotlinNativeFramework {
         debug("proceed executing after location coroutines")
 
     }
+
+    fun permissions(nsBundle: NSBundle): Permissions {
+        return Permissions.Builder()
+                .bundle(nsBundle)
+                .build()
+    }
+
 }

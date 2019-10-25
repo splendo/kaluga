@@ -19,10 +19,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 interface PermissionManager {
-    suspend fun checkSupport(): Support
-    suspend fun checkPermit(): Permit
-    suspend fun openSettings()
-    suspend fun requestPermissions()
+    fun checkSupport(): Support
+    fun checkPermit(): Permit
+    fun openSettings()
+    fun requestPermissions()
 }
 
 enum class Support {
