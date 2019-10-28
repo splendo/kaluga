@@ -1,6 +1,9 @@
 package com.splendo.kaluga.loadingIndicator
 
+import platform.UIKit.UIViewController
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 /*
 
@@ -19,3 +22,27 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+class IosLoadingIndicatorTests {
+
+    @Test
+    fun builderMissingViewException() {
+
+        assertFailsWith<IllegalArgumentException> {
+            IOSLoadingIndicator
+                .Builder()
+                .create()
+        }
+    }
+
+    @Test
+    fun builderInitializer() {
+        val view = UIViewController()
+        val indicator = IOSLoadingIndicator
+            .Builder()
+            .setView(view)
+            .create()
+        assertNotNull(indicator)
+    }
+}
+
