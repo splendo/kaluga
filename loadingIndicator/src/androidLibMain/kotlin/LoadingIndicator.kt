@@ -30,11 +30,11 @@ class AndroidLoadingIndicator private constructor(private val view: View): Loadi
         }
     }
 
-    override fun present(parent: View) {
+    override fun present(parent: View, animated: Boolean, completion: () -> Unit) {
         TODO("not implemented")
     }
 
-    override fun dismiss() {
+    override fun dismiss(animated: Boolean, completion: () -> Unit) {
         TODO("not implemented")
     }
 }

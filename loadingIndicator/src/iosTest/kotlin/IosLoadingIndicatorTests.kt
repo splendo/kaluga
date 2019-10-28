@@ -1,9 +1,7 @@
 package com.splendo.kaluga.loadingIndicator
 
-import platform.UIKit.UIViewController
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
+import platform.UIKit.*
+import kotlin.test.*
 
 /*
 
@@ -44,5 +42,46 @@ class IosLoadingIndicatorTests {
             .create()
         assertNotNull(indicator)
     }
-}
 
+    private lateinit var window: UIWindow
+
+    @BeforeTest
+    fun setUp() {
+        window = UIWindow(UIScreen.mainScreen.bounds)
+        window.makeKeyAndVisible()
+    }
+
+    @Test
+    fun presentIndicator() {
+        val indicatorView = UIViewController()
+        indicatorView.view.backgroundColor = UIColor.blackColor
+        val indicator = IOSLoadingIndicator
+            .Builder()
+            .setView(indicatorView)
+            .create()
+        val hostView = UIViewController()
+        window.rootViewController = hostView
+        assertNull(hostView.presentedViewController)
+        indicator.present(hostView, false)
+        assertEquals(indicatorView, hostView.presentedViewController)
+    }
+
+    @Test
+    fun dismissIndicator() {
+        val indicatorView = UIViewController()
+        indicatorView.view.backgroundColor = UIColor.blackColor
+        val indicator = IOSLoadingIndicator
+            .Builder()
+            .setView(indicatorView)
+            .create()
+        val hostView = UIViewController()
+        window.rootViewController = hostView
+        assertNull(hostView.presentedViewController)
+        indicator.present(hostView, false) {
+            assertEquals(indicatorView, hostView.presentedViewController)
+            indicator.dismiss(false) {
+                assertNull(hostView.presentedViewController)
+            }
+        }
+    }
+}

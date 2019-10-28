@@ -39,11 +39,11 @@ class IOSLoadingIndicator private constructor(private val view: View): LoadingIn
         view.modalTransitionStyle = UIModalTransitionStyleCrossDissolve
     }
 
-    override fun present(parent: View) {
-        parent.presentViewController(view, true, null)
+    override fun present(parent: View, animated: Boolean, completion: () -> Unit) {
+        parent.presentViewController(view, animated, completion)
     }
 
-    override fun dismiss() {
-        view.dismissViewControllerAnimated(true, null)
+    override fun dismiss(animated: Boolean, completion: () -> Unit) {
+        view.presentingViewController?.dismissViewControllerAnimated(animated, completion)
     }
 }
