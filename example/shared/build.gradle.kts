@@ -6,6 +6,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     google()
     jcenter()
@@ -16,29 +17,6 @@ apply(from = "../../gradle/component.gradle")
 
 kotlin {
     sourceSets {
-        getByName("iosMain") {
-            val ext =  (gradle as ExtensionAware).extra
-
-            println("properties ${ext.properties}")
-
-            val singleSet = ext["ios_one_sourceset"] as Boolean
-            var iosArch = ext["ios_arch"]
-            val orgArch = iosArch
-
-            if (singleSet)
-                iosArch = "ios"
-
-            dependencies {
-
-                if (!(ext["exampleAsRoot"] as Boolean)) {
-                    implementation(project(":Components", "${iosArch}Default"))
-                } else {
-                    val libraryVersion = ext["library_version"]
-                    implementation("com.splendo.kaluga:Components-$orgArch:$libraryVersion")
-                }
-
-            }
-        }
         getByName("commonMain") {
             val ext =  (gradle as ExtensionAware).extra
 
@@ -47,14 +25,16 @@ kotlin {
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", ""))
                     implementation(project(":logging", ""))
+                    implementation(project(":alerts", "${iosArch}Default"))
+                    implementation(project(":permissions", "${iosArch}Default"))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:Components:$libraryVersion")
+                    implementation("com.splendo.kaluga:logging:$libraryVersion")
+                    implementation("com.splendo.kaluga:alerts-$orgArch:$libraryVersion")
+                    implementation("com.splendo.kaluga:permissions-$orgArch:$libraryVersion")
                 }
-
             }
         }
     }
 }
-
-

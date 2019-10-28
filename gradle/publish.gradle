@@ -50,8 +50,8 @@ afterEvaluate {
         publication.pom.withXml {
             def root = asNode()
             root.appendNode('name', project.name)
-            root.appendNode('description', 'Collection of Flow libraries')
-            root.appendNode('url', 'https://github.com/splendo/kotlin-components')
+            root.appendNode('description', 'Collection of Kotlin Flow based libraries')
+            root.appendNode('url', 'https://github.com/splendo/kaluga')
             root.children().last() + pomConfig
         }
     }

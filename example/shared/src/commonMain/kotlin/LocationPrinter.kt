@@ -5,7 +5,7 @@ import com.splendo.kaluga.runBlocking
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import com.splendo.kaluga.log.*
+import com.splendo.kaluga.log.debug
 
 class LocationPrinter(val loc:LocationFlowable) {
 
