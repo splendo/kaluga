@@ -28,18 +28,16 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.coroutineScope
 import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.helloAndroid
 import com.splendo.kaluga.example.shared.helloCommon
-import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.android.synthetic.main.activity_main.info
+import kotlinx.coroutines.MainScope
 
 @SuppressLint("SetTextI18n")
 class LocationActivity : AppCompatActivity() {
@@ -53,16 +51,23 @@ class LocationActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED) {
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             flowLocation()
         } else {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         }
 
         info.text = helloAndroid() + " " + helloCommon()
     }
 
-    companion object {const val LOCATION_PERMISSION_REQUEST_CODE = 1}
+    companion object {
+        const val LOCATION_PERMISSION_REQUEST_CODE = 1
+    }
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -88,20 +93,24 @@ class LocationActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        return when (item.itemId) {
             R.id.show_alert -> {
-                showAlert()
+                MainScope().launch {
+                    showAlert()
+                }
                 true
             }
             R.id.dismissible_alert -> {
-                showDismissibleAlert()
+                MainScope().launch {
+                    showDismissibleAlert()
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun showAlert() {
+    private suspend fun showAlert() {
         AlertBuilder(this)
             .setTitle("Hello, Kaluga")
             .setPositiveButton("OK") { println("OK pressed") }
@@ -112,17 +121,19 @@ class LocationActivity : AppCompatActivity() {
     }
 
     private fun showDismissibleAlert() {
+        
+        val coroutine = MainScope().launch {
+            val presenter = AlertBuilder(this@LocationActivity)
+                .setTitle("Hello")
+                .setMessage("Wait for 3 sec...")
+                .setPositiveButton("OK") { println("OK pressed") }
+                .create()
 
-        val presenter = AlertBuilder(this)
-            .setTitle("Hello")
-            .setMessage("Wait for 3 sec...")
-            .setPositiveButton("OK") {}
-            .create()
-
-        presenter.show()
+            presenter.show()
+        }
 
         Handler().postDelayed({
-            presenter.dismiss()
+            coroutine.cancel()
         }, 3000)
     }
 
@@ -131,7 +142,7 @@ class LocationActivity : AppCompatActivity() {
             this@LocationActivity
         )
         location.setFusedLocationProviderClient(client)
-        
+
         LocationPrinter(location).printTo {
             info.text = "location: $it"
             info.animate().withEndAction {
