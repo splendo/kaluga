@@ -28,6 +28,6 @@ interface LoadingIndicator {
         fun create(): LoadingIndicator
     }
 
-    fun present(parent: View, animated: Boolean = true, completion: () -> Unit = {})
+    fun present(parent: View? = null, animated: Boolean = true, completion: () -> Unit = {})
     fun dismiss(animated: Boolean = false, completion: () -> Unit = {})
 }

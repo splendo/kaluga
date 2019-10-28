@@ -8,6 +8,11 @@ apply from: "../gradle/publishable_component.gradle"
 version = gradle.library_version
 group = "com.splendo.kaluga"
 
+dependencies {
+    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}
+
 android {
     testOptions {
         unitTests.returnDefaultValues = true

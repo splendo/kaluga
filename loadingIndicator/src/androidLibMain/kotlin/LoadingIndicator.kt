@@ -1,5 +1,7 @@
 package com.splendo.kaluga.loadingIndicator
 
+import android.app.Dialog
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual typealias View = android.view.View
+actual typealias View = Dialog
 
 class AndroidLoadingIndicator private constructor(private val view: View): LoadingIndicator {
 
@@ -30,11 +32,13 @@ class AndroidLoadingIndicator private constructor(private val view: View): Loadi
         }
     }
 
-    override fun present(parent: View, animated: Boolean, completion: () -> Unit) {
-        TODO("not implemented")
+    override fun present(parent: View?, animated: Boolean, completion: () -> Unit) {
+        view.show()
+        completion()
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        TODO("not implemented")
+        view.dismiss()
+        completion()
     }
 }

@@ -1,6 +1,16 @@
 package com.splendo.kaluga.loadingIndicator
 
+import android.app.Dialog
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
+import kotlinx.coroutines.*
+import org.junit.Rule
 import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 /*
@@ -23,8 +33,67 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class AndroidLoadingIndicatorTests {
 
+    @get:Rule
+    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+
+    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+    companion object {
+        const val DEFAULT_TIMEOUT = 1_000L
+    }
+
     @Test
-    fun testInit() {
-        assertTrue(true)
+    fun builderMissingViewException() {
+
+        assertFailsWith<IllegalArgumentException> {
+            AndroidLoadingIndicator
+                .Builder()
+                .create()
+        }
+    }
+
+    @Test
+    fun builderInitializer() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+            val view = Dialog(activityRule.activity)
+            val indicator = AndroidLoadingIndicator
+                .Builder()
+                .setView(view)
+                .create()
+            assertNotNull(indicator)
+        }
+        Unit
+    }
+
+    @Test
+    fun indicatorShow() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+            val view = Dialog(activityRule.activity)
+            view.setTitle("HUD")
+            AndroidLoadingIndicator
+                .Builder()
+                .setView(view)
+                .create()
+                .present()
+            device.wait(Until.findObject(By.text("HUD")), DEFAULT_TIMEOUT)
+        }
+        Unit
+    }
+
+    @Test
+    fun indicatorDismiss() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+            val view = Dialog(activityRule.activity)
+            view.setTitle("HUD")
+            val indicator = AndroidLoadingIndicator
+                .Builder()
+                .setView(view)
+                .create()
+            indicator.present()
+            device.wait(Until.findObject(By.text("HUD")), DEFAULT_TIMEOUT)
+            indicator.dismiss()
+            assertTrue(device.wait(Until.gone(By.text("HUD")), DEFAULT_TIMEOUT))
+        }
+        Unit
     }
 }
