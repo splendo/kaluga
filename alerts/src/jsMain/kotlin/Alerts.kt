@@ -29,11 +29,27 @@ actual class AlertInterface(
     alert: Alert
 ): BaseAlertPresenter(alert) {
 
-    override fun show(animated: Boolean, completion: (() -> Unit)?) {
+    override fun show(animated: Boolean, completion: (() -> Unit)) {
+        TODO("not implemented")
+    }
+
+    override suspend fun show(animated: Boolean): Alert.Action? {
         TODO("not implemented")
     }
 
     override fun dismiss(animated: Boolean) {
+        TODO("not implemented")
+    }
+
+    override fun dismissAlert(animated: Boolean) {
+        TODO("not implemented")
+    }
+
+    override fun showAlert(
+        animated: Boolean,
+        afterHandler: (Alert.Action?) -> Unit,
+        completion: () -> Unit
+    ) {
         TODO("not implemented")
     }
 }
