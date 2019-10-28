@@ -1,11 +1,14 @@
 package com.splendo.kaluga.alerts
 
-import android.content.Context
-import org.junit.Before
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
+import kotlinx.coroutines.*
+import org.junit.*
 import org.junit.Test
-import kotlin.test.assertFailsWith
-import org.mockito.Mockito.mock
-import java.lang.IllegalArgumentException
+import kotlin.test.*
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -26,17 +29,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class MockAlertsTest {
 
-    private lateinit var mockContext: Context
+    @get:Rule
+    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
 
-    @Before
-    fun before() {
-        mockContext = mock(Context::class.java)
+    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+
+    companion object {
+        const val DEFAULT_TIMEOUT = 1_000L
     }
 
     @Test
     fun testAlertBuilderExceptionNoActions() {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(mockContext)
+            AlertBuilder(activityRule.activity)
                 .setTitle("OK")
                 .create()
         }
@@ -45,9 +50,58 @@ class MockAlertsTest {
     @Test
     fun testAlertBuilderExceptionNoTitleOrMessage() {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(mockContext)
+            AlertBuilder(activityRule.activity)
                 .setPositiveButton("OK") { }
                 .create()
         }
+    }
+
+    @Test
+    fun testAlertShow() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+            AlertBuilder(activityRule.activity)
+                .setTitle("Hello")
+                .setPositiveButton("OK") { }
+                .create()
+                .show()
+        }
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.findObject(By.text("OK")).click()
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testAlertFlowWithCoroutines() = runBlocking {
+        CoroutineScope(Dispatchers.Main).launch {
+            val action = Alert.Action("OK")
+            val presenter = AlertBuilder(activityRule.activity)
+                .setTitle("Hello")
+                .addActions(listOf(action))
+                .create()
+
+            val result = withContext(coroutineContext) { presenter.show() }
+            assertEquals(result, action)
+        }
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.findObject(By.text("OK")).click()
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testAlertFlowCancel() = runBlocking {
+        val coroutine = CoroutineScope(Dispatchers.Main).launch {
+            val presenter = AlertBuilder(activityRule.activity)
+                .setTitle("Hello")
+                .setPositiveButton("OK") { }
+                .setNegativeButton("Cancel") { }
+                .create()
+
+            val result = coroutineContext.run { presenter.show() }
+            assertNull(result)
+        }
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        // On cancel we expect dialog to be dismissed
+        coroutine.cancel()
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 }
