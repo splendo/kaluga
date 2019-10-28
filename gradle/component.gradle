@@ -199,14 +199,15 @@ dependencies {
 
 task iosTest {
     def device = project.findProperty("iosDevice")?.toString() ?: "iPhone 8"
-    dependsOn 'linkDebugTestIos'
+    dependsOn "linkDebugTest${gradle.ios_primary_arch.capitalize()}"
     group = JavaBasePlugin.VERIFICATION_GROUP
-    description = "Runs tests for target 'ios' on an iOS simulator"
+    description = "Runs tests for target '${gradle.ios_primary_arch}' on an iOS simulator"
 
     doLast {
-        def binary = kotlin.targets.ios.binaries.getTest('DEBUG').outputFile
+        def binary = kotlin.targets.getByName(gradle.ios_primary_arch).binaries.getTest('DEBUG').outputFile
         exec {
-            commandLine 'xcrun', 'simctl', 'spawn', device, binary.absolutePath
+            // Xcode 11 requires `--standalone`
+            commandLine 'xcrun', 'simctl', 'spawn', "--standalone", device, binary.absolutePath
         }
     }
 }
