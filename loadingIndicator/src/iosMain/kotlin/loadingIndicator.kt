@@ -1,5 +1,7 @@
 package com.splendo.kaluga.loadingIndicator
 
+import platform.UIKit.UIModalPresentationOverFullScreen
+import platform.UIKit.UIModalTransitionStyleCrossDissolve
 import platform.UIKit.UIViewController
 
 /*
@@ -22,19 +24,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual typealias View = UIViewController
 
-class IOSLoadingIndicator: LoadingIndicator {
+class IOSLoadingIndicator private constructor(private val view: View): LoadingIndicator {
 
-    class Factory: LoadingIndicator.Factory {
+    class Builder: LoadingIndicator.Builder {
+        override var view: View? = null
         override fun create(): LoadingIndicator {
-            return IOSLoadingIndicator()
+            require(view != null) { "Please set a view first" }
+            return IOSLoadingIndicator(view!!)
         }
     }
 
+    init {
+        view.modalPresentationStyle = UIModalPresentationOverFullScreen
+        view.modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+    }
+
     override fun present(parent: View) {
-        TODO("not implemented")
+        parent.presentViewController(view, true, null)
     }
 
     override fun dismiss() {
-        TODO("not implemented")
+        view.dismissViewControllerAnimated(true, null)
     }
 }

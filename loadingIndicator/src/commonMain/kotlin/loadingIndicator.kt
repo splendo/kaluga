@@ -22,7 +22,9 @@ expect class View
 
 interface LoadingIndicator {
 
-    interface Factory {
+    interface Builder {
+        var view: View?
+        fun setView(view: View) = apply { this.view = view }
         fun create(): LoadingIndicator
     }
 

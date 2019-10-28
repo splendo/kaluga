@@ -20,11 +20,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual typealias View = android.view.View
 
-class AndroidLoadingIndicator: LoadingIndicator {
+class AndroidLoadingIndicator private constructor(private val view: View): LoadingIndicator {
 
-    class Factory: LoadingIndicator.Factory {
+    class Builder: LoadingIndicator.Builder {
+        override var view: View? = null
         override fun create(): LoadingIndicator {
-            return AndroidLoadingIndicator()
+            require(view != null) { "Please set view first" }
+            return AndroidLoadingIndicator(view!!)
         }
     }
 

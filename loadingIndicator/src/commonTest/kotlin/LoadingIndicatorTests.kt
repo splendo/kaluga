@@ -1,5 +1,7 @@
 package com.splendo.kaluga.loadingIndicator
 
+import kotlin.test.Test
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,3 +19,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+class LoadingIndicatorTests {
+
+    @Test
+    fun testInitBuilder() {
+
+    }
+}
