@@ -4,7 +4,7 @@ A library allows you to show native alerts.
 It shows `AlertDialog` on Android and `UIAlertController` on iOS.
 
 ### Usage
-The `BaseAlertBuilder` abstract class has implementations on the Android and iOS as `AlertBuilder`.
+The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
 It has methods:
 - `setTitle(title: String?)` - sets optional title for the alert
 - `setMessage(message: String?)` - sets optional message for the alert
