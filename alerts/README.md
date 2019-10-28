@@ -27,7 +27,8 @@ let builder = AlertsAlertBuilder(viewController)
 ```
 
 The `AlertInterface` has methods to show and dismiss alert:
-- `show(animated: Boolean = true, completion: (() -> Unit)? = null)`
+- `show(animated: Boolean = true, completion: () -> Unit = {})`
+- `suspend show(animated: Boolean = true): Alert.Action?`
 - `dismiss(animated: Boolean = true)`
 
 ### Example
