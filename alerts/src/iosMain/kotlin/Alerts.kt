@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val viewController: UIViewController): BaseAlertBuilder() {
+actual class AlertBuilder(private val viewController: UIViewController) : BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
         return AlertInterface(createAlert(), viewController)
@@ -30,16 +30,25 @@ actual class AlertBuilder(private val viewController: UIViewController): BaseAle
 actual class AlertInterface(
     private val alert: Alert,
     private val parent: UIViewController
-): BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert) {
 
-    override fun show(animated: Boolean, completion: (() -> Unit)?) {
-
+    private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
-            Alert.Action.Style.DEFAULT -> UIAlertActionStyleDefault
-            Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
-            Alert.Action.Style.CANCEL -> UIAlertActionStyleCancel
+            Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault
+            Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDestructive
+            Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
         }
+    }
 
+    override fun dismissAlert(animated: Boolean) {
+        parent.dismissModalViewControllerAnimated(animated)
+    }
+
+    override fun showAlert(
+        animated: Boolean,
+        afterHandler: (Alert.Action?) -> Unit,
+        completion: () -> Unit
+    ) {
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
@@ -52,15 +61,12 @@ actual class AlertInterface(
                         transform(action.style)
                     ) {
                         action.handler()
+                        afterHandler(action)
                     }
                 )
             }
         }.run {
             parent.presentViewController(this, animated, completion)
         }
-    }
-
-    override fun dismiss(animated: Boolean) {
-        parent.dismissModalViewControllerAnimated(animated)
     }
 }
