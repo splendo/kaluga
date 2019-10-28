@@ -85,7 +85,6 @@ class BluetoothPermissionsDemoActivity : AppCompatActivity(R.layout.activity_per
 
         btn_permissions_bluetooth_request_permissions.setOnClickListener {
             launch {
-//                bluetoothManager.requestPermissions()
                 Permissions.requestPermissions(this@BluetoothPermissionsDemoActivity, Manifest.permission.ACCESS_FINE_LOCATION)
             }
         }
