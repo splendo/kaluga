@@ -18,13 +18,10 @@ class BluetoothPermissionViewController: UITableViewController {
         switch (indexPath.row) {
         case 1:
             debugPrint(bluetoothManager.checkPermit().name)
-            break
         case 2:
             debugPrint(bluetoothManager.checkSupport().name)
-            break
         case 3:
             bluetoothManager.openSettings()
-            break
         default:
             break
         }
