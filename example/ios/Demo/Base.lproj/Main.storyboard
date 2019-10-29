@@ -30,8 +30,8 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dU2-1e-Xhs">
-                                <rect key="frame" x="93" y="556" width="228" height="30"/>
-                                <state key="normal" title="Show Alert with automatic dimiss"/>
+                                <rect key="frame" x="89.5" y="556" width="235" height="30"/>
+                                <state key="normal" title="Show Alert with automatic dismiss"/>
                                 <connections>
                                     <action selector="onShowWithDismiss:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nsh-OH-Eh2"/>
                                 </connections>

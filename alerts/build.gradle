@@ -10,10 +10,9 @@ apply from: "../gradle/publishable_component.gradle"
 group = "com.splendo.kaluga"
 version = gradle.library_version
 
-
 dependencies {
-    androidTestImplementation 'org.mockito:mockito-core:2.28.2'
-    androidTestImplementation 'org.mockito:mockito-android:2.28.2'
+    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
 android {
