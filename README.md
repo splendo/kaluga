@@ -65,3 +65,4 @@ The libraries are not published on any hosted repository yet, but can be publish
 ## Code conventions
 
 The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.
+

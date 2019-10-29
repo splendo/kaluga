@@ -38,6 +38,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":logging")
     project(":logging").projectDir = file("../../../logging")
 
+    include(":permissions")
+    project(":permissions").projectDir = file("../../../permissions")
+
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 }
