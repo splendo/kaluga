@@ -24,9 +24,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual typealias View = UIViewController
 
-class IOSLoadingIndicator private constructor(private val view: View): LoadingIndicator {
+class IOSLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
 
-    class Builder: LoadingIndicator.Builder {
+    class Builder : LoadingIndicator.Builder {
         override var view: View? = null
         override fun create(): LoadingIndicator {
             require(view != null) { "Please set a view first" }
@@ -35,12 +35,16 @@ class IOSLoadingIndicator private constructor(private val view: View): LoadingIn
     }
 
     init {
-        view.modalPresentationStyle = UIModalPresentationOverFullScreen
-        view.modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+        view.apply {
+            modalPresentationStyle = UIModalPresentationOverFullScreen
+            modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+        }
     }
 
-    override fun present(parent: View, animated: Boolean, completion: () -> Unit) {
-        parent.presentViewController(view, animated, completion)
+    override val isVisible get() = view.presentingViewController != null
+
+    override fun present(parent: View?, animated: Boolean, completion: () -> Unit) {
+        parent?.presentViewController(view, animated, completion)
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {

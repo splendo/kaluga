@@ -18,16 +18,47 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+/**
+ * Class represents a view
+ */
 expect class View
 
+/**
+ * Interface that defines loading indicator class that can be shown or dismissed
+ */
 interface LoadingIndicator {
 
+    /**
+     * Interface used to build loading indicator
+     */
     interface Builder {
+        /** The indicator view */
         var view: View?
+        /** Sets the indicator view */
         fun setView(view: View) = apply { this.view = view }
+        /** Returns created loading indicator */
         fun create(): LoadingIndicator
     }
 
+    /**
+     * Returns true is indicator is visible
+     */
+    val isVisible: Boolean
+
+    /**
+     * Presents as indicator
+     *
+     * @param parent A host view to present indicator on top of
+     * @param animated Pass true to animate the presentation
+     * @param completion The block to execute after the presentation finishes
+     */
     fun present(parent: View? = null, animated: Boolean = true, completion: () -> Unit = {})
+
+    /**
+     * Dismisses the indicator
+     *
+     * @param animated Pass `true` to animate the transition
+     * @param completion The block to execute after the presentation finishes
+     */
     fun dismiss(animated: Boolean = false, completion: () -> Unit = {})
 }

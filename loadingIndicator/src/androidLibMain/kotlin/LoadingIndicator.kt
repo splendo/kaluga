@@ -22,15 +22,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual typealias View = Dialog
 
-class AndroidLoadingIndicator private constructor(private val view: View): LoadingIndicator {
+class AndroidLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
 
-    class Builder: LoadingIndicator.Builder {
+    class Builder : LoadingIndicator.Builder {
         override var view: View? = null
         override fun create(): LoadingIndicator {
             require(view != null) { "Please set view first" }
             return AndroidLoadingIndicator(view!!)
         }
     }
+
+    override val isVisible get() = view.isShowing
 
     override fun present(parent: View?, animated: Boolean, completion: () -> Unit) {
         view.show()

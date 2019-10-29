@@ -62,7 +62,9 @@ class IosLoadingIndicatorTests {
         val hostView = UIViewController()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
+        assertFalse(indicator.isVisible)
         indicator.present(hostView, false)
+        assertTrue(indicator.isVisible)
         assertEquals(indicatorView, hostView.presentedViewController)
     }
 
@@ -77,10 +79,13 @@ class IosLoadingIndicatorTests {
         val hostView = UIViewController()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
+        assertFalse(indicator.isVisible)
         indicator.present(hostView, false) {
             assertEquals(indicatorView, hostView.presentedViewController)
+            assertTrue(indicator.isVisible)
             indicator.dismiss(false) {
                 assertNull(hostView.presentedViewController)
+                assertFalse(indicator.isVisible)
             }
         }
     }
