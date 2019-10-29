@@ -53,7 +53,7 @@ class LocationActivity : AppCompatActivity(R.layout.activity_main) {
                 this,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
-            );
+            )
         }
     }
 
@@ -73,11 +73,10 @@ class LocationActivity : AppCompatActivity(R.layout.activity_main) {
             ) {
                 flowLocation()
             } else {
-                info.setText("You must grant the location permission for this example to work")
+                info.text = "You must grant the location permission for this example to work"
             }
         }
     }
-
 
     private fun flowLocation() {
         lifecycle.coroutineScope.launch {
