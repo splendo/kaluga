@@ -30,6 +30,8 @@
                   android:label="Permissions list"/>
         <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
                   android:label="Bluetooth"/>
+        <activity android:name=".alerts.AlertsActivity"
+                  android:label="Alerts"/>
     </application>
 
 </manifest>
