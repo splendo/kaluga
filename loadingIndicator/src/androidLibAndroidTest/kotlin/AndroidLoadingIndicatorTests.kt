@@ -7,6 +7,7 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -53,8 +54,8 @@ class AndroidLoadingIndicatorTests {
     }
 
     @Test
-    fun builderInitializer() = runBlocking {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+    fun builderInitializer() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
             val view = Dialog(activityRule.activity)
             val indicator = AndroidLoadingIndicator
                 .Builder()
@@ -62,12 +63,11 @@ class AndroidLoadingIndicatorTests {
                 .create()
             assertNotNull(indicator)
         }
-        Unit
     }
 
     @Test
-    fun indicatorShow() = runBlocking {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
+    fun indicatorShow() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
             val view = Dialog(activityRule.activity)
             view.setTitle("HUD")
             AndroidLoadingIndicator
@@ -77,11 +77,10 @@ class AndroidLoadingIndicatorTests {
                 .present()
             device.wait(Until.findObject(By.text("HUD")), DEFAULT_TIMEOUT)
         }
-        Unit
     }
 
     @Test
-    fun indicatorDismiss() = runBlocking {
+    fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             val view = Dialog(activityRule.activity)
             view.setTitle("HUD")
@@ -94,6 +93,5 @@ class AndroidLoadingIndicatorTests {
             indicator.dismiss()
             assertTrue(device.wait(Until.gone(By.text("HUD")), DEFAULT_TIMEOUT))
         }
-        Unit
     }
 }
