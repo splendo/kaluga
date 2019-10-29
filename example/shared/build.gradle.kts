@@ -20,6 +20,9 @@ kotlin {
         getByName("commonMain") {
             val ext =  (gradle as ExtensionAware).extra
 
+            val ext = (gradle as ExtensionAware).extra
+            var primaryIosArch = ext["ios_primary_arch"]
+
             dependencies {
 
                 if (!(ext["exampleAsRoot"] as Boolean)) {
