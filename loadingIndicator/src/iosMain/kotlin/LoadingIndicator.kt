@@ -23,11 +23,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual typealias View = UIViewController
+actual typealias Controller = UIViewController
 
 class IOSLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
 
     class Builder : LoadingIndicator.Builder {
-        override var view: View? = null
+
+        private var view: View? = null
+
+        fun setView(view: View) = apply { this.view = view }
+
         override fun create(): LoadingIndicator {
             require(view != null) { "Please set a view first" }
             return IOSLoadingIndicator(view!!)
@@ -43,8 +48,8 @@ class IOSLoadingIndicator private constructor(private val view: View) : LoadingI
 
     override val isVisible get() = view.presentingViewController != null
 
-    override fun present(parent: View?, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
-        parent?.presentViewController(view, animated, completion)
+    override fun present(controller: Controller, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+        controller.presentViewController(view, animated, completion)
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {

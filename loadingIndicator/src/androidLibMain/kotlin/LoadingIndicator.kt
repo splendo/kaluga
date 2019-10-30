@@ -1,6 +1,11 @@
 package com.splendo.kaluga.loadingIndicator
 
-import android.app.Dialog
+import android.content.res.Resources.ID_NULL
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 
 /*
 
@@ -20,27 +25,55 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual typealias View = Dialog
+actual typealias View = Int
+actual typealias Controller = FragmentActivity
 
-class AndroidLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
+class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndicator {
 
     class Builder : LoadingIndicator.Builder {
-        override var view: View? = null
+
+        private var viewResId: View? = null
+
+        fun setViewResId(viewResId: View) = apply { this.viewResId = viewResId }
+
         override fun create(): LoadingIndicator {
-            require(view != null) { "Please set view first" }
-            return AndroidLoadingIndicator(view!!)
+            require(viewResId != null) { "Please set view resource id first" }
+            return AndroidLoadingIndicator(viewResId!!)
         }
     }
 
-    override val isVisible get() = view.isShowing
+    class LoadingDialog : DialogFragment() {
 
-    override fun present(parent: View?, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
-        view.show()
+        companion object {
+
+            private const val RESOURCE_ID_KEY = "resId"
+
+            fun newInstance(viewResId: View) = LoadingDialog().apply {
+                val args = Bundle()
+                args.putInt(RESOURCE_ID_KEY, viewResId)
+                arguments = args
+                isCancelable = false
+            }
+        }
+
+        private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
+
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
+            return inflater.inflate(viewResId, container)
+        }
+    }
+
+    private val loadingDialog = LoadingDialog.newInstance(viewResId)
+
+    override val isVisible get() = loadingDialog.isVisible
+
+    override fun present(controller: Controller, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+        loadingDialog.show(controller.supportFragmentManager, "LoadingIndicator")
         completion()
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        view.dismiss()
+        loadingDialog.dismissAllowingStateLoss()
         completion()
     }
 }

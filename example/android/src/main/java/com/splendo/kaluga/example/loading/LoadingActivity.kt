@@ -1,8 +1,6 @@
 package com.splendo.kaluga.example.loading
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
-import android.app.Dialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.splendo.kaluga.example.R
@@ -42,18 +40,13 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
     }
 
     private fun showLoadingIndicator() {
-        val dialog = AlertDialog
-            .Builder(this)
-            .setMessage("Loading...")
-            .setCancelable(false)
-            .create()
         val indicator = AndroidLoadingIndicator
             .Builder()
-            .setView(dialog)
+            .setViewResId(R.layout.loading_indicator_view)
             .create()
-            .present()
+            .present(this)
         GlobalScope.launch {
-            delay(3000)
+            delay(10_000)
             indicator.dismiss()
         }
     }

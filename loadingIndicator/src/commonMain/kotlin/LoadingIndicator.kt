@@ -24,6 +24,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 expect class View
 
 /**
+ * Class represents a view controller
+ */
+expect class Controller
+
+/**
  * Interface that defines loading indicator class that can be shown or dismissed
  */
 interface LoadingIndicator {
@@ -32,10 +37,6 @@ interface LoadingIndicator {
      * Interface used to build loading indicator
      */
     interface Builder {
-        /** The indicator view */
-        var view: View?
-        /** Sets the indicator view */
-        fun setView(view: View) = apply { this.view = view }
         /** Returns created loading indicator */
         fun create(): LoadingIndicator
     }
@@ -48,11 +49,11 @@ interface LoadingIndicator {
     /**
      * Presents as indicator
      *
-     * @param parent A host view to present indicator on top of
+     * @param controller A host controller to present indicator on top of
      * @param animated Pass true to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun present(parent: View? = null, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
+    fun present(controller: Controller, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
 
     /**
      * Dismisses the indicator

@@ -19,3 +19,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual class View
+actual class Controller

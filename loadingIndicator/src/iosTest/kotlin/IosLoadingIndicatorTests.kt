@@ -25,7 +25,6 @@ class IosLoadingIndicatorTests {
 
     @Test
     fun builderMissingViewException() {
-
         assertFailsWith<IllegalArgumentException> {
             IOSLoadingIndicator
                 .Builder()

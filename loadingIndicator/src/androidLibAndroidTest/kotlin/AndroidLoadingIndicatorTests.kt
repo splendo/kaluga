@@ -1,6 +1,5 @@
 package com.splendo.kaluga.loadingIndicator
 
-import android.app.Dialog
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
@@ -13,6 +12,7 @@ import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import com.splendo.kaluga.loadingIndicator.test.R
 
 /*
 
@@ -45,7 +45,6 @@ class AndroidLoadingIndicatorTests {
 
     @Test
     fun builderMissingViewException() {
-
         assertFailsWith<IllegalArgumentException> {
             AndroidLoadingIndicator
                 .Builder()
@@ -56,10 +55,9 @@ class AndroidLoadingIndicatorTests {
     @Test
     fun builderInitializer() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
-            val view = Dialog(activityRule.activity)
             val indicator = AndroidLoadingIndicator
                 .Builder()
-                .setView(view)
+                .setViewResId(R.layout.loading_indicator_view)
                 .create()
             assertNotNull(indicator)
         }
@@ -68,30 +66,27 @@ class AndroidLoadingIndicatorTests {
     @Test
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
-            val view = Dialog(activityRule.activity)
-            view.setTitle("HUD")
             AndroidLoadingIndicator
                 .Builder()
-                .setView(view)
+                .setViewResId(R.layout.loading_indicator_view)
                 .create()
-                .present()
-            device.wait(Until.findObject(By.text("HUD")), DEFAULT_TIMEOUT)
+                .present(activityRule.activity)
+            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
         }
     }
 
     @Test
     fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            val view = Dialog(activityRule.activity)
-            view.setTitle("HUD")
             val indicator = AndroidLoadingIndicator
                 .Builder()
-                .setView(view)
+                .setViewResId(R.layout.loading_indicator_view)
                 .create()
-            indicator.present()
-            device.wait(Until.findObject(By.text("HUD")), DEFAULT_TIMEOUT)
+            indicator.present(activityRule.activity)
+            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
             indicator.dismiss()
-            assertTrue(device.wait(Until.gone(By.text("HUD")), DEFAULT_TIMEOUT))
+            assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
         }
+        Unit
     }
 }
