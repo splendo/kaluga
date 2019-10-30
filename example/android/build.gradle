@@ -48,6 +48,7 @@ dependencies {
         implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:loadingIndicator:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -56,7 +57,7 @@ dependencies {
         implementation project(":permissions")
         implementation project(":logging")
         implementation project(":alerts")
-
+        implementation project(":loadingIndicator")
     }
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-beta01'

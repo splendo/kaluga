@@ -52,7 +52,7 @@ interface LoadingIndicator {
      * @param animated Pass true to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun present(parent: View? = null, animated: Boolean = true, completion: () -> Unit = {})
+    fun present(parent: View? = null, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
 
     /**
      * Dismisses the indicator

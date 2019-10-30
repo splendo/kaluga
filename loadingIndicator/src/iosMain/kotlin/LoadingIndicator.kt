@@ -43,7 +43,7 @@ class IOSLoadingIndicator private constructor(private val view: View) : LoadingI
 
     override val isVisible get() = view.presentingViewController != null
 
-    override fun present(parent: View?, animated: Boolean, completion: () -> Unit) {
+    override fun present(parent: View?, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
         parent?.presentViewController(view, animated, completion)
     }
 

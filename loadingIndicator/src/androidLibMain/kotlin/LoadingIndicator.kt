@@ -34,7 +34,7 @@ class AndroidLoadingIndicator private constructor(private val view: View) : Load
 
     override val isVisible get() = view.isShowing
 
-    override fun present(parent: View?, animated: Boolean, completion: () -> Unit) {
+    override fun present(parent: View?, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
         view.show()
         completion()
     }
