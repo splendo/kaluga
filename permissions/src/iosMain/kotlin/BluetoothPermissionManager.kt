@@ -32,15 +32,15 @@ actual class BluetoothPermissionManager(
     }
 ) : PermissionManager {
 
-    override suspend fun requestPermissions() {
+    override fun requestPermissions() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun openSettings() {
+    override fun openSettings() {
         UIApplication.sharedApplication.openURL(NSURL(string = "App-Prefs:root=General"))
     }
 
-    override suspend fun checkSupport(): Support {
+    override fun checkSupport(): Support {
         return when (CBCentralManagerState.byCBManagerState(cbCentralManager.state)) {
             CBCentralManagerState.UNSUPPORTED -> Support.NOT_SUPPORTED
             CBCentralManagerState.RESETTING -> Support.RESETTING
@@ -51,10 +51,12 @@ actual class BluetoothPermissionManager(
         }
     }
 
-    override suspend fun checkPermit(): Permit {
+    override fun checkPermit(): Permit {
         //TODO: Add support for iOS 13. `authorizationStatus` is being deprecated
         //https://github.com/splendo/kaluga/issues/21
-        return when (CBPeripheralManagerAuthorizationStatus.byCBPeripheralManagerAuthorizationStatus(authorizationStatusProvider())) {
+        return when (CBPeripheralManagerAuthorizationStatus.byCBPeripheralManagerAuthorizationStatus(
+            authorizationStatusProvider()
+        )) {
             CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusNotDetermined -> Permit.UNDEFINED
             CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusRestricted -> Permit.RESTRICTED
             CBPeripheralManagerAuthorizationStatus.CBPeripheralManagerAuthorizationStatusDenied -> Permit.DENIED
@@ -100,7 +102,10 @@ actual class BluetoothPermissionManager(
                 val ordinal = state.toInt()
 
                 return if (values.size <= ordinal) {
-                    error("BluetoothPermissionManager", "Unknown CBPeripheralManagerAuthorizationStatus status={$state}")
+                    error(
+                        "BluetoothPermissionManager",
+                        "Unknown CBPeripheralManagerAuthorizationStatus status={$state}"
+                    )
 
                     CBPeripheralManagerAuthorizationStatusNotDetermined
                 } else {

@@ -41,7 +41,7 @@ actual class Permissions {
             val permissions = Permissions()
 
             with(permissions) {
-                this.bundle = bundle
+                this.bundle = this@Builder.bundle
             }
 
             return permissions

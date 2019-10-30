@@ -17,6 +17,7 @@
 		74C9929AB26988E8CC66893D /* gradle.properties in Resources */ = {isa = PBXBuildFile; fileRef = 74F1F3223C9CF11420F72B08 /* gradle.properties */; };
 		74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CF99B70DA1947AA98CA3B /* DemoTests.swift */; };
 		74E6599B023623BD96737582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74F483E9C1890D693F808DDA /* Main.storyboard */; };
+		978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +82,7 @@
 		74C9C443CC304CB387AB324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
+		978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -170,6 +172,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				978348A5235DF51D005B140B /* Permissions */,
 				74BEC2BADB02749FD409313B /* Info.plist */,
 				74C9C443CC304CB387AB324D /* Assets.xcassets */,
 				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
@@ -241,6 +244,14 @@
 				744F12775216AF134CBAF4E9 /* build.gradle.kts */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		978348A5235DF51D005B140B /* Permissions */ = {
+			isa = PBXGroup;
+			children = (
+				978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */,
+			);
+			path = Permissions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -402,6 +413,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
+				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* ViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
