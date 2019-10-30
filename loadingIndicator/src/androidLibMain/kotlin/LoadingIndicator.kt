@@ -53,6 +53,7 @@ class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndi
                 args.putInt(RESOURCE_ID_KEY, viewResId)
                 arguments = args
                 isCancelable = false
+                retainInstance = true
             }
         }
 
