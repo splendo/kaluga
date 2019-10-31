@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
-		7425815FF35195035A8991B0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* ViewController.swift */; };
+		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
 		7450B266B7AD1FE0B79C10EA /* KotlinNativeFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74BBBF2C57521E71982179E0 /* AppDelegate.swift */; };
 		7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74FDC8922442294AF0776058 /* LaunchScreen.storyboard */; };
@@ -58,6 +59,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
 		741A9B938B05534BD1B508C6 /* settings.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = settings.gradle.kts; sourceTree = "<group>"; };
@@ -78,7 +80,7 @@
 		74BEC2BADB02749FD409313B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74C07E8A2DB465B1CE47DC5E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		74C22623993814F606777266 /* KotlinNativeFramework.kt */ = {isa = PBXFileReference; lastKnownFileType = file.kt; path = KotlinNativeFramework.kt; sourceTree = "<group>"; };
-		74C710A1E2E41AF0F4A9FFC5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationViewController.swift; sourceTree = "<group>"; };
 		74C9C443CC304CB387AB324D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
@@ -111,6 +113,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4B54CB1E2369DA2B00B69B2D /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		4B54CB1F2369DA4E00B69B2D /* Alerts */ = {
+			isa = PBXGroup;
+			children = (
+				4B54CB202369DA6600B69B2D /* AlertsViewController.swift */,
+			);
+			path = Alerts;
+			sourceTree = "<group>";
+		};
 		743414FDF97167BD81A5293E /* wrapper */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,13 +190,14 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				4B54CB1F2369DA4E00B69B2D /* Alerts */,
+				4B54CB1E2369DA2B00B69B2D /* Location */,
 				978348A5235DF51D005B140B /* Permissions */,
 				74BEC2BADB02749FD409313B /* Info.plist */,
 				74C9C443CC304CB387AB324D /* Assets.xcassets */,
 				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
 				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				74F483E9C1890D693F808DDA /* Main.storyboard */,
-				74C710A1E2E41AF0F4A9FFC5 /* ViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -414,7 +433,8 @@
 			files = (
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
-				7425815FF35195035A8991B0 /* ViewController.swift in Sources */,
+				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
+				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
