@@ -30,17 +30,17 @@ actual open class BluetoothPermissionManager(
     private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper()
 ) : PermissionManager {
 
-    override suspend fun requestPermissions() {
+    override fun requestPermissions() {
         Permissions.requestPermissions(context, Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN)
     }
 
-    override suspend fun openSettings() {
+    override fun openSettings() {
         val intent = Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intent)
     }
 
-    override suspend fun checkSupport(): Support {
+    override fun checkSupport(): Support {
         return when {
             !bluetoothAdapterProvider.isAvailable() -> Support.NOT_SUPPORTED
             bluetoothAdapterProvider.isEnabled() -> Support.POWER_ON
@@ -48,7 +48,7 @@ actual open class BluetoothPermissionManager(
         }
     }
 
-    override suspend fun checkPermit(): Permit {
+    override fun checkPermit(): Permit {
         //this is non-dangerous permission so it should be always available
         return when (context.checkSelfPermission(Manifest.permission.BLUETOOTH)) {
             PackageManager.PERMISSION_DENIED -> Permit.DENIED

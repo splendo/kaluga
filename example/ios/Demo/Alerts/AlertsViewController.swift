@@ -17,30 +17,21 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import UIKit
-import CoreLocation
 import KotlinNativeFramework
 
-class ViewController: UIViewController {
+class AlertsViewController: UITableViewController {
 
-    //MARK: Properties
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
 
-    @IBOutlet weak var label: UILabel!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        label.text = KotlinNativeFramework().hello()
-
-        // show how dependencies are also exposed if we declare them in a method
-        KotlinNativeFramework().logger().log(level: Hydra_logLogLevel.debug, tag: "hidra", message: "hi")
-
-        let lm = CLLocationManager()
-        lm.requestWhenInUseAuthorization()
-
-        KotlinNativeFramework().location(label: label, locationManager: lm)
+        switch indexPath.row {
+        case 0: showAlert()
+        case 1: showWithDismiss()
+        default: ()
+        }
     }
 
-    @IBAction func onShowAlert(_ sender: Any) {
+    fileprivate func showAlert() {
         KotlinNativeFramework()
             .makeAlert(from: self, title: "Hello, Kaluga", message: nil, actions: [
                 AlertsAlert.Action(title: "Default", style: .default_) { debugPrint("OK") },
@@ -50,7 +41,7 @@ class ViewController: UIViewController {
             .show(animated: true) { }
     }
 
-    @IBAction func onShowWithDismiss(_ sender: Any) {
+    fileprivate func showWithDismiss() {
         let presenter = KotlinNativeFramework().makeAlert(from: self, title: "Wait for 3 sec...", message: "Automatic dismissible", actions: [
             AlertsAlert.Action(title: "OK", style: .cancel) {},
         ])
