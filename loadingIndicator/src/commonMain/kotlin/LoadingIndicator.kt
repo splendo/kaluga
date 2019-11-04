@@ -29,7 +29,7 @@ expect class View
 expect class Controller
 
 /**
- * Interface that defines loading indicator class that can be shown or dismissed
+ * Interface that defines loading indicator class, which can be shown or dismissed
  */
 interface LoadingIndicator {
 
@@ -61,5 +61,5 @@ interface LoadingIndicator {
      * @param animated Pass `true` to animate the transition
      * @param completion The block to execute after the presentation finishes
      */
-    fun dismiss(animated: Boolean = false, completion: () -> Unit = {})
+    fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
 }

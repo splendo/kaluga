@@ -59,7 +59,7 @@ data class Alert(
 }
 
 /**
- * Interface that defines an actions that can be applied to the alert.
+ * Interface that defines actions that can be applied to the alert.
  */
 interface AlertActions {
     /**
@@ -80,7 +80,7 @@ interface AlertActions {
     suspend fun show(animated: Boolean = true): Alert.Action?
 
     /**
-     * Dismisses the alert that was presented previously
+     * Dismisses the alert, which was presented previously
      *
      * @param animated Pass `true` to animate the transition
      */
@@ -88,7 +88,7 @@ interface AlertActions {
 }
 
 /**
- * Base alert presenter class that used to show and dismiss given [alert]
+ * Base alert presenter class, which used to show and dismiss given [alert]
  * Abstract methods should be implemented on platform-specific side
  *
  * @property alert The alert to present (and dismiss if needed)
@@ -124,7 +124,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 expect class AlertInterface : BaseAlertPresenter
 
 /**
- * Base alert builder class that used to create an alert that can be shown and dismissed
+ * Base alert builder class, which used to create an alert, which can be shown and dismissed
  * later on using AlertInterface object
  *
  * @see AlertInterface
@@ -150,7 +150,7 @@ abstract class BaseAlertBuilder {
     fun setMessage(message: String?) = apply { this.message = message }
 
     /**
-     * Sets button with id `BUTTON_POSITIVE` on Android
+     * Sets button with the id `BUTTON_POSITIVE` on Android
      * and action with style `UIAlertActionStyleDefault` on iOS
      *
      * @param title The title of the button
@@ -161,7 +161,7 @@ abstract class BaseAlertBuilder {
     }
 
     /**
-     * Sets button with id `BUTTON_NEGATIVE` on Android
+     * Sets button with the id `BUTTON_NEGATIVE` on Android
      * and action with style `UIAlertActionStyleCancel` on iOS
      *
      * @param title The title of the button
@@ -172,7 +172,7 @@ abstract class BaseAlertBuilder {
     }
 
     /**
-     * Sets button with id `BUTTON_NEUTRAL` on Android
+     * Sets button with the id `BUTTON_NEUTRAL` on Android
      * and action with style `UIAlertActionStyleDestructive` on iOS
      *
      * @param title The title of the button
