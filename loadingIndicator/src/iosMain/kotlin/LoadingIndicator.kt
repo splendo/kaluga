@@ -22,20 +22,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+/** On iOS `View` is represented as view controller */
 actual typealias View = UIViewController
 actual typealias Controller = UIViewController
 
 class IOSLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
 
-    class Builder : LoadingIndicator.Builder {
-
-        private var view: View? = null
-
-        fun setView(view: View) = apply { this.view = view }
-
+    class Builder(private val view: View) : LoadingIndicator.Builder {
         override fun create(): LoadingIndicator {
-            require(view != null) { "Please set a view first" }
-            return IOSLoadingIndicator(view!!)
+            return IOSLoadingIndicator(view)
         }
     }
 

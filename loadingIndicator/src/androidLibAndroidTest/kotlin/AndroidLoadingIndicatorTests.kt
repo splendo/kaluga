@@ -9,7 +9,6 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.Test
-import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import com.splendo.kaluga.loadingIndicator.test.R
@@ -44,20 +43,10 @@ class AndroidLoadingIndicatorTests {
     }
 
     @Test
-    fun builderMissingViewException() {
-        assertFailsWith<IllegalArgumentException> {
-            AndroidLoadingIndicator
-                .Builder()
-                .create()
-        }
-    }
-
-    @Test
     fun builderInitializer() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val indicator = AndroidLoadingIndicator
-                .Builder()
-                .setViewResId(R.layout.loading_indicator_view)
+                .Builder(R.layout.loading_indicator_view)
                 .create()
             assertNotNull(indicator)
         }
@@ -67,8 +56,7 @@ class AndroidLoadingIndicatorTests {
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             AndroidLoadingIndicator
-                .Builder()
-                .setViewResId(R.layout.loading_indicator_view)
+                .Builder(R.layout.loading_indicator_view)
                 .create()
                 .present(activityRule.activity)
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
@@ -79,14 +67,12 @@ class AndroidLoadingIndicatorTests {
     fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             val indicator = AndroidLoadingIndicator
-                .Builder()
-                .setViewResId(R.layout.loading_indicator_view)
+                .Builder(R.layout.loading_indicator_view)
                 .create()
-            indicator.present(activityRule.activity)
+                .present(activityRule.activity)
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
             indicator.dismiss()
             assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
         }
-        Unit
     }
 }

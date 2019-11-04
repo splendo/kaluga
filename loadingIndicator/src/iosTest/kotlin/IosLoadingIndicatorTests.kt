@@ -24,22 +24,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class IosLoadingIndicatorTests {
 
     @Test
-    fun builderMissingViewException() {
-        assertFailsWith<IllegalArgumentException> {
-            IOSLoadingIndicator
-                .Builder()
-                .create()
-        }
-    }
-
-    @Test
     fun builderInitializer() {
-        val view = UIViewController()
-        val indicator = IOSLoadingIndicator
-            .Builder()
-            .setView(view)
+        assertNotNull(IOSLoadingIndicator
+            .Builder(UIViewController())
             .create()
-        assertNotNull(indicator)
+        )
     }
 
     private lateinit var window: UIWindow
@@ -55,8 +44,7 @@ class IosLoadingIndicatorTests {
         val indicatorView = UIViewController()
         indicatorView.view.backgroundColor = UIColor.blackColor
         val indicator = IOSLoadingIndicator
-            .Builder()
-            .setView(indicatorView)
+            .Builder(indicatorView)
             .create()
         val hostView = UIViewController()
         window.rootViewController = hostView
@@ -72,8 +60,7 @@ class IosLoadingIndicatorTests {
         val indicatorView = UIViewController()
         indicatorView.view.backgroundColor = UIColor.blackColor
         val indicator = IOSLoadingIndicator
-            .Builder()
-            .setView(indicatorView)
+            .Builder(indicatorView)
             .create()
         val hostView = UIViewController()
         window.rootViewController = hostView

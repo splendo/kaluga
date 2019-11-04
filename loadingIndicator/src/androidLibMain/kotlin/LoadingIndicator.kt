@@ -25,20 +25,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+/** On Android `View` is represented as resource id */
 actual typealias View = Int
+/** On Android host `Controller` is FragmentActivity */
 actual typealias Controller = FragmentActivity
 
 class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndicator {
 
-    class Builder : LoadingIndicator.Builder {
-
-        private var viewResId: View? = null
-
-        fun setViewResId(viewResId: View) = apply { this.viewResId = viewResId }
-
+    class Builder(private val viewResId: View) : LoadingIndicator.Builder {
         override fun create(): LoadingIndicator {
-            require(viewResId != null) { "Please set view resource id first" }
-            return AndroidLoadingIndicator(viewResId!!)
+            return AndroidLoadingIndicator(viewResId)
         }
     }
 
