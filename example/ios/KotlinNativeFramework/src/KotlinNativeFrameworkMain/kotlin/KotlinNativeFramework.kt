@@ -52,8 +52,7 @@ class KotlinNativeFramework {
 
     fun loadingIndicator(view: UIViewController): LoadingIndicator {
         return IOSLoadingIndicator
-            .Builder()
-            .setView(view)
+            .Builder(view)
             .create()
     }
 
