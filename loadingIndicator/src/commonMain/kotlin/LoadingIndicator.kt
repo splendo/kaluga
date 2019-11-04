@@ -42,15 +42,15 @@ interface LoadingIndicator {
     }
 
     /**
-     * Returns true is indicator is visible
+     * Returns true if indicator is visible
      */
     val isVisible: Boolean
 
     /**
      * Presents as indicator
      *
-     * @param controller A host controller to present indicator on top of
-     * @param animated Pass true to animate the presentation
+     * @param controller A host controller to present indicator on top of it
+     * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
     fun present(controller: Controller, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator

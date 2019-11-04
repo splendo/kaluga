@@ -70,7 +70,7 @@ class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndi
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismissAllowingStateLoss()
+        loadingDialog.dismiss()
         completion()
     }
 }
