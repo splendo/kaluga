@@ -25,6 +25,7 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
+import com.splendo.kaluga.loadingIndicator.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -47,6 +48,12 @@ class KotlinNativeFramework {
                 .setMessage(message)
                 .addActions(actions)
                 .create()
+    }
+
+    fun loadingIndicator(view: UIViewController): LoadingIndicator {
+        return IOSLoadingIndicator
+            .Builder(view)
+            .create()
     }
 
     fun location(label: UILabel, locationManager: CLLocationManager) {

@@ -32,5 +32,6 @@ apply from: "gradle/ext.gradle"
 
 include ':alerts'
 include ':logging'
+include ':loadingIndicator'
 include ':permissions'
 include ':Components'

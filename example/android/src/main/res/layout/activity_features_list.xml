@@ -28,6 +28,12 @@
             android:layout_height="wrap_content"
             android:text="Alerts"/>
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_feature_loading_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading Indicator"/>
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.core.widget.NestedScrollView>

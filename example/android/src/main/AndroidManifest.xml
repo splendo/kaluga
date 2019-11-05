@@ -32,6 +32,8 @@
                   android:label="Bluetooth"/>
         <activity android:name=".alerts.AlertsActivity"
                   android:label="Alerts"/>
+        <activity android:name=".loading.LoadingActivity"
+                  android:label="Loading Indicator"/>
     </application>
 
 </manifest>
