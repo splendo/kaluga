@@ -156,7 +156,7 @@ abstract class BaseAlertBuilder {
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
      */
-    fun setPositiveButton(title: String, handler: AlertActionHandler) = apply {
+    fun setPositiveButton(title: String, handler: AlertActionHandler = {}) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.POSITIVE, handler))
     }
 
@@ -167,7 +167,7 @@ abstract class BaseAlertBuilder {
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
      */
-    fun setNegativeButton(title: String, handler: AlertActionHandler) = apply {
+    fun setNegativeButton(title: String, handler: AlertActionHandler = {}) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.NEGATIVE, handler))
     }
 
@@ -178,7 +178,7 @@ abstract class BaseAlertBuilder {
      * @param title The title of the button
      * @param handler The block to execute after user taps a button
      */
-    fun setNeutralButton(title: String, handler: AlertActionHandler) = apply {
+    fun setNeutralButton(title: String, handler: AlertActionHandler = {}) = apply {
         addAction(Alert.Action(title, Alert.Action.Style.NEUTRAL, handler))
     }
 
