@@ -196,15 +196,13 @@ abstract class BaseAlertBuilder {
     /**
      * Builds an alert using DSL syntax
      *
-     * @param initialize
-     * @return
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
      */
-    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
-        mutex.withLock(this) {
-            reset()
-            initialize()
-            return create()
-        }
+    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
+        reset()
+        initialize()
+        return create()
     }
 
     /**
