@@ -17,6 +17,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
+import com.splendo.kaluga.example.shared.AlertFactory
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -34,10 +35,7 @@ import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
-fun alert(viewController: UIViewController, buildAlert: AlertBuilder.() -> Unit): AlertInterface {
-    val builder = AlertBuilder(viewController)
-    return builder.alert { builder.buildAlert() }
-}
+fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
 
 class KotlinNativeFramework {
     private val loc = LocationFlowable()

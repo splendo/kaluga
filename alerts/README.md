@@ -6,7 +6,7 @@ It shows `AlertDialog` on Android and `UIAlertController` on iOS.
 ### Usage
 The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
 It has methods:
-- `alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`
+- `suspend alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`
 - `setTitle(title: String?)` — sets optional title for the alert
 - `setMessage(message: String?)` — sets an optional message for the alert
 - `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert

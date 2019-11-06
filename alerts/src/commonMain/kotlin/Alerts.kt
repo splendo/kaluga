@@ -1,6 +1,9 @@
 package com.splendo.kaluga.alerts
 
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 /*
@@ -134,6 +137,7 @@ abstract class BaseAlertBuilder {
     private var title: String? = null
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
+    private val mutex = Mutex()
 
     /**
      * Sets the [title] displayed in the alert
@@ -195,10 +199,12 @@ abstract class BaseAlertBuilder {
      * @param initialize
      * @return
      */
-    fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
-        reset()
-        initialize()
-        return create()
+    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+        mutex.withLock(this) {
+            reset()
+            initialize()
+            return create()
+        }
     }
 
     /**

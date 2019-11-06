@@ -40,7 +40,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoActions() {
+    fun testAlertBuilderExceptionNoActions() = runBlockingTest {
         assertFailsWith<IllegalArgumentException> {
             AlertBuilder(activityRule.activity).alert {
                 setTitle("OK")
@@ -49,7 +49,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() {
+    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlockingTest {
         assertFailsWith<IllegalArgumentException> {
             AlertBuilder(activityRule.activity).alert {
                 setPositiveButton("OK")
@@ -84,7 +84,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertShow() = runBlocking {
+    fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             AlertBuilder(activityRule.activity).alert {
                 setTitle("Hello")
@@ -97,7 +97,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertFlowWithCoroutines() = runBlocking {
+    fun testAlertFlowWithCoroutines() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val action = Alert.Action("OK")
             val presenter = AlertBuilder(activityRule.activity).alert {
@@ -114,7 +114,7 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertFlowCancel() = runBlocking {
+    fun testAlertFlowCancel() = runBlockingTest {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
             val presenter = AlertBuilder(activityRule.activity).alert {
                 setTitle("Hello")
