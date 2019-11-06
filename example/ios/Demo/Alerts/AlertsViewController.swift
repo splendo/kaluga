@@ -21,6 +21,8 @@ import KotlinNativeFramework
 
 class AlertsViewController: UITableViewController {
 
+    lazy var alertsBuilder = AlertsAlertBuilder(viewController: self)
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -32,22 +34,25 @@ class AlertsViewController: UITableViewController {
     }
 
     fileprivate func showAlert() {
-        KotlinNativeFramework()
-            .makeAlert(from: self, title: "Hello, Kaluga", message: nil, actions: [
+        alertsBuilder.alert { builder in
+            builder.setTitle(title: "Hello")
+            builder.setMessage(message: "From Kaluga")
+            builder.addActions(actions: [
                 AlertsAlert.Action(title: "Default", style: .default_) { debugPrint("OK") },
                 AlertsAlert.Action(title: "Destructive", style: .destructive) { debugPrint("Not OK") },
                 AlertsAlert.Action(title: "Cancel", style: .cancel) { debugPrint("Cancel") },
             ])
-            .show(animated: true) { }
+        }.show(animated: true) { }
     }
 
     fileprivate func showWithDismiss() {
-        let presenter = KotlinNativeFramework().makeAlert(from: self, title: "Wait for 3 sec...", message: "Automatic dismissible", actions: [
-            AlertsAlert.Action(title: "OK", style: .cancel) {},
-        ])
-        presenter.show(animated: true) {
+        let alert = alertsBuilder.alert { builder in
+            builder.setTitle(title: "Wait for 3 sec...")
+            builder.setPositiveButton(title: "OK") { }
+        }
+        alert.show(animated: true) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                presenter.dismiss(animated: true)
+                alert.dismiss(animated: true)
             }
         }
     }

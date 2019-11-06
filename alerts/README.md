@@ -6,13 +6,13 @@ It shows `AlertDialog` on Android and `UIAlertController` on iOS.
 ### Usage
 The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
 It has methods:
+- `alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`
 - `setTitle(title: String?)` — sets optional title for the alert
 - `setMessage(message: String?)` — sets an optional message for the alert
 - `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert
 - `setNegativeButton(title: String, handler: AlertActionHandler)` — sets a negative button for the alert
 - `setNeutralButton(title: String, handler: AlertActionHandler)` — sets a neutral button for the alert
 - `addActions(actions: List<Alert.Action>)` — adds a list of actions for the alert
-- `create(): AlertInterface` — returns created `AlertInterface`
 
 On Android this builder needs a `Context` object:
 
@@ -36,21 +36,19 @@ The `AlertInterface` has methods to show and dismiss alert:
 Building and displaying alert on Android:
 
 ```kotlin
-AlertBuilder(context)
-    .setTitle("Hello, Kaluga")
-    .setPositiveButton("OK") { println("OK pressed") }
-    .setNegativeButton("Cancel") { println("Cancel pressed") }
-    .setNeutralButton("Details") { println("Details pressed") }
-    .create()
-    .show()
+AlertBuilder(context).alert {
+    setTitle("Hello, Kaluga")
+    setPositiveButton("OK") { println("OK pressed") }
+    setNegativeButton("Cancel") { println("Cancel pressed") }
+    setNeutralButton("Details") { println("Details pressed") }
+}.show()
 ```
 
 On iOS:
 
 ```swift
-AlertsAlertBuilder(viewController: viewController)
-    .setTitle(title: "Hello, Kaluga")
-    .setPositiveButton(title: "OK", handler: { debugPrint("OK pressed") } )
-    .create()
-    .show(animated: true) { debugPrint("Presented") }
+AlertsAlertBuilder(viewController: viewController).alert {
+    $0.setTitle(title: "Hello, Kaluga")
+    $0.setPositiveButton(title: "OK") { debugPrint("OK pressed") }
+}.show(animated: true) { debugPrint("Presented") }
 ```

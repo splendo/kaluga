@@ -112,9 +112,9 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         dismissAlert(animated)
     }
 
-    protected abstract fun dismissAlert(animated: Boolean = true)
+    internal abstract fun dismissAlert(animated: Boolean = true)
 
-    protected abstract fun showAlert(
+    internal abstract fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
         completion: () -> Unit = {}
@@ -190,11 +190,32 @@ abstract class BaseAlertBuilder {
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     /**
+     * Builds an alert using DSL syntax
+     *
+     * @param initialize
+     * @return
+     */
+    fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+        reset()
+        initialize()
+        return create()
+    }
+
+    /**
      * Adds an [action] to the alert
      *
      * @param action The action object
      */
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
+
+    /**
+     * Reset builder into initial state
+     */
+    private fun reset() = apply {
+        this.title = null
+        this.message = null
+        this.actions.clear()
+    }
 
     /**
      * Creates an alert based on [title], [message] and [actions] properties
@@ -214,7 +235,7 @@ abstract class BaseAlertBuilder {
      *
      * @return The AlertInterface object
      */
-    abstract fun create(): AlertInterface
+    internal abstract fun create(): AlertInterface
 }
 
 expect class AlertBuilder : BaseAlertBuilder

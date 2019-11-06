@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.R
 import kotlinx.coroutines.MainScope
@@ -31,8 +32,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
 
+    private lateinit var alertBuilder: AlertBuilder
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        alertBuilder = AlertBuilder(this)
 
         btn_simple_alert.setOnClickListener {
             MainScope().launch {
@@ -48,29 +53,29 @@ class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
     }
 
     private suspend fun showAlert() {
-        AlertBuilder(this)
-            .setTitle("Hello, Kaluga")
-            .setPositiveButton("OK") { println("OK pressed") }
-            .setNegativeButton("Cancel") { println("Cancel pressed") }
-            .setNeutralButton("Details") { println("Details pressed") }
-            .create()
-            .show()
+        val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
+        val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
+        val alert = alertBuilder.alert {
+            setTitle("Hello, Kaluga")
+            addActions(listOf(okAction, cancelAction))
+        }
+        when (alert.show()) {
+            okAction -> println("OK pressed")
+            cancelAction -> println("Cancel pressed")
+        }
     }
 
     private fun showDismissibleAlert() {
-
         val coroutine = MainScope().launch {
-            val presenter = AlertBuilder(this@AlertsActivity)
-                .setTitle("Hello")
-                .setMessage("Wait for 3 sec...")
-                .setPositiveButton("OK") { println("OK pressed") }
-                .create()
-
-            presenter.show()
+            alertBuilder.alert {
+                setTitle("Hello")
+                setMessage("Wait for 3 sec...")
+                setPositiveButton("OK") { println("OK pressed") }
+            }.show()
         }
 
         Handler().postDelayed({
             coroutine.cancel()
-        }, 3000)
+        }, 3_000)
     }
 }
