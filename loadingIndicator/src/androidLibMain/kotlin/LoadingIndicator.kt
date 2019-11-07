@@ -33,27 +33,23 @@ actual typealias Controller = FragmentActivity
 class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndicator {
 
     class Builder(private val viewResId: View) : LoadingIndicator.Builder {
-        override fun create(): LoadingIndicator {
-            return AndroidLoadingIndicator(viewResId)
-        }
+        override fun create() = AndroidLoadingIndicator(viewResId)
     }
 
     class LoadingDialog : DialogFragment() {
+
+        private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
 
         companion object {
 
             private const val RESOURCE_ID_KEY = "resId"
 
             fun newInstance(viewResId: View) = LoadingDialog().apply {
-                val args = Bundle()
-                args.putInt(RESOURCE_ID_KEY, viewResId)
-                arguments = args
+                arguments = Bundle().apply { putInt(RESOURCE_ID_KEY, viewResId) }
                 isCancelable = false
                 retainInstance = true
             }
         }
-
-        private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
             return inflater.inflate(viewResId, container)

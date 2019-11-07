@@ -29,9 +29,7 @@ actual typealias Controller = UIViewController
 class IOSLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
 
     class Builder(private val view: View) : LoadingIndicator.Builder {
-        override fun create(): LoadingIndicator {
-            return IOSLoadingIndicator(view)
-        }
+        override fun create() = IOSLoadingIndicator(view)
     }
 
     init {
