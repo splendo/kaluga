@@ -56,4 +56,17 @@ class AlertFactory(private val builder: AlertBuilder) {
             coroutine.cancel()
         }
     }
+
+    fun showList() = GlobalScope.launch(MainQueueDispatcher) {
+        build {
+            setTitle("Select an option")
+            setStyle(Alert.Style.ACTION_LIST)
+            addActions(listOf(
+                Alert.Action("Option 1") { log(LogLevel.DEBUG, "Option 1") },
+                Alert.Action("Option 2") { log(LogLevel.DEBUG, "Option 2") },
+                Alert.Action("Option 3") { log(LogLevel.DEBUG, "Option 3") },
+                Alert.Action("Option 4") { log(LogLevel.DEBUG, "Option 4") }
+            ))
+        }.show()
+    }
 }

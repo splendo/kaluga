@@ -36,5 +36,6 @@ class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
 
         btn_simple_alert.setOnClickListener { alertFactory.showAlert() }
         btn_dismissible_alert.setOnClickListener { alertFactory.showAndDismissAfter(3) }
+        btn_alert_list.setOnClickListener { alertFactory.showList() }
     }
 }

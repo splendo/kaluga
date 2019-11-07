@@ -51,12 +51,24 @@ actual class AlertInterface(
         alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
+            .apply {
+                if (alert.style == Alert.Style.ACTION_LIST) {
+                    val actions = alert.actions.toTypedArray()
+                    val titles = actions.map { it.title }.toTypedArray()
+                    setItems(titles) { _, which ->
+                        val action = alert.actions[which].apply { handler() }
+                        afterHandler(action)
+                    }
+                }
+            }
             .create()
             .apply {
-                alert.actions.forEach { action ->
-                    setButton(transform(action.style), action.title) { _, _ ->
-                        action.handler()
-                        afterHandler(action)
+                if (alert.style == Alert.Style.ALERT) {
+                    alert.actions.forEach { action ->
+                        setButton(transform(action.style), action.title) { _, _ ->
+                            action.handler()
+                            afterHandler(action)
+                        }
                     }
                 }
                 setOnDismissListener { alertDialog = null }

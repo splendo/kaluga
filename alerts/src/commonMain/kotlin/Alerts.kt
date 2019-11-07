@@ -35,8 +35,17 @@ typealias AlertActionHandler = () -> Unit
 data class Alert(
     val title: String?,
     val message: String?,
-    val actions: List<Action>
+    val actions: List<Action>,
+    val style: Alert.Style = Style.ALERT
 ) {
+
+    /**
+     * Alert style
+     */
+    enum class Style {
+        ALERT, ACTION_LIST
+    }
+
     /**
      * An action than represents a button in the alert
      *
@@ -136,6 +145,7 @@ abstract class BaseAlertBuilder {
     private var title: String? = null
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
+    private var style: Alert.Style = Alert.Style.ALERT
     private val mutex = Mutex()
 
     /**
@@ -193,6 +203,13 @@ abstract class BaseAlertBuilder {
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     /**
+     * Sets a style of the alert
+     *
+     * @param style The style of an alert
+     */
+    fun setStyle(style: Alert.Style) = apply { this.style = style }
+
+    /**
      * Builds an alert using DSL syntax
      *
      * @param initialize The block to construct an Alert
@@ -218,6 +235,7 @@ abstract class BaseAlertBuilder {
         this.title = null
         this.message = null
         this.actions.clear()
+        this.style = Alert.Style.ALERT
     }
 
     /**
@@ -230,7 +248,7 @@ abstract class BaseAlertBuilder {
         require(title != null || message != null) { "Please set title and/or message for the Alert" }
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
 
-        return Alert(title, message, actions)
+        return Alert(title, message, actions, style)
     }
 
     /**
