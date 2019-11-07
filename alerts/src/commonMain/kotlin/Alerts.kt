@@ -3,7 +3,6 @@ package com.splendo.kaluga.alerts
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 /*

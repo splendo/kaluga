@@ -30,7 +30,7 @@ class AlertsViewController: UITableViewController {
 
         switch indexPath.row {
         case 0: alertFactory.showAlert()
-        case 1: alertFactory.showAndDismissAfter()
+        case 1: alertFactory.showAndDismissAfter(timeSecs: 3)
         default: ()
         }
     }

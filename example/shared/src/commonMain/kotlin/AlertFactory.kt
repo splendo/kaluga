@@ -44,15 +44,15 @@ class AlertFactory(private val builder: AlertBuilder) {
         }
     }
 
-    fun showAndDismissAfter() = GlobalScope.launch(MainQueueDispatcher) {
+    fun showAndDismissAfter(timeSecs: Long) = GlobalScope.launch(MainQueueDispatcher) {
         val coroutine = GlobalScope.launch(MainQueueDispatcher) {
             build {
-                setTitle("Wait for 3 sec...")
+                setTitle("Wait for $timeSecs sec...")
                 setPositiveButton("OK")
             }.show()
         }
         GlobalScope.launch(MainQueueDispatcher) {
-            delay(3_000)
+            delay(timeSecs * 1_000)
             coroutine.cancel()
         }
     }

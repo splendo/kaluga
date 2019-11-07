@@ -33,22 +33,46 @@ The `AlertInterface` has methods to show and dismiss alert:
 
 ### Example
 
-Building and displaying alert on Android:
+Create an Alert:
 
 ```kotlin
-AlertBuilder(context).alert {
+val alert = AlertBuilder(context).alert {
     setTitle("Hello, Kaluga")
     setPositiveButton("OK") { println("OK pressed") }
     setNegativeButton("Cancel") { println("Cancel pressed") }
     setNeutralButton("Details") { println("Details pressed") }
-}.show()
+}
 ```
 
-On iOS:
+In order to show alert use `alert.show()` call. Alert will be dismissed after the user pressed a button.
+Dialog is cancelable, so the user also can tap outside of the alert or press back button to dismiss.
+You also can dismiss it in code with `alert.dismiss()` call.
+
+Before use on iOS platform you have to wrap `suspend` calls inside shared Kotlin code like this:
+
+```kotlin
+fun showAlert(builder: AlertBuilder, title: String) = GlobalScope.launch(MainQueueDispatcher) {
+    // Create OK action
+    val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
+    // Create Cancel action
+    val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
+    // Create an Alert with title, message and actions
+    val alert = builder.alert {
+        setTitle(title)
+        setMessage("This is sample message")
+        addActions(listOf(okAction, cancelAction))
+    }
+    // Show and handle actions
+    when (alert.show()) {
+        okAction -> log(LogLevel.DEBUG, "OK pressed")
+        cancelAction -> log(LogLevel.DEBUG, "Cancel pressed")
+    }
+}
+```
+
+Then call with platform-specific builder:
 
 ```swift
-AlertsAlertBuilder(viewController: viewController).alert {
-    $0.setTitle(title: "Hello, Kaluga")
-    $0.setPositiveButton(title: "OK") { debugPrint("OK pressed") }
-}.show(animated: true) { debugPrint("Presented") }
+let builder = AlertBuilder(viewController: viewController)
+SharedKt.showAlert(builder, "Hello from iOS")
 ```

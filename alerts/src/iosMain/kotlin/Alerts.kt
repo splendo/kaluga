@@ -21,10 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual class AlertBuilder(private val viewController: UIViewController) : BaseAlertBuilder() {
-
-    override fun create(): AlertInterface {
-        return AlertInterface(createAlert(), viewController)
-    }
+    override fun create() = AlertInterface(createAlert(), viewController)
 }
 
 actual class AlertInterface(
