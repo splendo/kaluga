@@ -84,6 +84,27 @@ class MockAlertsTest {
     }
 
     @Test
+    fun testConcurrentBuilders() = runBlockingTest {
+        val builder = AlertBuilder(activityRule.activity)
+        val alerts: MutableList<AlertInterface> = mutableListOf()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 0 until 10) {
+                alerts.add(builder.alert {
+                    setTitle("Alert$i")
+                    setPositiveButton("OK$i")
+                })
+            }
+            for (i in 0 until 10) {
+                alerts[i].show()
+                device.wait(Until.findObject(By.text("Alert$i")), DEFAULT_TIMEOUT)
+                device.findObject(By.text("OK$i")).click()
+                assertTrue(device.wait(Until.gone(By.text("Alert$i")), DEFAULT_TIMEOUT))
+            }
+        }
+    }
+
+    @Test
     fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             AlertBuilder(activityRule.activity).alert {

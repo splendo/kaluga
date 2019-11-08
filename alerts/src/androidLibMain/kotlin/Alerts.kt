@@ -20,10 +20,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
-    if (condition) block(this)
-}
-
 actual class AlertBuilder(private val context: Context) : BaseAlertBuilder() {
     override fun create() = AlertInterface(createAlert(), context)
 }
@@ -32,6 +28,10 @@ actual class AlertInterface(
     private val alert: Alert,
     private val context: Context
 ) : BaseAlertPresenter(alert) {
+
+    private inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
+        if (condition) block(this)
+    }
 
     private var alertDialog: AlertDialog? = null
 
