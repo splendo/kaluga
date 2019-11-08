@@ -20,6 +20,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
+    if (condition) block(this)
+}
+
 actual class AlertBuilder(private val context: Context) : BaseAlertBuilder() {
     override fun create() = AlertInterface(createAlert(), context)
 }
@@ -51,26 +55,23 @@ actual class AlertInterface(
         alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
-            .apply {
-                if (alert.style == Alert.Style.ACTION_LIST) {
-                    val actions = alert.actions.toTypedArray()
-                    val titles = actions.map { it.title }.toTypedArray()
-                    setItems(titles) { _, which ->
-                        val action = alert.actions[which].apply { handler() }
+            .applyIf(alert.style == Alert.Style.ACTION_LIST) {
+                val titles = alert.actions.map { it.title }.toTypedArray()
+                setItems(titles) { _, which ->
+                    val action = alert.actions[which].apply { handler() }
+                    afterHandler(action)
+                }
+            }
+            .create()
+            .applyIf(alert.style == Alert.Style.ALERT) {
+                alert.actions.forEach { action ->
+                    setButton(transform(action.style), action.title) { _, _ ->
+                        action.handler()
                         afterHandler(action)
                     }
                 }
             }
-            .create()
             .apply {
-                if (alert.style == Alert.Style.ALERT) {
-                    alert.actions.forEach { action ->
-                        setButton(transform(action.style), action.title) { _, _ ->
-                            action.handler()
-                            afterHandler(action)
-                        }
-                    }
-                }
                 setOnDismissListener { alertDialog = null }
                 setOnCancelListener { afterHandler(null) }
                 show()
