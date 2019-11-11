@@ -217,12 +217,22 @@ abstract class BaseAlertBuilder {
     fun setStyle(style: Alert.Style) = apply { this.style = style }
 
     /**
-     * Builds an alert using DSL syntax
+     * Builds an alert using DSL syntax (thread safe)
      *
      * @param initialize The block to construct an Alert
      * @return The built alert interface object
      */
     suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
+        buildUnsafe(initialize)
+    }
+
+    /**
+     * Builds an alert using DSL syntax (not thread safe)
+     *
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
+     */
+    fun buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
         reset()
         initialize()
         return create()

@@ -30,7 +30,7 @@ class AlertFactory(private val builder: AlertBuilder) {
     private suspend fun build(initialize: AlertBuilder.() -> Unit) =
         builder.alert { builder.initialize() }
 
-    fun showAlert() = GlobalScope.launch(MainQueueDispatcher) {
+    fun showAlert() = MainScope().launch(MainQueueDispatcher) {
         val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
         val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
         val alert = build {
@@ -44,31 +44,29 @@ class AlertFactory(private val builder: AlertBuilder) {
         }
     }
 
-    fun showAndDismissAfter(timeSecs: Long) = GlobalScope.launch(MainQueueDispatcher) {
-        val coroutine = GlobalScope.launch(MainQueueDispatcher) {
+    fun showAndDismissAfter(timeSecs: Long) = MainScope().launch(MainQueueDispatcher) {
+        val coroutine = MainScope().launch(MainQueueDispatcher) {
             build {
                 setTitle("Wait for $timeSecs sec...")
                 setPositiveButton("OK")
             }.show()
         }
-        GlobalScope.launch(MainQueueDispatcher) {
+        MainScope().launch(MainQueueDispatcher) {
             delay(timeSecs * 1_000)
             coroutine.cancel()
         }
     }
 
-    fun showList() = runBlocking {
-        MainScope().launch {
-            build {
-                setTitle("Select an option")
-                setStyle(Alert.Style.ACTION_LIST)
-                addActions(
-                    Alert.Action("Option 1") { debug("Option 1") },
-                    Alert.Action("Option 2") { debug("Option 2") },
-                    Alert.Action("Option 3") { debug("Option 3") },
-                    Alert.Action("Option 4") { debug("Option 4") }
-                )
-            }.showAsync(true) { debug("The list has been shown") }
-        }
+    fun showList() = MainScope().launch(MainQueueDispatcher) {
+        build {
+            setTitle("Select an option")
+            setStyle(Alert.Style.ACTION_LIST)
+            addActions(
+                Alert.Action("Option 1") { debug("Option 1") },
+                Alert.Action("Option 2") { debug("Option 2") },
+                Alert.Action("Option 3") { debug("Option 3") },
+                Alert.Action("Option 4") { debug("Option 4") }
+            )
+        }.show()
     }
 }
