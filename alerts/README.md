@@ -8,11 +8,12 @@ The `BaseAlertBuilder` abstract class has implementations on the Android as `Ale
 It has methods:
 - `suspend alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`
 - `setTitle(title: String?)` — sets optional title for the alert
+- `setStyle(style: Alert.Style)` - sets the type of alert to display (An alert or an action sheet/list)
 - `setMessage(message: String?)` — sets an optional message for the alert
 - `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert
 - `setNegativeButton(title: String, handler: AlertActionHandler)` — sets a negative button for the alert
 - `setNeutralButton(title: String, handler: AlertActionHandler)` — sets a neutral button for the alert
-- `addActions(actions: List<Alert.Action>)` — adds a list of actions for the alert
+- `addActions(actions: List<Alert.Action>)` or `addActions(vararg actions: Alert.Action)` — adds a list of actions for the alert
 
 On Android this builder needs a `Context` object:
 
@@ -27,7 +28,7 @@ let builder = AlertsAlertBuilder(viewController)
 ```
 
 The `AlertInterface` has methods to show and dismiss alert:
-- `show(animated: Boolean = true, completion: () -> Unit = {})`
+- `showAsync(animated: Boolean = true, completion: () -> Unit = {})`
 - `suspend show(animated: Boolean = true): Alert.Action?`
 - `dismiss(animated: Boolean = true)`
 

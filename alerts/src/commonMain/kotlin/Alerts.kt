@@ -3,7 +3,6 @@ package com.splendo.kaluga.alerts
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 /*
@@ -37,7 +36,7 @@ data class Alert(
     val title: String?,
     val message: String?,
     val actions: List<Action>,
-    val style: Alert.Style = Style.ALERT
+    val style: Style = Style.ALERT
 ) {
 
     /**
