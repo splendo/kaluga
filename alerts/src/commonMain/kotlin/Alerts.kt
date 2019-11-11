@@ -3,6 +3,7 @@ package com.splendo.kaluga.alerts
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 
 /*
@@ -79,7 +80,7 @@ interface AlertActions {
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun show(animated: Boolean = true, completion: () -> Unit = {})
+    fun showAsync(animated: Boolean = true, completion: () -> Unit = {})
 
     /**
      * Presents an alert and suspends
@@ -106,7 +107,7 @@ interface AlertActions {
  */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
-    override fun show(animated: Boolean, completion: () -> Unit) {
+    override fun showAsync(animated: Boolean, completion: () -> Unit) {
         showAlert(animated, completion = completion)
     }
 
@@ -203,6 +204,13 @@ abstract class BaseAlertBuilder {
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     /**
+     * Adds a list of [actions] to the alert
+     *
+     * @param actions The list of action objects
+     */
+    fun addActions(vararg actions: Alert.Action) = apply { this.actions.addAll(actions) }
+
+    /**
      * Sets a style of the alert
      *
      * @param style The style of an alert
@@ -245,7 +253,10 @@ abstract class BaseAlertBuilder {
      * @throws IllegalArgumentException in case missing title and/or message or actions
      */
     internal fun createAlert(): Alert {
-        require(title != null || message != null) { "Please set title and/or message for the Alert" }
+        if (style == Alert.Style.ALERT) {
+            require(title != null || message != null) { "Please set title and/or message for the Alert" }
+        } // Action sheet on iOS can be without title and message
+
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
 
         return Alert(title, message, actions, style)
