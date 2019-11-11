@@ -3,8 +3,8 @@ package com.splendo.kaluga.example.shared
 import com.splendo.kaluga.MainQueueDispatcher
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.log.LogLevel
-import com.splendo.kaluga.log.log
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.runBlocking
 import kotlinx.coroutines.*
 
 /*
@@ -36,11 +36,11 @@ class AlertFactory(private val builder: AlertBuilder) {
         val alert = build {
             setTitle("Hello, Kaluga 🐟")
             setMessage("This is sample message")
-            addActions(listOf(okAction, cancelAction))
+            addActions(okAction, cancelAction)
         }
         when (alert.show()) {
-            okAction -> log(LogLevel.DEBUG, "OK pressed")
-            cancelAction -> log(LogLevel.DEBUG, "Cancel pressed")
+            okAction -> debug("OK pressed")
+            cancelAction -> debug("Cancel pressed")
         }
     }
 
@@ -57,16 +57,18 @@ class AlertFactory(private val builder: AlertBuilder) {
         }
     }
 
-    fun showList() = GlobalScope.launch(MainQueueDispatcher) {
-        build {
-            setTitle("Select an option")
-            setStyle(Alert.Style.ACTION_LIST)
-            addActions(listOf(
-                Alert.Action("Option 1") { log(LogLevel.DEBUG, "Option 1") },
-                Alert.Action("Option 2") { log(LogLevel.DEBUG, "Option 2") },
-                Alert.Action("Option 3") { log(LogLevel.DEBUG, "Option 3") },
-                Alert.Action("Option 4") { log(LogLevel.DEBUG, "Option 4") }
-            ))
-        }.show()
+    fun showList() = runBlocking {
+        MainScope().launch {
+            build {
+                setTitle("Select an option")
+                setStyle(Alert.Style.ACTION_LIST)
+                addActions(
+                    Alert.Action("Option 1") { debug("Option 1") },
+                    Alert.Action("Option 2") { debug("Option 2") },
+                    Alert.Action("Option 3") { debug("Option 3") },
+                    Alert.Action("Option 4") { debug("Option 4") }
+                )
+            }.showAsync(true) { debug("The list has been shown") }
+        }
     }
 }

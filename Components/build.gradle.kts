@@ -27,7 +27,6 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                implementation(project(":alerts", ""))
             }
         }
     }
