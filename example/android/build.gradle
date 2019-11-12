@@ -46,6 +46,7 @@ dependencies {
         // if the example is the root we use a maven dependency instead of the project
         implementation "com.splendo.kaluga:Components:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:loadingIndicator:$gradle.ext.library_version"
@@ -53,6 +54,7 @@ dependencies {
     }
     else {
         implementation project(':Components')
+        implementation project(':base')
         implementation project(':shared')
         implementation project(":permissions")
         implementation project(":logging")

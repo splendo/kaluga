@@ -24,7 +24,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.location.test.LocationFlowableTest
-import com.splendo.kaluga.runBlocking
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.tasks.await
 import org.junit.Before
@@ -99,7 +99,7 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
 
         runBlocking {
             client.setMockMode(true).await()
-            setFusedLocation(0.0,0.0)
+            setFusedLocation(0.0, 0.0)
         }
 
         flowable.setFusedLocationProviderClient(client)
