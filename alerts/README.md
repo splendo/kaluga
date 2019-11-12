@@ -20,7 +20,7 @@ It has methods:
 
 There are two different Alert styles:
 - `Alert.Style.ALERT` — a standard alert type
-- `Alert.Style.ACTION_SHEET` — an action sheet type
+- `Alert.Style.ACTION_LIST` — an action sheet type
 
 Default alert requires a title or message to be set,
 but for action sheet it is not necessary.
