@@ -27,6 +27,7 @@ kotlin {
                     implementation(project(":Components", ""))
                     implementation(project(":logging", ""))
                     implementation(project(":alerts", ""))
+                    implementation(project(":beacons", ""))
                     implementation(project(":permissions", ""))
                     implementation(project(":loadingIndicator", ""))
                 } else {
@@ -34,6 +35,7 @@ kotlin {
                     implementation("com.splendo.kaluga:Components:$libraryVersion")
                     implementation("com.splendo.kaluga:logging:$libraryVersion")
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
+                    implementation("com.splendo.kaluga:beacons:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:loadingIndicator:$libraryVersion")
                 }

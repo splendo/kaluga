@@ -127,6 +127,26 @@
                                             <segue destination="itP-bh-ePK" kind="show" id="WLh-qg-eVj"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="EDb-sM-dUk">
+                                        <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EDb-sM-dUk" id="vX1-X3-8SF">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Beacons" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pM2-WH-Dwr">
+                                                    <rect key="frame" x="20" y="0.0" width="414" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="9C8-nU-vXP" kind="show" id="MbQ-n5-Qi6"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -433,6 +453,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DjG-hX-0S1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2007" y="1193"/>
+        </scene>
+        <!--Beacons View Controller-->
+        <scene sceneID="Z7Y-xt-HwX">
+            <objects>
+                <viewController id="9C8-nU-vXP" customClass="BeaconsViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ytL-Ng-9Jq">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="characterWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WjW-q2-QZU">
+                                <rect key="frame" x="40" y="448" width="334" height="0.0"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="WjW-q2-QZU" firstAttribute="leading" secondItem="ytL-Ng-9Jq" secondAttribute="leadingMargin" constant="20" id="7eG-tK-h0e"/>
+                            <constraint firstItem="WjW-q2-QZU" firstAttribute="centerY" secondItem="ytL-Ng-9Jq" secondAttribute="centerY" id="u2b-Vb-dSh"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="WjW-q2-QZU" secondAttribute="trailing" constant="20" id="ukk-BF-gF5"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="0Ss-z1-6CZ"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="KjM-K1-upv"/>
+                    <connections>
+                        <outlet property="label" destination="WjW-q2-QZU" id="GV8-Pr-U23"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nlR-TV-s9d" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1758" y="-1055"/>
         </scene>
     </scenes>
 </document>

@@ -22,6 +22,7 @@
 		74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CF99B70DA1947AA98CA3B /* DemoTests.swift */; };
 		74E6599B023623BD96737582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74F483E9C1890D693F808DDA /* Main.storyboard */; };
 		978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */; };
+		A3AF1475237AEAC40032E802 /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3AF1474237AEAC40032E802 /* BeaconsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -91,6 +92,7 @@
 		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewController.swift; sourceTree = "<group>"; };
+		A3AF1474237AEAC40032E802 /* BeaconsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -206,6 +208,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				A3AF1473237AEA760032E802 /* Beacons */,
 				4B02E502236B2206003F0B36 /* LoadingIndicator */,
 				4B54CB1F2369DA4E00B69B2D /* Alerts */,
 				4B54CB1E2369DA2B00B69B2D /* Location */,
@@ -290,6 +293,14 @@
 			path = Permissions;
 			sourceTree = "<group>";
 		};
+		A3AF1473237AEA760032E802 /* Beacons */ = {
+			isa = PBXGroup;
+			children = (
+				A3AF1474237AEAC40032E802 /* BeaconsViewController.swift */,
+			);
+			path = Beacons;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -372,7 +383,7 @@
 				ORGANIZATIONNAME = Splendo;
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
-						DevelopmentTeam = 2732HQPVJP;
+						DevelopmentTeam = J4RCUDKNBN;
 					};
 				};
 			};
@@ -451,6 +462,7 @@
 			files = (
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				4B02E507236B237C003F0B36 /* ActivityViewController.swift in Sources */,
+				A3AF1475237AEAC40032E802 /* BeaconsViewController.swift in Sources */,
 				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
@@ -620,7 +632,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = J4RCUDKNBN;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -736,7 +748,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = J4RCUDKNBN;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
