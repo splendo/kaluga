@@ -21,10 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual class AlertBuilder(private val viewController: UIViewController) : BaseAlertBuilder() {
-
-    override fun create(): AlertInterface {
-        return AlertInterface(createAlert(), viewController)
-    }
+    override fun create() = AlertInterface(createAlert(), viewController)
 }
 
 actual class AlertInterface(
@@ -37,6 +34,10 @@ actual class AlertInterface(
             Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault
             Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDestructive
             Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
+        }
+        fun transform(style: Alert.Style): UIAlertControllerStyle = when (style) {
+            Alert.Style.ALERT -> UIAlertControllerStyleAlert
+            Alert.Style.ACTION_LIST -> UIAlertControllerStyleActionSheet
         }
     }
 
@@ -52,7 +53,7 @@ actual class AlertInterface(
         UIAlertController.alertControllerWithTitle(
             alert.title,
             alert.message,
-            UIAlertControllerStyleAlert
+            transform(alert.style)
         ).apply {
             alert.actions.forEach { action ->
                 addAction(

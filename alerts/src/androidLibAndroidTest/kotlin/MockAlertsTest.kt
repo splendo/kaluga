@@ -6,6 +6,7 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
 import org.junit.Test
 import kotlin.test.*
@@ -39,31 +40,77 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoActions() {
+    fun testAlertBuilderExceptionNoActions() = runBlockingTest {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity)
-                .setTitle("OK")
-                .create()
+            AlertBuilder(activityRule.activity).alert {
+                setTitle("OK")
+            }
         }
     }
 
     @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() {
+    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlockingTest {
         assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity)
-                .setPositiveButton("OK") { }
-                .create()
+            AlertBuilder(activityRule.activity).alert {
+                setPositiveButton("OK")
+            }
         }
     }
 
     @Test
-    fun testAlertShow() = runBlocking {
+    fun testBuilderReuse() = runBlockingTest {
+
+        val builder = AlertBuilder(activityRule.activity)
+
+        CoroutineScope(Dispatchers.Main).launch {
+            builder.alert {
+                setTitle("Test")
+                setPositiveButton("OK")
+            }.show()
+
+            device.wait(Until.findObject(By.text("Test")), DEFAULT_TIMEOUT)
+            device.findObject(By.text("OK")).click()
+            assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
+
+            builder.alert {
+                setTitle("Hello")
+                setNegativeButton("Cancel")
+            }.show()
+
+            device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+            device.findObject(By.text("Cancel")).click()
+            assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        }
+    }
+
+    @Test
+    fun testConcurrentBuilders() = runBlockingTest {
+        val builder = AlertBuilder(activityRule.activity)
+        val alerts: MutableList<AlertInterface> = mutableListOf()
+
+        CoroutineScope(Dispatchers.Main).launch {
+            for (i in 0 until 10) {
+                alerts.add(builder.alert {
+                    setTitle("Alert$i")
+                    setPositiveButton("OK$i")
+                })
+            }
+            for (i in 0 until 10) {
+                alerts[i].show()
+                device.wait(Until.findObject(By.text("Alert$i")), DEFAULT_TIMEOUT)
+                device.findObject(By.text("OK$i")).click()
+                assertTrue(device.wait(Until.gone(By.text("Alert$i")), DEFAULT_TIMEOUT))
+            }
+        }
+    }
+
+    @Test
+    fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            AlertBuilder(activityRule.activity)
-                .setTitle("Hello")
-                .setPositiveButton("OK") { }
-                .create()
-                .show()
+            AlertBuilder(activityRule.activity).alert {
+                setTitle("Hello")
+                setPositiveButton("OK")
+            }.show()
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
         device.findObject(By.text("OK")).click()
@@ -71,13 +118,13 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertFlowWithCoroutines() = runBlocking {
+    fun testAlertFlowWithCoroutines() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val action = Alert.Action("OK")
-            val presenter = AlertBuilder(activityRule.activity)
-                .setTitle("Hello")
-                .addActions(listOf(action))
-                .create()
+            val presenter = AlertBuilder(activityRule.activity).alert {
+                setTitle("Hello")
+                addActions(listOf(action))
+            }
 
             val result = withContext(coroutineContext) { presenter.show() }
             assertEquals(result, action)
@@ -88,19 +135,19 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertFlowCancel() = runBlocking {
+    fun testAlertFlowCancel() = runBlockingTest {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = AlertBuilder(activityRule.activity)
-                .setTitle("Hello")
-                .setPositiveButton("OK") { }
-                .setNegativeButton("Cancel") { }
-                .create()
+            val presenter = AlertBuilder(activityRule.activity).alert {
+                setTitle("Hello")
+                setPositiveButton("OK")
+                setNegativeButton("Cancel")
+            }
 
             val result = coroutineContext.run { presenter.show() }
             assertNull(result)
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        // On cancel we expect dialog to be dismissed
+        // On cancel call, we expect the dialog to be dismissed
         coroutine.cancel()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }

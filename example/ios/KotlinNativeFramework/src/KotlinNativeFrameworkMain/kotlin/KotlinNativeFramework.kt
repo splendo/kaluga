@@ -17,6 +17,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
+import com.splendo.kaluga.example.shared.AlertFactory
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -34,6 +35,8 @@ import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
+fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
+
 class KotlinNativeFramework {
     private val loc = LocationFlowable()
 
@@ -42,19 +45,9 @@ class KotlinNativeFramework {
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
-    fun makeAlert(from: UIViewController, title: String? = null, message: String? = null, actions: List<Alert.Action>): AlertInterface {
-        return AlertBuilder(from)
-                .setTitle(title)
-                .setMessage(message)
-                .addActions(actions)
-                .create()
-    }
-
-    fun loadingIndicator(view: UIViewController): LoadingIndicator {
-        return IOSLoadingIndicator
-            .Builder(view)
-            .create()
-    }
+    fun loadingIndicator(view: UIViewController) = IOSLoadingIndicator
+        .Builder(view)
+        .create()
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager(locationManager)
@@ -62,13 +55,10 @@ class KotlinNativeFramework {
             label.text = it
         }
         debug("proceed executing after location coroutines")
-
     }
 
-    fun permissions(nsBundle: NSBundle): Permissions {
-        return Permissions.Builder()
-                .bundle(nsBundle)
-                .build()
-    }
-
+    fun permissions(nsBundle: NSBundle) = Permissions
+        .Builder()
+        .bundle(nsBundle)
+        .build()
 }

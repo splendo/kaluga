@@ -21,16 +21,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 actual class AlertBuilder(private val context: Context) : BaseAlertBuilder() {
-
-    override fun create(): AlertInterface {
-        return AlertInterface(createAlert(), context)
-    }
+    override fun create() = AlertInterface(createAlert(), context)
 }
 
 actual class AlertInterface(
     private val alert: Alert,
     private val context: Context
 ) : BaseAlertPresenter(alert) {
+
+    private inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
+        if (condition) block(this)
+    }
 
     private var alertDialog: AlertDialog? = null
 
@@ -54,14 +55,23 @@ actual class AlertInterface(
         alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
+            .applyIf(alert.style == Alert.Style.ACTION_LIST) {
+                val titles = alert.actions.map { it.title }.toTypedArray()
+                setItems(titles) { _, which ->
+                    val action = alert.actions[which].apply { handler() }
+                    afterHandler(action)
+                }
+            }
             .create()
-            .apply {
+            .applyIf(alert.style == Alert.Style.ALERT) {
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
                         action.handler()
                         afterHandler(action)
                     }
                 }
+            }
+            .apply {
                 setOnDismissListener { alertDialog = null }
                 setOnCancelListener { afterHandler(null) }
                 show()

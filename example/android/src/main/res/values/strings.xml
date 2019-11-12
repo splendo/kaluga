@@ -2,5 +2,6 @@
     <string name="app_name">Kaluga Example</string>
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
+    <string name="alert_list">Show Alert List</string>
     <string name="show_loading_indicator">Show Loading Indicator</string>
 </resources>

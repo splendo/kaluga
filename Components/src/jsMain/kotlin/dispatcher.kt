@@ -1,3 +1,8 @@
+package com.splendo.kaluga
+
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -16,23 +21,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import UIKit
-import KotlinNativeFramework
-
-class AlertsViewController: UITableViewController {
-
-    lazy var alertFactory = KotlinNativeFrameworkKt.alertFactory(
-        builder: AlertsAlertBuilder(viewController: self)
-    )
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        switch indexPath.row {
-        case 0: alertFactory.showAlert()
-        case 1: alertFactory.showAndDismissAfter(timeSecs: 3)
-        case 2: alertFactory.showList()
-        default: ()
-        }
-    }
-}
+actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main

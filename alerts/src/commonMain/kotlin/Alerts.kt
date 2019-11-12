@@ -1,6 +1,8 @@
 package com.splendo.kaluga.alerts
 
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
 
 /*
@@ -33,8 +35,17 @@ typealias AlertActionHandler = () -> Unit
 data class Alert(
     val title: String?,
     val message: String?,
-    val actions: List<Action>
+    val actions: List<Action>,
+    val style: Style = Style.ALERT
 ) {
+
+    /**
+     * Alert style
+     */
+    enum class Style {
+        ALERT, ACTION_LIST
+    }
+
     /**
      * An action than represents a button in the alert
      *
@@ -68,7 +79,7 @@ interface AlertActions {
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun show(animated: Boolean = true, completion: () -> Unit = {})
+    fun showAsync(animated: Boolean = true, completion: () -> Unit = {})
 
     /**
      * Presents an alert and suspends
@@ -95,7 +106,7 @@ interface AlertActions {
  */
 abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
-    override fun show(animated: Boolean, completion: () -> Unit) {
+    override fun showAsync(animated: Boolean, completion: () -> Unit) {
         showAlert(animated, completion = completion)
     }
 
@@ -112,9 +123,9 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         dismissAlert(animated)
     }
 
-    protected abstract fun dismissAlert(animated: Boolean = true)
+    internal abstract fun dismissAlert(animated: Boolean = true)
 
-    protected abstract fun showAlert(
+    internal abstract fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
         completion: () -> Unit = {}
@@ -134,6 +145,8 @@ abstract class BaseAlertBuilder {
     private var title: String? = null
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
+    private var style: Alert.Style = Alert.Style.ALERT
+    private val mutex = Mutex()
 
     /**
      * Sets the [title] displayed in the alert
@@ -190,11 +203,57 @@ abstract class BaseAlertBuilder {
     fun addActions(actions: List<Alert.Action>) = apply { this.actions.addAll(actions) }
 
     /**
+     * Adds a list of [actions] to the alert
+     *
+     * @param actions The list of action objects
+     */
+    fun addActions(vararg actions: Alert.Action) = apply { this.actions.addAll(actions) }
+
+    /**
+     * Sets a style of the alert
+     *
+     * @param style The style of an alert
+     */
+    fun setStyle(style: Alert.Style) = apply { this.style = style }
+
+    /**
+     * Builds an alert using DSL syntax (thread safe)
+     *
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
+     */
+    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
+        buildUnsafe(initialize)
+    }
+
+    /**
+     * Builds an alert using DSL syntax (not thread safe)
+     *
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
+     */
+    fun buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+        reset()
+        initialize()
+        return create()
+    }
+
+    /**
      * Adds an [action] to the alert
      *
      * @param action The action object
      */
     private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
+
+    /**
+     * Reset builder into initial state
+     */
+    private fun reset() = apply {
+        this.title = null
+        this.message = null
+        this.actions.clear()
+        this.style = Alert.Style.ALERT
+    }
 
     /**
      * Creates an alert based on [title], [message] and [actions] properties
@@ -203,10 +262,13 @@ abstract class BaseAlertBuilder {
      * @throws IllegalArgumentException in case missing title and/or message or actions
      */
     internal fun createAlert(): Alert {
-        require(title != null || message != null) { "Please set title and/or message for the Alert" }
+        if (style == Alert.Style.ALERT) {
+            require(title != null || message != null) { "Please set title and/or message for the Alert" }
+        } // Action sheet on iOS can be without title and message
+
         require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
 
-        return Alert(title, message, actions)
+        return Alert(title, message, actions, style)
     }
 
     /**
@@ -214,7 +276,7 @@ abstract class BaseAlertBuilder {
      *
      * @return The AlertInterface object
      */
-    abstract fun create(): AlertInterface
+    internal abstract fun create(): AlertInterface
 }
 
 expect class AlertBuilder : BaseAlertBuilder

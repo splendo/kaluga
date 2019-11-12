@@ -2,12 +2,10 @@ package com.splendo.kaluga.example.alerts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.R
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import com.splendo.kaluga.example.shared.AlertFactory
 import kotlinx.android.synthetic.main.activity_alerts.*
 
 /*
@@ -31,46 +29,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
 
+    private val alertFactory = AlertFactory(AlertBuilder(this))
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_simple_alert.setOnClickListener {
-            MainScope().launch {
-                showAlert()
-            }
-        }
-
-        btn_dismissible_alert.setOnClickListener {
-            MainScope().launch {
-                showDismissibleAlert()
-            }
-        }
-    }
-
-    private suspend fun showAlert() {
-        AlertBuilder(this)
-            .setTitle("Hello, Kaluga")
-            .setPositiveButton("OK") { println("OK pressed") }
-            .setNegativeButton("Cancel") { println("Cancel pressed") }
-            .setNeutralButton("Details") { println("Details pressed") }
-            .create()
-            .show()
-    }
-
-    private fun showDismissibleAlert() {
-
-        val coroutine = MainScope().launch {
-            val presenter = AlertBuilder(this@AlertsActivity)
-                .setTitle("Hello")
-                .setMessage("Wait for 3 sec...")
-                .setPositiveButton("OK") { println("OK pressed") }
-                .create()
-
-            presenter.show()
-        }
-
-        Handler().postDelayed({
-            coroutine.cancel()
-        }, 3000)
+        btn_simple_alert.setOnClickListener { alertFactory.showAlert() }
+        btn_dismissible_alert.setOnClickListener { alertFactory.showAndDismissAfter(3) }
+        btn_alert_list.setOnClickListener { alertFactory.showList() }
     }
 }
