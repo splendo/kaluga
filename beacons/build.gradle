@@ -1,0 +1,21 @@
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply from: "../gradle/publishable_component.gradle"
+
+group = "com.splendo.kaluga"
+version = gradle.library_version
+
+dependencies {
+
+}
+
+android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}

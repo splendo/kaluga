@@ -23,16 +23,22 @@
                 android:text="Permissions"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_feature_alerts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Alerts"/>
+                android:id="@+id/btn_feature_alerts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Alerts"/>
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_feature_loading_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Loading Indicator"/>
+                android:id="@+id/btn_feature_loading_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading Indicator"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_feature_beacons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Beacons"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

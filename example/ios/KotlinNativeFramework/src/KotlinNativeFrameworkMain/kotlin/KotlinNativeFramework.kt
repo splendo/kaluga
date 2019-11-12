@@ -61,4 +61,6 @@ class KotlinNativeFramework {
         .Builder()
         .bundle(nsBundle)
         .build()
+
+    fun beaconMonitor() = BeaconMonitor(BeaconScanner())
 }

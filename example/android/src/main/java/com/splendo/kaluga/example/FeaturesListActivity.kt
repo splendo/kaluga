@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.alerts.AlertsActivity
+import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
@@ -43,6 +44,14 @@ class FeaturesListActivity : AppCompatActivity(R.layout.activity_features_list) 
                 Intent(
                     this,
                     LoadingActivity::class.java
+                )
+            )
+        }
+        btn_feature_beacons.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    BeaconsActivity::class.java
                 )
             )
         }

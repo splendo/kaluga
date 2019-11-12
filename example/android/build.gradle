@@ -48,6 +48,7 @@ dependencies {
         implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:beacons:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:loadingIndicator:$gradle.ext.library_version"
         implementation project(':shared')
     }
@@ -57,6 +58,7 @@ dependencies {
         implementation project(":permissions")
         implementation project(":logging")
         implementation project(":alerts")
+        implementation project(":beacons")
         implementation project(":loadingIndicator")
     }
 

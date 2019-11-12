@@ -31,6 +31,7 @@ rootProject.name = 'Kaluga'
 apply from: "gradle/ext.gradle"
 
 include ':alerts'
+include ':beacons'
 include ':logging'
 include ':loadingIndicator'
 include ':permissions'

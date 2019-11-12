@@ -44,6 +44,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
+    include(":beacons")
+    project(":beacons").projectDir = file("../../../beacons")
+
     include(":loadingIndicator")
     project(":loadingIndicator").projectDir = file("../../../loadingIndicator")
 }
