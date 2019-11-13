@@ -63,8 +63,8 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("iosarm32Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["iosarm32Default"]}Default"))
-                    implementation(project(":logging", "${ext["iosarm32Default"]}Default"))
+                    implementation(project(":base", "iosarm32Default"))
+                    implementation(project(":logging", "iosarm32Default"))
                 }
             }
         }
