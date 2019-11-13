@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.location.Location.Time.*
 import com.splendo.kaluga.location.Location.UnknownReason.*
 import com.splendo.kaluga.location.LocationFlowable.CLAuthorizationStatusKotlin.*
-import com.splendo.kaluga.util.byOrdinalOrDefault
+import com.splendo.kaluga.utils.byOrdinalOrDefault
 import kotlinx.cinterop.*
 import kotlinx.coroutines.*
 import platform.CoreLocation.*

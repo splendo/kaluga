@@ -12,7 +12,6 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-
 repositories {
     maven("https://dl.bintray.com/pocketbyte/hydra/")
 }
@@ -26,6 +25,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }
         }
@@ -39,6 +39,7 @@ kotlin {
         val ext =  (gradle as ExtensionAware).extra
         getByName("${ext["ios_primary_arch"]}Main") {
             dependencies {
+                implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
                 implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
             }
         }
@@ -53,6 +54,7 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
+                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
@@ -61,6 +63,7 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("iosarm32Main") {
                 dependencies {
+                    implementation(project(":base", "iosarm32Default"))
                     implementation(project(":logging", "iosarm32Default"))
                 }
             }

@@ -35,6 +35,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":Components")
     project(":Components").projectDir = file("../../../Components")
 
+    include(":base")
+    project(":base").projectDir = file("../../../base")
+
     include(":logging")
     project(":logging").projectDir = file("../../../logging")
 

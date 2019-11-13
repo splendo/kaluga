@@ -30,6 +30,7 @@ rootProject.name = 'Kaluga'
 
 apply from: "gradle/ext.gradle"
 
+include ':base'
 include ':alerts'
 include ':logging'
 include ':loadingIndicator'

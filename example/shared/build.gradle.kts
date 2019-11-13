@@ -25,6 +25,7 @@ kotlin {
 
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":Components", ""))
+                    implementation(project(":base", ""))
                     implementation(project(":logging", ""))
                     implementation(project(":alerts", ""))
                     implementation(project(":permissions", ""))
@@ -32,6 +33,7 @@ kotlin {
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:Components:$libraryVersion")
+                    implementation("com.splendo.kaluga:base:$libraryVersion")
                     implementation("com.splendo.kaluga:logging:$libraryVersion")
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
