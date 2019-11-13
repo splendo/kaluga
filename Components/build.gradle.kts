@@ -54,8 +54,8 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
+                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
+                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
@@ -63,8 +63,8 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("iosarm32Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
+                    implementation(project(":base", "${ext["iosarm32Default"]}Default"))
+                    implementation(project(":logging", "${ext["iosarm32Default"]}Default"))
                 }
             }
         }
