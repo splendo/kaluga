@@ -24,11 +24,19 @@ class BeaconsViewController: UIViewController {
 
     @IBOutlet weak var label: UILabel!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+private let locationManager = CLLocationManager()
+    private let beaconMonitor = KotlinNativeFramework().beaconMonitor(locationManager: CLLocationManager())
+    
+    override func viewWillAppear(_ animated: Bool) {
+        locationManager.requestWhenInUseAuthorization()
         label.text = "Beacon status: unknown"
-
-        KotlinNativeFramework().beaconMonitor().scan(beaconId: "f7826da6-4fa2-4e98-8024-bc5b71e0893e")
+        beaconMonitor
+            .subscribe(beaconId: "f7826da6-4fa2-4e98-8024-bc5b71e0893e", listener: { (isPresent: KotlinBoolean) -> Void in
+                self.label.text = isPresent.boolValue ? "Beacon status: found" : "Beacon status: not found"
+            })
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        beaconMonitor.unsubscribe(beaconId: "f7826da6-4fa2-4e98-8024-bc5b71e0893e")
     }
 }
