@@ -28,9 +28,25 @@ fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQue
 }
 ```
 
+Or this:
+
+```kotlin
+// Shared code
+fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQueueDispatcher) {
+    // Create an Alert with title, message and actions
+    val alert = builder.alert {
+        setTitle(title)
+        setPositiveButton("Yes") { /* handle `Yes` action */ }
+        setNegativeButton("No") { /* handle `No` action */ }
+    }
+    // Show
+    alert.show()
+}
+```
+
 > You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
 
-Then you have to prepare `AlertBuilder` object from specific platform.
+But you have to prepare `AlertBuilder` object from specific platform.
 On Android this builder needs a `Context` object:
 
 ```kotlin
@@ -55,10 +71,10 @@ fun showList(builder: AlertBuilder) = MainScope().launch(MainQueueDispatcher) {
         setTitle("Select an option")
         setStyle(Alert.Style.ACTION_LIST)
         addActions(
-            Alert.Action("Option 1") { debug("Option 1") },
-            Alert.Action("Option 2") { debug("Option 2") },
-            Alert.Action("Option 3") { debug("Option 3") },
-            Alert.Action("Option 4") { debug("Option 4") }
+            Alert.Action("Option 1") { /* handle option #1 */ },
+            Alert.Action("Option 2") { /* handle option #2 */ },
+            Alert.Action("Option 3") { /* handle option #3 */ },
+            Alert.Action("Option 4") { /* handle option #4 */ }
         )
     }.show()
 }
@@ -66,7 +82,7 @@ fun showList(builder: AlertBuilder) = MainScope().launch(MainQueueDispatcher) {
 
 > You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
 
-In order to dismiss alert you can use `dismiss()` function call:
+In order to dismiss alert you can use `dismiss()` function:
 
 ```kotlin
 // Build alert
@@ -84,8 +100,6 @@ alert.dismiss()
 
 The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
 
-It has methods:
-
 Build alert:
 - `suspend alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
 - `buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
@@ -93,7 +107,7 @@ Build alert:
 Set title, style and message:
 
 - `setTitle(title: String?)` — sets optional title for the alert
-- `setStyle(style: Alert.Style)` - sets the type of alert to display (An alert or an action sheet/list)
+- `setStyle(style: Alert.Style)` - sets the type of alert to display (see below)
 - `setMessage(message: String?)` — sets an optional message for the alert
 
 Set buttons:
