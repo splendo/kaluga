@@ -2,11 +2,11 @@ package com.splendo.kaluga.beacons
 
 class BeaconMonitor(private val scanner: BeaconScanner) {
 
-    fun scan(beaconId: String) = scanner.addListener(beaconId, object : Listener {
-        override fun onStateUpdate(beaconId: String, isPresent: Boolean) {
-            print("BeaconMonitor.onStateUpdate $beaconId $isPresent")
-        }
+    fun subscribe(beaconId: String, callback: (isPresent: Boolean) -> Unit) = scanner.addListener(beaconId, object : Listener {
+        override fun onStateUpdate(beaconId: String, isPresent: Boolean) = callback(isPresent)
     })
+
+    fun unsubscribe(beaconId: String) = scanner.removeListener(beaconId)
 }
 
 

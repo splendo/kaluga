@@ -11,7 +11,8 @@ group = "com.splendo.kaluga"
 version = gradle.library_version
 
 dependencies {
-
+    androidLibMainImplementation 'org.altbeacon:android-beacon-library:2.16.3'
+    androidLibMainImplementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
 }
 
 android {
