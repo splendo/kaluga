@@ -56,7 +56,6 @@ class AndroidLoadingIndicatorTests {
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             AndroidLoadingIndicator
-                .Builder(R.layout.loading_indicator_view)
                 .Builder(activityRule.activity)
                 .create()
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
