@@ -20,13 +20,38 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-
 class IOSLoadingIndicator private constructor(private val view: UIViewController, private val controller: UIViewController) : LoadingIndicator {
 
     private class DefaultView: UIViewController(null, null) {
         override fun viewDidLoad() {
             super.viewDidLoad()
-            view.backgroundColor = UIColor.blackColor
+            setupView()
+        }
+
+        private fun setupView() {
+            view.backgroundColor = UIColor(0.0, 1/3.0)
+            val contentView = UIView().apply {
+                backgroundColor = UIColor.whiteColor
+                layer.cornerRadius = 14.0
+                translatesAutoresizingMaskIntoConstraints = false
+            }
+            view.addSubview(contentView)
+            NSLayoutConstraint.activateConstraints(listOf(
+                contentView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
+                contentView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
+                contentView.widthAnchor.constraintEqualToConstant(100.0),
+                contentView.heightAnchor.constraintEqualToConstant(100.0)
+            ))
+            val activityView = UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
+                color = UIColor.blackColor
+                startAnimating()
+                translatesAutoresizingMaskIntoConstraints = false
+            }
+            contentView.addSubview(activityView)
+            NSLayoutConstraint.activateConstraints(listOf(
+                activityView.centerXAnchor.constraintEqualToAnchor(contentView.centerXAnchor),
+                activityView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor)
+            ))
         }
     }
 
