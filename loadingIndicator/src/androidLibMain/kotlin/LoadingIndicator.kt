@@ -25,15 +25,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-/** On Android `View` is represented as resource id */
-actual typealias View = Int
-/** On Android host `Controller` is FragmentActivity */
-actual typealias Controller = FragmentActivity
+class AndroidLoadingIndicator private constructor(viewResId: Int, private val activity: FragmentActivity) : LoadingIndicator {
 
-class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndicator {
-
-    class Builder(private val viewResId: View) : LoadingIndicator.Builder {
-        override fun create() = AndroidLoadingIndicator(viewResId)
+    class Builder(private val activity: FragmentActivity) : LoadingIndicator.Builder {
+        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, activity)
     }
 
     class LoadingDialog : DialogFragment() {
@@ -44,7 +39,7 @@ class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndi
 
             private const val RESOURCE_ID_KEY = "resId"
 
-            fun newInstance(viewResId: View) = LoadingDialog().apply {
+            fun newInstance(viewResId: Int) = LoadingDialog().apply {
                 arguments = Bundle().apply { putInt(RESOURCE_ID_KEY, viewResId) }
                 isCancelable = false
                 retainInstance = true
@@ -60,8 +55,8 @@ class AndroidLoadingIndicator private constructor(viewResId: View) : LoadingIndi
 
     override val isVisible get() = loadingDialog.isVisible
 
-    override fun present(controller: Controller, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
-        loadingDialog.show(controller.supportFragmentManager, "LoadingIndicator")
+    override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+        loadingDialog.show(activity.supportFragmentManager, "LoadingIndicator")
         completion()
     }
 

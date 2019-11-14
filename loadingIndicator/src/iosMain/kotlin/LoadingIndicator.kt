@@ -1,8 +1,6 @@
 package com.splendo.kaluga.loadingIndicator
 
-import platform.UIKit.UIModalPresentationOverFullScreen
-import platform.UIKit.UIModalTransitionStyleCrossDissolve
-import platform.UIKit.UIViewController
+import platform.UIKit.*
 
 /*
 
@@ -22,14 +20,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-/** On iOS `View` is represented as view controller */
-actual typealias View = UIViewController
-actual typealias Controller = UIViewController
 
-class IOSLoadingIndicator private constructor(private val view: View) : LoadingIndicator {
+class IOSLoadingIndicator private constructor(private val view: UIViewController, private val controller: UIViewController) : LoadingIndicator {
 
-    class Builder(private val view: View) : LoadingIndicator.Builder {
-        override fun create() = IOSLoadingIndicator(view)
+    private class DefaultView: UIViewController(null, null) {
+        override fun viewDidLoad() {
+            super.viewDidLoad()
+            view.backgroundColor = UIColor.blackColor
+        }
+    }
+
+    class Builder(private val controller: UIViewController) : LoadingIndicator.Builder {
+        override fun create() = IOSLoadingIndicator(DefaultView(), controller)
     }
 
     init {
@@ -41,7 +43,7 @@ class IOSLoadingIndicator private constructor(private val view: View) : LoadingI
 
     override val isVisible get() = view.presentingViewController != null
 
-    override fun present(controller: Controller, animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+    override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
         controller.presentViewController(view, animated, completion)
     }
 

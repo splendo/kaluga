@@ -41,9 +41,9 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 
     private fun showLoadingIndicator() {
         val indicator = AndroidLoadingIndicator
-            .Builder(R.layout.loading_indicator_view)
+            .Builder(this)
             .create()
-            .present(this)
+            .present()
         GlobalScope.launch {
             delay(3_000)
             indicator.dismiss()

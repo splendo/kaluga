@@ -19,16 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 /**
- * Class represents a view
- */
-expect class View
-
-/**
- * Class represents a view controller
- */
-expect class Controller
-
-/**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
 interface LoadingIndicator {
@@ -49,11 +39,10 @@ interface LoadingIndicator {
     /**
      * Presents as indicator
      *
-     * @param controller A host controller to present indicator on top of it
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun present(controller: Controller, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
+    fun present(animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
 
     /**
      * Dismisses the indicator

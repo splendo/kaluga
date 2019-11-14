@@ -45,8 +45,8 @@ class KotlinNativeFramework {
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
-    fun loadingIndicator(view: UIViewController) = IOSLoadingIndicator
-        .Builder(view)
+    fun loadingIndicator(viewController: UIViewController) = IOSLoadingIndicator
+        .Builder(viewController)
         .create()
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
