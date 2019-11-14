@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertFactory
+import com.splendo.kaluga.example.shared.ActivityIndicator
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -36,6 +37,7 @@ import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
 fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
+fun activityIndicator(viewController : UIViewController) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController))
 
 class KotlinNativeFramework {
     private val loc = LocationFlowable()
@@ -44,10 +46,6 @@ class KotlinNativeFramework {
 
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
-
-    fun loadingIndicator(viewController: UIViewController) = IOSLoadingIndicator
-        .Builder(viewController)
-        .create()
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         loc.addCLLocationManager(locationManager)

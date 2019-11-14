@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.ActivityIndicator
 import com.splendo.kaluga.loadingIndicator.AndroidLoadingIndicator
 import kotlinx.android.synthetic.main.activity_loading.*
 import kotlinx.coroutines.GlobalScope
@@ -40,10 +41,7 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
     }
 
     private fun showLoadingIndicator() {
-        val indicator = AndroidLoadingIndicator
-            .Builder(this)
-            .create()
-            .present()
+        val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)).show()
         GlobalScope.launch {
             delay(3_000)
             indicator.dismiss()

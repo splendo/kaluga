@@ -19,11 +19,10 @@ class LoadingViewController: UITableViewController {
     }
 
     fileprivate func showLoadingIndicator() {
-        let indicator = KotlinNativeFramework().loadingIndicator(viewController: self)
-        indicator.present(animated: true) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                indicator.dismiss(animated: true) { }
-            }
+        let indicator = KotlinNativeFrameworkKt.activityIndicator(viewController: self)
+        indicator.show(animated: true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            indicator.dismiss(animated: true)
         }
     }
 }
