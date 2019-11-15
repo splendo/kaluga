@@ -31,6 +31,15 @@ class IosLoadingIndicatorTests {
         )
     }
 
+    @Test
+    fun builderSetStyle() {
+        assertNotNull(IOSLoadingIndicator
+            .Builder(UIViewController()).build {
+                setStyle(LoadingIndicator.Style.DARK)
+            }
+        )
+    }
+
     private lateinit var window: UIWindow
 
     @BeforeTest

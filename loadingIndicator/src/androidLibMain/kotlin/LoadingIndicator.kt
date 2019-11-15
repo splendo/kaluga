@@ -1,9 +1,14 @@
 package com.splendo.kaluga.loadingIndicator
 
+import android.content.res.ColorStateList
 import android.content.res.Resources.ID_NULL
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Layout
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 
@@ -25,33 +30,53 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidLoadingIndicator private constructor(viewResId: Int, private val activity: FragmentActivity) : LoadingIndicator {
+class AndroidLoadingIndicator private constructor(viewResId: Int, style: LoadingIndicator.Style, private val activity: FragmentActivity) : LoadingIndicator {
 
     class Builder(private val activity: FragmentActivity) : LoadingIndicator.Builder {
-        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, activity)
+        override var style = LoadingIndicator.Style.LIGHT
+        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, style, activity)
     }
 
     class LoadingDialog : DialogFragment() {
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
+        private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.LIGHT.value)
+
+        private val backgroundColor: Int
+            get() = when (style) {
+                LoadingIndicator.Style.LIGHT -> Color.WHITE
+                LoadingIndicator.Style.DARK -> Color.BLACK
+            }
+        private val foregroundColor: Int
+            get() = when (style) {
+                LoadingIndicator.Style.LIGHT -> Color.BLACK
+                LoadingIndicator.Style.DARK -> Color.WHITE
+            }
 
         companion object {
 
             private const val RESOURCE_ID_KEY = "resId"
+            private const val STYLE_KEY = "style"
 
-            fun newInstance(viewResId: Int) = LoadingDialog().apply {
-                arguments = Bundle().apply { putInt(RESOURCE_ID_KEY, viewResId) }
+            fun newInstance(viewResId: Int, style: LoadingIndicator.Style) = LoadingDialog().apply {
+                arguments = Bundle().apply {
+                    putInt(RESOURCE_ID_KEY, viewResId)
+                    putInt(STYLE_KEY, style.ordinal)
+                }
                 isCancelable = false
                 retainInstance = true
             }
         }
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
-            return inflater.inflate(viewResId, container)
+            return inflater.inflate(viewResId, container).apply {
+                findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor)
+                findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor)
+            }
         }
     }
 
-    private val loadingDialog = LoadingDialog.newInstance(viewResId)
+    private val loadingDialog = LoadingDialog.newInstance(viewResId, style)
 
     override val isVisible get() = loadingDialog.isVisible
 

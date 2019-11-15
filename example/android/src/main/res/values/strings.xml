@@ -3,5 +3,6 @@
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
     <string name="alert_list">Show Alert List</string>
-    <string name="show_loading_indicator">Show Loading Indicator</string>
+    <string name="show_loading_indicator_light">Show Loading Indicator (Light)</string>
+    <string name="show_loading_indicator_dark">Show Loading Indicator (Dark)</string>
 </resources>

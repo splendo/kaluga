@@ -20,9 +20,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class ActivityIndicator(builder: LoadingIndicator.Builder) {
+class ActivityIndicator(builder: LoadingIndicator.Builder, initialize: LoadingIndicator.Builder.() -> Unit) {
 
-    private val indicator: LoadingIndicator = builder.create()
+    private val indicator: LoadingIndicator = builder.build(initialize)
 
     fun show(animated: Boolean = true): LoadingIndicator = indicator.present(animated)
     fun dismiss(animated: Boolean = true) = indicator.dismiss(animated)

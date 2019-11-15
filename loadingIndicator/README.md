@@ -4,33 +4,27 @@ A library allows you to show loading indicator view.
 
 ## Usage
 
-The `LoadingIndicator` interface has implementation on the Android as `AndroidLoadingIndicator`
-and on the iOS as `IOSLoadingIndicator`.
-
-The nested `Builder` class to build indicator.
-
-The `LoadingIndicator` has methods to show and dismiss a loading indicator:
-- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator`
-- `dismiss(animated: Boolean = true, completion: () -> Unit = {})`
-
-### Android
+```kotlin
+val indicator = builder.build {
+    setStyle(LoadingIndicator.Style.LIGHT /* .DARK */)
+}.present()
+```
 
 On Android this builder needs an activity fragment:
 
 ```kotlin
-val indicator = AndroidLoadingIndicator
-    .Builder(activityFragment)
-    .create()
-    .present()
+val indicator = AndroidLoadingIndicator.Builder(activityFragment)
 ```
-
-### iOS
 
 On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
-let indicator = IOSLoadingIndicator
-    .Builder(viewController)
-    .create()
-    .present(animated: true) { }
+let indicator = IOSLoadingIndicator.Builder(viewController)
 ```
+
+The `LoadingIndicator` interface has implementation on the Android as `AndroidLoadingIndicator`
+and on the iOS as `IOSLoadingIndicator`.
+
+The `LoadingIndicator` has methods to show and dismiss a loading indicator:
+- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator`
+- `dismiss(animated: Boolean = true, completion: () -> Unit = {})`

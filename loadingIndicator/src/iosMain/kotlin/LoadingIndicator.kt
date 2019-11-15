@@ -22,41 +22,61 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class IOSLoadingIndicator private constructor(private val view: UIViewController, private val controller: UIViewController) : LoadingIndicator {
 
-    private class DefaultView: UIViewController(null, null) {
+    private class DefaultView(
+        private val style: LoadingIndicator.Style
+    ) : UIViewController(null, null) {
+
+        private val backgroundColor: UIColor
+            get() = when (style) {
+                LoadingIndicator.Style.LIGHT -> UIColor.whiteColor
+                LoadingIndicator.Style.DARK -> UIColor.blackColor
+            }
+
+        private val foregroundColor: UIColor
+            get() = when (style) {
+                LoadingIndicator.Style.LIGHT -> UIColor.blackColor
+                LoadingIndicator.Style.DARK -> UIColor.whiteColor
+            }
+
         override fun viewDidLoad() {
             super.viewDidLoad()
             setupView()
         }
 
         private fun setupView() {
-            view.backgroundColor = UIColor(0.0, 1/3.0)
+            view.backgroundColor = UIColor(0.0, 1 / 3.0)
             val contentView = UIView().apply {
-                backgroundColor = UIColor.whiteColor
+                backgroundColor = this@DefaultView.backgroundColor
                 layer.cornerRadius = 14.0
                 translatesAutoresizingMaskIntoConstraints = false
             }
             view.addSubview(contentView)
-            NSLayoutConstraint.activateConstraints(listOf(
-                contentView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
-                contentView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
-                contentView.widthAnchor.constraintEqualToConstant(100.0),
-                contentView.heightAnchor.constraintEqualToConstant(100.0)
-            ))
+            NSLayoutConstraint.activateConstraints(
+                listOf(
+                    contentView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
+                    contentView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
+                    contentView.widthAnchor.constraintEqualToConstant(100.0),
+                    contentView.heightAnchor.constraintEqualToConstant(100.0)
+                )
+            )
             val activityView = UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
-                color = UIColor.blackColor
+                color = foregroundColor
                 startAnimating()
                 translatesAutoresizingMaskIntoConstraints = false
             }
             contentView.addSubview(activityView)
-            NSLayoutConstraint.activateConstraints(listOf(
-                activityView.centerXAnchor.constraintEqualToAnchor(contentView.centerXAnchor),
-                activityView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor)
-            ))
+            NSLayoutConstraint.activateConstraints(
+                listOf(
+                    activityView.centerXAnchor.constraintEqualToAnchor(contentView.centerXAnchor),
+                    activityView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor)
+                )
+            )
         }
     }
 
     class Builder(private val controller: UIViewController) : LoadingIndicator.Builder {
-        override fun create() = IOSLoadingIndicator(DefaultView(), controller)
+        override var style = LoadingIndicator.Style.LIGHT
+        override fun create() = IOSLoadingIndicator(DefaultView(style), controller)
     }
 
     init {

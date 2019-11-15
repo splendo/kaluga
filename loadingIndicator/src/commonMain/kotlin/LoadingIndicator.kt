@@ -24,9 +24,33 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 interface LoadingIndicator {
 
     /**
+     * Style of the Loading Indicator
+     */
+    enum class Style(val value: Int) {
+        LIGHT(0),
+        DARK(1);
+
+        companion object {
+            fun valueOf(value: Int) = values().first { it.value == value }
+        }
+    }
+
+    /**
      * Interface used to build loading indicator
      */
     interface Builder {
+
+        var style: Style
+
+        /** The style of the loading indicator */
+        fun setStyle(style: Style) = apply { this.style = style }
+
+        /** Returns built loading indicator */
+        fun build(initialize: Builder.() -> Unit): LoadingIndicator {
+            initialize()
+            return create()
+        }
+
         /** Returns created loading indicator */
         fun create(): LoadingIndicator
     }

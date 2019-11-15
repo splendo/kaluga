@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.ActivityIndicator
 import com.splendo.kaluga.loadingIndicator.AndroidLoadingIndicator
+import com.splendo.kaluga.loadingIndicator.LoadingIndicator
 import kotlinx.android.synthetic.main.activity_loading.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -35,13 +36,20 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_show_loading_indicator.setOnClickListener {
-            showLoadingIndicator()
+        btn_show_loading_indicator_light.setOnClickListener {
+            showLoadingIndicator(LoadingIndicator.Style.LIGHT)
+        }
+
+        btn_show_loading_indicator_dark.setOnClickListener {
+            showLoadingIndicator(LoadingIndicator.Style.DARK)
         }
     }
 
-    private fun showLoadingIndicator() {
-        val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)).show()
+    private fun showLoadingIndicator(style: LoadingIndicator.Style) {
+        val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)) {
+            setStyle(style)
+        }.show()
+
         GlobalScope.launch {
             delay(3_000)
             indicator.dismiss()
