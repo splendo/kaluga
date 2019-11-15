@@ -33,7 +33,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class AndroidLoadingIndicator private constructor(viewResId: Int, style: LoadingIndicator.Style, private val activity: FragmentActivity) : LoadingIndicator {
 
     class Builder(private val activity: FragmentActivity) : LoadingIndicator.Builder {
-        override var style = LoadingIndicator.Style.LIGHT
+        override var style = LoadingIndicator.Style.SYSTEM
         override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, style, activity)
     }
 

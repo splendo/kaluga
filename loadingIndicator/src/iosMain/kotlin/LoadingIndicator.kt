@@ -82,7 +82,7 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
     }
 
     class Builder(private val controller: UIViewController) : LoadingIndicator.Builder {
-        override var style = LoadingIndicator.Style.LIGHT
+        override var style = LoadingIndicator.Style.SYSTEM
         override fun create() = IOSLoadingIndicator(DefaultView(style), controller)
     }
 

@@ -6,11 +6,11 @@ A library allows you to show loading indicator view.
 
 ```kotlin
 val indicator = builder.build {
-    setStyle(LoadingIndicator.Style.SYSTEM /* also .LIGHT or .DARK */)
+    setStyle(LoadingIndicator.Style.LIGHT /* .DARK, default is .SYSTEM */)
 }.present()
 ```
 
-> System style will adapt colors for current appearance
+> `.SYSTEM` style will adapt colors for current appearance
 
 On Android this builder needs an activity fragment:
 
