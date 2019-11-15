@@ -11,6 +11,12 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_show_loading_indicator_system"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/show_loading_indicator_system"/>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_show_loading_indicator_light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

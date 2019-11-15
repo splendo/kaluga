@@ -27,8 +27,12 @@ interface LoadingIndicator {
      * Style of the Loading Indicator
      */
     enum class Style(val value: Int) {
+        /** Light appearance */
         LIGHT(0),
-        DARK(1);
+        /** Dark appearance */
+        DARK(1),
+        /** System appearance */
+        SYSTEM(2);
 
         companion object {
             fun valueOf(value: Int) = values().first { it.value == value }

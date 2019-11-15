@@ -36,6 +36,10 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        btn_show_loading_indicator_system.setOnClickListener {
+            showLoadingIndicator(LoadingIndicator.Style.SYSTEM)
+        }
+
         btn_show_loading_indicator_light.setOnClickListener {
             showLoadingIndicator(LoadingIndicator.Style.LIGHT)
         }

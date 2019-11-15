@@ -30,12 +30,18 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
             get() = when (style) {
                 LoadingIndicator.Style.LIGHT -> UIColor.whiteColor
                 LoadingIndicator.Style.DARK -> UIColor.blackColor
+                LoadingIndicator.Style.SYSTEM ->
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
+                        UIColor.blackColor else UIColor.whiteColor
             }
 
         private val foregroundColor: UIColor
             get() = when (style) {
                 LoadingIndicator.Style.LIGHT -> UIColor.blackColor
                 LoadingIndicator.Style.DARK -> UIColor.whiteColor
+                LoadingIndicator.Style.SYSTEM ->
+                    if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
+                        UIColor.whiteColor else UIColor.blackColor
             }
 
         override fun viewDidLoad() {
@@ -44,6 +50,7 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
         }
 
         private fun setupView() {
+            // Dimmed background
             view.backgroundColor = UIColor(0.0, 1 / 3.0)
             val contentView = UIView().apply {
                 backgroundColor = this@DefaultView.backgroundColor

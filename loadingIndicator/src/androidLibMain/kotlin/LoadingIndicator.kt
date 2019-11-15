@@ -42,15 +42,17 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
         private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.LIGHT.value)
 
-        private val backgroundColor: Int
+        private val backgroundColor: Int?
             get() = when (style) {
                 LoadingIndicator.Style.LIGHT -> Color.WHITE
                 LoadingIndicator.Style.DARK -> Color.BLACK
+                LoadingIndicator.Style.SYSTEM -> null
             }
-        private val foregroundColor: Int
+        private val foregroundColor: Int?
             get() = when (style) {
                 LoadingIndicator.Style.LIGHT -> Color.BLACK
                 LoadingIndicator.Style.DARK -> Color.WHITE
+                LoadingIndicator.Style.SYSTEM -> null
             }
 
         companion object {
@@ -70,8 +72,12 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
             return inflater.inflate(viewResId, container).apply {
-                findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor)
-                findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor)
+                if (backgroundColor != null) {
+                    findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor!!)
+                }
+                if (foregroundColor != null) {
+                    findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor!!)
+                }
             }
         }
     }
