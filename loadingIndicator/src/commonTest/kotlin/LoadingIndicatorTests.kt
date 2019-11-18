@@ -48,8 +48,8 @@ class LoadingIndicatorTests {
         val builder = MockBuilder()
         assertEquals(builder.style, LoadingIndicator.Style.SYSTEM)
         builder.build {
-            setStyle(LoadingIndicator.Style.LIGHT)
+            setStyle(LoadingIndicator.Style.CUSTOM)
         }
-        assertEquals(builder.style, LoadingIndicator.Style.LIGHT)
+        assertEquals(builder.style, LoadingIndicator.Style.CUSTOM)
     }
 }

@@ -28,8 +28,7 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
 
         private val backgroundColor: UIColor
             get() = when (style) {
-                LoadingIndicator.Style.LIGHT -> UIColor.whiteColor
-                LoadingIndicator.Style.DARK -> UIColor.blackColor
+                LoadingIndicator.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 LoadingIndicator.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.blackColor else UIColor.whiteColor
@@ -37,8 +36,7 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
 
         private val foregroundColor: UIColor
             get() = when (style) {
-                LoadingIndicator.Style.LIGHT -> UIColor.blackColor
-                LoadingIndicator.Style.DARK -> UIColor.whiteColor
+                LoadingIndicator.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
                 LoadingIndicator.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.whiteColor else UIColor.blackColor

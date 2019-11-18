@@ -15,8 +15,7 @@ class LoadingViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.row) {
         case 0: showLoadingIndicator(.system)
-        case 1: showLoadingIndicator(.light)
-        case 2: showLoadingIndicator(.dark)
+        case 1: showLoadingIndicator(.custom)
         default: ()
         }
     }

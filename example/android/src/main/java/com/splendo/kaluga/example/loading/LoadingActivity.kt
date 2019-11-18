@@ -40,12 +40,8 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
             showLoadingIndicator(LoadingIndicator.Style.SYSTEM)
         }
 
-        btn_show_loading_indicator_light.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.LIGHT)
-        }
-
-        btn_show_loading_indicator_dark.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.DARK)
+        btn_show_loading_indicator_custom.setOnClickListener {
+            showLoadingIndicator(LoadingIndicator.Style.CUSTOM)
         }
     }
 

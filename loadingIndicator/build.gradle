@@ -10,7 +10,7 @@ group = "com.splendo.kaluga"
 
 dependencies {
     implementation 'androidx.fragment:fragment:1.1.0'
-    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 

@@ -1,17 +1,22 @@
 package com.splendo.kaluga.loadingIndicator
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources.ID_NULL
 import android.graphics.Color
 import android.os.Bundle
-import android.text.Layout
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import java.lang.Exception
 
 /*
 
@@ -41,20 +46,26 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
     class LoadingDialog : DialogFragment() {
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
-        private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.LIGHT.value)
+        private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.SYSTEM.value)
 
-        private val backgroundColor: Int?
-            get() = when (style) {
-                LoadingIndicator.Style.LIGHT -> Color.WHITE
-                LoadingIndicator.Style.DARK -> Color.BLACK
-                LoadingIndicator.Style.SYSTEM -> null
-            }
-        private val foregroundColor: Int?
-            get() = when (style) {
-                LoadingIndicator.Style.LIGHT -> Color.BLACK
-                LoadingIndicator.Style.DARK -> Color.WHITE
-                LoadingIndicator.Style.SYSTEM -> null
-            }
+        @ColorInt
+        private fun backgroundColor(context: Context): Int = when (style) {
+            LoadingIndicator.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.windowBackground)
+            LoadingIndicator.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorBackground)
+        }
+
+        @ColorInt
+        private fun foregroundColor(context: Context): Int = when (style) {
+            LoadingIndicator.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.colorAccent)
+            LoadingIndicator.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorAccent)
+        }
+
+        @ColorInt
+        private fun resolveAttrColor(context: Context, @AttrRes colorAttrRes: Int): Int {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(colorAttrRes, typedValue, true)
+            return typedValue.data
+        }
 
         companion object {
 
@@ -73,12 +84,8 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
 
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
             return inflater.inflate(viewResId, container).apply {
-                if (backgroundColor != null) {
-                    findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor!!)
-                }
-                if (foregroundColor != null) {
-                    findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor!!)
-                }
+                findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
+                findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor(inflater.context))
             }
         }
     }
