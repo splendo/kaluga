@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 
@@ -60,7 +61,7 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
             private const val RESOURCE_ID_KEY = "resId"
             private const val STYLE_KEY = "style"
 
-            fun newInstance(viewResId: Int, style: LoadingIndicator.Style) = LoadingDialog().apply {
+            fun newInstance(@IdRes viewResId: Int, style: LoadingIndicator.Style) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, style.ordinal)
