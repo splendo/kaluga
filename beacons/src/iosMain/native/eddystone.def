@@ -1,0 +1,4 @@
+package = framework.eddystone
+language = Objective-C
+headers = Eddystone.h Eddystone-Swift.h
+excludeDependentModules = true

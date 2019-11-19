@@ -66,3 +66,5 @@ projectFilesBackup*/
 google-services.json
 
 *.framework
+
+**/Carthage
