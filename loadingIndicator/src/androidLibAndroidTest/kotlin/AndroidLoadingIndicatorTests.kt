@@ -11,7 +11,6 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import com.splendo.kaluga.loadingIndicator.test.R
 
 /*
 

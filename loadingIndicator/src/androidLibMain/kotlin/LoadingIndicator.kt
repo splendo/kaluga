@@ -3,7 +3,6 @@ package com.splendo.kaluga.loadingIndicator
 import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources.ID_NULL
-import android.graphics.Color
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
-import java.lang.Exception
 
 /*
 
