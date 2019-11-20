@@ -2,6 +2,7 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
+import com.splendo.kaluga.utils.applyIf
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -28,10 +29,6 @@ actual class AlertInterface(
     private val alert: Alert,
     private val context: Context
 ) : BaseAlertPresenter(alert) {
-
-    private inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
-        if (condition) block(this)
-    }
 
     private var alertDialog: AlertDialog? = null
 

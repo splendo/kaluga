@@ -10,6 +10,12 @@ apply from: "../gradle/publishable_component.gradle"
 group = "com.splendo.kaluga"
 version = gradle.library_version
 
+repositories {
+    google()
+    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
+    mavenCentral()
+}
+
 dependencies {
     androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
@@ -18,5 +24,22 @@ dependencies {
 android {
     testOptions {
         unitTests.returnDefaultValues = true
+    }
+}
+
+kotlin {
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation project(":base", "")
+            }
+        }
     }
 }

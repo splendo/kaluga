@@ -19,7 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.location.*
-import com.splendo.kaluga.runBlocking
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
