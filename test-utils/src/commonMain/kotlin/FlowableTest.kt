@@ -1,4 +1,4 @@
-package com.splendo.kaluga.basetest
+package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands

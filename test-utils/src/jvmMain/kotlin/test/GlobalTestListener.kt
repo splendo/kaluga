@@ -1,4 +1,4 @@
-package com.splendo.kaluga.basetest
+package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,6 +19,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual class GlobalTestListener {
     actual fun beforeTest() {
+        // required for running headless on CI
+        val props = System.getProperties().setProperty("javax.accessibility.assistive_technologies", "")
     }
 
     actual fun afterTest() {

@@ -1,4 +1,4 @@
-package com.splendo.kaluga.basetest
+package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,13 +17,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class GlobalTestListener {
-    actual fun beforeTest() {
-        // required for running headless on CI
-        val props = System.getProperties().setProperty("javax.accessibility.assistive_technologies", "")
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+
+/*
+ * Android Studio at this time thinks this class has too many implementations because of the test and androidTest source sets.
+ * To clear the error close the file and restart Android Studio ¯\_(ツ)_/¯
+ */
+expect class GlobalTestListener() {
+    fun beforeTest()
+    fun afterTest()
+}
+
+open class BaseTest {
+    private val testListener = GlobalTestListener()
+
+    @BeforeTest
+    fun beforeTest() {
+        testListener.beforeTest()
     }
 
-    actual fun afterTest() {
+    @AfterTest
+    fun afterTest() {
+        testListener.afterTest()
     }
 
 }

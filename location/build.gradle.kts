@@ -31,7 +31,7 @@ kotlin {
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":baseTest", ""))
+                implementation(project(":test-utils", ""))
             }
         }
     }

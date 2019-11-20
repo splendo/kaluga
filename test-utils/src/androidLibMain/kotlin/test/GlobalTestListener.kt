@@ -1,4 +1,4 @@
-package com.splendo.kaluga.basetest
+package com.splendo.kaluga.test
 
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.Logger
