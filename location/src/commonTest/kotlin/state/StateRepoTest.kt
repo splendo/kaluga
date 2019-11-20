@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import com.splendo.kaluga.state.SimpleState.StateOne
-import com.splendo.kaluga.flow.test.FlowableTest
+import com.splendo.kaluga.basetest.FlowableTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
