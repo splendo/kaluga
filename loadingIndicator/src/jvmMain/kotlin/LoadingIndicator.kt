@@ -17,6 +17,3 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
-
-actual class View
-actual class Controller

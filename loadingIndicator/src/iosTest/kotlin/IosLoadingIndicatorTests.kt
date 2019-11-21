@@ -31,6 +31,15 @@ class IosLoadingIndicatorTests {
         )
     }
 
+    @Test
+    fun builderSetStyle() {
+        assertNotNull(IOSLoadingIndicator
+            .Builder(UIViewController()).build {
+                setStyle(LoadingIndicator.Style.CUSTOM)
+            }
+        )
+    }
+
     private lateinit var window: UIWindow
 
     @BeforeTest
@@ -41,33 +50,27 @@ class IosLoadingIndicatorTests {
 
     @Test
     fun presentIndicator() {
-        val indicatorView = UIViewController()
-        indicatorView.view.backgroundColor = UIColor.blackColor
-        val indicator = IOSLoadingIndicator
-            .Builder(indicatorView)
-            .create()
         val hostView = UIViewController()
+        val indicator = IOSLoadingIndicator
+            .Builder(hostView)
+            .create()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        indicator.present(hostView, false)
+        indicator.present(false)
         assertTrue(indicator.isVisible)
-        assertEquals(indicatorView, hostView.presentedViewController)
     }
 
     @Test
     fun dismissIndicator() {
-        val indicatorView = UIViewController()
-        indicatorView.view.backgroundColor = UIColor.blackColor
-        val indicator = IOSLoadingIndicator
-            .Builder(indicatorView)
-            .create()
         val hostView = UIViewController()
+        val indicator = IOSLoadingIndicator
+            .Builder(hostView)
+            .create()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        indicator.present(hostView, false) {
-            assertEquals(indicatorView, hostView.presentedViewController)
+        indicator.present(false) {
             assertTrue(indicator.isVisible)
             indicator.dismiss(false) {
                 assertNull(hostView.presentedViewController)

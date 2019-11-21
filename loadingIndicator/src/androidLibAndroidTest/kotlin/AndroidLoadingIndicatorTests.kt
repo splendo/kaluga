@@ -11,7 +11,6 @@ import org.junit.Rule
 import kotlin.test.Test
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import com.splendo.kaluga.loadingIndicator.test.R
 
 /*
 
@@ -46,7 +45,7 @@ class AndroidLoadingIndicatorTests {
     fun builderInitializer() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val indicator = AndroidLoadingIndicator
-                .Builder(R.layout.loading_indicator_view)
+                .Builder(activityRule.activity)
                 .create()
             assertNotNull(indicator)
         }
@@ -56,9 +55,8 @@ class AndroidLoadingIndicatorTests {
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             AndroidLoadingIndicator
-                .Builder(R.layout.loading_indicator_view)
+                .Builder(activityRule.activity)
                 .create()
-                .present(activityRule.activity)
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
         }
     }
@@ -67,9 +65,8 @@ class AndroidLoadingIndicatorTests {
     fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             val indicator = AndroidLoadingIndicator
-                .Builder(R.layout.loading_indicator_view)
+                .Builder(activityRule.activity)
                 .create()
-                .present(activityRule.activity)
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
             indicator.dismiss()
             assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))

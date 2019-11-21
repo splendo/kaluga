@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="li_colorBackground">#FFFFFF</color>
+    <color name="li_colorAccent">#000000</color>
+</resources>

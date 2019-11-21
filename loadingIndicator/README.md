@@ -1,41 +1,49 @@
-## Loading Indicator
+# Loading Indicator
 
-A library allows you to show loading indicator with custom view.
+A library allows you to show loading indicator view.
 
-### Usage
+## Usage
+
+```kotlin
+val indicator = builder.build {
+    setStyle(LoadingIndicator.Style.CUSTOM /* Default is .SYSTEM */)
+}.present()
+```
+
+> `.SYSTEM` style will adapt colors for current appearance
+
+On Android this builder needs an activity fragment:
+
+```kotlin
+val indicator = AndroidLoadingIndicator.Builder(activityFragment)
+```
+
+Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- surface color -->
+    <color name="li_colorBackground">#FFFFFF</color>
+    <!-- progress bar color -->
+    <color name="li_colorAccent">#000000</color>
+</resources>
+```
+
+On iOS this builder should be instantiated with `UIViewController`:
+
+```swift
+let indicator = IOSLoadingIndicator.Builder(viewController)
+```
+
+Define your Color Sets in project's assets if using `.CUSTOM` style:
+
+- `li_colorBackground` for surface color
+- `li_colorAccent` for progress bar color
+
 The `LoadingIndicator` interface has implementation on the Android as `AndroidLoadingIndicator`
 and on the iOS as `IOSLoadingIndicator`.
 
-The nested `Builder` class to build indicator.
-
 The `LoadingIndicator` has methods to show and dismiss a loading indicator:
-- `present(controller: Controller, animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator`
+- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator`
 - `dismiss(animated: Boolean = true, completion: () -> Unit = {})`
-
-On the Android `Controller` is `ActivityFragment` and on the iOS it's `UIViewController`.
-
-#### Android
-
-On Android this builder needs a resource id as custom view for an indicator:
-
-```kotlin
-val indicator = AndroidLoadingIndicator
-    .Builder(R.layout.activity)
-    .create()
-    .present(mActivity)
-```
-
-This resource will be inflated by custom `DialogFragment` inside library.
-
-#### iOS
-
-On iOS this builder should be instantiated with `UIViewController` to display:
-
-```swift
-let indicator = IOSLoadingIndicator
-    .Builder(loadingVC)
-    .create()
-    .present(controller: viewController, animated: true) { }
-```
-
-This view controller will be shown over full screen using cross dissolve modal transition style.
