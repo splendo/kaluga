@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.0")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2")
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }
