@@ -11,6 +11,7 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
+val kotlinx_corountines_version = ext["kotlinx_corountines_version"]!!
 
 repositories {
     maven("https://dl.bintray.com/pocketbyte/hydra/")
@@ -22,7 +23,7 @@ kotlin {
             dependencies {
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.2")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_corountines_version")
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }
