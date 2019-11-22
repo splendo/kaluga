@@ -32,6 +32,9 @@ apply("../../../gradle/ext.gradle")
 val ext =  (gradle as ExtensionAware).extra
 
 if (!(ext["exampleAsRoot"] as Boolean)) {
+    include(":test-utils")
+    project(":test-utils").projectDir = file("../../../test-utils")
+
     include(":location")
     project(":location").projectDir = file("../../../location")
 

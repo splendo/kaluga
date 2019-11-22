@@ -1,4 +1,4 @@
-package com.splendo.kaluga.flow.test
+package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -73,12 +73,10 @@ class BaseFlowableTest : FlowableTest<String>() {
         test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
-
     }
 
     @Test
     fun testExceptionBeingThrown() = runBlockingWithFlow {
-
         action {
             flowable.set("Test")
         }
@@ -95,6 +93,4 @@ class BaseFlowableTest : FlowableTest<String>() {
             debug("We got the throwable ($t) we expected")
         }
     }
-
-
 }

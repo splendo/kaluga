@@ -1,4 +1,4 @@
-package com.splendo.kaluga.flow.test
+package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.flow.Flowable
 import kotlinx.coroutines.*
