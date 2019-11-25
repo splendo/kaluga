@@ -1,5 +1,6 @@
 package com.splendo.kaluga.loadingIndicator
 
+import platform.CoreGraphics.CGFloat
 import platform.UIKit.*
 
 /*
@@ -47,12 +48,13 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
             setupView()
         }
 
+        // NOTES: Cast to CGFloat is needed for Arm32
         private fun setupView() {
             // Dimmed background
-            view.backgroundColor = UIColor(0.0, 1 / 3.0)
+            view.backgroundColor = UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat)
             val contentView = UIView().apply {
                 backgroundColor = this@DefaultView.backgroundColor
-                layer.cornerRadius = 14.0
+                layer.cornerRadius = 14.0 as CGFloat
                 translatesAutoresizingMaskIntoConstraints = false
             }
             view.addSubview(contentView)
@@ -60,8 +62,8 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
                 listOf(
                     contentView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
                     contentView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
-                    contentView.widthAnchor.constraintEqualToConstant(100.0),
-                    contentView.heightAnchor.constraintEqualToConstant(100.0)
+                    contentView.widthAnchor.constraintEqualToConstant(100.0 as CGFloat),
+                    contentView.heightAnchor.constraintEqualToConstant(100.0 as CGFloat)
                 )
             )
             val activityView = UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
