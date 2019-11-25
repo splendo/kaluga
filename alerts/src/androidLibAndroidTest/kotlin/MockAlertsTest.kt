@@ -40,24 +40,6 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoActions() = runBlockingTest {
-        assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity).alert {
-                setTitle("OK")
-            }
-        }
-    }
-
-    @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlockingTest {
-        assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity).alert {
-                setPositiveButton("OK")
-            }
-        }
-    }
-
-    @Test
     fun testBuilderReuse() = runBlockingTest {
 
         val builder = AlertBuilder(activityRule.activity)
