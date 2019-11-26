@@ -214,7 +214,7 @@ abstract class BaseAlertBuilder {
      *
      * @param style The style of an alert
      */
-    fun setStyle(style: Alert.Style) = apply { this.style = style }
+    private fun setStyle(style: Alert.Style) = apply { this.style = style }
 
     /**
      * Builds an alert using DSL syntax (thread safe)
@@ -222,8 +222,8 @@ abstract class BaseAlertBuilder {
      * @param initialize The block to construct an Alert
      * @return The built alert interface object
      */
-    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
-        buildUnsafe(initialize)
+    suspend fun buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
+        buildAlertUnsafe(initialize)
     }
 
     /**
@@ -232,8 +232,32 @@ abstract class BaseAlertBuilder {
      * @param initialize The block to construct an Alert
      * @return The built alert interface object
      */
-    fun buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+    fun buildAlertUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
         reset()
+        setStyle(Alert.Style.ALERT)
+        initialize()
+        return create()
+    }
+
+    /**
+     * Builds an alert using DSL syntax (thread safe)
+     *
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
+     */
+    suspend fun buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
+        buildActionSheetUnsafe(initialize)
+    }
+
+    /**
+     * Builds an alert using DSL syntax (not thread safe)
+     *
+     * @param initialize The block to construct an Alert
+     * @return The built alert interface object
+     */
+    fun buildActionSheetUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+        reset()
+        setStyle(Alert.Style.ACTION_LIST)
         initialize()
         return create()
     }

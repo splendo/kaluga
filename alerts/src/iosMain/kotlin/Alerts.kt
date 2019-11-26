@@ -1,5 +1,7 @@
 package com.splendo.kaluga.alerts
 
+import platform.Foundation.NSString
+import platform.Foundation.localizedStringWithFormat
 import platform.UIKit.*
 
 /*
@@ -63,6 +65,17 @@ actual class AlertInterface(
                     ) {
                         action.handler()
                         afterHandler(action)
+                    }
+                )
+            }
+            // If there is no Cancel action inject it by default
+            if (alert.style == Alert.Style.ACTION_LIST && alert.actions.indexOfFirst { it.style == Alert.Action.Style.CANCEL} == -1) {
+                addAction(
+                    UIAlertAction.actionWithTitle(
+                        NSString.localizedStringWithFormat("Cancel"),
+                        UIAlertActionStyleCancel
+                    ) {
+                        afterHandler(null)
                     }
                 )
             }
