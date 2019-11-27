@@ -1,20 +1,26 @@
+val android_gradle_plugin_version:String by settings
+val kotlin_version:String by settings
+
 pluginManagement {
+
     repositories {
         gradlePluginPortal()
         google()
         jcenter()
     }
+
     resolutionStrategy {
         eachPlugin {
+
             if (requested.id.id == "kotlin-multiplatform") {
                 // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
             }
             if (requested.id.id == "com.android.library") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
+                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
             }
             if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
+                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
             }
         }
     }
