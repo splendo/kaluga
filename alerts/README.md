@@ -15,7 +15,7 @@ fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQue
     // Create Cancel action
     val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
     // Create an Alert with title, message and actions
-    val alert = builder.alert {
+    val alert = builder.buildAlert {
         setTitle(title)
         setMessage("This is sample message")
         addActions(okAction, cancelAction)
@@ -34,7 +34,7 @@ Or this:
 // Shared code
 fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create an Alert with title, message and actions
-    val alert = builder.alert {
+    val alert = builder.buildAlert {
         setTitle(title)
         setPositiveButton("Yes") { /* handle `Yes` action */ }
         setNegativeButton("No") { /* handle `No` action */ }
@@ -67,9 +67,8 @@ You can also show action sheet using Actions with handlers:
 
 ```kotlin
 fun showList(builder: AlertBuilder) = MainScope().launch(MainQueueDispatcher) {
-    builder.alert {
+    builder.buildActionSheet {
         setTitle("Select an option")
-        setStyle(Alert.Style.ACTION_LIST)
         addActions(
             Alert.Action("Option 1") { /* handle option #1 */ },
             Alert.Action("Option 2") { /* handle option #2 */ },
@@ -79,14 +78,14 @@ fun showList(builder: AlertBuilder) = MainScope().launch(MainQueueDispatcher) {
     }.show()
 }
 ```
-
+> Cancel action will be added automatically on iOS platform
 > You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
 
 In order to dismiss alert you can use `dismiss()` function:
 
 ```kotlin
 // Build alert
-val alert = build {
+val alert = builder.buildAlert {
     setTitle("Please wait...")
     setPositiveButton("OK")
 }
@@ -100,17 +99,22 @@ alert.dismiss()
 
 The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
 
-Build alert:
-- `suspend alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
-- `buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
+### Build alert
 
-Set title, style and message:
+- `suspend buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildAlertUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
+
+### Build action sheet
+
+- `suspend buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildActionSheetUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
+
+### Set title, style and message
 
 - `setTitle(title: String?)` — sets optional title for the alert
-- `setStyle(style: Alert.Style)` - sets the type of alert to display (see below)
 - `setMessage(message: String?)` — sets an optional message for the alert
 
-Set buttons:
+### Set buttons
 
 - `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert
 - `setNegativeButton(title: String, handler: AlertActionHandler)` — sets a negative button for the alert
@@ -118,19 +122,11 @@ Set buttons:
 
 > On Android you can have only maximum of 3 buttons (each of type Positive, Negative and Neutral) for the alert with Alert.Style.ALERT
 
-Set actions for action sheet:
+### Set actions for action sheet
 
 - `addActions(actions: List<Alert.Action>)` or `addActions(vararg actions: Alert.Action)` — adds a list of actions for the alert
 
 > On iOS you can have only 1 button with type of Action.Style.Cancel / Negative
-
-#### Alert styles
-
-There are two different Alert styles:
-- `Alert.Style.ALERT` — a standard alert type
-- `Alert.Style.ACTION_LIST` — an action sheet type
-
-> Default alert requires a title or message to be set, but for action sheet it is not necessary.
 
 #### Action styles
 

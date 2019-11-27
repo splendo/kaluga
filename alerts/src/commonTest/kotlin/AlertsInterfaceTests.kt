@@ -16,7 +16,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoActions() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.alert {
+            builder.buildAlert {
                 setTitle("OK")
             }
         }
@@ -26,7 +26,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoTitleOrMessage() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.alert {
+            builder.buildAlert {
                 setPositiveButton("OK")
             }
         }
@@ -36,10 +36,27 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.alert {
+            val presenter = builder.buildAlert {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")
+            }
+
+            val result = coroutineContext.run { presenter.show() }
+            assertNull(result)
+        }
+        // On cancel call, we expect the dialog to be dismissed
+        coroutine.cancel()
+    }
+
+    @Test
+    fun testActionSheetFlowCancel() = runBlocking {
+        val coroutine = CoroutineScope(Dispatchers.Main).launch {
+            val presenter = builder.buildActionSheet {
+                setTitle("Choose")
+                setPositiveButton("Option 1")
+                setPositiveButton("Option 2")
+                setPositiveButton("Option 3")
             }
 
             val result = coroutineContext.run { presenter.show() }

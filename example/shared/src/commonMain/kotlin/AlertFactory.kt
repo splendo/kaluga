@@ -26,13 +26,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class AlertFactory(private val builder: AlertBuilder) {
 
-    private suspend fun build(initialize: AlertBuilder.() -> Unit) =
-        builder.alert { builder.initialize() }
-
     fun showAlert() = MainScope().launch(MainQueueDispatcher) {
         val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
         val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
-        val alert = build {
+        val alert = builder.buildAlert {
             setTitle("Hello, Kaluga 🐟")
             setMessage("This is sample message")
             addActions(okAction, cancelAction)
@@ -45,7 +42,7 @@ class AlertFactory(private val builder: AlertBuilder) {
 
     fun showAndDismissAfter(timeSecs: Long) = MainScope().launch(MainQueueDispatcher) {
         val coroutine = MainScope().launch(MainQueueDispatcher) {
-            build {
+            builder.buildAlert {
                 setTitle("Wait for $timeSecs sec...")
                 setPositiveButton("OK")
             }.show()
@@ -57,9 +54,8 @@ class AlertFactory(private val builder: AlertBuilder) {
     }
 
     fun showList() = MainScope().launch(MainQueueDispatcher) {
-        build {
+        builder.buildActionSheet {
             setTitle("Select an option")
-            setStyle(Alert.Style.ACTION_LIST)
             addActions(
                 Alert.Action("Option 1") { debug("Option 1") },
                 Alert.Action("Option 2") { debug("Option 2") },
