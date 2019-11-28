@@ -1,4 +1,5 @@
 package com.splendo.kaluga.location
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,7 +18,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class LocationFlowable:
-    BaseLocationFlowable() {
-
-}
+actual class LocationFlowable : BaseLocationFlowable()

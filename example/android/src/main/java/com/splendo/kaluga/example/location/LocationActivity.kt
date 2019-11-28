@@ -38,7 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.info
 @SuppressLint("SetTextI18n")
 class LocationActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val location = LocationFlowable()
+    private lateinit var location: LocationFlowable
 
     @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,14 +84,14 @@ class LocationActivity : AppCompatActivity(R.layout.activity_main) {
                 this@LocationActivity
             )
 
-            location.set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
-            location.setFusedLocationProviderClient(client)
+            location = LocationFlowable.Builder(client).create().apply {
+                set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
+            }
             location.flow().collect { value ->
                 info.text = "location: $value"
                 info.animate().withEndAction {
                     info.animate().setDuration(10000).alpha(0.12f).start()
                 }.alpha(1f).setDuration(100).start()
-
             }
         }
     }

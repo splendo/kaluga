@@ -1,4 +1,5 @@
 package com.splendo.kaluga.location
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -24,23 +25,17 @@ import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSDate
 import platform.Foundation.create
-import kotlin.test.BeforeTest
 
-class MockLocationFlowableTest: LocationFlowableTest() {
+class MockLocationFlowableTest : LocationFlowableTest() {
 
+    private val locationManager = CLLocationManager()
 
-    lateinit var manager: CLLocationManager
-    @BeforeTest
-    fun setLocationManager() {
-        manager = flowable.addCLLocationManager()
+    override val flowable: LocationFlowable by lazy { LocationFlowable.Builder(locationManager).create() }
 
-    }
-
-    private fun clLocation(location: KnownLocation):CLLocation {
-
+    private fun clLocation(location: KnownLocation): CLLocation {
         location.apply {
             return CLLocation(
-                coordinate =  cValue {
+                coordinate = cValue {
                     latitude = location.latitude
                     longitude = location.longitude
                 },
@@ -49,17 +44,16 @@ class MockLocationFlowableTest: LocationFlowableTest() {
                 horizontalAccuracy = horizontalAccuracy ?: 0.0,
                 speed = speed ?: 0.0,
                 course = course ?: 0.0,
-                timestamp = NSDate.create(timeIntervalSince1970 = time.ms / 1000.0))
+                timestamp = NSDate.create(timeIntervalSince1970 = time.ms / 1000.0)
+            )
         }
-
     }
 
     override suspend fun setLocation(location: KnownLocation) {
-        manager.delegate!!.locationManager(manager = manager, didUpdateLocations = listOf (
-            clLocation(location)
-        ))
+        locationManager.delegate!!.locationManager(
+            manager = locationManager, didUpdateLocations = listOf(
+                clLocation(location)
+            )
+        )
     }
-
-
-
 }

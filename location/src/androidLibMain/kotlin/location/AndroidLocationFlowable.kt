@@ -92,12 +92,15 @@ sealed class LocationFlowableState(override val repo: LocationManagerStateRepo) 
     }
 }
 
-actual class LocationFlowable :
-    BaseLocationFlowable() {
+actual class LocationFlowable : BaseLocationFlowable() {
+
+    class Builder(private val provider: FusedLocationProviderClient) : BaseLocationFlowable.Builder {
+        override fun create() = LocationFlowable().setFusedLocationProviderClient(provider)
+    }
 
     private var stateRepo = LocationManagerStateRepo(this)
 
-    fun setFusedLocationProviderClient(provider: FusedLocationProviderClient) {
+    private fun setFusedLocationProviderClient(provider: FusedLocationProviderClient) = apply {
         stateRepo.changeStateBlocking {
             when (it) {
                 is NoLocationClient -> it + provider

@@ -42,7 +42,6 @@ fun activityIndicator(viewController : UIViewController, style: LoadingIndicator
 }
 
 class KotlinNativeFramework {
-    private val loc = LocationFlowable()
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
@@ -50,8 +49,8 @@ class KotlinNativeFramework {
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
-        loc.addCLLocationManager(locationManager)
-        LocationPrinter(loc).printTo {
+        val location = LocationFlowable.Builder(locationManager).create()
+        LocationPrinter(location).printTo {
             label.text = it
         }
         debug("proceed executing after location coroutines")
