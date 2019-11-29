@@ -101,13 +101,11 @@ The `BaseAlertBuilder` abstract class has implementations on the Android as `Ale
 
 ### Build alert
 
-- `suspend buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
-- `buildAlertUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
+- `buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
 
 ### Build action sheet
 
-- `suspend buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
-- `buildActionSheetUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — build `AlertInterface`, not thread-safe
+- `buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
 
 ### Set title, style and message
 
