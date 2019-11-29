@@ -22,7 +22,6 @@ To stop listening for specific beacon you can use `BeaconMonitor.unsubscribe(bea
 #### Improvements
 
 * Fix iOS sample app to compile properly.
-* Try to remove `@Suppress("NO_ACTUAL_FOR_EXPECT")` from `BeaconScanner`. It can cause runtime errors.
 * Test all device-beacon types combinations on real devices (device types - iOS, Android; beacon types - iBeacon, Eddystone URL, Eddystone UID, Eddystone TLM, Eddystone EID)
 * Refactor `BeaconScanner` to extract common logic
 * Consider using Carthage dependency [locally](https://github.com/Carthage/Carthage/issues/1458) or alternatively enable cache for Carthage 

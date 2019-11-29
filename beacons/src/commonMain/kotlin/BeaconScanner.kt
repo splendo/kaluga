@@ -18,7 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-@Suppress("NO_ACTUAL_FOR_EXPECT")
 expect class BeaconScanner {
 
     fun addListener(beaconId: String, listener: Listener)
