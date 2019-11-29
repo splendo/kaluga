@@ -19,24 +19,41 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 /**
- * Class represents a view
- */
-expect class View
-
-/**
- * Class represents a view controller
- */
-expect class Controller
-
-/**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
 interface LoadingIndicator {
 
     /**
+     * Style of the Loading Indicator
+     */
+    enum class Style(val value: Int) {
+        /** System appearance */
+        SYSTEM(0),
+        /** Custom appearance */
+        CUSTOM(1);
+
+        companion object {
+            fun valueOf(value: Int) = values().first { it.value == value }
+        }
+    }
+
+    /**
      * Interface used to build loading indicator
      */
     interface Builder {
+
+        /** The style of the loading indicator */
+        var style: Style
+
+        /** Sets the style fo the loading indicator */
+        fun setStyle(style: Style) = apply { this.style = style }
+
+        /** Returns built loading indicator */
+        fun build(initialize: Builder.() -> Unit): LoadingIndicator {
+            initialize()
+            return create()
+        }
+
         /** Returns created loading indicator */
         fun create(): LoadingIndicator
     }
@@ -49,11 +66,10 @@ interface LoadingIndicator {
     /**
      * Presents as indicator
      *
-     * @param controller A host controller to present indicator on top of it
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun present(controller: Controller, animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
+    fun present(animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
 
     /**
      * Dismisses the indicator

@@ -1,6 +1,7 @@
 package com.splendo.kaluga.loadingIndicator
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /*
 
@@ -19,3 +20,36 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+class LoadingIndicatorTests {
+
+    class MockLoadingIndicator: LoadingIndicator {
+        lateinit var onPresentCalled: () -> Unit
+        lateinit var onDismissCalled: () -> Unit
+
+        override val isVisible: Boolean = false
+        override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator {
+            onPresentCalled()
+            return this
+        }
+
+        override fun dismiss(animated: Boolean, completion: () -> Unit) {
+            onDismissCalled()
+        }
+    }
+
+    class MockBuilder: LoadingIndicator.Builder {
+        override var style = LoadingIndicator.Style.SYSTEM
+        override fun create(): LoadingIndicator = MockLoadingIndicator()
+    }
+
+    @Test
+    fun testBuilder() {
+        val builder = MockBuilder()
+        assertEquals(builder.style, LoadingIndicator.Style.SYSTEM)
+        builder.build {
+            setStyle(LoadingIndicator.Style.CUSTOM)
+        }
+        assertEquals(builder.style, LoadingIndicator.Style.CUSTOM)
+    }
+}
