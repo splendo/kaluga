@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTargetPreset
 import org.jetbrains.kotlin.gradle.tasks.CInteropProcess
@@ -61,7 +62,10 @@ tasks.withType(CInteropProcess::class) {
     dependsOn("carthageBootstrap")
 }
 
-// Delete build directory on clean
-tasks.named<Delete>("clean") {
-    delete(buildDir)
+tasks.create("clearCarthageFiles", Delete::class.java) {
+    delete(
+        "$projectDir/src/iosMain/native/Carthage",
+        "$projectDir/src/iosMain/native/Cartfile.resolved"
+    )
 }
+tasks.named<Delete>("clean").dependsOn(tasks.named("clearCarthageFiles"))
