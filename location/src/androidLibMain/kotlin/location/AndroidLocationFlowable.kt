@@ -18,77 +18,51 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.google.android.gms.location.*
-import com.splendo.kaluga.location.LocationFlowableState.NoLocationClient
-import com.splendo.kaluga.state.State
-import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
-class LocationManagerStateRepo(
-    val locationFlowable: LocationFlowable
-) : StateRepo<LocationFlowableState>() {
+data class FusedLocationProviderHandler(
+    private val locationFlowable: LocationFlowable,
+    private val fusedLocationProviderClient: FusedLocationProviderClient
+) :
+    CoroutineScope by CoroutineScope(Dispatchers.Default + CoroutineName("Android Location Updates")) {
 
-    override fun initialState(): LocationFlowableState {
-        return NoLocationClient(this)
-    }
-}
+    private val locationCallback: LocationCallback
 
-sealed class LocationFlowableState(override val repo: LocationManagerStateRepo) : State<LocationFlowableState>(repo) {
-
-    class NoLocationClient(override val repo: LocationManagerStateRepo) : LocationFlowableState(repo) {
-        operator fun plus(locationProvider: FusedLocationProviderClient): HasFusedLocationProvider {
-            return HasFusedLocationProvider(repo, locationProvider)
-        }
-    }
-
-    data class HasFusedLocationProvider(
-        override val repo: LocationManagerStateRepo,
-        private val fusedLocationProviderClient: FusedLocationProviderClient
-    ) :
-        LocationFlowableState(repo),
-        CoroutineScope by CoroutineScope(repo.coroutineContext + Dispatchers.Default + CoroutineName("Android Location Updates")) {
-        val locationCallback: LocationCallback
-
-        init {
-            val (task, locationCallback) = fusedLocationProviderClient.onLocation(
-                coroutineScope = this,
-                locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-                    LocationRequest.PRIORITY_HIGH_ACCURACY
-                ),
-                available = {
-                    debug(TAG, "available in listener: $it")
-                    if (!it.isLocationAvailable) {
-                        debug(TAG, "set location unknown..")
-                        repo.locationFlowable.setUnknownLocation()
-                    }
-                },
-                location = { result ->
-                    result.toKnownLocations().forEach {
-                        debug(TAG, "known locations: $it")
-                        repo.locationFlowable.set(it)
-                    }
-
-                })
-            this.locationCallback = locationCallback
-
-            launch {
-                fusedLocationProviderClient.lastLocation.await()?.let {
-                    repo.locationFlowable.set(it.toKnownLocation())
-                    debug(TAG, "last location sent: $it")
+    init {
+        val (task, locationCallback) = fusedLocationProviderClient.onLocation(
+            coroutineScope = this,
+            locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
+                LocationRequest.PRIORITY_HIGH_ACCURACY
+            ),
+            available = {
+                debug(TAG, "available in listener: $it")
+                if (!it.isLocationAvailable) {
+                    debug(TAG, "set location unknown..")
+                    locationFlowable.setUnknownLocation()
                 }
-                task.await()
+            },
+            location = { result ->
+                result.toKnownLocations().forEach {
+                    debug(TAG, "known locations: $it")
+                    locationFlowable.set(it)
+                }
+
+            })
+        this.locationCallback = locationCallback
+
+        launch {
+            fusedLocationProviderClient.lastLocation.await()?.let {
+                locationFlowable.set(it.toKnownLocation())
+                debug(TAG, "last location sent: $it")
             }
+            task.await()
         }
+    }
 
-        fun removeFusedLocationProvider(): NoLocationClient {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-            return NoLocationClient(repo)
-        }
-
-        companion object {
-            val TAG = "HasFusedLocationProvider"
-        }
+    companion object {
+        val TAG = "HasFusedLocationProvider"
     }
 }
 
@@ -98,14 +72,9 @@ actual class LocationFlowable : BaseLocationFlowable() {
         override fun create() = LocationFlowable().setFusedLocationProviderClient(provider)
     }
 
-    private var stateRepo = LocationManagerStateRepo(this)
+    private lateinit var locationProviderHandler: FusedLocationProviderHandler
 
     private fun setFusedLocationProviderClient(provider: FusedLocationProviderClient) = apply {
-        stateRepo.changeStateBlocking {
-            when (it) {
-                is NoLocationClient -> it + provider
-                is LocationFlowableState.HasFusedLocationProvider -> it.removeFusedLocationProvider() + provider
-            }
-        }
+        locationProviderHandler = FusedLocationProviderHandler(this, provider)
     }
 }
