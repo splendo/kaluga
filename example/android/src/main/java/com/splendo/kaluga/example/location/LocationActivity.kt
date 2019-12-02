@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.android.synthetic.main.activity_main.info
@@ -39,8 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.info
 class LocationActivity : AppCompatActivity(R.layout.activity_main) {
 
     private lateinit var location: LocationFlowable
-
-    @InternalCoroutinesApi
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
