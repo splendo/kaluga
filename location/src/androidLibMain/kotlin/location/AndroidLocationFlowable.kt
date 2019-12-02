@@ -62,7 +62,7 @@ data class FusedLocationProviderHandler(
     }
 
     companion object {
-        val TAG = "HasFusedLocationProvider"
+        const val TAG = "HasFusedLocationProvider"
     }
 }
 
