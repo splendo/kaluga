@@ -1,0 +1,47 @@
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply from: "../gradle/publishable_component.gradle"
+
+group = "com.splendo.kaluga"
+version = gradle.library_version
+
+repositories {
+    google()
+    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}
+
+android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+kotlin {
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation project(":base", "")
+                implementation 'co.touchlab:stately:0.9.3'
+            }
+        }
+    }
+}

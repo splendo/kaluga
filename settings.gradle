@@ -33,6 +33,7 @@ apply from: "gradle/ext.gradle"
 include ':base'
 include ':test-utils'
 include ':alerts'
+include ':keyboardManager'
 include ':logging'
 include ':loadingIndicator'
 include ':permissions'

@@ -50,6 +50,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
+    include(":keyboardManager")
+    project(":keyboardManager").projectDir = file("../../../keyboardManager")
+
     include(":loadingIndicator")
     project(":loadingIndicator").projectDir = file("../../../loadingIndicator")
 }
