@@ -1,7 +1,7 @@
 package com.splendo.kaluga.test
 
 import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboardmanager.KeyboardManagerInterfaceTests
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerTests
 import com.splendo.kaluga.keyboardmanager.KeyboardView
 import kotlinx.cinterop.COpaquePointer
 import platform.UIKit.UIApplication
@@ -10,7 +10,7 @@ import platform.UIKit.UITextField
 import platform.objc.sel_registerName
 import kotlin.test.*
 
-class IOSKeyboardManagerInterfaceTests: KeyboardManagerInterfaceTests() {
+class IOSKeyboardManagerTests: KeyboardManagerTests() {
 
     private val application = MockApplication()
     private val textField = UITextField()

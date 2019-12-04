@@ -18,47 +18,45 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+/**
+ * Class that can a keyboard can be shown for
+ */
 expect class KeyboardView
 
 /**
- * Interface that defines actions that can be applied to the alert.
+ * Interface that defines the actions available for the Keyboard Manager
  */
-interface KeyboardActions {
+interface BaseKeyboardManager {
 
+    /**
+     * Shows the keyboard for a given KeyboardView
+     *
+     * @param KeyboardView The view for which the keyboard will be shown
+     */
     fun show(keyboardView: KeyboardView)
 
     /**
      * Dismisses the current keyboard
-     *
      */
-    fun dismiss()
+    fun hide()
 
 }
 
-/**
- * Base alert presenter class, which used to show and dismiss the keyboard
- * Abstract methods should be implemented on platform-specific side
- */
-abstract class BaseKeyboardManager : KeyboardActions {
-
-}
-
-expect class KeyboardInterface : BaseKeyboardManager
+expect class KeyboardManager : BaseKeyboardManager
 
 /**
- * Base alert builder class, which used to create an alert, which can be shown and dismissed
- * later on using AlertInterface object
+ * Base KeyboardManager builder class, which used to create an KeyboardManager
  *
- * @see KeyboardInterface
+ * @see KeyboardManager
  */
 abstract class BaseKeyboardManagerBuilder {
 
     /**
-     * Creates KeyboardInterface object
+     * Creates KeyboardManager object
      *
-     * @return The KeyboardInterface object
+     * @return The KeyboardManager object
      */
-    abstract fun create(): KeyboardInterface
+    abstract fun create(): KeyboardManager
 }
 
 expect class KeyboardManagerBuilder : BaseKeyboardManagerBuilder

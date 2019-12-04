@@ -25,10 +25,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 actual typealias KeyboardView = UIView
 
 actual class KeyboardManagerBuilder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManagerBuilder() {
-    override fun create() = KeyboardInterface(application)
+    override fun create() = KeyboardManager(application)
 }
 
-actual class KeyboardInterface(private val application: UIApplication) : BaseKeyboardManager() {
+actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
     override fun show(keyboardView: KeyboardView) {
         if (keyboardView.canBecomeFirstResponder) {
@@ -36,7 +36,7 @@ actual class KeyboardInterface(private val application: UIApplication) : BaseKey
         }
     }
 
-    override fun dismiss() {
+    override fun hide() {
         application.sendAction(sel_registerName("resignFirstResponder"), null, null, null)
     }
 }

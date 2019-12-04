@@ -2,7 +2,7 @@ package com.splendo.kaluga.keyboardmanager
 
 import kotlin.test.Test
 
-abstract class KeyboardManagerInterfaceTests {
+abstract class KeyboardManagerTests {
 
     abstract val builder: KeyboardManagerBuilder
     abstract val view: KeyboardView
@@ -17,7 +17,7 @@ abstract class KeyboardManagerInterfaceTests {
 
     @Test
     fun testDismiss() {
-        builder.create().dismiss()
+        builder.create().hide()
         verifyDismiss()
     }
 

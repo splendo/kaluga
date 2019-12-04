@@ -21,16 +21,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 actual class KeyboardView
 
 actual class KeyboardManagerBuilder() : BaseKeyboardManagerBuilder() {
-    override fun create() = KeyboardInterface()
+    override fun create() = KeyboardManager()
 }
 
-actual class KeyboardInterface : BaseKeyboardManager() {
+actual class KeyboardManager : BaseKeyboardManager() {
 
     override fun show(keyboardView: KeyboardView) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun dismiss() {
+    override fun hide() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

@@ -6,15 +6,14 @@ import android.os.IBinder
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboardmanager.KeyboardManagerInterfaceTests
-import com.splendo.kaluga.keyboardmanager.KeyboardView
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerTests
 import org.junit.Before
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
 import org.mockito.Mockito.verify
 
-class AndroidKeyboardManagerInterfaceTests: KeyboardManagerInterfaceTests() {
+class AndroidKeyboardManagerTests: KeyboardManagerTests() {
 
     private lateinit var mockActivity: Activity
     private lateinit var mockView: View

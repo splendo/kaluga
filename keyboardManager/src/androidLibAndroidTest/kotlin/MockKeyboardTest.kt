@@ -4,9 +4,6 @@ import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import androidx.test.uiautomator.SearchCondition
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.Until
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -14,8 +11,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -39,8 +34,6 @@ class MockKeyboardTest {
     @get:Rule
     var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java, false, true)
 
-    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
         const val INTERVAL = 100L
@@ -50,14 +43,14 @@ class MockKeyboardTest {
     fun testShowKeyboard() = runBlockingTest {
 
         val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
-        val keyboardView = KeyboardView(activityRule.activity.textView)
+        val keyboardView = activityRule.activity.textView
 
         CoroutineScope(Dispatchers.Main).launch {
 
             keyboardManager.show(keyboardView)
             validateKeyboard(true)
 
-            keyboardManager.dismiss()
+            keyboardManager.hide()
             validateKeyboard(false)
         }
     }

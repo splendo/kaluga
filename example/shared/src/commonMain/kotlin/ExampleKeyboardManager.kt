@@ -3,7 +3,7 @@ package com.splendo.kaluga.example.shared
 import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
 import com.splendo.kaluga.keyboardmanager.KeyboardView
 
-class ExampleKeyboardManager(private val keyboardManagerBuilder: KeyboardManagerBuilder, private val keyboardView: KeyboardView) {
+class ExampleKeyboardManager(keyboardManagerBuilder: KeyboardManagerBuilder, private val keyboardView: KeyboardView) {
 
     private val keyboardManager = keyboardManagerBuilder.create()
 
@@ -12,7 +12,7 @@ class ExampleKeyboardManager(private val keyboardManagerBuilder: KeyboardManager
     }
 
     fun hide() {
-        keyboardManager.dismiss()
+        keyboardManager.hide()
     }
 
 }
