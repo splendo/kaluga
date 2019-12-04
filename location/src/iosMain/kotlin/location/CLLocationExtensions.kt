@@ -18,4 +18,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class LocationFlowable : BaseLocationFlowable()
+import kotlinx.cinterop.useContents
+import platform.CoreLocation.CLLocation
+import platform.Foundation.timeIntervalSince1970
+
+val CLLocation.knownLocation
+    get() = coordinate.useContents {
+        Location.KnownLocation(
+            latitude = latitude,
+            longitude = longitude,
+            altitude = altitude,
+            horizontalAccuracy = horizontalAccuracy,
+            verticalAccuracy = verticalAccuracy,
+            course = course,
+            speed = speed,
+            time = Location.Time.MeasuredTime(timestamp.timeIntervalSince1970.toLong() * 1_000L)
+        )
+    }

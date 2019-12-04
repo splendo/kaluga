@@ -1,4 +1,7 @@
 buildscript {
+    val android_gradle_plugin_version:String by project
+    val kotlin_version:String by project
+
     repositories {
         mavenCentral()
         google()
@@ -7,9 +10,9 @@ buildscript {
 
     dependencies {
 
-        val kotlinVer = (gradle as ExtensionAware).extra["kotlin_version"]
-        classpath("com.android.tools.build:gradle:3.6.0-alpha12")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVer")
-        classpath("com.google.gms:google-services:4.3.1")
+
+        classpath("com.android.tools.build:gradle:$android_gradle_plugin_version")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath("com.google.gms:google-services:4.3.3")
     }
 }

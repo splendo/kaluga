@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationFlowable
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.android.synthetic.main.activity_main.info
@@ -38,9 +37,8 @@ import kotlinx.android.synthetic.main.activity_main.info
 @SuppressLint("SetTextI18n")
 class LocationActivity : AppCompatActivity(R.layout.activity_main) {
 
-    private val location = LocationFlowable()
-
-    @InternalCoroutinesApi
+    private lateinit var location: LocationFlowable
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -84,14 +82,14 @@ class LocationActivity : AppCompatActivity(R.layout.activity_main) {
                 this@LocationActivity
             )
 
-            location.set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
-            location.setFusedLocationProviderClient(client)
+            location = LocationFlowable.Builder(client).create().apply {
+                set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
+            }
             location.flow().collect { value ->
                 info.text = "location: $value"
                 info.animate().withEndAction {
                     info.animate().setDuration(10000).alpha(0.12f).start()
                 }.alpha(1f).setDuration(100).start()
-
             }
         }
     }
