@@ -23,6 +23,10 @@ import com.splendo.kaluga.log.debug
 
 open class BaseLocationFlowable : BaseFlowable<Location>() {
 
+    interface Builder {
+        fun create(): BaseLocationFlowable
+    }
+
     private var lastLocation: Location.KnownLocation? = null
 
     suspend fun set(location: Location.KnownLocation) {
