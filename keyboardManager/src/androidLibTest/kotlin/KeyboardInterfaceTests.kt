@@ -5,9 +5,9 @@ import android.content.Context
 import android.os.IBinder
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.splendo.kaluga.keyboardManager.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboardManager.KeyboardManagerInterfaceTests
-import com.splendo.kaluga.keyboardManager.KeyboardView
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerInterfaceTests
+import com.splendo.kaluga.keyboardmanager.KeyboardView
 import org.junit.Before
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -35,7 +35,8 @@ class AndroidKeyboardManagerInterfaceTests: KeyboardManagerInterfaceTests() {
     }
 
     override fun verifyShow() {
-        verify(mockInputMethodManager).showSoftInput(eq(mockView), eq(InputMethodManager.SHOW_FORCED))
+        verify(mockView).requestFocus()
+        verify(mockInputMethodManager).toggleSoftInput(eq(InputMethodManager.SHOW_FORCED), eq(InputMethodManager.HIDE_IMPLICIT_ONLY))
     }
 
     override fun verifyDismiss() {
@@ -43,5 +44,5 @@ class AndroidKeyboardManagerInterfaceTests: KeyboardManagerInterfaceTests() {
     }
 
     override val builder get() = KeyboardManagerBuilder(mockActivity)
-    override val view get() = KeyboardView(mockView)
+    override val view get() = mockView
 }

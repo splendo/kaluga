@@ -1,4 +1,4 @@
-package com.splendo.kaluga.keyboardManager
+package com.splendo.kaluga.keyboardmanager
 
 import android.os.Bundle
 import android.widget.LinearLayout

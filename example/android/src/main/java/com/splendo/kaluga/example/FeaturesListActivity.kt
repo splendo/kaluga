@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.alerts.AlertsActivity
-import com.splendo.kaluga.example.keyboardManager.KeyboardManagerActivity
+import com.splendo.kaluga.example.keyboardmanager.KeyboardManagerActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity

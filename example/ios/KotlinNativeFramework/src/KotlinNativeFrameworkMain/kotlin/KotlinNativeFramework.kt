@@ -29,7 +29,7 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.loadingIndicator.*
-import com.splendo.kaluga.keyboardManager.*
+import com.splendo.kaluga.keyboardmanager.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -64,5 +64,5 @@ class KotlinNativeFramework {
         .bundle(nsBundle)
         .build()
 
-    fun keyboardManager(textField: UITextField) = ExampleKeyboardManager(KeyboardManagerBuilder(), KeyboardView(textField))
+    fun keyboardManager(textField: UITextField) = ExampleKeyboardManager(KeyboardManagerBuilder(), textField)
 }

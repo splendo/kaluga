@@ -1,8 +1,8 @@
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.keyboardManager.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboardManager.KeyboardManagerInterfaceTests
-import com.splendo.kaluga.keyboardManager.KeyboardView
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboardmanager.KeyboardManagerInterfaceTests
+import com.splendo.kaluga.keyboardmanager.KeyboardView
 import kotlinx.cinterop.COpaquePointer
 import platform.UIKit.UIApplication
 import platform.UIKit.UIEvent
@@ -23,7 +23,7 @@ class IOSKeyboardManagerInterfaceTests: KeyboardManagerInterfaceTests() {
     override val builder get() = KeyboardManagerBuilder(application)
 
     override val view: KeyboardView
-        get() = KeyboardView(textField)
+        get() = textField
 
     override fun verifyShow() {
         assertTrue(textField.isFirstResponder)

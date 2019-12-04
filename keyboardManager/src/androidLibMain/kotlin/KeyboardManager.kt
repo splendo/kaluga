@@ -1,4 +1,4 @@
-package com.splendo.kaluga.keyboardManager
+package com.splendo.kaluga.keyboardmanager
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual data class KeyboardView(val view: View)
+actual typealias KeyboardView = View
 
 actual class KeyboardManagerBuilder(private val activity: Activity) : BaseKeyboardManagerBuilder() {
     override fun create() = KeyboardInterface(activity)
@@ -36,7 +36,7 @@ actual class KeyboardInterface(
 
     override fun show(keyboardView: KeyboardView) {
         inputMethodManager?.let {
-            keyboardView.view.requestFocus()
+            keyboardView.requestFocus()
             it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }

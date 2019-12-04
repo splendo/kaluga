@@ -49,7 +49,7 @@ dependencies {
         implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:keyboardManager:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:keyboardmanager:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:loadingIndicator:$gradle.ext.library_version"
         implementation project(':shared')
     }
@@ -60,7 +60,7 @@ dependencies {
         implementation project(":permissions")
         implementation project(":logging")
         implementation project(":alerts")
-        implementation project(":keyboardManager")
+        implementation project(":keyboardmanager")
         implementation project(":loadingIndicator")
     }
 

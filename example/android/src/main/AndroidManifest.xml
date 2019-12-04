@@ -34,7 +34,7 @@
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"
                   android:label="Loading Indicator"/>
-        <activity android:name=".keyboardManager.KeyboardManagerActivity"
+        <activity android:name=".keyboardmanager.KeyboardManagerActivity"
             android:label="@string/keyboard_manager"/>
     </application>
 

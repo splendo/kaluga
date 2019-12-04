@@ -28,7 +28,7 @@ kotlin {
                     implementation(project(":base", ""))
                     implementation(project(":logging", ""))
                     implementation(project(":alerts", ""))
-                    implementation(project(":keyboardManager", ""))
+                    implementation(project(":keyboardmanager", ""))
                     implementation(project(":permissions", ""))
                     implementation(project(":loadingIndicator", ""))
                 } else {
@@ -37,7 +37,7 @@ kotlin {
                     implementation("com.splendo.kaluga:base:$libraryVersion")
                     implementation("com.splendo.kaluga:logging:$libraryVersion")
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
-                    implementation("com.splendo.kaluga:keyboardManager:$libraryVersion")
+                    implementation("com.splendo.kaluga:keyboardmanager:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:loadingIndicator:$libraryVersion")
                 }

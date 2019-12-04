@@ -1,4 +1,4 @@
-package com.splendo.kaluga.keyboardManager
+package com.splendo.kaluga.keyboardmanager
 
 import platform.UIKit.UIApplication
 import platform.UIKit.UIView
@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual data class KeyboardView(val view: UIView)
+actual typealias KeyboardView = UIView
 
 actual class KeyboardManagerBuilder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManagerBuilder() {
     override fun create() = KeyboardInterface(application)
@@ -31,8 +31,8 @@ actual class KeyboardManagerBuilder(private val application: UIApplication = UIA
 actual class KeyboardInterface(private val application: UIApplication) : BaseKeyboardManager() {
 
     override fun show(keyboardView: KeyboardView) {
-        if (keyboardView.view.canBecomeFirstResponder) {
-            keyboardView.view.becomeFirstResponder()
+        if (keyboardView.canBecomeFirstResponder) {
+            keyboardView.becomeFirstResponder()
         }
     }
 

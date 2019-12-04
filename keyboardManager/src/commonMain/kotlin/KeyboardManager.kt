@@ -1,4 +1,4 @@
-package com.splendo.kaluga.keyboardManager
+package com.splendo.kaluga.keyboardmanager
 
 /*
 
@@ -18,9 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-expect class KeyboardView {
-
-}
+expect class KeyboardView
 
 /**
  * Interface that defines actions that can be applied to the alert.

@@ -1,4 +1,4 @@
-<manifest package="com.splendo.kaluga.keyboardManager"
+<manifest package="com.splendo.kaluga.keyboardmanager"
           xmlns:android="http://schemas.android.com/apk/res/android">
     <application android:theme="@style/Theme.AppCompat">
         <activity android:name=".TestActivity"/>
