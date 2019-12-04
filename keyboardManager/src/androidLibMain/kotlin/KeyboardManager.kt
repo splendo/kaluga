@@ -36,7 +36,8 @@ actual class KeyboardInterface(
 
     override fun show(keyboardView: KeyboardView) {
         inputMethodManager?.let {
-            it.showSoftInput(keyboardView.view, InputMethodManager.SHOW_FORCED)
+            keyboardView.view.requestFocus()
+            it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
 

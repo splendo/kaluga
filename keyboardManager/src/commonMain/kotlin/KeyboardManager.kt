@@ -60,7 +60,7 @@ abstract class BaseKeyboardManagerBuilder {
      *
      * @return The KeyboardInterface object
      */
-    internal abstract fun create(): KeyboardInterface
+    abstract fun create(): KeyboardInterface
 }
 
 expect class KeyboardManagerBuilder : BaseKeyboardManagerBuilder

@@ -29,6 +29,12 @@
             android:text="Alerts"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_feature_keyboard_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/keyboard_manager"/>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_feature_loading_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
