@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertFactory
 import com.splendo.kaluga.example.shared.ActivityIndicator
+import com.splendo.kaluga.example.shared.ExampleKeyboardManager
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -28,11 +29,13 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.loadingIndicator.*
+import com.splendo.kaluga.keyboardManager.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
+import platform.UIKit.UITextField
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
@@ -61,4 +64,6 @@ class KotlinNativeFramework {
         .Builder()
         .bundle(nsBundle)
         .build()
+
+    fun keyboardManager(textField: UITextField) = ExampleKeyboardManager(KeyboardManagerBuilder(), KeyboardView(textField))
 }

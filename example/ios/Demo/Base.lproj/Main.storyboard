@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -127,6 +127,26 @@
                                             <segue destination="itP-bh-ePK" kind="show" id="WLh-qg-eVj"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="mxB-kd-exD" style="IBUITableViewCellStyleDefault" id="sFc-yY-tif">
+                                        <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sFc-yY-tif" id="9S3-bT-fpU">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Keyboard Manager" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mxB-kd-exD">
+                                                    <rect key="frame" x="20" y="0.0" width="374" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="7Rf-m0-GFx" kind="show" id="ozo-AH-7eH"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -140,6 +160,59 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="U5t-e5-Sl8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="884" y="329"/>
+        </scene>
+        <!--Keyboard Manager View Controller-->
+        <scene sceneID="i03-J0-4z5">
+            <objects>
+                <viewController id="7Rf-m0-GFx" customClass="KeyboardManagerViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ujg-Ft-aqv">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="KiQ-CF-pig">
+                                <rect key="frame" x="10" y="98" width="394" height="34"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="5KH-x9-S2x">
+                                <rect key="frame" x="10" y="142" width="394" height="30"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kY6-Kz-VM4">
+                                        <rect key="frame" x="0.0" y="0.0" width="197" height="30"/>
+                                        <state key="normal" title="Show Keyboard"/>
+                                        <connections>
+                                            <action selector="showButtonPressed" destination="7Rf-m0-GFx" eventType="touchUpInside" id="pKw-9x-kxU"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LHk-eR-LxZ">
+                                        <rect key="frame" x="197" y="0.0" width="197" height="30"/>
+                                        <state key="normal" title="Hide Keyboard"/>
+                                        <connections>
+                                            <action selector="hideButtonPressed" destination="7Rf-m0-GFx" eventType="touchUpInside" id="8qL-Di-xGc"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="2a8-e0-vMR" firstAttribute="trailing" secondItem="KiQ-CF-pig" secondAttribute="trailing" constant="10" id="0Ub-V5-Zsq"/>
+                            <constraint firstItem="KiQ-CF-pig" firstAttribute="leading" secondItem="2a8-e0-vMR" secondAttribute="leading" constant="10" id="5oQ-La-oA9"/>
+                            <constraint firstItem="5KH-x9-S2x" firstAttribute="trailing" secondItem="KiQ-CF-pig" secondAttribute="trailing" id="PUx-Tj-I19"/>
+                            <constraint firstItem="KiQ-CF-pig" firstAttribute="top" secondItem="2a8-e0-vMR" secondAttribute="top" constant="10" id="YqD-JK-hRK"/>
+                            <constraint firstItem="5KH-x9-S2x" firstAttribute="leading" secondItem="KiQ-CF-pig" secondAttribute="leading" id="biC-Co-NJa"/>
+                            <constraint firstItem="5KH-x9-S2x" firstAttribute="top" secondItem="KiQ-CF-pig" secondAttribute="bottom" constant="10" id="mIW-2P-VzJ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="2a8-e0-vMR"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="3vu-M7-Qu6"/>
+                    <connections>
+                        <outlet property="editField" destination="KiQ-CF-pig" id="t55-zo-eh8"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4mF-Fn-ESe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1757.9710144927537" y="-1012.5"/>
         </scene>
         <!--Loading View Controller-->
         <scene sceneID="vaO-15-Tqm">
