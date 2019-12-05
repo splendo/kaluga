@@ -10,7 +10,7 @@ class ContextProvider {
         val context: Context
             get() {
                 val context = application
-                checkNotNull(context) { "Application was never set" }
+                checkNotNull(context) { "Application was never set. Assign ContextProvider.application" }
                 return context
             }
     }
