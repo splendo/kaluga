@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.HUD
+import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.hud.AndroidHUD
 import kotlinx.android.synthetic.main.activity_loading.*
 
@@ -35,11 +35,11 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
         super.onCreate(savedInstanceState)
 
         btn_show_loading_indicator_system.setOnClickListener {
-            HUD(builder).showSystem()
+            HudPresenter(builder).showSystem()
         }
 
         btn_show_loading_indicator_custom.setOnClickListener {
-            HUD(builder).showCustom()
+            HudPresenter(builder).showCustom()
         }
     }
 }
