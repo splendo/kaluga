@@ -18,13 +18,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.google.android.gms.location.*
+import com.splendo.kaluga.base.ContextProvider
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
 data class FusedLocationProviderHandler(
     private val locationFlowable: LocationFlowable,
-    private val fusedLocationProviderClient: FusedLocationProviderClient
+    private val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(ContextProvider.context)
 ) :
     CoroutineScope by CoroutineScope(Dispatchers.Default + CoroutineName("Android Location Updates")) {
 
