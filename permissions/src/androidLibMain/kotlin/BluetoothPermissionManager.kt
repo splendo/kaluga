@@ -23,11 +23,13 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.core.content.ContextCompat
+import com.splendo.kaluga.base.ContextProvider
 
 
 actual open class BluetoothPermissionManager(
-    private val context: Context,
-    private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper()
+    private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper(),
+    private val context: Context = ContextProvider.context
 ) : PermissionManager {
 
     override fun requestPermissions() {
@@ -50,7 +52,7 @@ actual open class BluetoothPermissionManager(
 
     override fun checkPermit(): Permit {
         //this is non-dangerous permission so it should be always available
-        return when (context.checkSelfPermission(Manifest.permission.BLUETOOTH)) {
+        return when (ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH)) {
             PackageManager.PERMISSION_DENIED -> Permit.DENIED
             PackageManager.PERMISSION_GRANTED -> Permit.ALLOWED
             else -> Permit.DENIED
