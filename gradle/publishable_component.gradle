@@ -1,2 +1,0 @@
-apply from: "../gradle/component.gradle"
-apply from: "../gradle/jacoco.gradle"
