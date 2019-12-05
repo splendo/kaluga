@@ -15,13 +15,17 @@ class LoadingViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.row) {
         case 0: showLoadingIndicator(.system)
-        case 1: showLoadingIndicator(.custom)
+        case 1: showLoadingIndicator(.custom, title: "This is a custom title")
         default: ()
         }
     }
 
-    fileprivate func showLoadingIndicator(_ style: LoadingIndicatorLoadingIndicatorStyle) {
-        let indicator = KotlinNativeFrameworkKt.activityIndicator(viewController: self, style: style)
+    fileprivate func showLoadingIndicator(_ style: LoadingIndicatorLoadingIndicatorStyle, title: String? = nil) {
+        let indicator = KotlinNativeFrameworkKt.activityIndicator(
+            viewController: self,
+            style: style,
+            title: title
+        )
         indicator.show(animated: true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             indicator.dismiss(animated: true)

@@ -37,8 +37,9 @@ import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
 fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
-fun activityIndicator(viewController : UIViewController, style: LoadingIndicator.Style) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController)) {
+fun activityIndicator(viewController : UIViewController, style: LoadingIndicator.Style, title: String?) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController)) {
     setStyle(style)
+    setTitle(title)
 }
 
 class KotlinNativeFramework {
