@@ -1,6 +1,6 @@
 package com.splendo.kaluga.example.shared
 
-import com.splendo.kaluga.loadingIndicator.LoadingIndicator
+import com.splendo.kaluga.hud.HUD
 
 /*
 
@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class ActivityIndicator(private val builder: LoadingIndicator.Builder) {
+class HUD(private val builder: HUD.Builder) {
 
     fun showSystem() {
         builder.build { 
@@ -31,7 +31,7 @@ class ActivityIndicator(private val builder: LoadingIndicator.Builder) {
     
     fun showCustom() {
         builder.build { 
-            setStyle(LoadingIndicator.Style.CUSTOM)
+            setStyle(HUD.Style.CUSTOM)
             setTitle("This is a custom title")
         }.present().dismissAfter(3_000)
     }
