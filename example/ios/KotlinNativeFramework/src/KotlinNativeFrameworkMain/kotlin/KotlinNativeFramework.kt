@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertFactory
-import com.splendo.kaluga.example.shared.HUD
+import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -39,7 +39,7 @@ import platform.UIKit.UIViewController
 fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
 
 // Nested classes somehow not exposed into iOS Framework, here is wrapper
-fun activityIndicator(viewController: UIViewController) = HUD(IOSHUD.Builder(viewController))
+fun hudPresenter(viewController: UIViewController) = HudPresenter(IOSHUD.Builder(viewController))
 
 class KotlinNativeFramework {
 
