@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import platform.UIKit.*
 import kotlin.test.*
@@ -21,11 +21,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IosLoadingIndicatorTests {
+class IosHUDTests {
 
     @Test
     fun builderInitializer() {
-        assertNotNull(IOSLoadingIndicator
+        assertNotNull(IOSHUD
             .Builder(UIViewController())
             .create()
         )
@@ -33,9 +33,9 @@ class IosLoadingIndicatorTests {
 
     @Test
     fun builderSetStyle() {
-        assertNotNull(IOSLoadingIndicator
+        assertNotNull(IOSHUD
             .Builder(UIViewController()).build {
-                setStyle(LoadingIndicator.Style.CUSTOM)
+                setStyle(HUD.Style.CUSTOM)
             }
         )
     }
@@ -51,7 +51,7 @@ class IosLoadingIndicatorTests {
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSLoadingIndicator
+        val indicator = IOSHUD
             .Builder(hostView)
             .create()
         window.rootViewController = hostView
@@ -64,7 +64,7 @@ class IosLoadingIndicatorTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSLoadingIndicator
+        val indicator = IOSHUD
             .Builder(hostView)
             .create()
         window.rootViewController = hostView

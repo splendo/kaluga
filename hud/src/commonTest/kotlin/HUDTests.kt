@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -21,14 +21,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class LoadingIndicatorTests {
+class HUDTests {
 
-    class MockLoadingIndicator: LoadingIndicator {
+    class MockHUD: HUD {
         lateinit var onPresentCalled: () -> Unit
         lateinit var onDismissCalled: () -> Unit
 
         override val isVisible: Boolean = false
-        override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator {
+        override fun present(animated: Boolean, completion: () -> Unit): HUD {
             onPresentCalled()
             return this
         }
@@ -42,19 +42,19 @@ class LoadingIndicatorTests {
         }
     }
 
-    class MockBuilder: LoadingIndicator.Builder {
-        override var style = LoadingIndicator.Style.SYSTEM
+    class MockBuilder: HUD.Builder {
+        override var style = HUD.Style.SYSTEM
         override var title: String? = null
-        override fun create(): LoadingIndicator = MockLoadingIndicator()
+        override fun create(): HUD = MockHUD()
     }
 
     @Test
     fun testBuilder() {
         val builder = MockBuilder()
-        assertEquals(builder.style, LoadingIndicator.Style.SYSTEM)
+        assertEquals(builder.style, HUD.Style.SYSTEM)
         builder.build {
-            setStyle(LoadingIndicator.Style.CUSTOM)
+            setStyle(HUD.Style.CUSTOM)
         }
-        assertEquals(builder.style, LoadingIndicator.Style.CUSTOM)
+        assertEquals(builder.style, HUD.Style.CUSTOM)
     }
 }

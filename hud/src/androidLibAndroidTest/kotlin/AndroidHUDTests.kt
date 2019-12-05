@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -30,7 +30,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidLoadingIndicatorTests {
+class AndroidHUDTests {
 
     @get:Rule
     var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
@@ -44,7 +44,7 @@ class AndroidLoadingIndicatorTests {
     @Test
     fun builderInitializer() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
-            val indicator = AndroidLoadingIndicator
+            val indicator = AndroidHUD
                 .Builder(activityRule.activity)
                 .create()
             assertNotNull(indicator)
@@ -54,7 +54,7 @@ class AndroidLoadingIndicatorTests {
     @Test
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
-            AndroidLoadingIndicator
+            AndroidHUD
                 .Builder(activityRule.activity)
                 .create()
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
@@ -64,7 +64,7 @@ class AndroidLoadingIndicatorTests {
     @Test
     fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            val indicator = AndroidLoadingIndicator
+            val indicator = AndroidHUD
                 .Builder(activityRule.activity)
                 .create()
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
