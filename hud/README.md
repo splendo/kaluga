@@ -1,22 +1,39 @@
-# Loading Indicator
+# HUD
 
-A library allows you to show loading indicator view.
+A library allows you to show HUD (e.g. loading indicator) view.
 
 ## Usage
 
+Show default HUD:
 ```kotlin
-val indicator = builder.build {
-    setStyle(LoadingIndicator.Style.CUSTOM /* Default is .SYSTEM */)
+val hud = builder.build().present()
+```
+
+> It will has `.SYSTEM` style and has no title
+> `.SYSTEM` style will adapt colors for current appearance
+>
+Custom with title:
+```kotlin
+val hud = builder.build {
+    setStyle(HUD.Style.CUSTOM)
     setTitle("Loading...")
 }.present()
 ```
 
-> `.SYSTEM` style will adapt colors for current appearance
+The `HUD` interface has implementation on the Android as `AndroidHUD`
+and on the iOS as `IOSHUD`.
+
+The `HUD` has methods to show and dismiss a loading indicator:
+- `present(animated: Boolean: true, completion: () -> Unit = {}): HUD` — show
+- `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
+- `dismissAfter(timeMillis: Long, aniamted: Boolean = true)` — dismiss after `timeMillis` milliseconds
+
+### Android
 
 On Android this builder needs an activity fragment:
 
 ```kotlin
-val indicator = AndroidLoadingIndicator.Builder(activityFragment)
+val hud = AndroidHUD.Builder(activityFragment)
 ```
 
 Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
@@ -31,21 +48,15 @@ Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
 </resources>
 ```
 
+### iOS
+
 On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
-let indicator = IOSLoadingIndicator.Builder(viewController)
+let hud = IOSHUD.Builder(viewController)
 ```
 
 Define your Color Sets in project's assets if using `.CUSTOM` style:
 
 - `li_colorBackground` for surface color
 - `li_colorAccent` for progress bar color
-
-The `LoadingIndicator` interface has implementation on the Android as `AndroidLoadingIndicator`
-and on the iOS as `IOSLoadingIndicator`.
-
-The `LoadingIndicator` has methods to show and dismiss a loading indicator:
-- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator` — show
-- `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
-- `dismissAfter(timeMillis: Long, aniamted: Boolean = true)` — dismiss after `timeMillis` milliseconds
