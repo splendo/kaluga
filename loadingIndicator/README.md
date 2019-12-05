@@ -7,6 +7,7 @@ A library allows you to show loading indicator view.
 ```kotlin
 val indicator = builder.build {
     setStyle(LoadingIndicator.Style.CUSTOM /* Default is .SYSTEM */)
+    setTitle("Loading...")
 }.present()
 ```
 
@@ -45,5 +46,6 @@ The `LoadingIndicator` interface has implementation on the Android as `AndroidLo
 and on the iOS as `IOSLoadingIndicator`.
 
 The `LoadingIndicator` has methods to show and dismiss a loading indicator:
-- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator`
-- `dismiss(animated: Boolean = true, completion: () -> Unit = {})`
+- `present(animated: Boolean: true, completion: () -> Unit = {}): LoadingIndicator` — show
+- `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
+- `dismissAfter(timeMillis: Long, aniamted: Boolean = true)` — dismiss after `timeMillis` milliseconds

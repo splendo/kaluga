@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources.ID_NULL
 import android.os.Bundle
+import android.os.Handler
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -108,5 +109,9 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
         loadingDialog.dismiss()
         completion()
+    }
+
+    override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+        Handler().postDelayed({ dismiss(animated) }, timeMillis)
     }
 }

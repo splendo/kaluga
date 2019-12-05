@@ -33,27 +33,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 
+    private val builder = AndroidLoadingIndicator.Builder(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         btn_show_loading_indicator_system.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.SYSTEM)
+            ActivityIndicator(builder).showSystem()
         }
 
         btn_show_loading_indicator_custom.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.CUSTOM, "This is a custom title string")
-        }
-    }
-
-    private fun showLoadingIndicator(style: LoadingIndicator.Style, title: String? = null) {
-        val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)) {
-            setStyle(style)
-            setTitle(title)
-        }.show()
-
-        GlobalScope.launch {
-            delay(3_000)
-            indicator.dismiss()
+            ActivityIndicator(builder).showCustom()
         }
     }
 }

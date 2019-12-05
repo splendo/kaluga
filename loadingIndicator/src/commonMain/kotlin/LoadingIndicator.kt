@@ -56,12 +56,18 @@ interface LoadingIndicator {
 
         /** Returns built loading indicator */
         fun build(initialize: Builder.() -> Unit): LoadingIndicator {
+            clear()
             initialize()
             return create()
         }
 
         /** Returns created loading indicator */
         fun create(): LoadingIndicator
+
+        private fun clear() {
+            setStyle(LoadingIndicator.Style.SYSTEM)
+            setTitle(null)
+        }
     }
 
     /**
@@ -84,4 +90,10 @@ interface LoadingIndicator {
      * @param completion The block to execute after the presentation finishes
      */
     fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
+
+    /**
+     * Dismisses the indicator after [timeMillis] milliseconds
+     * @param timeMillis The number of milliseconds to wait
+     */
+    fun dismissAfter(timeMillis: Long, animated: Boolean = true)
 }

@@ -11,24 +11,14 @@ import KotlinNativeFramework
 
 class LoadingViewController: UITableViewController {
 
+    lazy var activityIndicator = KotlinNativeFrameworkKt.activityIndicator(viewController: self)
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.row) {
-        case 0: showLoadingIndicator(.system)
-        case 1: showLoadingIndicator(.custom, title: "This is a custom title")
+        case 0: activityIndicator.showSystem()
+        case 1: activityIndicator.showCustom()
         default: ()
-        }
-    }
-
-    fileprivate func showLoadingIndicator(_ style: LoadingIndicatorLoadingIndicatorStyle, title: String? = nil) {
-        let indicator = KotlinNativeFrameworkKt.activityIndicator(
-            viewController: self,
-            style: style,
-            title: title
-        )
-        indicator.show(animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            indicator.dismiss(animated: true)
         }
     }
 }

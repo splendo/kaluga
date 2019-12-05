@@ -2,6 +2,10 @@ package com.splendo.kaluga.loadingIndicator
 
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.*
+import platform.darwin.DISPATCH_TIME_NOW
+import platform.darwin.dispatch_after
+import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_time
 
 /*
 
@@ -117,5 +121,11 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
         view.presentingViewController?.dismissViewControllerAnimated(animated, completion)
+    }
+
+    override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
+            dismiss(animated)
+        }
     }
 }
