@@ -36,10 +36,15 @@ class LoadingIndicatorTests {
         override fun dismiss(animated: Boolean, completion: () -> Unit) {
             onDismissCalled()
         }
+
+        override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+            onDismissCalled()
+        }
     }
 
     class MockBuilder: LoadingIndicator.Builder {
         override var style = LoadingIndicator.Style.SYSTEM
+        override var title: String? = null
         override fun create(): LoadingIndicator = MockLoadingIndicator()
     }
 
