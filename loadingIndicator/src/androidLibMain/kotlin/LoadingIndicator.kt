@@ -6,9 +6,11 @@ import android.content.res.Resources.ID_NULL
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
@@ -34,17 +36,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidLoadingIndicator private constructor(viewResId: Int, style: LoadingIndicator.Style, private val activity: FragmentActivity) : LoadingIndicator {
+class AndroidLoadingIndicator private constructor(viewResId: Int, style: LoadingIndicator.Style, title: String?, private val activity: FragmentActivity) : LoadingIndicator {
 
     class Builder(private val activity: FragmentActivity) : LoadingIndicator.Builder {
+        override var title: String? = null
         override var style = LoadingIndicator.Style.SYSTEM
-        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, style, activity)
+        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, style, title, activity)
     }
 
     class LoadingDialog : DialogFragment() {
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
         private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.SYSTEM.value)
+        private val title get() = arguments?.getString(TITLE_KEY)
 
         @ColorInt
         private fun backgroundColor(context: Context): Int = when (style) {
@@ -69,11 +73,13 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
 
             private const val RESOURCE_ID_KEY = "resId"
             private const val STYLE_KEY = "style"
+            private const val TITLE_KEY = "title"
 
-            fun newInstance(@IdRes viewResId: Int, style: LoadingIndicator.Style) = LoadingDialog().apply {
+            fun newInstance(@IdRes viewResId: Int, style: LoadingIndicator.Style, title: String?) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, style.ordinal)
+                    putString(TITLE_KEY, title)
                 }
                 isCancelable = false
                 retainInstance = true
@@ -84,11 +90,13 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
             return inflater.inflate(viewResId, container).apply {
                 findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
                 findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor(inflater.context))
+                findViewById<TextView>(R.id.text_view).text = title
+                findViewById<TextView>(R.id.text_view).visibility = if (title == null) View.GONE else View.VISIBLE
             }
         }
     }
 
-    private val loadingDialog = LoadingDialog.newInstance(viewResId, style)
+    private val loadingDialog = LoadingDialog.newInstance(viewResId, style, title)
 
     override val isVisible get() = loadingDialog.isVisible
 

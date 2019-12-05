@@ -24,7 +24,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class IOSLoadingIndicator private constructor(private val view: UIViewController, private val controller: UIViewController) : LoadingIndicator {
 
     private class DefaultView(
-        private val style: LoadingIndicator.Style
+        private val style: LoadingIndicator.Style,
+        private val titleString: String?
     ) : UIViewController(null, null) {
 
         private val backgroundColor: UIColor
@@ -52,38 +53,53 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
         private fun setupView() {
             // Dimmed background
             view.backgroundColor = UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat)
+            // Main HUD view is stack view
+            val stackView = UIStackView().apply {
+                axis = UILayoutConstraintAxisVertical
+                alignment = UIStackViewAlignmentCenter
+                distribution = UIStackViewDistributionFill
+                spacing = 8.0 as CGFloat
+                translatesAutoresizingMaskIntoConstraints = false
+            }
+            view.addSubview(stackView)
+            // Stack view background view
             val contentView = UIView().apply {
                 backgroundColor = this@DefaultView.backgroundColor
                 layer.cornerRadius = 14.0 as CGFloat
                 translatesAutoresizingMaskIntoConstraints = false
             }
-            view.addSubview(contentView)
+            stackView.addSubview(contentView)
             NSLayoutConstraint.activateConstraints(
                 listOf(
-                    contentView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
-                    contentView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
-                    contentView.widthAnchor.constraintEqualToConstant(100.0 as CGFloat),
-                    contentView.heightAnchor.constraintEqualToConstant(100.0 as CGFloat)
+                    contentView.leadingAnchor.constraintEqualToAnchor(stackView.leadingAnchor, -32.0 as CGFloat),
+                    contentView.trailingAnchor.constraintEqualToAnchor(stackView.trailingAnchor, 32.0 as CGFloat),
+                    contentView.topAnchor.constraintEqualToAnchor(stackView.topAnchor, -32.0 as CGFloat),
+                    contentView.bottomAnchor.constraintEqualToAnchor(stackView.bottomAnchor, 32.0 as CGFloat),
+                    stackView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
+                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor)
+
                 )
             )
+            // Activity indicator
             val activityView = UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
                 color = foregroundColor
                 startAnimating()
-                translatesAutoresizingMaskIntoConstraints = false
             }
-            contentView.addSubview(activityView)
-            NSLayoutConstraint.activateConstraints(
-                listOf(
-                    activityView.centerXAnchor.constraintEqualToAnchor(contentView.centerXAnchor),
-                    activityView.centerYAnchor.constraintEqualToAnchor(contentView.centerYAnchor)
-                )
-            )
+            stackView.addArrangedSubview(activityView)
+            // Title label if needed
+            if (titleString != null) {
+                val labelView = UILabel().apply {
+                }
+                labelView.text = titleString
+                stackView.addArrangedSubview(labelView)
+            }
         }
     }
 
     class Builder(private val controller: UIViewController) : LoadingIndicator.Builder {
+        override var title: String? = null
         override var style = LoadingIndicator.Style.SYSTEM
-        override fun create() = IOSLoadingIndicator(DefaultView(style), controller)
+        override fun create() = IOSLoadingIndicator(DefaultView(style, title), controller)
     }
 
     init {

@@ -41,13 +41,14 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
         }
 
         btn_show_loading_indicator_custom.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.CUSTOM)
+            showLoadingIndicator(LoadingIndicator.Style.CUSTOM, "This is a custom title string")
         }
     }
 
-    private fun showLoadingIndicator(style: LoadingIndicator.Style) {
+    private fun showLoadingIndicator(style: LoadingIndicator.Style, title: String? = null) {
         val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)) {
             setStyle(style)
+            setTitle(title)
         }.show()
 
         GlobalScope.launch {
