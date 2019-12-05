@@ -49,7 +49,7 @@ class BluetoothPermissionManagerTest {
             .build()
 
         mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
-        bluetoothPermissionManager = BluetoothPermissionManager(mockContext, mockBluetoothAdapterWrapper)
+        bluetoothPermissionManager = BluetoothPermissionManager(mockBluetoothAdapterWrapper, mockContext)
     }
 
     @After
