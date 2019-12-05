@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -37,30 +37,30 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidLoadingIndicator private constructor(viewResId: Int, style: LoadingIndicator.Style, title: String?, private val activity: FragmentActivity) : LoadingIndicator {
+class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: String?, private val activity: FragmentActivity) : HUD {
 
-    class Builder(private val activity: FragmentActivity) : LoadingIndicator.Builder {
+    class Builder(private val activity: FragmentActivity) : HUD.Builder {
         override var title: String? = null
-        override var style = LoadingIndicator.Style.SYSTEM
-        override fun create() = AndroidLoadingIndicator(R.layout.loading_indicator_view, style, title, activity)
+        override var style = HUD.Style.SYSTEM
+        override fun create() = AndroidHUD(R.layout.loading_indicator_view, style, title, activity)
     }
 
     class LoadingDialog : DialogFragment() {
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
-        private val style get() = LoadingIndicator.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: LoadingIndicator.Style.SYSTEM.value)
+        private val style get() = HUD.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: HUD.Style.SYSTEM.value)
         private val title get() = arguments?.getString(TITLE_KEY)
 
         @ColorInt
         private fun backgroundColor(context: Context): Int = when (style) {
-            LoadingIndicator.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.windowBackground)
-            LoadingIndicator.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorBackground)
+            HUD.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.windowBackground)
+            HUD.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorBackground)
         }
 
         @ColorInt
         private fun foregroundColor(context: Context): Int = when (style) {
-            LoadingIndicator.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.colorAccent)
-            LoadingIndicator.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorAccent)
+            HUD.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.colorAccent)
+            HUD.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorAccent)
         }
 
         @ColorInt
@@ -76,7 +76,7 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
             private const val STYLE_KEY = "style"
             private const val TITLE_KEY = "title"
 
-            fun newInstance(@IdRes viewResId: Int, style: LoadingIndicator.Style, title: String?) = LoadingDialog().apply {
+            fun newInstance(@IdRes viewResId: Int, style: HUD.Style, title: String?) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, style.ordinal)
@@ -101,7 +101,7 @@ class AndroidLoadingIndicator private constructor(viewResId: Int, style: Loading
 
     override val isVisible get() = loadingDialog.isVisible
 
-    override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         loadingDialog.show(activity.supportFragmentManager, "LoadingIndicator")
         completion()
     }

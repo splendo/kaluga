@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import platform.CoreGraphics.CGFloat
 import platform.UIKit.*
@@ -25,25 +25,25 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSLoadingIndicator private constructor(private val view: UIViewController, private val controller: UIViewController) : LoadingIndicator {
+class IOSHUD private constructor(private val view: UIViewController, private val controller: UIViewController) : HUD {
 
     private class DefaultView(
-        private val style: LoadingIndicator.Style,
+        private val style: HUD.Style,
         private val titleString: String?
     ) : UIViewController(null, null) {
 
         private val backgroundColor: UIColor
             get() = when (style) {
-                LoadingIndicator.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
-                LoadingIndicator.Style.SYSTEM ->
+                HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
+                HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.blackColor else UIColor.whiteColor
             }
 
         private val foregroundColor: UIColor
             get() = when (style) {
-                LoadingIndicator.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
-                LoadingIndicator.Style.SYSTEM ->
+                HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
+                HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.whiteColor else UIColor.blackColor
             }
@@ -100,10 +100,10 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
         }
     }
 
-    class Builder(private val controller: UIViewController) : LoadingIndicator.Builder {
+    class Builder(private val controller: UIViewController) : HUD.Builder {
         override var title: String? = null
-        override var style = LoadingIndicator.Style.SYSTEM
-        override fun create() = IOSLoadingIndicator(DefaultView(style, title), controller)
+        override var style = HUD.Style.SYSTEM
+        override fun create() = IOSHUD(DefaultView(style, title), controller)
     }
 
     init {
@@ -115,7 +115,7 @@ class IOSLoadingIndicator private constructor(private val view: UIViewController
 
     override val isVisible get() = view.presentingViewController != null
 
-    override fun present(animated: Boolean, completion: () -> Unit): LoadingIndicator = apply {
+    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         controller.presentViewController(view, animated, completion)
     }
 
