@@ -20,10 +20,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class ActivityIndicator(builder: LoadingIndicator.Builder, initialize: LoadingIndicator.Builder.() -> Unit) {
+class ActivityIndicator(private val builder: LoadingIndicator.Builder) {
 
-    private val indicator: LoadingIndicator = builder.build(initialize)
-
-    fun show(animated: Boolean = true): LoadingIndicator = indicator.present(animated)
-    fun dismiss(animated: Boolean = true) = indicator.dismiss(animated)
+    fun showSystem() {
+        builder.build { 
+            // SYSTEM style by default
+            // No title by default
+        }.present().dismissAfter(3_000)
+    }
+    
+    fun showCustom() {
+        builder.build { 
+            setStyle(LoadingIndicator.Style.CUSTOM)
+            setTitle("This is a custom title")
+        }.present().dismissAfter(3_000)
+    }
 }

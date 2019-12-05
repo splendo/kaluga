@@ -37,10 +37,9 @@ import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
 fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
-fun activityIndicator(viewController : UIViewController, style: LoadingIndicator.Style, title: String?) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController)) {
-    setStyle(style)
-    setTitle(title)
-}
+
+// Nested classes somehow not exposed into iOS Framework, here is wrapper
+fun activityIndicator(viewController: UIViewController) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController))
 
 class KotlinNativeFramework {
 
