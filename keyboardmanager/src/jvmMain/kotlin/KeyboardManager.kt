@@ -24,7 +24,7 @@ actual class KeyboardManagerBuilder() : BaseKeyboardManagerBuilder() {
     override fun create() = KeyboardManager()
 }
 
-actual class KeyboardManager : BaseKeyboardManager() {
+actual class KeyboardManager : BaseKeyboardManager {
 
     override fun show(keyboardView: KeyboardView) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
