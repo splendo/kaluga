@@ -45,8 +45,14 @@ interface LoadingIndicator {
         /** The style of the loading indicator */
         var style: Style
 
-        /** Sets the style fo the loading indicator */
+        /** Sets the style for the loading indicator */
         fun setStyle(style: Style) = apply { this.style = style }
+
+        /** The title of the loading indicator */
+        var title: String?
+
+        /** Set the title for the loading indicator */
+        fun setTitle(title: String?) = apply { this.title = title }
 
         /** Returns built loading indicator */
         fun build(initialize: Builder.() -> Unit): LoadingIndicator {
