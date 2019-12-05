@@ -23,10 +23,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class HUD(private val builder: HUD.Builder) {
 
     fun showSystem() {
-        builder.build { 
-            // SYSTEM style by default
-            // No title by default
-        }.present().dismissAfter(3_000)
+        // SYSTEM style by default
+        // No title by default
+        builder.build().present().dismissAfter(3_000)
     }
     
     fun showCustom() {
