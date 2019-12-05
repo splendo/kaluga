@@ -55,7 +55,7 @@ interface HUD {
         fun setTitle(title: String?) = apply { this.title = title }
 
         /** Returns built loading indicator */
-        fun build(initialize: Builder.() -> Unit): HUD {
+        fun build(initialize: Builder.() -> Unit = { }): HUD {
             clear()
             initialize()
             return create()
