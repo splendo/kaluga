@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -30,7 +30,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidLoadingIndicatorTests {
+class AndroidHUDTests {
 
     @get:Rule
     var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
@@ -43,33 +43,47 @@ class AndroidLoadingIndicatorTests {
 
     @Test
     fun builderInitializer() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val indicator = AndroidLoadingIndicator
+        assertNotNull(
+            AndroidHUD
                 .Builder(activityRule.activity)
                 .create()
-            assertNotNull(indicator)
-        }
+        )
     }
 
     @Test
     fun indicatorShow() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            AndroidLoadingIndicator
-                .Builder(activityRule.activity)
-                .create()
-            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
-        }
+        AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 
     @Test
     fun indicatorDismiss() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            val indicator = AndroidLoadingIndicator
-                .Builder(activityRule.activity)
-                .create()
-            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
-            indicator.dismiss()
-            assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
-        }
+        val indicator = AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        indicator.dismiss()
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun indicatorDismissAfter() = runBlockingTest {
+        val indicator = AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        indicator.dismissAfter(500)
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 }

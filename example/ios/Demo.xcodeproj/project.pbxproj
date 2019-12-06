@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
-		4B02E507236B237C003F0B36 /* ActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E505236B237C003F0B36 /* ActivityViewController.swift */; };
-		4B02E508236B237C003F0B36 /* ActivityViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B02E506236B237C003F0B36 /* ActivityViewController.xib */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
 		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
@@ -63,8 +61,6 @@
 
 /* Begin PBXFileReference section */
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
-		4B02E505236B237C003F0B36 /* ActivityViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityViewController.swift; sourceTree = "<group>"; };
-		4B02E506236B237C003F0B36 /* ActivityViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ActivityViewController.xib; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
@@ -123,8 +119,6 @@
 			isa = PBXGroup;
 			children = (
 				4B02E503236B221B003F0B36 /* LoadingViewController.swift */,
-				4B02E505236B237C003F0B36 /* ActivityViewController.swift */,
-				4B02E506236B237C003F0B36 /* ActivityViewController.xib */,
 			);
 			path = LoadingIndicator;
 			sourceTree = "<group>";
@@ -413,7 +407,6 @@
 				74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */,
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
-				4B02E508236B237C003F0B36 /* ActivityViewController.xib in Resources */,
 				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,7 +443,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
-				4B02E507236B237C003F0B36 /* ActivityViewController.swift in Sources */,
 				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,

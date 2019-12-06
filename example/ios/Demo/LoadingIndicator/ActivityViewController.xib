@@ -3,7 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,15 +18,45 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="n3i-b3-c7I">
-                    <rect key="frame" x="188.5" y="429.5" width="37" height="37"/>
-                    <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </activityIndicatorView>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TgB-l6-eNU">
+                    <rect key="frame" x="154" y="387.5" width="106" height="121.5"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="j71-db-jJU">
+                            <rect key="frame" x="32" y="32" width="42" height="57.5"/>
+                            <subviews>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="5qm-Vi-dOY">
+                                    <rect key="frame" x="2.5" y="0.0" width="37" height="37"/>
+                                </activityIndicatorView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JIh-5Z-dD6">
+                                    <rect key="frame" x="0.0" y="37" width="42" height="20.5"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <nil key="textColor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="j71-db-jJU" secondAttribute="trailing" constant="32" id="6BT-5l-gL9"/>
+                        <constraint firstAttribute="bottom" secondItem="j71-db-jJU" secondAttribute="bottom" constant="32" id="7pd-TL-wQ1"/>
+                        <constraint firstItem="j71-db-jJU" firstAttribute="leading" secondItem="TgB-l6-eNU" secondAttribute="leading" constant="32" id="8YS-wM-gPL"/>
+                        <constraint firstAttribute="height" constant="200" id="nj8-gy-hKC"/>
+                        <constraint firstItem="j71-db-jJU" firstAttribute="top" secondItem="TgB-l6-eNU" secondAttribute="top" constant="32" id="pSA-of-lhb"/>
+                        <constraint firstAttribute="width" constant="200" id="wRA-be-Yeh"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="nj8-gy-hKC"/>
+                            <exclude reference="wRA-be-Yeh"/>
+                        </mask>
+                    </variation>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.64653230444785281" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="n3i-b3-c7I" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="YAH-7j-c8O"/>
-                <constraint firstItem="n3i-b3-c7I" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="gJa-Gb-nBj"/>
+                <constraint firstItem="TgB-l6-eNU" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="3VY-gS-uHZ"/>
+                <constraint firstItem="TgB-l6-eNU" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="DSu-Pe-vnO"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="139" y="125"/>

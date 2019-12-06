@@ -1,4 +1,6 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.example.shared
+
+import com.splendo.kaluga.hud.HUD
 
 /*
 
@@ -17,3 +19,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+class HudPresenter(private val builder: HUD.Builder) {
+
+    fun showSystem() {
+        // SYSTEM style by default
+        // No title by default
+        builder.build().present().dismissAfter(3_000)
+    }
+    
+    fun showCustom() {
+        builder.build { 
+            setStyle(HUD.Style.CUSTOM)
+            setTitle("This is a custom title")
+        }.present().dismissAfter(3_000)
+    }
+}

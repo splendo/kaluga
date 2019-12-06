@@ -1,4 +1,4 @@
-package com.splendo.kaluga.loadingIndicator
+package com.splendo.kaluga.hud
 
 /*
 
@@ -21,7 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 /**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
-interface LoadingIndicator {
+interface HUD {
 
     /**
      * Style of the Loading Indicator
@@ -45,17 +45,30 @@ interface LoadingIndicator {
         /** The style of the loading indicator */
         var style: Style
 
-        /** Sets the style fo the loading indicator */
+        /** Sets the style for the loading indicator */
         fun setStyle(style: Style) = apply { this.style = style }
 
+        /** The title of the loading indicator */
+        var title: String?
+
+        /** Set the title for the loading indicator */
+        fun setTitle(title: String?) = apply { this.title = title }
+
         /** Returns built loading indicator */
-        fun build(initialize: Builder.() -> Unit): LoadingIndicator {
+        fun build(initialize: Builder.() -> Unit = { }): HUD {
+            clear()
             initialize()
             return create()
         }
 
         /** Returns created loading indicator */
-        fun create(): LoadingIndicator
+        fun create(): HUD
+
+        /** Sets default style and empty title */
+        private fun clear() {
+            setStyle(HUD.Style.SYSTEM)
+            setTitle(null)
+        }
     }
 
     /**
@@ -69,7 +82,7 @@ interface LoadingIndicator {
      * @param animated Pass `true` to animate the presentation
      * @param completion The block to execute after the presentation finishes
      */
-    fun present(animated: Boolean = true, completion: () -> Unit = {}): LoadingIndicator
+    fun present(animated: Boolean = true, completion: () -> Unit = {}): HUD
 
     /**
      * Dismisses the indicator
@@ -78,4 +91,10 @@ interface LoadingIndicator {
      * @param completion The block to execute after the presentation finishes
      */
     fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
+
+    /**
+     * Dismisses the indicator after [timeMillis] milliseconds
+     * @param timeMillis The number of milliseconds to wait
+     */
+    fun dismissAfter(timeMillis: Long, animated: Boolean = true)
 }
