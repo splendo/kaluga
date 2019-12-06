@@ -2,6 +2,7 @@ package com.splendo.kaluga.hud
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 /*
 
@@ -52,9 +53,12 @@ class HUDTests {
     fun testBuilder() {
         val builder = MockBuilder()
         assertEquals(builder.style, HUD.Style.SYSTEM)
+        assertNull(builder.title)
         builder.build {
             setStyle(HUD.Style.CUSTOM)
+            setTitle("Title")
         }
         assertEquals(builder.style, HUD.Style.CUSTOM)
+        assertEquals(builder.title, "Title")
     }
 }
