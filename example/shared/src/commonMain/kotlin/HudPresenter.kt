@@ -1,4 +1,7 @@
-package com.splendo.kaluga.test
+package com.splendo.kaluga.example.shared
+
+import com.splendo.kaluga.hud.HUD
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,29 +20,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
+class HudPresenter(private val builder: HUD.Builder) {
 
-/*
- * Android Studio at this time thinks this class has too many implementations because of the test and androidTest source sets.
- * To clear the error close the file and restart Android Studio ¯\_(ツ)_/¯
- */
-expect class GlobalTestListener() {
-    fun beforeTest()
-    fun afterTest()
-}
-
-open class BaseTest {
-    private val testListener = GlobalTestListener()
-
-    @BeforeTest
-    fun beforeTest() {
-        testListener.beforeTest()
+    fun showSystem() {
+        // SYSTEM style by default
+        // No title by default
+        builder.build().present().dismissAfter(3_000)
     }
-
-    @AfterTest
-    fun afterTest() {
-        testListener.afterTest()
+    
+    fun showCustom() {
+        builder.build { 
+            setStyle(HUD.Style.CUSTOM)
+            setTitle("This is a custom title")
+        }.present().dismissAfter(3_000)
     }
-
 }
