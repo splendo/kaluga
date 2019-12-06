@@ -85,17 +85,19 @@ class IOSHUD private constructor(private val view: UIViewController, private val
                 )
             )
             // Activity indicator
-            val activityView = UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
+            UIActivityIndicatorView(UIActivityIndicatorViewStyleWhiteLarge).apply {
                 color = foregroundColor
                 startAnimating()
+            }.also {
+                stackView.addArrangedSubview(it)
             }
-            stackView.addArrangedSubview(activityView)
-            // Title label if needed
+            // Place title label if needed
             if (titleString != null) {
-                val labelView = UILabel().apply {
+                UILabel().apply {
+                    text = titleString
+                }.also {
+                    stackView.addArrangedSubview(it)
                 }
-                labelView.text = titleString
-                stackView.addArrangedSubview(labelView)
             }
         }
     }
