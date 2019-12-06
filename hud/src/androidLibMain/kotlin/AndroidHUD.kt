@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.content.res.Resources.ID_NULL
 import android.os.Bundle
-import android.os.Handler
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +17,9 @@ import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /*
 
@@ -112,6 +114,9 @@ class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: St
     }
 
     override fun dismissAfter(timeMillis: Long, animated: Boolean) {
-        Handler().postDelayed({ dismiss(animated) }, timeMillis)
+        MainScope().launch {
+            delay(timeMillis)
+            dismiss(animated)
+        }
     }
 }
