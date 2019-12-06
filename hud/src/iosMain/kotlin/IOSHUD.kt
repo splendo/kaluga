@@ -80,8 +80,11 @@ class IOSHUD private constructor(private val view: UIViewController, private val
                     contentView.topAnchor.constraintEqualToAnchor(stackView.topAnchor, -32.0 as CGFloat),
                     contentView.bottomAnchor.constraintEqualToAnchor(stackView.bottomAnchor, 32.0 as CGFloat),
                     stackView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
-                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor)
-
+                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
+                    stackView.widthAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
+                    stackView.widthAnchor.constraintLessThanOrEqualToAnchor(view.widthAnchor, 0.5 as CGFloat),
+                    stackView.heightAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
+                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(view.heightAnchor, 0.5 as CGFloat)
                 )
             )
             // Activity indicator
@@ -95,6 +98,7 @@ class IOSHUD private constructor(private val view: UIViewController, private val
             if (titleString != null) {
                 UILabel().apply {
                     text = titleString
+                    numberOfLines = 0 // Multiline support
                 }.also {
                     stackView.addArrangedSubview(it)
                 }
