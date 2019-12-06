@@ -31,7 +31,7 @@ class HudPresenter(private val builder: HUD.Builder) {
     fun showCustom() {
         builder.build { 
             setStyle(HUD.Style.CUSTOM)
-            setTitle("This is a custom titleThis is a custom titleThis is a custom titleThis is a custom title")
+            setTitle("This is a custom title")
         }.present().dismissAfter(3_000)
     }
 }
