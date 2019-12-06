@@ -43,35 +43,47 @@ class AndroidHUDTests {
 
     @Test
     fun builderInitializer() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val indicator = AndroidHUD
+        assertNotNull(
+            AndroidHUD
                 .Builder(activityRule.activity)
                 .create()
-            assertNotNull(indicator)
-        }
+        )
     }
 
     @Test
     fun indicatorShow() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            AndroidHUD
-                .Builder(activityRule.activity).build {
-                    setTitle("Loading...")
-                }.present()
-            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
-        }
+        AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 
     @Test
     fun indicatorDismiss() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            val indicator = AndroidHUD
-                .Builder(activityRule.activity).build {
-                    setTitle("Loading...")
-                }.present()
-            device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
-            indicator.dismiss()
-            assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
-        }
+        val indicator = AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        indicator.dismiss()
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun indicatorDismissAfter() = runBlockingTest {
+        val indicator = AndroidHUD
+            .Builder(activityRule.activity)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        indicator.dismissAfter(500)
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 }
