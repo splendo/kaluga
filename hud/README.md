@@ -27,7 +27,7 @@ and on the iOS as `IOSHUD`.
 The `HUD` has methods to show and dismiss a loading indicator:
 - `present(animated: Boolean: true, completion: () -> Unit = {}): HUD` — show
 - `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
-- `dismissAfter(timeMillis: Long, aniamted: Boolean = true)` — dismiss after `timeMillis` milliseconds
+- `dismissAfter(timeMillis: Long, animated: Boolean = true)` — dismiss after `timeMillis` milliseconds
 
 ### Android
 

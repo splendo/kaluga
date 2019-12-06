@@ -64,6 +64,7 @@ interface HUD {
         /** Returns created loading indicator */
         fun create(): HUD
 
+        /** Sets default style and empty title */
         private fun clear() {
             setStyle(HUD.Style.SYSTEM)
             setTitle(null)

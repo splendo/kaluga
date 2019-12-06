@@ -55,8 +55,9 @@ class AndroidHUDTests {
     fun indicatorShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             AndroidHUD
-                .Builder(activityRule.activity)
-                .create()
+                .Builder(activityRule.activity).build {
+                    setTitle("Loading...")
+                }.present()
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
         }
     }
@@ -65,8 +66,9 @@ class AndroidHUDTests {
     fun indicatorDismiss() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
             val indicator = AndroidHUD
-                .Builder(activityRule.activity)
-                .create()
+                .Builder(activityRule.activity).build {
+                    setTitle("Loading...")
+                }.present()
             device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT)
             indicator.dismiss()
             assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
