@@ -9,10 +9,11 @@ Show default HUD:
 val hud = builder.build().present()
 ```
 
-> It will has `.SYSTEM` style and has no title
-> `.SYSTEM` style will adapt colors for current appearance
->
+> Default style is `.SYSTEM` and it will adapt colors for current appearance
+> Default HUD has no title label
+
 Custom with title:
+
 ```kotlin
 val hud = builder.build {
     setStyle(HUD.Style.CUSTOM)
