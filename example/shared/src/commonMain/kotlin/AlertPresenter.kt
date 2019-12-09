@@ -24,7 +24,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AlertFactory(private val builder: AlertBuilder) {
+class AlertPresenter(private val builder: AlertBuilder) {
 
     fun showAlert() = MainScope().launch(MainQueueDispatcher) {
         val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)

@@ -17,7 +17,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.example.shared.AlertFactory
+import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
@@ -36,10 +36,17 @@ import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
-fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
+class KNAlertFramework {
+    companion object {
+        fun makeAlertPresenter(builder: AlertBuilder) = AlertPresenter(builder)
+    }
+}
 
-// Nested classes somehow not exposed into iOS Framework, here is wrapper
-fun hudPresenter(viewController: UIViewController) = HudPresenter(IOSHUD.Builder(viewController))
+class KNHudFramework {
+    companion object {
+        fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
+    }
+}
 
 class KotlinNativeFramework {
 
