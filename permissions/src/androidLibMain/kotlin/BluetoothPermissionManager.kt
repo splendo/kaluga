@@ -24,12 +24,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
-import com.splendo.kaluga.base.ContextProvider
 
 
 actual open class BluetoothPermissionManager(
-    private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper(),
-    private val context: Context = ContextProvider.context
+    private val context: Context,
+    private val bluetoothAdapterProvider: BluetoothAdapterWrapper = BluetoothAdapterWrapper()
 ) : PermissionManager {
 
     override fun requestPermissions() {
