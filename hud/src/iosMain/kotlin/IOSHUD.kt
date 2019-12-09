@@ -25,12 +25,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val view: UIViewController, private val controller: UIViewController) : HUD {
+class IOSHUD private constructor(private val view: DefaultView, private val controller: UIViewController) : HUD {
 
     private class DefaultView(
         private val style: HUD.Style,
         private val titleString: String?
     ) : UIViewController(null, null) {
+
+        lateinit var titleLabel: UILabel
 
         private val backgroundColor: UIColor
             get() = when (style) {
@@ -94,14 +96,13 @@ class IOSHUD private constructor(private val view: UIViewController, private val
             }.also {
                 stackView.addArrangedSubview(it)
             }
-            // Place title label if needed
-            if (titleString != null) {
-                UILabel().apply {
-                    text = titleString
-                    numberOfLines = 0 // Multiline support
-                }.also {
-                    stackView.addArrangedSubview(it)
-                }
+            // Place title label
+            titleLabel = UILabel().apply {
+                text = titleString
+                hidden = titleString?.isEmpty() ?: true
+                numberOfLines = 0 // Multiline support
+            }.also {
+                stackView.addArrangedSubview(it)
             }
         }
     }
@@ -129,9 +130,14 @@ class IOSHUD private constructor(private val view: UIViewController, private val
         view.presentingViewController?.dismissViewControllerAnimated(animated, completion)
     }
 
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
             dismiss(animated)
         }
+    }
+
+    override fun setTitle(title: String?) {
+        view.titleLabel.text = title
+        view.titleLabel.hidden = title?.isEmpty() ?: true
     }
 }
