@@ -113,10 +113,15 @@ class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: St
         completion()
     }
 
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
         MainScope().launch {
             delay(timeMillis)
             dismiss(animated)
         }
+    }
+
+    override fun setTitle(title: String?) {
+        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.text = title
+        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.visibility = if (title == null) View.GONE else View.VISIBLE
     }
 }
