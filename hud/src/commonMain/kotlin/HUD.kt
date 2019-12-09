@@ -99,7 +99,8 @@ interface HUD {
     fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD
 
     /**
-     * Sets title
+     * Sets [title] string to the HUD's title label
+     * @param title The title to be set
      */
     fun setTitle(title: String?)
 }
