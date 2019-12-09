@@ -57,7 +57,6 @@ class KotlinNativeFramework {
     }
 
     fun permissions(nsBundle: NSBundle) = Permissions
-        .Builder()
-        .bundle(nsBundle)
+        .Builder(nsBundle)
         .build()
 }

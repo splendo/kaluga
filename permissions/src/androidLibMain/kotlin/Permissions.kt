@@ -21,49 +21,31 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import com.splendo.kaluga.base.ContextProvider
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.log.warn
 import com.splendo.kaluga.log.error
 
-actual class Permissions {
-
-    internal lateinit var context: Context
+actual class Permissions constructor(private val context: Context) {
 
     actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager()
+        return BluetoothPermissionManager(context)
     }
 
-    actual open class Builder {
-        private var context: Context = ContextProvider.context
-
-        fun context(context: Context) = apply { this.context = context.applicationContext }
-
+    actual open class Builder(private val context: Context = ApplicationHolder.applicationContext) {
         actual open fun build(): Permissions {
-            val permissions = Permissions()
-
-            with(permissions) {
-                this.context = this@Builder.context
-            }
-
-            return permissions
+            return Permissions(this.context)
         }
     }
 
     companion object {
-        fun requestPermissions(
-            context: Context = ContextProvider.context,
-            vararg permissions: String
-        ) {
+        fun requestPermissions(context: Context = ApplicationHolder.applicationContext, vararg permissions: String) {
             val intent = PermissionsActivity.intent(context, *permissions)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
 
-        fun checkPermissionsDeclaration(
-            context: Context = ContextProvider.context,
-            vararg requestedPermissionNames: String = emptyArray()
-        ): List<String> {
+        fun checkPermissionsDeclaration(context: Context = ApplicationHolder.applicationContext, vararg requestedPermissionNames: String = emptyArray()): List<String> {
             val pm = context.packageManager
 
             val missingPermissions = requestedPermissionNames.toList().toMutableList()
@@ -95,6 +77,7 @@ actual class Permissions {
         }
 
         const val TAG = "Permissions"
+
     }
 
 }
