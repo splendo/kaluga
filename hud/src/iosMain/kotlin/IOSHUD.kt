@@ -133,7 +133,11 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        view.presentingViewController?.dismissViewControllerAnimated(animated, completion)
+        if (controller.presentedViewController != null) {
+            controller.dismissViewControllerAnimated(animated, completion)
+        } else {
+            completion()
+        }
     }
 
     override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
