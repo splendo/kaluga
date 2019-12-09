@@ -1,6 +1,10 @@
 package com.splendo.kaluga.example.shared
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.hud.HUD
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /*
 
@@ -29,9 +33,13 @@ class HudPresenter(private val builder: HUD.Builder) {
     }
     
     fun showCustom() {
-        builder.build { 
+        val hud = builder.build {
             setStyle(HUD.Style.CUSTOM)
             setTitle("This is a custom title")
         }.present().dismissAfter(3_000)
+        MainScope().launch(MainQueueDispatcher) {
+            delay(1_500)
+            hud.setTitle("Congratulation!")
+        }
     }
 }
