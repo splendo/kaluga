@@ -11,7 +11,7 @@ import KotlinNativeFramework
 
 class LoadingViewController: UITableViewController {
 
-    lazy var hudPresenter = KotlinNativeFrameworkKt.hudPresenter(viewController: self)
+    private lazy var hudPresenter = SharedHudPresenter(builder: HudIOSHUD.Builder(controller: self))
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
