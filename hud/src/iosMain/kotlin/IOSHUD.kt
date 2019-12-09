@@ -123,7 +123,13 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
     override val isVisible get() = view.presentingViewController != null
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        controller.presentViewController(view, animated, completion)
+        if (controller.presentedViewController != null) {
+            controller.dismissViewControllerAnimated(animated) {
+                controller.presentViewController(view, animated, completion)
+            }
+        } else {
+            controller.presentViewController(view, animated, completion)
+        }
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
