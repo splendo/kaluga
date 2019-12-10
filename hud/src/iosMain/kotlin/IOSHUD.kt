@@ -25,12 +25,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val view: UIViewController, private val controller: UIViewController) : HUD {
+class IOSHUD private constructor(private val view: DefaultView, private val controller: UIViewController) : HUD {
 
     private class DefaultView(
         private val style: HUD.Style,
         private val titleString: String?
     ) : UIViewController(null, null) {
+
+        lateinit var titleLabel: UILabel
 
         private val backgroundColor: UIColor
             get() = when (style) {
@@ -80,8 +82,11 @@ class IOSHUD private constructor(private val view: UIViewController, private val
                     contentView.topAnchor.constraintEqualToAnchor(stackView.topAnchor, -32.0 as CGFloat),
                     contentView.bottomAnchor.constraintEqualToAnchor(stackView.bottomAnchor, 32.0 as CGFloat),
                     stackView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
-                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor)
-
+                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
+                    stackView.widthAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
+                    stackView.widthAnchor.constraintLessThanOrEqualToAnchor(view.widthAnchor, 0.5 as CGFloat),
+                    stackView.heightAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
+                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(view.heightAnchor, 0.5 as CGFloat)
                 )
             )
             // Activity indicator
@@ -91,13 +96,13 @@ class IOSHUD private constructor(private val view: UIViewController, private val
             }.also {
                 stackView.addArrangedSubview(it)
             }
-            // Place title label if needed
-            if (titleString != null) {
-                UILabel().apply {
-                    text = titleString
-                }.also {
-                    stackView.addArrangedSubview(it)
-                }
+            // Place title label
+            titleLabel = UILabel().apply {
+                text = titleString
+                hidden = titleString?.isEmpty() ?: true
+                numberOfLines = 0 // Multiline support
+            }.also {
+                stackView.addArrangedSubview(it)
             }
         }
     }
@@ -118,16 +123,31 @@ class IOSHUD private constructor(private val view: UIViewController, private val
     override val isVisible get() = view.presentingViewController != null
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        controller.presentViewController(view, animated, completion)
+        if (controller.presentedViewController != null) {
+            controller.dismissViewControllerAnimated(animated) {
+                controller.presentViewController(view, animated, completion)
+            }
+        } else {
+            controller.presentViewController(view, animated, completion)
+        }
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        view.presentingViewController?.dismissViewControllerAnimated(animated, completion)
+        if (controller.presentedViewController != null) {
+            controller.dismissViewControllerAnimated(animated, completion)
+        } else {
+            completion()
+        }
     }
 
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) {
+    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
             dismiss(animated)
         }
+    }
+
+    override fun setTitle(title: String?) {
+        view.titleLabel.text = title
+        view.titleLabel.hidden = title?.isEmpty() ?: true
     }
 }
