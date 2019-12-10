@@ -96,5 +96,11 @@ interface HUD {
      * Dismisses the indicator after [timeMillis] milliseconds
      * @param timeMillis The number of milliseconds to wait
      */
-    fun dismissAfter(timeMillis: Long, animated: Boolean = true)
+    fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD
+
+    /**
+     * Sets [title] string to the HUD's title label
+     * @param title The title to be set
+     */
+    fun setTitle(title: String?)
 }
