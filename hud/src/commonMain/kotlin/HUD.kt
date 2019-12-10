@@ -66,7 +66,7 @@ interface HUD {
 
         /** Sets default style and empty title */
         private fun clear() {
-            setStyle(HUD.Style.SYSTEM)
+            setStyle(Style.SYSTEM)
             setTitle(null)
         }
     }
