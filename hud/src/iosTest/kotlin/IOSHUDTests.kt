@@ -21,40 +21,45 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IosHUDTests {
+class IOSHUDTests {
 
-    @Test
-    fun builderInitializer() {
-        assertNotNull(IOSHUD
-            .Builder(UIViewController())
-            .create()
-        )
+    private class MockWindowProvider: WindowProvider {
+        override val topmostWindow = UIWindow(UIScreen.mainScreen.bounds).apply { makeKeyAndVisible() }
     }
 
-    @Test
-    fun builderSetStyle() {
-        assertNotNull(IOSHUD
-            .Builder(UIViewController()).build {
-                setStyle(HUD.Style.CUSTOM)
-            }
-        )
+    private class MockBuilder(windowProvider: WindowProvider): IOSHUD.Builder() {
+        override val windowProvider = windowProvider
     }
 
-    private lateinit var window: UIWindow
+    private lateinit var windowProvider: WindowProvider
 
     @BeforeTest
     fun setUp() {
-        window = UIWindow(UIScreen.mainScreen.bounds)
-        window.makeKeyAndVisible()
+        windowProvider = MockWindowProvider()
+    }
+
+    @Test
+    fun builderInitializer() {
+        assertNotNull(
+            MockBuilder(windowProvider).create()
+        )
+    }
+
+    @Test
+    fun builderSetStyleAndTitle() {
+        assertNotNull(
+            MockBuilder(windowProvider).build {
+                setStyle(HUD.Style.CUSTOM)
+                setTitle("Foo")
+            }
+        )
     }
 
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD
-            .Builder(hostView)
-            .create()
-        window.rootViewController = hostView
+        val indicator = MockBuilder(windowProvider).create()
+        windowProvider.topmostWindow?.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         indicator.present(false)
@@ -64,10 +69,8 @@ class IosHUDTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD
-            .Builder(hostView)
-            .create()
-        window.rootViewController = hostView
+        val indicator = MockBuilder(windowProvider).create()
+        windowProvider.topmostWindow?.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         indicator.present(false) {
