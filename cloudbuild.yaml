@@ -3,7 +3,6 @@ steps:
     id: assemble
     args: ["./gradlew", "assemble"]
     env:
-      - 'CHROME_BIN=/usr/bin/chromium-browser'
       - 'TERM=dumb'
       - 'GRADLE_USER_HOME=/workspace/gradle_home'
       - 'KONAN_DATA_DIR=/workspace/konan'
@@ -15,7 +14,6 @@ steps:
     id: check
     args: ["./gradlew", "check"]
     env:
-      - 'CHROME_BIN=/usr/bin/chromium-browser'
       - 'TERM=dumb'
       # can only use one gradle home concurrently
       - 'GRADLE_USER_HOME=/workspace/gradle_home_check'
@@ -29,7 +27,6 @@ steps:
     id: compileExampleAndroidUsingModules
     args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_project_example_modules", "-x",  "compileKotlinIosx64", "assemble"]
     env:
-      - 'CHROME_BIN=/usr/bin/chromium-browser'
       - 'GRADLE_USER_HOME=/workspace/gradle_home_example_modules'
       - 'KONAN_DATA_DIR=/workspace/konan'
       - 'TERM=dumb'
@@ -45,7 +42,6 @@ steps:
     id: localPublish
     args: ["./gradlew", "--stacktrace", "-Dmaven.repo.local=/workspace/m2", "publishToMavenLocal"]
     env:
-      - 'CHROME_BIN=/usr/bin/chromium-browser'
       - 'GRADLE_USER_HOME=/workspace/gradle_home'
       - 'KONAN_DATA_DIR=/workspace/konan'
       - 'TERM=dumb'
@@ -59,7 +55,6 @@ steps:
     id: compileExampleAndroidUsingM2
     args: ["../../../gradlew", "--stacktrace", "--project-cache-dir=gradle_example_project_m2","-Dmaven.repo.local=/workspace/m2", "-x",  "compileKotlinIosx64", "assemble", ]
     env:
-      - 'CHROME_BIN=/usr/bin/chromium-browser'
       - 'GRADLE_USER_HOME=/workspace/gradle_home_example_m2'
       - 'KONAN_DATA_DIR=/workspace/konan'
       - 'TERM=dumb'

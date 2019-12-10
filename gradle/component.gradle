@@ -19,13 +19,7 @@ kotlin {
 
     jvm()
     js {
-        browser {
-            testTask {
-                useKarma {
-                    useChromeHeadless()
-                }
-            }
-        }
+        browser()
         configure([compilations.main, compilations.test]) {
             tasks.getByName(compileKotlinTaskName).kotlinOptions {
                 metaInfo = true
