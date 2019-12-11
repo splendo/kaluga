@@ -1,6 +1,8 @@
 package com.splendo.kaluga.bluetooth
 
-actual data class UUID(val uuid: java.util.UUID) : BaseUUID {
+import android.os.ParcelUuid
+
+actual data class UUID(val uuid: ParcelUuid) : BaseUUID {
 
     override val uuidString: String
         get() = uuid.toString()
