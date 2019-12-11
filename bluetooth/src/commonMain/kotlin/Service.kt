@@ -2,7 +2,7 @@ package com.splendo.kaluga.bluetooth
 
 interface BaseService {
     val uuid: UUID
-    val peripheral: Peripheral
+    val peripheral: Device
     val characteristics: List<Characteristic>
 }
 
