@@ -3,7 +3,6 @@ package com.splendo.kaluga.hud
 import kotlinx.cinterop.CValue
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
-import platform.CoreGraphics.CGRectMake
 import platform.UIKit.*
 import platform.darwin.DISPATCH_TIME_NOW
 import platform.darwin.dispatch_after
@@ -48,16 +47,25 @@ fun UIApplication.asTopmostWindowProvider() = object : WindowProvider {
 
 class IOSHUD private constructor(private val containerView: ContainerView, private val windowProvider: WindowProvider) : HUD {
 
+    open class Builder : HUD.Builder() {
+
+        internal open val windowProvider = UIApplication.sharedApplication.asTopmostWindowProvider()
+
+        override fun create(hudConfig: HudConfig) = IOSHUD(
+            ContainerView(hudConfig, windowProvider.topmostWindow?.bounds ?: UIScreen.mainScreen.bounds),
+            windowProvider
+        )
+    }
+
     private class ContainerView(
-        private val style: HUD.Style,
-        private val title: String?,
+        private val hudConfig: HudConfig,
         frame: CValue<CGRect>
     ) : UIView(frame) {
 
         val titleLabel: UILabel
 
         private val backgroundColor: UIColor
-            get() = when (style) {
+            get() = when (hudConfig.style) {
                 HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
@@ -65,7 +73,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             }
 
         private val foregroundColor: UIColor
-            get() = when (style) {
+            get() = when (hudConfig.style) {
                 HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
                 HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
@@ -119,25 +127,13 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             }
             // Place title label
             titleLabel = UILabel().apply {
-                text = title
-                hidden = title?.isEmpty() ?: true
+                text = hudConfig.title
+                hidden = hudConfig.title?.isEmpty() ?: true
                 numberOfLines = 0 // Multiline support
             }.also {
                 stackView.addArrangedSubview(it)
             }
         }
-    }
-
-    open class Builder : HUD.Builder {
-
-        open val windowProvider = UIApplication.sharedApplication.asTopmostWindowProvider()
-
-        override var title: String? = null
-        override var style = HUD.Style.SYSTEM
-        override fun create() = IOSHUD(
-            ContainerView(style, title, windowProvider.topmostWindow?.bounds ?: UIScreen.mainScreen.bounds),
-            windowProvider
-        )
     }
 
     private val topmostWindow get() = windowProvider.topmostWindow
