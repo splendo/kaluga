@@ -27,33 +27,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-interface WindowProvider {
-    val topmostWindow: UIWindow?
-}
+class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
 
-fun UIApplication.asTopmostWindowProvider() = object : WindowProvider {
-    override val topmostWindow: UIWindow?
-        get() = windows
-            .reversed() /* top most is at the end of the list */
-            .mapNotNull { it as? UIWindow } /* thanks to kotlin it returns List<*> and not List<UIWindow> */
-            .firstOrNull {
-                val isOnMainScreen = it.screen == UIScreen.mainScreen
-                val isVisible = !it.hidden && it.alpha > 0.0
-                val isLevelSupported = it.windowLevel == UIWindowLevelNormal
-                val isKeyWindow = it.isKeyWindow()
-                return@firstOrNull isOnMainScreen && isVisible && isLevelSupported && isKeyWindow
-            }
-}
-
-class IOSHUD private constructor(private val containerView: ContainerView, private val windowProvider: WindowProvider) : HUD {
-
-    open class Builder : HUD.Builder() {
-
-        internal open val windowProvider = UIApplication.sharedApplication.asTopmostWindowProvider()
-
+    class Builder(private val viewController: UIViewController) : HUD.Builder() {
         override fun create(hudConfig: HudConfig) = IOSHUD(
-            ContainerView(hudConfig, windowProvider.topmostWindow?.bounds ?: UIScreen.mainScreen.bounds),
-            windowProvider
+            ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
+            viewController
         )
     }
 
@@ -82,9 +61,8 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
 
         // NOTES: Cast to CGFloat is needed for Arm32
         init {
+            // Rotation support
             autoresizingMask = UIViewAutoresizingFlexibleWidth or UIViewAutoresizingFlexibleHeight
-            // Hidden by default
-            alpha = 0.0 as CGFloat
             // Dimmed background
             setBackgroundColor(UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat))
             // Main HUD view is stack view
@@ -136,43 +114,34 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         }
     }
 
-    private val topmostWindow get() = windowProvider.topmostWindow
+    private val hudViewController = UIViewController(null, null).apply {
+        modalPresentationStyle = UIModalPresentationOverFullScreen
+        modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+        view.backgroundColor = UIColor.clearColor
+        view.addSubview(containerView)
+    }
 
-    override val isVisible get() = containerView.superview != null
+    private val topViewController: UIViewController get() {
+        var result: UIViewController? = viewController
+        while (result?.presentedViewController != null) {
+            result = result.presentedViewController
+        }
+        return result ?: viewController
+    }
+
+    override val isVisible get() = hudViewController.presentingViewController != null
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         if (!isVisible) {
-            topmostWindow?.addSubview(containerView)
-            if (animated) {
-                UIView.animateWithDuration(1 / 3.0 as CGFloat, {
-                    containerView.alpha = 1.0 as CGFloat
-                }, {
-                    completion()
-                })
-            } else {
-                containerView.alpha = 1.0 as CGFloat
-                completion()
-            }
+            topViewController.presentViewController(hudViewController, animated, completion)
         } else {
-            topmostWindow?.bringSubviewToFront(containerView)
             completion()
         }
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
         if (isVisible) {
-            if (animated) {
-                UIView.animateWithDuration(1 / 3.0 as CGFloat, {
-                    containerView.alpha = 0.0 as CGFloat
-                }, {
-                    containerView.removeFromSuperview()
-                    completion()
-                })
-            } else {
-                containerView.alpha = 0.0 as CGFloat
-                containerView.removeFromSuperview()
-                completion()
-            }
+            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated, completion)
         } else {
             completion()
         }

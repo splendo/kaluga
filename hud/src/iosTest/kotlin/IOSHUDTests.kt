@@ -23,32 +23,24 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class IOSHUDTests {
 
-    private class MockWindowProvider: WindowProvider {
-        override val topmostWindow = UIWindow(UIScreen.mainScreen.bounds).apply { makeKeyAndVisible() }
-    }
-
-    private class MockBuilder(windowProvider: WindowProvider): IOSHUD.Builder() {
-        override val windowProvider = windowProvider
-    }
-
-    private lateinit var windowProvider: WindowProvider
+    private lateinit var window: UIWindow
 
     @BeforeTest
     fun setUp() {
-        windowProvider = MockWindowProvider()
+        window = UIWindow(UIScreen.mainScreen.bounds).apply { makeKeyAndVisible() }
     }
 
     @Test
     fun builderInitializer() {
         assertNotNull(
-            MockBuilder(windowProvider).build()
+            IOSHUD.Builder(UIViewController()).build()
         )
     }
 
     @Test
     fun builderSetStyleAndTitle() {
         assertNotNull(
-            MockBuilder(windowProvider).build {
+            IOSHUD.Builder(UIViewController()).build {
                 setStyle(HUD.Style.CUSTOM)
                 setTitle("Foo")
             }
@@ -58,8 +50,8 @@ class IOSHUDTests {
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = MockBuilder(windowProvider).build()
-        windowProvider.topmostWindow?.rootViewController = hostView
+        val indicator = IOSHUD.Builder(hostView).build()
+        window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         indicator.present(false)
@@ -69,8 +61,8 @@ class IOSHUDTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = MockBuilder(windowProvider).build()
-        windowProvider.topmostWindow?.rootViewController = hostView
+        val indicator = IOSHUD.Builder(hostView).build()
+        window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         indicator.present(false) {
