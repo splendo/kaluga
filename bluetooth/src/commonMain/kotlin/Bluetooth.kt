@@ -68,6 +68,21 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
             checkAvailability()
         }
 
+        override suspend fun afterNewStateIsSet() {
+            super.afterNewStateIsSet()
+
+            when (manager.stateRepoAccesor.currentState()) {
+                !is MissingPermissions -> manager.startMonitoringBluetooth()
+            }
+        }
+
+        override suspend fun afterOldStateIsRemoved(oldState: BluetoothState) {
+            super.afterOldStateIsRemoved(oldState)
+
+            when (manager.stateRepoAccesor.currentState()) {
+                !is MissingPermissions -> manager.stopMonitoringBluetooth()
+            }
+        }
     }
 
     class Idle internal constructor(val discoveredDevices: List<Device>,
@@ -121,15 +136,17 @@ class Bluetooth( builder: BaseBluetoothManager.Builder) : StateRepo<BluetoothSta
 
     val manager = builder.create(StateRepoAccesor(this), this)
 
-    init {
-        manager.startMonitoringBluetooth()
-    }
-
     override fun initialState(): BluetoothState {
         return when (manager.permissions.getBluetoothManager().checkSupport()) {
-            Support.POWER_ON -> BluetoothState.Idle(emptyList(), emptySet(), manager)
+            Support.POWER_ON -> {
+                manager.startMonitoringBluetooth()
+                BluetoothState.Idle(emptyList(), emptySet(), manager)
+            }
             Support.UNAUTHORIZED, Support.NOT_SUPPORTED -> BluetoothState.MissingPermissions(manager)
-            Support.POWER_OFF, Support.RESETTING -> BluetoothState.Disabled(manager)
+            Support.POWER_OFF, Support.RESETTING -> {
+                manager.startMonitoringBluetooth()
+                BluetoothState.Disabled(manager)
+            }
         }
     }
 
