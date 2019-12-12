@@ -8,6 +8,7 @@ import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<BluetoothState>(manager.stateRepoAccesor) {
 
@@ -138,7 +139,7 @@ class Bluetooth( builder: BaseBluetoothManager.Builder) : StateRepo<BluetoothSta
 
 }
 
-abstract class BaseBluetoothManager(internal val permissions: Permissions, internal val stateRepoAccesor: StateRepoAccesor<BluetoothState>) {
+abstract class BaseBluetoothManager(internal val permissions: Permissions, internal val stateRepoAccesor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(stateRepoAccessor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope): BluetoothManager
@@ -148,6 +149,22 @@ abstract class BaseBluetoothManager(internal val permissions: Permissions, inter
     abstract fun stopScanning()
     abstract fun startMonitoringBluetooth()
     abstract fun stopMonitoringBluetooth()
+
+    internal fun bluetoothEnabled() {
+        launch {
+            when (val state = stateRepoAccesor.currentState()) {
+                is BluetoothState.Disabled -> state.enable()
+            }
+        }
+    }
+
+    internal fun bluetoothDisabled() {
+        launch {
+            when (val state = stateRepoAccesor.currentState()) {
+                is BluetoothState.Enabled -> state.disable()
+            }
+        }
+    }
 
 }
 

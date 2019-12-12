@@ -16,7 +16,7 @@ actual class BluetoothManager(private val bluetoothScanner: BluetoothLeScannerCo
                               permissions: Permissions,
                               private val context: Context,
                               coroutineScope: CoroutineScope,
-                              stateRepoAccesor: StateRepoAccesor<BluetoothState>) : BaseBluetoothManager(permissions, stateRepoAccesor), CoroutineScope by coroutineScope {
+                              stateRepoAccesor: StateRepoAccesor<BluetoothState>) : BaseBluetoothManager(permissions, stateRepoAccesor, coroutineScope) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
@@ -88,7 +88,7 @@ actual class BluetoothManager(private val bluetoothScanner: BluetoothLeScannerCo
     }
 
     private val callback = BluetoothScannerCallback(context, stateRepoAccesor, this)
-    private val broadcastReceiver = AvailabilityReceiver(stateRepoAccesor, this)
+    private val broadcastReceiver = AvailabilityReceiver(this)
 
     override fun scanForDevices(filter: Set<UUID>) {
         bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(it.uuid).build() }, scanSettings, callback)
@@ -108,31 +108,16 @@ actual class BluetoothManager(private val bluetoothScanner: BluetoothLeScannerCo
 
 }
 
-private class AvailabilityReceiver(private val stateRepoAccesor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope) : BroadcastReceiver(), CoroutineScope by coroutineScope {
+private class AvailabilityReceiver(private val bluetoothManager: BaseBluetoothManager) : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let {
             if (intent.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
-                val state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)
-                launch {
-                    when (state) {
-                        BluetoothAdapter.STATE_ON -> bluetoothEnabled()
-                        BluetoothAdapter.STATE_OFF -> bluetoothDisabled()
+                when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
+                        BluetoothAdapter.STATE_ON -> bluetoothManager.bluetoothEnabled()
+                        BluetoothAdapter.STATE_OFF -> bluetoothManager.bluetoothDisabled()
                     }
-                }
             }
-        }
-    }
-
-    private suspend fun bluetoothEnabled() {
-        when (val state = stateRepoAccesor.currentState()) {
-            is BluetoothState.Disabled -> state.enable()
-        }
-    }
-
-    private suspend fun bluetoothDisabled() {
-        when (val state = stateRepoAccesor.currentState()) {
-            is BluetoothState.Enabled -> state.disable()
         }
     }
 
