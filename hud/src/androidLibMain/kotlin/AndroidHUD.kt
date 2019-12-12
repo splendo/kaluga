@@ -39,15 +39,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: String?, private val activity: FragmentActivity) : HUD {
+class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, private val activity: FragmentActivity) : HUD {
 
-    class Builder(private val activity: FragmentActivity) : HUD.Builder {
-        override var title: String? = null
-        override var style = HUD.Style.SYSTEM
-        override fun create() = AndroidHUD(R.layout.loading_indicator_view, style, title, activity)
+    class Builder(private val activity: FragmentActivity) : HUD.Builder() {
+        override fun create(hudConfig: HudConfig) = AndroidHUD(R.layout.loading_indicator_view, hudConfig, activity)
     }
 
-    class LoadingDialog : DialogFragment() {
+    internal class LoadingDialog : DialogFragment() {
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
         private val style get() = HUD.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: HUD.Style.SYSTEM.value)
@@ -78,18 +76,18 @@ class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: St
             private const val STYLE_KEY = "style"
             private const val TITLE_KEY = "title"
 
-            fun newInstance(@IdRes viewResId: Int, style: HUD.Style, title: String?) = LoadingDialog().apply {
+            fun newInstance(@IdRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
-                    putInt(STYLE_KEY, style.ordinal)
-                    putString(TITLE_KEY, title)
+                    putInt(STYLE_KEY, hudConfig.style.ordinal)
+                    putString(TITLE_KEY, hudConfig.title)
                 }
                 isCancelable = false
                 retainInstance = true
             }
         }
 
-        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): android.view.View? {
+        override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(viewResId, container).apply {
                 findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
                 findViewById<ProgressBar>(R.id.progress_bar).indeterminateTintList = ColorStateList.valueOf(foregroundColor(inflater.context))
@@ -99,7 +97,7 @@ class AndroidHUD private constructor(viewResId: Int, style: HUD.Style, title: St
         }
     }
 
-    private val loadingDialog = LoadingDialog.newInstance(viewResId, style, title)
+    private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
 
     override val isVisible get() = loadingDialog.isVisible
 

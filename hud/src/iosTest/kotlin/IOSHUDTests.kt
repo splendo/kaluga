@@ -41,7 +41,7 @@ class IOSHUDTests {
     @Test
     fun builderInitializer() {
         assertNotNull(
-            MockBuilder(windowProvider).create()
+            MockBuilder(windowProvider).build()
         )
     }
 
@@ -58,7 +58,7 @@ class IOSHUDTests {
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = MockBuilder(windowProvider).create()
+        val indicator = MockBuilder(windowProvider).build()
         windowProvider.topmostWindow?.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
@@ -69,7 +69,7 @@ class IOSHUDTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = MockBuilder(windowProvider).create()
+        val indicator = MockBuilder(windowProvider).build()
         windowProvider.topmostWindow?.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)

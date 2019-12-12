@@ -24,7 +24,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class HUDTests {
 
-    class MockHUD: HUD {
+    class MockHUD(val style: HUD.Style, val title: String?): HUD {
         lateinit var onPresentCalled: () -> Unit
         lateinit var onDismissCalled: () -> Unit
 
@@ -45,22 +45,21 @@ class HUDTests {
         override fun setTitle(title: String?) { }
     }
 
-    class MockBuilder: HUD.Builder {
-        override var style = HUD.Style.SYSTEM
-        override var title: String? = null
-        override fun create(): HUD = MockHUD()
+    class MockBuilder: HUD.Builder() {
+        override fun create(hudConfig: HudConfig) = MockHUD(hudConfig.style, hudConfig.title)
     }
 
     @Test
     fun testBuilder() {
         val builder = MockBuilder()
-        assertEquals(builder.style, HUD.Style.SYSTEM)
-        assertNull(builder.title)
-        builder.build {
+        val hud1 = builder.build() as MockHUD
+        assertEquals(hud1.style, HUD.Style.SYSTEM)
+        assertNull(hud1.title)
+        val hud2 = builder.build {
             setStyle(HUD.Style.CUSTOM)
             setTitle("Title")
-        }
-        assertEquals(builder.style, HUD.Style.CUSTOM)
-        assertEquals(builder.title, "Title")
+        } as MockHUD
+        assertEquals(hud2.style, HUD.Style.CUSTOM)
+        assertEquals(hud2.title, "Title")
     }
 }
