@@ -1,21 +1,27 @@
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.state.StateRepoAccesor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
+import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.CoreBluetooth.CBPeripheral
-import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class BluetoothManager : BaseBluetoothManager()  {
+actual class BluetoothManager(permissions: Permissions, stateRepoAccesor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope) : BaseBluetoothManager(permissions, stateRepoAccesor, coroutineScope)  {
 
-    private class BluetoothManagerDelegate(val bluetoothManager: BluetoothManager) : NSObject(), CBCentralManagerDelegateProtocol {
+    class Builder(private val permissions: Permissions) : BaseBluetoothManager.Builder {
 
-        override fun centralManagerDidUpdateState(central: CBCentralManager) {
-
+        override fun create(stateRepoAccessor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope): BluetoothManager {
+            return BluetoothManager(permissions, stateRepoAccessor, coroutineScope)
         }
+    }
+
+    private class CentralManagerDelegate(val bluetoothManager: BluetoothManager) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
@@ -23,26 +29,43 @@ actual class BluetoothManager : BaseBluetoothManager()  {
             bluetoothManager.discoverPeripheral(didDiscoverPeripheral)
         }
 
+        override fun centralManagerDidUpdateState(central: CBCentralManager) {
+            when (central.state) {
+                CBCentralManagerStatePoweredOn -> bluetoothManager.bluetoothEnabled()
+                else -> bluetoothManager.bluetoothDisabled()
+            }
+        }
+
     }
 
-    private val delegate = BluetoothManagerDelegate(this)
-    private val centralManager = CBCentralManager(delegate, dispatch_get_main_queue())
+    private var centralManager: CBCentralManager? = null
 
-    suspend fun scan(filter: Set<CBUUID> = emptySet()) {
-        scan(filter.map { UUID(it) }.toSet())
-    }
-
-    override fun handleStartScanning(filter: Set<UUID>) {
+    override fun scanForDevices(filter: Set<UUID>) {
         val uuids = filter.map { it.uuid }
-        centralManager.scanForPeripheralsWithServices(uuids, null)
+        centralManager?.scanForPeripheralsWithServices(uuids, null)
     }
 
-    override fun handleStopScanning() {
-        centralManager.stopScan()
+    override fun stopScanning() {
+        centralManager?.stopScan()
+    }
+
+    override fun startMonitoringBluetooth() {
+        centralManager = CBCentralManager(CentralManagerDelegate(this), dispatch_get_main_queue())
+    }
+
+    override fun stopMonitoringBluetooth() {
+        centralManager = null
     }
 
     private fun discoverPeripheral(peripheral: CBPeripheral) {
-        val device = Device(peripheral)
-        runBlocking { discoveredDevice(device) }
+        launch { when (val state = stateRepoAccesor.currentState()) {
+            is BluetoothState.Scanning -> {
+                val device = Device(peripheral)
+                state.discoverDevices(device)
+            }
+            else -> state.logError(Error("Discovered Device while not scanning"))
+        } }
     }
+
+
 }
