@@ -21,11 +21,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-data class HudConfig(
-    val style: HUD.Style = HUD.Style.SYSTEM,
-    val title: String? = null
-)
-
 /**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
@@ -53,13 +48,13 @@ interface HUD {
         private val lock = Lock()
 
         /** The style of the loading indicator */
-        var style: Style = Style.SYSTEM
+        private var style: Style = Style.SYSTEM
 
         /** Sets the style for the loading indicator */
         fun setStyle(style: Style) = apply { this.style = style }
 
         /** The title of the loading indicator */
-        var title: String? = null
+        private var title: String? = null
 
         /** Set the title for the loading indicator */
         fun setTitle(title: String?) = apply { this.title = title }
