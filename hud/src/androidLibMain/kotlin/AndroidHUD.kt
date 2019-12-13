@@ -16,7 +16,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,10 +40,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, private val activity: FragmentActivity) : HUD {
+class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiContextTrackingBuilder: UiContextTrackingBuilder) : HUD {
 
-    class Builder(private val activity: FragmentActivity) : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = AndroidHUD(R.layout.loading_indicator_view, hudConfig, activity)
+    class Builder(private val uiContextTrackingBuilder: UiContextTrackingBuilder) : HUD.Builder() {
+        override fun create(hudConfig: HudConfig) = AndroidHUD(
+            R.layout.loading_indicator_view,
+            hudConfig,
+            uiContextTrackingBuilder
+        )
     }
 
     internal class LoadingDialog : DialogFragment() {
@@ -83,10 +88,15 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, priva
                     putString(TITLE_KEY, hudConfig.title)
                 }
                 isCancelable = false
-                retainInstance = true
             }
         }
 
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            if (savedInstanceState != null) {
+                dismiss()
+            }
+        }
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(viewResId, container).apply {
                 findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
@@ -97,17 +107,46 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, priva
         }
     }
 
+    private sealed class DialogState {
+        object Gone: DialogState()
+        object Visible: DialogState()
+    }
+
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
+    private var dialogState = MutableLiveData<DialogState>()
+
+    init {
+        subscribeIfNeeded(uiContextTrackingBuilder.uiContextData)
+        uiContextTrackingBuilder.onUiContextDataChanged = { uiContextData ->
+            subscribeIfNeeded(uiContextData)
+        }
+    }
+
+    private fun subscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) = when(uiContextData) {
+        null -> { }
+        else -> {
+            dialogState.observe(uiContextData.lifecycleOwner, Observer {
+                when (it) {
+                    is DialogState.Visible -> {
+                        loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
+                    }
+                    is DialogState.Gone -> {
+                        loadingDialog.dismiss()
+                    }
+                }
+            })
+        }
+    }
 
     override val isVisible get() = loadingDialog.isVisible
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        loadingDialog.show(activity.supportFragmentManager, "LoadingIndicator")
+        dialogState.postValue(DialogState.Visible)
         completion()
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismiss()
+        dialogState.postValue(DialogState.Gone)
         completion()
     }
 
@@ -119,7 +158,9 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, priva
     }
 
     override fun setTitle(title: String?) {
-        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.text = title
-        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.visibility = if (title == null) View.GONE else View.VISIBLE
+        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.apply {
+            text = title
+            visibility = if (title == null) View.GONE else View.VISIBLE
+        }
     }
 }

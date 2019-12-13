@@ -27,6 +27,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+actual class UiContextTrackingBuilder
+
 class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
 
     class Builder(private val viewController: UIViewController) : HUD.Builder() {

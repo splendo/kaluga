@@ -5,6 +5,8 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.Test
@@ -44,26 +46,28 @@ class AndroidHUDTests {
     fun builderInitializer() = runBlockingTest {
         assertNotNull(
             AndroidHUD
-                .Builder(activityRule.activity)
+                .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
                 .build()
         )
     }
 
     @Test
     fun indicatorShow() = runBlockingTest {
-        AndroidHUD
-            .Builder(activityRule.activity)
-            .build {
-                setTitle("Loading...")
-            }
-            .present()
-        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        MainScope().launch {
+            AndroidHUD
+                .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
+                .build {
+                    setTitle("Loading...")
+                }
+                .present()
+            assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        }
     }
 
     @Test
     fun indicatorDismiss() = runBlockingTest {
         val indicator = AndroidHUD
-            .Builder(activityRule.activity)
+            .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
             .build {
                 setTitle("Loading...")
             }
@@ -76,7 +80,7 @@ class AndroidHUDTests {
     @Test
     fun indicatorDismissAfter() = runBlockingTest {
         val indicator = AndroidHUD
-            .Builder(activityRule.activity)
+            .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
             .build {
                 setTitle("Loading...")
             }

@@ -21,6 +21,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+expect class UiContextTrackingBuilder
+
 /**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
