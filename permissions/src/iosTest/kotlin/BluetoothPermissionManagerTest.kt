@@ -15,14 +15,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.permissions.BluetoothPermissionManager
 import com.splendo.kaluga.permissions.Permit
 import com.splendo.kaluga.permissions.Support
-import kotlinx.coroutines.runBlocking
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusAuthorized
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusDenied
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermined
-import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
+import platform.CoreBluetooth.*
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -32,7 +29,8 @@ class BluetoothPermissionMangerTest {
 
     private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
     private lateinit var mockCBCentralManager: MockCBCentralManager
-    private var cbPeripheralManagerAuthorizationStatus: platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus = CBPeripheralManagerAuthorizationStatusNotDetermined
+    private var cbPeripheralManagerAuthorizationStatus: CBPeripheralManagerAuthorizationStatus =
+        CBPeripheralManagerAuthorizationStatusNotDetermined
 
     @BeforeTest
     fun before() {
