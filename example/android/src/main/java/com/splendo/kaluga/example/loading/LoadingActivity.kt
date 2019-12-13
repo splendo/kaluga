@@ -3,10 +3,15 @@ package com.splendo.kaluga.example.loading
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.hud.AndroidHUD
+import com.splendo.kaluga.hud.HUD
+import com.splendo.kaluga.hud.UiContextTrackingBuilder
 import kotlinx.android.synthetic.main.activity_loading.*
+import kotlinx.coroutines.launch
 
 /*
 
@@ -26,13 +31,19 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+private val uiContextTrackingBuilder = UiContextTrackingBuilder()
+private val builder = AndroidHUD.Builder(uiContextTrackingBuilder)
+
 @SuppressLint("SetTextI18n")
 class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 
-    private val builder = AndroidHUD.Builder(this)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        uiContextTrackingBuilder.uiContextData = UiContextTrackingBuilder.UiContextData(
+            this@LoadingActivity,
+            this@LoadingActivity.supportFragmentManager
+        )
 
         btn_show_loading_indicator_system.setOnClickListener {
             HudPresenter(builder).showSystem()
@@ -41,5 +52,10 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
         btn_show_loading_indicator_custom.setOnClickListener {
             HudPresenter(builder).showCustom()
         }
+    }
+
+    override fun onDestroy() {
+        uiContextTrackingBuilder.uiContextData = null
+        super.onDestroy()
     }
 }
