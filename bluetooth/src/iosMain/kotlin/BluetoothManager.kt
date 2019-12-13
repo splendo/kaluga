@@ -38,7 +38,7 @@ actual class BluetoothManager(permissions: Permissions, stateRepoAccesor: StateR
 
     }
 
-    private var centralManager: CBCentralManager = CBCentralManager(CentralManagerDelegate(this), dispatch_get_main_queue())
+    private var centralManager: CBCentralManager = CBCentralManager(null, dispatch_get_main_queue())
 
     override fun scanForDevices(filter: Set<UUID>) {
         val uuids = filter.map { it.uuid }
@@ -50,9 +50,11 @@ actual class BluetoothManager(permissions: Permissions, stateRepoAccesor: StateR
     }
 
     override fun startMonitoringBluetooth() {
+        centralManager.delegate = CentralManagerDelegate(this)
     }
 
     override fun stopMonitoringBluetooth() {
+        centralManager.delegate = null
     }
 
     private fun discoverPeripheral(peripheral: CBPeripheral) {

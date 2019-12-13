@@ -29,7 +29,7 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
         error.message?.let { logger().log(LogLevel.ERROR, tag, it) }
     }
 
-    open class Enabled internal constructor(private val manager: BaseBluetoothManager) : BluetoothState(manager) {
+    open class Enabled internal constructor(val discoveredDevices: List<Device>, private val manager: BaseBluetoothManager) : BluetoothState(manager) {
 
         suspend fun disable() {
             changeState(Disabled(manager))
@@ -85,9 +85,9 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
         }
     }
 
-    class Idle internal constructor(val discoveredDevices: List<Device>,
+    class Idle internal constructor(discoveredDevices: List<Device>,
                                     private val oldFilter: Set<UUID>,
-                                    private val manager: BaseBluetoothManager)  : Enabled(manager) {
+                                    private val manager: BaseBluetoothManager)  : Enabled(discoveredDevices, manager) {
 
         suspend fun startScanning(filter: Set<UUID>) {
             val devices = if (filter == oldFilter)
@@ -99,9 +99,9 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
 
     }
 
-    class Scanning internal constructor(val discoveredDevices: List<Device>,
+    class Scanning internal constructor(discoveredDevices: List<Device>,
                                         private val filter: Set<UUID>,
-                                        private val manager: BaseBluetoothManager) : Enabled(manager) {
+                                        private val manager: BaseBluetoothManager) : Enabled(discoveredDevices, manager) {
 
         suspend fun discoverDevices(vararg devices: Device) {
             val newDevices = listOf(*discoveredDevices.toTypedArray(), *devices)
@@ -162,10 +162,10 @@ abstract class BaseBluetoothManager(internal val permissions: Permissions, inter
         fun create(stateRepoAccessor: StateRepoAccesor<BluetoothState>, coroutineScope: CoroutineScope): BluetoothManager
     }
 
-    abstract fun scanForDevices(filter: Set<UUID>)
-    abstract fun stopScanning()
-    abstract fun startMonitoringBluetooth()
-    abstract fun stopMonitoringBluetooth()
+    internal abstract fun scanForDevices(filter: Set<UUID>)
+    internal abstract fun stopScanning()
+    internal abstract fun startMonitoringBluetooth()
+    internal abstract fun stopMonitoringBluetooth()
 
     internal fun bluetoothEnabled() {
         launch {
