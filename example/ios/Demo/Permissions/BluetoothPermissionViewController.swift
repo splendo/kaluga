@@ -12,7 +12,7 @@ import KotlinNativeFramework
 
 class BluetoothPermissionViewController: UITableViewController {
 
-    let bluetoothManager = KotlinNativeFramework().permissions(nsBundle: Bundle.main).getBluetoothManager()
+    let bluetoothManager = KotlinNativeFramework().permissions(nsBundle: Bundle.main).getBluetoothScanner()
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
