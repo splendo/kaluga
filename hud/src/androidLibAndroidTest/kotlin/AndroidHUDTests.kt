@@ -5,8 +5,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.*
@@ -32,54 +31,33 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class AndroidHUDTests {
 
     @get:Rule
-    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+    var activityRule = ActivityTestRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-
-    private lateinit var uiContextTrackingBuilder: UiContextTrackingBuilder
+    private val builder get() = activityRule.activity.viewModel.builder
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
     }
 
-    @BeforeTest
-    fun setUp() {
-        uiContextTrackingBuilder = UiContextTrackingBuilder().apply {
-            uiContextData = UiContextTrackingBuilder.UiContextData(
-                activityRule.activity,
-                activityRule.activity.supportFragmentManager
-            )
-        }
-    }
-
     @Test
-    fun builderInitializer() = runBlockingTest {
-        assertNotNull(
-            AndroidHUD
-                .Builder(uiContextTrackingBuilder)
-                .build()
-        )
+    fun builderInitializer() {
+        assertNotNull(builder.build())
     }
 
     @Test
     fun indicatorShow() = runBlockingTest {
-        AndroidHUD
-            .Builder(uiContextTrackingBuilder)
-            .build {
-                setTitle("Loading...")
-            }
-            .present()
+        builder.build {
+            setTitle("Loading...")
+        }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 
     @Test
     fun indicatorDismiss() = runBlockingTest {
-        val indicator = AndroidHUD
-            .Builder(uiContextTrackingBuilder)
-            .build {
-                setTitle("Loading...")
-            }
-            .present()
+        val indicator = builder.build {
+            setTitle("Loading...")
+        }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
         indicator.dismiss()
         assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
@@ -87,14 +65,30 @@ class AndroidHUDTests {
 
     @Test
     fun indicatorDismissAfter() = runBlockingTest {
-        val indicator = AndroidHUD
-            .Builder(uiContextTrackingBuilder)
-            .build {
-                setTitle("Loading...")
-            }
-            .present()
+        val indicator = builder.build {
+            setTitle("Loading...")
+        }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
         indicator.dismissAfter(500)
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun rotateActivity() = runBlockingTest {
+        val indicator = builder.build {
+            setTitle("Loading...")
+        }.present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        // Schedule dismiss
+        indicator.dismissAfter(3000)
+        delay(500)
+        // Rotate screen
+        device.setOrientationLeft()
+        // HUD should be on screen
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        delay(500)
+        device.setOrientationNatural()
+        // Finally should gone
         assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 }
