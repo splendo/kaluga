@@ -21,8 +21,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-expect class UiContextTrackingBuilder
-
 /**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
@@ -104,10 +102,4 @@ interface HUD {
      * @param timeMillis The number of milliseconds to wait
      */
     fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD
-
-    /**
-     * Sets [title] string to the HUD's title label
-     * @param title The title to be set
-     */
-    fun setTitle(title: String?)
 }

@@ -33,13 +33,9 @@ class HudPresenter(private val builder: HUD.Builder) {
     }
     
     fun showCustom() {
-        val hud = builder.build {
+        builder.build {
             setStyle(HUD.Style.CUSTOM)
             setTitle("This is a custom title")
         }.present().dismissAfter(3_000)
-        MainScope().launch(MainQueueDispatcher) {
-            delay(1_500)
-            hud.setTitle("Congratulation!")
-        }
     }
 }
