@@ -23,17 +23,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 open class HudViewModel: ViewModel() {
 
-    private val uiContextTrackingBuilder = UiContextTrackingBuilder()
-
-    val builder = AndroidHUD.Builder(uiContextTrackingBuilder)
+    val builder = AndroidHUD.Builder()
 
     fun subscribe(activity: AppCompatActivity) {
-        uiContextTrackingBuilder.uiContextData = UiContextTrackingBuilder.UiContextData(
-            activity, activity.supportFragmentManager
-        )
+        builder.subscribe(activity, activity.supportFragmentManager)
     }
 
     fun unsubscribe() {
-        uiContextTrackingBuilder.uiContextData = null
+        builder.unsubscribe()
     }
 }

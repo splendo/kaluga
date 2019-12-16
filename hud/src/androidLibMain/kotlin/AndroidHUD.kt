@@ -16,6 +16,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.MainScope
@@ -40,13 +42,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiContextTrackingBuilder: UiContextTrackingBuilder) : HUD {
+class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
 
-    class Builder(private val uiContextTrackingBuilder: UiContextTrackingBuilder) : HUD.Builder() {
+    class Builder : HUD.Builder() {
+
+        private val uiContextObserver = UiContextObserver()
+
+        fun subscribe(lifecycleOwner: LifecycleOwner, fragmentManager: FragmentManager) {
+            uiContextObserver.uiContextData = UiContextObserver.UiContextData(
+                lifecycleOwner, fragmentManager
+            )
+        }
+
+        fun unsubscribe() {
+            uiContextObserver.uiContextData = null
+        }
+
         override fun create(hudConfig: HudConfig) = AndroidHUD(
             R.layout.loading_indicator_view,
             hudConfig,
-            uiContextTrackingBuilder
+            uiContextObserver
         )
     }
 
@@ -116,14 +131,14 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
     private var dialogState = MutableLiveData<DialogState>()
 
     init {
-        subscribeIfNeeded(uiContextTrackingBuilder.uiContextData)
-        uiContextTrackingBuilder.onUiContextDataWillChange = { newValue, oldValue ->
+        subscribeIfNeeded(uiContextObserver.uiContextData)
+        uiContextObserver.onUiContextDataWillChange = { newValue, oldValue ->
             unsubscribeIfNeeded(oldValue)
             subscribeIfNeeded(newValue)
         }
     }
 
-    private fun unsubscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) {
+    private fun unsubscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
             MainScope().launch {
                 dialogState.removeObservers(uiContextData.lifecycleOwner)
@@ -131,7 +146,7 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
         }
     }
 
-    private fun subscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) {
+    private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
             MainScope().launch {
                 dialogState.observe(uiContextData.lifecycleOwner, Observer {
@@ -164,13 +179,6 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
         MainScope().launch {
             delay(timeMillis)
             dismiss(animated)
-        }
-    }
-
-    override fun setTitle(title: String?) {
-        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.apply {
-            text = title
-            visibility = if (title == null) View.GONE else View.VISIBLE
         }
     }
 }

@@ -27,8 +27,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class UiContextTrackingBuilder
-
 class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
 
     class Builder(private val viewController: UIViewController) : HUD.Builder() {
@@ -43,7 +41,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         frame: CValue<CGRect>
     ) : UIView(frame) {
 
-        val titleLabel: UILabel
+        private val titleLabel: UILabel
 
         private val backgroundColor: UIColor
             get() = when (hudConfig.style) {
@@ -153,10 +151,5 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
             dismiss(animated)
         }
-    }
-
-    override fun setTitle(title: String?) {
-        containerView.titleLabel.text = title
-        containerView.titleLabel.hidden = title?.isEmpty() ?: true
     }
 }

@@ -5,6 +5,7 @@ A library allows you to show HUD (e.g. loading indicator) view.
 ## Usage
 
 Show default HUD:
+
 ```kotlin
 val hud = builder.build().present()
 ```
@@ -28,14 +29,46 @@ The `HUD` has methods to show and dismiss a loading indicator:
 - `present(animated: Boolean: true, completion: () -> Unit = {}): HUD` — show
 - `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
 - `dismissAfter(timeMillis: Long, animated: Boolean = true): HUD` — dismiss after `timeMillis` milliseconds
-- `setTitle(title: String?)` — sets title on already presented hud
 
 ### Android
 
-On Android this builder needs an activity fragment:
+On Android you need to subscribe the builder to `LifecycleOwner` and `FragmentManager`, best way is to use `HudViewModel`:
 
 ```kotlin
-val hud = AndroidHUD.Builder(activityFragment)
+open class HudViewModel: ViewModel() {
+
+    val builder = AndroidHUD.Builder()
+
+    fun subscribe(activity: AppCompatActivity) {
+        builder.subscribe(activity, activity.supportFragmentManager)
+    }
+
+    fun unsubscribe() {
+        builder.unsubscribe()
+    }
+}
+```
+
+And then in your `Activity`:
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+
+    private val viewModel: HudViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.subscribe(this)
+        //
+        // Pass viewModel.builder to shared code
+        //
+    }
+
+    override fun onDestroy() {
+        viewModel.unsubscribe()
+        super.onDestroy()
+    }
+}
 ```
 
 Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
@@ -55,7 +88,7 @@ Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
 On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
-let hud = IOSHUD.Builder(viewController)
+let builder = IOSHUD.Builder(viewController)
 ```
 
 Define your Color Sets in project's assets if using `.CUSTOM` style:
