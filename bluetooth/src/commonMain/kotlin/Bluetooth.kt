@@ -8,6 +8,7 @@ import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.DEFAULT_CONCURRENCY
 import kotlinx.coroutines.launch
 
 sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<BluetoothState>(manager.stateRepoAccesor) {
@@ -39,6 +40,11 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
             changeState(MissingPermissions(manager))
         }
 
+        override suspend fun initialState() {
+            super.initialState()
+
+            manager.startMonitoringBluetooth()
+        }
     }
 
      open class NoBluetoothState internal constructor(private val manager: BaseBluetoothManager) : BluetoothState(manager) {
@@ -60,6 +66,11 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
             checkAvailability()
         }
 
+        override suspend fun initialState() {
+            super.initialState()
+
+            manager.startMonitoringBluetooth()
+        }
     }
 
     class MissingPermissions internal constructor(private val manager: BaseBluetoothManager) : NoBluetoothState(manager) {
@@ -83,6 +94,7 @@ sealed class BluetoothState(private val manager: BaseBluetoothManager) : State<B
                 !is MissingPermissions -> manager.stopMonitoringBluetooth()
             }
         }
+
     }
 
     class Idle internal constructor(discoveredDevices: List<Device>,

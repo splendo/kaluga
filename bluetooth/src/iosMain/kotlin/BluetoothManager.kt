@@ -1,13 +1,11 @@
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
-import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
-import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.*
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
@@ -26,7 +24,7 @@ actual class BluetoothManager(permissions: Permissions, stateRepoAccesor: StateR
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
 
-            bluetoothManager.discoverPeripheral(didDiscoverPeripheral)
+            bluetoothManager.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap())
         }
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
@@ -38,33 +36,63 @@ actual class BluetoothManager(permissions: Permissions, stateRepoAccesor: StateR
 
     }
 
-    private var centralManager: CBCentralManager = CBCentralManager(null, dispatch_get_main_queue())
+    private val centralManagerDelegate = CentralManagerDelegate(this)
+    private val mainCentralManager = CBCentralManager(null, dispatch_get_main_queue())
+    private val centralManagers = emptyList<CBCentralManager>().toMutableList()
+    private var devicesMap = emptyMap<Identifier, Device>().toMutableMap()
 
     override fun scanForDevices(filter: Set<UUID>) {
-        val uuids = filter.map { it.uuid }
-        centralManager.scanForPeripheralsWithServices(uuids, null)
+        devicesMap.clear()
+
+        if (filter.isEmpty()) {
+            val centralManager = CBCentralManager(centralManagerDelegate, dispatch_get_main_queue())
+            centralManagers.add(centralManager)
+            centralManager.scanForPeripheralsWithServices(null, null)
+        }
+
+        filter.map { it.uuid }.forEach {
+            val centralManager = CBCentralManager(centralManagerDelegate, dispatch_get_main_queue())
+            centralManagers.add(centralManager)
+            centralManager.scanForPeripheralsWithServices(listOf(it), null)
+        }
     }
 
     override fun stopScanning() {
-        centralManager.stopScan()
+        centralManagers.forEach {
+            when(it.state) {
+                CBCentralManagerStatePoweredOn -> it.stopScan()
+            }
+        }
+        centralManagers.clear()
     }
 
     override fun startMonitoringBluetooth() {
-        centralManager.delegate = CentralManagerDelegate(this)
+        devicesMap.clear()
+        mainCentralManager.delegate = centralManagerDelegate
     }
 
     override fun stopMonitoringBluetooth() {
-        centralManager.delegate = null
+        devicesMap.clear()
+        mainCentralManager.delegate = null
     }
 
-    private fun discoverPeripheral(peripheral: CBPeripheral) {
-        launch { when (val state = stateRepoAccesor.currentState()) {
-            is BluetoothState.Scanning -> {
-                val device = Device(peripheral)
-                state.discoverDevices(device)
+    private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>) {
+        if (central == mainCentralManager)
+            return
+        // Since multiple managers may discover device, make sure even is only triggered once
+        if (devicesMap.containsKey(peripheral.identifier))
+            return
+        launch {
+            when (val state = stateRepoAccesor.currentState()) {
+                is BluetoothState.Scanning -> {
+                    val advertisementData = AdvertisementData(advertisementDataMap)
+                    val device = Device(peripheral, central, advertisementData)
+                    devicesMap[device.identifier] = device
+                    state.discoverDevices(device)
+                }
+                else -> state.logError(Error("Discovered Device while not scanning"))
             }
-            else -> state.logError(Error("Discovered Device while not scanning"))
-        } }
+        }
     }
 
 

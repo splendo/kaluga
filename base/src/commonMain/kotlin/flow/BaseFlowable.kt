@@ -22,21 +22,39 @@ import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 
-open class BaseFlowable<T>(private val channel: BroadcastChannel<T> = ConflatedBroadcastChannel()) : Flowable<T> {
+open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = {ConflatedBroadcastChannel()}) : Flowable<T> {
+
+    private var channel: BroadcastChannel<T>? = null
 
     final override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return flowConfig.apply(channel.asFlow())
+        val flow = channel?.let {
+            it.asFlow()
+        } ?: run {
+            val newChannel = channelFactory()
+            channel = newChannel
+            newChannel.asFlow()
+        }
+
+        flow.onStart {initialize()}
+        flow.onCompletion {complete()}
+
+        return flowConfig.apply(flow)
     }
 
+    protected open suspend fun initialize() {}
+    protected open suspend fun complete() {channel = null}
+
     suspend fun set(value: T) {
-        channel.send(value)
+        channel?.send(value)
     }
 
     fun setBlocking(value:T) {
         // if a conflated broadcast channel is used it always accepts input non-blocking (provided the channel is not closed)
         runBlocking {
-            channel.send(value)
+            set(value)
         }
     }
 }

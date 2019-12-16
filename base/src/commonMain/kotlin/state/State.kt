@@ -21,15 +21,15 @@ import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
+    open suspend fun initialState() {}
     open suspend fun beforeCreatingNewState() {}
     open suspend fun afterCreatingNewState(newState: T) {}
     open suspend fun afterNewStateIsSet() {}
     open suspend fun beforeOldStateIsRemoved() {}
     open suspend fun afterOldStateIsRemoved(oldState: T) {}
-    open suspend fun cleanupState() {}
+    open suspend fun finalState() {}
 }
 
 class StateRepoAccesor<T:State<T>>(val s:StateRepo<T> ) {
@@ -54,19 +54,19 @@ abstract class StateRepo<T:State<T>>(context: CoroutineContext = Dispatchers.Mai
             }
         }
 
-    init {
-        setBlocking(changedState)
+    abstract fun initialState():T
+
+    final override suspend fun initialize() {
+        super.initialize()
+        changedState = initialState()
+        changedState.initialState()
     }
 
-    abstract fun initialState():T
-    
-    fun cancelBlocking() {
-        runBlocking { cancel() }
-    }
-    
-    open suspend fun cancel() {
+
+    override suspend fun complete() {
+        super.complete()
         val state = state()
-        state.cleanupState()
+        state.finalState()
         if (state is CoroutineScope)
             state.cancel("State machine cancelled")
         coroutineContext.cancel()
