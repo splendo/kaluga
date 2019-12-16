@@ -41,8 +41,6 @@ class HUDTests {
         override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
             onDismissCalled()
         }
-
-        override fun setTitle(title: String?) { }
     }
 
     class MockBuilder: HUD.Builder() {
