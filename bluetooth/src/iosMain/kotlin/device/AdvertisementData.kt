@@ -1,23 +1,11 @@
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.typedMap
+import com.splendo.kaluga.bluetooth.UUID
 import platform.CoreBluetooth.*
 import platform.Foundation.NSData
-import platform.Foundation.NSUUID
-
-actual class Device(private val peripheral: CBPeripheral, private val centralManager: CBCentralManager, override val advertisementData: AdvertisementData) : BaseDevice {
-
-    override val name: String?
-        get() =
-            peripheral.name
-
-    override val identifier: Identifier
-        get() = peripheral.identifier
-}
-
-actual typealias Identifier = NSUUID
 
 actual class AdvertisementData(private val advertisementData: Map<String, Any>) : BaseAdvertisementData {
 

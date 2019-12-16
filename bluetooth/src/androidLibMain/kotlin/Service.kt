@@ -1,6 +1,7 @@
 package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattService
+import com.splendo.kaluga.bluetooth.device.Device
 
 actual class Service(private val service: BluetoothGattService) : BaseService {
 

@@ -1,16 +1,16 @@
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.BaseBluetoothScanner
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.logger
-import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.Support
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<ScanningState>(scanner.stateRepoAccesor) {
+sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>(scanner.stateRepoAccesor) {
 
     companion object {
         val tag = "BluetoothManager"
@@ -22,14 +22,14 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
                 toState
             else
                 it
-            }
+        }
     }
 
     fun logError(error: Error) {
         error.message?.let { logger().log(LogLevel.ERROR, tag, it) }
     }
 
-    open class Enabled internal constructor(val discoveredDevices: List<Device>, private val scanner: BaseBluetoothScanner) : ScanningState(scanner) {
+    open class Enabled internal constructor(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner) {
 
         suspend fun disable() {
             changeState(Disabled(scanner))
@@ -52,7 +52,7 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
         }
     }
 
-     open class NoBluetoothState internal constructor(private val scanner: BaseBluetoothScanner) : ScanningState(scanner) {
+    open class NoBluetoothState internal constructor(private val scanner: BaseScanner) : ScanningState(scanner) {
 
         internal suspend fun checkAvailability() {
             val newState = when(scanner.permissions.getBluetoothManager().checkSupport()) {
@@ -65,7 +65,7 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
 
     }
 
-    class Disabled internal constructor(private val scanner: BaseBluetoothScanner) : NoBluetoothState(scanner) {
+    class Disabled internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner) {
 
         suspend fun enable() {
             checkAvailability()
@@ -84,7 +84,7 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
         }
     }
 
-    class MissingPermissions internal constructor(private val scanner: BaseBluetoothScanner) : NoBluetoothState(scanner) {
+    class MissingPermissions internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner) {
 
         suspend fun givePermissions() {
             checkAvailability()
@@ -110,7 +110,8 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
 
     class Idle internal constructor(discoveredDevices: List<Device>,
                                     private val oldFilter: Set<UUID>,
-                                    private val scanner: BaseBluetoothScanner)  : Enabled(discoveredDevices, scanner) {
+                                    private val scanner: BaseScanner
+    )  : Enabled(discoveredDevices, scanner) {
 
         suspend fun startScanning(filter: Set<UUID>) {
             val devices = if (filter == oldFilter)
@@ -124,7 +125,8 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
 
     class Scanning internal constructor(discoveredDevices: List<Device>,
                                         private val filter: Set<UUID>,
-                                        private val scanner: BaseBluetoothScanner) : Enabled(discoveredDevices, scanner) {
+                                        private val scanner: BaseScanner
+    ) : Enabled(discoveredDevices, scanner) {
 
         suspend fun discoverDevices(vararg devices: Device) {
             val newDevices = listOf(*discoveredDevices.toTypedArray(), *devices)
@@ -155,7 +157,7 @@ sealed class ScanningState(private val scanner: BaseBluetoothScanner) : State<Sc
     }
 }
 
-class Scanner(builder: BaseBluetoothScanner.Builder) : StateRepo<ScanningState>() {
+class ScanningStateRepo(builder: BaseScanner.Builder) : StateRepo<ScanningState>() {
 
     val manager = builder.create(StateRepoAccesor(this), this)
 
@@ -174,35 +176,3 @@ class Scanner(builder: BaseBluetoothScanner.Builder) : StateRepo<ScanningState>(
     }
 
 }
-
-abstract class BaseBluetoothScanner(internal val permissions: Permissions, internal val stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
-
-    interface Builder {
-        fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): BluetoothScanner
-    }
-
-    internal abstract fun scanForDevices(filter: Set<UUID>)
-    internal abstract fun stopScanning()
-    internal abstract fun startMonitoringBluetooth()
-    internal abstract fun stopMonitoringBluetooth()
-
-    internal fun bluetoothEnabled() {
-        launch {
-            when (val state = stateRepoAccesor.currentState()) {
-                is ScanningState.Disabled -> state.enable()
-            }
-        }
-    }
-
-    internal fun bluetoothDisabled() {
-        launch {
-            when (val state = stateRepoAccesor.currentState()) {
-                is ScanningState.Enabled -> state.disable()
-            }
-        }
-    }
-
-}
-
-expect class BluetoothScanner : BaseBluetoothScanner
-

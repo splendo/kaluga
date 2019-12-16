@@ -1,30 +1,33 @@
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.scanner
 
 import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.*
 
-actual class BluetoothScanner(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-                              private val scanSettings: ScanSettings = defaultScanSettings,
-                              permissions: Permissions,
-                              private val context: Context,
-                              coroutineScope: CoroutineScope,
-                              stateRepoAccesor: StateRepoAccesor<ScanningState>) : BaseBluetoothScanner(permissions, stateRepoAccesor, coroutineScope) {
+actual class Scanner(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
+                     private val scanSettings: ScanSettings = defaultScanSettings,
+                     permissions: Permissions,
+                     private val context: Context,
+                     coroutineScope: CoroutineScope,
+                     stateRepoAccesor: StateRepoAccesor<ScanningState>) : BaseScanner(permissions, stateRepoAccesor, coroutineScope) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
                   private val permissions: Permissions,
-                  private val context: Context) : BaseBluetoothScanner.Builder {
+                  private val context: Context) : BaseScanner.Builder {
 
-        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): BluetoothScanner {
-            return BluetoothScanner(bluetoothScanner, scanSettings, permissions, context, coroutineScope, stateRepoAccessor)
+        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
+            return Scanner(bluetoothScanner, scanSettings, permissions, context, coroutineScope, stateRepoAccessor)
         }
     }
 
@@ -111,7 +114,7 @@ actual class BluetoothScanner(private val bluetoothScanner: BluetoothLeScannerCo
 
 }
 
-private class AvailabilityReceiver(private val bluetoothScanner: BaseBluetoothScanner) : BroadcastReceiver() {
+private class AvailabilityReceiver(private val bluetoothScanner: BaseScanner) : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         intent?.let {

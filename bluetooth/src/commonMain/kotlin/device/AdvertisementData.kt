@@ -1,7 +1,6 @@
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.device
 
-
-expect class Identifier
+import com.splendo.kaluga.bluetooth.UUID
 
 interface BaseAdvertisementData {
     val name: String?
@@ -12,15 +11,5 @@ interface BaseAdvertisementData {
 }
 
 expect class AdvertisementData {
-
-}
-
-interface BaseDevice {
-    val name: String?
-    val identifier: Identifier
-    val advertisementData: AdvertisementData
-}
-
-expect class Device : BaseDevice {
 
 }

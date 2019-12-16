@@ -1,6 +1,10 @@
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.typedMap
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
@@ -10,16 +14,16 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class BluetoothScanner(permissions: Permissions, stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseBluetoothScanner(permissions, stateRepoAccesor, coroutineScope)  {
+actual class Scanner(permissions: Permissions, stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
 
-    class Builder(private val permissions: Permissions) : BaseBluetoothScanner.Builder {
+    class Builder(private val permissions: Permissions) : BaseScanner.Builder {
 
-        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): BluetoothScanner {
-            return BluetoothScanner(permissions, stateRepoAccessor, coroutineScope)
+        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
+            return Scanner(permissions, stateRepoAccessor, coroutineScope)
         }
     }
 
-    private class CentralManagerDelegate(val bluetoothScanner: BluetoothScanner) : NSObject(), CBCentralManagerDelegateProtocol {
+    private class CentralManagerDelegate(val bluetoothScanner: Scanner) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
