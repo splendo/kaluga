@@ -117,24 +117,32 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
 
     init {
         subscribeIfNeeded(uiContextTrackingBuilder.uiContextData)
-        uiContextTrackingBuilder.onUiContextDataChanged = { uiContextData ->
-            subscribeIfNeeded(uiContextData)
+        uiContextTrackingBuilder.onUiContextDataChanged = { newValue, oldValue ->
+            unsubscribeIfNeeded(oldValue)
+            subscribeIfNeeded(newValue)
         }
     }
 
-    private fun subscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) = when(uiContextData) {
-        null -> { }
-        else -> {
-            dialogState.observe(uiContextData.lifecycleOwner, Observer {
-                when (it) {
-                    is DialogState.Visible -> {
-                        loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
+    private fun unsubscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) {
+        if (uiContextData != null) {
+            dialogState.removeObservers(uiContextData.lifecycleOwner)
+        }
+    }
+
+    private fun subscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) {
+        if (uiContextData != null) {
+            MainScope().launch {
+                dialogState.observe(uiContextData.lifecycleOwner, Observer {
+                    when (it) {
+                        is DialogState.Visible -> {
+                            loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
+                        }
+                        is DialogState.Gone -> {
+                            loadingDialog.dismiss()
+                        }
                     }
-                    is DialogState.Gone -> {
-                        loadingDialog.dismiss()
-                    }
-                }
-            })
+                })
+            }
         }
     }
 

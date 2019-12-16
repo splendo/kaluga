@@ -43,14 +43,12 @@ class AndroidHUDTests {
     }
 
     @BeforeTest
-    fun setUp() = runBlockingTest {
-        MainScope().launch {
-            uiContextTrackingBuilder = UiContextTrackingBuilder().apply {
-                uiContextData = UiContextTrackingBuilder.UiContextData(
-                    activityRule.activity,
-                    activityRule.activity.supportFragmentManager
-                )
-            }
+    fun setUp() {
+        uiContextTrackingBuilder = UiContextTrackingBuilder().apply {
+            uiContextData = UiContextTrackingBuilder.UiContextData(
+                activityRule.activity,
+                activityRule.activity.supportFragmentManager
+            )
         }
     }
 
@@ -65,15 +63,13 @@ class AndroidHUDTests {
 
     @Test
     fun indicatorShow() = runBlockingTest {
-        MainScope().launch {
-            AndroidHUD
-                .Builder(uiContextTrackingBuilder)
-                .build {
-                    setTitle("Loading...")
-                }
-                .present()
-            assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
-        }
+        AndroidHUD
+            .Builder(uiContextTrackingBuilder)
+            .build {
+                setTitle("Loading...")
+            }
+            .present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
     }
 
     @Test
