@@ -30,19 +30,24 @@ actual class UiContextTrackingBuilder: CoroutineScope by MainScope() {
         val fragmentManager: FragmentManager
     )
 
-    internal var onUiContextDataChanged: ((newValue: UiContextData?, oldValue: UiContextData?) -> Unit)? = null
+    internal var onUiContextDataWillChange: ((newValue: UiContextData?, oldValue: UiContextData?) -> Unit)? = null
 
     var uiContextData: UiContextData? = null
         set(value) {
             when (value) {
                 null -> {
-                    checkNotNull(uiContextData) { "Can't reset null value" }
+                    checkNotNull(field) {
+                        "Can't clear UiContextData if it is already null."
+                    }
                 }
                 else -> {
-                    check(this.uiContextData == null) { "Can't reset non-null value" }
+                    check(field == null) {
+                        "Can't set UiContextData if it is already set." +
+                        "The Android lifecycle requires your existing UI context to be unset before a new one is set"
+                    }
                 }
             }
-            onUiContextDataChanged?.invoke(value, uiContextData)
+            onUiContextDataWillChange?.invoke(value, field)
             field = value
         }
 }

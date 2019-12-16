@@ -117,7 +117,7 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
 
     init {
         subscribeIfNeeded(uiContextTrackingBuilder.uiContextData)
-        uiContextTrackingBuilder.onUiContextDataChanged = { newValue, oldValue ->
+        uiContextTrackingBuilder.onUiContextDataWillChange = { newValue, oldValue ->
             unsubscribeIfNeeded(oldValue)
             subscribeIfNeeded(newValue)
         }
@@ -125,7 +125,9 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
 
     private fun unsubscribeIfNeeded(uiContextData: UiContextTrackingBuilder.UiContextData?) {
         if (uiContextData != null) {
-            dialogState.removeObservers(uiContextData.lifecycleOwner)
+            MainScope().launch {
+                dialogState.removeObservers(uiContextData.lifecycleOwner)
+            }
         }
     }
 
