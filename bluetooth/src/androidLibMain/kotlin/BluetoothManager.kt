@@ -70,7 +70,10 @@ actual class BluetoothManager(private val bluetoothScanner: BluetoothLeScannerCo
             launch {
                 when (val state = stateRepoAccesor.currentState()) {
                     is BluetoothState.Scanning -> {
-                        val devices = results.map { Device(it.device, context) }
+                        val devices = results.map {
+                            val advertisementData = AdvertisementData(it.scanRecord)
+                            Device(it.device, advertisementData, context)
+                        }
                         state.discoverDevices(*devices.toTypedArray())
                     }
                     else -> state.logError(Error("Discovered Device while not scanning"))
