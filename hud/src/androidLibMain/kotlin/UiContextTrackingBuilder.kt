@@ -30,7 +30,7 @@ actual class UiContextTrackingBuilder: CoroutineScope by MainScope() {
         val fragmentManager: FragmentManager
     )
 
-    internal var onUiContextDataChanged: ((UiContextData?) -> Unit)? = null
+    internal var onUiContextDataChanged: ((newValue: UiContextData?, oldValue: UiContextData?) -> Unit)? = null
 
     var uiContextData: UiContextData? = null
         set(value) {
@@ -42,7 +42,7 @@ actual class UiContextTrackingBuilder: CoroutineScope by MainScope() {
                     check(this.uiContextData == null) { "Can't reset non-null value" }
                 }
             }
+            onUiContextDataChanged?.invoke(value, uiContextData)
             field = value
-            onUiContextDataChanged?.invoke(field)
         }
 }
