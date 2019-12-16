@@ -9,9 +9,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 /*
 
@@ -38,15 +36,29 @@ class AndroidHUDTests {
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
+    private lateinit var uiContextTrackingBuilder: UiContextTrackingBuilder
+
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
+    }
+
+    @BeforeTest
+    fun setUp() = runBlockingTest {
+        MainScope().launch {
+            uiContextTrackingBuilder = UiContextTrackingBuilder().apply {
+                uiContextData = UiContextTrackingBuilder.UiContextData(
+                    activityRule.activity,
+                    activityRule.activity.supportFragmentManager
+                )
+            }
+        }
     }
 
     @Test
     fun builderInitializer() = runBlockingTest {
         assertNotNull(
             AndroidHUD
-                .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
+                .Builder(uiContextTrackingBuilder)
                 .build()
         )
     }
@@ -55,7 +67,7 @@ class AndroidHUDTests {
     fun indicatorShow() = runBlockingTest {
         MainScope().launch {
             AndroidHUD
-                .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
+                .Builder(uiContextTrackingBuilder)
                 .build {
                     setTitle("Loading...")
                 }
@@ -67,7 +79,7 @@ class AndroidHUDTests {
     @Test
     fun indicatorDismiss() = runBlockingTest {
         val indicator = AndroidHUD
-            .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
+            .Builder(uiContextTrackingBuilder)
             .build {
                 setTitle("Loading...")
             }
@@ -80,7 +92,7 @@ class AndroidHUDTests {
     @Test
     fun indicatorDismissAfter() = runBlockingTest {
         val indicator = AndroidHUD
-            .Builder(activityRule.activity, activityRule.activity.supportFragmentManager)
+            .Builder(uiContextTrackingBuilder)
             .build {
                 setTitle("Loading...")
             }
