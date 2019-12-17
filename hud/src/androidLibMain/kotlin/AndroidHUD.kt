@@ -11,9 +11,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
-import androidx.annotation.IdRes
+import androidx.annotation.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -42,7 +40,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
+class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
 
     class Builder : HUD.Builder() {
 
@@ -96,7 +94,7 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
             private const val STYLE_KEY = "style"
             private const val TITLE_KEY = "title"
 
-            fun newInstance(@IdRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
+            fun newInstance(@LayoutRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, hudConfig.style.ordinal)
@@ -112,6 +110,7 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
                 dismiss()
             }
         }
+
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(viewResId, container).apply {
                 findViewById<LinearLayout>(R.id.content_view).setBackgroundColor(backgroundColor(inflater.context))
@@ -131,6 +130,7 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
     private var dialogState = MutableLiveData<DialogState>()
 
     init {
+        checkNotNull(uiContextObserver.uiContextData) { "Please subscribe builder to existing UI context before building HUD" }
         subscribeIfNeeded(uiContextObserver.uiContextData)
         uiContextObserver.onUiContextDataWillChange = { newValue, oldValue ->
             unsubscribeIfNeeded(oldValue)
@@ -151,12 +151,8 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, uiCon
             MainScope().launch {
                 dialogState.observe(uiContextData.lifecycleOwner, Observer {
                     when (it) {
-                        is DialogState.Visible -> {
-                            loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
-                        }
-                        is DialogState.Gone -> {
-                            loadingDialog.dismiss()
-                        }
+                        is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
+                        is DialogState.Gone -> loadingDialog.dismiss()
                     }
                 })
             }
