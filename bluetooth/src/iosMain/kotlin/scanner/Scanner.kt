@@ -1,10 +1,10 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.typedMap
-import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
@@ -15,7 +15,11 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class Scanner internal constructor(autoEnableBluetooth: Boolean, permissions: Permissions, stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
+actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
+                                          permissions: Permissions,
+                                          stateRepoAccesor: StateRepoAccesor<ScanningState>,
+                                          coroutineScope: CoroutineScope)
+    : BaseScanner(permissions, DeviceConnectionManager.Builder(), stateRepoAccesor, coroutineScope)  {
 
     class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions) : BaseScanner.Builder {
 
@@ -44,7 +48,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean, permissi
     private val centralManagerDelegate = CentralManagerDelegate(this)
     private val mainCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
-    private var devicesMap = emptyMap<Identifier, Device>().toMutableMap()
+    private var devicesMap = emptyMap<Identifier, DeviceInfoHolder>().toMutableMap()
 
     init {
         val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
@@ -93,10 +97,10 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean, permissi
         if (devicesMap.containsKey(peripheral.identifier))
             return
         launch {
-            when (val state = stateRepoAccesor.currentState()) {
+            when (val state = stateRepoAccessor.currentState()) {
                 is ScanningState.Enabled.Scanning -> {
                     val advertisementData = AdvertisementData(advertisementDataMap)
-                    val device = Device(peripheral, central, advertisementData)
+                    val device = DeviceInfoHolder(peripheral, central, advertisementData)
                     devicesMap[device.identifier] = device
                     state.discoverDevices(device)
                 }

@@ -4,7 +4,9 @@ import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSUUID
 
-actual class Device(private val peripheral: CBPeripheral, private val centralManager: CBCentralManager, override val advertisementData: AdvertisementData) : BaseDevice {
+actual class DeviceInfoHolder(internal val peripheral: CBPeripheral,
+                              internal val centralManager: CBCentralManager,
+                              override val advertisementData: AdvertisementData) : DeviceInfo {
 
     override val name: String?
         get() =

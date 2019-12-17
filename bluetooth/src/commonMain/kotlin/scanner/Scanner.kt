@@ -1,12 +1,17 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-abstract class BaseScanner(internal val permissions: Permissions, internal val stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+abstract class BaseScanner internal constructor(internal val permissions: Permissions,
+                                                internal val deviceBuilder: BaseDeviceConnectionManager.Builder,
+                                                internal val stateRepoAccessor: StateRepoAccesor<ScanningState>,
+                                                coroutineScope: CoroutineScope)
+    : CoroutineScope by coroutineScope {
 
     interface Builder {
         val autoEnableBluetooth: Boolean
@@ -20,7 +25,7 @@ abstract class BaseScanner(internal val permissions: Permissions, internal val s
 
     internal fun bluetoothEnabled() {
         launch {
-            when (val state = stateRepoAccesor.currentState()) {
+            when (val state = stateRepoAccessor.currentState()) {
                 is ScanningState.NoBluetoothState.Disabled -> state.enable()
             }
         }
@@ -28,7 +33,7 @@ abstract class BaseScanner(internal val permissions: Permissions, internal val s
 
     internal fun bluetoothDisabled() {
         launch {
-            when (val state = stateRepoAccesor.currentState()) {
+            when (val state = stateRepoAccessor.currentState()) {
                 is ScanningState.Enabled -> state.disable()
             }
         }

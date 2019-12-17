@@ -2,6 +2,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.logger
 import com.splendo.kaluga.permissions.Support
@@ -9,14 +10,14 @@ import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
 
-sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>(scanner.stateRepoAccesor) {
+sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>(scanner.stateRepoAccessor) {
 
     companion object {
         val tag = "BluetoothManager"
     }
 
     protected suspend fun changeState(toState: ScanningState) {
-        scanner.stateRepoAccesor.s.changeState {
+        scanner.stateRepoAccessor.s.changeState {
             if (it === this)
                 toState
             else
@@ -70,8 +71,9 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                                             private val scanner: BaseScanner
         ) : Enabled(discoveredDevices, scanner) {
 
-            suspend fun discoverDevices(vararg devices: Device) {
-                val newDevices = listOf(*discoveredDevices.toTypedArray(), *devices)
+            suspend fun discoverDevices(vararg devices: DeviceInfoHolder) {
+                val addedDevices = devices.map { Device(it, scanner.deviceBuilder) }
+                val newDevices = listOf(*discoveredDevices.toTypedArray(), *addedDevices.toTypedArray())
                 changeState(Scanning(newDevices, filter, scanner))
             }
 
@@ -139,7 +141,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
             override suspend fun afterNewStateIsSet() {
                 super.afterNewStateIsSet()
 
-                when (scanner.stateRepoAccesor.currentState()) {
+                when (scanner.stateRepoAccessor.currentState()) {
                     !is MissingPermissions -> scanner.startMonitoringBluetooth()
                 }
             }
@@ -147,7 +149,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
                 super.afterOldStateIsRemoved(oldState)
 
-                when (scanner.stateRepoAccesor.currentState()) {
+                when (scanner.stateRepoAccessor.currentState()) {
                     !is MissingPermissions -> scanner.stopMonitoringBluetooth()
                 }
             }

@@ -1,10 +1,10 @@
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 
 interface BaseService {
     val uuid: UUID
-    val peripheral: Device
+    val peripheral: DeviceInfoHolder
     val characteristics: List<Characteristic>
 }
 
