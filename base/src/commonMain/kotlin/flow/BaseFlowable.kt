@@ -27,28 +27,26 @@ import kotlinx.coroutines.flow.onStart
 
 open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = {ConflatedBroadcastChannel()}) : Flowable<T> {
 
-    private var channel: BroadcastChannel<T>? = null
+    private var channel = lazy {  channelFactory() }
+    private var flowing: Boolean = false
 
     final override fun flow(flowConfig: FlowConfig): Flow<T> {
-        val flow = channel?.let {
-            it.asFlow()
-        } ?: run {
-            val newChannel = channelFactory()
-            channel = newChannel
-            newChannel.asFlow()
-        }
+        val flow = channel.value.asFlow()
 
-        flow.onStart {initialize()}
+        flow.onStart {
+            flowing = true
+            initialize()
+        }
         flow.onCompletion {complete()}
 
         return flowConfig.apply(flow)
     }
-
     protected open suspend fun initialize() {}
-    protected open suspend fun complete() {channel = null}
+    //protected open suspend fun complete() {}
 
     suspend fun set(value: T) {
-        channel?.send(value)
+        if (flowing)
+            channel.value.send(value)
     }
 
     fun setBlocking(value:T) {
