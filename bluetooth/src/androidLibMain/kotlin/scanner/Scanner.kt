@@ -50,7 +50,7 @@ actual class Scanner(private val bluetoothScanner: BluetoothLeScannerCompat = Bl
                 stateRepoAccesor.currentState().logError(Error(error.first))
                 if (error.second) {
                     when (val state = stateRepoAccesor.currentState()) {
-                        is ScanningState.Scanning -> state.stopScanning()
+                        is ScanningState.Enabled.Scanning -> state.stopScanning()
                     }
                 }
             }
@@ -72,7 +72,7 @@ actual class Scanner(private val bluetoothScanner: BluetoothLeScannerCompat = Bl
         private fun receiveResults(results: List<ScanResult>) {
             launch {
                 when (val state = stateRepoAccesor.currentState()) {
-                    is ScanningState.Scanning -> {
+                    is ScanningState.Enabled.Scanning -> {
                         val devices = results.map {
                             val advertisementData = AdvertisementData(it.scanRecord)
                             Device(it.device, advertisementData, context)

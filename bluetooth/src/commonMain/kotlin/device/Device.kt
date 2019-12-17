@@ -1,6 +1,5 @@
 package com.splendo.kaluga.bluetooth.device
 
-
 expect class Identifier
 
 interface BaseDevice {
