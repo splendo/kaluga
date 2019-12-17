@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 abstract class BaseScanner(internal val permissions: Permissions, internal val stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     interface Builder {
+        val autoEnableBluetooth: Boolean
         fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner
     }
 
@@ -20,7 +21,7 @@ abstract class BaseScanner(internal val permissions: Permissions, internal val s
     internal fun bluetoothEnabled() {
         launch {
             when (val state = stateRepoAccesor.currentState()) {
-                is ScanningState.Disabled -> state.enable()
+                is ScanningState.NoBluetoothState.Disabled -> state.enable()
             }
         }
     }
