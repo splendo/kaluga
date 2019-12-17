@@ -13,17 +13,17 @@ sealed class DeviceAction {
     }
 }
 
-sealed class DeviceState (connectionManager: DeviceConnectionManager) : State<DeviceState>(connectionManager.repoAccessor), DeviceInfo by connectionManager.device {
+sealed class DeviceState (internal val connectionManager: DeviceConnectionManager) : State<DeviceState>(connectionManager.repoAccessor), DeviceInfo by connectionManager.deviceInfoHolder {
 
     sealed class Connected(connectionManager: DeviceConnectionManager) : DeviceState(connectionManager) {
 
         class Idle internal constructor(device: DeviceInfoHolder, connectionManager: DeviceConnectionManager): Connected(connectionManager) {
 
-            fun discoverServices() {
+            suspend fun discoverServices() {
 
             }
 
-            fun handleAction(action: DeviceAction) {
+            suspend fun handleAction(action: DeviceAction) {
 
             }
 
@@ -31,25 +31,30 @@ sealed class DeviceState (connectionManager: DeviceConnectionManager) : State<De
         class Discovering internal constructor(connectionManager: DeviceConnectionManager): Connected(connectionManager)
         class HandlingAction internal constructor(action: DeviceAction, nextActions: List<DeviceAction>, connectionManager: DeviceConnectionManager): Connected(connectionManager)
 
-        fun disconnect() {
+        suspend fun disconnect() {
 
         }
 
-        fun readRssi() {
-
+        suspend fun readRssi() {
+            connectionManager.readRssi()
         }
 
+        override suspend fun finalState() {
+            super.finalState()
+
+            connectionManager.disconnect()
+        }
     }
     class Connecting internal constructor(connectionManager: DeviceConnectionManager) : DeviceState(connectionManager) {
 
-        fun cancelConnection() {
+        suspend fun cancelConnection() {
 
         }
 
     }
     class Disconnected internal constructor(connectionManager: DeviceConnectionManager) : DeviceState(connectionManager) {
 
-        fun connect() {
+        suspend fun connect() {
             
         }
 
