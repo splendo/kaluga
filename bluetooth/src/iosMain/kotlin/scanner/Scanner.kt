@@ -1,6 +1,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.typedMap
+import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
@@ -14,12 +15,12 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class Scanner(permissions: Permissions, stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
+actual class Scanner internal constructor(autoEnableBluetooth: Boolean, permissions: Permissions, stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
 
-    class Builder(private val permissions: Permissions) : BaseScanner.Builder {
+    class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions) : BaseScanner.Builder {
 
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(permissions, stateRepoAccessor, coroutineScope)
+            return Scanner(autoEnableBluetooth, permissions, stateRepoAccessor, coroutineScope)
         }
     }
 
@@ -41,9 +42,14 @@ actual class Scanner(permissions: Permissions, stateRepoAccesor: StateRepoAcceso
     }
 
     private val centralManagerDelegate = CentralManagerDelegate(this)
-    private val mainCentralManager = CBCentralManager(null, dispatch_get_main_queue())
+    private val mainCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
     private var devicesMap = emptyMap<Identifier, Device>().toMutableMap()
+
+    init {
+        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
+        mainCentralManager = CBCentralManager(null, dispatch_get_main_queue(), options)
+    }
 
     override fun scanForDevices(filter: Set<UUID>) {
         devicesMap.clear()
