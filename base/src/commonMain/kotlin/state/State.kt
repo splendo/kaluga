@@ -62,9 +62,7 @@ abstract class StateRepo<T:State<T>>(context: CoroutineContext = Dispatchers.Mai
         changedState.initialState()
     }
 
-
-    final override suspend fun complete() {
-        super.complete()
+    suspend fun cancel() {
         val state = state()
         state.finalState()
         if (state is CoroutineScope)

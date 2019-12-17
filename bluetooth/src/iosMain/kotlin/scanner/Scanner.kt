@@ -88,7 +88,7 @@ actual class Scanner(permissions: Permissions, stateRepoAccesor: StateRepoAcceso
             return
         launch {
             when (val state = stateRepoAccesor.currentState()) {
-                is ScanningState.Scanning -> {
+                is ScanningState.Enabled.Scanning -> {
                     val advertisementData = AdvertisementData(advertisementDataMap)
                     val device = Device(peripheral, central, advertisementData)
                     devicesMap[device.identifier] = device

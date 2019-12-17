@@ -5,7 +5,7 @@ import platform.CoreBluetooth.CBCharacteristic
 
 actual class Characteristic(val characteristic: CBCharacteristic) : BaseCharacteristic {
 
-    override val uuid: BaseUUID
+    override val uuid: UUID
         get() = UUID(characteristic.UUID)
 
     override fun getIsNotifying(): Boolean {
