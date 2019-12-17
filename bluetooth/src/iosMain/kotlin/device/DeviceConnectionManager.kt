@@ -23,6 +23,10 @@ internal actual class DeviceConnectionManager(deviceInfoHolder: DeviceInfoHolder
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override suspend fun readRssi() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override suspend fun readCharacteristic(characteristic: Characteristic) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
