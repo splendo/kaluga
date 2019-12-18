@@ -33,7 +33,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
 
-            bluetoothScanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap())
+            bluetoothScanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
@@ -90,7 +90,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         mainCentralManager.delegate = null
     }
 
-    private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>) {
+    private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         if (central == mainCentralManager)
             return
         // Since multiple managers may discover device, make sure even is only triggered once
@@ -102,7 +102,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
                     val advertisementData = AdvertisementData(advertisementDataMap)
                     val device = DeviceInfoHolder(peripheral, central, advertisementData)
                     devicesMap[device.identifier] = device
-                    state.discoverDevices(device)
+                    state.discoverDevices(Pair(device, rssi))
                 }
                 else -> state.logError(Error("Discovered Device while not scanning"))
             }

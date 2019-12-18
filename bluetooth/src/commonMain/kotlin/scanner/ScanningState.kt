@@ -62,8 +62,8 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                                             private val scanner: BaseScanner
         ) : Enabled(discoveredDevices, scanner) {
 
-            suspend fun discoverDevices(vararg devices: DeviceInfoHolder) {
-                val addedDevices = devices.map { Device(it, scanner.deviceBuilder) }
+            suspend fun discoverDevices(vararg devices: Pair<DeviceInfoHolder, Int>) {
+                val addedDevices = devices.map { Device(it.first, it.second, scanner.deviceBuilder) }
                 val newDevices = listOf(*discoveredDevices.toTypedArray(), *addedDevices.toTypedArray())
                 changeState(Scanning(newDevices, filter, scanner))
             }
