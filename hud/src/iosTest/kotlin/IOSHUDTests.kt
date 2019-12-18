@@ -21,39 +21,36 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IosHUDTests {
-
-    @Test
-    fun builderInitializer() {
-        assertNotNull(IOSHUD
-            .Builder(UIViewController())
-            .create()
-        )
-    }
-
-    @Test
-    fun builderSetStyle() {
-        assertNotNull(IOSHUD
-            .Builder(UIViewController()).build {
-                setStyle(HUD.Style.CUSTOM)
-            }
-        )
-    }
+class IOSHUDTests {
 
     private lateinit var window: UIWindow
 
     @BeforeTest
     fun setUp() {
-        window = UIWindow(UIScreen.mainScreen.bounds)
-        window.makeKeyAndVisible()
+        window = UIWindow(UIScreen.mainScreen.bounds).apply { makeKeyAndVisible() }
+    }
+
+    @Test
+    fun builderInitializer() {
+        assertNotNull(
+            IOSHUD.Builder(UIViewController()).build()
+        )
+    }
+
+    @Test
+    fun builderSetStyleAndTitle() {
+        assertNotNull(
+            IOSHUD.Builder(UIViewController()).build {
+                setStyle(HUD.Style.CUSTOM)
+                setTitle("Foo")
+            }
+        )
     }
 
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD
-            .Builder(hostView)
-            .create()
+        val indicator = IOSHUD.Builder(hostView).build()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
@@ -64,9 +61,7 @@ class IosHUDTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD
-            .Builder(hostView)
-            .create()
+        val indicator = IOSHUD.Builder(hostView).build()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)

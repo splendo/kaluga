@@ -5,7 +5,6 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.Test
@@ -46,7 +45,7 @@ class AndroidHUDTests {
         assertNotNull(
             AndroidHUD
                 .Builder(activityRule.activity)
-                .create()
+                .build()
         )
     }
 

@@ -1,6 +1,8 @@
 package com.splendo.kaluga.hud
 
+import kotlinx.cinterop.CValue
 import platform.CoreGraphics.CGFloat
+import platform.CoreGraphics.CGRect
 import platform.UIKit.*
 import platform.darwin.DISPATCH_TIME_NOW
 import platform.darwin.dispatch_after
@@ -25,17 +27,24 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val view: DefaultView, private val controller: UIViewController) : HUD {
+class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
 
-    private class DefaultView(
-        private val style: HUD.Style,
-        private val titleString: String?
-    ) : UIViewController(null, null) {
+    class Builder(private val viewController: UIViewController) : HUD.Builder() {
+        override fun create(hudConfig: HudConfig) = IOSHUD(
+            ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
+            viewController
+        )
+    }
 
-        lateinit var titleLabel: UILabel
+    private class ContainerView(
+        private val hudConfig: HudConfig,
+        frame: CValue<CGRect>
+    ) : UIView(frame) {
+
+        val titleLabel: UILabel
 
         private val backgroundColor: UIColor
-            get() = when (style) {
+            get() = when (hudConfig.style) {
                 HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
                 HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
@@ -43,22 +52,19 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
             }
 
         private val foregroundColor: UIColor
-            get() = when (style) {
+            get() = when (hudConfig.style) {
                 HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
                 HUD.Style.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.whiteColor else UIColor.blackColor
             }
 
-        override fun viewDidLoad() {
-            super.viewDidLoad()
-            setupView()
-        }
-
         // NOTES: Cast to CGFloat is needed for Arm32
-        private fun setupView() {
+        init {
+            // Rotation support
+            autoresizingMask = UIViewAutoresizingFlexibleWidth or UIViewAutoresizingFlexibleHeight
             // Dimmed background
-            view.backgroundColor = UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat)
+            setBackgroundColor(UIColor(0.0 as CGFloat, (1 / 3.0) as CGFloat))
             // Main HUD view is stack view
             val stackView = UIStackView().apply {
                 axis = UILayoutConstraintAxisVertical
@@ -67,10 +73,11 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
                 spacing = 8.0 as CGFloat
                 translatesAutoresizingMaskIntoConstraints = false
             }
-            view.addSubview(stackView)
+            addSubview(stackView)
+
             // Stack view background view
             val contentView = UIView().apply {
-                backgroundColor = this@DefaultView.backgroundColor
+                backgroundColor = this@ContainerView.backgroundColor
                 layer.cornerRadius = 14.0 as CGFloat
                 translatesAutoresizingMaskIntoConstraints = false
             }
@@ -81,12 +88,12 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
                     contentView.trailingAnchor.constraintEqualToAnchor(stackView.trailingAnchor, 32.0 as CGFloat),
                     contentView.topAnchor.constraintEqualToAnchor(stackView.topAnchor, -32.0 as CGFloat),
                     contentView.bottomAnchor.constraintEqualToAnchor(stackView.bottomAnchor, 32.0 as CGFloat),
-                    stackView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor),
-                    stackView.centerYAnchor.constraintEqualToAnchor(view.centerYAnchor),
+                    stackView.centerXAnchor.constraintEqualToAnchor(centerXAnchor),
+                    stackView.centerYAnchor.constraintEqualToAnchor(centerYAnchor),
                     stackView.widthAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
-                    stackView.widthAnchor.constraintLessThanOrEqualToAnchor(view.widthAnchor, 0.5 as CGFloat),
+                    stackView.widthAnchor.constraintLessThanOrEqualToAnchor(widthAnchor, 0.5 as CGFloat),
                     stackView.heightAnchor.constraintGreaterThanOrEqualToConstant(64.0 as CGFloat),
-                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(view.heightAnchor, 0.5 as CGFloat)
+                    stackView.heightAnchor.constraintLessThanOrEqualToAnchor(heightAnchor, 0.5 as CGFloat)
                 )
             )
             // Activity indicator
@@ -98,8 +105,8 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
             }
             // Place title label
             titleLabel = UILabel().apply {
-                text = titleString
-                hidden = titleString?.isEmpty() ?: true
+                text = hudConfig.title
+                hidden = hudConfig.title?.isEmpty() ?: true
                 numberOfLines = 0 // Multiline support
             }.also {
                 stackView.addArrangedSubview(it)
@@ -107,34 +114,34 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
         }
     }
 
-    class Builder(private val controller: UIViewController) : HUD.Builder {
-        override var title: String? = null
-        override var style = HUD.Style.SYSTEM
-        override fun create() = IOSHUD(DefaultView(style, title), controller)
+    private val hudViewController = UIViewController(null, null).apply {
+        modalPresentationStyle = UIModalPresentationOverFullScreen
+        modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+        view.backgroundColor = UIColor.clearColor
+        view.addSubview(containerView)
     }
 
-    init {
-        view.apply {
-            modalPresentationStyle = UIModalPresentationOverFullScreen
-            modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+    private val topViewController: UIViewController get() {
+        var result: UIViewController? = viewController
+        while (result?.presentedViewController != null) {
+            result = result.presentedViewController
         }
+        return result ?: viewController
     }
 
-    override val isVisible get() = view.presentingViewController != null
+    override val isVisible get() = hudViewController.presentingViewController != null
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        if (controller.presentedViewController != null) {
-            controller.dismissViewControllerAnimated(animated) {
-                controller.presentViewController(view, animated, completion)
-            }
+        if (!isVisible) {
+            topViewController.presentViewController(hudViewController, animated, completion)
         } else {
-            controller.presentViewController(view, animated, completion)
+            completion()
         }
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        if (controller.presentedViewController != null) {
-            controller.dismissViewControllerAnimated(animated, completion)
+        if (isVisible) {
+            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated, completion)
         } else {
             completion()
         }
@@ -147,7 +154,7 @@ class IOSHUD private constructor(private val view: DefaultView, private val cont
     }
 
     override fun setTitle(title: String?) {
-        view.titleLabel.text = title
-        view.titleLabel.hidden = title?.isEmpty() ?: true
+        containerView.titleLabel.text = title
+        containerView.titleLabel.hidden = title?.isEmpty() ?: true
     }
 }
