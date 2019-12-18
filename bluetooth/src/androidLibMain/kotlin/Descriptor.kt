@@ -6,7 +6,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
 
-actual class Descriptor(private val descriptor: BluetoothGattDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
+actual class Descriptor(val descriptor: BluetoothGattDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
 
     override val uuid: UUID
         get() = UUID(ParcelUuid(descriptor.uuid))
