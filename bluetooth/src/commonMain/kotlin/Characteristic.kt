@@ -1,31 +1,29 @@
 package com.splendo.kaluga.bluetooth
 
-interface BaseAttribute {
-    val uuid: UUID
-}
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.state.StateRepoAccesor
 
-data class Attribute(val uuid: UUID)
+abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepoAccessor: StateRepoAccesor<DeviceState>) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepoAccessor) {
 
-interface BaseCharacteristic : BaseAttribute {
-    fun getIsNotifying(): Boolean
-    fun getData(): ByteArray?
+    abstract val descriptors: List<Descriptor>
+    var isNotifying: Boolean = false
+
+    suspend fun enableNotification() {
+        if (!isNotifying)
+            addAction(createNotificationAction(true))
+        isNotifying = true
+    }
+
+    suspend fun disableNotification() {
+        if (isNotifying)
+            addAction(createNotificationAction(false))
+        isNotifying = false
+    }
+
+    internal abstract fun createNotificationAction(enabled: Boolean): DeviceAction.Notification
+
 }
 
 expect class Characteristic : BaseCharacteristic
 
-class CharacteristicCache {
-    private val cache = mutableMapOf<UUID, Characteristic>()
-
-    fun clear() {
-        cache.clear()
-    }
-
-    fun cache(characteristic: Characteristic) {
-        cache[characteristic.uuid] = characteristic
-    }
-
-    fun adapter(uuid: UUID): Characteristic? {
-        return cache[uuid]
-    }
-
-}
