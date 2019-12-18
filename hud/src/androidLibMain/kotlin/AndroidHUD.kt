@@ -106,6 +106,8 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
+            // Dismiss existing dialog on rotation
+            // We will handle this state via dialogState and show it again if needed
             if (savedInstanceState != null) {
                 dismiss()
             }
