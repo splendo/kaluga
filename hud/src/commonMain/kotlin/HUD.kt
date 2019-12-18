@@ -1,5 +1,8 @@
 package com.splendo.kaluga.hud
 
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -40,33 +43,35 @@ interface HUD {
     /**
      * Interface used to build loading indicator
      */
-    interface Builder {
+    abstract class Builder {
+
+        private val lock = Lock()
 
         /** The style of the loading indicator */
-        var style: Style
+        private var style: Style = Style.SYSTEM
 
         /** Sets the style for the loading indicator */
         fun setStyle(style: Style) = apply { this.style = style }
 
         /** The title of the loading indicator */
-        var title: String?
+        private var title: String? = null
 
         /** Set the title for the loading indicator */
         fun setTitle(title: String?) = apply { this.title = title }
 
         /** Returns built loading indicator */
-        fun build(initialize: Builder.() -> Unit = { }): HUD {
+        fun build(initialize: Builder.() -> Unit = { }): HUD = lock.withLock {
             clear()
             initialize()
-            return create()
+            return create(HudConfig(style, title))
         }
 
         /** Returns created loading indicator */
-        fun create(): HUD
+        abstract fun create(hudConfig: HudConfig): HUD
 
         /** Sets default style and empty title */
         private fun clear() {
-            setStyle(HUD.Style.SYSTEM)
+            setStyle(Style.SYSTEM)
             setTitle(null)
         }
     }

@@ -19,3 +19,20 @@ android {
         unitTests.returnDefaultValues = true
     }
 }
+
+kotlin {
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation 'co.touchlab:stately:0.9.3'
+            }
+        }
+    }
+}
