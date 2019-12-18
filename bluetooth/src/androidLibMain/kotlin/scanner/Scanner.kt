@@ -80,7 +80,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                     is ScanningState.Enabled.Scanning -> {
                         val devices = results.map {
                             val advertisementData = AdvertisementData(it.scanRecord)
-                            DeviceInfoHolder(it.device, advertisementData, context)
+                            Pair(DeviceInfoHolder(it.device, advertisementData, context), it.rssi)
                         }
                         state.discoverDevices(*devices.toTypedArray())
                     }
