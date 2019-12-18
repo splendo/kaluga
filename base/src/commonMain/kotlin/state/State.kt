@@ -30,6 +30,16 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
     open suspend fun beforeOldStateIsRemoved() {}
     open suspend fun afterOldStateIsRemoved(oldState: T) {}
     open suspend fun finalState() {}
+
+    protected suspend fun changeState(toState: T) {
+        repoAccessor.s.changeState {
+            if (it === this)
+                toState
+            else
+                it
+        }
+    }
+
 }
 
 class StateRepoAccesor<T:State<T>>(val s:StateRepo<T> ) {

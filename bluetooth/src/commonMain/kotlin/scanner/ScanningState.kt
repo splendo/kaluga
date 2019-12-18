@@ -16,15 +16,6 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
         val tag = "BluetoothManager"
     }
 
-    protected suspend fun changeState(toState: ScanningState) {
-        scanner.stateRepoAccessor.s.changeState {
-            if (it === this)
-                toState
-            else
-                it
-        }
-    }
-
     fun logError(error: Error) {
         error.message?.let { logger().log(LogLevel.ERROR, tag, it) }
     }

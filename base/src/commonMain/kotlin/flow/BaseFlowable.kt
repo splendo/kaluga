@@ -42,7 +42,7 @@ open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T>
         return flowConfig.apply(flow)
     }
     protected open suspend fun initialize() {}
-    //protected open suspend fun complete() {}
+    protected open suspend fun complete() {}
 
     suspend fun set(value: T) {
         if (flowing)

@@ -51,6 +51,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
                                 hasStartedScanning = true
                             } else if (scanState.oldFilter == filter) {
                                 emit(scanState.discoveredDevices)
+                                return@transformLatest
                             }
                         }
                         is ScanningState.Enabled.Scanning -> {
@@ -59,6 +60,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
                                 hasStoppedScanning = true
                             } else {
                                 emit(scanState.discoveredDevices)
+                                return@transformLatest
                             }
                         }
                     }
@@ -72,6 +74,8 @@ class Bluetooth internal constructor(private val builder: Builder) {
                     }
                 }
             }
+
+            emit(emptyList())
         }
     }
 
