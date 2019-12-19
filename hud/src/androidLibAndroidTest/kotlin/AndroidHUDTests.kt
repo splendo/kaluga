@@ -5,8 +5,6 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.*
 
@@ -46,49 +44,56 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorShow() = runBlockingTest {
-        builder.build {
-            setTitle("Loading...")
-        }.present()
-        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
-    }
-
-    @Test
-    fun indicatorDismiss() = runBlockingTest {
+    fun indicatorShow() {
         val indicator = builder.build {
             setTitle("Loading...")
         }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertTrue(indicator.isVisible)
+    }
+
+    @Test
+    fun indicatorDismiss() {
+        val indicator = builder.build {
+            setTitle("Loading...")
+        }.present()
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertTrue(indicator.isVisible)
         indicator.dismiss()
         assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertFalse(indicator.isVisible)
     }
 
     @Test
-    fun indicatorDismissAfter() = runBlockingTest {
+    fun indicatorDismissAfter() {
         val indicator = builder.build {
             setTitle("Loading...")
         }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertTrue(indicator.isVisible)
         indicator.dismissAfter(500)
         assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertFalse(indicator.isVisible)
     }
 
     @Test
-    fun rotateActivity() = runBlockingTest {
+    fun rotateActivity() {
         val indicator = builder.build {
             setTitle("Loading...")
-        }.present()
+        }.present() as AndroidHUD
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
-        // Schedule dismiss
-        indicator.dismissAfter(3000)
-        delay(500)
+        assertTrue(indicator.isVisible)
+
         // Rotate screen
         device.setOrientationLeft()
         // HUD should be on screen
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
-        delay(500)
+        assertTrue(indicator.isVisible)
+
         device.setOrientationNatural()
+        indicator.dismiss()
         // Finally should gone
         assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertTrue(!indicator.isVisible)
     }
 }
