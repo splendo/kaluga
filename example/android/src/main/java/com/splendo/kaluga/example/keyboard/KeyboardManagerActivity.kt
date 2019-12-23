@@ -1,10 +1,10 @@
-package com.splendo.kaluga.example.keyboardmanager
+package com.splendo.kaluga.example.keyboard
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.ExampleKeyboardManager
-import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import kotlinx.android.synthetic.main.activity_keyboard_manager.*
 
 class KeyboardManagerActivity : AppCompatActivity(R.layout.activity_keyboard_manager) {

@@ -1,7 +1,7 @@
 package com.splendo.kaluga.example.shared
 
-import com.splendo.kaluga.keyboardmanager.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboardmanager.KeyboardView
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardView
 
 class ExampleKeyboardManager(keyboardManagerBuilder: KeyboardManagerBuilder, private val keyboardView: KeyboardView) {
 

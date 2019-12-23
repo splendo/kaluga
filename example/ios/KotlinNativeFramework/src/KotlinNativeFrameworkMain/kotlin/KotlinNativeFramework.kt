@@ -29,7 +29,7 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.loadingIndicator.*
-import com.splendo.kaluga.keyboardmanager.*
+import com.splendo.kaluga.keyboard.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
