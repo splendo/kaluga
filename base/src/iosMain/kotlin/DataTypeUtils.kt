@@ -1,15 +1,16 @@
 package com.splendo.kaluga.base
 
-import kotlinx.cinterop.ByteVar
-import kotlinx.cinterop.CPointer
-import kotlinx.cinterop.get
-import kotlinx.cinterop.reinterpret
-import platform.Foundation.NSData
+import kotlinx.cinterop.*
+import platform.Foundation.*
 
 fun NSData.toByteArray() : ByteArray? {
     val bytes = bytes?.let { it } ?: return null
     val ktBytes: CPointer<ByteVar> = bytes.reinterpret()
     return ByteArray(length.toInt()) { index -> ktBytes[index] }
+}
+
+fun ByteArray.toNSData() : NSData? {
+    return NSString.create(string = this.toKString()).dataUsingEncoding(NSUTF8StringEncoding)
 }
 
 inline fun <reified T:Any> List<*>.typedList() : List<T> {
