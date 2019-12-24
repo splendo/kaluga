@@ -7,7 +7,7 @@ import com.splendo.kaluga.state.StateRepoAccesor
 import platform.CoreBluetooth.CBDescriptor
 import platform.Foundation.NSData
 
-actual class Descriptor(private val descriptor: CBDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepoAccessor) {
+actual class Descriptor(internal val descriptor: CBDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepoAccessor) {
 
     override val uuid: UUID
         get() = UUID(descriptor.UUID)
