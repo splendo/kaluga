@@ -8,7 +8,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 abstract class BaseScanner internal constructor(internal val permissions: Permissions,
-                                                internal val deviceBuilder: BaseDeviceConnectionManager.Builder,
                                                 internal val stateRepoAccessor: StateRepoAccesor<ScanningState>,
                                                 coroutineScope: CoroutineScope)
     : CoroutineScope by coroutineScope {

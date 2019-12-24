@@ -183,12 +183,12 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
 
 }
 
-class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val lastKnownRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : StateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
+class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : StateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
 
-    private val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, StateRepoAccesor(this))
+    internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, StateRepoAccesor(this))
 
     override fun initialState(): DeviceState {
-        return DeviceState.Disconnected(lastKnownRssi, deviceConnectionManager)
+        return DeviceState.Disconnected(initialRssi, deviceConnectionManager)
     }
 
 }
