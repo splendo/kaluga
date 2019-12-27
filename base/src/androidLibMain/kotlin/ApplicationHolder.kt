@@ -25,7 +25,9 @@ class ApplicationHolder {
     companion object {
         var application: Application? = null
             set(application) {
-                checkNotNull(field) { "Application object can only be set once." }
+                field?.let {
+                    throw IllegalArgumentException("Application object can only be set once.")
+                }
                 field = application
             }
         val applicationContext: Context
