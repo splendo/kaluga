@@ -1,20 +1,26 @@
+val android_gradle_plugin_version:String by settings
+val kotlin_version:String by settings
+
 pluginManagement {
+
     repositories {
         gradlePluginPortal()
         google()
         jcenter()
     }
+
     resolutionStrategy {
         eachPlugin {
+
             if (requested.id.id == "kotlin-multiplatform") {
                 // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
             }
             if (requested.id.id == "com.android.library") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
+                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
             }
             if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
+                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
             }
         }
     }
@@ -32,6 +38,9 @@ apply("../../../gradle/ext.gradle")
 val ext =  (gradle as ExtensionAware).extra
 
 if (!(ext["exampleAsRoot"] as Boolean)) {
+    include(":test-utils")
+    project(":test-utils").projectDir = file("../../../test-utils")
+
     include(":location")
     project(":location").projectDir = file("../../../location")
 
@@ -47,11 +56,11 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
+    include(":hud")
+    project(":hud").projectDir = file("../../../hud")
+
     include(":beacons")
     project(":beacons").projectDir = file("../../../beacons")
-
-    include(":loadingIndicator")
-    project(":loadingIndicator").projectDir = file("../../../loadingIndicator")
 }
 
 include(":android")

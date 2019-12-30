@@ -5,7 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.AlertFactory
+import com.splendo.kaluga.example.shared.AlertPresenter
 import kotlinx.android.synthetic.main.activity_alerts.*
 
 /*
@@ -29,13 +29,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
 
-    private val alertFactory = AlertFactory(AlertBuilder(this))
+    private val alertPresenter = AlertPresenter(AlertBuilder(this))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_simple_alert.setOnClickListener { alertFactory.showAlert() }
-        btn_dismissible_alert.setOnClickListener { alertFactory.showAndDismissAfter(3) }
-        btn_alert_list.setOnClickListener { alertFactory.showList() }
+        btn_simple_alert.setOnClickListener { alertPresenter.showAlert() }
+        btn_dismissible_alert.setOnClickListener { alertPresenter.showAndDismissAfter(3) }
+        btn_alert_list.setOnClickListener { alertPresenter.showList() }
     }
 }

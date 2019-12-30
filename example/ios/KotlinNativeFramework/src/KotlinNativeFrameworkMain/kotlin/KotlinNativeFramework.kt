@@ -17,7 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.example.shared.AlertFactory
+import com.splendo.kaluga.example.shared.AlertPresenter
+import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -26,8 +27,8 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
+import com.splendo.kaluga.hud.IOSHUD
 import com.splendo.kaluga.beacons.*
-import com.splendo.kaluga.loadingIndicator.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -36,31 +37,35 @@ import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
-fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
+class KNAlertFramework {
+    companion object {
+        fun makeAlertPresenter(builder: AlertBuilder) = AlertPresenter(builder)
+    }
+}
+
+class KNHudFramework {
+    companion object {
+        fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
+    }
+}
 
 class KotlinNativeFramework {
-    private val loc = LocationFlowable()
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
-    fun loadingIndicator(view: UIViewController) = IOSLoadingIndicator
-        .Builder(view)
-        .create()
-
     fun location(label: UILabel, locationManager: CLLocationManager) {
-        loc.addCLLocationManager(locationManager)
-        LocationPrinter(loc).printTo {
+        val location = LocationFlowable.Builder(locationManager).create()
+        LocationPrinter(location).printTo {
             label.text = it
         }
         debug("proceed executing after location coroutines")
     }
 
     fun permissions(nsBundle: NSBundle) = Permissions
-        .Builder()
-        .bundle(nsBundle)
+        .Builder(nsBundle)
         .build()
 
     fun beaconMonitor(locationManager: CLLocationManager) = BeaconMonitor(BeaconScanner(locationManager))

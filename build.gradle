@@ -8,9 +8,9 @@ buildscript {
 //        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.0-alpha12'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$gradle.ext.kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.2'
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 

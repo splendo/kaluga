@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.loadingIndicator.AndroidLoadingIndicator
+import com.splendo.kaluga.example.shared.HudPresenter
+import com.splendo.kaluga.hud.AndroidHUD
 import kotlinx.android.synthetic.main.activity_loading.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /*
 
@@ -31,22 +29,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 
+    private val builder = AndroidHUD.Builder(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_show_loading_indicator.setOnClickListener {
-            showLoadingIndicator()
+        btn_show_loading_indicator_system.setOnClickListener {
+            HudPresenter(builder).showSystem()
         }
-    }
 
-    private fun showLoadingIndicator() {
-        val indicator = AndroidLoadingIndicator
-            .Builder(R.layout.loading_indicator_view)
-            .create()
-            .present(this)
-        GlobalScope.launch {
-            delay(3_000)
-            indicator.dismiss()
+        btn_show_loading_indicator_custom.setOnClickListener {
+            HudPresenter(builder).showCustom()
         }
     }
 }

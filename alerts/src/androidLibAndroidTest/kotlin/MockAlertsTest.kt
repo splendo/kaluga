@@ -40,30 +40,12 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertBuilderExceptionNoActions() = runBlockingTest {
-        assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity).alert {
-                setTitle("OK")
-            }
-        }
-    }
-
-    @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlockingTest {
-        assertFailsWith<IllegalArgumentException> {
-            AlertBuilder(activityRule.activity).alert {
-                setPositiveButton("OK")
-            }
-        }
-    }
-
-    @Test
     fun testBuilderReuse() = runBlockingTest {
 
         val builder = AlertBuilder(activityRule.activity)
 
         CoroutineScope(Dispatchers.Main).launch {
-            builder.alert {
+            builder.buildAlert {
                 setTitle("Test")
                 setPositiveButton("OK")
             }.show()
@@ -72,7 +54,7 @@ class MockAlertsTest {
             device.findObject(By.text("OK")).click()
             assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
 
-            builder.alert {
+            builder.buildAlert {
                 setTitle("Hello")
                 setNegativeButton("Cancel")
             }.show()
@@ -90,7 +72,7 @@ class MockAlertsTest {
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 0 until 10) {
-                alerts.add(builder.alert {
+                alerts.add(builder.buildAlert {
                     setTitle("Alert$i")
                     setPositiveButton("OK$i")
                 })
@@ -107,7 +89,7 @@ class MockAlertsTest {
     @Test
     fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            AlertBuilder(activityRule.activity).alert {
+            AlertBuilder(activityRule.activity).buildAlert {
                 setTitle("Hello")
                 setPositiveButton("OK")
             }.show()
@@ -121,7 +103,7 @@ class MockAlertsTest {
     fun testAlertFlowWithCoroutines() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val action = Alert.Action("OK")
-            val presenter = AlertBuilder(activityRule.activity).alert {
+            val presenter = AlertBuilder(activityRule.activity).buildAlert {
                 setTitle("Hello")
                 addActions(listOf(action))
             }
@@ -137,7 +119,7 @@ class MockAlertsTest {
     @Test
     fun testAlertFlowCancel() = runBlockingTest {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = AlertBuilder(activityRule.activity).alert {
+            val presenter = AlertBuilder(activityRule.activity).buildAlert {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")

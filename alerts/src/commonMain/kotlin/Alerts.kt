@@ -1,9 +1,9 @@
 package com.splendo.kaluga.alerts
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.resume
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
 
 /*
 
@@ -146,7 +146,7 @@ abstract class BaseAlertBuilder {
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
     private var style: Alert.Style = Alert.Style.ALERT
-    private val mutex = Mutex()
+    private val lock = Lock()
 
     /**
      * Sets the [title] displayed in the alert
@@ -214,7 +214,7 @@ abstract class BaseAlertBuilder {
      *
      * @param style The style of an alert
      */
-    fun setStyle(style: Alert.Style) = apply { this.style = style }
+    private fun setStyle(style: Alert.Style) = apply { this.style = style }
 
     /**
      * Builds an alert using DSL syntax (thread safe)
@@ -222,18 +222,22 @@ abstract class BaseAlertBuilder {
      * @param initialize The block to construct an Alert
      * @return The built alert interface object
      */
-    suspend fun alert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = mutex.withLock(this) {
-        buildUnsafe(initialize)
+    fun buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = lock.withLock {
+        reset()
+        setStyle(Alert.Style.ALERT)
+        initialize()
+        return create()
     }
 
     /**
-     * Builds an alert using DSL syntax (not thread safe)
+     * Builds an alert using DSL syntax (thread safe)
      *
      * @param initialize The block to construct an Alert
      * @return The built alert interface object
      */
-    fun buildUnsafe(initialize: BaseAlertBuilder.() -> Unit): AlertInterface {
+    fun buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = lock.withLock {
         reset()
+        setStyle(Alert.Style.ACTION_LIST)
         initialize()
         return create()
     }
