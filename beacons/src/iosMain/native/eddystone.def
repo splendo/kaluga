@@ -2,3 +2,4 @@ package = framework.eddystone
 language = Objective-C
 headers = Eddystone.h Eddystone-Swift.h
 excludeDependentModules = true
+linkerOpts = -F$CARTHAGE_BUILD_PATH -framework Eddystone

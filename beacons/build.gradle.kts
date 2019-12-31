@@ -9,6 +9,7 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
+val carthageBuildDir = "$projectDir/src/iosMain/native/Carthage/Build/iOS"
 
 plugins {
     id("jacoco")
@@ -26,10 +27,9 @@ kotlin {
     for (target in targets.filterIsInstance<KotlinNativeTarget>()) {
         target.compilations {
                     val main by getting {
-                        val carthageBuildDir = "$projectDir/src/iosMain/native/Carthage/Build/iOS"
                         cinterops(Action {
                             val eddystone by creating {
-                                defFile("src/iosMain/native/eddystone.def")
+                                defFile("src/iosMain/native/eddystone_generated.def")
                                 includeDirs("$carthageBuildDir/Eddystone.framework/Headers")
                             }
                         })
@@ -57,13 +57,21 @@ listOf("bootstrap", "update").forEach { type ->
     }
 }
 
+tasks.create("generateDefFile") {
+    val templateFile = File("$projectDir/src/iosMain/native/eddystone.def")
+    val generatedFile = File("$projectDir/src/iosMain/native/eddystone_generated.def")
+    generatedFile.writeText(templateFile.readText().replace("\$CARTHAGE_BUILD_PATH", carthageBuildDir))
+}
+
 // Make CInterop tasks depend on Carthage
 tasks.withType(CInteropProcess::class) {
     dependsOn("carthageBootstrap")
+    dependsOn("generateDefFile")
 }
 
 tasks.create("clearCarthageFiles", Delete::class.java) {
     delete(
+        "$projectDir/src/iosMain/native/eddystone_generated.def",
         "$projectDir/src/iosMain/native/Carthage",
         "$projectDir/src/iosMain/native/Cartfile.resolved"
     )
