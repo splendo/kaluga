@@ -180,9 +180,7 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
                 val result = gatt?.setCharacteristicNotification(action.characteristic.characteristic, action.enable)
                 // Action always completes. Launch in separate coroutine to make sure this action can be completed
                 launch {
-                    when(val state = repoAccessor.currentState()){
-                        is DeviceState.Connected.HandlingAction -> state.actionCompleted()
-                    }
+                    completeCurrentAction()
                 }
                 result
             }
@@ -240,7 +238,9 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
     private suspend fun completeCurrentAction() {
         when (val state = repoAccessor.currentState()) {
             is DeviceState.Connected.HandlingAction -> {
-                state.actionCompleted()
+                if (state.action == currentAction) {
+                    state.actionCompleted()
+                }
             }
         }
         currentAction = null
