@@ -10,10 +10,10 @@ Show default HUD:
 val hud = builder.build().present()
 ```
 
-> Default style is `.SYSTEM` and it will adapt colors for current appearance
-> Default HUD has no title label
+> Default style is `.SYSTEM` and it will adapt colors for current appearance (dark/light)
+> Default HUD also has no title label
 
-Custom with title:
+Custom HUD with title:
 
 ```kotlin
 val hud = builder.build {
@@ -22,17 +22,17 @@ val hud = builder.build {
 }.present()
 ```
 
-The `HUD` interface has implementation on the Android as `AndroidHUD`
-and on the iOS as `IOSHUD`.
+The `HUD` interface has implementation on the Android as `AndroidHUD` class
+and on the iOS as `IOSHUD` class.
 
-The `HUD` has methods to show and dismiss a loading indicator:
-- `present(animated: Boolean: true, completion: () -> Unit = {}): HUD` — show
+The `HUD` has methods to show and dismiss a loading indicator view:
+- `present(animated: Boolean = true, completion: () -> Unit = {}): HUD` — show
 - `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
 - `dismissAfter(timeMillis: Long, animated: Boolean = true): HUD` — dismiss after `timeMillis` milliseconds
 
 ### Android
 
-On Android you need to subscribe the builder to `LifecycleOwner` and `FragmentManager`, best way is to use `HudViewModel`:
+On Android you need to subscribe the builder to `LifecycleOwner` and pass `FragmentManager`, the best way is to use `HudViewModel`:
 
 ```kotlin
 open class HudViewModel: ViewModel() {
@@ -52,7 +52,7 @@ open class HudViewModel: ViewModel() {
 And then in your `Activity`:
 
 ```kotlin
-class MyActivity : AppCompatActivity() {
+class MyActivity: AppCompatActivity() {
 
     private val viewModel: HudViewModel by viewModels()
 
@@ -94,4 +94,4 @@ let builder = IOSHUD.Builder(viewController)
 Define your Color Sets in project's assets if using `.CUSTOM` style:
 
 - `li_colorBackground` for surface color
-- `li_colorAccent` for progress bar color
+- `li_colorAccent` for progress bar / activity indicator color
