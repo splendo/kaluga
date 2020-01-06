@@ -26,6 +26,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         }
     }
 
+    @Suppress("CONFLICTING_OVERLOADS")
     private class CentralManagerDelegate(val bluetoothScanner: Scanner) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
@@ -43,12 +44,27 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
             super.centralManager(central, didConnectPeripheral)
+
+            bluetoothScanner.connectionManagerMap[didConnectPeripheral.identifier]?.let {
+                it.didConnect()
+            }
         }
 
-        override fun centralManager(central: CBCentralManager, willRestoreState: Map<Any?, *>) {
-            super.centralManager(central, willRestoreState)
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
+            super.centralManager(central, didDisconnectPeripheral= didDisconnectPeripheral, error = error)
+
+            bluetoothScanner.connectionManagerMap[didDisconnectPeripheral.identifier]?.let {
+                it.didDisconnect()
+            }
         }
 
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+            super.centralManager(central, didFailToConnectPeripheral = didFailToConnectPeripheral, error = error)
+
+            bluetoothScanner.connectionManagerMap[didFailToConnectPeripheral.identifier]?.let {
+                it.didDisconnect()
+            }
+        }
     }
 
     private val centralManagerDelegate = CentralManagerDelegate(this)
@@ -107,7 +123,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
                 is ScanningState.Enabled.Scanning -> {
                     val advertisementData = AdvertisementData(advertisementDataMap)
                     val deviceInfo = DeviceInfoHolder(peripheral, central, advertisementData)
-                    val device = Device(0, deviceInfo, rssi, DeviceConnectionManager.Builder(this@Scanner, central))
+                    val device = Device(0, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
                     connectionManagerMap[device.identifier] = device.deviceConnectionManager
                     state.discoverDevices(device)
                 }

@@ -1,31 +1,106 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.toNSData
+import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.scanner.Scanner
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
-import platform.CoreBluetooth.CBPeripheralDelegateProtocol
+import platform.CoreBluetooth.*
+import platform.Foundation.NSError
+import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val scanner: Scanner, private val cbCentralManager: CBCentralManager, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor.s {
+internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor.s {
 
     val peripheral = deviceInfoHolder.peripheral
     private var currentAction: DeviceAction? = null
     private val notifyingCharacteristics = emptyMap<String, Characteristic>().toMutableMap()
 
-    class Builder(val scanner: Scanner, private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
+    private val discoveringServices = emptyList<CBUUID>().toMutableList()
+    private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
+
+    class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
         override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
-            return DeviceConnectionManager(scanner, cbCentralManager, reconnectionAttempts, deviceInfo, repoAccessor)
+            return DeviceConnectionManager(cbCentralManager, reconnectionAttempts, deviceInfo, repoAccessor)
         }
     }
 
-    private class PeripheralDelegate(val connectionManager: DeviceConnectionManager) : NSObject(), CBPeripheralDelegateProtocol {
+    @Suppress("CONFLICTING_OVERLOADS")
+    private class PeripheralDelegate(val connectionManager: DeviceConnectionManager) : NSObject(), CBPeripheralDelegateProtocol, CoroutineScope by connectionManager {
 
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
+            super.peripheral(peripheral, didDiscoverDescriptorsForCharacteristic = didDiscoverDescriptorsForCharacteristic, error = error)
 
+            connectionManager.didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
+            super.peripheral(peripheral, didUpdateNotificationStateForCharacteristic = didUpdateNotificationStateForCharacteristic, error = error)
+
+            when (val action = connectionManager.currentAction) {
+                is DeviceAction.Notification -> {
+                    if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
+                        launch {
+                            connectionManager.completeCurrentAction()
+                        }
+                    }
+                }
+            }
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            super.peripheral(peripheral, didUpdateValueForCharacteristic = didUpdateValueForCharacteristic, error = error)
+
+            launch {
+                connectionManager.updateCharacteristic(didUpdateValueForCharacteristic)
+            }
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            super.peripheral(peripheral, didWriteValueForCharacteristic = didWriteValueForCharacteristic, error = error)
+
+            launch {
+                connectionManager.updateCharacteristic(didWriteValueForCharacteristic)
+            }
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
+            super.peripheral(peripheral, didUpdateValueForDescriptor = didUpdateValueForDescriptor, error = error)
+
+            launch {
+                connectionManager.updateDescriptor(didUpdateValueForDescriptor)
+            }
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
+            super.peripheral(peripheral, didWriteValueForDescriptor = didWriteValueForDescriptor, error = error)
+
+            launch {
+                connectionManager.updateDescriptor(didWriteValueForDescriptor)
+            }
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
+            super.peripheral(peripheral, didDiscoverCharacteristicsForService = didDiscoverCharacteristicsForService, error = error)
+
+            connectionManager.didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
+            super.peripheral(peripheral, didDiscoverServices)
+
+            connectionManager.didDiscoverServices()
+        }
+
+        override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
+            super.peripheral(peripheral, didReadRSSI, error)
+
+            launch {
+                connectionManager.repoAccessor.currentState().rssiDidUpdate( didReadRSSI.intValue)
+            }
+        }
 
     }
 
@@ -38,6 +113,8 @@ internal actual class DeviceConnectionManager(private val scanner: Scanner, priv
     }
 
     override suspend fun discoverServices() {
+        discoveringServices.clear()
+        discoveringCharacteristics.clear()
         peripheral.discoverServices(null)
     }
 
@@ -70,12 +147,6 @@ internal actual class DeviceConnectionManager(private val scanner: Scanner, priv
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
                 peripheral.setNotifyValue(action.enable, action.characteristic.characteristic)
-                // Action always completes. Launch in separate coroutine to make sure this action can be completed
-                launch {
-                    when(val state = repoAccessor.currentState()){
-                        is DeviceState.Connected.HandlingAction -> state.actionCompleted()
-                    }
-                }
             }
         }
         return true
@@ -110,6 +181,93 @@ internal actual class DeviceConnectionManager(private val scanner: Scanner, priv
             }
             currentAction = null
             repoAccessor.currentState().didDisconnect()
+        }
+    }
+
+    private suspend fun updateCharacteristic(characteristic: CBCharacteristic) {
+        notifyingCharacteristics[characteristic.UUID.toString()]?.updateValue()
+        val characteristicToUpdate = when (val action = currentAction) {
+            is DeviceAction.Read.Characteristic -> {
+                if (action.characteristic.uuid.uuidString == characteristic.UUID.toString()) {
+                    action.characteristic
+                } else null
+            }
+            is DeviceAction.Write.Characteristic -> {
+                if (action.characteristic.uuid.uuidString == characteristic.UUID.toString()) {
+                    action.characteristic
+                } else null
+            }
+            else -> null
+        }
+
+        characteristicToUpdate?.let {
+            it.updateValue()
+            completeCurrentAction()
+        }
+    }
+
+    private suspend fun updateDescriptor(descriptor: CBDescriptor) {
+        val descriptorToUpdate = when (val action = currentAction) {
+            is DeviceAction.Read.Descriptor -> {
+                if (action.descriptor.uuid.uuidString == descriptor.UUID.toString()) {
+                    action.descriptor
+                } else null
+            }
+            is DeviceAction.Write.Descriptor -> {
+                if (action.descriptor.uuid.uuidString == descriptor.UUID.toString()) {
+                    action.descriptor
+                } else null
+            }
+            else -> null
+        }
+
+        descriptorToUpdate?.let {
+            it.updateValue()
+            completeCurrentAction()
+        }
+    }
+
+    private suspend fun completeCurrentAction() {
+        when (val state = repoAccessor.currentState()) {
+            is DeviceState.Connected.HandlingAction -> {
+                if (state.action == currentAction) {
+                    state.actionCompleted()
+                }
+            }
+        }
+        currentAction = null
+    }
+
+    private fun didDiscoverServices() {
+        discoveringServices.addAll(peripheral.services?.typedList<CBService>()?.map {
+            peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
+            it.UUID
+        } ?: emptyList())
+
+        checkScanComplete()
+    }
+
+    private fun didDiscoverCharacteristic(forService: CBService) {
+        discoveringServices.remove(forService.UUID)
+        discoveringCharacteristics.addAll(forService.characteristics?.typedList<CBCharacteristic>()?.map {
+            peripheral.discoverDescriptorsForCharacteristic(it)
+            it.UUID
+        } ?: emptyList())
+        checkScanComplete()
+    }
+
+    private fun didDiscoverDescriptors(forCharacteristic: CBCharacteristic) {
+        discoveringCharacteristics.remove(forCharacteristic.UUID)
+        checkScanComplete()
+    }
+
+    private fun checkScanComplete() {
+        if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
+            launch {
+                when(val state = repoAccessor.currentState()) {
+                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(peripheral.services?.typedList<CBService>()?.map { Service(it, repoAccessor) } ?: emptyList())
+                }
+            }
         }
     }
 
