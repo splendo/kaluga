@@ -19,7 +19,9 @@ kotlin {
 
     jvm()
     js {
-        browser()
+        // Disable JS browser tests for now
+        // See https://github.com/splendo/kaluga/issues/97
+        // browser()
         configure([compilations.main, compilations.test]) {
             tasks.getByName(compileKotlinTaskName).kotlinOptions {
                 metaInfo = true
@@ -34,7 +36,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$gradle.kotlinx_corountines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$gradle.kotlinx_coroutines_version"
             }
         }
 
@@ -42,14 +44,14 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_corountines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
             }
         }
 
         jvmMain {
             dependencies {
                 implementation kotlin("stdlib")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_corountines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_coroutines_version"
             }
         }
         jvmTest {
@@ -62,7 +64,7 @@ kotlin {
         jsMain {
             dependencies {
                 implementation kotlin('stdlib-js')
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$gradle.kotlinx_corountines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$gradle.kotlinx_coroutines_version"
             }
         }
         jsTest {
@@ -75,7 +77,7 @@ kotlin {
             kotlin.srcDirs("src/iosMain")
             dependencies {
                 implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
             }
         }
 
@@ -93,7 +95,7 @@ kotlin {
                 kotlin.srcDirs("src/iosMain")
                 dependencies {
                     implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
                 }
             }
             iosarm32Test {
@@ -106,7 +108,7 @@ kotlin {
                 kotlin.srcDirs("src/iosMain")
                 dependencies {
                     implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_corountines_version"
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
                 }
             }
             "${gradle.ios_secondary_arch}Test" {
@@ -180,10 +182,10 @@ configurations {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_corountines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
 
     testImplementation 'junit:junit:4.12'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_corountines_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
