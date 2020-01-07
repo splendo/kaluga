@@ -146,10 +146,4 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             completion()
         }
     }
-
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
-            dismiss(animated)
-        }
-    }
 }

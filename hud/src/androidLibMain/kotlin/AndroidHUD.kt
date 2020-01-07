@@ -18,9 +18,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 /*
 
@@ -64,6 +62,9 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
     }
 
     internal class LoadingDialog : DialogFragment() {
+
+        var presentCompletionBlock: () -> Unit = {}
+        var dismissCompletionBlock: () -> Unit = {}
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
         private val style get() = HUD.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: HUD.Style.SYSTEM.value)
@@ -121,6 +122,16 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
                 findViewById<TextView>(R.id.text_view).visibility = if (title == null) View.GONE else View.VISIBLE
             }
         }
+
+        override fun onStart() {
+            super.onStart()
+            presentCompletionBlock()
+        }
+
+        override fun onStop() {
+            super.onStop()
+            dismissCompletionBlock()
+        }
     }
 
     private sealed class DialogState {
@@ -164,19 +175,12 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
     override val isVisible get() = loadingDialog.isVisible
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
+        loadingDialog.presentCompletionBlock = completion
         dialogState.postValue(DialogState.Visible)
-        completion()
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
+        loadingDialog.dismissCompletionBlock = completion
         dialogState.postValue(DialogState.Gone)
-        completion()
-    }
-
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
-        MainScope().launch {
-            delay(timeMillis)
-            dismiss(animated)
-        }
     }
 }
