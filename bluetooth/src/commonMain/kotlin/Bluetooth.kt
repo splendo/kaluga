@@ -1,13 +1,12 @@
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
+import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.Permissions
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transformLatest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 
 class Bluetooth internal constructor(private val builder: Builder) {
 
@@ -35,7 +34,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
     val requestPermission = builder.requestPermission
     val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
 
-    suspend fun scan(filter: Set<UUID> = emptySet()): Flow<List<Device>> {
+    suspend fun devices(filter: Set<UUID> = emptySet()): Flow<List<Device>> {
         var hasStartedScanning = false
         var hasStoppedScanning = false
         return scanningStateRepo.flow().transformLatest { scanState ->
@@ -79,4 +78,85 @@ class Bluetooth internal constructor(private val builder: Builder) {
         }
     }
 
+}
+
+fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
+    return this.map { devices ->
+        devices.firstOrNull { it.identifier == identifier }
+    }
+}
+
+suspend fun Flow<Device?>.services(): Flow<List<Service>> {
+    var hasConnected = false
+    return this.mapDeviceState {deviceState ->
+        when (deviceState) {
+            is DeviceState.Disconnected -> {
+                if (!hasConnected)
+                    deviceState.connect()
+            }
+            is DeviceState.Connected -> {
+                hasConnected = true
+                when (deviceState) {
+                    is DeviceState.Connected.Idle -> {
+                        if (deviceState.services.isEmpty())
+                            deviceState.discoverServices()
+                    }
+                }
+                emit(deviceState.services)
+                return@mapDeviceState
+            }
+        }
+        emit(emptyList())
+    }
+}
+
+suspend fun Flow<Device?>.disconnect() {
+    this.mapDeviceState<Boolean> {deviceState ->
+            when (deviceState) {
+                is DeviceState.Connected -> deviceState.disconnect()
+                is DeviceState.Disconnected -> emit(true)
+            }
+    }.first()
+}
+
+suspend fun Flow<Device?>.rssi(interval: Long? = 1000) : Flow<Int> {
+    return this.mapDeviceState {deviceState ->
+        emit(deviceState.lastKnownRssi)
+        interval?.let {
+            delay(it)
+        }
+        when (deviceState) {
+            is DeviceState.Connected -> deviceState.readRssi()
+        }
+    }
+}
+
+fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value: DeviceState) -> Unit) : Flow<T> {
+    return this.flatMapLatest { device ->
+        device?.flow()?.transformLatest(transform) ?: emptyFlow()
+    }
+}
+
+fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
+    return this.mapLatest { services ->
+        services.firstOrNull { it.uuid.uuidString == uuid.uuidString }
+    }
+}
+
+fun Flow<Service?>.characteristics() : Flow<List<Characteristic>> {
+    return this.mapLatest { service -> service?.characteristics ?: emptyList() }
+}
+
+fun Flow<Characteristic?>.descriptors() : Flow<List<Descriptor>> {
+    return this.mapLatest{ characteristic -> characteristic?.descriptors ?: emptyList() }
+}
+
+fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID) : Flow<T?> {
+    return this.mapLatest{characteristics ->
+        characteristics.firstOrNull {it.uuid.uuidString == uuid.uuidString}
+    }
+}
+
+fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value() : Flow<ByteArray?> {
+    return this.flatMapLatest{attribute -> attribute?.flow() ?: emptyFlow()}
 }
