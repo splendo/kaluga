@@ -5,6 +5,8 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.*
 
@@ -77,10 +79,23 @@ class AndroidHUDTests {
     }
 
     @Test
+    fun testPresentDuring() = runBlockingTest {
+        val indicator = builder.build {
+            setTitle("Loading...")
+        }.presentDuring {
+            delay(1000)
+        }
+        assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertTrue(indicator.isVisible)
+        assertTrue(device.wait(Until.gone(By.text("Loading...")), DEFAULT_TIMEOUT))
+        assertFalse(indicator.isVisible)
+    }
+
+    @Test
     fun rotateActivity() {
         val indicator = builder.build {
             setTitle("Loading...")
-        }.present() as AndroidHUD
+        }.present()
         assertNotNull(device.wait(Until.findObject(By.text("Loading...")), DEFAULT_TIMEOUT))
         assertTrue(indicator.isVisible)
 
