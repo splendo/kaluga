@@ -26,7 +26,7 @@ class ApplicationHolder {
         var application: Application? = null
             set(application) {
                 if (field != null) 
-                    throw IllegalArgumentException("Application object can only be set once.")                
+                    throw IllegalArgumentException("Application object can only be set once.")
                 field = application
             }
         val applicationContext: Context
