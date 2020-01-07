@@ -117,11 +117,11 @@ interface HUD {
      * hides view after block finished.
      * @param block The block to execute with hud visible
      */
-    fun presentDuring(block: suspend () -> Unit) {
-        present {
+    fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
+        present(animated) {
             GlobalScope.launch(MainQueueDispatcher) {
                 block()
-                dismiss()
+                dismiss(animated)
             }
         }
     }
