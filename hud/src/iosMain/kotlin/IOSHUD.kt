@@ -4,10 +4,6 @@ import kotlinx.cinterop.CValue
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.UIKit.*
-import platform.darwin.DISPATCH_TIME_NOW
-import platform.darwin.dispatch_after
-import platform.darwin.dispatch_get_main_queue
-import platform.darwin.dispatch_time
 
 /*
 
@@ -121,13 +117,14 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         view.addSubview(containerView)
     }
 
-    private val topViewController: UIViewController get() {
-        var result: UIViewController? = viewController
-        while (result?.presentedViewController != null) {
-            result = result.presentedViewController
+    private val topViewController: UIViewController
+        get() {
+            var result: UIViewController? = viewController
+            while (result?.presentedViewController != null) {
+                result = result.presentedViewController
+            }
+            return result ?: viewController
         }
-        return result ?: viewController
-    }
 
     override val isVisible get() = hudViewController.presentingViewController != null
 
