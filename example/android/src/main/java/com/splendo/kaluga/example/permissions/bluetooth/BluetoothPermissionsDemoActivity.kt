@@ -21,7 +21,7 @@ class BluetoothPermissionsDemoActivity : AppCompatActivity(R.layout.activity_per
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissions = Permissions.Builder().context(this).build()
+        permissions = Permissions.Builder(this).build()
         bluetoothManager = permissions.getBluetoothManager()
 
         btn_permissions_bluetooth_check_manifest_declaration.setOnClickListener {
