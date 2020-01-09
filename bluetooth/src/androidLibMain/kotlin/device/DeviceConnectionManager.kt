@@ -10,11 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-internal actual class DeviceConnectionManager(val context: Context, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor.s  {
-
-    companion object {
-        val removeBondMethod = "removeBond"
-    }
+internal actual class DeviceConnectionManager(val context: Context, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
 
     class Builder(val context: Context) : BaseDeviceConnectionManager.Builder {
         override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
@@ -250,7 +246,7 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
         // unpair to prevent connection problems
         if (device.bondState != BluetoothDevice.BOND_NONE) {
             try {
-                device.javaClass.getMethod(removeBondMethod).invoke(device)
+                device.javaClass.getMethod("removeBond").invoke(device)
             } catch (localException: Exception) {
             }
 
