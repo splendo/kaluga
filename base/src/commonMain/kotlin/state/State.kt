@@ -20,11 +20,37 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-open class State<T:State<T>>(open val repo:StateRepo<T>){
+open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
+    open suspend fun initialState() {}
     open suspend fun beforeCreatingNewState() {}
-    open suspend fun afterCreatingNewState() {}
+    open suspend fun afterCreatingNewState(newState: T) {}
     open suspend fun afterNewStateIsSet() {}
+    open suspend fun beforeOldStateIsRemoved() {}
+    open suspend fun afterOldStateIsRemoved(oldState: T) {}
+    open suspend fun finalState() {}
+
+    protected suspend fun changeState(toState: T) {
+        repoAccessor.changeState {
+            if (it === this)
+                toState
+            else
+                it
+        }
+    }
+
+}
+
+class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
+
+    fun currentState(): T {
+        return s.state()
+    }
+
+    suspend fun changeState(action: (T) -> T) {
+        s.changeState(action)
+    }
 }
 
 /**
@@ -32,7 +58,7 @@ open class State<T:State<T>>(open val repo:StateRepo<T>){
  *
  * Make sure that if you pass a coroutine scope that has sequential execution if you do not want simultaneous state changes. The default MainScope meets these criteria.
  */
-abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope = MainScope()): BaseFlowable<T>(), CoroutineScope by coroutineScope {
+abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main): BaseFlowable<T>(), CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     private var changedState:T = initialState()
@@ -43,13 +69,23 @@ abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope 
             }
         }
 
-    init {
-        setBlocking(changedState)
-    }
-
     abstract fun initialState():T
 
-    private fun state():T {
+    final override suspend fun initialize() {
+        super.initialize()
+        changedState = initialState()
+        changedState.initialState()
+    }
+
+    suspend fun cancel() {
+        val state = state()
+        state.finalState()
+        if (state is CoroutineScope)
+            state.cancel("State machine cancelled")
+        coroutineContext.cancel()
+    }
+
+    internal fun state():T {
         return changedState
     }
 
@@ -68,9 +104,11 @@ abstract class StateRepo<T:State<T>>(private val coroutineScope: CoroutineScope 
                 if (beforeState is CoroutineScope)
                     beforeState.cancel("this state will end. New state will be created")
                 val newState = action(beforeState)
-                beforeState.afterCreatingNewState()
+                beforeState.afterCreatingNewState(newState)
+                newState.beforeOldStateIsRemoved()
                 changedState = newState
                 beforeState.afterNewStateIsSet()
+                newState.afterOldStateIsRemoved(beforeState)
                 result.complete(newState)
             }
         }
