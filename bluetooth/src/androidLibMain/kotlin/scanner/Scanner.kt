@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.Device
@@ -22,7 +23,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                      private val scanSettings: ScanSettings = defaultScanSettings,
                      permissions: Permissions,
                      private val context: Context,
-                     coroutineScope: CoroutineScope,
+                     private val coroutineScope: CoroutineScope,
                      stateRepoAccessor: StateRepoAccesor<ScanningState>) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
@@ -30,14 +31,21 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                   private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
                   private val permissions: Permissions,
-                  private val context: Context = ApplicationContextHolder()) : BaseScanner.Builder {
+                  private val context: Context = ApplicationHolder.applicationContext) : BaseScanner.Builder {
 
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
             return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, context, coroutineScope, stateRepoAccessor)
         }
     }
 
-    private class BluetoothScannerCallback(private val context: Context, private val stateRepoAccesor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : ScanCallback(), CoroutineScope by coroutineScope {
+    companion object {
+        val defaultScanSettings = ScanSettings.Builder()
+            .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+            .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
+            .build()
+    }
+
+    private val callback = object : ScanCallback() {
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
@@ -53,9 +61,9 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
             }
 
             launch {
-                stateRepoAccesor.currentState().logError(Error(error.first))
+                stateRepoAccessor.currentState().logError(Error(error.first))
                 if (error.second) {
-                    when (val state = stateRepoAccesor.currentState()) {
+                    when (val state = stateRepoAccessor.currentState()) {
                         is ScanningState.Enabled.Scanning -> state.stopScanning()
                     }
                 }
@@ -77,7 +85,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
 
         private fun receiveResults(results: List<ScanResult>) {
             launch {
-                when (val state = stateRepoAccesor.currentState()) {
+                when (val state = stateRepoAccessor.currentState()) {
                     is ScanningState.Enabled.Scanning -> {
                         val devices = results.map {
                             val advertisementData = AdvertisementData(it.scanRecord)
@@ -92,15 +100,6 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
         }
 
     }
-
-    companion object {
-        val defaultScanSettings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-            .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
-            .build()
-    }
-
-    private val callback = BluetoothScannerCallback(context, stateRepoAccessor, this)
     private val broadcastReceiver = AvailabilityReceiver(this)
 
     override fun scanForDevices(filter: Set<UUID>) {

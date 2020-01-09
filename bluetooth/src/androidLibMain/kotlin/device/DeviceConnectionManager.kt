@@ -6,6 +6,7 @@ import android.os.Build
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.StateRepoAccesor
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -18,103 +19,87 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
         }
     }
 
-    private class GattCallback(val manager: DeviceConnectionManager) : BluetoothGattCallback(), CoroutineScope by manager {
+    val device = deviceInfoHolder.device
+    private var gatt: CompletableDeferred<BluetoothGatt> = CompletableDeferred()
+    private val callback = object : BluetoothGattCallback() {
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
-            super.onReadRemoteRssi(gatt, rssi, status)
-
             launch {
-                manager.repoAccessor.currentState().rssiDidUpdate(rssi)
+                repoAccessor.currentState().rssiDidUpdate(rssi)
             }
         }
 
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-            super.onCharacteristicRead(gatt, characteristic, status)
+            characteristic ?: return
 
             launch {
-                characteristic?.let {
-                    manager.updateCharacteristic(characteristic)
-                }
+                updateCharacteristic(characteristic)
             }
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-            super.onCharacteristicWrite(gatt, characteristic, status)
+            characteristic ?: return
 
             launch {
-                characteristic?.let {
-                    manager.updateCharacteristic(characteristic)
-                }
+                updateCharacteristic(characteristic)
             }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            super.onServicesDiscovered(gatt, status)
-
             launch {
-                when(val state = manager.repoAccessor.currentState()) {
-                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(it, manager.repoAccessor) } ?: emptyList())
+                when(val state = repoAccessor.currentState()) {
+                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(it, repoAccessor) } ?: emptyList())
                 }
             }
         }
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            super.onDescriptorWrite(gatt, descriptor, status)
-
             launch {
                 descriptor?.let {
-                    manager.updateDescriptor(it)
+                    updateDescriptor(it)
                 }
             }
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            super.onCharacteristicChanged(gatt, characteristic)
-
+            characteristic ?: return
             launch {
-                characteristic?.let {
-                    manager.updateNotifyingCharacteristic(it)
-                }
+                updateNotifyingCharacteristic(characteristic)
             }
         }
 
         override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            super.onDescriptorRead(gatt, descriptor, status)
-
+            descriptor ?: return
             launch {
-                descriptor?.let {
-                    manager.updateDescriptor(it)
-                }
+                updateDescriptor(descriptor)
             }
         }
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-            super.onConnectionStateChange(gatt, status, newState)
-
             launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
-                        when (val state = manager.repoAccessor.currentState()) {
+                        when (val state = repoAccessor.currentState()) {
                             is DeviceState.Reconnecting -> {
-                                if (state.attempt < manager.reconnectionAttempts) {
+                                if (state.attempt < reconnectionAttempts) {
                                     state.retry()
                                     return@launch
                                 }
                             }
                             is DeviceState.Connected -> {
-                                if (manager.reconnectionAttempts > 0) {
+                                if (reconnectionAttempts > 0) {
                                     state.reconnect()
                                     return@launch
                                 }
                             }
                         }
-                        manager.currentAction = null
+                        currentAction = null
                         gatt?.close()
-                        manager.gatt = null
-                        manager.repoAccessor.currentState().didDisconnect()
+                        this@DeviceConnectionManager.gatt = CompletableDeferred()
+                        repoAccessor.currentState().didDisconnect()
                     }
                     BluetoothProfile.STATE_CONNECTED -> {
-                        when (val state = manager.repoAccessor.currentState()) {
+                        when (val state = repoAccessor.currentState()) {
                             is DeviceState.Connecting -> state.didConnect()
                             is DeviceState.Reconnecting -> state.didConnect()
                             is DeviceState.Connected -> {}
@@ -126,54 +111,53 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
         }
     }
 
-    val device = deviceInfoHolder.device
-    private var gatt: BluetoothGatt? = null
-    private val callback = GattCallback(this)
     private var currentAction: DeviceAction? = null
     private val notifyingCharacteristics = emptyMap<String, Characteristic>().toMutableMap()
 
     override suspend fun connect() {
         unpair()
-        gatt?.let { it.connect() } ?: run {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (gatt.isCompleted) {
+            gatt.getCompleted().connect()
+        } else {
+            gatt.complete(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 device.connectGatt(context, false, callback, BluetoothDevice.TRANSPORT_LE)
             } else {
                 device.connectGatt(context, false, callback)
-            }
+            })
         }
     }
 
     override suspend fun discoverServices() {
-        gatt?.discoverServices()
+        gatt.await().discoverServices()
     }
 
     override suspend fun disconnect() {
-        gatt?.disconnect()
+        gatt.await().disconnect()
     }
 
     override suspend fun readRssi() {
-        gatt?.readRemoteRssi()
+        gatt.await().readRemoteRssi()
     }
 
     override suspend fun performAction(action: DeviceAction): Boolean {
         currentAction = action
         return when(action) {
-            is DeviceAction.Read.Characteristic -> gatt?.readCharacteristic(action.characteristic.characteristic)
-            is DeviceAction.Read.Descriptor -> gatt?.readDescriptor(action.descriptor.descriptor)
+            is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.characteristic)
+            is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.descriptor)
             is DeviceAction.Write.Characteristic -> {
                 action.characteristic.characteristic.value = action.newValue
-                gatt?.writeCharacteristic(action.characteristic.characteristic)
+                gatt.await().writeCharacteristic(action.characteristic.characteristic)
             }
             is DeviceAction.Write.Descriptor -> {
                 action.descriptor.descriptor.value = action.newValue
-                gatt?.writeDescriptor(action.descriptor.descriptor)
+                gatt.await().writeDescriptor(action.descriptor.descriptor)
             }
             is DeviceAction.Notification -> {
                 val uuid = action.characteristic.uuid.uuidString
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                val result = gatt?.setCharacteristicNotification(action.characteristic.characteristic, action.enable)
+                val result = gatt.await().setCharacteristicNotification(action.characteristic.characteristic, action.enable)
                 // Action always completes. Launch in separate coroutine to make sure this action can be completed
                 launch {
                     completeCurrentAction()

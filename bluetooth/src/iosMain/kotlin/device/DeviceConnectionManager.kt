@@ -28,22 +28,22 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
-    private class PeripheralDelegate(val connectionManager: DeviceConnectionManager) : NSObject(), CBPeripheralDelegateProtocol, CoroutineScope by connectionManager {
+    private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
             super.peripheral(peripheral, didDiscoverDescriptorsForCharacteristic = didDiscoverDescriptorsForCharacteristic, error = error)
 
-            connectionManager.didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
+            didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
             super.peripheral(peripheral, didUpdateNotificationStateForCharacteristic = didUpdateNotificationStateForCharacteristic, error = error)
 
-            when (val action = connectionManager.currentAction) {
+            when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
                         launch {
-                            connectionManager.completeCurrentAction()
+                            completeCurrentAction()
                         }
                     }
                 }
@@ -54,7 +54,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             super.peripheral(peripheral, didUpdateValueForCharacteristic = didUpdateValueForCharacteristic, error = error)
 
             launch {
-                connectionManager.updateCharacteristic(didUpdateValueForCharacteristic)
+                updateCharacteristic(didUpdateValueForCharacteristic)
             }
         }
 
@@ -62,7 +62,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             super.peripheral(peripheral, didWriteValueForCharacteristic = didWriteValueForCharacteristic, error = error)
 
             launch {
-                connectionManager.updateCharacteristic(didWriteValueForCharacteristic)
+                updateCharacteristic(didWriteValueForCharacteristic)
             }
         }
 
@@ -70,7 +70,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             super.peripheral(peripheral, didUpdateValueForDescriptor = didUpdateValueForDescriptor, error = error)
 
             launch {
-                connectionManager.updateDescriptor(didUpdateValueForDescriptor)
+                updateDescriptor(didUpdateValueForDescriptor)
             }
         }
 
@@ -78,34 +78,34 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             super.peripheral(peripheral, didWriteValueForDescriptor = didWriteValueForDescriptor, error = error)
 
             launch {
-                connectionManager.updateDescriptor(didWriteValueForDescriptor)
+                updateDescriptor(didWriteValueForDescriptor)
             }
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
             super.peripheral(peripheral, didDiscoverCharacteristicsForService = didDiscoverCharacteristicsForService, error = error)
 
-            connectionManager.didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
+            didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
             super.peripheral(peripheral, didDiscoverServices)
 
-            connectionManager.didDiscoverServices()
+            didDiscoverServices()
         }
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
             super.peripheral(peripheral, didReadRSSI, error)
 
             launch {
-                connectionManager.repoAccessor.currentState().rssiDidUpdate( didReadRSSI.intValue)
+                repoAccessor.currentState().rssiDidUpdate( didReadRSSI.intValue)
             }
         }
 
     }
 
     init {
-        peripheral.delegate = PeripheralDelegate(this)
+        peripheral.delegate = peripheralDelegate
     }
 
     override suspend fun connect() {

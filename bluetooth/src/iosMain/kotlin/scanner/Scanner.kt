@@ -27,47 +27,43 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
-    private class CentralManagerDelegate(val bluetoothScanner: Scanner) : NSObject(), CBCentralManagerDelegateProtocol {
+    private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
 
-            bluetoothScanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
+            discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             when (central.state) {
-                CBCentralManagerStatePoweredOn -> bluetoothScanner.bluetoothEnabled()
-                else -> bluetoothScanner.bluetoothDisabled()
+                CBCentralManagerStatePoweredOn -> bluetoothEnabled()
+                else -> bluetoothDisabled()
             }
         }
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
             super.centralManager(central, didConnectPeripheral)
 
-            bluetoothScanner.connectionManagerMap[didConnectPeripheral.identifier]?.let {
-                it.didConnect()
-            }
+            val connectionManager = connectionManagerMap[didConnectPeripheral.identifier] ?: return
+            connectionManager.didConnect()
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
             super.centralManager(central, didDisconnectPeripheral= didDisconnectPeripheral, error = error)
 
-            bluetoothScanner.connectionManagerMap[didDisconnectPeripheral.identifier]?.let {
-                it.didDisconnect()
-            }
+            val connectionManager = connectionManagerMap[didDisconnectPeripheral.identifier] ?: return
+            connectionManager.didConnect()
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
             super.centralManager(central, didFailToConnectPeripheral = didFailToConnectPeripheral, error = error)
 
-            bluetoothScanner.connectionManagerMap[didFailToConnectPeripheral.identifier]?.let {
-                it.didDisconnect()
-            }
+            val connectionManager = connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return
+            connectionManager.didConnect()
         }
     }
 
-    private val centralManagerDelegate = CentralManagerDelegate(this)
     private val mainCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
     private var connectionManagerMap = emptyMap<Identifier, DeviceConnectionManager>().toMutableMap()
