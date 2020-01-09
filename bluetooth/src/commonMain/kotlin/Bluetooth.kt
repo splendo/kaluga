@@ -78,6 +78,15 @@ class Bluetooth internal constructor(private val builder: Builder) {
         }
     }
 
+    suspend fun stopScanning() {
+        scanningStateRepo.flow().transformLatest { scanState ->
+            when(scanState) {
+                is ScanningState.Enabled.Scanning -> scanState.stopScanning()
+                is ScanningState.Enabled.Idle -> emit(true)
+            }
+        }.first()
+    }
+
 }
 
 fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
@@ -87,15 +96,9 @@ fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
 }
 
 suspend fun Flow<Device?>.services(): Flow<List<Service>> {
-    var hasConnected = false
     return this.mapDeviceState {deviceState ->
         when (deviceState) {
-            is DeviceState.Disconnected -> {
-                if (!hasConnected)
-                    deviceState.connect()
-            }
             is DeviceState.Connected -> {
-                hasConnected = true
                 when (deviceState) {
                     is DeviceState.Connected.Idle -> {
                         if (deviceState.services.isEmpty())
@@ -108,6 +111,15 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
         }
         emit(emptyList())
     }
+}
+
+suspend fun Flow<Device?>.connect() {
+    this.mapDeviceState<Boolean> {deviceState ->
+        when (deviceState) {
+            is DeviceState.Disconnected -> deviceState.connect()
+            is DeviceState.Connected -> emit(true)
+        }
+    }.first()
 }
 
 suspend fun Flow<Device?>.disconnect() {

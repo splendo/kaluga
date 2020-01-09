@@ -32,7 +32,7 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
     open suspend fun finalState() {}
 
     protected suspend fun changeState(toState: T) {
-        repoAccessor.s.changeState {
+        repoAccessor.changeState {
             if (it === this)
                 toState
             else
@@ -42,9 +42,14 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
 
 }
 
-class StateRepoAccesor<T:State<T>>(val s:StateRepo<T> ) {
+class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
+
     fun currentState(): T {
         return s.state()
+    }
+
+    suspend fun changeState(action: (T) -> T) {
+        s.changeState(action)
     }
 }
 
@@ -53,7 +58,7 @@ class StateRepoAccesor<T:State<T>>(val s:StateRepo<T> ) {
  *
  * Make sure that if you pass a coroutine scope that has sequential execution if you do not want simultaneous state changes. The default MainScope meets these criteria.
  */
-abstract class StateRepo<T:State<T>>(context: CoroutineContext = Dispatchers.Main): BaseFlowable<T>(), CoroutineScope by CoroutineScope(context + CoroutineName("State Repo")) {
+abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main): BaseFlowable<T>(), CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     private var changedState:T = initialState()

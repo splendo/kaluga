@@ -30,7 +30,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                   private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
                   private val permissions: Permissions,
-                  private val context: Context) : BaseScanner.Builder {
+                  private val context: Context = ApplicationContextHolder()) : BaseScanner.Builder {
 
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
             return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, context, coroutineScope, stateRepoAccessor)

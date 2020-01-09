@@ -10,6 +10,4 @@ interface BaseAdvertisementData {
     val txPowerLevel: Int
 }
 
-expect class AdvertisementData {
-
-}
+expect class AdvertisementData : BaseAdvertisementData
