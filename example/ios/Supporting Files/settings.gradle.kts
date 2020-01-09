@@ -56,8 +56,8 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
-    include(":loadingIndicator")
-    project(":loadingIndicator").projectDir = file("../../../loadingIndicator")
+    include(":hud")
+    project(":hud").projectDir = file("../../../hud")
 }
 
 include(":android")

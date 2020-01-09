@@ -1,4 +1,4 @@
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.hud
 
 /*
 
@@ -18,12 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-expect class Permissions {
-
-    fun getBluetoothManager(): PermissionManager
-
-    open class Builder {
-        open fun build(): Permissions
-    }
-}
-
+data class HudConfig(
+    /** Style of the HUD */
+    val style: HUD.Style = HUD.Style.SYSTEM,
+    /** Optional title of the HUD */
+    val title: String? = null
+)

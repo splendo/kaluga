@@ -17,8 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.example.shared.AlertFactory
-import com.splendo.kaluga.example.shared.ActivityIndicator
+import com.splendo.kaluga.example.shared.AlertPresenter
+import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
@@ -27,7 +27,7 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
-import com.splendo.kaluga.loadingIndicator.*
+import com.splendo.kaluga.hud.IOSHUD
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -36,9 +36,16 @@ import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
-fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
-fun activityIndicator(viewController : UIViewController, style: LoadingIndicator.Style) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController)) {
-    setStyle(style)
+class KNAlertFramework {
+    companion object {
+        fun makeAlertPresenter(builder: AlertBuilder) = AlertPresenter(builder)
+    }
+}
+
+class KNHudFramework {
+    companion object {
+        fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
+    }
 }
 
 class KotlinNativeFramework {
@@ -57,7 +64,6 @@ class KotlinNativeFramework {
     }
 
     fun permissions(nsBundle: NSBundle) = Permissions
-        .Builder()
-        .bundle(nsBundle)
+        .Builder(nsBundle)
         .build()
 }

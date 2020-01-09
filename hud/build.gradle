@@ -1,24 +1,16 @@
-plugins {
-    id 'jacoco'
-    id 'com.android.library'
-    id 'org.jetbrains.kotlin.multiplatform'
-    id 'maven-publish'
-}
+apply plugin: 'com.android.library'
+apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 apply from: "../gradle/publishable_component.gradle"
 
-group = "com.splendo.kaluga"
 version = gradle.library_version
-
-repositories {
-    google()
-    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
-    mavenCentral()
-}
+group = "com.splendo.kaluga"
 
 dependencies {
-    testImplementation 'org.mockito:mockito-core:2.28.2'
-    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.fragment:fragment:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
@@ -39,7 +31,6 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                implementation project(":base", "")
                 implementation 'co.touchlab:stately:0.9.5'
             }
         }

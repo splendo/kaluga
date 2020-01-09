@@ -21,11 +21,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Process
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -42,14 +44,9 @@ class BluetoothPermissionManagerTest {
     @Before
     fun before() {
         mockContext = mock(Context::class.java)
-        `when`(mockContext.applicationContext).thenReturn(mockContext)
-
-        Permissions.Builder()
-            .context(mockContext)
-            .build()
 
         mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
-        bluetoothPermissionManager = BluetoothPermissionManager(mockContext, mockBluetoothAdapterWrapper)
+        bluetoothPermissionManager = BluetoothPermissionManager( mockContext, mockBluetoothAdapterWrapper)
     }
 
     @After
@@ -96,7 +93,7 @@ class BluetoothPermissionManagerTest {
 
     @Test
     fun testBluetoothPermitCheckAndPermissionGrantedThenPermitAllowed() {
-        `when`(mockContext.checkSelfPermission(Manifest.permission.BLUETOOTH)).thenReturn(PackageManager.PERMISSION_GRANTED)
+        `when`(mockContext.checkPermission(eq(Manifest.permission.BLUETOOTH), anyInt(), anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
 
         val permit: Permit = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkPermit()
@@ -108,8 +105,7 @@ class BluetoothPermissionManagerTest {
 
     @Test
     fun testBluetoothPermitCheckAndPermissionDeniedThenPermitDenied() {
-        `when`(mockContext.checkSelfPermission(Manifest.permission.BLUETOOTH)).thenReturn(PackageManager.PERMISSION_DENIED)
-
+        `when`(mockContext.checkPermission(eq(Manifest.permission.BLUETOOTH), anyInt(), anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         val permit: Permit = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkPermit()
         }
