@@ -37,8 +37,8 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
-    @Before
-    fun mockLocation() {
+    override fun setUp() {
+        super.setUp()
         client = LocationServices.getFusedLocationProviderClient(
             ApplicationProvider.getApplicationContext() as Context
         )
@@ -47,11 +47,11 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
             client.setMockMode(true).await()
             setFusedLocation(0.0, 0.0)
         }
+
+        flowable.complete(LocationFlowable.Builder(client).create() )
     }
 
     private lateinit var client: FusedLocationProviderClient
-
-    override val flowable: LocationFlowable by lazy { LocationFlowable.Builder(client).create() }
 
     // we want to set an initial location, but not have it be included in the test. So we filter it from the test.
     var allowInFilter = false

@@ -31,19 +31,18 @@ import kotlin.test.BeforeTest
 typealias TestBlock<T> = suspend(T)->Unit
 typealias ActionBlock = suspend()->Unit
 
-abstract class FlowableTest<T>: BaseTest() {
+abstract class FlowableTest<T, F : Flowable<T>>: BaseTest() {
 
     @BeforeTest
-    fun setUp() {
+    open fun setUp() {
         super.beforeTest()
 
-        flowable = createFlowable()
+        flowable = CompletableDeferred()
     }
 
     open val filter:suspend(T)->Boolean = { true }
 
-    lateinit var flowable: Flowable<T>
-    abstract fun createFlowable(): Flowable<T>
+    lateinit var flowable: CompletableDeferred<F>
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 
@@ -88,7 +87,7 @@ abstract class FlowableTest<T>: BaseTest() {
         debug("start flow...")
         job = mainScope.launch {
             debug("main scope launched, about to flow")
-            flowable.flow().filter(filter).collect { value ->
+            flowable.await().flow().filter(filter).collect { value ->
                 debug("in flow received $value")
                 val test = testChannel.receive()
                 debug("receive test $test")
