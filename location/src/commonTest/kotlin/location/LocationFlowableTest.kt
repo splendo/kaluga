@@ -26,25 +26,18 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
-open class LocationFlowableTest : FlowableTest<Location>() {
-
-    lateinit var locationFlowable: LocationFlowable
-
-    override fun createFlowable(): LocationFlowable {
-        locationFlowable = LocationFlowable()
-        return locationFlowable
-    }
+open class LocationFlowableTest : FlowableTest<Location, LocationFlowable>() {
 
     private val location1 = KnownLocation(latitude = 52.15, longitude = 4.4303, time = Time.MeasuredTime(1000), horizontalAccuracy = 1.0, verticalAccuracy = 1.0, altitude = 1.0, speed = 1.0, course = 1.0)
     private val location2 = KnownLocation(latitude = 52.079, longitude = 4.3413, time = Time.MeasuredTime(1000), horizontalAccuracy = 2.0, verticalAccuracy = 2.0, altitude = 2.0, speed = 2.0, course = 2.0)
 
     open suspend fun setLocationUnknown(reason:UnknownReason = UnknownReason.NOT_CLEAR) {
-        locationFlowable.setUnknownLocation(reason)
+        flowable.await().setUnknownLocation(reason)
     }
 
     open suspend fun setLocation(location:KnownLocation) {
         debug("Send location directly to channel for test: $location")
-        locationFlowable.set(location)
+        flowable.await().set(location)
     }
 
     open fun assertSameLocation(expected:Location, actual:Location) {
