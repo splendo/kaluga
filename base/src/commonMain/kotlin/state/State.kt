@@ -71,10 +71,12 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
 
     abstract fun initialState():T
 
-    final override suspend fun initialize() {
-        super.initialize()
-        setChangedState(initialState())
-        changedState.initialState()
+    final override suspend fun initialize(numberOfElements: Int) {
+        super.initialize(numberOfElements)
+        if (numberOfElements <= 1) {
+            setChangedState(initialState())
+            changedState.initialState()
+        }
     }
 
     suspend fun finish() {
