@@ -149,7 +149,11 @@ class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
         }
         test {
             assertTrue(it is TrafficLightState.RedLight)
+            assertTrue(greenState.beforeCreatingNewStateDone.isCompleted)
+            assertTrue(greenState.afterCreatingNewStateDone.isCompleted)
             assertTrue(greenState.afterNewStateIsSetDone.isCompleted)
+            assertTrue(it.beforeOldStateIsRemovedDone.isCompleted)
+            assertTrue(it.afterOldStateIsRemovedDone.isCompleted)
         }
         action {
             trafficLight.finish()
