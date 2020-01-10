@@ -22,4 +22,6 @@ android {
 
 dependencies {
     commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.2'
+    commonMainImplementation 'co.touchlab:stately:0.9.5'
+    commonMainImplementation 'co.touchlab:stately-collections:0.9.5'
 }
