@@ -17,11 +17,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlin.test.*
 
 sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : State<TrafficLightState>(stateRepoAccessor) {
@@ -176,4 +181,14 @@ class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
             assertTrue(it is TrafficLightState.RedLight)
         }
     }
+
+    @Test
+    fun multipleObservers() = runBlocking {
+        val greenState = flowable.await().flow().first()
+        assertTrue(greenState is TrafficLightState.GreenLight)
+        greenState.becomeYellow()
+        val yellowState = flowable.await().flow().first()
+        assertTrue(yellowState is TrafficLightState.YellowLight)
+    }
+
 }
