@@ -101,18 +101,18 @@ class TrafficLight: StateRepo<TrafficLightState>() {
 
 }
 
-class StateRepoTest: FlowableTest<TrafficLightState>() {
+class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
 
-    lateinit var trafficLight: TrafficLight
+    override fun setUp() {
+        super.setUp()
 
-    override fun createFlowable(): Flowable<TrafficLightState> {
-        trafficLight = TrafficLight()
-        return trafficLight
+        flowable.complete(TrafficLight())
     }
 
     @Test
     fun changeState() = runBlockingWithFlow {
         lateinit var greenState: TrafficLightState.GreenLight
+        val trafficLight = flowable.getCompleted()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
             greenState = it
