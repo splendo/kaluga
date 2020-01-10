@@ -135,6 +135,7 @@ class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
                     assertFalse { newState.afterOldStateIsRemovedDone.isCompleted }
                 }
                 newState.afterOldStateIsRemovedDone.invokeOnCompletion {
+                    assertEquals(greenState, newState.afterOldStateIsRemovedDone.getCompleted())
                     assertEquals(newState, trafficLight.repoAccesor.currentState())
                 }
             }
