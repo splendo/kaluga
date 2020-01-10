@@ -48,7 +48,7 @@ class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope
         return s.state()
     }
 
-    suspend fun changeState(action: (T) -> T) {
+    internal suspend fun changeState(action: (T) -> T) {
         s.changeState(action)
     }
 }
@@ -77,10 +77,10 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         changedState.initialState()
     }
 
-    suspend fun cancel() {
+    suspend fun finish() {
         val state = state()
         state.finalState()
-        coroutineContext.cancel()
+        cancel("State Repo Finished")
     }
 
     internal fun state():T {

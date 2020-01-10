@@ -28,7 +28,7 @@ import kotlinx.coroutines.flow.onStart
 open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = {ConflatedBroadcastChannel()}) : Flowable<T> {
 
     private var channel = lazy {  channelFactory() }
-    private var flowing: Boolean = false
+    protected var flowing: Boolean = false
 
     final override fun flow(flowConfig: FlowConfig): Flow<T> {
         return flowConfig.apply(channel.value.asFlow()
