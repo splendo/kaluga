@@ -23,17 +23,27 @@ import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.flow.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
+import kotlin.test.BeforeTest
 
 typealias TestBlock<T> = suspend(T)->Unit
 typealias ActionBlock = suspend()->Unit
 
 abstract class FlowableTest<T>: BaseTest() {
 
+    @BeforeTest
+    fun setUp() {
+        super.beforeTest()
+
+        flowable = createFlowable()
+    }
+
     open val filter:suspend(T)->Boolean = { true }
 
-    abstract val flowable: Flowable<T>
+    lateinit var flowable: Flowable<T>
+    abstract fun createFlowable(): Flowable<T>
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 
