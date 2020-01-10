@@ -31,15 +31,11 @@ open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T>
     private var flowing: Boolean = false
 
     final override fun flow(flowConfig: FlowConfig): Flow<T> {
-        val flow = channel.value.asFlow()
-
-        flow.onStart {
-            flowing = true
-            initialize()
-        }
-        flow.onCompletion {complete()}
-
-        return flowConfig.apply(flow)
+        return flowConfig.apply(channel.value.asFlow()
+            .onStart {
+                flowing = true
+                initialize()
+            }.onCompletion {complete()})
     }
     protected open suspend fun initialize() {}
     protected open suspend fun complete() {}

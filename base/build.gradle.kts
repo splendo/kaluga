@@ -23,5 +23,11 @@ kotlin {
                 implementation(project(":logging", ""))
             }
         }
+        getByName("commonTest") {
+            dependencies {
+                implementation(project(":test-utils", ""))
+            }
+        }
     }
+
 }

@@ -61,27 +61,25 @@ class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope
 abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main): BaseFlowable<T>(), CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
-    private var changedState:T = initialState()
-        private set(value) {
-            field = value
-            launch {
-                set(value)
-            }
+    private lateinit var changedState:T
+    private fun setChangedState(value: T) {
+        changedState = value
+        launch {
+            set(value)
         }
+    }
 
     abstract fun initialState():T
 
     final override suspend fun initialize() {
         super.initialize()
-        changedState = initialState()
+        setChangedState(initialState())
         changedState.initialState()
     }
 
     suspend fun cancel() {
         val state = state()
         state.finalState()
-        if (state is CoroutineScope)
-            state.cancel("State machine cancelled")
         coroutineContext.cancel()
     }
 
@@ -89,24 +87,22 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         return changedState
     }
 
-    fun changeStateBlocking(action: (state:T) -> T):T {
+    internal fun changeStateBlocking(action: (state:T) -> T):T {
         return runBlocking {
             changeState(action)
         }
     }
 
-    suspend fun changeState(action: (state:T) -> T):T {
+    internal suspend fun changeState(action: (state:T) -> T):T {
         val result = CompletableDeferred<T>()
         coroutineScope {
             launch {
                 val beforeState = state()
                 beforeState.beforeCreatingNewState()
-                if (beforeState is CoroutineScope)
-                    beforeState.cancel("this state will end. New state will be created")
                 val newState = action(beforeState)
                 beforeState.afterCreatingNewState(newState)
                 newState.beforeOldStateIsRemoved()
-                changedState = newState
+                setChangedState(newState)
                 beforeState.afterNewStateIsSet()
                 newState.afterOldStateIsRemoved(beforeState)
                 result.complete(newState)
