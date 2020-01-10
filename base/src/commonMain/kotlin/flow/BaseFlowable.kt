@@ -33,8 +33,10 @@ open class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T>
     final override fun flow(flowConfig: FlowConfig): Flow<T> {
         return flowConfig.apply(channel.value.asFlow()
             .onStart {
-                flowing = true
-                initialize()
+                if (!flowing) {
+                    flowing = true
+                    initialize()
+                }
             }.onCompletion {complete()})
     }
     protected open suspend fun initialize() {}
