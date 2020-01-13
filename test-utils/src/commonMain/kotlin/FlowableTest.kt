@@ -17,13 +17,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.flow.Flowable
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlin.test.BeforeTest
@@ -31,7 +30,7 @@ import kotlin.test.BeforeTest
 typealias TestBlock<T> = suspend(T)->Unit
 typealias ActionBlock = suspend()->Unit
 
-abstract class FlowableTest<T, F : Flowable<T>>: BaseTest() {
+abstract class FlowableTest<T>: BaseTest() {
 
     @BeforeTest
     open fun setUp() {
@@ -42,7 +41,7 @@ abstract class FlowableTest<T, F : Flowable<T>>: BaseTest() {
 
     open val filter:suspend(T)->Boolean = { true }
 
-    lateinit var flowable: CompletableDeferred<F>
+    lateinit var flowable: CompletableDeferred<Flowable<T>>
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 

@@ -17,9 +17,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.ColdFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
 import kotlin.coroutines.CoroutineContext
 
 open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
@@ -44,9 +48,7 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
 
 class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
 
-    fun currentState(): T {
-        return s.state()
-    }
+    fun currentState() =  s.state()
 
     internal suspend fun changeState(action: (T) -> T) {
         s.changeState(action)
@@ -58,31 +60,19 @@ class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope
  *
  * Make sure that if you pass a coroutine scope that has sequential execution if you do not want simultaneous state changes. The default MainScope meets these criteria.
  */
-abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main): BaseFlowable<T>(), CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+
+    abstract val flowable: Lazy<BaseFlowable<T>>
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
-    private lateinit var changedState:T
-    private fun setChangedState(value: T) {
+    internal lateinit var changedState:T
+    private suspend fun setChangedState(value: T) {
         changedState = value
-        launch {
-            set(value)
-        }
+        flowable.value.set(value)
     }
 
-    abstract fun initialState():T
-
-    final override suspend fun initialize(numberOfElements: Int) {
-        super.initialize(numberOfElements)
-        if (numberOfElements <= 1) {
-            setChangedState(initialState())
-            changedState.initialState()
-        }
-    }
-
-    suspend fun finish() {
-        val state = state()
-        state.finalState()
-        cancel("State Repo Finished")
+    fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T> {
+        return flowable.value.flow(flowConfig)
     }
 
     internal fun state():T {
@@ -112,5 +102,40 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         }
         return result.await()
     }
+
+}
+
+abstract class HotStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<T>(coroutineContext) {
+
+    override val flowable = lazy {
+        val value = initialValue
+        changedState = initialValue
+        launch {
+            value.initialState()
+        }
+        HotFlowable(value)
+    }
+
+    protected abstract val initialValue: T
+
+}
+
+abstract class ColdStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<T>(coroutineContext) {
+
+    override val flowable = lazy {
+        ColdFlowable({
+            val value = initialize()
+            changedState = value
+            launch {
+                value.initialState()
+            }
+            value
+        }, {
+            state -> this.deinitialize(state)
+        })
+    }
+
+    abstract fun initialize() : T
+    abstract fun deinitialize(state: T)
 
 }
