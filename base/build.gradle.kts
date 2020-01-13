@@ -20,6 +20,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                implementation("co.touchlab:stately:0.9.5")
                 implementation(project(":logging", ""))
             }
         }

@@ -18,16 +18,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.flow.Flowable
+import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : State<TrafficLightState>(stateRepoAccessor) {
 
@@ -96,28 +95,27 @@ sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<
 
 }
 
-class TrafficLight: StateRepo<TrafficLightState>() {
+class TrafficLight: HotStateRepo<TrafficLightState>() {
 
     val repoAccesor = StateRepoAccesor(this)
 
-    override fun initialState(): TrafficLightState {
-        return TrafficLightState.GreenLight(repoAccesor)
-    }
-
+    override val initialValue: TrafficLightState = TrafficLightState.GreenLight(repoAccesor)
 }
 
-class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
+class StateRepoTest: FlowableTest<TrafficLightState>() {
+
+    lateinit var trafficLight: TrafficLight
 
     override fun setUp() {
         super.setUp()
 
-        flowable.complete(TrafficLight())
+        trafficLight = TrafficLight()
+        flowable.complete(trafficLight.flowable.value)
     }
 
     @Test
     fun changeState() = runBlockingWithFlow {
         lateinit var greenState: TrafficLightState.GreenLight
-        val trafficLight = flowable.getCompleted()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
             greenState = it
@@ -159,10 +157,6 @@ class StateRepoTest: FlowableTest<TrafficLightState, TrafficLight>() {
             assertTrue(greenState.afterNewStateIsSetDone.isCompleted)
             assertTrue(it.beforeOldStateIsRemovedDone.isCompleted)
             assertTrue(it.afterOldStateIsRemovedDone.isCompleted)
-        }
-        action {
-            trafficLight.finish()
-            assertTrue(trafficLight.repoAccesor.currentState().finalStateDone.isCompleted)
         }
     }
 

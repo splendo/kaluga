@@ -23,4 +23,7 @@ import kotlinx.coroutines.flow.Flow
 interface Flowable<T> {
     @ExperimentalCoroutinesApi
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T>
+
+    suspend fun set(value: T)
+    fun setBlocking(value: T)
 }
