@@ -24,4 +24,9 @@ class ColdFlowable<T>(private val initialize: () -> T, private val deinitialize:
                 }
             }
     }
+
+    override suspend fun set(value: T) {
+        if (flowingCounter.get() > 0)
+            super.set(value)
+    }
 }

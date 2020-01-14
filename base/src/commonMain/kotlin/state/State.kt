@@ -75,6 +75,17 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         return flowable.value.flow(flowConfig)
     }
 
+    internal fun initialize() : T {
+        val value = initialValue()
+        changedState = value
+        launch {
+            value.initialState()
+        }
+        return value
+    }
+
+    abstract fun initialValue() : T
+
     internal fun state():T {
         return changedState
     }
@@ -108,15 +119,8 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
 abstract class HotStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<T>(coroutineContext) {
 
     override val flowable = lazy {
-        val value = initialValue
-        changedState = initialValue
-        launch {
-            value.initialState()
-        }
-        HotFlowable(value)
+        HotFlowable(initialize())
     }
-
-    protected abstract val initialValue: T
 
 }
 
@@ -124,18 +128,12 @@ abstract class ColdStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Di
 
     override val flowable = lazy {
         ColdFlowable({
-            val value = initialize()
-            changedState = value
-            launch {
-                value.initialState()
-            }
-            value
+            initialize()
         }, {
             state -> this.deinitialize(state)
         })
     }
 
-    abstract fun initialize() : T
     abstract fun deinitialize(state: T)
 
 }
