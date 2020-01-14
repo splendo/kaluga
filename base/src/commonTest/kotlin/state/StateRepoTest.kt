@@ -99,7 +99,10 @@ class TrafficLight: HotStateRepo<TrafficLightState>() {
 
     val repoAccesor = StateRepoAccesor(this)
 
-    override val initialValue: TrafficLightState = TrafficLightState.GreenLight(repoAccesor)
+    override fun initialValue(): TrafficLightState {
+        return TrafficLightState.GreenLight(repoAccesor)
+    }
+
 }
 
 class StateRepoTest: FlowableTest<TrafficLightState>() {
