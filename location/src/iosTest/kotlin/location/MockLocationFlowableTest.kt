@@ -30,9 +30,8 @@ class MockLocationFlowableTest : LocationFlowableTest() {
 
     private val locationManager = CLLocationManager()
 
-    override fun setUp() {
-        super.setUp()
-        flowable.complete(LocationFlowable.Builder(locationManager).create())
+    override fun generateLocationFlowable(): LocationFlowable {
+        return LocationFlowable.Builder(locationManager).create()
     }
 
     private fun clLocation(location: KnownLocation): CLLocation {
