@@ -24,6 +24,12 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 
+/**
+ * Base definition of [Flowable]. Abstract class, use [ColdFlowable] or [HotFlowable] instead.
+ *
+ * @param T the value type to flow on.
+ * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
+ */
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
     protected var channel = lazy {channelFactory()}
