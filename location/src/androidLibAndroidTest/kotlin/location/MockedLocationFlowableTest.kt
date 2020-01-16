@@ -23,11 +23,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.splendo.kaluga.location.test.LocationFlowableTest
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.location.test.LocationFlowableTest
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.tasks.await
-import org.junit.Before
 import org.junit.Rule
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -37,8 +36,7 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
-    @Before
-    fun mockLocation() {
+    override fun generateLocationFlowable(): LocationFlowable {
         client = LocationServices.getFusedLocationProviderClient(
             ApplicationProvider.getApplicationContext() as Context
         )
@@ -47,11 +45,11 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
             client.setMockMode(true).await()
             setFusedLocation(0.0, 0.0)
         }
+
+        return LocationFlowable.Builder(client).create()
     }
 
     private lateinit var client: FusedLocationProviderClient
-
-    override val flowable: LocationFlowable by lazy { LocationFlowable.Builder(client).create() }
 
     // we want to set an initial location, but not have it be included in the test. So we filter it from the test.
     var allowInFilter = false
