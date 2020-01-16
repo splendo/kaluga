@@ -1,6 +1,9 @@
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.*
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
@@ -35,44 +38,32 @@ class Bluetooth internal constructor(private val builder: Builder) {
     val requestPermission = builder.requestPermission
     val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
 
-    suspend fun devices(filter: Set<UUID> = emptySet()): Flow<List<Device>> {
-        var hasStartedScanning = false
-        var hasStoppedScanning = false
-        return scanningStateRepo.flow().transformLatest { scanState ->
-            if (hasStoppedScanning)
-                return@transformLatest
+    suspend fun startScanning(filter: Set<UUID> = emptySet()) {
+        scanningStateRepo.flow().transformLatest{ scanState ->
             when(scanState) {
-
                 is ScanningState.Enabled -> {
                     when (scanState) {
-                        is ScanningState.Enabled.Idle -> {
-                            if (!hasStartedScanning) {
-                                scanState.startScanning(filter)
-                                hasStartedScanning = true
-                            } else if (scanState.oldFilter == filter) {
-                                emit(scanState.discoveredDevices)
-                                return@transformLatest
-                            }
-                        }
+                        is ScanningState.Enabled.Idle -> scanState.startScanning(filter)
                         is ScanningState.Enabled.Scanning -> {
-                            if (scanState.filter != filter) {
+                            if (filter == scanState.filter)
+                                emit(Unit)
+                            else
                                 scanState.stopScanning()
-                                hasStoppedScanning = true
-                            } else {
-                                emit(scanState.discoveredDevices)
-                                return@transformLatest
-                            }
                         }
                     }
                 }
-                is ScanningState.NoBluetoothState -> {
-                    when (scanState) {
-                        is ScanningState.NoBluetoothState.MissingPermissions ->
-                            requestPermission()
-                        is ScanningState.NoBluetoothState.Disabled ->
-                            notifyBluetoothDisabled()
-                    }
+                is ScanningState.NoBluetoothState -> handleNoBluetooth(scanState)
+            }
+        }.first()
+    }
+
+    suspend fun devices(): Flow<List<Device>> {
+        return scanningStateRepo.flow().transformLatest { scanState ->
+            when(scanState) {
+                is ScanningState.Enabled -> {
+                    emit(scanState.discoveredDevices)
                 }
+                is ScanningState.NoBluetoothState -> handleNoBluetooth(scanState)
             }
 
             emit(emptyList())
@@ -83,9 +74,18 @@ class Bluetooth internal constructor(private val builder: Builder) {
         scanningStateRepo.flow().transformLatest { scanState ->
             when(scanState) {
                 is ScanningState.Enabled.Scanning -> scanState.stopScanning()
-                is ScanningState.Enabled.Idle -> emit(true)
+                is ScanningState.Enabled.Idle -> emit(Unit)
             }
         }.first()
+    }
+
+    private suspend fun handleNoBluetooth(noBluetoothState: ScanningState.NoBluetoothState) {
+        when (noBluetoothState) {
+            is ScanningState.NoBluetoothState.MissingPermissions ->
+                requestPermission()
+            is ScanningState.NoBluetoothState.Disabled ->
+                notifyBluetoothDisabled()
+        }
     }
 
 }
@@ -98,7 +98,7 @@ fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
 
 suspend fun Flow<Device?>.services(): Flow<List<Service>> {
     return this.mapDeviceState {deviceState ->
-        when (deviceState) {
+        emit(when (deviceState) {
             is DeviceState.Connected -> {
                 when (deviceState) {
                     is DeviceState.Connected.Idle -> {
@@ -106,28 +106,27 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
                             deviceState.discoverServices()
                     }
                 }
-                emit(deviceState.services)
-                return@mapDeviceState
+                deviceState.services
             }
-        }
-        emit(emptyList())
+            else -> emptyList()
+        })
     }
 }
 
 suspend fun Flow<Device?>.connect() {
-    this.mapDeviceState<Boolean> {deviceState ->
+    this.mapDeviceState<Unit> {deviceState ->
         when (deviceState) {
             is DeviceState.Disconnected -> deviceState.connect()
-            is DeviceState.Connected -> emit(true)
+            is DeviceState.Connected -> emit(Unit)
         }
     }.first()
 }
 
 suspend fun Flow<Device?>.disconnect() {
-    this.mapDeviceState<Boolean> {deviceState ->
+    this.mapDeviceState<Unit> {deviceState ->
             when (deviceState) {
                 is DeviceState.Connected -> deviceState.disconnect()
-                is DeviceState.Disconnected -> emit(true)
+                is DeviceState.Disconnected -> emit(Unit)
             }
     }.first()
 }
