@@ -7,9 +7,11 @@ import kotlinx.coroutines.CoroutineScope
 
 actual class Scanner(permissions: Permissions, stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
 
-    class Builder(override val autoEnableBluetooth: Boolean) : BaseScanner.Builder {
+    class Builder(
+        private val permissions: Permissions,
+        override val autoEnableBluetooth: Boolean) : BaseScanner.Builder {
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(Permissions(), stateRepoAccessor, coroutineScope)
+            return Scanner(permissions, stateRepoAccessor, coroutineScope)
         }
     }
 
