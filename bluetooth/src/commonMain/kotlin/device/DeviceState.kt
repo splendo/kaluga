@@ -1,6 +1,7 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
@@ -183,11 +184,11 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
 
 }
 
-class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : StateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
+class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : HotStateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
 
     internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, StateRepoAccesor(this))
 
-    override fun initialState(): DeviceState {
+    override fun initialValue(): DeviceState {
         return DeviceState.Disconnected(initialRssi, deviceConnectionManager)
     }
 

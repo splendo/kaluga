@@ -6,6 +6,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.logger
 import com.splendo.kaluga.permissions.Support
+import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
@@ -150,11 +151,11 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
 }
 
-class ScanningStateRepo(builder: BaseScanner.Builder) : StateRepo<ScanningState>() {
+class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningState>() {
 
-    val manager = builder.create(StateRepoAccesor(this), this)
+    private val manager = builder.create(StateRepoAccesor(this), this)
 
-    override fun initialState(): ScanningState {
+    override fun initialValue(): ScanningState {
         return when (manager.permissions.getBluetoothManager().checkSupport()) {
             Support.POWER_ON -> {
                 manager.startMonitoringBluetooth()
@@ -168,4 +169,7 @@ class ScanningStateRepo(builder: BaseScanner.Builder) : StateRepo<ScanningState>
         }
     }
 
+    override fun deinitialize(state: ScanningState) {
+        // Deinitalized by the State
+    }
 }

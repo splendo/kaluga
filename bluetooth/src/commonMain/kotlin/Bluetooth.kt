@@ -7,6 +7,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlin.jvm.JvmName
 
 class Bluetooth internal constructor(private val builder: Builder) {
 
@@ -149,6 +150,7 @@ fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value:
     }
 }
 
+@JvmName("getService")
 fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
     return this.mapLatest { services ->
         services.firstOrNull { it.uuid.uuidString == uuid.uuidString }
@@ -163,9 +165,10 @@ fun Flow<Characteristic?>.descriptors() : Flow<List<Descriptor>> {
     return this.mapLatest{ characteristic -> characteristic?.descriptors ?: emptyList() }
 }
 
+@JvmName("getAttribute")
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID) : Flow<T?> {
-    return this.mapLatest{characteristics ->
-        characteristics.firstOrNull {it.uuid.uuidString == uuid.uuidString}
+    return this.mapLatest{attribute ->
+        attribute.firstOrNull {it.uuid.uuidString == uuid.uuidString}
     }
 }
 

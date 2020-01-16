@@ -164,7 +164,7 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
                 }
                 result
             }
-        } ?: false
+        }
     }
 
     private suspend fun updateCharacteristic(characteristic: BluetoothGattCharacteristic) {
