@@ -1,16 +1,28 @@
 package com.splendo.kaluga.bluetooth
 
-actual class Characteristic : BaseCharacteristic {
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.state.StateRepoAccesor
+import java.util.concurrent.atomic.AtomicReference
 
-    override val uuid: BaseUUID
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+actual class Characteristic(override val uuid: UUID, override val descriptors: List<Descriptor>, initialValue: ByteArray?, stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseCharacteristic(initialValue, stateRepoAccesor) {
 
-    override fun getIsNotifying(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    var value = AtomicReference(initialValue)
+
+    override fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
+        return DeviceAction.Notification(this, enabled)
     }
 
-    override fun getData(): ByteArray? {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun createReadAction(): DeviceAction.Read.Characteristic {
+        return DeviceAction.Read.Characteristic(this)
     }
 
+    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
+        value.set(newValue)
+        return DeviceAction.Write.Characteristic(newValue, this)
+    }
+
+    override fun getUpdatedValue(): ByteArray? {
+        return value.get()
+    }
 }
