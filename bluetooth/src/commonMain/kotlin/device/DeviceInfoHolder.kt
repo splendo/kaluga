@@ -8,6 +8,4 @@ interface DeviceInfo {
     val advertisementData: AdvertisementData
 }
 
-expect class DeviceInfoHolder : DeviceInfo {
-
-}
+expect class DeviceInfoHolder : DeviceInfo
