@@ -106,6 +106,12 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                     }
                 }
             }
+
+            override suspend fun finalState() {
+                super.finalState()
+
+                scanner.stopScanning()
+            }
         }
 
     }
@@ -172,11 +178,14 @@ class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningSt
 
     private val manager = builder.create(StateRepoAccesor(this), this)
 
+    private var lastDevices: List<Device> = emptyList()
+    private var lastFilter: Set<UUID> = emptySet()
+
     override fun initialValue(): ScanningState {
         return when (manager.permissions.getBluetoothManager().checkSupport()) {
             Support.POWER_ON -> {
                 manager.startMonitoringBluetooth()
-                ScanningState.Enabled.Idle(emptyList(), emptySet(), manager)
+                ScanningState.Enabled.Idle(lastDevices, lastFilter, manager)
             }
             Support.UNAUTHORIZED, Support.NOT_SUPPORTED -> ScanningState.NoBluetoothState.MissingPermissions(manager)
             Support.POWER_OFF, Support.RESETTING -> {
@@ -187,6 +196,14 @@ class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningSt
     }
 
     override fun deinitialize(state: ScanningState) {
-        // Deinitalized by the State
+        when (state) {
+            is ScanningState.Enabled -> {
+                lastDevices = state.discoveredDevices
+                lastFilter = when (state) {
+                    is ScanningState.Enabled.Idle -> state.oldFilter
+                    is ScanningState.Enabled.Scanning -> state.filter
+                }
+            }
+        }
     }
 }
