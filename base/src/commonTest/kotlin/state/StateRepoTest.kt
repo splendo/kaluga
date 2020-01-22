@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -117,13 +117,14 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun changeState() = runBlockingWithFlow {
-        lateinit var greenState: TrafficLightState.GreenLight
+    fun testChangeState() = runBlockingWithFlow {
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
-            greenState = it
-            assertTrue(greenState.initialStateDone.isCompleted)
+            greenStateDeferred.complete(it)
+            assertTrue(it.initialStateDone.isCompleted)
         }
+        val greenState = greenStateDeferred.await()
         action {
             assertFalse(greenState.beforeCreatingNewStateDone.isCompleted)
             greenState.beforeCreatingNewStateDone.invokeOnCompletion {
@@ -169,11 +170,11 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun changeStateDouble() = runBlockingWithFlow {
-        lateinit var greenState: TrafficLightState.GreenLight
+    fun testChangeStateDouble() = runBlockingWithFlow {
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
-            greenState = it
+            greenStateDeferred.complete(it)
         }
         action {
             trafficLight.repoAccesor.handleCurrentState {
@@ -195,7 +196,43 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun multipleObservers() = runBlocking {
+    fun testChangeStateDoubleConcurrent() = runBlockingWithFlow {
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
+        test {
+            assertTrue(it is TrafficLightState.GreenLight)
+            greenStateDeferred.complete(it)
+        }
+        action {
+            val scope = MainScope()
+            val delayedTransition = scope.async {
+                delay(100)
+                trafficLight.repoAccesor.handleCurrentState {
+                    when(val state = it) {
+                        is TrafficLightState.GreenLight -> state.becomeRed()
+                        else -> null
+                    }
+                }
+            }
+            val slowTransition = scope.async {
+                trafficLight.repoAccesor.handleCurrentState {
+                    delay(100)
+                    when(val state = it) {
+                        is TrafficLightState.GreenLight -> state.becomeYellow()
+                        else -> null
+                    }
+                }
+            }
+            delayedTransition.await()
+            slowTransition.await()
+        }
+        test {
+            assertTrue(it is TrafficLightState.YellowLight)
+        }
+
+    }
+
+    @Test
+    fun testMultipleObservers() = runBlocking {
         val greenState = flowable.await().flow().first()
         assertTrue(greenState is TrafficLightState.GreenLight)
         trafficLight.repoAccesor.handleCurrentState {
