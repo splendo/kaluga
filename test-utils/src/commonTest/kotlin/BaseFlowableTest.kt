@@ -17,6 +17,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
@@ -27,14 +28,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.*
 
 class BaseFlowableTest : FlowableTest<String>() {
 
-    override val flowable = BaseFlowable<String>()
+    @BeforeTest
+    override fun setUp() {
+        super.setUp()
+
+        flowable.complete(HotFlowable<String>(""))
+    }
 
     // doesn't test BaseFlowable directly, but shows some the working of some coroutine principles used in the class
     // unignore if you want to experiment more
@@ -66,7 +69,7 @@ class BaseFlowableTest : FlowableTest<String>() {
 
     @Test
     fun testKnownValueBeforeAction() = runBlockingWithFlow {
-        flowable.set("foo")
+        flowable.await().set("foo")
         action {
             // no action
         }
@@ -78,7 +81,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testExceptionBeingThrown() = runBlockingWithFlow {
         action {
-            flowable.set("Test")
+            flowable.await().set("Test")
         }
         try {
             test {

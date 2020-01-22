@@ -106,7 +106,6 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
  */
 class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
 
-
     fun currentState() : T = s.state()
 
     suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) = s.handleCurrentState(action)
