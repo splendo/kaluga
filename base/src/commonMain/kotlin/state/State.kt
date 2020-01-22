@@ -24,7 +24,13 @@ import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
+
+interface StateTransitionAction<T:State<T>> {
+    suspend fun action(fromState: T): T
+}
 
 /**
  * State to be represented in a state machine
@@ -77,12 +83,16 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
      *
      * @param toState the state to which to transition
      */
-    protected suspend fun changeState(toState: T) {
-        repoAccessor.changeState {
-            if (it === this)
-                toState
-            else
-                it
+    protected suspend fun createStateTransitionAction(toState: suspend () -> T) : StateTransitionAction<T> {
+        return object : StateTransitionAction<T> {
+
+            override suspend fun action(fromState: T): T {
+                return if (fromState === this@State) {
+                    toState()
+                } else {
+                    fromState
+                }
+            }
         }
     }
 
@@ -96,20 +106,18 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
  */
 class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
 
-    /**
-     * Gets the current state
-     * @return the current [State] of the [StateRepo]
-     */
-    fun currentState() =  s.state()
+    private val stateMutex = Mutex()
 
-    /**
-     * Changes from the current state to a new state
-     *
-     * @param action the function for determining which [State] to transition to.
-     */
-    internal suspend fun changeState(action: (T) -> T) {
-        s.changeState(action)
+    fun currentState() : T = s.state()
+
+    suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) {
+        stateMutex.withLock {
+            action(s.state())?.let {
+                s.changeState(it)
+            }
+        }
     }
+
 }
 
 /**
@@ -158,19 +166,19 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         return changedState
     }
 
-    internal fun changeStateBlocking(action: (state:T) -> T):T {
+    internal fun changeStateBlocking(action: StateTransitionAction<T>):T {
         return runBlocking {
             changeState(action)
         }
     }
 
-    internal suspend fun changeState(action: (state:T) -> T):T {
+    internal suspend fun changeState(action: StateTransitionAction<T>):T {
         val result = CompletableDeferred<T>()
         coroutineScope {
             launch {
                 val beforeState = state()
                 beforeState.beforeCreatingNewState()
-                val newState = action(beforeState)
+                val newState = action.action(beforeState)
                 beforeState.afterCreatingNewState(newState)
                 newState.beforeOldStateIsRemoved()
                 setChangedState(newState)
