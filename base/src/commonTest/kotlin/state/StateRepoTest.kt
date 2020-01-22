@@ -68,27 +68,27 @@ sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<
 
     class RedLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
 
-        suspend fun becomeGreen() {
-            changeState(GreenLight(stateRepoAccessor))
+        suspend fun becomeGreen() : StateTransitionAction<TrafficLightState> {
+            return createStateTransitionAction{GreenLight(stateRepoAccessor)}
         }
     }
 
     class GreenLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
 
-        suspend fun becomeYellow() {
-            changeState(YellowLight(stateRepoAccessor))
+        suspend fun becomeYellow() : StateTransitionAction<TrafficLightState> {
+            return createStateTransitionAction{YellowLight(stateRepoAccessor)}
         }
 
-        suspend fun becomeRed() {
-            changeState(RedLight(stateRepoAccessor))
+        suspend fun becomeRed() : StateTransitionAction<TrafficLightState> {
+            return createStateTransitionAction{RedLight(stateRepoAccessor)}
         }
 
     }
 
     class YellowLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
 
-        suspend fun becomeRed() {
-            changeState(RedLight(stateRepoAccessor))
+        suspend fun becomeRed() : StateTransitionAction<TrafficLightState> {
+            return createStateTransitionAction{RedLight(stateRepoAccessor)}
         }
 
     }
@@ -151,7 +151,12 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 assertFalse { newState.afterOldStateIsRemovedDone.isCompleted }
             }
 
-            greenState.becomeRed()
+            trafficLight.repoAccesor.handleCurrentState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    else -> null
+                }
+            }
         }
         test {
             assertTrue(it is TrafficLightState.RedLight)
@@ -171,8 +176,18 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
             greenState = it
         }
         action {
-            greenState.becomeRed()
-            greenState.becomeYellow()
+            trafficLight.repoAccesor.handleCurrentState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    else -> null
+                }
+            }
+            trafficLight.repoAccesor.handleCurrentState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeYellow()
+                    else -> null
+                }
+            }
         }
         test {
             assertTrue(it is TrafficLightState.RedLight)
@@ -183,7 +198,12 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     fun multipleObservers() = runBlocking {
         val greenState = flowable.await().flow().first()
         assertTrue(greenState is TrafficLightState.GreenLight)
-        greenState.becomeYellow()
+        trafficLight.repoAccesor.handleCurrentState {
+            when (val state = it) {
+                is TrafficLightState.GreenLight -> state.becomeYellow()
+                else -> null
+            }
+        }
         val yellowState = flowable.await().flow().first()
         assertTrue(yellowState is TrafficLightState.YellowLight)
     }
