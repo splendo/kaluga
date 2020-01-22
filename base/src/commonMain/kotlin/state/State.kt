@@ -28,6 +28,9 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Action to transition from a given [State] to another.
+ */
 interface StateTransitionAction<T:State<T>> {
     suspend fun action(fromState: T): T
 }
@@ -79,9 +82,9 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
     open suspend fun finalState() {}
 
     /**
-     * Changes from this state to a new state. Only transitions if this State is the current state of the state machine.
+     * Creates a [StateTransitionAction] to transition to a give [State] if this State is the current state.
      *
-     * @param toState the state to which to transition
+     * @param toState function to determine the state to transition to.
      */
     protected suspend fun createStateTransitionAction(toState: suspend () -> T) : StateTransitionAction<T> {
         return object : StateTransitionAction<T> {
@@ -96,6 +99,21 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
         }
     }
 
+    /**
+     * Transitions to a new [State] if this State is the current state.
+     *
+     * @param toState function to determine the state to transition to.
+     */
+    protected suspend fun transitionIfCurrentState(toState: suspend () -> T) {
+        repoAccessor.handleCurrentState {
+            if (it === this) {
+                createStateTransitionAction(toState)
+            } else {
+                null
+            }
+        }
+    }
+
 }
 
 /**
@@ -106,7 +124,7 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
  */
 class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
 
-    fun currentState() : T = s.state()
+    internal fun currentState() : T = s.state()
 
     suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) = s.handleCurrentState(action)
 
@@ -161,6 +179,11 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         return changedState
     }
 
+    /**
+     * Handles the current state in a thread safe order
+     *
+     * @param action Function to determine the [StateTransitionAction] to be exectured for the current [State]
+     */
     suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) {
         stateMutex.withLock {
             action(state())?.let {
