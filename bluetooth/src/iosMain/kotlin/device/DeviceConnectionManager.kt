@@ -39,7 +39,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
 
     class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
-        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
+        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
             return DeviceConnectionManager(cbCentralManager, reconnectionAttempts, deviceInfo, repoAccessor)
         }
     }
@@ -184,15 +184,15 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         launch {
             when (val state = repoAccessor.currentState()) {
                 is DeviceState.Reconnecting -> {
-                    if (state.attempt < reconnectionAttempts) {
-                        state.retry()
+                    if (state.retry())
                         return@launch
-                    }
                 }
                 is DeviceState.Connected -> {
                     if (reconnectionAttempts > 0) {
                         state.reconnect()
                         return@launch
+                    } else {
+                        state.didDisconnect()
                     }
                 }
             }

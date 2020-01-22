@@ -24,7 +24,7 @@ internal abstract class BaseDeviceConnectionManager(var reconnectionAttempts: In
                                                     internal val repoAccessor: StateRepoAccesor<DeviceState>) {
 
     interface Builder {
-        fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager
+        fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager
     }
 
     abstract suspend fun connect()

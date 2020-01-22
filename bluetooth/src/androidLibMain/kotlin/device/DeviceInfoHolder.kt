@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import android.bluetooth.BluetoothDevice
 import android.content.Context
 
-actual class DeviceInfoHolder(internal val device: BluetoothDevice, override val advertisementData: AdvertisementData, private val context: Context) : DeviceInfo {
+actual open class DeviceInfoHolder(internal val device: DeviceWrapper, override val advertisementData: AdvertisementData) : DeviceInfo {
 
     override val name: String?
         get() = device.name

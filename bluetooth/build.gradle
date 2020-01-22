@@ -45,5 +45,10 @@ kotlin {
                 implementation project(":permissions", "")
             }
         }
+        getByName("commonTest") {
+            dependencies {
+                implementation(project(":test-utils", ""))
+            }
+        }
     }
 }

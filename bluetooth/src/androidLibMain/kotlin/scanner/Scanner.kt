@@ -24,10 +24,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.AdvertisementData
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CoroutineScope
@@ -106,7 +104,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                     is ScanningState.Enabled.Scanning -> {
                         val devices = results.map {
                             val advertisementData = AdvertisementData(it.scanRecord)
-                            val deviceInfoHolder = DeviceInfoHolder(it.device, advertisementData, context)
+                            val deviceInfoHolder = DeviceInfoHolder(DefaultDeviceWrapper(it.device), advertisementData)
                             Device(0, deviceInfoHolder, it.rssi, DeviceConnectionManager.Builder(context))
                         }
                         state.discoverDevices(*devices.toTypedArray())

@@ -15,28 +15,23 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.mock
 
 import android.bluetooth.BluetoothGattDescriptor
-import android.os.ParcelUuid
-import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.utils.complete
+import java.util.*
 
-actual open class Descriptor(val descriptor: BluetoothGattDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
+class MockDescriptor(stateRepoAccessor: StateRepoAccesor<DeviceState>) : Descriptor(BluetoothGattDescriptor(UUID.randomUUID(), BluetoothGattDescriptor.PERMISSION_WRITE), stateRepoAccessor) {
 
-    override val uuid: UUID
-        get() = UUID(ParcelUuid(descriptor.uuid))
+    val didUpdate = EmptyCompletableDeferred()
 
-    override fun createReadAction(): DeviceAction.Read.Descriptor {
-        return DeviceAction.Read.Descriptor(this)
+    internal override suspend fun updateValue() {
+        didUpdate.complete()
     }
 
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Descriptor {
-        return DeviceAction.Write.Descriptor(newValue, this)
-    }
-
-    override fun getUpdatedValue(): ByteArray? {
-        return descriptor.value
-    }
 }
+
