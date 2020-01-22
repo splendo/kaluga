@@ -99,24 +99,17 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
 }
 
 /**
- * Accessor for accessing the current state from a [StateRepo]
+ * Accessor for accessing the current state from a [StateRepo].
  *
  * @param T the [State] associated with the [StateRepo]
  * @param s The [StateRepo] accessed bt this accessor
  */
 class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
 
-    private val stateMutex = Mutex()
 
     fun currentState() : T = s.state()
 
-    suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) {
-        stateMutex.withLock {
-            action(s.state())?.let {
-                s.changeState(it)
-            }
-        }
-    }
+    suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) = s.handleCurrentState(action)
 
 }
 
@@ -127,6 +120,9 @@ class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
 abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+
+
+    private val stateMutex = Mutex()
 
     abstract val flowable: Lazy<BaseFlowable<T>>
 
@@ -166,13 +162,21 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
         return changedState
     }
 
-    internal fun changeStateBlocking(action: StateTransitionAction<T>):T {
+    suspend fun handleCurrentState(action: suspend (State<T>) -> StateTransitionAction<T>?) {
+        stateMutex.withLock {
+            action(state())?.let {
+                changeState(it)
+            }
+        }
+    }
+
+    private fun changeStateBlocking(action: StateTransitionAction<T>):T {
         return runBlocking {
             changeState(action)
         }
     }
 
-    internal suspend fun changeState(action: StateTransitionAction<T>):T {
+    private suspend fun changeState(action: StateTransitionAction<T>):T {
         val result = CompletableDeferred<T>()
         coroutineScope {
             launch {
