@@ -23,7 +23,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
 
-actual class Characteristic(val characteristic: BluetoothGattCharacteristic, stateRepoAccesor: StateRepoAccesor<DeviceState>) :
+actual open class Characteristic(val characteristic: BluetoothGattCharacteristic, stateRepoAccesor: StateRepoAccesor<DeviceState>) :
     BaseCharacteristic(characteristic.value, stateRepoAccesor) {
 
     override val uuid: UUID

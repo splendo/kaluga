@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import android.bluetooth.*
 import android.content.Context
 import android.os.Build
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.StateRepoAccesor
@@ -28,16 +29,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-internal actual class DeviceConnectionManager(val context: Context, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
+internal actual class DeviceConnectionManager(private val context: Context, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
 
-    class Builder(val context: Context) : BaseDeviceConnectionManager.Builder {
-        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
+    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
+        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
             return DeviceConnectionManager(context, reconnectionAttempts, deviceInfo, repoAccessor)
         }
     }
 
-    val device = deviceInfoHolder.device
-    private var gatt: CompletableDeferred<BluetoothGatt> = CompletableDeferred()
+    private val device = deviceInfoHolder.device
+    private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
     private val callback = object : BluetoothGattCallback() {
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
@@ -98,15 +99,15 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         when (val state = repoAccessor.currentState()) {
                             is DeviceState.Reconnecting -> {
-                                if (state.attempt < reconnectionAttempts) {
-                                    state.retry()
+                                if (state.retry())
                                     return@launch
-                                }
                             }
                             is DeviceState.Connected -> {
                                 if (reconnectionAttempts > 0) {
                                     state.reconnect()
                                     return@launch
+                                } else {
+                                    state.didDisconnect()
                                 }
                             }
                         }
@@ -136,11 +137,7 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
         if (gatt.isCompleted) {
             gatt.getCompleted().connect()
         } else {
-            gatt.complete(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                device.connectGatt(context, false, callback, BluetoothDevice.TRANSPORT_LE)
-            } else {
-                device.connectGatt(context, false, callback)
-            })
+            gatt.complete(device.connectGatt(context, false, callback))
         }
     }
 
@@ -246,11 +243,7 @@ internal actual class DeviceConnectionManager(val context: Context, reconnection
     private fun unpair() {
         // unpair to prevent connection problems
         if (device.bondState != BluetoothDevice.BOND_NONE) {
-            try {
-                device.javaClass.getMethod("removeBond").invoke(device)
-            } catch (localException: Exception) {
-            }
-
+            device.removeBond()
         }
     }
 }

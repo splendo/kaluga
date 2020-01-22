@@ -15,17 +15,13 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.device
+package com.splendo.kaluga.base
 
-import android.content.Context
+import com.splendo.kaluga.test.BaseTest
 
-actual open class DeviceInfoHolder(internal val device: DeviceWrapper, override val advertisementData: AdvertisementData) : DeviceInfo {
+class DataTypeUtilsTest : BaseTest() {
 
-    override val name: String?
-        get() = device.name
 
-    override val identifier: Identifier
-        get() = device.address
+
 }
 
-actual typealias Identifier = String

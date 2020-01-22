@@ -42,5 +42,5 @@ abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepoAcce
 
 }
 
-expect class Characteristic : BaseCharacteristic
+expect open class Characteristic : BaseCharacteristic
 
