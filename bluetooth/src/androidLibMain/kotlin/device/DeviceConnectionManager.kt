@@ -23,6 +23,7 @@ import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.state.StateRepoAccesor
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope

@@ -19,12 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import platform.CoreBluetooth.CBUUID
 
-actual data class UUID(val uuid: CBUUID) : BaseUUID {
+actual typealias UUID = CBUUID
 
-    override val uuidString: String
-        get() = uuid.UUIDString
+actual val UUID.uuidString: String
+    get() = UUIDString
 
-    override val isValid: Boolean
-        get() = true
-}
 

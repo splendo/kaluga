@@ -26,7 +26,7 @@ import com.splendo.kaluga.state.StateRepoAccesor
 actual open class Descriptor(val descriptor: BluetoothGattDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
 
     override val uuid: UUID
-        get() = UUID(ParcelUuid(descriptor.uuid))
+        get() = ParcelUuid(descriptor.uuid)
 
     override fun createReadAction(): DeviceAction.Read.Descriptor {
         return DeviceAction.Read.Descriptor(this)

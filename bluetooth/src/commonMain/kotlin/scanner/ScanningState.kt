@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.logger
+import com.splendo.kaluga.permissions.Permit
 import com.splendo.kaluga.permissions.Support
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
@@ -120,7 +121,12 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
         internal suspend fun checkAvailability() {
             val newState = when (scanner.permissions.getBluetoothManager().checkSupport()) {
-                Support.POWER_ON -> Enabled.Idle(emptyList(), emptySet(), scanner)
+                Support.POWER_ON -> {
+                    when (scanner.permissions.getBluetoothManager().checkPermit()) {
+                        Permit.ALLOWED -> Enabled.Idle(emptyList(), emptySet(), scanner)
+                        else -> MissingPermissions(scanner)
+                    }
+                }
                 Support.NOT_SUPPORTED, Support.UNAUTHORIZED -> MissingPermissions(scanner)
                 else -> Disabled(scanner)
             }
@@ -163,7 +169,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
                 super.afterOldStateIsRemoved(oldState)
 
-                when (scanner.stateRepoAccessor.currentState()) {
+                when (oldState) {
                     !is MissingPermissions -> scanner.stopMonitoringBluetooth()
                 }
             }
@@ -182,10 +188,16 @@ class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningSt
     private var lastFilter: Set<UUID> = emptySet()
 
     override fun initialValue(): ScanningState {
-        return when (manager.permissions.getBluetoothManager().checkSupport()) {
+        val state = when (manager.permissions.getBluetoothManager().checkSupport()) {
             Support.POWER_ON -> {
-                manager.startMonitoringBluetooth()
-                ScanningState.Enabled.Idle(lastDevices, lastFilter, manager)
+                when (manager.permissions.getBluetoothManager().checkPermit()) {
+                    Permit.ALLOWED -> {
+                        manager.startMonitoringBluetooth()
+                        ScanningState.Enabled.Idle(lastDevices, lastFilter, manager)
+                    }
+                    else -> ScanningState.NoBluetoothState.MissingPermissions(manager)
+                }
+
             }
             Support.UNAUTHORIZED, Support.NOT_SUPPORTED -> ScanningState.NoBluetoothState.MissingPermissions(manager)
             Support.POWER_OFF, Support.RESETTING -> {
@@ -193,6 +205,9 @@ class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningSt
                 ScanningState.NoBluetoothState.Disabled(manager)
             }
         }
+        lastDevices = emptyList()
+        lastFilter = emptySet()
+        return state
     }
 
     override fun deinitialize(state: ScanningState) {

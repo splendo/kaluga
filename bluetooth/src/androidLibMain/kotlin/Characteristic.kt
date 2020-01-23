@@ -27,7 +27,7 @@ actual open class Characteristic(val characteristic: BluetoothGattCharacteristic
     BaseCharacteristic(characteristic.value, stateRepoAccesor) {
 
     override val uuid: UUID
-        get() = UUID(ParcelUuid(characteristic.uuid))
+        get() = ParcelUuid(characteristic.uuid)
 
     override val descriptors: List<Descriptor>
         get() = characteristic.descriptors.map { Descriptor(it, stateRepoAccessor) }
