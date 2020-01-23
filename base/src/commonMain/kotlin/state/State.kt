@@ -205,9 +205,7 @@ abstract class ColdStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Di
             initialize()
         }, {
             state ->
-            launch {
-                state.finalState()
-            }
+            state.finalState()
             this.deinitialize(state)
         })
     }
