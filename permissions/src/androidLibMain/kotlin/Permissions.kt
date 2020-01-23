@@ -26,14 +26,14 @@ import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.log.warn
 import com.splendo.kaluga.log.error
 
-actual class Permissions constructor(private val context: Context) {
+actual class Permissions constructor(private val context: Context) : BasePermissions() {
 
-    actual fun getBluetoothManager(): PermissionManager {
+    override fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager(context)
     }
 
-    actual open class Builder(private val context: Context = ApplicationHolder.applicationContext) {
-        actual open fun build(): Permissions {
+    open class Builder(private val context: Context = ApplicationHolder.applicationContext) : BasePermissions.Builder {
+        override fun build(): Permissions {
             return Permissions(this.context)
         }
     }

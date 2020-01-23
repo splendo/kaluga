@@ -49,7 +49,7 @@ abstract class FlowableTest<T>: BaseTest() {
 
     private val mainScope = MainScope()
 
-    private val testChannel = Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>(Channel.UNLIMITED)
+    private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
@@ -76,6 +76,7 @@ abstract class FlowableTest<T>: BaseTest() {
 
     fun runBlockingWithFlow(block:suspend()->Unit) {
         runBlocking {
+            testChannel = Channel(Channel.UNLIMITED)
             startFlow()
             block()
             endFlow()

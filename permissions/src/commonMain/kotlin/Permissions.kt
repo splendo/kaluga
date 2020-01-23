@@ -18,12 +18,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-expect class Permissions {
+abstract class BasePermissions {
 
-    fun getBluetoothManager(): PermissionManager
-
-    open class Builder {
-        open fun build(): Permissions
+    interface Builder {
+        fun build(): Permissions
     }
+
+    abstract fun getBluetoothManager(): PermissionManager
+
 }
+
+expect class Permissions : BasePermissions
 

@@ -118,7 +118,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
     private val broadcastReceiver = AvailabilityReceiver(this)
 
     override fun scanForDevices(filter: Set<UUID>) {
-        bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(it.uuid).build() }, scanSettings, callback)
+        bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(it).build() }, scanSettings, callback)
     }
 
     override fun stopScanning() {
@@ -133,7 +133,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
         context.unregisterReceiver(broadcastReceiver)
     }
 
-    internal fun notifyBluetooothDisabledAndAutoconnectIfRequired() {
+    internal fun notifyBluetoothDisabledAndAutoconnectIfRequired() {
         bluetoothDisabled()
         if (autoEnableBluetooth)
             bluetoothAdapter.enable()
@@ -148,7 +148,7 @@ private class AvailabilityReceiver(private val bluetoothScanner: Scanner) : Broa
             if (intent.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
                 when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
                         BluetoothAdapter.STATE_ON -> bluetoothScanner.bluetoothEnabled()
-                        BluetoothAdapter.STATE_OFF -> bluetoothScanner.notifyBluetooothDisabledAndAutoconnectIfRequired()
+                        BluetoothAdapter.STATE_OFF -> bluetoothScanner.notifyBluetoothDisabledAndAutoconnectIfRequired()
                     }
             }
         }

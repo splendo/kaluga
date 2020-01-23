@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-interface BaseUUID {
-    val uuidString: String
-    val isValid: Boolean
-}
+expect class UUID
 
-expect class UUID : BaseUUID
+expect val UUID.uuidString : String
+
