@@ -134,8 +134,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
             }
             action {
                 scanningState.getCompleted().discoverDevices(device)
+                scanningState = CompletableDeferred()
             }
-            scanningState = CompletableDeferred()
             test {
                 assertTrue(it is ScanningState.Enabled.Scanning)
                 assertEquals(filter, it.filter)
