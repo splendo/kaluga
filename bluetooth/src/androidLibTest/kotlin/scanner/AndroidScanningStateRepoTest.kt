@@ -23,27 +23,8 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
 
 class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
-
-    private val mainThreadSurrogate = newSingleThreadContext("TestThread")
-
-    @Before
-    fun before() {
-        Dispatchers.setMain(mainThreadSurrogate)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain() // reset main dispatcher to the original Main dispatcher
-        mainThreadSurrogate.close()
-    }
 
     override fun createFilter(): Set<UUID> {
         return setOf(ParcelUuid(java.util.UUID.randomUUID()))

@@ -106,14 +106,11 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
             reconnecting.complete(it)
         }
         action {
-            reconnecting.await().didConnect()
+            reconnecting.getCompleted().didConnect()
         }
-        val newCompletionState = CompletableDeferred<DeviceState.Connected>()
         test {
             assertTrue(it is DeviceState.Connected)
-            newCompletionState.complete(it)
         }
-        newCompletionState.await()
     }
 
     @Test
@@ -136,7 +133,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         }
         action {
             connectionManager.reset()
-            reconnecting1.await().retry()
+            reconnecting1.getCompleted().retry()
         }
         val reconnecting2 = CompletableDeferred<DeviceState.Reconnecting>()
         test {
@@ -147,7 +144,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         }
         action {
             connectionManager.reset()
-            reconnecting2.await().retry()
+            reconnecting2.getCompleted().retry()
         }
         test {
             assertFalse(connectionManager.connectCompleted.isCompleted)
@@ -168,14 +165,11 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
             connectedState.rssiDidUpdate(-20)
         }
 
-        val newCompletionState = CompletableDeferred<DeviceState.Connected>()
         test {
             assertTrue(connectionManager.readRssiCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected)
             assertEquals(-20, it.lastKnownRssi)
-            newCompletionState.complete(it)
         }
-        newCompletionState.await()
     }
 
     @Test
@@ -186,24 +180,21 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         action {
             connectedState.discoverServices()
         }
-        val discoverStateDeferred = CompletableDeferred<DeviceState.Connected.Discovering>()
+        val discoverState = CompletableDeferred<DeviceState.Connected.Discovering>()
         test {
             assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected.Discovering)
-            discoverStateDeferred.complete(it)
+            discoverState.complete(it)
         }
-        val discoverState = discoverStateDeferred.await()
-        val services = createServices(discoverState.repoAccessor)
+        val services = CompletableDeferred<List<Service>>()
         action {
-            discoverState.didDiscoverServices(services)
+            services.complete(createServices(discoverState.getCompleted().repoAccessor))
+            discoverState.getCompleted().didDiscoverServices(services.getCompleted())
         }
-        val connectedWithServiceState = CompletableDeferred<DeviceState.Connected.Idle>()
         test {
             assertTrue(it is DeviceState.Connected.Idle)
-            assertEquals(services, it.services)
-            connectedWithServiceState.complete(it)
+            assertEquals(services.getCompleted(), it.services)
         }
-        connectedWithServiceState.await()
     }
 
     @Test
@@ -215,34 +206,32 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         action {
             connectedState.handleAction(DeviceAction.Read.Characteristic(characteristic))
         }
-        var handlingActionDeferred = CompletableDeferred<DeviceState.Connected.HandlingAction>()
+        var handlingAction = CompletableDeferred<DeviceState.Connected.HandlingAction>()
         test {
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingActionDeferred.complete(it)
+            handlingAction.complete(it)
         }
-        val handlingReadCharacteristicAction = handlingActionDeferred.await()
-        val descriptor = createDescriptor(handlingReadCharacteristicAction.repoAccessor)
+        val descriptor = CompletableDeferred<Descriptor>()
         action {
-            handlingReadCharacteristicAction.addAction(DeviceAction.Write.Descriptor(null, descriptor))
+            descriptor.complete(createDescriptor(handlingAction.getCompleted().repoAccessor))
+            handlingAction.getCompleted().addAction(DeviceAction.Write.Descriptor(null, descriptor.getCompleted()))
+            handlingAction = CompletableDeferred()
         }
-        handlingActionDeferred = CompletableDeferred()
         test {
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingActionDeferred.complete(it)
+            handlingAction.complete(it)
         }
-        val handlingTwoActions = handlingActionDeferred.await()
         action {
-            handlingTwoActions.actionCompleted()
+            handlingAction.getCompleted().actionCompleted()
+            handlingAction = CompletableDeferred()
         }
-        handlingActionDeferred = CompletableDeferred()
         test {
             assertTrue(validateCharacteristicUpdated())
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingActionDeferred.complete(it)
+            handlingAction.complete(it)
         }
-        val descriptorAction = handlingActionDeferred.await()
         action {
-            descriptorAction.actionCompleted()
+            handlingAction.getCompleted().actionCompleted()
         }
         test {
             assertTrue(validateDescriptorUpdated())
