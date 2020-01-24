@@ -30,6 +30,7 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -193,10 +194,39 @@ abstract class BluetoothTest : BaseTest() {
         }
     }
 
-    private suspend fun scanDevice(device: Device, scanCompleted: EmptyCompletableDeferred) {
+    @Test
+    fun testConnectDevice() = runBlocking {
+        permissionManager.support = Support.POWER_ON
+        permissionManager.permit = Permit.ALLOWED
+
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        launch {
+            scanDevice(device)
+        }
+        val connectingJob = async {
+            bluetooth.devices()[device.identifier].connect()
+        }
+        bluetooth.startScanning()
+        connectionManager.connectCompleted.await()
+        val connectingState = device.flow().filter { it is DeviceState.Connecting }.first() as DeviceState.Connecting
+        connectingState.didConnect()
+        connectingJob.await()
+
+        val disconnectingJob = async {
+            bluetooth.devices()[device.identifier].disconnect()
+        }
+        connectionManager.disconnectCompleted.await()
+        val disconnectingState = device.flow().filter { it is DeviceState.Disconnecting }.first() as DeviceState.Disconnecting
+        disconnectingState.didDisconnect()
+        disconnectingJob.await()
+
+    }
+
+    private suspend fun scanDevice(device: Device, scanCompleted: EmptyCompletableDeferred? = null) {
         val scanningState = bluetooth.scanningStateRepo.flow().filter { it is ScanningState.Enabled.Scanning }.first() as ScanningState.Enabled.Scanning
         scanningState.discoverDevices(device)
-        scanCompleted.complete()
+        scanCompleted?.complete()
     }
 
     private fun awaitDevice(flowTest: FlowTest<Device?>, foundDevice: CompletableDeferred<Device>) {
