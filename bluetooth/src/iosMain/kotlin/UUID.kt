@@ -21,7 +21,4 @@ import platform.CoreBluetooth.CBUUID
 
 actual typealias UUID = CBUUID
 
-actual val UUID.uuidString: String
-    get() = UUIDString
-
 

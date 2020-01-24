@@ -24,15 +24,15 @@ import platform.CoreBluetooth.CBCentralManager
 import platform.Foundation.NSBundle
 import platform.posix.remove
 
-actual class Permissions(private val bundle: NSBundle) {
+actual class Permissions(private val bundle: NSBundle) : BasePermissions() {
 
-    actual fun getBluetoothManager(): PermissionManager {
+    override fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager(CBCentralManager())
     }
 
-    actual open class Builder(private val bundle: NSBundle) {
+    open class Builder(private val bundle: NSBundle) : BasePermissions.Builder {
 
-        actual open fun build(): Permissions {
+        override fun build(): Permissions {
             return Permissions(bundle)
         }
     }

@@ -32,11 +32,11 @@ import com.splendo.kaluga.state.StateRepoAccesor
 sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>(scanner.stateRepoAccessor) {
 
     companion object {
-        val tag = "BluetoothManager"
+        const val TAG = "BluetoothManager"
     }
 
     fun logError(error: Error) {
-        error.message?.let { logger().log(LogLevel.ERROR, tag, it) }
+        error.message?.let { logger().log(LogLevel.ERROR, TAG, it) }
     }
 
     sealed class Enabled constructor(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner) {
