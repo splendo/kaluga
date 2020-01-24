@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.BasePermissions
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -33,7 +33,7 @@ import kotlin.jvm.JvmName
 
 class Bluetooth internal constructor(private val builder: Builder) {
 
-    class Builder(internal val scannerBuilder: BaseScanner.Builder, private val permissions: Permissions) {
+    class Builder(internal val scannerBuilder: BaseScanner.Builder, private val permissions: BasePermissions) {
 
         var requestPermission = suspend {permissions.getBluetoothManager().requestPermissions()}
         var notifyBluetoothDisabled = suspend {}
@@ -53,7 +53,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
         }
     }
 
-    private val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder)
+    internal val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder)
     private val requestPermission = builder.requestPermission
     private val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
 
@@ -61,27 +61,30 @@ class Bluetooth internal constructor(private val builder: Builder) {
 
     @ExperimentalCoroutinesApi
     suspend fun devices(): Flow<List<Device>> {
-        return scanningStateRepo.flow().combineTransform(scanFilter.flow()) { scanState, filter ->
-            emit(when (scanState) {
+        return scanningStateRepo.flow().combine(scanFilter.flow()) { scanState, filter ->
+            when (scanState) {
                 is ScanningState.Enabled.Idle -> {
                     filter?.let {
                         scanState.startScanning(it)
                         if (scanState.oldFilter == it) scanState.discoveredDevices else emptyList()
-                    } ?: emptyList()
+                    } ?: scanState.discoveredDevices
                 }
                 is ScanningState.Enabled.Scanning -> {
                     filter?.let {
-                        if (scanState.filter == it) scanState.discoveredDevices else emptyList()
+                        if (scanState.filter == it) scanState.discoveredDevices else {
+                            scanState.stopScanning()
+                            emptyList()
+                        }
                     } ?: run {
                         scanState.stopScanning()
-                        emptyList<Device>()
+                        scanState.discoveredDevices
                     }
                 }
                 is ScanningState.NoBluetoothState -> {
                     handleNoBluetooth(scanState)
                     emptyList()
                 }
-            })
+            }
         }
     }
 
@@ -104,7 +107,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
 
 }
 
-fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
+operator fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
     return this.map { devices ->
         devices.firstOrNull { it.identifier == identifier }
     }
@@ -164,7 +167,7 @@ fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value:
 }
 
 @JvmName("getService")
-fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
+operator fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
     return this.mapLatest { services ->
         services.firstOrNull { it.uuid.uuidString == uuid.uuidString }
     }
@@ -179,7 +182,7 @@ fun Flow<Characteristic?>.descriptors() : Flow<List<Descriptor>> {
 }
 
 @JvmName("getAttribute")
-fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID) : Flow<T?> {
+operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID) : Flow<T?> {
     return this.mapLatest{attribute ->
         attribute.firstOrNull {it.uuid.uuidString == uuid.uuidString}
     }
