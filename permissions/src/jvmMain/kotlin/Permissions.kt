@@ -17,15 +17,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class Permissions {
-    actual fun getBluetoothManager(): PermissionManager {
+actual class Permissions : BasePermissions() {
+
+    override fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager()
     }
 
-    actual open class Builder {
-        actual open fun build(): Permissions {
+    open class Builder : BasePermissions.Builder {
+
+        override fun build(): Permissions {
             return Permissions()
         }
+        
     }
 
 }
