@@ -53,9 +53,9 @@ class Bluetooth internal constructor(private val builder: Builder) {
         }
     }
 
-    val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder)
-    val requestPermission = builder.requestPermission
-    val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
+    private val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder)
+    private val requestPermission = builder.requestPermission
+    private val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
 
     private val scanFilter = HotFlowable<Set<UUID>?>(null)
 
