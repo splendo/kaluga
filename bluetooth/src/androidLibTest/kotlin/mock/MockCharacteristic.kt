@@ -17,15 +17,17 @@
 
 package com.splendo.kaluga.bluetooth.mock
 
-import android.bluetooth.BluetoothGattCharacteristic
 import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.DescriptorWrapper
+import com.splendo.kaluga.bluetooth.GattServiceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import java.util.*
 
-class MockCharacteristic(stateRepoAccesor: StateRepoAccesor<DeviceState>) : Characteristic(BluetoothGattCharacteristic(UUID.randomUUID(), BluetoothGattCharacteristic.PROPERTY_READ, BluetoothGattCharacteristic.PERMISSION_READ), stateRepoAccesor) {
+class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepoAccesor: StateRepoAccesor<DeviceState>) : Characteristic(characteristicWrapper, stateRepoAccesor) {
 
     val didUpdate = EmptyCompletableDeferred()
 
@@ -33,5 +35,44 @@ class MockCharacteristic(stateRepoAccesor: StateRepoAccesor<DeviceState>) : Char
         didUpdate.complete()
     }
 
+}
+
+class MockCharacteristicWrapper(override val uuid: UUID = UUID.randomUUID(), private val descriptorUuids: List<UUID> = emptyList(), override val service: GattServiceWrapper) : CharacteristicWrapper {
+
+    override var value: ByteArray? = null
+
+    override val descriptors: List<DescriptorWrapper> = descriptorUuids.map { MockDescriptorWrapper(it, this) }
+    override val permissions: Int
+        get() = 0
+    override val properties: Int
+        get() = 0
+    override var writeType = 0
+
+    @ExperimentalStdlibApi
+    override fun setValue(newValue: String): Boolean {
+        value = newValue.encodeToByteArray()
+        return true
+    }
+
+    override fun setValue(newValue: ByteArray?): Boolean {
+        value = newValue
+        return true
+    }
+
+    override fun setValue(mantissa: Int, exponent: Int, formatType: Int, offset: Int): Boolean {
+        return true
+    }
+
+    override fun getDescriptor(uuid: UUID): DescriptorWrapper? {
+        return descriptors.firstOrNull { it.uuid == uuid }
+    }
+
+    override fun floatValue(formatType: Int, offset: Int): Float {
+        return 0.0f
+    }
+
+    override fun intValue(formatType: Int, offset: Int): Int {
+        return 0
+    }
 }
 

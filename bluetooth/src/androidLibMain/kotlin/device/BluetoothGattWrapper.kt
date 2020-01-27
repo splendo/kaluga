@@ -20,6 +20,8 @@ package com.splendo.kaluga.bluetooth.device
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
+import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
 interface BluetoothGattWrapper {
     fun connect(): Boolean
@@ -27,11 +29,11 @@ interface BluetoothGattWrapper {
     fun disconnect()
     fun readRemoteRssi(): Boolean
 
-    fun readCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean
-    fun readDescriptor(descriptor: BluetoothGattDescriptor): Boolean
-    fun writeCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean
-    fun writeDescriptor(descriptor: BluetoothGattDescriptor): Boolean
-    fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean): Boolean
+    fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
+    fun readDescriptor(wrapper: DescriptorWrapper): Boolean
+    fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean
+    fun writeDescriptor(wrapper: DescriptorWrapper): Boolean
+    fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean
 }
 
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
@@ -52,23 +54,36 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
         return gatt.readRemoteRssi()
     }
 
-    override fun readCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
+    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+        val characteristic = getCharacteristic(wrapper) ?: return false
         return gatt.readCharacteristic(characteristic)
     }
 
-    override fun readDescriptor(descriptor: BluetoothGattDescriptor): Boolean {
+    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean {
+        val descriptor = getDescriptor(wrapper) ?: return false
         return gatt.readDescriptor(descriptor)
     }
 
-    override fun writeCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
+    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+        val characteristic = getCharacteristic(wrapper) ?: return false
         return gatt.writeCharacteristic(characteristic)
     }
 
-    override fun writeDescriptor(descriptor: BluetoothGattDescriptor): Boolean {
+    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean {
+        val descriptor = getDescriptor(wrapper) ?: return false
         return gatt.writeDescriptor(descriptor)
     }
 
-    override fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean): Boolean {
+    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
+        val characteristic = getCharacteristic(wrapper) ?: return false
         return gatt.setCharacteristicNotification(characteristic, enable)
+    }
+
+    private fun getCharacteristic(wrapper: CharacteristicWrapper): BluetoothGattCharacteristic? {
+        return gatt.getService(wrapper.service.uuid)?.getCharacteristic(wrapper.uuid)
+    }
+
+    private fun getDescriptor(wrapper: DescriptorWrapper): BluetoothGattDescriptor? {
+        return getCharacteristic(wrapper.characteristic)?.getDescriptor(wrapper.uuid)
     }
 }

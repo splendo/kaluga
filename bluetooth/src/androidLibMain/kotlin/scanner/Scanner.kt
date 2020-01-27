@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
@@ -118,7 +119,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
     private val broadcastReceiver = AvailabilityReceiver(this)
 
     override fun scanForDevices(filter: Set<UUID>) {
-        bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(it).build() }, scanSettings, callback)
+        bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build() }, scanSettings, callback)
     }
 
     override fun stopScanning() {

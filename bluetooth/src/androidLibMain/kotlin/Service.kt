@@ -17,16 +17,58 @@
 
 package com.splendo.kaluga.bluetooth
 
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
 import android.os.ParcelUuid
 import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
 
-actual class Service(private val service: BluetoothGattService, private val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseService {
+actual open class Service(private val service: GattServiceWrapper, private val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseService {
 
-    override val uuid: UUID get() = ParcelUuid(service.uuid)
+    override val uuid: UUID
+        get() = service.uuid
 
     override val characteristics: List<Characteristic>
         get() = service.characteristics.map { Characteristic(it, stateRepoAccesor) }
+}
+
+interface GattServiceWrapper {
+
+    val uuid: java.util.UUID
+    val type: Int
+    val instanceId: Int
+    val characteristics: List<CharacteristicWrapper>
+    val includedServices: List<GattServiceWrapper>
+
+    fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper?
+    fun addCharacteristic(characteristic: BluetoothGattCharacteristic) : Boolean
+    fun addService(service: BluetoothGattService) : Boolean
+
+}
+
+class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : GattServiceWrapper {
+
+    override val uuid: java.util.UUID
+        get() = gattService.uuid
+    override val type: Int
+        get() = gattService.type
+    override val instanceId: Int
+        get() = gattService.instanceId
+    override val characteristics: List<CharacteristicWrapper>
+        get() = gattService.characteristics.map { DefaultCharacteristicWrapper(it) }
+    override val includedServices: List<GattServiceWrapper>
+        get() = gattService.includedServices.map { DefaultGattServiceWrapper(it) }
+
+    override fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper? {
+        return gattService.getCharacteristic(uuid)?.let { DefaultCharacteristicWrapper(it) }
+    }
+
+    override fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
+        return gattService.addCharacteristic(characteristic)
+    }
+
+    override fun addService(service: BluetoothGattService): Boolean {
+        return gattService.addService(service)
+    }
 }

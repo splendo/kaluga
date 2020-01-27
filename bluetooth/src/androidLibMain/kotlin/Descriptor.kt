@@ -19,14 +19,15 @@ package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattDescriptor
 import android.os.ParcelUuid
+import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepoAccesor
 
-actual open class Descriptor(val descriptor: BluetoothGattDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
+actual open class Descriptor(val descriptor: DescriptorWrapper, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
 
     override val uuid: UUID
-        get() = ParcelUuid(descriptor.uuid)
+        get() = descriptor.uuid
 
     override fun createReadAction(): DeviceAction.Read.Descriptor {
         return DeviceAction.Read.Descriptor(this)
@@ -38,5 +39,33 @@ actual open class Descriptor(val descriptor: BluetoothGattDescriptor, stateRepoA
 
     override fun getUpdatedValue(): ByteArray? {
         return descriptor.value
+    }
+}
+
+interface DescriptorWrapper {
+
+    val uuid: java.util.UUID
+    var value: ByteArray?
+    val permissions: Int
+    val characteristic: CharacteristicWrapper
+
+    fun setValue(newValue: ByteArray?): Boolean
+
+}
+
+class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescriptor) : DescriptorWrapper {
+
+    override val uuid: java.util.UUID
+        get() = gattDescriptor.uuid
+    override var value: ByteArray?
+        get() = gattDescriptor.value
+        set(newValue) {gattDescriptor.value = newValue}
+    override val permissions: Int
+        get() = gattDescriptor.permissions
+    override val characteristic: CharacteristicWrapper
+        get() = DefaultCharacteristicWrapper(gattDescriptor.characteristic)
+
+    override fun setValue(newValue: ByteArray?): Boolean {
+        return gattDescriptor.setValue(newValue)
     }
 }

@@ -159,6 +159,10 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
             return nextState is Reconnecting
         }
 
+        suspend fun cancelConnection() {
+            changeState(Disconnecting(lastKnownRssi, connectionManager))
+        }
+
         internal suspend fun didConnect() {
             changeState(Connected.Idle(services, lastKnownRssi, connectionManager))
         }
@@ -186,7 +190,7 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
             super.afterOldStateIsRemoved(oldState)
 
             when (oldState) {
-                is Connecting, is Connected -> connectionManager.disconnect()
+                is Connecting, is Reconnecting, is Connected -> connectionManager.disconnect()
             }
         }
     }
@@ -212,7 +216,7 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
 
 class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : HotStateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
 
-    internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, StateRepoAccesor(this))
+    internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, stateRepoAccesor)
 
     override fun initialValue(): DeviceState {
         return DeviceState.Disconnected(initialRssi, deviceConnectionManager)

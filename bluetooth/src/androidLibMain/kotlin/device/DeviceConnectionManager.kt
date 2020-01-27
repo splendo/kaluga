@@ -22,6 +22,7 @@ import android.content.Context
 import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.state.StateRepoAccesor
@@ -67,7 +68,7 @@ internal actual class DeviceConnectionManager(private val context: Context, reco
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             launch {
                 when(val state = repoAccessor.currentState()) {
-                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(it, repoAccessor) } ?: emptyList())
+                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(DefaultGattServiceWrapper(it), repoAccessor) } ?: emptyList())
                 }
             }
         }

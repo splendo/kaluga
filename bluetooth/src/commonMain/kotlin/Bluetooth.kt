@@ -143,6 +143,8 @@ suspend fun Flow<Device?>.disconnect() {
     this.mapDeviceState<Unit> {deviceState ->
             when (deviceState) {
                 is DeviceState.Connected -> deviceState.disconnect()
+                is DeviceState.Connecting -> deviceState.cancelConnection()
+                is DeviceState.Reconnecting -> deviceState.cancelConnection()
                 is DeviceState.Disconnected -> emit(Unit)
             }
     }.first()
@@ -168,8 +170,10 @@ fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value:
 
 @JvmName("getService")
 operator fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
-    return this.mapLatest { services ->
-        services.firstOrNull { it.uuid.uuidString == uuid.uuidString }
+    return this.map { services ->
+        services.firstOrNull {
+            it.uuid.uuidString == uuid.uuidString
+        }
     }
 }
 

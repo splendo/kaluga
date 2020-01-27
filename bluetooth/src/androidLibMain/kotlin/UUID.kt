@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import android.os.ParcelUuid
-
-actual typealias UUID = ParcelUuid
+actual typealias UUID = java.util.UUID
 
 actual val UUID.uuidString: String
     get() = toString()

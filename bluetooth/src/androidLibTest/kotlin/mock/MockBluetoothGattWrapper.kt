@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.mock
 
-import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattDescriptor
+import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
@@ -30,11 +30,11 @@ class MockBluetoothGattWrapper : BluetoothGattWrapper {
     val discoverServicesCompleted = EmptyCompletableDeferred()
     val disconnectCompleted = EmptyCompletableDeferred()
     val readRemoteRssiCompleted = EmptyCompletableDeferred()
-    val readCharacteristicCompleted = CompletableDeferred<BluetoothGattCharacteristic>()
-    val readDescriptorCompleted = CompletableDeferred<BluetoothGattDescriptor>()
-    val writeCharacteristicCompleted = CompletableDeferred<BluetoothGattCharacteristic>()
-    val writeDescriptorCompleted = CompletableDeferred<BluetoothGattDescriptor>()
-    val setCharacteristicNotificationCompleted = CompletableDeferred<Pair<BluetoothGattCharacteristic, Boolean>>()
+    val readCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
+    val readDescriptorCompleted = CompletableDeferred<DescriptorWrapper>()
+    val writeCharacteristicCompleted = CompletableDeferred<CharacteristicWrapper>()
+    val writeDescriptorCompleted = CompletableDeferred<DescriptorWrapper>()
+    val setCharacteristicNotificationCompleted = CompletableDeferred<Pair<CharacteristicWrapper, Boolean>>()
 
     override fun connect(): Boolean {
         connectCompleted.complete()
@@ -55,28 +55,28 @@ class MockBluetoothGattWrapper : BluetoothGattWrapper {
         return true
     }
 
-    override fun readCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
-        readCharacteristicCompleted.complete(characteristic)
+    override fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+        readCharacteristicCompleted.complete(wrapper)
         return true
     }
 
-    override fun readDescriptor(descriptor: BluetoothGattDescriptor): Boolean {
-        readDescriptorCompleted.complete(descriptor)
+    override fun readDescriptor(wrapper: DescriptorWrapper): Boolean {
+        readDescriptorCompleted.complete(wrapper)
         return true
     }
 
-    override fun writeCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean {
-        writeCharacteristicCompleted.complete(characteristic)
+    override fun writeCharacteristic(wrapper: CharacteristicWrapper): Boolean {
+        writeCharacteristicCompleted.complete(wrapper)
         return true
     }
 
-    override fun writeDescriptor(descriptor: BluetoothGattDescriptor): Boolean {
-        writeDescriptorCompleted.complete(descriptor)
+    override fun writeDescriptor(wrapper: DescriptorWrapper): Boolean {
+        writeDescriptorCompleted.complete(wrapper)
         return true
     }
 
-    override fun setCharacteristicNotification(characteristic: BluetoothGattCharacteristic, enable: Boolean): Boolean {
-        setCharacteristicNotificationCompleted.complete(Pair(characteristic, enable))
+    override fun setCharacteristicNotification(wrapper: CharacteristicWrapper, enable: Boolean): Boolean {
+        setCharacteristicNotificationCompleted.complete(Pair(wrapper, enable))
         return true
     }
 }

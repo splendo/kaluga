@@ -182,7 +182,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
 class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningState>() {
 
-    private val manager = builder.create(StateRepoAccesor(this), this)
+    private val manager = builder.create(stateRepoAccesor, this)
 
     private var lastDevices: List<Device> = emptyList()
     private var lastFilter: Set<UUID> = emptySet()

@@ -1,11 +1,14 @@
 import android.os.ParcelUuid
 import com.splendo.kaluga.bluetooth.BluetoothTest
+import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
+import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
-import java.util.*
+import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
+import com.splendo.kaluga.state.StateRepoAccesor
 
 /*
  Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
@@ -27,11 +30,16 @@ import java.util.*
 class AndroidBluetoothTest : BluetoothTest() {
 
     override fun createFilter(): Set<UUID> {
-        return setOf(ParcelUuid(java.util.UUID.randomUUID()))
+        return setOf(UUID.randomUUID())
     }
 
     override fun createDeviceInfoHolder(): DeviceInfoHolder {
         return DeviceInfoHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState), AdvertisementData(null))
     }
 
+    override fun createService(stateRepoAccesor: StateRepoAccesor<DeviceState>): Service {
+        val uuid = UUID.randomUUID()
+        val serviceWrapper = MockServiceWrapper(uuid, listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
+        return Service(serviceWrapper, stateRepoAccesor)
+    }
 }
