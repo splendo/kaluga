@@ -25,10 +25,10 @@ import com.splendo.kaluga.state.StateRepoAccesor
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBDescriptor
 
-actual class Characteristic(val characteristic: CBCharacteristic, val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepoAccesor) {
+actual open class Characteristic(val characteristic: CBCharacteristic, val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepoAccesor) {
 
     override val uuid: UUID
-        get() = UUID(characteristic.UUID)
+        get() = characteristic.UUID
 
     override val descriptors: List<Descriptor>
         get() = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepoAccessor) } ?: emptyList()
