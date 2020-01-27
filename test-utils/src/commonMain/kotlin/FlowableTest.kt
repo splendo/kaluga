@@ -17,7 +17,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
@@ -47,7 +47,7 @@ abstract class FlowableTest<T>: BaseTest() {
 
     lateinit var job: Job
 
-    private val mainScope = MainScope()
+    private val mainScope = CoroutineScope(SupervisorJob() + MainQueueDispatcher)
 
     private val testChannel = Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>(Channel.UNLIMITED)
 
@@ -74,8 +74,8 @@ abstract class FlowableTest<T>: BaseTest() {
         }
     }
 
-    fun runBlockingWithFlow(block:suspend()->Unit) {
-        runBlocking {
+    fun testWithFlow(block:suspend()->Unit) {
+        mainScope.launch {
             startFlow()
             block()
             endFlow()

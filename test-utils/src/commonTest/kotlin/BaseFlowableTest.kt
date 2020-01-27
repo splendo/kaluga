@@ -17,7 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.MainScope
@@ -34,7 +33,6 @@ import kotlin.test.fail
 
 class BaseFlowableTest : FlowableTest<String>() {
 
-    override val flowable = BaseFlowable<String>()
 
     // doesn't test BaseFlowable directly, but shows some the working of some coroutine principles used in the class
     // unignore if you want to experiment more
@@ -45,6 +43,7 @@ class BaseFlowableTest : FlowableTest<String>() {
         c.send("Foo")
         var r: String? = null
         var flow: Flow<String>?
+        // TODO use multiplatform mainscope
         MainScope().launch {
             flow = c.asFlow()
             flow!!.collect {
@@ -65,8 +64,8 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testKnownValueBeforeAction() = runBlockingWithFlow {
-        flowable.set("foo")
+    fun testKnownValueBeforeAction() = testWithFlow {
+        flowable.await().set("foo")
         action {
             // no action
         }
@@ -76,9 +75,9 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testExceptionBeingThrown() = runBlockingWithFlow {
+    fun testExceptionBeingThrown() = testWithFlow {
         action {
-            flowable.set("Test")
+            flowable.await().set("Test")
         }
         try {
             test {
