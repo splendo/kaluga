@@ -198,4 +198,18 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         assertTrue(yellowState is YellowLight)
     }
 
+    @Test fun changeStateInsideChangeState() = runBlocking {
+        var caught = false
+        try {
+            trafficLight.takeAndChangeState {
+                trafficLight.takeAndChangeState {
+                    it
+                }
+            }
+        } catch (e:IllegalStateException) {
+            caught = true
+        }
+        assertTrue(caught)
+    }
+
 }
