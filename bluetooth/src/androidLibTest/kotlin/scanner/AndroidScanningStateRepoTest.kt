@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import android.os.ParcelUuid
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
@@ -27,7 +26,7 @@ import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
 
     override fun createFilter(): Set<UUID> {
-        return setOf(ParcelUuid(java.util.UUID.randomUUID()))
+        return setOf(UUID.randomUUID())
     }
 
     override fun createDeviceInfoHolder(): DeviceInfoHolder {

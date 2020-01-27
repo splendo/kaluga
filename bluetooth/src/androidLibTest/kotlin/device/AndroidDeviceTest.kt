@@ -18,17 +18,12 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothGattService
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.Descriptor
-import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.mock.MockCharacteristic
-import com.splendo.kaluga.bluetooth.mock.MockDescriptor
-import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
+import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.mock.*
 import com.splendo.kaluga.state.StateRepoAccesor
 import org.junit.Test
 import java.util.*
+import java.util.UUID
 import kotlin.test.assertTrue
 
 class AndroidDeviceTest : DeviceTest() {
@@ -39,6 +34,7 @@ class AndroidDeviceTest : DeviceTest() {
         const val deviceState = BluetoothDevice.BOND_NONE
     }
 
+    private lateinit var gattServiceWrapper: MockServiceWrapper
     private lateinit var characteristic: MockCharacteristic
     private lateinit var descriptor: MockDescriptor
 
@@ -46,18 +42,19 @@ class AndroidDeviceTest : DeviceTest() {
         get() = DeviceInfoHolder(MockDeviceWrapper(deviceName, address, deviceState), AdvertisementData(null))
 
     override fun createServices(repoAccessor: StateRepoAccesor<DeviceState>): List<Service> {
-        val gattService = BluetoothGattService(UUID.randomUUID(), BluetoothGattService.SERVICE_TYPE_PRIMARY)
-        gattService.addCharacteristic(BluetoothGattCharacteristic(UUID.randomUUID(), BluetoothGattCharacteristic.PROPERTY_READ,  BluetoothGattCharacteristic.PERMISSION_READ))
-        return listOf(Service(gattService, repoAccessor))
+        gattServiceWrapper = MockServiceWrapper(UUID.randomUUID(), listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
+        return listOf(Service(gattServiceWrapper, repoAccessor))
     }
 
     override fun createCharacteristic(repoAccessor: StateRepoAccesor<DeviceState>): Characteristic {
-        characteristic = MockCharacteristic(repoAccessor)
+        val characteristicWrapper = gattServiceWrapper.characteristics.first() as MockCharacteristicWrapper
+        characteristic = MockCharacteristic(characteristicWrapper, repoAccessor)
         return characteristic
     }
 
     override fun createDescriptor(repoAccessor: StateRepoAccesor<DeviceState>): Descriptor {
-        descriptor = MockDescriptor(repoAccessor)
+        val descriptorWrapper = characteristic.characteristic.descriptors.first()
+        descriptor = MockDescriptor(descriptorWrapper, repoAccessor)
         return descriptor
     }
 

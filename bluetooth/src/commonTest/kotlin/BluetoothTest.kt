@@ -48,6 +48,7 @@ abstract class BluetoothTest : BaseTest() {
 
     abstract fun createFilter() : Set<UUID>
     abstract fun createDeviceInfoHolder() : DeviceInfoHolder
+    abstract fun createService(stateRepoAccesor: StateRepoAccesor<DeviceState>) : Service
 
     @BeforeTest
     fun setup() {
@@ -200,27 +201,90 @@ abstract class BluetoothTest : BaseTest() {
         permissionManager.permit = Permit.ALLOWED
 
         val device = createDevice()
-        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         launch {
             scanDevice(device)
         }
-        val connectingJob = async {
-            bluetooth.devices()[device.identifier].connect()
+        bluetooth.startScanning()
+        connectDevice(device)
+        disconnectDevice(device)
+    }
+
+    @Test
+    fun testGetServices() = runBlocking {
+        permissionManager.support = Support.POWER_ON
+        permissionManager.permit = Permit.ALLOWED
+
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        launch {
+            scanDevice(device)
         }
         bluetooth.startScanning()
-        connectionManager.connectCompleted.await()
-        val connectingState = device.flow().filter { it is DeviceState.Connecting }.first() as DeviceState.Connecting
-        connectingState.didConnect()
-        connectingJob.await()
 
-        val disconnectingJob = async {
-            bluetooth.devices()[device.identifier].disconnect()
+        FlowTest(bluetooth.devices()[device.identifier].services()).runBlockingWithFlow { flowTest ->
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.action {
+                connectDevice(device)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+                assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.action {
+                val discoveringState = device.flow().filter { it is DeviceState.Connected.Discovering }.first() as DeviceState.Connected.Discovering
+                discoveringState.didDiscoverServices(listOf(service))
+            }
+            flowTest.test {
+                assertEquals(listOf(service), it)
+            }
         }
-        connectionManager.disconnectCompleted.await()
-        val disconnectingState = device.flow().filter { it is DeviceState.Disconnecting }.first() as DeviceState.Disconnecting
-        disconnectingState.didDisconnect()
-        disconnectingJob.await()
+    }
 
+    @Test
+    fun testGetService() = runBlocking {
+        permissionManager.support = Support.POWER_ON
+        permissionManager.permit = Permit.ALLOWED
+
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        launch {
+            scanDevice(device)
+        }
+        bluetooth.startScanning()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid]).runBlockingWithFlow { flowTest ->
+            flowTest.test {
+                assertNull(it)
+            }
+
+            val discoveryCompleted = EmptyCompletableDeferred()
+            flowTest.action {
+                connectDevice(device)
+                val discoveringState = CompletableDeferred<DeviceState.Connected.Discovering>()
+                val job = launch {
+                    device.flow().collect { state ->
+                        print("Whatever")
+                        when (state) {
+                            is DeviceState.Connected.Discovering -> discoveringState.complete(state)
+                        }
+                    }
+                }
+                discoveringState.await().didDiscoverServices(listOf(service))
+                job.cancel()
+                discoveryCompleted.complete()
+            }
+            discoveryCompleted.await()
+            val foundService = CompletableDeferred<Service>()
+            awaitService(flowTest, foundService)
+            assertEquals(service, foundService.await())
+        }
     }
 
     private suspend fun scanDevice(device: Device, scanCompleted: EmptyCompletableDeferred? = null) {
@@ -239,6 +303,42 @@ abstract class BluetoothTest : BaseTest() {
                 foundDevice.complete(it)
             } else {
                 deviceNotFound.complete()
+            }
+        }
+    }
+
+    private fun connectDevice(device: Device) = runBlocking {
+        val connectingJob = async {
+            bluetooth.devices()[device.identifier].connect()
+        }
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        connectionManager.connectCompleted.await()
+        val connectingState = device.flow().filter { it is DeviceState.Connecting }.first() as DeviceState.Connecting
+        connectingState.didConnect()
+        connectingJob.await()
+    }
+
+    private fun disconnectDevice(device: Device) = runBlocking {
+        val disconnectingJob = async {
+            bluetooth.devices()[device.identifier].disconnect()
+        }
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        connectionManager.disconnectCompleted.await()
+        val disconnectingState = device.flow().filter { it is DeviceState.Disconnecting }.first() as DeviceState.Disconnecting
+        disconnectingState.didDisconnect()
+        disconnectingJob.await()
+    }
+
+    private fun awaitService(flowTest: FlowTest<Service?>, foundService: CompletableDeferred<Service>) {
+        val serviceNotFound = EmptyCompletableDeferred()
+        serviceNotFound.invokeOnCompletion {
+            awaitService(flowTest, foundService)
+        }
+        flowTest.test {
+            if (it != null) {
+                foundService.complete(it)
+            } else {
+                serviceNotFound.complete()
             }
         }
     }

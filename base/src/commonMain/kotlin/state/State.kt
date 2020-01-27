@@ -94,7 +94,7 @@ open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
  * @param T the [State] associated with the [StateRepo]
  * @param s The [StateRepo] accessed bt this accessor
  */
-class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope by s {
+class StateRepoAccesor<T:State<T>> internal constructor(private val s:StateRepo<T> ) : CoroutineScope by s {
 
     /**
      * Gets the current state
@@ -121,6 +121,7 @@ class StateRepoAccesor<T:State<T>>(private val s:StateRepo<T> ) : CoroutineScope
 abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     abstract val flowable: Lazy<BaseFlowable<T>>
+    protected val stateRepoAccesor = StateRepoAccesor(this)
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     internal lateinit var changedState:T

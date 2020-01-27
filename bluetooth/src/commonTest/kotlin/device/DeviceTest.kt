@@ -203,6 +203,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         val disconnectedState = getDisconnectedState(flowTest)
         val connectingState = connecting(disconnectedState, flowTest)
         val connectedState = connect(connectingState, flowTest)
+        createServices(connectedState.repoAccessor)
         val characteristic = createCharacteristic(connectedState.repoAccessor)
         flowTest.action {
             connectedState.handleAction(DeviceAction.Read.Characteristic(characteristic))

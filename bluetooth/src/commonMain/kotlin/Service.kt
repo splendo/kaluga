@@ -22,4 +22,4 @@ interface BaseService {
     val characteristics: List<Characteristic>
 }
 
-expect class Service : BaseService
+expect open class Service : BaseService

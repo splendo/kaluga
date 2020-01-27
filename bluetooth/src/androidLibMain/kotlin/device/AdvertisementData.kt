@@ -29,9 +29,9 @@ actual class AdvertisementData(private val scanRecord: ScanRecord?) : BaseAdvert
             if (it.size() > 0) it.get(0) else null
         }
     override val serviceUUIDs: List<UUID>
-        get() = scanRecord?.serviceUuids ?: emptyList()
+        get() = scanRecord?.serviceUuids?.map { it.uuid } ?: emptyList()
     override val serviceData: Map<UUID, ByteArray?>
-        get() = scanRecord?.serviceData?.mapKeys { it.key } ?: emptyMap()
+        get() = scanRecord?.serviceData?.mapKeys { it.key.uuid } ?: emptyMap()
     override val txPowerLevel: Int
         get() = scanRecord?.txPowerLevel ?: 0
 }
