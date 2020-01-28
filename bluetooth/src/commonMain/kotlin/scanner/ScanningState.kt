@@ -28,6 +28,8 @@ import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>(scanner.stateRepoAccessor) {
 
@@ -180,7 +182,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
 }
 
-class ScanningStateRepo(builder: BaseScanner.Builder) : ColdStateRepo<ScanningState>() {
+class ScanningStateRepo(builder: BaseScanner.Builder, coroutineContext: CoroutineContext = Dispatchers.Main) : ColdStateRepo<ScanningState>(coroutineContext) {
 
     private val manager = builder.create(stateRepoAccesor, this)
 
