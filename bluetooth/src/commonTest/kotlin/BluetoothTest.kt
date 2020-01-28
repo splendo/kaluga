@@ -35,6 +35,10 @@ import kotlin.test.*
 
 abstract class BluetoothTest : BaseTest() {
 
+    companion object {
+        val initialRssi = -100
+    }
+
     private val mainScope = MainScope()
 
     lateinit var permissionManager: MockPermissionManager
@@ -198,6 +202,33 @@ abstract class BluetoothTest : BaseTest() {
         bluetooth.startScanning()
         connectDevice(device)
         disconnectDevice(device)
+    }
+
+    @Test
+    fun testRssi() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val newRssi = -42
+        FlowTest(bluetooth.devices()[device.identifier].rssi()).runBlockingWithFlow { flowTest ->
+            flowTest.action {
+                mainScope.launch {
+                    scanDevice(device)
+                }
+                bluetooth.startScanning()
+                connectDevice(device)
+            }
+            flowTest.test {
+                assertEquals(initialRssi, it)
+            }
+            flowTest.action {
+                bluetooth.devices()[device.identifier].updateRssi()
+                connectionManager.readRssiCompleted.await()
+                val connectedState = device.flow().filter { it is DeviceState.Connected }.first() as DeviceState.Connected
+                connectedState.rssiDidUpdate(newRssi)
+            }
+            flowTest.test(2) { assertEquals(newRssi, it) }
+
+        }
     }
 
     @Test
@@ -531,7 +562,7 @@ abstract class BluetoothTest : BaseTest() {
     }
 
     private fun createDevice(): Device {
-        return Device(DeviceTest.reconnectionAttempts, createDeviceInfoHolder(), DeviceTest.initialRssi, object : BaseDeviceConnectionManager.Builder {
+        return Device(DeviceTest.reconnectionAttempts, createDeviceInfoHolder(), initialRssi, object : BaseDeviceConnectionManager.Builder {
             override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
                 return MockDeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
             }

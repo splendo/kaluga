@@ -152,16 +152,21 @@ suspend fun Flow<Device?>.disconnect() {
     }.first()
 }
 
-suspend fun Flow<Device?>.rssi(interval: Long? = 1000) : Flow<Int> {
+suspend fun Flow<Device?>.rssi() : Flow<Int> {
     return this.mapDeviceState {deviceState ->
         emit(deviceState.lastKnownRssi)
-        interval?.let {
-            delay(it)
-        }
-        when (deviceState) {
-            is DeviceState.Connected -> deviceState.readRssi()
-        }
     }
+}
+
+suspend fun Flow<Device?>.updateRssi() {
+    this.mapDeviceState<Unit> { deviceState ->
+        when (deviceState) {
+            is DeviceState.Connected -> {
+                deviceState.readRssi()
+                emit(Unit)
+            }
+        }
+    }.first()
 }
 
 fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value: DeviceState) -> Unit) : Flow<T> {
