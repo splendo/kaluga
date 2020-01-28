@@ -26,8 +26,7 @@ import platform.Foundation.NSData
 
 actual class Descriptor(internal val descriptor: CBDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepoAccessor) {
 
-    override val uuid: UUID
-        get() = UUID(descriptor.UUID)
+    override val uuid = UUID(descriptor.UUID)
 
     override fun createReadAction(): DeviceAction.Read.Descriptor {
         return DeviceAction.Read.Descriptor(this)

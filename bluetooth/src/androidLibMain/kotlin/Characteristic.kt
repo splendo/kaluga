@@ -27,11 +27,9 @@ import com.splendo.kaluga.state.StateRepoAccesor
 actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepoAccesor: StateRepoAccesor<DeviceState>) :
     BaseCharacteristic(characteristic.value, stateRepoAccesor) {
 
-    override val uuid: UUID
-        get() = characteristic.uuid
+    override val uuid = characteristic.uuid
 
-    override val descriptors: List<Descriptor>
-        get() = characteristic.descriptors.map { Descriptor(it, stateRepoAccessor) }
+    override val descriptors = characteristic.descriptors.map { Descriptor(it, stateRepoAccessor) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

@@ -25,8 +25,7 @@ import platform.CoreBluetooth.CBService
 
 actual class Service(private val service: CBService, private val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseService {
 
-    override val uuid: UUID get() = UUID(service.UUID)
+    override val uuid = UUID(service.UUID)
 
-    override val characteristics: List<Characteristic>
-        get() = service.characteristics?.typedList<CBCharacteristic>()?.map { Characteristic(it, stateRepoAccesor) } ?: emptyList()
+    override val characteristics = service.characteristics?.typedList<CBCharacteristic>()?.map { Characteristic(it, stateRepoAccesor) } ?: emptyList()
 }

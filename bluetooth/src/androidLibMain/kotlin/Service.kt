@@ -26,11 +26,9 @@ import com.splendo.kaluga.state.StateRepoAccesor
 
 actual open class Service(private val service: GattServiceWrapper, private val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseService {
 
-    override val uuid: UUID
-        get() = service.uuid
+    override val uuid = service.uuid
 
-    override val characteristics: List<Characteristic>
-        get() = service.characteristics.map { Characteristic(it, stateRepoAccesor) }
+    override val characteristics = service.characteristics.map { Characteristic(it, stateRepoAccesor) }
 }
 
 interface GattServiceWrapper {

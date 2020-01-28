@@ -22,6 +22,8 @@ import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.state.StateRepoAccesor
+import kotlinx.coroutines.Dispatchers
+import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
     sealed class Read : DeviceAction() {
@@ -214,7 +216,7 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
 
 }
 
-class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder) : HotStateRepo<DeviceState>(), DeviceInfo by deviceInfoHolder {
+class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder, coroutineContext: CoroutineContext = Dispatchers.Main) : HotStateRepo<DeviceState>(coroutineContext), DeviceInfo by deviceInfoHolder {
 
     internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, stateRepoAccesor)
 

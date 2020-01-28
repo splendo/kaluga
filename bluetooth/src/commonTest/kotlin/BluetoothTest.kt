@@ -28,16 +28,14 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlin.test.*
 
 abstract class BluetoothTest : BaseTest() {
+
+    private val mainScope = MainScope()
 
     lateinit var permissionManager: MockPermissionManager
     lateinit var mockBaseScanner: MockBaseScanner
@@ -51,10 +49,12 @@ abstract class BluetoothTest : BaseTest() {
     abstract fun createService(stateRepoAccesor: StateRepoAccesor<DeviceState>) : Service
 
     @BeforeTest
-    fun setup() {
+    open fun setup() {
         super.beforeTest()
 
         permissionManager = MockPermissionManager()
+        permissionManager.support = Support.POWER_ON
+        permissionManager.permit = Permit.ALLOWED
         val permissions = MockBasePermissions(permissionManager)
 
         val scannerBuilder = object : BaseScanner.Builder {
@@ -77,14 +77,11 @@ abstract class BluetoothTest : BaseTest() {
         builder.setOnRequestPermission {
             bluetoothMissingPermissionCalled.complete()
         }
-        bluetooth = Bluetooth(builder)
+        bluetooth = Bluetooth(builder, mainScope.coroutineContext)
     }
 
     @Test
     fun testScanDevice() = runBlocking {
-        permissionManager.support = Support.POWER_ON
-        permissionManager.permit = Permit.ALLOWED
-
         FlowTest(bluetooth.devices()).runBlockingWithFlow { flowTest ->
             flowTest.test {
                 assertEquals(emptyList(), it)
@@ -119,7 +116,7 @@ abstract class BluetoothTest : BaseTest() {
             val device = createDevice()
             val scanCompleted = EmptyCompletableDeferred()
             flowTest.action {
-                launch {
+                mainScope.launch {
                     scanDevice(device, scanCompleted)
                 }
             }
@@ -169,9 +166,6 @@ abstract class BluetoothTest : BaseTest() {
 
     @Test
     fun testGetDevice() = runBlocking {
-        permissionManager.support = Support.POWER_ON
-        permissionManager.permit = Permit.ALLOWED
-
         val device = createDevice()
         FlowTest(bluetooth.devices()[device.identifier]).runBlockingWithFlow { flowTest ->
             flowTest.test {
@@ -179,7 +173,7 @@ abstract class BluetoothTest : BaseTest() {
             }
             val scanCompleted = EmptyCompletableDeferred()
             flowTest.action {
-                launch {
+                mainScope.launch {
                     scanDevice(device, scanCompleted)
                 }
                 bluetooth.startScanning()
@@ -197,11 +191,8 @@ abstract class BluetoothTest : BaseTest() {
 
     @Test
     fun testConnectDevice() = runBlocking {
-        permissionManager.support = Support.POWER_ON
-        permissionManager.permit = Permit.ALLOWED
-
         val device = createDevice()
-        launch {
+        mainScope.launch {
             scanDevice(device)
         }
         bluetooth.startScanning()
@@ -211,13 +202,10 @@ abstract class BluetoothTest : BaseTest() {
 
     @Test
     fun testGetServices() = runBlocking {
-        permissionManager.support = Support.POWER_ON
-        permissionManager.permit = Permit.ALLOWED
-
         val device = createDevice()
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.repoAccessor)
-        launch {
+        mainScope.launch {
             scanDevice(device)
         }
         bluetooth.startScanning()
@@ -237,8 +225,7 @@ abstract class BluetoothTest : BaseTest() {
                 assertEquals(emptyList(), it)
             }
             flowTest.action {
-                val discoveringState = device.flow().filter { it is DeviceState.Connected.Discovering }.first() as DeviceState.Connected.Discovering
-                discoveringState.didDiscoverServices(listOf(service))
+                discoverService(service, device)
             }
             flowTest.test {
                 assertEquals(listOf(service), it)
@@ -248,13 +235,10 @@ abstract class BluetoothTest : BaseTest() {
 
     @Test
     fun testGetService() = runBlocking {
-        permissionManager.support = Support.POWER_ON
-        permissionManager.permit = Permit.ALLOWED
-
         val device = createDevice()
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.repoAccessor)
-        launch {
+        mainScope.launch {
             scanDevice(device)
         }
         bluetooth.startScanning()
@@ -264,26 +248,182 @@ abstract class BluetoothTest : BaseTest() {
                 assertNull(it)
             }
 
-            val discoveryCompleted = EmptyCompletableDeferred()
             flowTest.action {
                 connectDevice(device)
-                val discoveringState = CompletableDeferred<DeviceState.Connected.Discovering>()
-                val job = launch {
-                    device.flow().collect { state ->
-                        print("Whatever")
-                        when (state) {
-                            is DeviceState.Connected.Discovering -> discoveringState.complete(state)
-                        }
-                    }
-                }
-                discoveringState.await().didDiscoverServices(listOf(service))
-                job.cancel()
-                discoveryCompleted.complete()
+                discoverService(service, device)
             }
-            discoveryCompleted.await()
             val foundService = CompletableDeferred<Service>()
             awaitService(flowTest, foundService)
             assertEquals(service, foundService.await())
+        }
+    }
+
+    @Test
+    fun testGetCharacteristics() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        mainScope.launch {
+            scanDevice(device)
+        }
+        bluetooth.startScanning()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()).runBlockingWithFlow { flowTest ->
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.action {
+                connectDevice(device)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+                assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.action {
+                discoverService(service, device)
+            }
+            flowTest.test {
+                assertEquals(service.characteristics, it)
+            }
+
+        }
+    }
+
+    @Test
+    fun testGetCharacteristic() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        val characteristic = service.characteristics.first()
+        mainScope.launch {
+            scanDevice(device)
+        }
+        bluetooth.startScanning()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid]).runBlockingWithFlow { flowTest ->
+            flowTest.test {
+                assertNull(it)
+            }
+
+            flowTest.action {
+                connectDevice(device)
+                discoverService(service, device)
+            }
+            val foundCharacteristic = CompletableDeferred<Characteristic>()
+            awaitCharacteristic(flowTest, foundCharacteristic)
+            assertEquals(characteristic, foundCharacteristic.await())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testGetCharacteristicValue() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        val characteristic = service.characteristics.first()
+        val newValue = "Test".encodeToByteArray()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].value()).runBlockingWithFlow { flowTest ->
+            flowTest.action {
+                mainScope.launch {
+                    scanDevice(device)
+                }
+                bluetooth.startScanning()
+                connectDevice(device)
+                discoverService(service, device)
+                characteristic.set(newValue)
+            }
+            val foundByte = CompletableDeferred<ByteArray>()
+            awaitByte(flowTest, foundByte)
+            assertEquals(newValue, foundByte.await())
+        }
+    }
+
+    @Test
+    fun testGetDescriptors() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        val characteristic = service.characteristics.first()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()).runBlockingWithFlow { flowTest ->
+            flowTest.action {
+                mainScope.launch {
+                    scanDevice(device)
+                }
+                bluetooth.startScanning()
+                connectDevice(device)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+                assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
+            }
+            flowTest.test {
+                assertEquals(emptyList(), it)
+            }
+            flowTest.action {
+                discoverService(service, device)
+            }
+            flowTest.test {
+                assertEquals(characteristic.descriptors, it)
+            }
+
+        }
+    }
+
+    @Test
+    fun testGetDescriptor() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        val characteristic = service.characteristics.first()
+        val descriptor = characteristic.descriptors.first()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid]).runBlockingWithFlow { flowTest ->
+            flowTest.action {
+                mainScope.launch {
+                    scanDevice(device)
+                }
+                bluetooth.startScanning()
+                connectDevice(device)
+                discoverService(service, device)
+            }
+            val foundDescriptor = CompletableDeferred<Descriptor>()
+            awaitDescriptor(flowTest, foundDescriptor)
+            assertEquals(descriptor, foundDescriptor.await())
+        }
+    }
+
+    @ExperimentalStdlibApi
+    @Test
+    fun testGetDescriptorValue() = runBlocking {
+        val device = createDevice()
+        val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
+        val service = createService(connectionManager.repoAccessor)
+        val characteristic = service.characteristics.first()
+        val descriptor = characteristic.descriptors.first()
+        val newValue = "Test".encodeToByteArray()
+
+        FlowTest(bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid].value()).runBlockingWithFlow { flowTest ->
+            flowTest.action {
+                mainScope.launch {
+                    scanDevice(device)
+                }
+                bluetooth.startScanning()
+                connectDevice(device)
+                discoverService(service, device)
+                descriptor.set(newValue)
+            }
+            val foundByte = CompletableDeferred<ByteArray>()
+            awaitByte(flowTest, foundByte)
+            assertEquals(newValue, foundByte.await())
         }
     }
 
@@ -308,7 +448,7 @@ abstract class BluetoothTest : BaseTest() {
     }
 
     private fun connectDevice(device: Device) = runBlocking {
-        val connectingJob = async {
+        val connectingJob = mainScope.async {
             bluetooth.devices()[device.identifier].connect()
         }
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
@@ -319,7 +459,7 @@ abstract class BluetoothTest : BaseTest() {
     }
 
     private fun disconnectDevice(device: Device) = runBlocking {
-        val disconnectingJob = async {
+        val disconnectingJob = mainScope.async {
             bluetooth.devices()[device.identifier].disconnect()
         }
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
@@ -327,6 +467,11 @@ abstract class BluetoothTest : BaseTest() {
         val disconnectingState = device.flow().filter { it is DeviceState.Disconnecting }.first() as DeviceState.Disconnecting
         disconnectingState.didDisconnect()
         disconnectingJob.await()
+    }
+
+    private suspend fun discoverService(service: Service, device: Device) {
+        val discoveringState = device.flow().filter { it is DeviceState.Connected.Discovering }.first() as DeviceState.Connected.Discovering
+        discoveringState.didDiscoverServices(listOf(service))
     }
 
     private fun awaitService(flowTest: FlowTest<Service?>, foundService: CompletableDeferred<Service>) {
@@ -343,12 +488,54 @@ abstract class BluetoothTest : BaseTest() {
         }
     }
 
+    private fun awaitCharacteristic(flowTest: FlowTest<Characteristic?>, foundCharacteristic: CompletableDeferred<Characteristic>) {
+        val characteristicNotFound = EmptyCompletableDeferred()
+        characteristicNotFound.invokeOnCompletion {
+            awaitCharacteristic(flowTest, foundCharacteristic)
+        }
+        flowTest.test {
+            if (it != null) {
+                foundCharacteristic.complete(it)
+            } else {
+                characteristicNotFound.complete()
+            }
+        }
+    }
+
+    private fun awaitDescriptor(flowTest: FlowTest<Descriptor?>, foundDescriptor: CompletableDeferred<Descriptor>) {
+        val descriptorNotFound = EmptyCompletableDeferred()
+        descriptorNotFound.invokeOnCompletion {
+            awaitDescriptor(flowTest, foundDescriptor)
+        }
+        flowTest.test {
+            if (it != null) {
+                foundDescriptor.complete(it)
+            } else {
+                descriptorNotFound.complete()
+            }
+        }
+    }
+
+    private fun awaitByte(flowTest: FlowTest<ByteArray?>, foundByte: CompletableDeferred<ByteArray>) {
+        val byteNotFound = EmptyCompletableDeferred()
+        byteNotFound.invokeOnCompletion {
+            awaitByte(flowTest, foundByte)
+        }
+        flowTest.test {
+            if (it != null) {
+                foundByte.complete(it)
+            } else {
+                byteNotFound.complete()
+            }
+        }
+    }
+
     private fun createDevice(): Device {
         return Device(DeviceTest.reconnectionAttempts, createDeviceInfoHolder(), DeviceTest.initialRssi, object : BaseDeviceConnectionManager.Builder {
             override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
                 return MockDeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
             }
-        })
+        }, mainScope.coroutineContext)
     }
 
 }

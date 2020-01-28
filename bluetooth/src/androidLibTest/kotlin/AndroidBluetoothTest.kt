@@ -9,6 +9,9 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepoAccesor
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.newSingleThreadContext
+import kotlin.test.BeforeTest
 
 /*
  Copyright (c) 2020. Splendo Consulting B.V. The Netherlands

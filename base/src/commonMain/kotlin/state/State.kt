@@ -143,7 +143,7 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
     internal fun initialize() : T {
         val value = initialValue()
         changedState = value
-        launch {
+        runBlocking {
             value.initialState()
         }
         return value

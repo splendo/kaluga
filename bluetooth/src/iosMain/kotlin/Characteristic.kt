@@ -27,11 +27,9 @@ import platform.CoreBluetooth.CBDescriptor
 
 actual open class Characteristic(val characteristic: CBCharacteristic, val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepoAccesor) {
 
-    override val uuid: UUID
-        get() = characteristic.UUID
+    override val uuid = characteristic.UUID
 
-    override val descriptors: List<Descriptor>
-        get() = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepoAccessor) } ?: emptyList()
+    override val descriptors = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepoAccessor) } ?: emptyList()
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

@@ -26,12 +26,14 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.BasePermissions
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 
-class Bluetooth internal constructor(private val builder: Builder) {
+class Bluetooth internal constructor(private val builder: Builder, coroutineContext: CoroutineContext = Dispatchers.Main) {
 
     class Builder(internal val scannerBuilder: BaseScanner.Builder, private val permissions: BasePermissions) {
 
@@ -53,7 +55,7 @@ class Bluetooth internal constructor(private val builder: Builder) {
         }
     }
 
-    internal val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder)
+    internal val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder, coroutineContext)
     private val requestPermission = builder.requestPermission
     private val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
 
@@ -187,11 +189,15 @@ fun Flow<Characteristic?>.descriptors() : Flow<List<Descriptor>> {
 
 @JvmName("getAttribute")
 operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<List<T>>.get(uuid: UUID) : Flow<T?> {
-    return this.mapLatest{attribute ->
-        attribute.firstOrNull {it.uuid.uuidString == uuid.uuidString}
+    return this.map { attribute ->
+        attribute.firstOrNull {
+            it.uuid.uuidString == uuid.uuidString
+        }
     }
 }
 
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value() : Flow<ByteArray?> {
-    return this.flatMapLatest{attribute -> attribute?.flow() ?: emptyFlow()}
+    return this.flatMapLatest{attribute ->
+        attribute?.flow() ?: emptyFlow()
+    }
 }
