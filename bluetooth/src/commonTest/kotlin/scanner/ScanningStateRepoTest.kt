@@ -287,9 +287,9 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     }
 
     private fun createDevice(): Device {
-        return Device(DeviceTest.reconnectionAttempts, createDeviceInfoHolder(), DeviceTest.initialRssi, object : BaseDeviceConnectionManager.Builder {
-            override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-                return MockDeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
+        return Device(ConnectionSettings(), createDeviceInfoHolder(), DeviceTest.initialRssi, object : BaseDeviceConnectionManager.Builder {
+            override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+                return MockDeviceConnectionManager(connectionSettings, deviceInfo, repoAccessor)
             }
         })
     }

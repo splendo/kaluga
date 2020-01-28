@@ -151,11 +151,17 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
     data class Reconnecting internal constructor(val attempt: Int, val services: List<Service>, override val lastKnownRssi: Int, override val connectionManager: BaseDeviceConnectionManager) : DeviceState(lastKnownRssi, connectionManager) {
 
         suspend fun retry() : Boolean {
-            val nextAttempt = attempt + 1
-            val nextState = if (nextAttempt < connectionManager.reconnectionAttempts) {
-                copy(attempt = nextAttempt)
-            } else {
-                Disconnected(lastKnownRssi, connectionManager)
+            val nextState = when(val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
+                is ConnectionSettings.ReconnectionSettings.Always -> this
+                is ConnectionSettings.ReconnectionSettings.Never -> Disconnected(lastKnownRssi, connectionManager)
+                is ConnectionSettings.ReconnectionSettings.Limited -> {
+                    val nextAttempt = attempt + 1
+                    if (nextAttempt < reconnectionSetting.attempts) {
+                        copy(attempt = nextAttempt)
+                    } else {
+                        Disconnected(lastKnownRssi, connectionManager)
+                    }
+                }
             }
             changeState(nextState)
             return nextState is Reconnecting
@@ -216,9 +222,9 @@ sealed class DeviceState (open val lastKnownRssi: Int, internal open val connect
 
 }
 
-class Device internal constructor(private val reconnectionAttempts: Int = 0, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder, coroutineContext: CoroutineContext = Dispatchers.Main) : HotStateRepo<DeviceState>(coroutineContext), DeviceInfo by deviceInfoHolder {
+class Device internal constructor(private val connectionSettings: ConnectionSettings, private val deviceInfoHolder: DeviceInfoHolder, private val initialRssi: Int, connectionBuilder: BaseDeviceConnectionManager.Builder, coroutineContext: CoroutineContext = Dispatchers.Main) : HotStateRepo<DeviceState>(coroutineContext), DeviceInfo by deviceInfoHolder {
 
-    internal val deviceConnectionManager = connectionBuilder.create(reconnectionAttempts, deviceInfoHolder, stateRepoAccesor)
+    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, deviceInfoHolder, stateRepoAccesor)
 
     override fun initialValue(): DeviceState {
         return DeviceState.Disconnected(initialRssi, deviceConnectionManager)

@@ -32,14 +32,16 @@ import platform.darwin.dispatch_get_main_queue
 
 actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
                                           permissions: Permissions,
+                                          private val connectionSettings: ConnectionSettings,
                                           stateRepoAccesor: StateRepoAccesor<ScanningState>,
                                           coroutineScope: CoroutineScope)
     : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
 
-    class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions) : BaseScanner.Builder {
+    class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions,
+                  private val connectionSettings: ConnectionSettings) : BaseScanner.Builder {
 
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(autoEnableBluetooth, permissions, stateRepoAccessor, coroutineScope)
+            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepoAccessor, coroutineScope)
         }
     }
 
@@ -136,7 +138,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
                 is ScanningState.Enabled.Scanning -> {
                     val advertisementData = AdvertisementData(advertisementDataMap)
                     val deviceInfo = DeviceInfoHolder(peripheral, central, advertisementData)
-                    val device = Device(0, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
+                    val device = Device(connectionSettings, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
                     connectionManagerMap[device.identifier] = device.deviceConnectionManager
                     state.discoverDevices(device)
                 }

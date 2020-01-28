@@ -19,12 +19,12 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.state.StateRepoAccesor
 
-internal actual class DeviceConnectionManager(reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor) {
+internal actual class DeviceConnectionManager(connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor) {
 
     class Builder() : BaseDeviceConnectionManager.Builder {
 
-        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
-            return DeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): DeviceConnectionManager {
+            return DeviceConnectionManager(connectionSettings, deviceInfo, repoAccessor)
         }
     }
 

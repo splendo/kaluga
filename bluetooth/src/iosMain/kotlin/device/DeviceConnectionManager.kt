@@ -29,7 +29,7 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor {
+internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor {
 
     val peripheral = deviceInfoHolder.peripheral
     private var currentAction: DeviceAction? = null
@@ -39,8 +39,8 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
 
     class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
-        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(cbCentralManager, reconnectionAttempts, deviceInfo, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceInfo, repoAccessor)
         }
     }
 
@@ -188,11 +188,12 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
                         return@launch
                 }
                 is DeviceState.Connected -> {
-                    if (reconnectionAttempts > 0) {
-                        state.reconnect()
-                        return@launch
-                    } else {
-                        state.didDisconnect()
+                    when (connectionSettings.reconnectionSettings) {
+                        is ConnectionSettings.ReconnectionSettings.Always,
+                        is ConnectionSettings.ReconnectionSettings.Limited -> {
+                            state.reconnect()
+                            return@launch
+                        }
                     }
                 }
             }

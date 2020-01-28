@@ -19,12 +19,12 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.state.StateRepoAccesor
 
-internal abstract class BaseDeviceConnectionManager(var reconnectionAttempts: Int = 0,
+internal abstract class BaseDeviceConnectionManager(internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
                                                     internal val deviceInfoHolder: DeviceInfoHolder,
                                                     internal val repoAccessor: StateRepoAccesor<DeviceState>) {
 
     interface Builder {
-        fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager
+        fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager
     }
 
     abstract suspend fun connect()
