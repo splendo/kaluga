@@ -31,11 +31,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-internal actual class DeviceConnectionManager(private val context: Context, reconnectionAttempts: Int, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
+internal actual class DeviceConnectionManager(private val context: Context, connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
-        override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, reconnectionAttempts, deviceInfo, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(context, connectionSettings, deviceInfo, repoAccessor)
         }
     }
 
@@ -105,11 +105,12 @@ internal actual class DeviceConnectionManager(private val context: Context, reco
                                     return@launch
                             }
                             is DeviceState.Connected -> {
-                                if (reconnectionAttempts > 0) {
-                                    state.reconnect()
-                                    return@launch
-                                } else {
-                                    state.didDisconnect()
+                                when (connectionSettings.reconnectionSettings) {
+                                    is ConnectionSettings.ReconnectionSettings.Always,
+                                    is ConnectionSettings.ReconnectionSettings.Limited -> {
+                                        state.reconnect()
+                                        return@launch
+                                    }
                                 }
                             }
                         }

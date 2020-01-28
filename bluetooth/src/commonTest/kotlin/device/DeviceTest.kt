@@ -31,7 +31,8 @@ import kotlin.test.*
 abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     companion object {
-        val reconnectionAttempts = 2
+        val reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(2)
+        val connectionSettings = ConnectionSettings(reconnectionSettings)
         val initialRssi = -10
     }
 
@@ -47,9 +48,9 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
     @BeforeTest
     override fun setUp() {
         super.setUp()
-        flowable.complete(Device(reconnectionAttempts, deviceInfoHolder, initialRssi, object : BaseDeviceConnectionManager.Builder {
-            override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-                connectionManager = MockDeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
+        flowable.complete(Device(connectionSettings, deviceInfoHolder, initialRssi, object : BaseDeviceConnectionManager.Builder {
+            override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+                connectionManager = MockDeviceConnectionManager(connectionSettings, deviceInfo, repoAccessor)
                 return connectionManager
             }
         }).flowable.value)
@@ -302,10 +303,10 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
 
 }
 
-internal class MockDeviceConnectionManager(reconnectionAttempts: Int,
+internal class MockDeviceConnectionManager(connectionSettings: ConnectionSettings,
                                   deviceInfoHolder: DeviceInfoHolder,
                                   repoAccessor: StateRepoAccesor<DeviceState>
-) : BaseDeviceConnectionManager(reconnectionAttempts, deviceInfoHolder, repoAccessor) {
+) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor) {
 
     internal lateinit var connectCompleted: EmptyCompletableDeferred
     internal lateinit var discoverServicesCompleted: EmptyCompletableDeferred

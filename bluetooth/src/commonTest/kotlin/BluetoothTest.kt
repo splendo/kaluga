@@ -562,9 +562,9 @@ abstract class BluetoothTest : BaseTest() {
     }
 
     private fun createDevice(): Device {
-        return Device(DeviceTest.reconnectionAttempts, createDeviceInfoHolder(), initialRssi, object : BaseDeviceConnectionManager.Builder {
-            override fun create(reconnectionAttempts: Int, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-                return MockDeviceConnectionManager(reconnectionAttempts, deviceInfo, repoAccessor)
+        return Device(ConnectionSettings(), createDeviceInfoHolder(), initialRssi, object : BaseDeviceConnectionManager.Builder {
+            override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+                return MockDeviceConnectionManager(connectionSettings, deviceInfo, repoAccessor)
             }
         }, mainScope.coroutineContext)
     }

@@ -34,23 +34,25 @@ import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.*
 
 actual class Scanner internal constructor(private val autoEnableBluetooth: Boolean,
-                     private val bluetoothScanner: BluetoothLeScannerCompat,
-                     private val bluetoothAdapter: BluetoothAdapter,
-                     private val scanSettings: ScanSettings = defaultScanSettings,
-                     permissions: Permissions,
-                     private val context: Context,
-                     private val coroutineScope: CoroutineScope,
-                     stateRepoAccessor: StateRepoAccesor<ScanningState>) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
+                                          private val bluetoothScanner: BluetoothLeScannerCompat,
+                                          private val bluetoothAdapter: BluetoothAdapter,
+                                          private val scanSettings: ScanSettings = defaultScanSettings,
+                                          permissions: Permissions,
+                                          private val connectionSettings: ConnectionSettings,
+                                          private val context: Context,
+                                          private val coroutineScope: CoroutineScope,
+                                          stateRepoAccessor: StateRepoAccesor<ScanningState>) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
                   override val autoEnableBluetooth: Boolean,
                   private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
                   private val permissions: Permissions,
+                  private val connectionSettings: ConnectionSettings,
                   private val context: Context = ApplicationHolder.applicationContext) : BaseScanner.Builder {
 
         override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, context, coroutineScope, stateRepoAccessor)
+            return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, context, coroutineScope, stateRepoAccessor)
         }
     }
 
@@ -106,7 +108,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                         val devices = results.map {
                             val advertisementData = AdvertisementData(it.scanRecord)
                             val deviceInfoHolder = DeviceInfoHolder(DefaultDeviceWrapper(it.device), advertisementData)
-                            Device(0, deviceInfoHolder, it.rssi, DeviceConnectionManager.Builder(context))
+                            Device(connectionSettings, deviceInfoHolder, it.rssi, DeviceConnectionManager.Builder(context))
                         }
                         state.discoverDevices(*devices.toTypedArray())
                     }

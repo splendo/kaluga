@@ -17,13 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-actual typealias Identifier = String
+data class ConnectionSettings(val reconnectionSettings: ReconnectionSettings = ReconnectionSettings.Always) {
 
-actual open class DeviceInfoHolder(internal val device: DeviceWrapper, override val advertisementData: AdvertisementData) : DeviceInfo {
+    sealed class ReconnectionSettings {
+        object Always : ReconnectionSettings()
+        object Never : ReconnectionSettings()
+        data class Limited(val attempts: Int) : ReconnectionSettings()
+    }
 
-    override val name: String?
-        get() = device.name
-
-    override val identifier: Identifier
-        get() = device.address
 }
