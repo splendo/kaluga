@@ -17,6 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.log.debug
@@ -44,10 +46,9 @@ abstract class FlowableTest<T>: BaseTest() {
     lateinit var flowable: CompletableDeferred<Flowable<T>>
     lateinit var flowTest: FlowTest<T>
 
-    fun runBlockingWithFlow(block:suspend(FlowTest<T>)->Unit) {
-        flowTest.runBlockingWithFlow(block)
+    fun testWithFlow(block: suspend (FlowTest<T>) -> Unit) {
+        flowTest.testWithFlow(block)
     }
-
 }
 
 open class FlowTest<T>(private val flow: Flow<T>) {
@@ -58,7 +59,7 @@ open class FlowTest<T>(private val flow: Flow<T>) {
 
     lateinit var job: Job
 
-    private val mainScope = MainScope()
+    private val mainScope = MultiplatformMainScope()
 
     private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
 
@@ -85,13 +86,11 @@ open class FlowTest<T>(private val flow: Flow<T>) {
         }
     }
 
-    fun runBlockingWithFlow(block:suspend(FlowTest<T>)->Unit) {
-        runBlocking {
-            testChannel = Channel(Channel.UNLIMITED)
-            startFlow()
-            block(this@FlowTest)
-            endFlow()
-        }
+    fun testWithFlow(block:suspend(FlowTest<T>)->Unit) = runBlocking {
+        testChannel = Channel(Channel.UNLIMITED)
+        startFlow()
+        block(this@FlowTest)
+        endFlow()
     }
 
     private suspend fun startFlow() {
