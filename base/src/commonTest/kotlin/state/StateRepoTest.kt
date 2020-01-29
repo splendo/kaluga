@@ -120,15 +120,15 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun testChangeState() = runBlockingWithFlow {
+    fun testChangeState() = testWithFlow {flowTest ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.GreenLight)
             greenStateDeferred.complete(it)
             assertTrue(it.initialStateDone.isCompleted)
         }
         val greenState = greenStateDeferred.await()
-        action {
+        flowTest.action {
             assertFalse(greenState.beforeCreatingNewStateDone.isCompleted)
             greenState.beforeCreatingNewStateDone.invokeOnCompletion {
                 assertEquals(greenState, trafficLight.peekState())
@@ -162,7 +162,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 }
             }
         }
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.RedLight)
             assertTrue(greenState.beforeCreatingNewStateDone.isCompleted)
             assertTrue(greenState.afterCreatingNewStateDone.isCompleted)
@@ -173,13 +173,13 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun testChangeStateDouble() = runBlockingWithFlow {
+    fun testChangeStateDouble() = testWithFlow {
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.GreenLight)
             greenStateDeferred.complete(it)
         }
-        action {
+        flowTest.action {
             trafficLight.takeAndChangeState {
                 when (val state = it) {
                     is TrafficLightState.GreenLight -> state.becomeRed()
@@ -193,19 +193,19 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 }
             }
         }
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.RedLight)
         }
     }
 
     @Test
-    fun testChangeStateDoubleConcurrent() = runBlockingWithFlow {
+    fun testChangeStateDoubleConcurrent() = testWithFlow { flowTest ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.GreenLight)
             greenStateDeferred.complete(it)
         }
-        action {
+        flowTest.action {
             val scope = MainScope()
             val delayedTransition = scope.async {
                 delay(100)
@@ -228,7 +228,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
             delayedTransition.await()
             slowTransition.await()
         }
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.YellowLight)
         }
 

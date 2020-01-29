@@ -17,11 +17,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -48,7 +50,7 @@ class BaseFlowableTest : FlowableTest<String>() {
         c.send("Foo")
         var r: String? = null
         var flow: Flow<String>?
-        MainScope().launch {
+        MultiplatformMainScope().launch {
             flow = c.asFlow()
             flow!!.collect {
                 r = it
@@ -68,28 +70,28 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testKnownValueBeforeAction() = runBlockingWithFlow {
+    fun testKnownValueBeforeAction() = testWithFlow { flowTest ->
         flowable.await().set("foo")
-        action {
+        flowTest.action {
             // no action
         }
-        test {
+        flowTest.test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
     }
 
     @Test
-    fun testExceptionBeingThrown() = runBlockingWithFlow {
-        action {
+    fun testExceptionBeingThrown() = testWithFlow { flowTest ->
+        flowTest.action {
             flowable.await().set("Test")
         }
         try {
-            test {
+            flowTest.test {
                 debug("cause an exception")
                 throw Exception("some error!")
             }
             debug("wait for the exception..")
-            action {}
+            flowTest.action {}
             fail("No throwable was thrown, even though we caused an exception")
         } catch (t: Throwable) {
             assertEquals("some error!", t.message)
