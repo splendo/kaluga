@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.*
  * @param deinitialize method for deinitializing the flow, passing the last known value. Will be called when the flow transitions from one or more to zero observers.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-class ColdFlowable<T>(private val initialize: () -> T, private val deinitialize: (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
+class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
     private val flowingCounter = AtomicInt(0)
 

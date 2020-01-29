@@ -17,12 +17,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlin.test.BeforeTest
@@ -37,19 +40,28 @@ abstract class FlowableTest<T>: BaseTest() {
         super.beforeTest()
 
         flowable = CompletableDeferred()
+        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted().flow()) }
     }
 
-    open val filter:suspend(T)->Boolean = { true }
-
     lateinit var flowable: CompletableDeferred<Flowable<T>>
+    lateinit var flowTest: FlowTest<T>
+
+    fun testWithFlow(block: suspend (FlowTest<T>) -> Unit) {
+        flowTest.testWithFlow(block)
+    }
+}
+
+open class FlowTest<T>(private val flow: Flow<T>) {
+
+    open val filter:suspend(T)->Boolean = { true }
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 
     lateinit var job: Job
 
-    private val mainScope = MainScope()
+    private val mainScope = MultiplatformMainScope()
 
-    private val testChannel = Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>(Channel.UNLIMITED)
+    private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
@@ -74,19 +86,18 @@ abstract class FlowableTest<T>: BaseTest() {
         }
     }
 
-    fun runBlockingWithFlow(block:suspend()->Unit) {
-        runBlocking {
-            startFlow()
-            block()
-            endFlow()
-        }
+    fun testWithFlow(block:suspend(FlowTest<T>)->Unit) = runBlocking {
+        testChannel = Channel(Channel.UNLIMITED)
+        startFlow()
+        block(this@FlowTest)
+        endFlow()
     }
 
     private suspend fun startFlow() {
         debug("start flow...")
         job = mainScope.launch {
             debug("main scope launched, about to flow")
-            flowable.await().flow().filter(filter).collect { value ->
+            flow.filter(filter).collect { value ->
                 debug("in flow received $value")
                 val test = testChannel.receive()
                 debug("receive test $test")

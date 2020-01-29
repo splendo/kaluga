@@ -23,6 +23,8 @@ import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.sync.Mutex
@@ -121,12 +123,10 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
         return flowable.value.flow(flowConfig)
     }
 
-    internal fun initialize() : S {
+    internal suspend fun initialize() : S {
         val value = initialValue()
         changedState = value
-        launch {
-            value.initialState()
-        }
+        value.initialState()
         return value
     }
 
@@ -214,7 +214,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
 abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
     override val flowable = lazy {
-        HotFlowable(initialize())
+        HotFlowable(runBlocking { initialize() })
     }
 
 }
