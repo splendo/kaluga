@@ -19,22 +19,25 @@ package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.*
 import android.content.Context
-import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
-internal actual class DeviceConnectionManager(private val context: Context, connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor  {
+internal actual class DeviceConnectionManager(private val context: Context,
+                                              connectionSettings: ConnectionSettings,
+                                              deviceInfoHolder: DeviceInfoHolder,
+                                              stateRepo: StateRepo<DeviceState>)
+    : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, stateRepo), CoroutineScope by stateRepo  {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
+        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepo<DeviceState>): BaseDeviceConnectionManager {
             return DeviceConnectionManager(context, connectionSettings, deviceInfo, repoAccessor)
         }
     }
@@ -45,7 +48,7 @@ internal actual class DeviceConnectionManager(private val context: Context, conn
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
             launch {
-                repoAccessor.currentState().rssiDidUpdate(rssi)
+                stateRepo.takeAndChangeState { it.rssiDidUpdate(rssi) }
             }
         }
 
@@ -67,8 +70,11 @@ internal actual class DeviceConnectionManager(private val context: Context, conn
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
             launch {
-                when(val state = repoAccessor.currentState()) {
-                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(DefaultGattServiceWrapper(it), repoAccessor) } ?: emptyList())
+                stateRepo.takeAndChangeState { state ->
+                    when (state) {
+                        is DeviceState.Connected.Discovering -> state.didDiscoverServices(gatt?.services?.map { Service(DefaultGattServiceWrapper(it), stateRepo) } ?: emptyList())
+                        else -> state.remain
+                    }
                 }
             }
         }
@@ -99,32 +105,15 @@ internal actual class DeviceConnectionManager(private val context: Context, conn
             launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
-                        when (val state = repoAccessor.currentState()) {
-                            is DeviceState.Reconnecting -> {
-                                if (state.retry())
-                                    return@launch
-                            }
-                            is DeviceState.Connected -> {
-                                when (connectionSettings.reconnectionSettings) {
-                                    is ConnectionSettings.ReconnectionSettings.Always,
-                                    is ConnectionSettings.ReconnectionSettings.Limited -> {
-                                        state.reconnect()
-                                        return@launch
-                                    }
-                                }
-                            }
+                        handleDisconnect {
+                            currentAction = null
+                            gatt?.close()
+                            this@DeviceConnectionManager.gatt = CompletableDeferred()
                         }
-                        currentAction = null
-                        gatt?.close()
-                        this@DeviceConnectionManager.gatt = CompletableDeferred()
-                        repoAccessor.currentState().didDisconnect()
                     }
                     BluetoothProfile.STATE_CONNECTED -> {
-                        when (val state = repoAccessor.currentState()) {
-                            is DeviceState.Connecting -> state.didConnect()
-                            is DeviceState.Reconnecting -> state.didConnect()
-                            is DeviceState.Connected -> {}
-                            else -> gatt?.disconnect()
+                        handleConnect {
+                            gatt?.disconnect()
                         }
                     }
                 }
@@ -233,14 +222,20 @@ internal actual class DeviceConnectionManager(private val context: Context, conn
     }
 
     private suspend fun completeCurrentAction() {
-        when (val state = repoAccessor.currentState()) {
-            is DeviceState.Connected.HandlingAction -> {
-                if (state.action == currentAction) {
-                    state.actionCompleted()
+        stateRepo.takeAndChangeState { state ->
+            val newState = when (state) {
+                is DeviceState.Connected.HandlingAction -> {
+                    if (state.action == currentAction) {
+                        state.actionCompleted
+                    } else {
+                        state.remain
+                    }
                 }
+                else -> state.remain
             }
+            currentAction = null
+            newState
         }
-        currentAction = null
     }
 
     private fun unpair() {

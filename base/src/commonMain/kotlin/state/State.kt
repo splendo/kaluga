@@ -70,21 +70,26 @@ interface HandleAfterCreating<S:State<S>> {
 
 }
 
-interface HandleAfterNewStateIsSet {
+interface HandleAfterNewStateIsSet<S:State<S>> {
+
     /**
      * Called while transitioning to a new state after the new state is set.
+     *
+     * @param newState the newly set [State]
      */
-    suspend fun afterNewStateIsSet()
+    suspend fun afterNewStateIsSet(newState: S)
 }
 
-interface HandleBeforeOldStateIsRemoved {
+interface HandleBeforeOldStateIsRemoved<S:State<S>> {
+
     /**
      * Called while transitioning from an old state before it is removed.
      */
-    suspend fun beforeOldStateIsRemoved()
+    suspend fun beforeOldStateIsRemoved(oldState: S)
 }
 
 interface HandleAfterOldStateIsRemoved<S:State<S>> {
+
     /**
      * Called while transitioning from an old state after it is removed
      *
@@ -192,9 +197,9 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
                         (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
                         val newState = transition()
                         (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
-                        (newState as? HandleBeforeOldStateIsRemoved)?.beforeOldStateIsRemoved()
+                        (newState as? HandleBeforeOldStateIsRemoved<S>)?.beforeOldStateIsRemoved(beforeState)
                         setChangedState(newState)
-                        (beforeState as? HandleAfterNewStateIsSet)?.afterNewStateIsSet()
+                        (beforeState as? HandleAfterNewStateIsSet<S>)?.afterNewStateIsSet(newState)
                         (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
                         result.complete(newState)
                     }

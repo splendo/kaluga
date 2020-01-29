@@ -19,9 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepoAccessor: StateRepoAccesor<DeviceState>) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepoAccessor) {
+abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepo: StateRepo<DeviceState>) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
     abstract val descriptors: List<Descriptor>
     var isNotifying: Boolean = false

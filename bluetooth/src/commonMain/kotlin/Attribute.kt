@@ -20,9 +20,9 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.flow.BaseFlowable
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseFlowable<ByteArray?>() {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: StateRepo<DeviceState>) : BaseFlowable<ByteArray?>() {
     abstract val uuid: UUID
 
     init {
@@ -48,9 +48,12 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     internal abstract fun getUpdatedValue(): ByteArray?
 
     protected suspend fun addAction(action: DeviceAction) {
-        when (val state = stateRepoAccessor.currentState()) {
-            is DeviceState.Connected.Idle -> state.handleAction(action)
-            is DeviceState.Connected.HandlingAction -> state.addAction(action)
+        stateRepo.takeAndChangeState { state ->
+            when (state) {
+                is DeviceState.Connected.Idle -> state.handleAction(action)
+                is DeviceState.Connected.HandlingAction -> state.addAction(action)
+                else -> state.remain
+            }
         }
     }
 

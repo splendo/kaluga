@@ -171,34 +171,18 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
 
     internal fun didConnect() {
         launch {
-            when (val state = repoAccessor.currentState()) {
-                is DeviceState.Connecting -> state.didConnect()
-                is DeviceState.Reconnecting -> state.didConnect()
-                is DeviceState.Connected -> {}
-                else -> disconnect()
+            handleConnected() {
+                disconnect()
             }
         }
     }
 
     internal fun didDisconnect() {
         launch {
-            when (val state = repoAccessor.currentState()) {
-                is DeviceState.Reconnecting -> {
-                    if (state.retry())
-                        return@launch
-                }
-                is DeviceState.Connected -> {
-                    when (connectionSettings.reconnectionSettings) {
-                        is ConnectionSettings.ReconnectionSettings.Always,
-                        is ConnectionSettings.ReconnectionSettings.Limited -> {
-                            state.reconnect()
-                            return@launch
-                        }
-                    }
-                }
+            handleDisconnected {
+                disconnect()
+                currentAction = null
             }
-            currentAction = null
-            repoAccessor.currentState().didDisconnect()
         }
     }
 
