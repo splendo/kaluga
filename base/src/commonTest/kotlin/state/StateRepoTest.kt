@@ -21,14 +21,19 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : State<TrafficLightState>(stateRepoAccessor) {
+sealed class TrafficLightState : State<TrafficLightState>(),
+    HandleBeforeCreating,
+    HandleAfterCreating<TrafficLightState>,
+    HandleBeforeOldStateIsRemoved,
+    HandleAfterOldStateIsRemoved<TrafficLightState>,
+    HandleAfterNewStateIsSet {
 
     val initialStateDone = EmptyCompletableDeferred()
     val beforeCreatingNewStateDone = EmptyCompletableDeferred()
@@ -66,29 +71,29 @@ sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<
         finalStateDone.complete()
     }
 
-    class RedLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
+    class RedLight : TrafficLightState() {
 
-        suspend fun becomeGreen() {
-            changeState(GreenLight(stateRepoAccessor))
+        fun becomeGreen() : suspend () -> GreenLight {
+            return {GreenLight()}
         }
     }
 
-    class GreenLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
+    class GreenLight() : TrafficLightState() {
 
-        suspend fun becomeYellow() {
-            changeState(YellowLight(stateRepoAccessor))
+        fun becomeYellow() : suspend () -> YellowLight {
+            return {YellowLight()}
         }
 
-        suspend fun becomeRed() {
-            changeState(RedLight(stateRepoAccessor))
+        fun becomeRed() : suspend () -> RedLight {
+            return {RedLight()}
         }
 
     }
 
-    class YellowLight(stateRepoAccessor: StateRepoAccesor<TrafficLightState>) : TrafficLightState(stateRepoAccessor) {
+    class YellowLight() : TrafficLightState() {
 
-        suspend fun becomeRed() {
-            changeState(RedLight(stateRepoAccessor))
+        fun becomeRed() : suspend () -> RedLight {
+            return {RedLight()}
         }
 
     }
@@ -97,17 +102,15 @@ sealed class TrafficLightState(internal val stateRepoAccessor: StateRepoAccesor<
 
 class TrafficLight: HotStateRepo<TrafficLightState>() {
 
-    val repoAccesor = StateRepoAccesor(this)
-
     override fun initialValue(): TrafficLightState {
-        return TrafficLightState.GreenLight(repoAccesor)
+        return TrafficLightState.GreenLight()
     }
 
 }
 
 class StateRepoTest: FlowableTest<TrafficLightState>() {
 
-    lateinit var trafficLight: TrafficLight
+    private lateinit var trafficLight: TrafficLight
 
     override fun setUp() {
         super.setUp()
@@ -117,43 +120,49 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun changeState() = runBlockingWithFlow {
-        lateinit var greenState: TrafficLightState.GreenLight
-        test {
+    fun testChangeState() = testWithFlow {flowTest ->
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
+        flowTest.test {
             assertTrue(it is TrafficLightState.GreenLight)
-            greenState = it
-            assertTrue(greenState.initialStateDone.isCompleted)
+            greenStateDeferred.complete(it)
+            assertTrue(it.initialStateDone.isCompleted)
         }
-        action {
+        val greenState = greenStateDeferred.await()
+        flowTest.action {
             assertFalse(greenState.beforeCreatingNewStateDone.isCompleted)
             greenState.beforeCreatingNewStateDone.invokeOnCompletion {
-                assertEquals(greenState, trafficLight.repoAccesor.currentState())
+                assertEquals(greenState, trafficLight.peekState())
                 assertFalse { greenState.afterCreatingNewStateDone.isCompleted }
             }
             greenState.afterCreatingNewStateDone.invokeOnCompletion {
-                assertEquals(greenState, trafficLight.repoAccesor.currentState())
+                assertEquals(greenState, trafficLight.peekState())
                 val newState = greenState.afterCreatingNewStateDone.getCompleted()
                 assertTrue(newState is TrafficLightState.RedLight)
                 assertFalse { greenState.afterNewStateIsSetDone.isCompleted}
                 assertFalse { newState.beforeOldStateIsRemovedDone.isCompleted }
                 newState.beforeOldStateIsRemovedDone.invokeOnCompletion {
-                    assertEquals(greenState, trafficLight.repoAccesor.currentState())
+                    assertEquals(greenState, trafficLight.peekState())
                     assertFalse { newState.afterOldStateIsRemovedDone.isCompleted }
                 }
                 newState.afterOldStateIsRemovedDone.invokeOnCompletion {
                     assertEquals(greenState, newState.afterOldStateIsRemovedDone.getCompleted())
-                    assertEquals(newState, trafficLight.repoAccesor.currentState())
+                    assertEquals(newState, trafficLight.peekState())
                 }
             }
             greenState.afterNewStateIsSetDone.invokeOnCompletion {
-                val newState = trafficLight.repoAccesor.currentState()
+                val newState = trafficLight.peekState()
                 assertTrue { newState is TrafficLightState.RedLight }
                 assertFalse { newState.afterOldStateIsRemovedDone.isCompleted }
             }
 
-            greenState.becomeRed()
+            trafficLight.takeAndChangeState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    else -> state.remain
+                }
+            }
         }
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.RedLight)
             assertTrue(greenState.beforeCreatingNewStateDone.isCompleted)
             assertTrue(greenState.afterCreatingNewStateDone.isCompleted)
@@ -164,28 +173,104 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun changeStateDouble() = runBlockingWithFlow {
-        lateinit var greenState: TrafficLightState.GreenLight
-        test {
+    fun testChangeStateDouble() = testWithFlow {
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
+        flowTest.test {
             assertTrue(it is TrafficLightState.GreenLight)
-            greenState = it
+            greenStateDeferred.complete(it)
         }
-        action {
-            greenState.becomeRed()
-            greenState.becomeYellow()
+        flowTest.action {
+            trafficLight.takeAndChangeState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    else -> state.remain
+                }
+            }
+            trafficLight.takeAndChangeState {
+                when (val state = it) {
+                    is TrafficLightState.GreenLight -> state.becomeYellow()
+                    else -> state.remain
+                }
+            }
         }
-        test {
+        flowTest.test {
             assertTrue(it is TrafficLightState.RedLight)
         }
     }
 
     @Test
-    fun multipleObservers() = runBlocking {
+    fun testChangeStateDoubleConcurrent() = testWithFlow { flowTest ->
+        val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
+        flowTest.test {
+            assertTrue(it is TrafficLightState.GreenLight)
+            greenStateDeferred.complete(it)
+        }
+        flowTest.action {
+            val scope = MainScope()
+            val delayedTransition = scope.async {
+                delay(100)
+                trafficLight.takeAndChangeState {
+                    when(val state = it) {
+                        is TrafficLightState.GreenLight -> state.becomeRed()
+                        else -> state.remain
+                    }
+                }
+            }
+            val slowTransition = scope.async {
+                trafficLight.takeAndChangeState {
+                    delay(100)
+                    when(val state = it) {
+                        is TrafficLightState.GreenLight -> state.becomeYellow()
+                        else -> state.remain
+                    }
+                }
+            }
+            delayedTransition.await()
+            slowTransition.await()
+        }
+        flowTest.test {
+            assertTrue(it is TrafficLightState.YellowLight)
+        }
+
+    }
+
+    @Test
+    fun testMultipleObservers() = runBlocking {
         val greenState = flowable.await().flow().first()
         assertTrue(greenState is TrafficLightState.GreenLight)
-        greenState.becomeYellow()
+        trafficLight.takeAndChangeState {
+            when (val state = it) {
+                is TrafficLightState.GreenLight -> state.becomeYellow()
+                else -> state.remain
+            }
+        }
         val yellowState = flowable.await().flow().first()
         assertTrue(yellowState is TrafficLightState.YellowLight)
+    }
+
+    @Test
+    fun changeStateInsideChangeState() = runBlocking {
+        val transitionsCompleted = EmptyCompletableDeferred()
+        trafficLight.takeAndChangeState { state ->
+            async {
+                trafficLight.takeAndChangeState { newState ->
+                    when(newState) {
+                        is TrafficLightState.RedLight -> newState.becomeGreen()
+                        is TrafficLightState.YellowLight -> newState.becomeRed()
+                        is TrafficLightState.GreenLight -> newState.becomeYellow()
+                    }
+                }
+                transitionsCompleted.complete()
+            }
+            when(state) {
+                is TrafficLightState.RedLight -> state.becomeGreen()
+                is TrafficLightState.YellowLight -> state.becomeRed()
+                is TrafficLightState.GreenLight -> state.becomeYellow()
+            }
+        }
+        transitionsCompleted.await()
+        val redState = flowable.await().flow().first()
+        assertTrue(redState is TrafficLightState.RedLight)
     }
 
 }

@@ -17,99 +17,80 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 
 /**
  * State to be represented in a state machine
- *
- * @param T type of the State
- * @param repoAccessor The [StateRepoAccesor] for accessing the [StateRepo] associated with this State
  */
-open class State<T:State<T>>(open val repoAccessor:StateRepoAccesor<T>){
+open class State<S:State<S>> {
+
+    val remain = suspend {
+        this as S
+    }
 
     /**
      * Called when this state is the first state of the state machine
      */
     open suspend fun initialState() {}
 
-    /**
-     * Called while transitioning to a new state before the new state is created
-     */
-    open suspend fun beforeCreatingNewState() {}
-    /**
-     * Called while transitioning to a new state after the new state is created
-     *
-     * @param newState the newly created state
-     */
-    open suspend fun afterCreatingNewState(newState: T) {}
-
-    /**
-     * Called while transitioning to a new state after the new state is set.
-     */
-    open suspend fun afterNewStateIsSet() {}
-
-    /**
-     * Called while transitioning from an old state before it is removed.
-     */
-    open suspend fun beforeOldStateIsRemoved() {}
-
-    /**
-     * Called while transitioning from an old state after it is removed
-     *
-     * @param oldState the removed state
-     */
-    open suspend fun afterOldStateIsRemoved(oldState: T) {}
 
     /**
      * Called when this state is the final state of the state machine
      */
     open suspend fun finalState() {}
 
+}
+
+interface HandleBeforeCreating {
     /**
-     * Changes from this state to a new state. Only transitions if this State is the current state of the state machine.
-     *
-     * @param toState the state to which to transition
+     * Called while transitioning to a new state before the new state is created
      */
-    protected suspend fun changeState(toState: T) {
-        repoAccessor.changeState {
-            if (it === this)
-                toState
-            else
-                it
-        }
-    }
+    suspend fun beforeCreatingNewState()
+}
+
+interface HandleAfterCreating<S:State<S>> {
+    /**
+     * Called while transitioning to a new state after the new state is created
+     *
+     * @param newState the newly created state
+     */
+    suspend fun afterCreatingNewState(newState: S)
 
 }
 
-/**
- * Accessor for accessing the current state from a [StateRepo]
- *
- * @param T the [State] associated with the [StateRepo]
- * @param s The [StateRepo] accessed bt this accessor
- */
-class StateRepoAccesor<T:State<T>> internal constructor(private val s:StateRepo<T> ) : CoroutineScope by s {
-
+interface HandleAfterNewStateIsSet {
     /**
-     * Gets the current state
-     * @return the current [State] of the [StateRepo]
+     * Called while transitioning to a new state after the new state is set.
      */
-    fun currentState() =  s.state()
+    suspend fun afterNewStateIsSet()
+}
 
+interface HandleBeforeOldStateIsRemoved {
     /**
-     * Changes from the current state to a new state
+     * Called while transitioning from an old state before it is removed.
+     */
+    suspend fun beforeOldStateIsRemoved()
+}
+
+interface HandleAfterOldStateIsRemoved<S:State<S>> {
+    /**
+     * Called while transitioning from an old state after it is removed
      *
-     * @param action the function for determining which [State] to transition to.
+     * @param oldState the removed state
      */
-    internal suspend fun changeState(action: (T) -> T) {
-        s.changeState(action)
-    }
+    suspend fun afterOldStateIsRemoved(oldState: S)
 }
 
 /**
@@ -118,14 +99,16 @@ class StateRepoAccesor<T:State<T>> internal constructor(private val s:StateRepo<
  * @param T the [State] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
-    abstract val flowable: Lazy<BaseFlowable<T>>
-    protected val stateRepoAccesor = StateRepoAccesor(this)
+
+    private val stateMutex = Mutex()
+
+    abstract val flowable: Lazy<BaseFlowable<S>>
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
-    internal lateinit var changedState:T
-    private suspend fun setChangedState(value: T) {
+    internal lateinit var changedState:S
+    private suspend fun setChangedState(value: S) {
         changedState = value
         flowable.value.set(value)
     }
@@ -136,16 +119,14 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
      * @param flowConfig the [FlowConfig] to apply to the returned [Flow]
      * @return a [Flow] of the [State] of this repo
      */
-    fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T> {
+    fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<S> {
         return flowable.value.flow(flowConfig)
     }
 
-    internal fun initialize() : T {
+    internal suspend fun initialize() : S {
         val value = initialValue()
         changedState = value
-        runBlocking {
-            value.initialState()
-        }
+        value.initialState()
         return value
     }
 
@@ -153,34 +134,76 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
      * Gets the initial value of the repo
      * @return the initial value of the repo
      */
-    abstract fun initialValue() : T
+    abstract fun initialValue() : S
 
-    internal fun state():T {
+    internal fun state():S {
         return changedState
     }
 
-    internal fun changeStateBlocking(action: (state:T) -> T):T {
-        return runBlocking {
-            changeState(action)
+    /**
+     * Peek the current state of the state machine. The current state could change immediately after it is returned.
+     *
+     * If any actions are taken based on the current state that affect the state machine you should not use this method.
+     *
+     * If your code relies on the state not changing use [useState].
+     * If you want to change the state based on the current state use [takeAndChangeState]
+     *
+     * @return the current [State] of the [StateRepo]
+     */
+    fun peekState() = state()
+
+    /**
+     * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action] .
+     *
+     * @param action the function for determining which [State] to transition to.
+     */
+    suspend fun useState(action:suspend (S) -> Unit) {
+        try {
+            stateMutex.withLock {
+                coroutineScope {
+                    launch {
+                        action(state())
+                    }
+                }
+            }
+        } catch (e:IllegalStateException) {
+            throw IllegalStateException("Seems like you tried to change to a new a state while are inside a code block requesting the state to not change (see [useState]) ")
         }
     }
 
-    internal suspend fun changeState(action: (state:T) -> T):T {
-        val result = CompletableDeferred<T>()
-        coroutineScope {
-            launch {
-                val beforeState = state()
-                beforeState.beforeCreatingNewState()
-                val newState = action(beforeState)
-                beforeState.afterCreatingNewState(newState)
-                newState.beforeOldStateIsRemoved()
-                setChangedState(newState)
-                beforeState.afterNewStateIsSet()
-                newState.afterOldStateIsRemoved(beforeState)
-                result.complete(newState)
+    /**
+     * Changes from the current [State] to a new [State]
+     *
+     * @param action Function to determine the [State] to be transitioned to from the current [State]
+     */
+    suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
+        try {
+            stateMutex.withLock {
+                val result = CompletableDeferred<S>()
+                coroutineScope {
+                    launch {
+                        val beforeState = state()
+                        val transition = action(state())
+                        // No Need to Transition if remain is used
+                        if (transition == state().remain) {
+                            result.complete(beforeState)
+                            return@launch
+                        }
+                        (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
+                        val newState = transition()
+                        (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
+                        (newState as? HandleBeforeOldStateIsRemoved)?.beforeOldStateIsRemoved()
+                        setChangedState(newState)
+                        (beforeState as? HandleAfterNewStateIsSet)?.afterNewStateIsSet()
+                        (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
+                        result.complete(newState)
+                    }
+                }
+                return result.await()
             }
+        } catch (e:IllegalStateException) {
+            throw IllegalStateException("Seems like you tried to change to a new a state while you were still in the process of changing to the current state (see [useAndChangeState])")
         }
-        return result.await()
     }
 
 }
@@ -188,10 +211,10 @@ abstract class StateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispat
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
-abstract class HotStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<T>(coroutineContext) {
+abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
     override val flowable = lazy {
-        HotFlowable(initialize())
+        HotFlowable(runBlocking { initialize() })
     }
 
 }
@@ -199,7 +222,7 @@ abstract class HotStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dis
 /**
  * A [StateRepo] that represents its [State] as a Cold flow. Data will only be set when the State repo is observed
  */
-abstract class ColdStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<T>(coroutineContext) {
+abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
     override val flowable = lazy {
         ColdFlowable({
@@ -211,6 +234,6 @@ abstract class ColdStateRepo<T:State<T>>(coroutineContext: CoroutineContext = Di
         })
     }
 
-    abstract fun deinitialize(state: T)
+    abstract fun deinitialize(state: S)
 
 }
