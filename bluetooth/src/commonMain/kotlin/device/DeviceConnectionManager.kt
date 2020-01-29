@@ -17,14 +17,15 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CompletableDeferred
 
 internal abstract class BaseDeviceConnectionManager(internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
                                                     internal val deviceInfoHolder: DeviceInfoHolder,
-                                                    internal val repoAccessor: StateRepoAccesor<DeviceState>) {
+                                                    internal val stateRepo: StateRepo<DeviceState>) {
 
     interface Builder {
-        fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager
+        fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager
     }
 
     abstract suspend fun connect()
@@ -32,6 +33,51 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
     abstract suspend fun disconnect()
     abstract suspend fun readRssi()
     abstract suspend fun performAction(action: DeviceAction): Boolean
+
+    internal suspend fun handleConnect(onNotConnecting: () -> Unit) {
+        stateRepo.takeAndChangeState { state ->
+            when (state) {
+                is DeviceState.Connecting -> state.didConnect
+                is DeviceState.Reconnecting -> state.didConnect
+                is DeviceState.Connected -> state.remain
+                else -> {
+                    onNotConnecting()
+                    state.remain
+                }
+            }
+        }
+    }
+
+    internal suspend fun handleDisconnect(onDisconnect: () -> Unit) {
+        stateRepo.takeAndChangeState { state ->
+            when (state) {
+                is DeviceState.Reconnecting -> {
+                    val retry = state.retry()
+                    if (!retry.first)
+                        onDisconnect()
+                    retry.second
+                }
+                is DeviceState.Connected -> {
+                    when (connectionSettings.reconnectionSettings) {
+                        is ConnectionSettings.ReconnectionSettings.Always,
+                        is ConnectionSettings.ReconnectionSettings.Limited -> {
+                            state.reconnect
+                        }
+                        else -> {
+                            onDisconnect()
+                            state.didDisconnect
+                        }
+                    }
+                }
+                is DeviceState.Disconnected -> state.remain
+                else -> {
+                    onDisconnect()
+                    state.didDisconnect
+                }
+            }
+        }
+    }
+
 }
 
 internal expect class DeviceConnectionManager : BaseDeviceConnectionManager

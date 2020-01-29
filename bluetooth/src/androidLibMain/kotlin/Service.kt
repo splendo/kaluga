@@ -19,16 +19,14 @@ package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
-import android.os.ParcelUuid
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-actual open class Service(private val service: GattServiceWrapper, private val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseService {
+actual open class Service(private val service: GattServiceWrapper, private val stateRepo: StateRepo<DeviceState>) : BaseService {
 
     override val uuid = service.uuid
 
-    override val characteristics = service.characteristics.map { Characteristic(it, stateRepoAccesor) }
+    override val characteristics = service.characteristics.map { Characteristic(it, stateRepo) }
 }
 
 interface GattServiceWrapper {

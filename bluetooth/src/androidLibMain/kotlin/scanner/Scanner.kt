@@ -28,8 +28,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.state.StateRepoAccesor
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.*
 
@@ -40,8 +39,8 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                                           permissions: Permissions,
                                           private val connectionSettings: ConnectionSettings,
                                           private val context: Context,
-                                          private val coroutineScope: CoroutineScope,
-                                          stateRepoAccessor: StateRepoAccesor<ScanningState>) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
+                                          stateRepo: StateRepo<ScanningState>
+) : BaseScanner(permissions, stateRepo) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
                   override val autoEnableBluetooth: Boolean,
@@ -51,8 +50,8 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                   private val connectionSettings: ConnectionSettings,
                   private val context: Context = ApplicationHolder.applicationContext) : BaseScanner.Builder {
 
-        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, context, coroutineScope, stateRepoAccessor)
+        override fun create(stateRepo: StateRepo<ScanningState>): Scanner {
+            return Scanner(autoEnableBluetooth, bluetoothScanner, bluetoothAdapter, scanSettings, permissions, connectionSettings, context, stateRepo)
         }
     }
 
@@ -79,10 +78,13 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
             }
 
             launch {
-                stateRepoAccessor.currentState().logError(Error(error.first))
+                stateRepo.peekState().logError(Error(error.first))
                 if (error.second) {
-                    when (val state = stateRepoAccessor.currentState()) {
-                        is ScanningState.Enabled.Scanning -> state.stopScanning()
+                    stateRepo.takeAndChangeState { state ->
+                        when (state) {
+                            is ScanningState.Enabled.Scanning -> state.stopScanning()
+                            else -> state.remain
+                        }
                     }
                 }
             }
@@ -103,16 +105,21 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
 
         private fun receiveResults(results: List<ScanResult>) {
             launch {
-                when (val state = stateRepoAccessor.currentState()) {
-                    is ScanningState.Enabled.Scanning -> {
-                        val devices = results.map {
-                            val advertisementData = AdvertisementData(it.scanRecord)
-                            val deviceInfoHolder = DeviceInfoHolder(DefaultDeviceWrapper(it.device), advertisementData)
-                            Device(connectionSettings, deviceInfoHolder, it.rssi, DeviceConnectionManager.Builder(context))
+                stateRepo.takeAndChangeState { state ->
+                    when (state) {
+                        is ScanningState.Enabled.Scanning -> {
+                            val devices = results.map {
+                                val advertisementData = AdvertisementData(it.scanRecord)
+                                val deviceInfoHolder = DeviceInfoHolder(DefaultDeviceWrapper(it.device), advertisementData)
+                                Device(connectionSettings, deviceInfoHolder, it.rssi, DeviceConnectionManager.Builder(context))
+                            }
+                            state.discoverDevices(*devices.toTypedArray())
                         }
-                        state.discoverDevices(*devices.toTypedArray())
+                        else -> {
+                            state.logError(Error("Discovered Device while not scanning"))
+                            state.remain
+                        }
                     }
-                    else -> state.logError(Error("Discovered Device while not scanning"))
                 }
             }
         }

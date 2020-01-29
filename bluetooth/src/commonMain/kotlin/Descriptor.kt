@@ -19,8 +19,8 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-abstract class BaseDescriptor(initialValue: ByteArray? = null, stateRepoAccessor: StateRepoAccesor<DeviceState>) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, stateRepoAccessor)
+abstract class BaseDescriptor(initialValue: ByteArray? = null, stateRepo: StateRepo<DeviceState>) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, stateRepo)
 
 expect class Descriptor : BaseDescriptor

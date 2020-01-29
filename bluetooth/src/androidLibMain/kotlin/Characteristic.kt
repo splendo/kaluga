@@ -18,18 +18,16 @@
 package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattCharacteristic
-import android.os.ParcelUuid
-import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepoAccesor: StateRepoAccesor<DeviceState>) :
-    BaseCharacteristic(characteristic.value, stateRepoAccesor) {
+actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: StateRepo<DeviceState>) :
+    BaseCharacteristic(characteristic.value, stateRepo) {
 
     override val uuid = characteristic.uuid
 
-    override val descriptors = characteristic.descriptors.map { Descriptor(it, stateRepoAccessor) }
+    override val descriptors = characteristic.descriptors.map { Descriptor(it, stateRepo) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

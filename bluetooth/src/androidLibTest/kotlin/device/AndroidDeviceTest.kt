@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.device
 import android.bluetooth.BluetoothDevice
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.mock.*
-import com.splendo.kaluga.state.StateRepoAccesor
 import org.junit.Test
 import java.util.*
 import java.util.UUID

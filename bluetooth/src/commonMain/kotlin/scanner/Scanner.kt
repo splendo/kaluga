@@ -21,18 +21,17 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.permissions.BasePermissions
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 abstract class BaseScanner internal constructor(internal val permissions: BasePermissions,
-                                                internal val stateRepoAccessor: StateRepoAccesor<ScanningState>,
-                                                coroutineScope: CoroutineScope)
-    : CoroutineScope by coroutineScope {
+                                                internal val stateRepo: StateRepo<ScanningState>)
+    : CoroutineScope by stateRepo {
 
     interface Builder {
         val autoEnableBluetooth: Boolean
-        fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): BaseScanner
+        fun create(scanningStateRepo: StateRepo<ScanningState>): BaseScanner
     }
 
     internal abstract fun scanForDevices(filter: Set<UUID>)
@@ -42,16 +41,22 @@ abstract class BaseScanner internal constructor(internal val permissions: BasePe
 
     internal fun bluetoothEnabled() {
         launch {
-            when (val state = stateRepoAccessor.currentState()) {
-                is ScanningState.NoBluetoothState.Disabled -> state.enable()
+            stateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is ScanningState.NoBluetoothState.Disabled -> state.enable()
+                    else -> state.remain
+                }
             }
         }
     }
 
     internal fun bluetoothDisabled() {
         launch {
-            when (val state = stateRepoAccessor.currentState()) {
-                is ScanningState.Enabled -> state.disable()
+            stateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is ScanningState.Enabled -> state.disable()
+                    else -> state.remain
+                }
             }
         }
     }
