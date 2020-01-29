@@ -28,7 +28,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-sealed class TrafficLightState : State<TrafficLightState>() {
+sealed class TrafficLightState : State<TrafficLightState>(),
+    HandleBeforeCreating,
+    HandleAfterCreating<TrafficLightState>,
+    HandleBeforeOldStateIsRemoved,
+    HandleAfterOldStateIsRemoved<TrafficLightState>,
+    HandleAfterNewStateIsSet {
 
     val initialStateDone = EmptyCompletableDeferred()
     val beforeCreatingNewStateDone = EmptyCompletableDeferred()
@@ -68,18 +73,18 @@ sealed class TrafficLightState : State<TrafficLightState>() {
 
     class RedLight : TrafficLightState() {
 
-        suspend fun becomeGreen() : suspend () -> GreenLight {
+        fun becomeGreen() : suspend () -> GreenLight {
             return {GreenLight()}
         }
     }
 
     class GreenLight() : TrafficLightState() {
 
-        suspend fun becomeYellow() : suspend () -> YellowLight {
+        fun becomeYellow() : suspend () -> YellowLight {
             return {YellowLight()}
         }
 
-        suspend fun becomeRed() : suspend () -> RedLight {
+        fun becomeRed() : suspend () -> RedLight {
             return {RedLight()}
         }
 
@@ -87,7 +92,7 @@ sealed class TrafficLightState : State<TrafficLightState>() {
 
     class YellowLight() : TrafficLightState() {
 
-        suspend fun becomeRed() : suspend () -> RedLight {
+        fun becomeRed() : suspend () -> RedLight {
             return {RedLight()}
         }
 
@@ -105,7 +110,7 @@ class TrafficLight: HotStateRepo<TrafficLightState>() {
 
 class StateRepoTest: FlowableTest<TrafficLightState>() {
 
-    lateinit var trafficLight: TrafficLight
+    private lateinit var trafficLight: TrafficLight
 
     override fun setUp() {
         super.setUp()
@@ -253,7 +258,6 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                         is TrafficLightState.RedLight -> newState.becomeGreen()
                         is TrafficLightState.YellowLight -> newState.becomeRed()
                         is TrafficLightState.GreenLight -> newState.becomeYellow()
-                        else -> newState.remain
                     }
                 }
                 transitionsCompleted.complete()
@@ -262,7 +266,6 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 is TrafficLightState.RedLight -> state.becomeGreen()
                 is TrafficLightState.YellowLight -> state.becomeRed()
                 is TrafficLightState.GreenLight -> state.becomeYellow()
-                else -> state.remain
             }
         }
         transitionsCompleted.await()
