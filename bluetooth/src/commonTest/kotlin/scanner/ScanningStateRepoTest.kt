@@ -70,8 +70,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
         mockBaseScanner.stopMonitoringBluetoothCompleted.invokeOnCompletion {
             stopMonitoring.complete()
         }
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
@@ -83,8 +83,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testStartWithoutPermissions() {
         permissionManager.support = Support.POWER_ON
         permissionManager.permit = Permit.DENIED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.MissingPermissions)
                 assertFalse(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
@@ -95,11 +95,11 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testStartWithBluetoothDisabled() = runBlocking {
         permissionManager.support = Support.POWER_OFF
         val stopMonitoring = EmptyCompletableDeferred()
-        mockBaseScanner.stopMonitoringBluetoothCompleted.invokeOnCompletion { flowTest ->
+        mockBaseScanner.stopMonitoringBluetoothCompleted.invokeOnCompletion {
             stopMonitoring.complete()
         }
         testWithFlow {
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.Disabled)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
@@ -113,13 +113,13 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
         permissionManager.permit = Permit.ALLOWED
         val filter = createFilter()
         val device = createDevice()
-        testWithFlow {flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(emptySet(), it.oldFilter)
                 assertEquals(emptyList(), it.discoveredDevices)
             }
-            flowTest.action {
+            action {
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
                         is ScanningState.Enabled.Idle -> scanningState.startScanning(filter)
@@ -127,14 +127,14 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Scanning)
                 assertEquals(filter, it.filter)
                 assertEquals(emptyList(), it.discoveredDevices)
                 assertEquals(filter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
                 assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
                         is ScanningState.Enabled.Scanning -> scanningState.discoverDevices(device)
@@ -142,14 +142,14 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Scanning)
                 assertEquals(filter, it.filter)
                 assertEquals(listOf(device), it.discoveredDevices)
                 assertEquals(filter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
                 assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
                         is ScanningState.Enabled.Scanning -> scanningState.stopScanning
@@ -157,7 +157,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(filter, it.oldFilter)
                 assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
@@ -165,7 +165,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
             }
         }
         testWithFlow {
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(filter, it.oldFilter)
                 assertEquals(listOf(device), it.discoveredDevices)
@@ -177,12 +177,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testBluetoothDisabledWhileIdle() {
         permissionManager.support = Support.POWER_ON
         permissionManager.permit = Permit.ALLOWED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 permissionManager.support = Support.POWER_OFF
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
@@ -191,7 +191,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.Disabled)
             }
         }
@@ -201,12 +201,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testBluetoothDisabledWhileScanning() {
         permissionManager.support = Support.POWER_ON
         permissionManager.permit = Permit.ALLOWED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
                         is ScanningState.Enabled.Idle -> scanningState.startScanning(createFilter())
@@ -214,10 +214,10 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Scanning)
             }
-            flowTest.action {
+            action {
                 permissionManager.support = Support.POWER_OFF
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
@@ -226,7 +226,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     }
                 }
             }
-            flowTest.test {
+            test {
                 assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
                 assertTrue(it is ScanningState.NoBluetoothState.Disabled)
             }
@@ -237,12 +237,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testBluetoothEnabled() {
         permissionManager.support = Support.POWER_OFF
         permissionManager.permit = Permit.ALLOWED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.Disabled)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 permissionManager.support = Support.POWER_ON
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
@@ -252,7 +252,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 }
             }
 
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(emptySet(), it.oldFilter)
                 assertEquals(emptyList(), it.discoveredDevices)
@@ -264,12 +264,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testPermissionsGranted() {
         permissionManager.support = Support.POWER_ON
         permissionManager.permit = Permit.DENIED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.MissingPermissions)
                 assertFalse(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 permissionManager.permit = Permit.ALLOWED
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
@@ -279,7 +279,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 }
             }
 
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(emptySet(), it.oldFilter)
                 assertEquals(emptyList(), it.discoveredDevices)
@@ -292,12 +292,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testPermissionsRevoked() {
         permissionManager.support = Support.POWER_ON
         permissionManager.permit = Permit.ALLOWED
-        testWithFlow { flowTest ->
-            flowTest.test {
+        testWithFlow {
+            test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
-            flowTest.action {
+            action {
                 permissionManager.permit = Permit.DENIED
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
@@ -307,7 +307,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 }
             }
 
-            flowTest.test {
+            test {
                 assertTrue(it is ScanningState.NoBluetoothState.MissingPermissions)
                 assertTrue(mockBaseScanner.stopMonitoringBluetoothCompleted.isCompleted)
             }
