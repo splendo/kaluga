@@ -28,6 +28,7 @@ import com.splendo.kaluga.location.test.LocationFlowableTest
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.tasks.await
 import org.junit.Rule
+import kotlin.test.BeforeTest
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -35,6 +36,16 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
 
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
+
+    @BeforeTest
+    override fun setUp() {
+        super.setUp()
+
+        filter = {
+            debug("allow $allowInFilter for $it")
+            allowInFilter
+        }
+    }
 
     override fun generateLocationFlowable(): LocationFlowable {
         client = LocationServices.getFusedLocationProviderClient(
@@ -53,11 +64,6 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
 
     // we want to set an initial location, but not have it be included in the test. So we filter it from the test.
     var allowInFilter = false
-
-    override val filter: suspend (Location) -> Boolean = {
-        debug("allow $allowInFilter for $it")
-        allowInFilter
-    }
 
     override fun assertSameLocation(expected: Location, actual: Location) {
         if (expected is Location.KnownLocation && actual is Location.KnownLocation) {

@@ -1,4 +1,5 @@
 package com.splendo.kaluga.log.common
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,16 +23,15 @@ import kotlin.test.*
 
 internal class LogTest {
 
-    lateinit var mockLogger: LoggerMock
+    private lateinit var mockLogger: LoggerMock
 
     @BeforeTest
-    fun BeforeClass() {
-        initLogger(LoggerMock())
-        mockLogger = logger() as LoggerMock
+    fun setUp() {
+        mockLogger = initLogger(LoggerMock()) as LoggerMock
     }
 
     @AfterTest
-    fun afterTest() {
+    fun tearDown() {
         mockLogger.clear()
     }
 
@@ -107,7 +107,7 @@ internal class LogTest {
 
     @Test
     fun testInfoAndTagAndFunction() {
-        info(LogLevel.INFO.name, { LogLevel.INFO.name })
+        info(LogLevel.INFO.name) { LogLevel.INFO.name }
         assertLogWithMessageWasCalled(LogLevel.INFO, LogLevel.INFO.name)
     }
 
@@ -143,7 +143,7 @@ internal class LogTest {
 
     @Test
     fun testDebugAndTagAndFunction() {
-        debug(LogLevel.DEBUG.name, { LogLevel.DEBUG.name })
+        debug(LogLevel.DEBUG.name) { LogLevel.DEBUG.name }
         assertLogWithMessageWasCalled(LogLevel.DEBUG, LogLevel.DEBUG.name)
     }
 
@@ -179,7 +179,7 @@ internal class LogTest {
 
     @Test
     fun testWarnAndTagAndFunction() {
-        warn(LogLevel.WARNING.name, { LogLevel.WARNING.name })
+        warn(LogLevel.WARNING.name) { LogLevel.WARNING.name }
         assertLogWithMessageWasCalled(LogLevel.WARNING, LogLevel.WARNING.name)
     }
 
@@ -215,7 +215,7 @@ internal class LogTest {
 
     @Test
     fun testErrorAndTagAndFunction() {
-        error(LogLevel.ERROR.name, { LogLevel.ERROR.name })
+        error(LogLevel.ERROR.name) { LogLevel.ERROR.name }
         assertLogWithMessageWasCalled(LogLevel.ERROR, LogLevel.ERROR.name)
     }
 }
