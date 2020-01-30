@@ -66,19 +66,34 @@ class Bluetooth internal constructor(private val builder: Builder, coroutineCont
         return scanningStateRepo.flow().combine(scanFilter.flow()) { scanState, filter ->
             when (scanState) {
                 is ScanningState.Enabled.Idle -> {
-                    filter?.let {
-                        scanState.startScanning(it)
-                        if (scanState.oldFilter == it) scanState.discoveredDevices else emptyList()
+                    filter?.let {f ->
+                        scanningStateRepo.takeAndChangeState { state ->
+                            when(state) {
+                                is ScanningState.Enabled.Idle -> state.startScanning(f)
+                                else -> state.remain
+                            }
+                        }
+                        if (scanState.oldFilter == f) scanState.discoveredDevices else emptyList()
                     } ?: scanState.discoveredDevices
                 }
                 is ScanningState.Enabled.Scanning -> {
-                    filter?.let {
-                        if (scanState.filter == it) scanState.discoveredDevices else {
-                            scanState.stopScanning()
+                    filter?.let {f ->
+                        if (scanState.filter == f) scanState.discoveredDevices else {
+                            scanningStateRepo.takeAndChangeState { state ->
+                                when(state) {
+                                    is ScanningState.Enabled.Scanning -> state.stopScanning
+                                    else -> state.remain
+                                }
+                            }
                             emptyList()
                         }
                     } ?: run {
-                        scanState.stopScanning()
+                        scanningStateRepo.takeAndChangeState { state ->
+                            when(state) {
+                                is ScanningState.Enabled.Scanning -> state.stopScanning
+                                else -> state.remain
+                            }
+                        }
                         scanState.discoveredDevices
                     }
                 }
@@ -116,56 +131,58 @@ operator fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
 }
 
 suspend fun Flow<Device?>.services(): Flow<List<Service>> {
-    return this.mapDeviceState {deviceState ->
-        emit(when (deviceState) {
-            is DeviceState.Connected -> {
+    return this.mapDeviceState { deviceState ->
+            emit(
                 when (deviceState) {
-                    is DeviceState.Connected.Idle -> {
-                        if (deviceState.services.isEmpty())
-                            deviceState.discoverServices()
+                    is DeviceState.Connected -> {
+                        when (deviceState) {
+                            is DeviceState.Connected.Idle -> {
+                                if (deviceState.services.isEmpty())
+                                    deviceState.startDiscovering()
+                            }
+                        }
+                        deviceState.services
                     }
+                    else -> emptyList()
                 }
-                deviceState.services
-            }
-            else -> emptyList()
-        })
-    }
+            )
+        }
 }
 
 suspend fun Flow<Device?>.connect() {
-    this.mapDeviceState<Unit> {deviceState ->
-        when (deviceState) {
-            is DeviceState.Disconnected -> deviceState.connect()
-            is DeviceState.Connected -> emit(Unit)
-        }
+    this.mapDeviceState<Unit> { deviceState ->
+            when (deviceState) {
+                is DeviceState.Disconnected -> deviceState.startConnecting()
+                is DeviceState.Connected -> emit(Unit)
+            }
     }.first()
 }
 
 suspend fun Flow<Device?>.disconnect() {
-    this.mapDeviceState<Unit> {deviceState ->
+    this.mapDeviceState<Unit> { deviceState ->
             when (deviceState) {
-                is DeviceState.Connected -> deviceState.disconnect()
-                is DeviceState.Connecting -> deviceState.cancelConnection()
-                is DeviceState.Reconnecting -> deviceState.cancelConnection()
+                is DeviceState.Connected -> deviceState.handleDisconnect()
+                is DeviceState.Connecting -> deviceState.handleConnect()
+                is DeviceState.Reconnecting -> deviceState.handleCancel()
                 is DeviceState.Disconnected -> emit(Unit)
             }
     }.first()
 }
 
 suspend fun Flow<Device?>.rssi() : Flow<Int> {
-    return this.mapDeviceState {deviceState ->
-        emit(deviceState.lastKnownRssi)
-    }
+    return this.mapDeviceState { deviceState ->
+            emit(deviceState.lastKnownRssi)
+        }
 }
 
 suspend fun Flow<Device?>.updateRssi() {
     this.mapDeviceState<Unit> { deviceState ->
-        when (deviceState) {
-            is DeviceState.Connected -> {
-                deviceState.readRssi()
-                emit(Unit)
+            when (deviceState) {
+                is DeviceState.Connected -> {
+                    deviceState.readRssi()
+                    emit(Unit)
+                }
             }
-        }
     }.first()
 }
 

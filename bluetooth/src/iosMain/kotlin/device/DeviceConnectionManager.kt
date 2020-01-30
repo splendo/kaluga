@@ -19,9 +19,9 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.*
@@ -29,18 +29,16 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor), CoroutineScope by repoAccessor {
+internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, connectionSettings: ConnectionSettings, deviceInfoHolder: DeviceInfoHolder, stateRepo: StateRepo<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, stateRepo), CoroutineScope by stateRepo {
 
     val peripheral = deviceInfoHolder.peripheral
-    private var currentAction: DeviceAction? = null
-    private val notifyingCharacteristics = emptyMap<String, Characteristic>().toMutableMap()
 
     private val discoveringServices = emptyList<CBUUID>().toMutableList()
     private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
 
     class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceInfo, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceInfo, stateRepo)
         }
     }
 
@@ -60,7 +58,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
                         launch {
-                            completeCurrentAction()
+                            handleCurrentActionCompleted()
                         }
                     }
                 }
@@ -70,33 +68,25 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
             super.peripheral(peripheral, didUpdateValueForCharacteristic = didUpdateValueForCharacteristic, error = error)
 
-            launch {
-                updateCharacteristic(didUpdateValueForCharacteristic)
-            }
+            updateCharacteristic(didUpdateValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
             super.peripheral(peripheral, didWriteValueForCharacteristic = didWriteValueForCharacteristic, error = error)
 
-            launch {
-                updateCharacteristic(didWriteValueForCharacteristic)
-            }
+            updateCharacteristic(didWriteValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
             super.peripheral(peripheral, didUpdateValueForDescriptor = didUpdateValueForDescriptor, error = error)
 
-            launch {
-                updateDescriptor(didUpdateValueForDescriptor)
-            }
+            updateDescriptor(didUpdateValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
             super.peripheral(peripheral, didWriteValueForDescriptor = didWriteValueForDescriptor, error = error)
 
-            launch {
-                updateDescriptor(didWriteValueForDescriptor)
-            }
+            updateDescriptor(didWriteValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
@@ -115,7 +105,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             super.peripheral(peripheral, didReadRSSI, error)
 
             launch {
-                repoAccessor.currentState().rssiDidUpdate( didReadRSSI.intValue)
+                handleNewRssi(didReadRSSI.intValue)
             }
         }
 
@@ -171,73 +161,26 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
 
     internal fun didConnect() {
         launch {
-            handleConnected() {
-                disconnect()
-            }
+            handleConnect()
         }
     }
 
     internal fun didDisconnect() {
         launch {
-            handleDisconnected {
-                disconnect()
-                currentAction = null
-            }
+            handleDisconnect()
         }
     }
 
-    private suspend fun updateCharacteristic(characteristic: CBCharacteristic) {
-        notifyingCharacteristics[characteristic.UUID.toString()]?.updateValue()
-        val characteristicToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == characteristic.UUID.toString()) {
-                    action.characteristic
-                } else null
-            }
-            is DeviceAction.Write.Characteristic -> {
-                if (action.characteristic.uuid.uuidString == characteristic.UUID.toString()) {
-                    action.characteristic
-                } else null
-            }
-            else -> null
-        }
-
-        characteristicToUpdate?.let {
-            it.updateValue()
-            completeCurrentAction()
+    private fun updateCharacteristic(characteristic: CBCharacteristic) {
+        launch {
+            handleUpdatedCharacteristic(characteristic.UUID)
         }
     }
 
-    private suspend fun updateDescriptor(descriptor: CBDescriptor) {
-        val descriptorToUpdate = when (val action = currentAction) {
-            is DeviceAction.Read.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == descriptor.UUID.toString()) {
-                    action.descriptor
-                } else null
-            }
-            is DeviceAction.Write.Descriptor -> {
-                if (action.descriptor.uuid.uuidString == descriptor.UUID.toString()) {
-                    action.descriptor
-                } else null
-            }
-            else -> null
+    private fun updateDescriptor(descriptor: CBDescriptor) {
+        launch {
+            handleUpdatedDescriptor(descriptor.UUID)
         }
-
-        descriptorToUpdate?.let {
-            it.updateValue()
-            completeCurrentAction()
-        }
-    }
-
-    private suspend fun completeCurrentAction() {
-        when (val state = repoAccessor.currentState()) {
-            is DeviceState.Connected.HandlingAction -> {
-                if (state.action == currentAction) {
-                    state.actionCompleted()
-                }
-            }
-        }
-        currentAction = null
     }
 
     private fun didDiscoverServices() {
@@ -266,9 +209,8 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                when(val state = repoAccessor.currentState()) {
-                    is DeviceState.Connected.Discovering -> state.didDiscoverServices(peripheral.services?.typedList<CBService>()?.map { Service(it, repoAccessor) } ?: emptyList())
-                }
+                val services = peripheral.services?.typedList<CBService>()?.map { Service(it, stateRepo) } ?: emptyList()
+                handleScanCompleted(services)
             }
         }
     }

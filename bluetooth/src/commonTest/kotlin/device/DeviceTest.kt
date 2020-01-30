@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
@@ -36,28 +36,30 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         val initialRssi = -10
     }
 
+    private lateinit var deviceStateRepo: Device
     private lateinit var connectionManager: MockDeviceConnectionManager
 
     abstract val deviceInfoHolder: DeviceInfoHolder
-    abstract fun createServices(repoAccessor: StateRepoAccesor<DeviceState>): List<Service>
-    abstract fun createCharacteristic(repoAccessor: StateRepoAccesor<DeviceState>) : Characteristic
-    abstract fun createDescriptor(repoAccessor: StateRepoAccesor<DeviceState>) : Descriptor
+    abstract fun createServices(stateRepo: StateRepo<DeviceState>): List<Service>
+    abstract fun createCharacteristic(stateRepo: StateRepo<DeviceState>) : Characteristic
+    abstract fun createDescriptor(stateRepo: StateRepo<DeviceState>) : Descriptor
     abstract fun validateCharacteristicUpdated() : Boolean
     abstract fun validateDescriptorUpdated() : Boolean
 
     @BeforeTest
     override fun setUp() {
         super.setUp()
-        flowable.complete(Device(connectionSettings, deviceInfoHolder, initialRssi, object : BaseDeviceConnectionManager.Builder {
-            override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepoAccesor<DeviceState>): BaseDeviceConnectionManager {
-                connectionManager = MockDeviceConnectionManager(connectionSettings, deviceInfo, repoAccessor)
+        deviceStateRepo = Device(connectionSettings, deviceInfoHolder, initialRssi, object : BaseDeviceConnectionManager.Builder {
+            override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
+                connectionManager = MockDeviceConnectionManager(connectionSettings, deviceInfo, stateRepo)
                 return connectionManager
             }
-        }).flowable.value)
+        })
+        flowable.complete(deviceStateRepo.flowable.value)
     }
 
     @Test
-    fun testInitialState() = runBlockingWithFlow { flowTest ->
+    fun testInitialState() = testWithFlow { flowTest ->
         flowTest.test {
             assertTrue(it is DeviceState.Disconnected)
             assertEquals(initialRssi, it.lastKnownRssi)
@@ -65,50 +67,65 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
     }
 
     @Test
-    fun testConnected() = runBlockingWithFlow {
-        val disconnectedState = getDisconnectedState(it)
-        val connectingState = connecting(disconnectedState, it)
-        connect(connectingState, it)
+    fun testConnected() = testWithFlow {
+        getDisconnectedState(it)
+        connecting(it)
+        connect(it)
     }
 
     @Test
-    fun testCancelConnection() = runBlockingWithFlow {
-        val connectingState = connecting(getDisconnectedState(it), it)
+    fun testCancelConnection() = testWithFlow {
+        getDisconnectedState(it)
+        connecting(it)
         it.action {
-            connectingState.cancelConnection()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when(deviceState) {
+                    is DeviceState.Connecting -> deviceState.cancelConnection
+                    else -> deviceState.remain
+                }
+            }
         }
-        disconnect(getDisconnectingState(it), it)
+        disconnecting(it)
+        disconnect(it)
     }
 
     @Test
-    fun testDisconnect() = runBlockingWithFlow {
-        val disconnectedState = getDisconnectedState(it)
-        val connectingState = connecting(disconnectedState, it)
-        val connectedState = connect(connectingState, it)
-        val disconnectingState = disconnecting(connectedState, it)
-        disconnect(disconnectingState, it)
+    fun testDisconnect() = testWithFlow {
+        getDisconnectedState(it)
+        connecting(it)
+        connect(it)
+        disconnecting(it)
+        disconnect(it)
     }
 
     @Test
-    fun testReconnect() = runBlockingWithFlow { flowTest ->
-        val disconnectedState = getDisconnectedState(flowTest)
-        val connectingState = connecting(disconnectedState, flowTest)
-        val connectedState = connect(connectingState, flowTest)
+    fun testReconnect() = testWithFlow { flowTest ->
+        getDisconnectedState(flowTest)
+        connecting(flowTest)
+        connect(flowTest)
 
         flowTest.action {
             connectionManager.reset()
-            connectedState.reconnect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when(deviceState) {
+                    is DeviceState.Connected -> deviceState.reconnect
+                    else -> deviceState.remain
+                }
+            }
         }
 
-        val reconnecting = CompletableDeferred<DeviceState.Reconnecting>()
         flowTest.test {
             assertTrue(connectionManager.connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(0, it.attempt)
-            reconnecting.complete(it)
         }
         flowTest.action {
-            reconnecting.getCompleted().didConnect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when(deviceState) {
+                    is DeviceState.Reconnecting -> deviceState.didConnect
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(it is DeviceState.Connected)
@@ -116,37 +133,48 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
     }
 
     @Test
-    fun testReconnectFailed() = runBlockingWithFlow { flowTest ->
-        val disconnectedState = getDisconnectedState(flowTest)
-        val connectingState = connecting(disconnectedState, flowTest)
-        val connectedState = connect(connectingState, flowTest)
+    fun testReconnectFailed() = testWithFlow { flowTest ->
+        getDisconnectedState(flowTest)
+        connecting(flowTest)
+        connect(flowTest)
 
         flowTest.action {
             connectionManager.reset()
-            connectedState.reconnect()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected -> deviceState.reconnect
+                    else -> deviceState.remain
+                }
+            }
         }
 
-        val reconnecting1 = CompletableDeferred<DeviceState.Reconnecting>()
         flowTest.test {
             assertTrue(connectionManager.connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(0, it.attempt)
-            reconnecting1.complete(it)
         }
         flowTest.action {
             connectionManager.reset()
-            reconnecting1.getCompleted().retry()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Reconnecting -> deviceState.retry()
+                    else -> deviceState.remain
+                }
+            }
         }
-        val reconnecting2 = CompletableDeferred<DeviceState.Reconnecting>()
         flowTest.test {
             assertTrue(connectionManager.connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(1, it.attempt)
-            reconnecting2.complete(it)
         }
         flowTest.action {
             connectionManager.reset()
-            reconnecting2.getCompleted().retry()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Reconnecting -> deviceState.retry()
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertFalse(connectionManager.connectCompleted.isCompleted)
@@ -156,15 +184,22 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
     }
 
     @Test
-    fun testReadRssi() = runBlockingWithFlow { flowTest ->
-        val disconnectedState = getDisconnectedState(flowTest)
-        val connectingState = connecting(disconnectedState, flowTest)
-        val connectedState = connect(connectingState, flowTest)
+    fun testReadRssi() = testWithFlow { flowTest ->
+        getDisconnectedState(flowTest)
+        connecting(flowTest)
+        connect(flowTest)
 
-        assertEquals(initialRssi, connectedState.lastKnownRssi)
         flowTest.action {
-            connectedState.readRssi()
-            connectedState.rssiDidUpdate(-20)
+            assertEquals(initialRssi, deviceStateRepo.peekState().lastKnownRssi)
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected -> {
+                        deviceState.readRssi()
+                        deviceState.rssiDidUpdate(-20)
+                    }
+                    else -> deviceState.remain
+                }
+            }
         }
 
         flowTest.test {
@@ -175,66 +210,87 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
     }
 
     @Test
-    fun testDiscoverDevices() = runBlockingWithFlow() { flowTest ->
-        val disconnectedState = getDisconnectedState(flowTest)
-        val connectingState = connecting(disconnectedState, flowTest)
-        val connectedState = connect(connectingState, flowTest)
+    fun testDiscoverDevices() = testWithFlow { flowTest ->
+        getDisconnectedState(flowTest)
+        connecting(flowTest)
+        connect(flowTest)
         flowTest.action {
-            connectedState.discoverServices()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.Idle -> deviceState.discoverServices
+                    else -> deviceState.remain
+                }
+            }
         }
-        val discoverState = CompletableDeferred<DeviceState.Connected.Discovering>()
         flowTest.test {
             assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected.Discovering)
-            discoverState.complete(it)
         }
-        val services = CompletableDeferred<List<Service>>()
+        val services = createServices(deviceStateRepo)
         flowTest.action {
-            services.complete(createServices(discoverState.getCompleted().repoAccessor))
-            discoverState.getCompleted().didDiscoverServices(services.getCompleted())
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.Discovering -> deviceState.didDiscoverServices(services)
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(it is DeviceState.Connected.Idle)
-            assertEquals(services.getCompleted(), it.services)
+            assertEquals(services, it.services)
         }
     }
 
     @Test
-    fun testHandleActions() = runBlockingWithFlow { flowTest ->
-        val disconnectedState = getDisconnectedState(flowTest)
-        val connectingState = connecting(disconnectedState, flowTest)
-        val connectedState = connect(connectingState, flowTest)
-        createServices(connectedState.repoAccessor)
-        val characteristic = createCharacteristic(connectedState.repoAccessor)
+    fun testHandleActions() = testWithFlow { flowTest ->
+        getDisconnectedState(flowTest)
+        connecting(flowTest)
+        connect(flowTest)
+        createServices(deviceStateRepo)
+        val characteristic = createCharacteristic(deviceStateRepo)
         flowTest.action {
-            connectedState.handleAction(DeviceAction.Read.Characteristic(characteristic))
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.Idle -> deviceState.handleAction(DeviceAction.Read.Characteristic(characteristic))
+                    else -> deviceState.remain
+                }
+            }
         }
-        var handlingAction = CompletableDeferred<DeviceState.Connected.HandlingAction>()
         flowTest.test {
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingAction.complete(it)
         }
         val descriptor = CompletableDeferred<Descriptor>()
         flowTest.action {
-            descriptor.complete(createDescriptor(handlingAction.getCompleted().repoAccessor))
-            handlingAction.getCompleted().addAction(DeviceAction.Write.Descriptor(null, descriptor.getCompleted()))
-            handlingAction = CompletableDeferred()
+            descriptor.complete(createDescriptor(deviceStateRepo))
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.HandlingAction -> deviceState.addAction(DeviceAction.Write.Descriptor(null, descriptor.getCompleted()))
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingAction.complete(it)
         }
         flowTest.action {
-            handlingAction.getCompleted().actionCompleted()
-            handlingAction = CompletableDeferred()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.HandlingAction -> deviceState.actionCompleted
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(validateCharacteristicUpdated())
             assertTrue(it is DeviceState.Connected.HandlingAction)
-            handlingAction.complete(it)
         }
         flowTest.action {
-            handlingAction.getCompleted().actionCompleted()
+            deviceStateRepo.takeAndChangeState { deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected.HandlingAction -> deviceState.actionCompleted
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(validateDescriptorUpdated())
@@ -242,71 +298,79 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         }
     }
 
-    private suspend fun getDisconnectedState(flowTest: FlowTest<DeviceState>) : DeviceState.Disconnected {
-        val disconnectedState = CompletableDeferred<DeviceState.Disconnected>()
+    private fun getDisconnectedState(flowTest: FlowTest<DeviceState>) {
         flowTest.test {
             assertTrue(it is DeviceState.Disconnected)
-            disconnectedState.complete(it)
         }
-        return disconnectedState.await()
     }
 
-    private suspend fun getDisconnectingState(flowTest: FlowTest<DeviceState>) : DeviceState.Disconnecting {
-        val disconnectingState = CompletableDeferred<DeviceState.Disconnecting>()
+    private fun getDisconnectingState(flowTest: FlowTest<DeviceState>) {
         flowTest.test {
             assertTrue(connectionManager.disconnectCompleted.isCompleted)
             assertTrue(it is DeviceState.Disconnecting)
-            disconnectingState.complete(it)
         }
-        return disconnectingState.await()
     }
 
-    private suspend fun connecting(disconnectedState: DeviceState.Disconnected, flowTest: FlowTest<DeviceState>) : DeviceState.Connecting {
+    private suspend fun connecting(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            disconnectedState.connect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when (deviceState) {
+                    is DeviceState.Disconnected -> deviceState.connect
+                    else -> deviceState.remain
+                }
+            }
         }
-        val connectingState = CompletableDeferred<DeviceState.Connecting>()
         flowTest.test {
             assertTrue(connectionManager.connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Connecting)
-            connectingState.complete(it)
         }
-        return connectingState.await()
     }
 
-    private suspend fun connect(connectingState: DeviceState.Connecting, flowTest: FlowTest<DeviceState>) : DeviceState.Connected.Idle {
-        val connectedState = CompletableDeferred<DeviceState.Connected.Idle>()
+    private suspend fun connect(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            connectingState.didConnect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connecting -> deviceState.didConnect
+                    else -> deviceState.remain
+                }
+            }
         }
         flowTest.test {
             assertTrue(it is DeviceState.Connected.Idle)
             assertEquals(emptyList(), it.services)
-            connectedState.complete(it)
         }
-        return connectedState.await()
     }
 
-    private suspend fun disconnecting(connectedState: DeviceState.Connected, flowTest: FlowTest<DeviceState>): DeviceState.Disconnecting {
+    private suspend fun disconnecting(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            connectedState.disconnect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when (deviceState) {
+                    is DeviceState.Connected -> deviceState.disconnect
+                    else -> deviceState.remain
+                }
+            }
         }
-        return getDisconnectingState(flowTest)
+        getDisconnectingState(flowTest)
     }
 
-    private suspend fun disconnect(disconnecting: DeviceState.Disconnecting, flowTest: FlowTest<DeviceState>): DeviceState.Disconnected {
+    private suspend fun disconnect(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            disconnecting.didDisconnect()
+            deviceStateRepo.takeAndChangeState {deviceState ->
+                when (deviceState) {
+                    is DeviceState.Disconnecting -> deviceState.didDisconnect
+                    else -> deviceState.remain
+                }
+            }
         }
-        return getDisconnectedState(flowTest)
+        getDisconnectedState(flowTest)
     }
 
 }
 
 internal class MockDeviceConnectionManager(connectionSettings: ConnectionSettings,
                                   deviceInfoHolder: DeviceInfoHolder,
-                                  repoAccessor: StateRepoAccesor<DeviceState>
-) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, repoAccessor) {
+                                  stateRepo: StateRepo<DeviceState>
+) : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, stateRepo) {
 
     internal lateinit var connectCompleted: EmptyCompletableDeferred
     internal lateinit var discoverServicesCompleted: EmptyCompletableDeferred

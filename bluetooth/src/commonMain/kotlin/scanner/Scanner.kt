@@ -18,7 +18,8 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.*
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.permissions.BasePermissions
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
@@ -43,7 +44,7 @@ abstract class BaseScanner internal constructor(internal val permissions: BasePe
         launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is ScanningState.NoBluetoothState.Disabled -> state.enable()
+                    is ScanningState.NoBluetoothState.Disabled -> state.enable
                     else -> state.remain
                 }
             }
@@ -54,8 +55,24 @@ abstract class BaseScanner internal constructor(internal val permissions: BasePe
         launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is ScanningState.Enabled -> state.disable()
+                    is ScanningState.Enabled -> state.disable
                     else -> state.remain
+                }
+            }
+        }
+    }
+
+    internal fun handleDevicesDiscovered(devices: List<Device> ) {
+        launch {
+            stateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is ScanningState.Enabled.Scanning -> {
+                        state.discoverDevices(*devices.toTypedArray())
+                    }
+                    else -> {
+                        state.logError(Error("Discovered Device while not scanning"))
+                        state.remain
+                    }
                 }
             }
         }

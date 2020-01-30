@@ -21,9 +21,7 @@ import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.state.StateRepoAccesor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.*
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
@@ -33,15 +31,14 @@ import platform.darwin.dispatch_get_main_queue
 actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
                                           permissions: Permissions,
                                           private val connectionSettings: ConnectionSettings,
-                                          stateRepoAccesor: StateRepoAccesor<ScanningState>,
-                                          coroutineScope: CoroutineScope)
-    : BaseScanner(permissions, stateRepoAccesor, coroutineScope)  {
+                                          stateRepo: StateRepo<ScanningState>)
+    : BaseScanner(permissions, stateRepo)  {
 
     class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions,
                   private val connectionSettings: ConnectionSettings) : BaseScanner.Builder {
 
-        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepoAccessor, coroutineScope)
+        override fun create(stateRepoAccessor: StateRepo<ScanningState>): Scanner {
+            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepoAccessor)
         }
     }
 
@@ -101,7 +98,7 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
             centralManager.scanForPeripheralsWithServices(null, null)
         }
 
-        filter.map { it.uuid }.forEach {
+        filter.forEach {
             val centralManager = CBCentralManager(centralManagerDelegate, dispatch_get_main_queue())
             centralManagers.add(centralManager)
             centralManager.scanForPeripheralsWithServices(listOf(it), null)
@@ -133,18 +130,13 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         // Since multiple managers may discover device, make sure even is only triggered once
         if (connectionManagerMap.containsKey(peripheral.identifier))
             return
-        launch {
-            when (val state = stateRepoAccessor.currentState()) {
-                is ScanningState.Enabled.Scanning -> {
-                    val advertisementData = AdvertisementData(advertisementDataMap)
-                    val deviceInfo = DeviceInfoHolder(peripheral, central, advertisementData)
-                    val device = Device(connectionSettings, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
-                    connectionManagerMap[device.identifier] = device.deviceConnectionManager
-                    state.discoverDevices(device)
-                }
-                else -> state.logError(Error("Discovered Device while not scanning"))
-            }
-        }
+
+
+        val advertisementData = AdvertisementData(advertisementDataMap)
+        val deviceInfo = DeviceInfoHolder(peripheral, central, advertisementData)
+        val device = Device(connectionSettings, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
+        connectionManagerMap[device.identifier] = device.deviceConnectionManager
+        handleDevicesDiscovered(listOf(device))
     }
 
 

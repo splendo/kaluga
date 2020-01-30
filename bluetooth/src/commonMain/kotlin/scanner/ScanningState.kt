@@ -40,12 +40,12 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
     sealed class Enabled constructor(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner) {
 
-        fun disable() : suspend () -> NoBluetoothState.Disabled {
-            return {NoBluetoothState.Disabled(scanner)}
+        val disable = suspend {
+            NoBluetoothState.Disabled(scanner)
         }
 
-        fun removePermissions() : suspend () -> NoBluetoothState.MissingPermissions {
-            return {NoBluetoothState.MissingPermissions(scanner)}
+        val removePermissions = suspend {
+            NoBluetoothState.MissingPermissions(scanner)
         }
 
         override suspend fun initialState() {
@@ -65,7 +65,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                                         private val scanner: BaseScanner
         )  : Enabled(discoveredDevices, scanner) {
 
-            fun startScanning(filter: Set<UUID>) : () -> Scanning {
+            fun startScanning(filter: Set<UUID>) : suspend () -> Scanning {
                 return {
                     val devices = if (filter == oldFilter)
                         discoveredDevices
@@ -89,8 +89,8 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                 }
             }
 
-            fun stopScanning() : suspend () -> Idle {
-                return {Idle(discoveredDevices, filter, scanner)}
+            val stopScanning = suspend {
+                Idle(discoveredDevices, filter, scanner)
             }
 
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
@@ -118,26 +118,22 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
     sealed class NoBluetoothState constructor(private val scanner: BaseScanner) : ScanningState(scanner) {
 
-        internal fun checkAvailability() : suspend () -> ScanningState {
-            return {
-                when (scanner.permissions.getBluetoothManager().checkSupport()) {
-                    Support.POWER_ON -> {
-                        when (scanner.permissions.getBluetoothManager().checkPermit()) {
-                            Permit.ALLOWED -> Enabled.Idle(emptyList(), emptySet(), scanner)
-                            else -> MissingPermissions(scanner)
-                        }
+        internal val checkAvailability = suspend {
+            when (scanner.permissions.getBluetoothManager().checkSupport()) {
+                Support.POWER_ON -> {
+                    when (scanner.permissions.getBluetoothManager().checkPermit()) {
+                        Permit.ALLOWED -> Enabled.Idle(emptyList(), emptySet(), scanner)
+                        else -> MissingPermissions(scanner)
                     }
-                    Support.NOT_SUPPORTED, Support.UNAUTHORIZED -> MissingPermissions(scanner)
-                    else -> Disabled(scanner)
                 }
+                Support.NOT_SUPPORTED, Support.UNAUTHORIZED -> MissingPermissions(scanner)
+                else -> Disabled(scanner)
             }
         }
 
         class Disabled internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner) {
 
-            fun enable(): suspend () -> ScanningState {
-                return checkAvailability()
-            }
+            val enable = checkAvailability
 
             override suspend fun initialState() {
                 super.initialState()
@@ -154,9 +150,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
         class MissingPermissions internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner), HandleAfterNewStateIsSet<ScanningState>, HandleAfterOldStateIsRemoved<ScanningState> {
 
-            fun givePermissions() : suspend () -> ScanningState {
-                return checkAvailability()
-            }
+            val givePermissions = checkAvailability
 
             override suspend fun afterNewStateIsSet(newState: ScanningState) {
                 when (newState) {

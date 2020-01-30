@@ -19,18 +19,17 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.permissions.BasePermissions
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 
-class MockBaseScanner(permissions: BasePermissions, stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
+class MockBaseScanner(permissions: BasePermissions, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions, stateRepo) {
 
     lateinit var scanForDevicesCompleted: CompletableDeferred<Set<UUID>>
     lateinit var stopScanningCompleted: EmptyCompletableDeferred
-    lateinit var startMonitoringBluetooth: EmptyCompletableDeferred
-    lateinit var stopMonitoringBluetooth: EmptyCompletableDeferred
+    lateinit var startMonitoringBluetoothCompleted: EmptyCompletableDeferred
+    lateinit var stopMonitoringBluetoothCompleted: EmptyCompletableDeferred
 
     init {
         reset()
@@ -39,8 +38,8 @@ class MockBaseScanner(permissions: BasePermissions, stateRepoAccessor: StateRepo
     fun reset() {
         scanForDevicesCompleted = CompletableDeferred()
         stopScanningCompleted = EmptyCompletableDeferred()
-        stopMonitoringBluetooth = EmptyCompletableDeferred()
-        startMonitoringBluetooth = EmptyCompletableDeferred()
+        stopMonitoringBluetoothCompleted = EmptyCompletableDeferred()
+        startMonitoringBluetoothCompleted = EmptyCompletableDeferred()
     }
 
     override fun scanForDevices(filter: Set<UUID>) {
@@ -52,11 +51,11 @@ class MockBaseScanner(permissions: BasePermissions, stateRepoAccessor: StateRepo
     }
 
     override fun startMonitoringBluetooth() {
-        startMonitoringBluetooth.complete()
+        startMonitoringBluetoothCompleted.complete()
     }
 
     override fun stopMonitoringBluetooth() {
-        stopMonitoringBluetooth.complete()
+        stopMonitoringBluetoothCompleted.complete()
     }
 }
 
