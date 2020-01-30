@@ -21,15 +21,15 @@ import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBDescriptor
 
-actual open class Characteristic(val characteristic: CBCharacteristic, val stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepoAccesor) {
+actual open class Characteristic(val characteristic: CBCharacteristic, val stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
 
     override val uuid = characteristic.UUID
 
-    override val descriptors = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepoAccessor) } ?: emptyList()
+    override val descriptors = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepo) } ?: emptyList()
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)

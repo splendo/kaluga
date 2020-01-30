@@ -19,16 +19,15 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.state.StateRepoAccesor
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.state.StateRepo
 
-actual class Scanner(permissions: Permissions, stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions, stateRepoAccessor, coroutineScope) {
+actual class Scanner(permissions: Permissions, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions, stateRepo) {
 
     class Builder(
         private val permissions: Permissions,
         override val autoEnableBluetooth: Boolean) : BaseScanner.Builder {
-        override fun create(stateRepoAccessor: StateRepoAccesor<ScanningState>, coroutineScope: CoroutineScope): Scanner {
-            return Scanner(permissions, stateRepoAccessor, coroutineScope)
+        override fun create(stateRepo: StateRepo<ScanningState>): Scanner {
+            return Scanner(permissions, stateRepo)
         }
     }
 

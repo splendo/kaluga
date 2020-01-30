@@ -20,9 +20,9 @@ package com.splendo.kaluga.bluetooth
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 
-actual class Descriptor(override val uuid: UUID, initialValue: ByteArray?, stateRepoAccesor: StateRepoAccesor<DeviceState>) : BaseDescriptor(initialValue, stateRepoAccesor) {
+actual class Descriptor(override val uuid: UUID, initialValue: ByteArray?, stateRepo: StateRepo<DeviceState>) : BaseDescriptor(initialValue, stateRepo) {
 
     val value = AtomicReference(initialValue)
 
