@@ -36,7 +36,7 @@ class ColdFlowableTest : BaseTest() {
     }
 
     @Test
-    fun `Test Flowing`() = runBlocking {
+    fun testFlowing() = runBlocking {
         assertFalse { initialized.isCompleted }
         val initialBroadcastValue = CompletableDeferred<Int>()
         val broadcastValue = CompletableDeferred<Int>()
@@ -82,7 +82,7 @@ class ColdFlowableTest : BaseTest() {
     }
 
     @Test
-    fun `Test Multiple Flowing`() = runBlocking {
+    fun testMultipleFlowing() = runBlocking {
         val values1 = CompletableDeferred<List<Int>>()
         val values2 = CompletableDeferred<List<Int>>()
         val scope = MainScope()
