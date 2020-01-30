@@ -46,6 +46,11 @@ abstract class FlowableTest<T>: BaseTest() {
     lateinit var flowable: CompletableDeferred<Flowable<T>>
     lateinit var flowTest: FlowTest<T>
 
+    var filter:suspend(T)->Boolean
+        get() = flowTest.filter
+        set(newValue) {flowTest.filter = newValue }
+
+
     fun testWithFlow(block: suspend (FlowTest<T>) -> Unit) {
         flowTest.testWithFlow(block)
     }
@@ -53,7 +58,7 @@ abstract class FlowableTest<T>: BaseTest() {
 
 open class FlowTest<T>(private val flow: Flow<T>) {
 
-    open val filter:suspend(T)->Boolean = { true }
+    open var filter:suspend(T)->Boolean = { true }
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 
