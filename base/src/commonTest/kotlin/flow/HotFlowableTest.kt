@@ -29,7 +29,7 @@ class HotFlowableTest : BaseTest() {
     }
 
     @Test
-    fun `Test Flowing`() = runBlocking {
+    fun testFlowing() = runBlocking {
         assertEquals(0, broadcastChannel.asFlow().first())
         flowable.set(1)
         assertEquals(1, broadcastChannel.asFlow().first())
@@ -37,7 +37,7 @@ class HotFlowableTest : BaseTest() {
     }
 
     @Test
-    fun `Test Multiple Flowing`() = runBlocking {
+    fun testMultipleFlowing() = runBlocking {
         val values1 = CompletableDeferred<List<Int>>()
         val values2 = CompletableDeferred<List<Int>>()
         val scope = MainScope()
