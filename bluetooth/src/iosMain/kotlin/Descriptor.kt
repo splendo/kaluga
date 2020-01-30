@@ -20,11 +20,11 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.CBDescriptor
 import platform.Foundation.NSData
 
-actual class Descriptor(internal val descriptor: CBDescriptor, stateRepoAccessor: StateRepoAccesor<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepoAccessor) {
+actual class Descriptor(internal val descriptor: CBDescriptor, stateRepo: StateRepo<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepo) {
 
     override val uuid = UUID(descriptor.UUID)
 
