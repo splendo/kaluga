@@ -153,35 +153,43 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
     fun peekState() = state()
 
     /**
-     * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action] .
+     * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action].
+     * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
      * @param action the function for determining which [State] to transition to.
      */
     suspend fun useState(action:suspend (S) -> Unit) {
-        try {
-            stateMutex.withLock {
-                coroutineScope {
-                    launch {
+        stateMutex.withLock {
+            val result = EmptyCompletableDeferred()
+            coroutineScope {
+                launch {
+                    try {
                         action(state())
+                        result.complete()
+                    } catch(e: Throwable) {
+                        result.completeExceptionally(e)
                     }
                 }
             }
-        } catch (e:IllegalStateException) {
-            throw IllegalStateException("Seems like you tried to change to a new a state while are inside a code block requesting the state to not change (see [useState]) ")
+            return result.await()
         }
     }
 
     /**
-     * Changes from the current [State] to a new [State]
+     * Changes from the current [State] to a new [State]. This operation ensures atomic state changes.
+     * The new state is determined by an [action], which takes the current [State] upon starting the state transition and provides a deferred state creation.
+     * You are strongly encouraged to use the [State] provided by the [action] to determine the new state, to ensure no illegal state transitions occur, as the state may have changed between calling [takeAndChangeState] and the execution of [action].
+     * If the [action] returns [State.remain] no state transition will occur.
+     * Since this operation is atomic, the [action] should not directly call [takeAndChangeState] itself. If required to do this, handle the additional transition in a separate coroutine.
      *
-     * @param action Function to determine the [State] to be transitioned to from the current [State]
+     * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
      */
     suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
-        try {
-            stateMutex.withLock {
-                val result = CompletableDeferred<S>()
-                coroutineScope {
-                    launch {
+        stateMutex.withLock {
+            val result = CompletableDeferred<S>()
+            coroutineScope {
+                launch {
+                    try {
                         val beforeState = state()
                         val transition = action(state())
                         // No Need to Transition if remain is used
@@ -197,12 +205,12 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
                         (beforeState as? HandleAfterNewStateIsSet)?.afterNewStateIsSet()
                         (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
                         result.complete(newState)
+                    } catch (e: Throwable) {
+                        result.completeExceptionally(e)
                     }
                 }
-                return result.await()
             }
-        } catch (e:IllegalStateException) {
-            throw IllegalStateException("Seems like you tried to change to a new a state while you were still in the process of changing to the current state (see [useAndChangeState])")
+            return result.await()
         }
     }
 
