@@ -164,7 +164,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      */
     suspend fun useState(action:suspend (S) -> Unit) {
         try {
-            stateMutex.withLock {
+            stateMutex.withLock(null) {
                 coroutineScope {
                     launch {
                         action(state())
@@ -183,12 +183,12 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      */
     suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
         try {
-            stateMutex.withLock {
+            stateMutex.withLock(null) {
                 val result = CompletableDeferred<S>()
                 coroutineScope {
                     launch {
                         val beforeState = state()
-                        val transition = action(state())
+                        val transition = action(beforeState)
                         // No Need to Transition if remain is used
                         if (transition == state().remain) {
                             result.complete(beforeState)
@@ -210,6 +210,17 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
             throw IllegalStateException("Seems like you tried to change to a new a state while you were still in the process of changing to the current state (see [useAndChangeState])")
         }
     }
+
+//    suspend inline fun <reified T:S> takeAndChangeIfState(crossinline action: (T) -> suspend () -> S): S {
+//        return takeAndChangeState {
+//            if (it is T) {
+//                val test = action(it)
+//                test
+//            } else {
+//                it.remain
+//            }
+//        }
+//    }
 
 }
 
