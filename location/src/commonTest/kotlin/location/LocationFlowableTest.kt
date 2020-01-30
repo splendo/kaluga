@@ -57,56 +57,56 @@ open abstract class LocationFlowableTest : FlowableTest<Location>() {
 
 
     @Test
-    fun testKnownLocation() = runBlockingWithFlow {
-        action {
+    fun testKnownLocation() = testWithFlow { flowTest ->
+        flowTest.action {
             setLocation(location1)
             debug("sent location2")
         }
-        test {
+        flowTest.test {
             assertSameLocation(location1, it )
         }
     }
 
     @Test
-    fun testSingleUnknownLocation() = runBlockingWithFlow {
-        action {
+    fun testSingleUnknownLocation() = testWithFlow { flowTest ->
+        flowTest.action {
             setLocationUnknown()
             debug("sent location")
         }
-        test {
+        flowTest.test {
             debug("unknown? : $it")
             assertSameLocation(UnknownLocationWithNoLastLocation(reason = UnknownReason.NOT_CLEAR), it )
         }
     }
 
     @Test
-    fun testSingleUnknownLocationWithReason()  = runBlockingWithFlow {
-        action {
+    fun testSingleUnknownLocationWithReason()  = testWithFlow { flowTest ->
+        flowTest.action {
             setLocationUnknown(reason = UnknownReason.PERMISSION_DENIED)
             debug("sent location unknown")
         }
-        test {
+        flowTest.test {
             assertSameLocation(UnknownLocationWithNoLastLocation(reason = UnknownReason.PERMISSION_DENIED), it )
         }
     }
 
     @Test
-    fun testKnownLocationsFollowedByALocationUnknown()  = runBlockingWithFlow {
-        action {
+    fun testKnownLocationsFollowedByALocationUnknown()  = testWithFlow { flowTest ->
+        flowTest.action {
             setLocation(location1)
         }
-        test {
+        flowTest.test {
             assertSameLocation(location1, it)
         }
 
-        action {
+        flowTest.action {
             setLocation(location2)
         }
-        test { assertNotEquals(location1, it) }
-        action {
+        flowTest.test { assertNotEquals(location1, it) }
+        flowTest.action {
             setLocationUnknown()
         }
-        test {
+        flowTest.test {
             assertSameLocation(
                 UnknownLocationWithLastLocation(
                     location2,
