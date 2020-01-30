@@ -22,6 +22,8 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
@@ -41,7 +43,7 @@ sealed class DeviceAction {
 sealed class DeviceState (open val lastKnownRssi: Int,
                           internal open val connectionManager: BaseDeviceConnectionManager)
     : State<DeviceState>(),
-    DeviceInfo by connectionManager.deviceInfoHolder {
+    DeviceInfo by connectionManager.deviceInfoHolder, CoroutineScope by connectionManager.stateRepo {
 
     sealed class Connected(open val services: List<Service>,
                            lastKnownRssi: Int,
@@ -52,6 +54,17 @@ sealed class DeviceState (open val lastKnownRssi: Int,
                                              override val lastKnownRssi: Int,
                                              override val connectionManager: BaseDeviceConnectionManager)
             : Connected(services, lastKnownRssi, connectionManager) {
+
+            fun startDiscovering() {
+                launch {
+                    connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                        if (deviceState is Idle)
+                            discoverServices
+                        else
+                            remain
+                    }
+                }
+            }
 
             val discoverServices = suspend {
                 Discovering(lastKnownRssi, connectionManager)
@@ -124,6 +137,17 @@ sealed class DeviceState (open val lastKnownRssi: Int,
 
         }
 
+        fun handleDisconnect() {
+            launch {
+                connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    if (deviceState is Connected)
+                        disconnect
+                    else
+                        remain
+                }
+            }
+        }
+
         val disconnect = disconnecting
 
         val reconnect = suspend {
@@ -147,6 +171,18 @@ sealed class DeviceState (open val lastKnownRssi: Int,
 
         val cancelConnection = disconnecting
 
+        fun handleConnect() {
+            launch {
+                connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    if (deviceState is Connecting) {
+                        didConnect
+                    } else {
+                        remain
+                    }
+                }
+            }
+        }
+
         internal val didConnect = suspend {
             Connected.Idle(emptyList(), lastKnownRssi, connectionManager)
         }
@@ -165,17 +201,28 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         : DeviceState(lastKnownRssi, connectionManager),
         HandleAfterOldStateIsRemoved<DeviceState>{
 
-        fun retry() : Pair<Boolean, suspend () -> DeviceState> {
+        fun retry(): suspend () -> DeviceState {
             return when(val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
-                is ConnectionSettings.ReconnectionSettings.Always -> Pair(true, remain)
-                is ConnectionSettings.ReconnectionSettings.Never -> { Pair(false, didDisconnect)}
+                is ConnectionSettings.ReconnectionSettings.Always -> remain
+                is ConnectionSettings.ReconnectionSettings.Never -> didDisconnect
                 is ConnectionSettings.ReconnectionSettings.Limited -> {
                     val nextAttempt = attempt + 1
                     if (nextAttempt < reconnectionSetting.attempts) {
-                        Pair(true, suspend {copy(attempt = nextAttempt)})
+                        suspend {copy(attempt = nextAttempt)}
                     } else {
-                        Pair(false, didDisconnect)
+                        didDisconnect
                     }
+                }
+            }
+        }
+
+        fun handleCancel() {
+            launch {
+                connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    if (deviceState is Reconnecting)
+                        cancelConnection
+                    else
+                        remain
                 }
             }
         }
@@ -197,6 +244,18 @@ sealed class DeviceState (open val lastKnownRssi: Int,
     data class Disconnected internal constructor(override val lastKnownRssi: Int,
                                                  override val connectionManager: BaseDeviceConnectionManager)
         : DeviceState(lastKnownRssi, connectionManager) {
+
+        fun startConnecting() {
+            launch {
+                connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    if (deviceState is Disconnected) {
+                        connect
+                    } else {
+                        remain
+                    }
+                }
+            }
+        }
 
         val connect = suspend {
             Connecting(lastKnownRssi, connectionManager)

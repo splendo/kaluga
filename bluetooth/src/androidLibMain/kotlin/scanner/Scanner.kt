@@ -82,7 +82,7 @@ actual class Scanner internal constructor(private val autoEnableBluetooth: Boole
                 if (error.second) {
                     stateRepo.takeAndChangeState { state ->
                         when (state) {
-                            is ScanningState.Enabled.Scanning -> state.stopScanning()
+                            is ScanningState.Enabled.Scanning -> state.stopScanning
                             else -> state.remain
                         }
                     }

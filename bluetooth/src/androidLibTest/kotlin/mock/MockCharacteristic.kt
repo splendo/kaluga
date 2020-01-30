@@ -22,12 +22,12 @@ import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.GattServiceWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import java.util.*
 
-class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepoAccesor: StateRepoAccesor<DeviceState>) : Characteristic(characteristicWrapper, stateRepoAccesor) {
+class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : Characteristic(characteristicWrapper, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 

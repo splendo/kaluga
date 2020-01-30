@@ -20,14 +20,13 @@ package com.splendo.kaluga.bluetooth.mock
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
-import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepoAccesor
+import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import java.util.*
 
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepoAccessor: StateRepoAccesor<DeviceState>) : Descriptor(descriptorWrapper, stateRepoAccessor) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: StateRepo<DeviceState>) : Descriptor(descriptorWrapper, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 
