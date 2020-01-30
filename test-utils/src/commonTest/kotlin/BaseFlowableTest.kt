@@ -70,28 +70,28 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testKnownValueBeforeAction() = testWithFlow { flowTest ->
+    fun testKnownValueBeforeAction() = testWithFlow {
         flowable.await().set("foo")
-        flowTest.action {
+        action {
             // no action
         }
-        flowTest.test {
+        test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
     }
 
     @Test
-    fun testExceptionBeingThrown() = testWithFlow { flowTest ->
-        flowTest.action {
+    fun testExceptionBeingThrown() = testWithFlow {
+        action {
             flowable.await().set("Test")
         }
         try {
-            flowTest.test {
+            test {
                 debug("cause an exception")
                 throw Exception("some error!")
             }
             debug("wait for the exception..")
-            flowTest.action {}
+            action {}
             fail("No throwable was thrown, even though we caused an exception")
         } catch (t: Throwable) {
             assertEquals("some error!", t.message)

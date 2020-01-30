@@ -51,7 +51,7 @@ abstract class FlowableTest<T>: BaseTest() {
         set(newValue) {flowTest.filter = newValue }
 
 
-    fun testWithFlow(block: suspend (FlowTest<T>) -> Unit) {
+    fun testWithFlow(block: suspend FlowTest<T>.() -> Unit) {
         flowTest.testWithFlow(block)
     }
 }
@@ -91,7 +91,7 @@ open class FlowTest<T>(private val flow: Flow<T>) {
         }
     }
 
-    fun testWithFlow(block:suspend(FlowTest<T>)->Unit) = runBlocking {
+    fun testWithFlow(block:suspend FlowTest<T>.()->Unit) = runBlocking {
         testChannel = Channel(Channel.UNLIMITED)
         startFlow()
         block(this@FlowTest)
