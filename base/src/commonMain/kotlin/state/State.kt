@@ -84,6 +84,8 @@ interface HandleBeforeOldStateIsRemoved<S:State<S>> {
 
     /**
      * Called while transitioning from an old state before it is removed.
+     *
+     * @param oldState the [State] to be removed
      */
     suspend fun beforeOldStateIsRemoved(oldState: S)
 }
