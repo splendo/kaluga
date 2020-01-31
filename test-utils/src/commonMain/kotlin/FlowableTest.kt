@@ -18,7 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.log.debug
@@ -64,7 +63,7 @@ open class FlowTest<T>(private val flow: Flow<T>) {
 
     lateinit var job: Job
 
-    private val mainScope = MultiplatformMainScope()
+    private val mainScope = MainScope()
 
     private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
 
