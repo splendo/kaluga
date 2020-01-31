@@ -21,7 +21,10 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -31,15 +34,15 @@ import kotlin.test.assertTrue
 sealed class TrafficLightState : State<TrafficLightState>(),
     HandleBeforeCreating,
     HandleAfterCreating<TrafficLightState>,
-    HandleBeforeOldStateIsRemoved,
+    HandleBeforeOldStateIsRemoved<TrafficLightState>,
     HandleAfterOldStateIsRemoved<TrafficLightState>,
-    HandleAfterNewStateIsSet {
+    HandleAfterNewStateIsSet<TrafficLightState> {
 
     val initialStateDone = EmptyCompletableDeferred()
     val beforeCreatingNewStateDone = EmptyCompletableDeferred()
     val afterCreatingNewStateDone = CompletableDeferred<TrafficLightState>()
-    val afterNewStateIsSetDone = EmptyCompletableDeferred()
-    val beforeOldStateIsRemovedDone = EmptyCompletableDeferred()
+    val afterNewStateIsSetDone = CompletableDeferred<TrafficLightState>()
+    val beforeOldStateIsRemovedDone = CompletableDeferred<TrafficLightState>()
     val afterOldStateIsRemovedDone = CompletableDeferred<TrafficLightState>()
     val finalStateDone = EmptyCompletableDeferred()
 
@@ -55,12 +58,12 @@ sealed class TrafficLightState : State<TrafficLightState>(),
         afterCreatingNewStateDone.complete(newState)
     }
 
-    override suspend fun afterNewStateIsSet() {
-        afterNewStateIsSetDone.complete()
+    override suspend fun afterNewStateIsSet(newState: TrafficLightState) {
+        afterNewStateIsSetDone.complete(newState)
     }
 
-    override suspend fun beforeOldStateIsRemoved() {
-        beforeOldStateIsRemovedDone.complete()
+    override suspend fun beforeOldStateIsRemoved(oldState: TrafficLightState) {
+        beforeOldStateIsRemovedDone.complete(oldState)
     }
 
     override suspend fun afterOldStateIsRemoved(oldState: TrafficLightState) {
@@ -165,10 +168,10 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         test {
             assertTrue(it is TrafficLightState.RedLight)
             assertTrue(greenState.beforeCreatingNewStateDone.isCompleted)
-            assertTrue(greenState.afterCreatingNewStateDone.isCompleted)
-            assertTrue(greenState.afterNewStateIsSetDone.isCompleted)
-            assertTrue(it.beforeOldStateIsRemovedDone.isCompleted)
-            assertTrue(it.afterOldStateIsRemovedDone.isCompleted)
+            assertEquals(it, greenState.afterCreatingNewStateDone.getCompleted())
+            assertEquals(it, greenState.afterNewStateIsSetDone.getCompleted())
+            assertEquals(greenState, it.beforeOldStateIsRemovedDone.getCompleted())
+            assertEquals(greenState, it.afterOldStateIsRemovedDone.getCompleted())
         }
     }
 
