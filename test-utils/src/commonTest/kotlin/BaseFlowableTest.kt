@@ -17,13 +17,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +47,7 @@ class BaseFlowableTest : FlowableTest<String>() {
         c.send("Foo")
         var r: String? = null
         var flow: Flow<String>?
-        MultiplatformMainScope().launch {
+        MainScope().launch {
             flow = c.asFlow()
             flow!!.collect {
                 r = it
