@@ -66,10 +66,5 @@ class AndroidDeviceTest : DeviceTest() {
         return descriptor.didUpdate.isCompleted
     }
 
-    @Test
-    fun testSomeBullshit() {
-        assertTrue(true)
-    }
-
 }
 

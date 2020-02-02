@@ -23,6 +23,8 @@ import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -71,7 +73,7 @@ sealed class DeviceState (open val lastKnownRssi: Int,
             }
 
             fun handleAction(action: DeviceAction): suspend () -> HandlingAction {
-                return {HandlingAction(action, emptyList(), services, lastKnownRssi, connectionManager)}
+                return { HandlingAction(action, emptyList(), services, lastKnownRssi, connectionManager) }
             }
 
         }
@@ -137,7 +139,7 @@ sealed class DeviceState (open val lastKnownRssi: Int,
 
         }
 
-        fun handleDisconnect() {
+        fun startDisconnected() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Connected)

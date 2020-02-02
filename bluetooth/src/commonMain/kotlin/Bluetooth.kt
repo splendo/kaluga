@@ -28,7 +28,6 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.BasePermissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
@@ -161,7 +160,7 @@ suspend fun Flow<Device?>.connect() {
 suspend fun Flow<Device?>.disconnect() {
     this.mapDeviceState<Unit> { deviceState ->
             when (deviceState) {
-                is DeviceState.Connected -> deviceState.handleDisconnect()
+                is DeviceState.Connected -> deviceState.startDisconnected()
                 is DeviceState.Connecting -> deviceState.handleConnect()
                 is DeviceState.Reconnecting -> deviceState.handleCancel()
                 is DeviceState.Disconnected -> emit(Unit)

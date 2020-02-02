@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
 import com.splendo.kaluga.log.LogLevel
 import com.splendo.kaluga.log.logger
 import com.splendo.kaluga.permissions.Permit
@@ -38,7 +37,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
         error.message?.let { logger().log(LogLevel.ERROR, TAG, it) }
     }
 
-    sealed class Enabled constructor(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner) {
+    sealed class Enabled(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner) {
 
         val disable = suspend {
             NoBluetoothState.Disabled(scanner)
@@ -105,6 +104,12 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                         scanner.stopScanning()
                     }
                 }
+            }
+
+            override suspend fun initialState() {
+                super.initialState()
+
+                scanner.scanForDevices(filter)
             }
 
             override suspend fun finalState() {
