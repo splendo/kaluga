@@ -18,10 +18,13 @@
 package com.splendo.kaluga.bluetooth
 
 import platform.CoreBluetooth.CBUUID
+import platform.Foundation.NSUUID
 
 actual typealias UUID = CBUUID
 
 actual val UUID.uuidString: String
     get() = UUIDString
 
-
+fun randomUUID(): UUID {
+    return CBUUID.UUIDWithNSUUID(NSUUID.UUID())
+}

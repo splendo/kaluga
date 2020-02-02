@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.launch
 import platform.CoreBluetooth.*
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
@@ -37,8 +38,8 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
     class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions,
                   private val connectionSettings: ConnectionSettings) : BaseScanner.Builder {
 
-        override fun create(stateRepoAccessor: StateRepo<ScanningState>): Scanner {
-            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepoAccessor)
+        override fun create(stateRepo: StateRepo<ScanningState>): Scanner {
+            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepo)
         }
     }
 
@@ -46,8 +47,6 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
     private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
-            super.centralManager(central, didDiscoverPeripheral, advertisementData, RSSI)
-
             discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
@@ -59,30 +58,30 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         }
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            super.centralManager(central, didConnectPeripheral)
-
             val connectionManager = connectionManagerMap[didConnectPeripheral.identifier] ?: return
-            connectionManager.didConnect()
+            launch {
+                connectionManager.handleConnect()
+            }
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            super.centralManager(central, didDisconnectPeripheral= didDisconnectPeripheral, error = error)
-
             val connectionManager = connectionManagerMap[didDisconnectPeripheral.identifier] ?: return
-            connectionManager.didConnect()
+            launch {
+                connectionManager.handleDisconnect()
+            }
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            super.centralManager(central, didFailToConnectPeripheral = didFailToConnectPeripheral, error = error)
-
             val connectionManager = connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return
-            connectionManager.didConnect()
+            launch {
+                connectionManager.handleDisconnect()
+            }
         }
     }
 
     private val mainCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
-    private var connectionManagerMap = emptyMap<Identifier, DeviceConnectionManager>().toMutableMap()
+    private var connectionManagerMap = emptyMap<Identifier, BaseDeviceConnectionManager>().toMutableMap()
 
     init {
         val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)

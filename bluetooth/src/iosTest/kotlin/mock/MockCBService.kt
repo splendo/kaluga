@@ -15,17 +15,23 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.bluetooth.mock
 
-import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.randomUUID
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBService
+import platform.CoreBluetooth.CBUUID
 
-actual open class Service(private val service: CBService, private val stateRepo: StateRepo<DeviceState>) : BaseService {
+class MockCBService(private val uuid: UUID = randomUUID()) : CBService() {
 
-    override val uuid = service.UUID
+    external override fun UUID(): CBUUID {
+        return uuid
+    }
 
-    override val characteristics = service.characteristics?.typedList<CBCharacteristic>()?.map { Characteristic(it, stateRepo) } ?: emptyList()
+    external override fun characteristics(): List<CBCharacteristic>? {
+        return super.characteristics()
+    }
+
 }
+

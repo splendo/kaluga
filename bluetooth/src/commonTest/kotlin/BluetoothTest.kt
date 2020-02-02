@@ -17,10 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.*
-import com.splendo.kaluga.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.scanner.*
 import com.splendo.kaluga.permissions.Permit
 import com.splendo.kaluga.permissions.Support
@@ -29,9 +27,12 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlin.test.*
 
 abstract class BluetoothTest : BaseTest() {
@@ -40,7 +41,7 @@ abstract class BluetoothTest : BaseTest() {
         val initialRssi = -100
     }
 
-    private val mainScope = MultiplatformMainScope()
+    private val mainScope = MainScope()
 
     lateinit var permissionManager: MockPermissionManager
     lateinit var mockBaseScanner: MockBaseScanner

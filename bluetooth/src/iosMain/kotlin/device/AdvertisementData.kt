@@ -33,14 +33,13 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
     override val serviceUUIDs: List<UUID>
         get() = {
             (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? List<*>)?.
-                typedList<CBUUID>()?.
-                map { UUID(it) } ?: emptyList()
+                typedList<CBUUID>() ?: emptyList()
         }()
     override val serviceData: Map<UUID, ByteArray?>
         get() = {
             (advertisementData[CBAdvertisementDataManufacturerDataKey] as? Map<*, *>)?.
                 typedMap<CBUUID, NSData>()?.
-                mapNotNull { Pair(UUID(it.key), it.value.toByteArray()) }?.
+                mapNotNull { Pair(it.key, it.value.toByteArray()) }?.
                 toMap() ?: emptyMap()
         }()
     override val txPowerLevel: Int
