@@ -1,4 +1,5 @@
 package com.splendo.kaluga.permissions
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 actual class Permissions {
     actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager()
+        return com.splendo.kaluga.permissions.bluetooth.BluetoothPermission()
     }
 
     actual open class Builder {

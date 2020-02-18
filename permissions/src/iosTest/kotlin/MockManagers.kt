@@ -15,13 +15,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
-import com.splendo.kaluga.permissions.BluetoothPermissionManager
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBManagerState
 
 class MockCBCentralManager() : CBCentralManager(null, null, null) {
 
-    var mockState = BluetoothPermissionManager.CBCentralManagerState.UNKNOWN
+    var mockState = BluetoothPermission.CBCentralManagerState.UNKNOWN
 
     override fun state(): CBManagerState {
         return mockState.ordinal.toLong()

@@ -22,24 +22,12 @@ import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.log.error
 import platform.CoreBluetooth.CBCentralManager
 import platform.Foundation.NSBundle
-import platform.posix.remove
 
-actual class Permissions(private val bundle: NSBundle) {
-
-    actual fun getBluetoothManager(): PermissionManager {
-        return BluetoothPermissionManager(CBCentralManager())
-    }
-
-    actual open class Builder(private val bundle: NSBundle) {
-
-        actual open fun build(): Permissions {
-            return Permissions(bundle)
-        }
-    }
+class IOSPermissionsHelper {
 
     companion object {
-        const val TAG = "Permissions"
 
+        private const val TAG = "Permissions"
         fun checkDeclarationInPList(bundle: NSBundle, vararg permissionName: String): MutableList<String> {
 
             val missingPermissions = permissionName.toMutableList()
@@ -63,5 +51,4 @@ actual class Permissions(private val bundle: NSBundle) {
             return missingPermissions
         }
     }
-
 }
