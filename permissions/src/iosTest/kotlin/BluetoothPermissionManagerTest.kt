@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.permissions.BluetoothPermissionManager
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.Permit
 import com.splendo.kaluga.permissions.Support
 import platform.CoreBluetooth.*
@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 
 class BluetoothPermissionMangerTest {
 
-    private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
+    private lateinit var bluetoothPermissionManager: BluetoothPermission
     private lateinit var mockCBCentralManager: MockCBCentralManager
     private var cbPeripheralManagerAuthorizationStatus: CBPeripheralManagerAuthorizationStatus =
         CBPeripheralManagerAuthorizationStatusNotDetermined
@@ -36,7 +36,8 @@ class BluetoothPermissionMangerTest {
     fun before() {
         mockCBCentralManager = MockCBCentralManager()
 
-        bluetoothPermissionManager = BluetoothPermissionManager(mockCBCentralManager, { this@BluetoothPermissionMangerTest.cbPeripheralManagerAuthorizationStatus })
+        bluetoothPermissionManager =
+            BluetoothPermission(mockCBCentralManager, { this@BluetoothPermissionMangerTest.cbPeripheralManagerAuthorizationStatus })
     }
 
     @AfterTest
@@ -45,7 +46,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStateUnknownThenNotSupported() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.UNKNOWN
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.UNKNOWN
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
@@ -56,7 +57,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStateResettingThenResetting() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.RESETTING
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.RESETTING
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
@@ -67,7 +68,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStateNotSupportedThenNotSupported() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.UNSUPPORTED
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.UNSUPPORTED
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
@@ -78,7 +79,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStateUnauthorizedThenUnauthorized() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.UNAUTHORIZED
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.UNAUTHORIZED
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
@@ -89,7 +90,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStatePowerOffThenPowerOff() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.POWER_OFF
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.POWER_OFF
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()
@@ -100,7 +101,7 @@ class BluetoothPermissionMangerTest {
 
     @Test
     fun testBluetoothStatePowerOnThenPowerOn() {
-        mockCBCentralManager.mockState = BluetoothPermissionManager.CBCentralManagerState.POWER_ON
+        mockCBCentralManager.mockState = BluetoothPermission.CBCentralManagerState.POWER_ON
 
         val support: Support = runBlocking {
             return@runBlocking bluetoothPermissionManager.checkSupport()

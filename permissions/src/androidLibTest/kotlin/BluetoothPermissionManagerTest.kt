@@ -21,7 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Process
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -37,16 +37,16 @@ import kotlin.test.assertNotNull
 @RunWith(MockitoJUnitRunner::class)
 class BluetoothPermissionManagerTest {
 
-    private lateinit var bluetoothPermissionManager: BluetoothPermissionManager
+    private lateinit var bluetoothPermissionManager: BluetoothPermission
     private lateinit var mockContext: Context
-    private lateinit var mockBluetoothAdapterWrapper: BluetoothPermissionManager.BluetoothAdapterWrapper
+    private lateinit var mockBluetoothAdapterWrapper: BluetoothPermission.BluetoothAdapterWrapper
 
     @Before
     fun before() {
         mockContext = mock(Context::class.java)
 
-        mockBluetoothAdapterWrapper = mock(BluetoothPermissionManager.BluetoothAdapterWrapper::class.java)
-        bluetoothPermissionManager = BluetoothPermissionManager( mockContext, mockBluetoothAdapterWrapper)
+        mockBluetoothAdapterWrapper = mock(BluetoothPermission.BluetoothAdapterWrapper::class.java)
+        bluetoothPermissionManager = com.splendo.kaluga.permissions.bluetooth.BluetoothPermission(mockContext, mockBluetoothAdapterWrapper)
     }
 
     @After
