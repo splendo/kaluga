@@ -1,4 +1,4 @@
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.bluetooth
 
 /*
 

@@ -36,6 +36,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
@@ -45,26 +46,45 @@ import com.splendo.kaluga.permissions.PermissionState
 
 
 actual class BluetoothPermissionManager(
-    context: Context = ApplicationHolder.applicationContext,
+    context: Context,
+    bluetoothAdapter: BluetoothAdapter?,
     stateRepo: BluetoothPermissionStateRepo
 ) : PermissionManager<Permission.Bluetooth>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN))
+    private var supported: Boolean = bluetoothAdapter != null
 
     override suspend fun requestPermission() {
-        permissionsManager.requestPermissions()
+        if (supported)
+            permissionsManager.requestPermissions()
     }
 
     override fun initializeState(): PermissionState<Permission.Bluetooth> {
-        return if (permissionsManager.hasPermissions) PermissionState.Allowed(this) else PermissionState.Denied.Requestable(this)
+        return when {
+            !supported -> PermissionState.Denied.SystemLocked(this)
+            permissionsManager.hasPermissions -> PermissionState.Allowed(this)
+            else -> PermissionState.Denied.Requestable(this)
+        }
     }
 
     override fun startMonitoring(interval: Long) {
-        permissionsManager.stopMonitoring()
+        if (supported)
+            permissionsManager.startMonitoring(interval)
     }
 
     override fun stopMonitoring() {
-        permissionsManager.stopMonitoring()
+        if (supported)
+            permissionsManager.stopMonitoring()
+    }
+
+
+}
+
+actual class BluetoothPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext,
+                                               private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()) : BaseBluetoothPermissionManagerBuilder {
+
+    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
+        return BluetoothPermissionManager(context, bluetoothAdapter, repo)
     }
 
 }

@@ -17,6 +17,12 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.transformLatest
+
 sealed class Permission {
     object Bluetooth : Permission()
     object Calendar : Permission()
@@ -26,4 +32,27 @@ sealed class Permission {
     object Microphone : Permission()
     object Notifications : Permission()
     object Storage : Permission()
+}
+
+class Permissions(private val bluetoothPMBuilder: BluetoothPermissionManagerBuilder) {
+
+    private val bluetoothPermissionStateRepo = BluetoothPermissionStateRepo(bluetoothPMBuilder)
+
+    operator fun get(permission: Permission): Flow<PermissionState<*>> {
+        return when (permission) {
+            is Permission.Bluetooth -> bluetoothPermissionStateRepo.flow()
+            else -> throw NotImplementedError()
+        }
+    }
+
+}
+
+suspend fun Flow<PermissionState<*>>.request() : Boolean {
+    return this.transformLatest { state ->
+        when (state) {
+            is PermissionState.Allowed -> emit(true)
+            is PermissionState.Denied.Requestable -> state.request()
+            is PermissionState.Denied.SystemLocked -> emit(false)
+        }
+    }.first()
 }
