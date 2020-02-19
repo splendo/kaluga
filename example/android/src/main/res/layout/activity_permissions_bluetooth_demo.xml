@@ -11,28 +11,10 @@
             android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_permissions_bluetooth_check_manifest_declaration"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Check manifest declaration"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_permissions_bluetooth_check_support"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Check support"/>
-
-        <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_permissions_bluetooth_check_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Check permission"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_permissions_bluetooth_open_settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Open settings"/>
 
         <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_permissions_bluetooth_request_permissions"

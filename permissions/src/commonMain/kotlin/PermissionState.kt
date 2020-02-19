@@ -33,15 +33,25 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 
     sealed class Denied<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
-        internal fun allow() : suspend () -> Allowed<P> {
-            return {Allowed(permissionManager)}
+        internal val allow: suspend () -> Allowed<P> = {
+            Allowed(permissionManager)
         }
 
-        class SystemLocked<P : Permission>(permissionManager: PermissionManager<P>) : Denied<P>(permissionManager)
+        class SystemLocked<P : Permission>(permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+
+            internal val unlock: suspend () -> Requestable<P> = {
+                Requestable(permissionManager)
+            }
+
+        }
 
         class Requestable<P : Permission> internal constructor(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
             suspend fun request() {
                 permissionManager.requestPermission()
+            }
+
+            internal val lock: suspend () -> SystemLocked<P> = {
+                SystemLocked(permissionManager)
             }
         }
 

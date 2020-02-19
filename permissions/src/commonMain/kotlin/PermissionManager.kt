@@ -23,10 +23,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 abstract class PermissionManager<P : Permission>internal constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
 
-    interface Builder<P : Permission> {
-        fun create(stateRepo: PermissionStateRepo<P>): PermissionManager<P>
-    }
-
     abstract suspend fun requestPermission()
     abstract fun initializeState() : PermissionState<P>
 
@@ -37,7 +33,7 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is PermissionState.Denied -> state.allow()
+                    is PermissionState.Denied -> state.allow
                     is PermissionState.Allowed -> state.remain
                 }
             }
@@ -49,7 +45,12 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is PermissionState.Allowed -> state.deny(systemLocked)
-                    is PermissionState.Denied -> state.remain
+                    is PermissionState.Denied.Requestable -> {
+                        if (systemLocked) state.lock else state.remain
+                    }
+                    is PermissionState.Denied.SystemLocked -> {
+                        if (systemLocked) state.remain else state.unlock
+                    }
                 }
             }
         }

@@ -20,33 +20,60 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.log.error
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import platform.CoreBluetooth.*
-import platform.Foundation.NSURL
-import platform.UIKit.UIApplication
-import platform.UIKit.UIDevice
+import platform.Foundation.NSBundle
+import platform.darwin.NSObject
+import platform.darwin.dispatch_get_main_queue
 
 actual class BluetoothPermissionManager(
+    private val bundle: NSBundle,
     stateRepo: BluetoothPermissionStateRepo
 ) : PermissionManager<Permission.Bluetooth>(stateRepo) {
 
+    private val centralManager = lazy {
+        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to false)
+        CBCentralManager(null, dispatch_get_main_queue(), options)
+    }
+
+    private val delegate = object : NSObject(), CBCentralManagerDelegateProtocol {
+
+        override fun centralManagerDidUpdateState(central: CBCentralManager) {
+            when (checkAuthorization()) {
+                AuthorizationStatus.NotDetermined -> revokePermission(false)
+                AuthorizationStatus.Authorized -> grantPermission()
+                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> revokePermission(true)
+            }
+        }
+    }
+
     override suspend fun requestPermission() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
+            if (!centralManager.isInitialized()) {
+                centralManager.value
+            }
+        } else {
+            revokePermission(true)
+        }
     }
 
     override fun initializeState(): PermissionState<Permission.Bluetooth> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return when (checkAuthorization()) {
+            AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(this)
+            AuthorizationStatus.Authorized -> PermissionState.Allowed(this)
+            AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.SystemLocked(this)
+        }
     }
 
     override fun startMonitoring(interval: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        centralManager.value.delegate = delegate
     }
 
     override fun stopMonitoring() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        centralManager.value.delegate = null
     }
 
     private fun checkAuthorization(): AuthorizationStatus {
@@ -57,7 +84,6 @@ actual class BluetoothPermissionManager(
         }
     }
 
-    //https://developer.apple.com/documentation/corebluetooth/cbperipheralmanagerauthorizationstatus
     enum class AuthorizationStatus {
         NotDetermined,
         Restricted,
@@ -65,27 +91,46 @@ actual class BluetoothPermissionManager(
         Authorized;
 
         companion object {
-            fun byCBPeripheralManagerAuthorizationStatus(state: platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus): AuthorizationStatus {
-                return byOrdinal(state.toInt())
+            fun byCBPeripheralManagerAuthorizationStatus(state: CBPeripheralManagerAuthorizationStatus): AuthorizationStatus {
+                return when(state) {
+                    CBPeripheralManagerAuthorizationStatusAuthorized -> Authorized
+                    CBPeripheralManagerAuthorizationStatusDenied -> Denied
+                    CBPeripheralManagerAuthorizationStatusRestricted -> Restricted
+                    CBPeripheralManagerAuthorizationStatusNotDetermined -> NotDetermined
+                    else -> {
+                        error(
+                            "BluetoothPermissionManager",
+                            "Unknown CBPeripheralManagerAuthorizationStatus status={$state}"
+                        )
+                        NotDetermined
+                    }
+                }
             }
 
             fun byCBManagerAuthorization(state: CBManagerAuthorization): AuthorizationStatus {
-                return byOrdinal(state.toInt())
-            }
-
-            private fun byOrdinal(ordinal: Int): AuthorizationStatus {
-                val values = values()
-                return if (values.size <= ordinal) {
-                    error(
-                        "BluetoothPermissionManager",
-                        "Unknown CBPeripheralManagerAuthorizationStatus status={$ordinal}"
-                    )
-
-                    NotDetermined
-                } else {
-                    values[ordinal]
+                return when(state) {
+                    CBManagerAuthorizationAllowedAlways -> Authorized
+                    CBManagerAuthorizationDenied -> Denied
+                    CBManagerAuthorizationRestricted -> Restricted
+                    CBManagerAuthorizationNotDetermined -> NotDetermined
+                    else -> {
+                        error(
+                            "BluetoothPermissionManager",
+                            "Unknown CBManagerAuthorization status={$state}"
+                        )
+                        NotDetermined
+                    }
                 }
             }
         }
     }
+}
+
+actual class BluetoothPermissionManagerBuilder(
+    private val bundle: NSBundle) : BaseBluetoothPermissionManagerBuilder {
+
+    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
+        return BluetoothPermissionManager(bundle, repo)
+    }
+
 }

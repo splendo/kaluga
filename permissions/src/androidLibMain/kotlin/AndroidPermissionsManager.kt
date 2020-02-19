@@ -31,14 +31,37 @@ import kotlin.concurrent.fixedRateTimer
 
 class AndroidPermissionsManager<P : Permission> constructor(private val context: Context = ApplicationHolder.applicationContext, private val permissionManager: PermissionManager<P>, private val permissions: Array<String> = emptyArray()) {
 
+    enum class AndroidPermissionState {
+        GRANTED,
+        DENIED,
+        WAITING;
+
+        companion object {
+            fun fromInt(int: Int): AndroidPermissionState {
+                return when(int) {
+                    PackageManager.PERMISSION_DENIED -> DENIED
+                    PackageManager.PERMISSION_GRANTED -> GRANTED
+                    else -> WAITING
+                }
+            }
+        }
+
+    }
+
     companion object {
         const val TAG = "Permissions"
+
+        val lastPermission: MutableMap<String, AndroidPermissionState> = mutableMapOf()
+        val nextPermission: MutableMap<String, AndroidPermissionState> = mutableMapOf()
     }
 
     private var timer: Timer? = null
 
     fun requestPermissions() {
         if (checkPermissionsDeclaration().isEmpty()) {
+            permissions.forEach {
+                nextPermission[it] = AndroidPermissionState.WAITING
+            }
             val intent = PermissionsActivity.intent(context, *permissions)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
@@ -79,12 +102,22 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
     }
 
     fun startMonitoring(interval: Long) {
-        if (timer == null) return
+        updateLastPermissions()
+        if (timer != null) return
         timer = fixedRateTimer(period = interval) {
-            if (hasPermissions) {
-                permissionManager.grantPermission()
-            } else {
-                permissionManager.revokePermission(false)
+            val changed = permissions.fold(true) { previous, permission ->
+                val systemPermissionState = AndroidPermissionState.fromInt(ContextCompat.checkSelfPermission(context, permission))
+                val lastPermissionState = lastPermission[permission] ?: systemPermissionState
+                val nextPermissionState = nextPermission[permission] ?: systemPermissionState
+                nextPermissionState != AndroidPermissionState.WAITING && lastPermissionState != nextPermissionState && previous
+            }
+            if (changed) {
+                updateLastPermissions()
+                if (hasPermissions) {
+                    permissionManager.grantPermission()
+                } else {
+                    permissionManager.revokePermission(true)
+                }
             }
         }
     }
@@ -101,6 +134,14 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
                 PackageManager.PERMISSION_GRANTED -> true
                 else -> false
             } && previous
+        }
+    }
+
+    private fun updateLastPermissions() {
+        permissions.forEach {
+            val systemPermissionState = AndroidPermissionState.fromInt(ContextCompat.checkSelfPermission(context, it))
+            lastPermission[it] = nextPermission[it] ?: systemPermissionState
+            nextPermission[it] = systemPermissionState
         }
     }
 

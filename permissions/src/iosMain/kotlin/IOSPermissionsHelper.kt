@@ -20,7 +20,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.log.error
-import platform.CoreBluetooth.CBCentralManager
 import platform.Foundation.NSBundle
 
 class IOSPermissionsHelper {
@@ -28,19 +27,19 @@ class IOSPermissionsHelper {
     companion object {
 
         private const val TAG = "Permissions"
-        fun checkDeclarationInPList(bundle: NSBundle, vararg permissionName: String): MutableList<String> {
+        fun checkDeclarationInPList(bundle: NSBundle, vararg declarationName: String): MutableList<String> {
 
-            val missingPermissions = permissionName.toMutableList()
-            missingPermissions.forEach { permission ->
+            val missingDeclarations = declarationName.toMutableList()
+            missingDeclarations.forEach { declaration ->
                 try {
 
-                    val objectForInfoDictionaryKey = NSBundle.mainBundle.objectForInfoDictionaryKey(permission)
+                    val objectForInfoDictionaryKey = NSBundle.mainBundle.objectForInfoDictionaryKey(declaration)
 
                     if (objectForInfoDictionaryKey == null) {
-                        error(TAG, "$permission was not declared")
+                        error(TAG, "$declaration was not declared")
                     } else {
-                        debug(TAG, "$permission was declared")
-                        missingPermissions.remove(permission)
+                        debug(TAG, "$declaration was declared")
+                        missingDeclarations.remove(declaration)
                     }
 
                 } catch (error: Exception) {
@@ -48,7 +47,7 @@ class IOSPermissionsHelper {
                 }
             }
 
-            return missingPermissions
+            return missingDeclarations
         }
     }
 }

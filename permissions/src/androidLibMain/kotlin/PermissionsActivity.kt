@@ -18,6 +18,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -49,11 +51,9 @@ class PermissionsActivity : AppCompatActivity() {
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             permissions.forEachIndexed { index, permission ->
-                val permissionStatus = when (grantResults[index]) {
-                    PackageManager.PERMISSION_GRANTED -> "GRANTED"
-                    PackageManager.PERMISSION_DENIED -> "DENIED"
-                    else -> "UNKNOWN"
-                }
+                val permissionStatus = AndroidPermissionsManager.AndroidPermissionState.fromInt(grantResults[index])
+                AndroidPermissionsManager.lastPermission[permission] = AndroidPermissionsManager.AndroidPermissionState.WAITING
+                AndroidPermissionsManager.nextPermission[permission] = permissionStatus
 
                 info(TAG, "$permission was $permissionStatus")
             }
