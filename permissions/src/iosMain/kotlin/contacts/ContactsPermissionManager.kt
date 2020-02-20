@@ -1,0 +1,84 @@
+/*
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.permissions.contacts
+
+import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.permissions.*
+import platform.Contacts.*
+
+actual class ContactsPermissionManager(
+    actual val contacts: Permission.Contacts,
+    stateRepo: ContactsPermissionStateRepo
+) : PermissionManager<Permission.Contacts>(stateRepo) {
+
+    private val contactStore = CNContactStore()
+    private val authorizationStatus = {
+        CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts).toAuthorizationStatus()
+    }
+    private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
+
+    override suspend fun requestPermission() {
+        timerHelper.isWaiting = true
+        contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts) { success, error ->
+            error?.let {
+                debug(it.localizedDescription)
+                revokePermission(true)
+            } ?: run {
+                timerHelper.isWaiting = false
+                if (success) grantPermission() else revokePermission(true)
+            }
+        }
+    }
+
+    override fun initializeState(): PermissionState<Permission.Contacts> {
+        return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
+    }
+
+    override fun startMonitoring(interval: Long) {
+        timerHelper.startMonitoring(interval)
+    }
+
+    override fun stopMonitoring() {
+        timerHelper.stopMonitoring()
+    }
+
+}
+
+actual class ContactsPermissionManagerBuilder() : BaseContactsPermissionManagerBuilder {
+
+    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
+        return ContactsPermissionManager(contacts, repo)
+    }
+
+}
+
+private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
+    return when(this) {
+        CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+        CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+        CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+        CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        else -> {
+            com.splendo.kaluga.log.error(
+                "ContactsPermissionManager",
+                "Unknown ContactManagerAuthorization status={$this}"
+            )
+            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        }
+    }
+}

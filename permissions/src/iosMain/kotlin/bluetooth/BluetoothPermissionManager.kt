@@ -20,10 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.log.error
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.*
 import platform.CoreBluetooth.*
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
@@ -42,11 +39,7 @@ actual class BluetoothPermissionManager(
     private val delegate = object : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            when (checkAuthorization()) {
-                AuthorizationStatus.NotDeterminedcomponent -> revokePermission(false)
-                AuthorizationStatus.Authorized -> grantPermission()
-                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> revokePermission(true)
-            }
+            IOSPermissionsHelper.handleAuthorizationStatus(checkAuthorization(), this@BluetoothPermissionManager)
         }
     }
 
@@ -61,11 +54,7 @@ actual class BluetoothPermissionManager(
     }
 
     override fun initializeState(): PermissionState<Permission.Bluetooth> {
-        return when (checkAuthorization()) {
-            AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(this)
-            AuthorizationStatus.Authorized -> PermissionState.Allowed(this)
-            AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.SystemLocked(this)
-        }
+        return IOSPermissionsHelper.getPermissionState(checkAuthorization(), this)
     }
 
     override fun startMonitoring(interval: Long) {
@@ -76,54 +65,14 @@ actual class BluetoothPermissionManager(
         centralManager.value.delegate = null
     }
 
-    private fun checkAuthorization(): AuthorizationStatus {
+    private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
         val version = IOSVersion.systemVersion
         return when {
-            version.isOSVersionOrNewer(IOSVersion(13,0,0)) -> AuthorizationStatus.byCBManagerAuthorization(CBCentralManager().authorization)
-            else -> AuthorizationStatus.byCBPeripheralManagerAuthorizationStatus(CBPeripheralManager.authorizationStatus())
+            version.isOSVersionOrNewer(IOSVersion(13,0,0)) -> CBCentralManager().authorization.toAuthorizationStatus()
+            else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
         }
     }
 
-    enum class AuthorizationStatus {
-        NotDetermined,
-        Restricted,
-        Denied,
-        Authorized;
-
-        companion object {
-            fun byCBPeripheralManagerAuthorizationStatus(state: CBPeripheralManagerAuthorizationStatus): AuthorizationStatus {
-                return when(state) {
-                    CBPeripheralManagerAuthorizationStatusAuthorized -> Authorized
-                    CBPeripheralManagerAuthorizationStatusDenied -> Denied
-                    CBPeripheralManagerAuthorizationStatusRestricted -> Restricted
-                    CBPeripheralManagerAuthorizationStatusNotDetermined -> NotDetermined
-                    else -> {
-                        error(
-                            "BluetoothPermissionManager",
-                            "Unknown CBPeripheralManagerAuthorizationStatus status={$state}"
-                        )
-                        NotDetermined
-                    }
-                }
-            }
-
-            fun byCBManagerAuthorization(state: CBManagerAuthorization): AuthorizationStatus {
-                return when(state) {
-                    CBManagerAuthorizationAllowedAlways -> Authorized
-                    CBManagerAuthorizationDenied -> Denied
-                    CBManagerAuthorizationRestricted -> Restricted
-                    CBManagerAuthorizationNotDetermined -> NotDetermined
-                    else -> {
-                        error(
-                            "BluetoothPermissionManager",
-                            "Unknown CBManagerAuthorization status={$state}"
-                        )
-                        NotDetermined
-                    }
-                }
-            }
-        }
-    }
 }
 
 actual class BluetoothPermissionManagerBuilder(
@@ -133,4 +82,36 @@ actual class BluetoothPermissionManagerBuilder(
         return BluetoothPermissionManager(bundle, repo)
     }
 
+}
+
+private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
+    return when(this) {
+        CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+        CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+        CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+        CBPeripheralManagerAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        else -> {
+            error(
+                "BluetoothPermissionManager",
+                "Unknown CBPeripheralManagerAuthorizationStatus status={$this}"
+            )
+            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        }
+    }
+}
+
+private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
+    return when(this) {
+        CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+        CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+        CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+        CBManagerAuthorizationNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        else -> {
+            error(
+                "BluetoothPermissionManager",
+                "Unknown CBManagerAuthorization status={$this}"
+            )
+            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        }
+    }
 }

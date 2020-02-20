@@ -24,6 +24,13 @@ import platform.Foundation.NSBundle
 
 class IOSPermissionsHelper {
 
+    enum class AuthorizationStatus {
+        NotDetermined,
+        Restricted,
+        Denied,
+        Authorized
+    }
+
     companion object {
 
         private const val TAG = "Permissions"
@@ -49,5 +56,22 @@ class IOSPermissionsHelper {
 
             return missingDeclarations
         }
+
+        fun <P: Permission> getPermissionState(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) : PermissionState<P> {
+            return when (authorizationStatus) {
+                AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(permissionManager)
+                AuthorizationStatus.Authorized -> PermissionState.Allowed(permissionManager)
+                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.SystemLocked(permissionManager)
+            }
+        }
+
+        fun <P: Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
+            return when (authorizationStatus) {
+                AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)
+                AuthorizationStatus.Authorized -> permissionManager.grantPermission()
+                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> permissionManager.revokePermission(true)
+            }
+        }
+
     }
 }

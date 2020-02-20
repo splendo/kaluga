@@ -18,14 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.splendo.kaluga.log.info
 
 
@@ -50,11 +49,10 @@ class PermissionsActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            permissions.forEachIndexed { index, permission ->
-                val permissionStatus = AndroidPermissionsManager.AndroidPermissionState.fromInt(grantResults[index])
-                AndroidPermissionsManager.lastPermission[permission] = AndroidPermissionsManager.AndroidPermissionState.WAITING
-                AndroidPermissionsManager.nextPermission[permission] = permissionStatus
+            permissions.forEach { permission ->
+                AndroidPermissionsManager.waitingPermissions.remove(permission)
 
+                val permissionStatus = ContextCompat.checkSelfPermission(this, permission)
                 info(TAG, "$permission was $permissionStatus")
             }
         }
