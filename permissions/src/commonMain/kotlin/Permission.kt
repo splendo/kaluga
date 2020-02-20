@@ -19,29 +19,67 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
+import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
+import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
+import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
+import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
+import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
+import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
+import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
+import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
+import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
+import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 
 sealed class Permission {
     object Bluetooth : Permission()
-    object Calendar : Permission()
+    data class Calendar(val allowWrite: Boolean) : Permission()
     object Camera : Permission()
-    object Contacts : Permission()
-    data class Location(val background: Boolean) : Permission()
+    data class Contacts(val allowWrite: Boolean) : Permission()
+    data class Location(val background: Boolean, val precise: Boolean) : Permission()
     object Microphone : Permission()
     object Notifications : Permission()
-    object Storage : Permission()
+    data class Storage(val allowWrite: Boolean) : Permission()
 }
 
-class Permissions(private val bluetoothPMBuilder: BluetoothPermissionManagerBuilder) {
+interface BasePermissionsBuilder {
 
-    private val bluetoothPermissionStateRepo = BluetoothPermissionStateRepo(bluetoothPMBuilder)
+    val bluetoothPMBuilder: BluetoothPermissionManagerBuilder
+    val calendarPMBuilder: CalendarPermissionManagerBuilder
+    val cameraPMBuilder: CameraPermissionManagerBuilder
+    val contactsPMBuilder: ContactsPermissionManagerBuilder
+    val locationPMBuilder: LocationPermissionManagerBuilder
+    val microphonePMBuilder: MicrophonePermissionManagerBuilder
+    val notificationsPMBuilder: NotificationsPermissionManagerBuilder
+    val storagePMBuilder: StoragePermissionManagerBuilder
+
+}
+
+expect class PermissionsBuilder : BasePermissionsBuilder
+
+class Permissions(private val builder: PermissionsBuilder) {
+
+    private val bluetoothPermissionStateRepo = BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
+    private val cameraPermissionStateRepo = CameraPermissionStateRepo(builder.cameraPMBuilder)
+    private val microphonePermissionStateRepo = MicrophonePermissionStateRepo(builder.microphonePMBuilder)
+    private val notificationsPermissionStateRepo = NotificationsPermissionStateRepo(builder.notificationsPMBuilder)
 
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
         return when (permission) {
             is Permission.Bluetooth -> bluetoothPermissionStateRepo.flow()
-            else -> throw NotImplementedError()
+            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder).flow()
+            is Permission.Camera -> cameraPermissionStateRepo.flow()
+            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder).flow()
+            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder).flow()
+            is Permission.Microphone -> microphonePermissionStateRepo.flow()
+            is Permission.Notifications -> notificationsPermissionStateRepo.flow()
+            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder).flow()
         }
     }
 
