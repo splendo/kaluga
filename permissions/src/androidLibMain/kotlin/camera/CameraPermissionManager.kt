@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.permissions.bluetooth
+package com.splendo.kaluga.permissions.camera
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
 import android.content.Context
+import android.content.pm.PackageManager
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
@@ -27,21 +27,20 @@ import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
 
-actual class BluetoothPermissionManager(
+actual class CameraPermissionManager(
     context: Context,
-    bluetoothAdapter: BluetoothAdapter?,
-    stateRepo: BluetoothPermissionStateRepo
-) : PermissionManager<Permission.Bluetooth>(stateRepo) {
+    stateRepo: CameraPermissionStateRepo
+) : PermissionManager<Permission.Camera>(stateRepo) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN))
-    private var supported: Boolean = bluetoothAdapter != null
+    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
+    private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
 
     override suspend fun requestPermission() {
         if (supported)
             permissionsManager.requestPermissions()
     }
 
-    override fun initializeState(): PermissionState<Permission.Bluetooth> {
+    override fun initializeState(): PermissionState<Permission.Camera> {
         return when {
             !supported -> PermissionState.Denied.SystemLocked(this)
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
@@ -60,13 +59,13 @@ actual class BluetoothPermissionManager(
     }
 
 
+
 }
 
-actual class BluetoothPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext,
-                                               private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()) : BaseBluetoothPermissionManagerBuilder {
+actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
-        return BluetoothPermissionManager(context, bluetoothAdapter, repo)
+    override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
+        return CameraPermissionManager(context, repo)
     }
 
 }

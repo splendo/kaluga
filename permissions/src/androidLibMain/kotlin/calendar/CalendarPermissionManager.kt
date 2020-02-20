@@ -15,10 +15,9 @@
 
  */
 
-package com.splendo.kaluga.permissions.bluetooth
+package com.splendo.kaluga.permissions.calendar
 
 import android.Manifest
-import android.bluetooth.BluetoothAdapter
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
@@ -27,46 +26,40 @@ import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
 
-actual class BluetoothPermissionManager(
+actual class CalendarPermissionManager(
     context: Context,
-    bluetoothAdapter: BluetoothAdapter?,
-    stateRepo: BluetoothPermissionStateRepo
-) : PermissionManager<Permission.Bluetooth>(stateRepo) {
+    actual val calendar: Permission.Calendar,
+    stateRepo: CalendarPermissionStateRepo
+) : PermissionManager<Permission.Calendar>(stateRepo) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN))
-    private var supported: Boolean = bluetoothAdapter != null
+    private val permissionsManager = AndroidPermissionsManager(context, this, if (calendar.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR))
 
     override suspend fun requestPermission() {
-        if (supported)
-            permissionsManager.requestPermissions()
+        permissionsManager.requestPermissions()
     }
 
-    override fun initializeState(): PermissionState<Permission.Bluetooth> {
+    override fun initializeState(): PermissionState<Permission.Calendar> {
         return when {
-            !supported -> PermissionState.Denied.SystemLocked(this)
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
             else -> PermissionState.Denied.Requestable(this)
         }
     }
 
     override fun startMonitoring(interval: Long) {
-        if (supported)
-            permissionsManager.startMonitoring(interval)
+        permissionsManager.startMonitoring(interval)
     }
 
     override fun stopMonitoring() {
-        if (supported)
-            permissionsManager.stopMonitoring()
+        permissionsManager.stopMonitoring()
     }
 
 
 }
 
-actual class BluetoothPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext,
-                                               private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()) : BaseBluetoothPermissionManagerBuilder {
+actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
-        return BluetoothPermissionManager(context, bluetoothAdapter, repo)
+    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
+        return CalendarPermissionManager(context, calendar, repo)
     }
 
 }
