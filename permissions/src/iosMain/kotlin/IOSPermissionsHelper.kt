@@ -33,7 +33,7 @@ class IOSPermissionsHelper {
             missingDeclarations.forEach { declaration ->
                 try {
 
-                    val objectForInfoDictionaryKey = NSBundle.mainBundle.objectForInfoDictionaryKey(declaration)
+                    val objectForInfoDictionaryKey = bundle.objectForInfoDictionaryKey(declaration)
 
                     if (objectForInfoDictionaryKey == null) {
                         error(TAG, "$declaration was not declared")

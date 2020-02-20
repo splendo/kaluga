@@ -43,7 +43,7 @@ actual class BluetoothPermissionManager(
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             when (checkAuthorization()) {
-                AuthorizationStatus.NotDetermined -> revokePermission(false)
+                AuthorizationStatus.NotDeterminedcomponent -> revokePermission(false)
                 AuthorizationStatus.Authorized -> grantPermission()
                 AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> revokePermission(true)
             }
@@ -127,7 +127,7 @@ actual class BluetoothPermissionManager(
 }
 
 actual class BluetoothPermissionManagerBuilder(
-    private val bundle: NSBundle) : BaseBluetoothPermissionManagerBuilder {
+    private val bundle: NSBundle = NSBundle.mainBundle) : BaseBluetoothPermissionManagerBuilder {
 
     override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
         return BluetoothPermissionManager(bundle, repo)
