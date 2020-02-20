@@ -17,17 +17,21 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
+import com.splendo.kaluga.example.shared.PermissionsPrinter
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.hud.IOSHUD
+import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
@@ -63,7 +67,37 @@ class KotlinNativeFramework {
         debug("proceed executing after location coroutines")
     }
 
-    fun permissions(nsBundle: NSBundle) = Permissions
-        .Builder(nsBundle)
-        .build()
+    private val permissions = Permissions(BluetoothPermissionManagerBuilder())
+
+    fun permissionStatus(alertBuilder: AlertBuilder) {
+        PermissionsPrinter(permissions).printPermission { message ->
+            val coroutine = MainScope().launch(MainQueueDispatcher) {
+                alertBuilder.buildAlert {
+                    setTitle("Status")
+                    setMessage(message)
+                    setPositiveButton("OK")
+                }.show()
+            }
+            MainScope().launch(MainQueueDispatcher) {
+                delay(3 * 1_000)
+                coroutine.cancel()
+            }
+        }
+    }
+
+    fun permissionRequest(alertBuilder: AlertBuilder) {
+        PermissionsPrinter(permissions).printRequest { message ->
+            val coroutine = MainScope().launch(MainQueueDispatcher) {
+                alertBuilder.buildAlert {
+                    setTitle("Request Succeeded")
+                    setMessage(message)
+                    setPositiveButton("OK")
+                }.show()
+            }
+            MainScope().launch(MainQueueDispatcher) {
+                delay(3 * 1_000)
+                coroutine.cancel()
+            }
+        }
+    }
 }

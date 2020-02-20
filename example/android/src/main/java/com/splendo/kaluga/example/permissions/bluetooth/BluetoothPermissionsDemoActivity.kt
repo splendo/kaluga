@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.PermissionsPrinter
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -21,37 +22,23 @@ class BluetoothPermissionsDemoActivity : AppCompatActivity(R.layout.activity_per
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         permissions = Permissions(BluetoothPermissionManagerBuilder())
+        val printer = PermissionsPrinter(permissions)
 
         btn_permissions_bluetooth_check_permission.setOnClickListener {
-            launch {
-                withContext(Dispatchers.IO) {
-                    val message = when (permissions[Permission.Bluetooth].first()) {
-                        is PermissionState.Allowed -> "Allowed"
-                        is PermissionState.Denied.Requestable -> "Denied but Requestable"
-                        is PermissionState.Denied.SystemLocked -> "Denied"
-                    }
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            this@BluetoothPermissionsDemoActivity,
-                            "Permission = $message",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-
+            printer.printPermission {text ->
+                Toast.makeText(
+                this@BluetoothPermissionsDemoActivity,
+                text,
+                Toast.LENGTH_SHORT).show()
             }
         }
 
         btn_permissions_bluetooth_request_permissions.setOnClickListener {
-            launch {
-                val success = permissions[Permission.Bluetooth].request()
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        this@BluetoothPermissionsDemoActivity,
-                        "Request = $success",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+            printer.printRequest {text ->
+                Toast.makeText(
+                    this@BluetoothPermissionsDemoActivity,
+                    text,
+                    Toast.LENGTH_SHORT).show()
             }
         }
 
