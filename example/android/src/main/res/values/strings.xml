@@ -5,4 +5,14 @@
     <string name="alert_list">Show Alert List</string>
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
+
+    <string name="permissions_list">Permissions List</string>
+    <string name="permissions_bluetooth">Bluetooth Demo</string>
+    <string name="permissions_calendar">Calendar Demo</string>
+    <string name="permissions_camera">Camera Demo</string>
+    <string name="permissions_contacts">Contacts Demo</string>
+    <string name="permissions_location">Location Demo</string>
+    <string name="permissions_microphone">Microphone Demo</string>
+    <string name="permissions_storage">Storage Demo</string>
+
 </resources>

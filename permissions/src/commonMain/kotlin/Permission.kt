@@ -61,19 +61,22 @@ expect class PermissionsBuilder : BasePermissionsBuilder
 
 class Permissions(private val builder: PermissionsBuilder) {
 
-    private val bluetoothPermissionStateRepo = BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
-    private val cameraPermissionStateRepo = CameraPermissionStateRepo(builder.cameraPMBuilder)
-    private val microphonePermissionStateRepo = MicrophonePermissionStateRepo(builder.microphonePMBuilder)
+    private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
+        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission).also { permissionStateRepos[permission] = it }
+        return permissionStateRepo.flow()
+    }
+
+    private fun createPermissionStateRepo(permission: Permission): PermissionStateRepo<*> {
         return when (permission) {
-            is Permission.Bluetooth -> bluetoothPermissionStateRepo.flow()
-            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder).flow()
-            is Permission.Camera -> cameraPermissionStateRepo.flow()
-            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder).flow()
-            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder).flow()
-            is Permission.Microphone -> microphonePermissionStateRepo.flow()
-            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder).flow()
+            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
+            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder)
+            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder)
+            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder)
+            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder)
+            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder)
+            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
         }
     }
 

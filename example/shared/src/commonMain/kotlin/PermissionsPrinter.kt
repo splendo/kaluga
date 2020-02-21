@@ -8,11 +8,11 @@ import com.splendo.kaluga.permissions.request
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.first
 
-class PermissionsPrinter(val permissions: Permissions) {
+class PermissionsPrinter(val permissions: Permissions, private val permission: Permission) {
 
-    fun printPermission(printer: (String) -> Unit) = runBlocking {
+    suspend fun printPermission(printer: (String) -> Unit) = runBlocking {
         launch(Dispatchers.Default) {
-            val message = when (permissions[Permission.Bluetooth].first()) {
+            val message = when (permissions[permission].first()) {
                 is PermissionState.Allowed -> "Allowed"
                 is PermissionState.Denied.Requestable -> "Denied but Requestable"
                 is PermissionState.Denied.SystemLocked -> "Denied"
@@ -23,9 +23,9 @@ class PermissionsPrinter(val permissions: Permissions) {
         }
     }
 
-    fun printRequest(printer: (String) -> Unit) = runBlocking {
+    suspend fun printRequest(printer: (String) -> Unit) = runBlocking {
         launch(Dispatchers.Default) {
-            val success = permissions[Permission.Bluetooth].request()
+            val success = permissions[permission].request()
             MainScope().launch {
                     printer("Request = $success")
             }
