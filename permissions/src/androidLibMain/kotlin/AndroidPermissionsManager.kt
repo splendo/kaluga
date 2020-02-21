@@ -26,6 +26,10 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.log.error
 import com.splendo.kaluga.log.warn
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
 
@@ -45,9 +49,11 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
             permissions.forEach {
                 waitingPermissions.add(it)
             }
-            val intent = PermissionsActivity.intent(context, *permissions)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            context.startActivity(intent)
+            MainScope().launch {
+                val intent = PermissionsActivity.intent(context, *permissions)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+            }
         } else {
             permissionManager.revokePermission(true)
         }
