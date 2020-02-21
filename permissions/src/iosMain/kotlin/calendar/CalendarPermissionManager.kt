@@ -17,11 +17,14 @@
 
 package com.splendo.kaluga.permissions.calendar
 
+import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.*
 import platform.EventKit.*
+import platform.Foundation.NSBundle
 
 actual class CalendarPermissionManager(
+    private val bundle: NSBundle,
     actual val calendar: Permission.Calendar,
     stateRepo: CalendarPermissionStateRepo
 ) : PermissionManager<Permission.Calendar>(stateRepo) {
@@ -33,15 +36,19 @@ actual class CalendarPermissionManager(
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        timerHelper.isWaiting = true
-        eventStore.requestAccessToEntityType(EKEntityType.EKEntityTypeEvent) { success, error ->
-            timerHelper.isWaiting = false
-            error?.let {
-                debug(it.localizedDescription)
-                revokePermission(true)
-            } ?: run {
-                if (success) grantPermission() else revokePermission(true)
-            }
+        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSCalendarsUsageDescription").isEmpty()) {
+            timerHelper.isWaiting = true
+            eventStore.requestAccessToEntityType(EKEntityType.EKEntityTypeEvent, mainContinuation { success, error ->
+                timerHelper.isWaiting = false
+                error?.let {
+                    debug(it.localizedDescription)
+                    revokePermission(true)
+                } ?: run {
+                    if (success) grantPermission() else revokePermission(true)
+                }
+            })
+        } else {
+            revokePermission(true)
         }
     }
 
@@ -59,10 +66,10 @@ actual class CalendarPermissionManager(
 
 }
 
-actual class CalendarPermissionManagerBuilder() : BaseCalendarPermissionManagerBuilder {
+actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCalendarPermissionManagerBuilder {
 
     override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
-        return CalendarPermissionManager(calendar, repo)
+        return CalendarPermissionManager(bundle, calendar, repo)
     }
 
 }

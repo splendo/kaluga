@@ -16,29 +16,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.example.shared.PermissionsPrinter
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.AlertActionHandler
+import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
+import com.splendo.kaluga.example.shared.LocationPrinter
+import com.splendo.kaluga.example.shared.PermissionsPrinter
+import com.splendo.kaluga.hud.IOSHUD
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertInterface
-import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.alerts.AlertActionHandler
-import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.collect
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocationManager
-import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
 import ru.pocketbyte.hydra.log.HydraLog
-import platform.UIKit.UIViewController
 
 class KNAlertFramework {
     companion object {
@@ -49,6 +49,92 @@ class KNAlertFramework {
 class KNHudFramework {
     companion object {
         fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
+    }
+}
+
+class KNPermissionsFramework {
+    private val permissions = Permissions(PermissionsBuilder())
+
+    fun permissionStatusBluetooth(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Bluetooth, alertBuilder)
+    }
+
+    fun permissionRequestBluetooth(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Bluetooth, alertBuilder)
+    }
+
+    fun permissionStatusContacts(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Contacts(true), alertBuilder)
+    }
+
+    fun permissionStatusCalendar(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Calendar(true), alertBuilder)
+    }
+
+    fun permissionRequestCalendar(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Calendar(true), alertBuilder)
+    }
+
+    fun permissionStatusCamera(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Camera, alertBuilder)
+    }
+
+    fun permissionRequestCamera(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Camera, alertBuilder)
+    }
+
+    fun permissionRequestContacts(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Contacts(true), alertBuilder)
+    }
+
+    fun permissionStatusLocation(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Location(true, true), alertBuilder)
+    }
+
+    fun permissionRequestLocation(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Location(true, true), alertBuilder)
+    }
+
+    fun permissionStatusMicrophone(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Microphone, alertBuilder)
+    }
+
+    fun permissionRequestMicrophone(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Microphone, alertBuilder)
+    }
+
+    fun permissionStatusStorage(alertBuilder: AlertBuilder) {
+        permissionStatus(Permission.Storage(true), alertBuilder)
+    }
+
+    fun permissionRequestStorage(alertBuilder: AlertBuilder) {
+        permissionRequest(Permission.Storage(true), alertBuilder)
+    }
+
+    private fun permissionStatus(permission: Permission, alertBuilder: AlertBuilder) {
+        PermissionsPrinter(permissions, permission).printPermission { message ->
+            showTempAlert("Status", message, alertBuilder)
+        }
+    }
+
+    private fun permissionRequest(permission: Permission, alertBuilder: AlertBuilder) {
+        PermissionsPrinter(permissions, permission).printRequest { message ->
+            showTempAlert("Request", message, alertBuilder)
+        }
+    }
+
+    private fun showTempAlert(title: String, message: String, alertBuilder: AlertBuilder) {
+        val coroutine = MainScope().launch(MainQueueDispatcher) {
+            alertBuilder.buildAlert {
+                setTitle(title)
+                setMessage(message)
+                setPositiveButton("OK")
+            }.show()
+        }
+        MainScope().launch(MainQueueDispatcher) {
+            delay(3 * 1_000)
+            coroutine.cancel()
+        }
     }
 }
 
@@ -67,37 +153,4 @@ class KotlinNativeFramework {
         debug("proceed executing after location coroutines")
     }
 
-    private val permissions = Permissions(BluetoothPermissionManagerBuilder())
-
-    fun permissionStatus(alertBuilder: AlertBuilder) {
-        PermissionsPrinter(permissions).printPermission { message ->
-            val coroutine = MainScope().launch(MainQueueDispatcher) {
-                alertBuilder.buildAlert {
-                    setTitle("Status")
-                    setMessage(message)
-                    setPositiveButton("OK")
-                }.show()
-            }
-            MainScope().launch(MainQueueDispatcher) {
-                delay(3 * 1_000)
-                coroutine.cancel()
-            }
-        }
-    }
-
-    fun permissionRequest(alertBuilder: AlertBuilder) {
-        PermissionsPrinter(permissions).printRequest { message ->
-            val coroutine = MainScope().launch(MainQueueDispatcher) {
-                alertBuilder.buildAlert {
-                    setTitle("Request Succeeded")
-                    setMessage(message)
-                    setPositiveButton("OK")
-                }.show()
-            }
-            MainScope().launch(MainQueueDispatcher) {
-                delay(3 * 1_000)
-                coroutine.cancel()
-            }
-        }
-    }
 }

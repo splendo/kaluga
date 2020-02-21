@@ -1,35 +1,28 @@
 package com.splendo.kaluga.example.shared
 
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.request
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class PermissionsPrinter(val permissions: Permissions, private val permission: Permission) {
 
-    suspend fun printPermission(printer: (String) -> Unit) = runBlocking {
-        launch(Dispatchers.Default) {
-            val message = when (permissions[permission].first()) {
-                is PermissionState.Allowed -> "Allowed"
-                is PermissionState.Denied.Requestable -> "Denied but Requestable"
-                is PermissionState.Denied.SystemLocked -> "Denied"
-            }
-            MainScope().launch {
-                printer("Permission = $message")
-            }
+    fun printPermission(printer: (String) -> Unit) = MainScope().launch(MainQueueDispatcher) {
+        val message = when (permissions[permission].first()) {
+            is PermissionState.Allowed -> "Allowed"
+            is PermissionState.Denied.Requestable -> "Denied but Requestable"
+            is PermissionState.Denied.SystemLocked -> "Denied"
         }
+        printer("Permission = $message")
     }
 
-    suspend fun printRequest(printer: (String) -> Unit) = runBlocking {
-        launch(Dispatchers.Default) {
-            val success = permissions[permission].request()
-            MainScope().launch {
-                    printer("Request = $success")
-            }
-        }
+    fun printRequest(printer: (String) -> Unit) = MainScope().launch(MainQueueDispatcher) {
+        val success = permissions[permission].request()
+        printer("Request = $success")
     }
 
 }

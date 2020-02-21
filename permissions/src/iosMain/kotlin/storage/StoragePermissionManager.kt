@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.permissions.*
 import platform.Foundation.NSBundle
 import platform.Photos.*
@@ -35,10 +36,10 @@ actual class StoragePermissionManager(
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSPhotoLibraryUsageDescription").isEmpty()) {
             timerHelper.isWaiting = true
-            PHPhotoLibrary.requestAuthorization { status ->
+            PHPhotoLibrary.requestAuthorization(mainContinuation { status ->
                 timerHelper.isWaiting = false
                 IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
-            }
+            })
         } else {
             revokePermission(true)
         }
