@@ -15,43 +15,34 @@
 
  */
 
-package com.splendo.kaluga.permissions.notifications
+package com.splendo.kaluga.permissions.microphone
 
-import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
-actual class NotificationsPermissionManager(
-    stateRepo: NotificationsPermissionStateRepo
-) : PermissionManager<Permission.Notifications>(stateRepo) {
+actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : PermissionManager<Permission.Microphone>(repo) {
 
     override suspend fun requestPermission() {
-        // Android always has permissions, so no need to request
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun initializeState(): PermissionState<Permission.Notifications> {
-        // Android always has permissions, so always allowed
-        return PermissionState.Allowed(this)
+    override fun initializeState(): PermissionState<Permission.Microphone> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun startMonitoring(interval: Long) {
-        // Android always has permissions, so no need to monitor
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun stopMonitoring() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
-
 }
 
-actual class NotificationsPermissionManagerBuilder() : BaseNotificationsPermissionManagerBuilder {
+actual class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
-        return NotificationsPermissionManager(repo)
+    override fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
+        return MicrophonePermissionManager(repo)
     }
-
 }
-

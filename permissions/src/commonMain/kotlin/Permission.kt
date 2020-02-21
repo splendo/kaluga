@@ -29,8 +29,6 @@ import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.flow.Flow
@@ -44,7 +42,6 @@ sealed class Permission {
     data class Contacts(val allowWrite: Boolean) : Permission()
     data class Location(val background: Boolean, val precise: Boolean) : Permission()
     object Microphone : Permission()
-    object Notifications : Permission()
     data class Storage(val allowWrite: Boolean) : Permission()
 }
 
@@ -56,7 +53,6 @@ interface BasePermissionsBuilder {
     val contactsPMBuilder: ContactsPermissionManagerBuilder
     val locationPMBuilder: LocationPermissionManagerBuilder
     val microphonePMBuilder: MicrophonePermissionManagerBuilder
-    val notificationsPMBuilder: NotificationsPermissionManagerBuilder
     val storagePMBuilder: StoragePermissionManagerBuilder
 
 }
@@ -68,7 +64,6 @@ class Permissions(private val builder: PermissionsBuilder) {
     private val bluetoothPermissionStateRepo = BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
     private val cameraPermissionStateRepo = CameraPermissionStateRepo(builder.cameraPMBuilder)
     private val microphonePermissionStateRepo = MicrophonePermissionStateRepo(builder.microphonePMBuilder)
-    private val notificationsPermissionStateRepo = NotificationsPermissionStateRepo(builder.notificationsPMBuilder)
 
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
         return when (permission) {
@@ -78,7 +73,6 @@ class Permissions(private val builder: PermissionsBuilder) {
             is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder).flow()
             is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder).flow()
             is Permission.Microphone -> microphonePermissionStateRepo.flow()
-            is Permission.Notifications -> notificationsPermissionStateRepo.flow()
             is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder).flow()
         }
     }
