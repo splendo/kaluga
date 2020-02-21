@@ -14,7 +14,6 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
@@ -26,10 +25,10 @@ import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuil
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 
 actual data class PermissionsBuilder(override val bluetoothPMBuilder: BluetoothPermissionManagerBuilder = BluetoothPermissionManagerBuilder(),
-                                override val calendarPMBuilder: CalendarPermissionManagerBuilder = CalendarPermissionManagerBuilder(),
-                                override val cameraPMBuilder: CameraPermissionManagerBuilder = CameraPermissionManagerBuilder(),
-                                override val contactsPMBuilder: ContactsPermissionManagerBuilder = ContactsPermissionManagerBuilder(),
-                                override val locationPMBuilder: LocationPermissionManagerBuilder = LocationPermissionManagerBuilder(),
-                                override val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
-                                override val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
+                                     override val calendarPMBuilder: CalendarPermissionManagerBuilder = CalendarPermissionManagerBuilder(),
+                                     override val cameraPMBuilder: CameraPermissionManagerBuilder = CameraPermissionManagerBuilder(),
+                                     override val contactsPMBuilder: ContactsPermissionManagerBuilder = ContactsPermissionManagerBuilder(),
+                                     override val locationPMBuilder: LocationPermissionManagerBuilder = LocationPermissionManagerBuilder(),
+                                     override val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
+                                     override val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
 ) : BasePermissionsBuilder
