@@ -17,11 +17,14 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.*
 import platform.Contacts.*
+import platform.Foundation.NSBundle
 
 actual class ContactsPermissionManager(
+    private val bundle: NSBundle,
     actual val contacts: Permission.Contacts,
     stateRepo: ContactsPermissionStateRepo
 ) : PermissionManager<Permission.Contacts>(stateRepo) {
@@ -33,15 +36,19 @@ actual class ContactsPermissionManager(
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        timerHelper.isWaiting = true
-        contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts) { success, error ->
-            error?.let {
-                debug(it.localizedDescription)
-                revokePermission(true)
-            } ?: run {
-                timerHelper.isWaiting = false
-                if (success) grantPermission() else revokePermission(true)
-            }
+        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSContactsUsageDescription").isEmpty()) {
+            timerHelper.isWaiting = true
+            contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts, mainContinuation { success, error ->
+                error?.let {
+                    debug(it.localizedDescription)
+                    revokePermission(true)
+                } ?: run {
+                    timerHelper.isWaiting = false
+                    if (success) grantPermission() else revokePermission(true)
+                }
+            })
+        } else {
+            revokePermission(true)
         }
     }
 
@@ -59,10 +66,10 @@ actual class ContactsPermissionManager(
 
 }
 
-actual class ContactsPermissionManagerBuilder() : BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
 
     override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
-        return ContactsPermissionManager(contacts, repo)
+        return ContactsPermissionManager(bundle, contacts, repo)
     }
 
 }

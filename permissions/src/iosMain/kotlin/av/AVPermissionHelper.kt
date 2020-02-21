@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.av
 
+import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.permissions.*
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
@@ -54,21 +55,24 @@ internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, pr
     internal fun requestPermission() {
         if (IOSPermissionsHelper.checkDeclarationInPList(bundle, type.declarationName).isEmpty()) {
             timerHelper.isWaiting = true
-            AVCaptureDevice.requestAccessForMediaType(type.avMediaType) { allowed ->
+            AVCaptureDevice.requestAccessForMediaType(type.avMediaType, mainContinuation { allowed ->
                 timerHelper.isWaiting = false
                 if (allowed) {
                     type.permissionManager.grantPermission()
                 } else {
                     type.permissionManager.revokePermission(true)
                 }
-            }
+            })
         } else {
             type.permissionManager.revokePermission(true)
         }
     }
 
     internal fun initializeState(): PermissionState<P> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus(), type.permissionManager)
+        return when {
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.SystemLocked(type.permissionManager)
+            else -> IOSPermissionsHelper.getPermissionState(authorizationStatus(), type.permissionManager)
+        }
     }
 
     internal fun startMonitoring(interval: Long) {
