@@ -40,16 +40,16 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
         }
     }
 
-    fun revokePermission(systemLocked: Boolean) {
+    fun revokePermission(locked: Boolean) {
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is PermissionState.Allowed -> state.deny(systemLocked)
+                    is PermissionState.Allowed -> state.deny(locked)
                     is PermissionState.Denied.Requestable -> {
-                        if (systemLocked) state.lock else state.remain
+                        if (locked) state.lock else state.remain
                     }
-                    is PermissionState.Denied.SystemLocked -> {
-                        if (systemLocked) state.remain else state.unlock
+                    is PermissionState.Denied.Locked -> {
+                        if (locked) state.remain else state.unlock
                     }
                 }
             }

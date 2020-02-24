@@ -87,7 +87,7 @@ suspend fun Flow<PermissionState<*>>.request() : Boolean {
         when (state) {
             is PermissionState.Allowed -> emit(true)
             is PermissionState.Denied.Requestable -> state.request()
-            is PermissionState.Denied.SystemLocked -> emit(false)
+            is PermissionState.Denied.Locked -> emit(false)
         }
     }.first()
 }

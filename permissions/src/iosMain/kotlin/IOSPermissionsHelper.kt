@@ -61,7 +61,7 @@ class IOSPermissionsHelper {
             return when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(permissionManager)
                 AuthorizationStatus.Authorized -> PermissionState.Allowed(permissionManager)
-                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.SystemLocked(permissionManager)
+                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.Locked(permissionManager)
             }
         }
 

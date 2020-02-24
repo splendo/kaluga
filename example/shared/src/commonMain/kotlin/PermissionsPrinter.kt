@@ -15,7 +15,7 @@ class PermissionsPrinter(val permissions: Permissions, private val permission: P
         val message = when (permissions[permission].first()) {
             is PermissionState.Allowed -> "Allowed"
             is PermissionState.Denied.Requestable -> "Denied but Requestable"
-            is PermissionState.Denied.SystemLocked -> "Denied"
+            is PermissionState.Denied.Locked -> "Denied"
         }
         printer("Permission = $message")
     }
