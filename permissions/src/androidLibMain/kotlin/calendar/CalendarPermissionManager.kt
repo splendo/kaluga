@@ -38,18 +38,18 @@ actual class CalendarPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override fun initializeState(): PermissionState<Permission.Calendar> {
+    override suspend fun initializeState(): PermissionState<Permission.Calendar> {
         return when {
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
             else -> PermissionState.Denied.Requestable(this)
         }
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         permissionsManager.stopMonitoring()
     }
 

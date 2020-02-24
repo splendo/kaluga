@@ -27,15 +27,15 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun initializeState(): PermissionState<Permission.Microphone> {
+    override suspend fun initializeState(): PermissionState<Permission.Microphone> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

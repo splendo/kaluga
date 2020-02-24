@@ -41,7 +41,7 @@ actual class BluetoothPermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override fun initializeState(): PermissionState<Permission.Bluetooth> {
+    override suspend fun initializeState(): PermissionState<Permission.Bluetooth> {
         return when {
             !supported -> PermissionState.Denied.Locked(this)
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
@@ -49,12 +49,12 @@ actual class BluetoothPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         if (supported)
             permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         if (supported)
             permissionsManager.stopMonitoring()
     }

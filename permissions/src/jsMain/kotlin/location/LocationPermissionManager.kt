@@ -27,15 +27,15 @@ actual class LocationPermissionManager(actual val location: Permission.Location,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun initializeState(): PermissionState<Permission.Location> {
+    override suspend fun initializeState(): PermissionState<Permission.Location> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

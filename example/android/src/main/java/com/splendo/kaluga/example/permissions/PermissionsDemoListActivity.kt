@@ -2,7 +2,6 @@ package com.splendo.kaluga.example.permissions
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.permissions.bluetooth.BluetoothPermissionsDemoActivity
 import kotlinx.android.synthetic.main.activity_permissions_list.*
@@ -12,6 +11,7 @@ import com.splendo.kaluga.example.permissions.camera.CameraPermissionsDemoActivi
 import com.splendo.kaluga.example.permissions.contacts.ContactsPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.location.LocationPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.microphone.MicrophonePermissionsDemoActivity
+import com.splendo.kaluga.example.permissions.notifications.NotificationsPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.storage.StoragePermissionsDemoActivity
 
 class PermissionsDemoListActivity : AppCompatActivity(R.layout.activity_permissions_list) {
@@ -55,9 +55,11 @@ class PermissionsDemoListActivity : AppCompatActivity(R.layout.activity_permissi
         }
 
         btn_permissions_list_location.setOnClickListener {
-            Intent(
-                this,
-                LocationPermissionsDemoActivity::class.java
+            startActivity(
+                Intent(
+                    this,
+                    LocationPermissionsDemoActivity::class.java
+                )
             )
         }
 
@@ -66,6 +68,15 @@ class PermissionsDemoListActivity : AppCompatActivity(R.layout.activity_permissi
                 Intent(
                     this,
                     MicrophonePermissionsDemoActivity::class.java
+                )
+            )
+        }
+
+        btn_permissions_list_notifications.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    NotificationsPermissionsDemoActivity::class.java
                 )
             )
         }

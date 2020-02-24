@@ -90,7 +90,7 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
         return missingPermissions
     }
 
-    fun startMonitoring(interval: Long) {
+    suspend fun startMonitoring(interval: Long) {
         updateLastPermissions()
         if (timer != null) return
         timer = fixedRateTimer(period = interval) {
@@ -110,7 +110,7 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
         }
     }
 
-    fun stopMonitoring() {
+    suspend fun stopMonitoring() {
         timer?.cancel()
         timer = null
     }

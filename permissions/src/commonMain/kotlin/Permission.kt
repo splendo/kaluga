@@ -29,6 +29,9 @@ import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+import com.splendo.kaluga.permissions.notifications.NotificationOptions
+import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
+import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.flow.Flow
@@ -42,6 +45,7 @@ sealed class Permission {
     data class Contacts(val allowWrite: Boolean) : Permission()
     data class Location(val background: Boolean, val precise: Boolean) : Permission()
     object Microphone : Permission()
+    data class Notifications(val options: NotificationOptions) : Permission()
     data class Storage(val allowWrite: Boolean) : Permission()
 }
 
@@ -53,6 +57,7 @@ interface BasePermissionsBuilder {
     val contactsPMBuilder: ContactsPermissionManagerBuilder
     val locationPMBuilder: LocationPermissionManagerBuilder
     val microphonePMBuilder: MicrophonePermissionManagerBuilder
+    val notificationsPMBuilder: NotificationsPermissionManagerBuilder
     val storagePMBuilder: StoragePermissionManagerBuilder
 
 }
@@ -76,6 +81,7 @@ class Permissions(private val builder: PermissionsBuilder) {
             is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder)
             is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder)
             is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder)
+            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder)
             is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
         }
     }

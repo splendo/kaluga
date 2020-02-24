@@ -32,12 +32,14 @@ import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.notifications.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
+import platform.UserNotifications.UNAuthorizationOptions
 import ru.pocketbyte.hydra.log.HydraLog
 
 class KNAlertFramework {
@@ -101,6 +103,16 @@ class KNPermissionsFramework {
 
     fun permissionRequestMicrophone(alertBuilder: AlertBuilder) {
         permissionRequest(Permission.Microphone, alertBuilder)
+    }
+
+    fun permissionStatusNotifications(alertBuilder: AlertBuilder, options: UNAuthorizationOptions) {
+        val notificationOptions = NotificationOptions(options)
+        permissionStatus(Permission.Notifications(notificationOptions), alertBuilder)
+    }
+
+    fun permissionRequestNotifications(alertBuilder: AlertBuilder, options: UNAuthorizationOptions) {
+        val notificationOptions = NotificationOptions(options)
+        permissionRequest(Permission.Notifications(notificationOptions), alertBuilder)
     }
 
     fun permissionStatusStorage(alertBuilder: AlertBuilder) {

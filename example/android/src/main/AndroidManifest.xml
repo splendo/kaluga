@@ -53,7 +53,9 @@
         <activity android:name=".permissions.location.LocationPermissionsDemoActivity"
             android:label="@string/permissions_location"/>
         <activity android:name=".permissions.microphone.MicrophonePermissionsDemoActivity"
-            android:label="@string/permissions_microphone"/>
+        android:label="@string/permissions_microphone"/>
+        <activity android:name=".permissions.notifications.NotificationsPermissionsDemoActivity"
+            android:label="@string/permissions_notifications"/>
         <activity android:name=".permissions.storage.StoragePermissionsDemoActivity"
             android:label="@string/permissions_storage"/>
         <activity android:name=".alerts.AlertsActivity"
