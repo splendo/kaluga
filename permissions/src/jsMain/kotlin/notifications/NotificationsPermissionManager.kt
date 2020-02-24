@@ -15,19 +15,21 @@
 
  */
 
-package com.splendo.kaluga.permissions.camera
+package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : PermissionManager<Permission.Camera>(repo) {
+actual class NotificationOptions
+
+actual class NotificationsPermissionManager(actual val notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo) : PermissionManager<Permission.Notifications>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Camera> {
+    override suspend fun initializeState(): PermissionState<Permission.Notifications> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -40,9 +42,9 @@ actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : Permissi
     }
 }
 
-actual class CameraPermissionManagerBuilder :BaseCameraPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
-        return CameraPermissionManager(repo)
+    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
+        return NotificationsPermissionManager(notifications, repo)
     }
 }

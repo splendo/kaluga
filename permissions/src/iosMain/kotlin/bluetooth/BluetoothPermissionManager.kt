@@ -53,15 +53,15 @@ actual class BluetoothPermissionManager(
         }
     }
 
-    override fun initializeState(): PermissionState<Permission.Bluetooth> {
+    override suspend fun initializeState(): PermissionState<Permission.Bluetooth> {
         return IOSPermissionsHelper.getPermissionState(checkAuthorization(), this)
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         centralManager.value.delegate = delegate
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         centralManager.value.delegate = null
     }
 

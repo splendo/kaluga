@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.*
 import platform.Contacts.*
@@ -30,7 +31,7 @@ actual class ContactsPermissionManager(
 ) : PermissionManager<Permission.Contacts>(stateRepo) {
 
     private val contactStore = CNContactStore()
-    private val authorizationStatus = {
+    private val authorizationStatus = suspend {
         CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts).toAuthorizationStatus()
     }
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
@@ -52,15 +53,15 @@ actual class ContactsPermissionManager(
         }
     }
 
-    override fun initializeState(): PermissionState<Permission.Contacts> {
+    override suspend fun initializeState(): PermissionState<Permission.Contacts> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 

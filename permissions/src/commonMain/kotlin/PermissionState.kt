@@ -67,12 +67,12 @@ abstract class PermissionStateRepo<P : Permission> internal constructor(private 
 
     abstract val permissionManager: PermissionManager<P>
 
-    override fun initialValue(): PermissionState<P> {
+    override suspend fun initialValue(): PermissionState<P> {
         permissionManager.startMonitoring(monitoringInterval)
         return permissionManager.initializeState()
     }
 
-    override fun deinitialize(state: PermissionState<P>) {
+    override suspend fun deinitialize(state: PermissionState<P>) {
         permissionManager.stopMonitoring()
     }
 }

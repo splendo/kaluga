@@ -27,15 +27,15 @@ actual class StoragePermissionManager(actual val storage: Permission.Storage, re
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun initializeState(): PermissionState<Permission.Storage> {
+    override suspend fun initializeState(): PermissionState<Permission.Storage> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

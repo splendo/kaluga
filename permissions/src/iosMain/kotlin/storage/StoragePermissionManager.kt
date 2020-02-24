@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.permissions.*
 import platform.Foundation.NSBundle
 import platform.Photos.*
@@ -28,7 +29,7 @@ actual class StoragePermissionManager(
     stateRepo: StoragePermissionStateRepo
 ) : PermissionManager<Permission.Storage>(stateRepo) {
 
-    private val authorizationStatus = {
+    private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
@@ -45,15 +46,15 @@ actual class StoragePermissionManager(
         }
     }
 
-    override fun initializeState(): PermissionState<Permission.Storage> {
+    override suspend fun initializeState(): PermissionState<Permission.Storage> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 

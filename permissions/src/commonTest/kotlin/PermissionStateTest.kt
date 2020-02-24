@@ -153,15 +153,15 @@ private class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo)
         hasRequestedPermission.complete()
     }
 
-    override fun initializeState(): PermissionState<Permission.Microphone> {
+    override suspend fun initializeState(): PermissionState<Permission.Microphone> {
         return initialState
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         hasStartedMonitoring.complete(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         hasStoppedMonitoring.complete()
     }
 }

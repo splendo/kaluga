@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.permissions.location
 
-import com.splendo.kaluga.permissions.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
-import platform.Photos.*
 import platform.darwin.NSObject
 
 actual class LocationPermissionManager(
@@ -60,15 +62,15 @@ actual class LocationPermissionManager(
         }
     }
 
-    override fun initializeState(): PermissionState<Permission.Location> {
+    override suspend fun initializeState(): PermissionState<Permission.Location> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         locationManager.delegate = delegate
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         locationManager.delegate = null
     }
 

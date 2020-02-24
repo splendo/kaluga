@@ -22,6 +22,7 @@ class PermissionListViewController: UITableViewController {
         case "ContactsPermissionSegue": permissionViewController.permissionType = PermissionType.Contacts
         case "LocationPermissionSegue": permissionViewController.permissionType = PermissionType.Location
         case "MicrophonePermissionSegue": permissionViewController.permissionType = PermissionType.Microphone
+        case "NotificationsPermissionSegue": permissionViewController.permissionType = PermissionType.Notifications(options: [UNAuthorizationOptions.alert, UNAuthorizationOptions.sound])
         case "StoragePermissionSegue": permissionViewController.permissionType = PermissionType.Storage
         default: ()
         }

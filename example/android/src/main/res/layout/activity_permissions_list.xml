@@ -47,6 +47,12 @@
             android:text="@string/permissions_microphone"/>
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_notifications"/>
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_permissions_list_storage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

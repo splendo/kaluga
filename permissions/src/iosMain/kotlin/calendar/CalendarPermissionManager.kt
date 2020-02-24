@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.*
 import platform.EventKit.*
@@ -30,7 +31,7 @@ actual class CalendarPermissionManager(
 ) : PermissionManager<Permission.Calendar>(stateRepo) {
 
     private val eventStore = EKEventStore()
-    private val authorizationStatus = {
+    private val authorizationStatus = suspend {
         EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
     }
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
@@ -52,15 +53,15 @@ actual class CalendarPermissionManager(
         }
     }
 
-    override fun initializeState(): PermissionState<Permission.Calendar> {
+    override suspend fun initializeState(): PermissionState<Permission.Calendar> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 

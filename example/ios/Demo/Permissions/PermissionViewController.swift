@@ -17,6 +17,7 @@ enum PermissionType {
     case Contacts
     case Location
     case Microphone
+    case Notifications(options: UNAuthorizationOptions)
     case Storage
 }
 
@@ -51,6 +52,7 @@ class PermissionViewController: UITableViewController {
         case .Contacts: knPermissionsFramework.permissionStatusContacts(alertBuilder: alertBuilder)
         case .Location: knPermissionsFramework.permissionStatusLocation(alertBuilder: alertBuilder)
         case .Microphone: knPermissionsFramework.permissionStatusMicrophone(alertBuilder: alertBuilder)
+        case .Notifications(let options): knPermissionsFramework.permissionStatusNotifications(alertBuilder: alertBuilder, options: UInt64(options.rawValue))
         case .Storage: knPermissionsFramework.permissionStatusStorage(alertBuilder: alertBuilder)
         }
     }
@@ -67,6 +69,7 @@ class PermissionViewController: UITableViewController {
         case .Contacts: knPermissionsFramework.permissionRequestContacts(alertBuilder: alertBuilder)
         case .Location: knPermissionsFramework.permissionRequestLocation(alertBuilder: alertBuilder)
         case .Microphone: knPermissionsFramework.permissionRequestMicrophone(alertBuilder: alertBuilder)
+        case .Notifications(let options): knPermissionsFramework.permissionRequestNotifications(alertBuilder: alertBuilder, options: UInt64(options.rawValue))
         case .Storage: knPermissionsFramework.permissionRequestStorage(alertBuilder: alertBuilder)
         }
     }

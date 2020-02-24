@@ -24,10 +24,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 abstract class PermissionManager<P : Permission>internal constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
 
     abstract suspend fun requestPermission()
-    abstract fun initializeState() : PermissionState<P>
+    abstract suspend fun initializeState() : PermissionState<P>
 
-    abstract fun startMonitoring(interval: Long)
-    abstract fun stopMonitoring()
+    abstract suspend fun startMonitoring(interval: Long)
+    abstract suspend fun stopMonitoring()
 
     fun grantPermission() {
         stateRepo.launch {

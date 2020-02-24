@@ -15,34 +15,43 @@
 
  */
 
-package com.splendo.kaluga.permissions.camera
+package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : PermissionManager<Permission.Camera>(repo) {
+actual class NotificationOptions
+
+actual class NotificationsPermissionManager(
+    actual val notifications: Permission.Notifications,
+    stateRepo: NotificationsPermissionStateRepo
+) : PermissionManager<Permission.Notifications>(stateRepo) {
 
     override suspend fun requestPermission() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // No need to do anything, permission always granted
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Camera> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun initializeState(): PermissionState<Permission.Notifications> {
+        // Permission always granted
+        return PermissionState.Allowed(this)
     }
 
     override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // No need to do anything, permission always granted
     }
 
     override suspend fun stopMonitoring() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+
 }
 
-actual class CameraPermissionManagerBuilder :BaseCameraPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder() : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
-        return CameraPermissionManager(repo)
+    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
+        return NotificationsPermissionManager(notifications, repo)
     }
+
 }
+

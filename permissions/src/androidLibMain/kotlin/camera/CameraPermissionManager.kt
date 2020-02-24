@@ -40,7 +40,7 @@ actual class CameraPermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override fun initializeState(): PermissionState<Permission.Camera> {
+    override suspend fun initializeState(): PermissionState<Permission.Camera> {
         return when {
             !supported -> PermissionState.Denied.Locked(this)
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
@@ -48,12 +48,12 @@ actual class CameraPermissionManager(
         }
     }
 
-    override fun startMonitoring(interval: Long) {
+    override suspend fun startMonitoring(interval: Long) {
         if (supported)
             permissionsManager.startMonitoring(interval)
     }
 
-    override fun stopMonitoring() {
+    override suspend fun stopMonitoring() {
         if (supported)
             permissionsManager.stopMonitoring()
     }

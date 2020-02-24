@@ -17,31 +17,38 @@
 
 package com.splendo.kaluga.permissions
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.Foundation.NSTimer
 
-class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: () -> IOSPermissionsHelper.AuthorizationStatus) {
+class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus) : CoroutineScope by permissionManager {
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
     var isWaiting: Boolean = false
     private var timer: NSTimer? = null
 
-    fun startMonitoring(interval: Long) {
+    suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
         if (timer == null) return
         NSTimer.scheduledTimerWithTimeInterval(interval.toDouble(), true) {
-            if (!isWaiting && lastPermission != authorizationStatus()) {
-                updateLastPermission()
-                IOSPermissionsHelper.handleAuthorizationStatus(authorizationStatus(), permissionManager)
+            com.splendo.kaluga.log.debug("Timer")
+            launch {
+                val status = authorizationStatus()
+                if (!isWaiting && lastPermission != status) {
+                    updateLastPermission()
+                    IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                }
             }
         }
     }
 
-    fun stopMonitoring() {
+    suspend fun stopMonitoring() {
         timer?.invalidate()
         timer = null
     }
 
-    private fun updateLastPermission() {
+    private suspend fun updateLastPermission() {
+        com.splendo.kaluga.log.debug("Update Permission")
         lastPermission = authorizationStatus()
     }
 
