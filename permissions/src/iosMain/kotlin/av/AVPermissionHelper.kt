@@ -70,7 +70,7 @@ internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, pr
 
     internal fun initializeState(): PermissionState<P> {
         return when {
-            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.SystemLocked(type.permissionManager)
+            AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.Locked(type.permissionManager)
             else -> IOSPermissionsHelper.getPermissionState(authorizationStatus(), type.permissionManager)
         }
     }

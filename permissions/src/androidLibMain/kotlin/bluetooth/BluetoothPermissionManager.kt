@@ -43,7 +43,7 @@ actual class BluetoothPermissionManager(
 
     override fun initializeState(): PermissionState<Permission.Bluetooth> {
         return when {
-            !supported -> PermissionState.Denied.SystemLocked(this)
+            !supported -> PermissionState.Denied.Locked(this)
             permissionsManager.hasPermissions -> PermissionState.Allowed(this)
             else -> PermissionState.Denied.Requestable(this)
         }
