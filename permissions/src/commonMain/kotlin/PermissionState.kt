@@ -62,7 +62,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 abstract class PermissionStateRepo<P : Permission> internal constructor(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
 
     companion object {
-        private const val defaultMonitoringInterval: Long = 1000
+        const val defaultMonitoringInterval: Long = 1000
     }
 
     abstract val permissionManager: PermissionManager<P>
