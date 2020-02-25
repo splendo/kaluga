@@ -26,6 +26,7 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
+                implementation(project(":permissions", ""))
                 implementation(project(":logging", ""))
             }
         }
@@ -46,6 +47,7 @@ kotlin {
             dependencies {
                 implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
                 implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
+                implementation(project(":permissions", "${ext["ios_primary_arch"]}Default"))
             }
         }
     }
@@ -61,6 +63,7 @@ if (!singleSet)  {
                 dependencies {
                     implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
+                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
@@ -70,6 +73,7 @@ if (!singleSet)  {
                 dependencies {
                     implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
+                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }

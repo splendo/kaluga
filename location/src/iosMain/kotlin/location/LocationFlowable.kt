@@ -19,8 +19,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.location.Location.UnknownReason.*
-import com.splendo.kaluga.location.LocationFlowable.CLAuthorizationStatusKotlin.*
-import com.splendo.kaluga.utils.byOrdinalOrDefault
+import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import kotlinx.coroutines.*
 import platform.CoreLocation.*
 import platform.Foundation.NSError
@@ -30,16 +30,6 @@ actual class LocationFlowable : BaseLocationFlowable() {
 
     class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationFlowable.Builder {
         override fun create() = LocationFlowable().addCLLocationManager(locationManager)
-    }
-
-    @Suppress("EnumEntryName") // we are modeling an iOS construct so we will stick as close to it as possible
-    private enum class CLAuthorizationStatusKotlin {
-        // https://developer.apple.com/documentation/corelocation/clauthorizationstatus
-        notDetermined,
-        restricted,
-        denied,
-        authorizedAlways,
-        authorizedWhenInUse
     }
 
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
@@ -66,13 +56,10 @@ actual class LocationFlowable : BaseLocationFlowable() {
             manager: CLLocationManager,
             didChangeAuthorizationStatus: CLAuthorizationStatus
         ) = runBlocking {
-            when (Enum.byOrdinalOrDefault(
-                didChangeAuthorizationStatus,
-                notDetermined
-            )) {
-                restricted -> setUnknownLocation(NO_PERMISSION_GRANTED)
-                denied -> setUnknownLocation(PERMISSION_DENIED)
-                authorizedAlways, authorizedWhenInUse -> {
+            when (didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin()) {
+                CLAuthorizationStatusKotlin.restricted -> setUnknownLocation(NO_PERMISSION_GRANTED)
+                CLAuthorizationStatusKotlin.denied -> setUnknownLocation(PERMISSION_DENIED)
+                CLAuthorizationStatusKotlin.authorizedAlways, CLAuthorizationStatusKotlin.authorizedWhenInUse -> {
                     manager.startUpdatingLocation()
                 } // do nothing, a location should be published on it's own
                 else -> setUnknownLocation()
