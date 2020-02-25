@@ -25,8 +25,8 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 
     class Allowed<P : Permission>internal constructor(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
-        internal fun deny(locked: Boolean) : suspend () -> Denied<P> {
-            return {if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)}
+        internal fun deny(locked: Boolean) : suspend () -> Denied<P> = {
+            if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
         }
 
     }
