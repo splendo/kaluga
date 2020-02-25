@@ -10,7 +10,13 @@ kotlin {
     }
 
     if (gradle.ios_primary_arch == "iosx64")
-        targetFromPreset(gradle.ios_primary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_primary_arch)
+          targetFromPreset(presets.iosX64, gradle.ios_primary_arch)
+
+    if (gradle.ios_primary_arch == "iosarm64")
+        targetFromPreset(presets.iosArm64, gradle.ios_primary_arch)
+
+    if (gradle.ios_primary_arch == "iosarm32")
+        targetFromPreset(presets.iosArm32, gradle.ios_primary_arch)
 
     if (!gradle.ext.ios_one_sourceset) {
         targetFromPreset(presets.iosArm32, 'iosarm32')
