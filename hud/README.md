@@ -29,6 +29,7 @@ The `HUD` has methods to show and dismiss a loading indicator view:
 - `present(animated: Boolean = true, completion: () -> Unit = {}): HUD` — show
 - `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
 - `dismissAfter(timeMillis: Long, animated: Boolean = true): HUD` — dismiss after `timeMillis` milliseconds
+- `presentDuring(block: suspend () -> Unit): HUD` — show and keep visible during `block` execution
 
 ### Android
 
