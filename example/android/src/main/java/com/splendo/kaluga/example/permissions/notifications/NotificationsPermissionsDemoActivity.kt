@@ -23,6 +23,6 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 
 class NotificationsPermissionsDemoActivity : PermissionsDemoActivity<Permission.Notifications>() {
 
-    override val permission = Permission.Notifications(NotificationOptions())
+    override val permission = Permission.Notifications()
     
 }

@@ -22,6 +22,6 @@ import com.splendo.kaluga.permissions.Permission
 
 class CalendarPermissionsDemoActivity : PermissionsDemoActivity<Permission.Calendar>() {
 
-    override val permission = Permission.Calendar(true)
+    override val permission = Permission.Calendar(allowWrite=true)
     
 }

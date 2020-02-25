@@ -22,6 +22,6 @@ import com.splendo.kaluga.permissions.Permission
 
 class ContactsPermissionsDemoActivity : PermissionsDemoActivity<Permission.Contacts>() {
 
-    override val permission = Permission.Contacts(true)
+    override val permission = Permission.Contacts(allowWrite = true)
 
 }

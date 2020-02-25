@@ -44,7 +44,7 @@ actual class BluetoothPermissionManager(
     }
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
             if (!centralManager.isInitialized()) {
                 centralManager.value
             }

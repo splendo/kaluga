@@ -52,7 +52,7 @@ actual class LocationPermissionManager(
         if (location.background) {
             locationDeclarations.addAll(listOf("NSLocationAlwaysAndWhenInUseUsageDescription", "NSLocationAlwaysUsageDescription"))
         }
-        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             if (location.background)
                 locationManager.requestAlwaysAuthorization()
             else

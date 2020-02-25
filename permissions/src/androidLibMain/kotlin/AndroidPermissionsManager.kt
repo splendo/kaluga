@@ -42,11 +42,11 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
     private var timer: Timer? = null
 
     fun requestPermissions() {
-        if (checkPermissionsDeclaration().isEmpty()) {
-            permissions.forEach {
-                waitingPermissions.add(it)
-            }
+        if (missingPermissionsInManifest().isEmpty()) {
             launch {
+                permissions.forEach {
+                    waitingPermissions.add(it)
+                }
                 val intent = PermissionsActivity.intent(context, *permissions)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -56,7 +56,7 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
         }
     }
 
-    private fun checkPermissionsDeclaration(): List<String> {
+    private fun missingPermissionsInManifest(): List<String> {
         val pm = context.packageManager
 
         val missingPermissions = permissions.toMutableList()
