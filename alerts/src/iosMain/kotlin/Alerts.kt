@@ -68,8 +68,11 @@ actual class AlertInterface(
                     }
                 )
             }
+            val cancelButtonIndex = alert.actions.indexOfFirst {
+                (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
+            }
             // If there is no Cancel action inject it by default
-            if (alert.style == Alert.Style.ACTION_LIST && alert.actions.indexOfFirst { it.style == Alert.Action.Style.CANCEL} == -1) {
+            if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
                 addAction(
                     UIAlertAction.actionWithTitle(
                         NSString.localizedStringWithFormat("Cancel"),
