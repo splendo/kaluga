@@ -29,7 +29,7 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
     abstract suspend fun startMonitoring(interval: Long)
     abstract suspend fun stopMonitoring()
 
-    fun grantPermission() {
+    open fun grantPermission() {
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
@@ -40,7 +40,7 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
         }
     }
 
-    fun revokePermission(locked: Boolean) {
+    open fun revokePermission(locked: Boolean) {
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
