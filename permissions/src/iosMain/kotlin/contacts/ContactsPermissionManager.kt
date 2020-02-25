@@ -37,7 +37,7 @@ actual class ContactsPermissionManager(
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSContactsUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSContactsUsageDescription").isEmpty()) {
             timerHelper.isWaiting = true
             contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts, mainContinuation { success, error ->
                 error?.let {

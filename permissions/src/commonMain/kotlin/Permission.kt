@@ -40,13 +40,13 @@ import kotlinx.coroutines.flow.transformLatest
 
 sealed class Permission {
     object Bluetooth : Permission()
-    data class Calendar(val allowWrite: Boolean) : Permission()
+    data class Calendar(val allowWrite: Boolean = false) : Permission()
     object Camera : Permission()
-    data class Contacts(val allowWrite: Boolean) : Permission()
-    data class Location(val background: Boolean, val precise: Boolean) : Permission()
+    data class Contacts(val allowWrite: Boolean = false) : Permission()
+    data class Location(val background: Boolean = false, val precise: Boolean = false) : Permission()
     object Microphone : Permission()
-    data class Notifications(val options: NotificationOptions) : Permission()
-    data class Storage(val allowWrite: Boolean) : Permission()
+    data class Notifications(val options: NotificationOptions? = null) : Permission()
+    data class Storage(val allowWrite: Boolean = false) : Permission()
 }
 
 interface BasePermissionsBuilder {

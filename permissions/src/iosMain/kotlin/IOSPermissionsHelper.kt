@@ -34,9 +34,9 @@ class IOSPermissionsHelper {
     companion object {
 
         private const val TAG = "Permissions"
-        fun checkDeclarationInPList(bundle: NSBundle, vararg declarationName: String): MutableList<String> {
+        fun missingDeclarationsInPList(bundle: NSBundle, vararg requiredDeclarationName: String): List<String> {
 
-            val missingDeclarations = declarationName.toMutableList()
+            val missingDeclarations = requiredDeclarationName.toMutableList()
             missingDeclarations.forEach { declaration ->
                 try {
 

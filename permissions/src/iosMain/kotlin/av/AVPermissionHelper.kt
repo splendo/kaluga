@@ -54,7 +54,7 @@ internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, pr
 
 
     internal fun requestPermission() {
-        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, type.declarationName).isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
             timerHelper.isWaiting = true
             AVCaptureDevice.requestAccessForMediaType(type.avMediaType, mainContinuation { allowed ->
                 timerHelper.isWaiting = false

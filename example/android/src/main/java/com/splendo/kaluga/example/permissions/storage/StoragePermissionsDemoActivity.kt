@@ -22,6 +22,6 @@ import com.splendo.kaluga.permissions.Permission
 
 class StoragePermissionsDemoActivity : PermissionsDemoActivity<Permission.Storage>() {
 
-    override val permission = Permission.Storage(true)
+    override val permission = Permission.Storage(allowWrite=true)
     
 }

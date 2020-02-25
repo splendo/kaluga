@@ -24,19 +24,19 @@ import com.splendo.kaluga.permissions.PermissionState
 actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : PermissionManager<Permission.Bluetooth>(repo) {
 
     override suspend fun requestPermission() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Bluetooth> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun stopMonitoring() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 }
 

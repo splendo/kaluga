@@ -29,8 +29,8 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
 
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
-        if (timer == null) return
-        NSTimer.scheduledTimerWithTimeInterval(interval.toDouble(), true) {
+        if (timer != null) return
+        timer = NSTimer.scheduledTimerWithTimeInterval(interval.toDouble(), true) {
             launch {
                 val status = authorizationStatus()
                 if (!isWaiting && lastPermission != status) {

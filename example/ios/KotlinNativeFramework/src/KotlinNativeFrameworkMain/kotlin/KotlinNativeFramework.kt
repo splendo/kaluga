@@ -66,15 +66,15 @@ class KNPermissionsFramework {
     }
 
     fun permissionStatusContacts(alertBuilder: AlertBuilder) {
-        permissionStatus(Permission.Contacts(true), alertBuilder)
+        permissionStatus(Permission.Contacts(), alertBuilder)
     }
 
     fun permissionStatusCalendar(alertBuilder: AlertBuilder) {
-        permissionStatus(Permission.Calendar(true), alertBuilder)
+        permissionStatus(Permission.Calendar(), alertBuilder)
     }
 
     fun permissionRequestCalendar(alertBuilder: AlertBuilder) {
-        permissionRequest(Permission.Calendar(true), alertBuilder)
+        permissionRequest(Permission.Calendar(), alertBuilder)
     }
 
     fun permissionStatusCamera(alertBuilder: AlertBuilder) {
@@ -86,15 +86,15 @@ class KNPermissionsFramework {
     }
 
     fun permissionRequestContacts(alertBuilder: AlertBuilder) {
-        permissionRequest(Permission.Contacts(true), alertBuilder)
+        permissionRequest(Permission.Contacts(), alertBuilder)
     }
 
     fun permissionStatusLocation(alertBuilder: AlertBuilder) {
-        permissionStatus(Permission.Location(true, true), alertBuilder)
+        permissionStatus(Permission.Location(background=true, precise=true), alertBuilder)
     }
 
     fun permissionRequestLocation(alertBuilder: AlertBuilder) {
-        permissionRequest(Permission.Location(true, true), alertBuilder)
+        permissionRequest(Permission.Location(background=true, precise=true), alertBuilder)
     }
 
     fun permissionStatusMicrophone(alertBuilder: AlertBuilder) {
@@ -116,11 +116,11 @@ class KNPermissionsFramework {
     }
 
     fun permissionStatusStorage(alertBuilder: AlertBuilder) {
-        permissionStatus(Permission.Storage(true), alertBuilder)
+        permissionStatus(Permission.Storage(), alertBuilder)
     }
 
     fun permissionRequestStorage(alertBuilder: AlertBuilder) {
-        permissionRequest(Permission.Storage(true), alertBuilder)
+        permissionRequest(Permission.Storage(), alertBuilder)
     }
 
     private fun permissionStatus(permission: Permission, alertBuilder: AlertBuilder) {

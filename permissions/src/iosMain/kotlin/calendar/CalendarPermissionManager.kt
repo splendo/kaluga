@@ -37,7 +37,7 @@ actual class CalendarPermissionManager(
     private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.checkDeclarationInPList(bundle, "NSCalendarsUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSCalendarsUsageDescription").isEmpty()) {
             timerHelper.isWaiting = true
             eventStore.requestAccessToEntityType(EKEntityType.EKEntityTypeEvent, mainContinuation { success, error ->
                 timerHelper.isWaiting = false
