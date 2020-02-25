@@ -105,12 +105,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         }
         launch {
             permissionStateRepo.permissionManager.hasRequestedPermission.await()
-            permissionStateRepo.takeAndChangeState { state ->
-                when(state) {
-                    is PermissionState.Denied.Requestable -> state.allow
-                    else -> state.remain
-                }
-            }
+            permissionStateRepo.permissionManager.grantPermission()
         }
         assertTrue(hasRequested.await())
     }
@@ -123,12 +118,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         }
         launch {
             permissionStateRepo.permissionManager.hasRequestedPermission.await()
-            permissionStateRepo.takeAndChangeState { state ->
-                when(state) {
-                    is PermissionState.Denied.Requestable -> state.lock
-                    else -> state.remain
-                }
-            }
+            permissionStateRepo.permissionManager.revokePermission(true)
         }
         assertFalse(hasRequested.await())
     }

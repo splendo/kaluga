@@ -1,13 +1,28 @@
 import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.test.BaseTest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
 import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 /*
  Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
@@ -26,23 +41,104 @@ import org.mockito.junit.MockitoJUnitRunner
 
  */
 
-@RunWith(MockitoJUnitRunner::class)
-class AndroidPermissionsManagerTest {
+class AndroidPermissionsManagerTest : BaseTest() {
+
+    companion object {
+        private const val packageName = "package"
+        private val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 
     @Mock
     lateinit var context: Context
+    @Mock
+    lateinit var packageManager: PackageManager
+    @Mock
+    lateinit var packageInfo: PackageInfo
 
     @Mock
     lateinit var permissionsManager: PermissionManager<Permission.Storage>
-    lateinit var androidPermissionsManager: AndroidPermissionsManager<Permission.Storage>
+    private lateinit var androidPermissionsManager: AndroidPermissionsManager<Permission.Storage>
 
-    @Before
+    @BeforeTest
     fun setUp() {
+        super.beforeTest()
         MockitoAnnotations.initMocks(this)
 
-        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE))
+        `when`(context.packageManager).thenReturn(packageManager)
+        `when`(context.packageName).thenReturn(packageName)
+        `when`(packageManager.getPackageInfo(eq(packageName), eq(PackageManager.GET_PERMISSIONS))).thenReturn(packageInfo)
     }
 
+    @AfterTest
+    fun tearDown() {
+        super.afterTest()
+    }
 
+    @Test
+    fun testMissingDeclaration() = runBlockingTest {
+        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        packageInfo.requestedPermissions = emptyArray()
+        androidPermissionsManager.requestPermissions()
+
+        verify(permissionsManager).revokePermission(eq(true))
+    }
+
+    @Test
+    fun testRequestPermissions() = runBlockingTest {
+        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        packageInfo.requestedPermissions = permissions
+        androidPermissionsManager.requestPermissions()
+
+        assertTrue(AndroidPermissionsManager.waitingPermissions.containsAll(permissions.toList()))
+        verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
+    }
+
+    @Test
+    fun testStartMonitoring() = runBlocking {
+        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
+        packageInfo.requestedPermissions = permissions
+        permissions.forEach {
+            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
+        }
+
+        androidPermissionsManager.startMonitoring(50)
+        permissions.forEach {
+            assertEquals(PackageManager.PERMISSION_DENIED, AndroidPermissionsManager.lastPermission[it])
+        }
+        delay(50)
+        verify(permissionsManager, never()).grantPermission()
+        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
+
+        permissions.forEach {
+            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
+        }
+        reset(permissionsManager)
+        delay(50)
+        verify(permissionsManager).grantPermission()
+
+        permissions.forEach {
+            AndroidPermissionsManager.waitingPermissions.add(it)
+            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
+        }
+        reset(permissionsManager)
+        delay(50)
+        verify(permissionsManager, never()).grantPermission()
+        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
+
+        permissions.forEach {
+            AndroidPermissionsManager.waitingPermissions.remove(it)
+        }
+        delay(50)
+        verify(permissionsManager).revokePermission(true)
+
+        permissions.forEach {
+            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
+        }
+        reset(permissionsManager)
+        androidPermissionsManager.stopMonitoring()
+        delay(50)
+        verify(permissionsManager, never()).grantPermission()
+        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
+    }
 
 }
