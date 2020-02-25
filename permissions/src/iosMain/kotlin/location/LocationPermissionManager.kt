@@ -21,6 +21,7 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.utils.byOrdinalOrDefault
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -35,14 +36,14 @@ actual class LocationPermissionManager(
 
     private val locationManager = CLLocationManager()
     private val authorizationStatus = {
-        CLLocationManager.authorizationStatus().toAuthorizationStatus(location.background)
+        CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin().toAuthorizationStatus(location.background)
     }
 
     private val delegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus /* = kotlin.Int */) {
             val locationPermissionManager = this@LocationPermissionManager
-            IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toAuthorizationStatus(locationPermissionManager.location.background), locationPermissionManager)
+            IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermissionManager.location.background), locationPermissionManager)
         }
 
     }
@@ -84,19 +85,30 @@ actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSB
 
 }
 
-private fun CLAuthorizationStatus.toAuthorizationStatus(background: Boolean): IOSPermissionsHelper.AuthorizationStatus {
+
+@Suppress("EnumEntryName") // we are modeling an iOS construct so we will stick as close to it as possible. Actual CLAuthorizationStatus values not available
+enum class CLAuthorizationStatusKotlin {
+    // https://developer.apple.com/documentation/corelocation/clauthorizationstatus
+    notDetermined,
+    restricted,
+    denied,
+    authorizedAlways,
+    authorizedWhenInUse
+}
+
+fun CLAuthorizationStatus.toCLAuthorizationStatusKotlin() : CLAuthorizationStatusKotlin {
+    return Enum.byOrdinalOrDefault(
+        this,
+        CLAuthorizationStatusKotlin.notDetermined
+    )
+}
+
+private fun CLAuthorizationStatusKotlin.toAuthorizationStatus(background: Boolean): IOSPermissionsHelper.AuthorizationStatus {
     return when(this) {
-        0 -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        1 -> IOSPermissionsHelper.AuthorizationStatus.Restricted
-        2 -> IOSPermissionsHelper.AuthorizationStatus.Denied
-        3 -> IOSPermissionsHelper.AuthorizationStatus.Authorized
-        4 -> if (background) IOSPermissionsHelper.AuthorizationStatus.Denied else IOSPermissionsHelper.AuthorizationStatus.Authorized
-        else -> {
-            com.splendo.kaluga.log.error(
-                "LocationPermissionManager",
-                "Unknown LocationManagerAuthorization status={$this}"
-            )
-            IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        }
+        CLAuthorizationStatusKotlin.notDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
+        CLAuthorizationStatusKotlin.restricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
+        CLAuthorizationStatusKotlin.denied -> IOSPermissionsHelper.AuthorizationStatus.Denied
+        CLAuthorizationStatusKotlin.authorizedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
+        CLAuthorizationStatusKotlin.authorizedWhenInUse -> if (background) IOSPermissionsHelper.AuthorizationStatus.Denied else IOSPermissionsHelper.AuthorizationStatus.Authorized
     }
 }

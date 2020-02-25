@@ -7,27 +7,41 @@ plugins {
 
 val ext =  (gradle as ExtensionAware).extra
 
+
 apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
+val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
 repositories {
     maven("https://dl.bintray.com/pocketbyte/hydra/")
 }
 
 dependencies {
-    implementation("com.google.android.gms:play-services-location:17.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinx_coroutines_version")
+    testImplementation("org.mockito:mockito-core:3.1.0")
+
+    implementation("androidx.appcompat:appcompat:1.1.0")
+
+    commonTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinx_coroutines_version")
+
+}
+
+android {
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
 }
 
 kotlin {
+
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":permissions", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":base", ""))
             }
         }
         getByName("commonTest") {
@@ -47,7 +61,6 @@ kotlin {
             dependencies {
                 implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
                 implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
-                implementation(project(":permissions", "${ext["ios_primary_arch"]}Default"))
             }
         }
     }
@@ -63,7 +76,6 @@ if (!singleSet)  {
                 dependencies {
                     implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
@@ -73,7 +85,6 @@ if (!singleSet)  {
                 dependencies {
                     implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
