@@ -8,6 +8,12 @@ apply from: "../gradle/publishable_component.gradle"
 version = gradle.library_version
 group = "com.splendo.kaluga"
 
+repositories {
+    google()
+    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
+    mavenCentral()
+}
+
 dependencies {
     implementation 'androidx.fragment:fragment:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -35,6 +41,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                implementation project(":base", "")
                 implementation 'co.touchlab:stately:0.9.5'
             }
         }

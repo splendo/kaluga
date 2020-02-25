@@ -2,6 +2,10 @@ package com.splendo.kaluga.hud
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import com.splendo.kaluga.base.MainQueueDispatcher
+import kotlinx.coroutines.delay
 
 /*
 
@@ -101,5 +105,24 @@ interface HUD {
      * Dismisses the indicator after [timeMillis] milliseconds
      * @param timeMillis The number of milliseconds to wait
      */
-    fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD
+    fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD  = apply {
+        GlobalScope.launch(MainQueueDispatcher) {
+            delay(timeMillis)
+            dismiss(animated)
+        }
+    }
+
+    /**
+     * Presents and keep presenting the indicator during block execution,
+     * hides view after block finished.
+     * @param block The block to execute with hud visible
+     */
+    fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
+        present(animated) {
+            GlobalScope.launch(MainQueueDispatcher) {
+                block()
+                dismiss(animated)
+            }
+        }
+    }
 }
