@@ -28,6 +28,8 @@ sealed class LocationState(open val location: Location, private val locationMana
 
     interface Permitted : HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
         val revokePermission: suspend () -> Disabled.NotPermitted
+        suspend fun initialState()
+        suspend fun finalState()
     }
 
     class PermittedHandler(val location: Location, private val locationManager: BaseLocationManager) : Permitted {
@@ -48,6 +50,13 @@ sealed class LocationState(open val location: Location, private val locationMana
             }
         }
 
+        override suspend fun initialState() {
+            locationManager.startMonitoringLocationEnabled()
+        }
+
+        override suspend fun finalState() {
+            locationManager.stopMonitoringLocationEnabled()
+        }
     }
 
     sealed class Disabled(location: Location, locationManager: BaseLocationManager) : LocationState(location, locationManager) {
@@ -55,62 +64,75 @@ sealed class LocationState(open val location: Location, private val locationMana
         data class NotPermitted(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager) {
 
             fun permit(enabled: Boolean) : suspend () -> LocationState = {
-                if (enabled) Enabled.Idle(location, locationManager) else NoGPS(location, locationManager)
+                if (enabled) Enabled(location, locationManager) else NoGPS(location, locationManager)
             }
 
         }
 
-        data class NoGPS(override val location: Location, private val locationManager: BaseLocationManager, val permitedHandler: PermittedHandler = PermittedHandler(location, locationManager)) : Disabled(location, locationManager), Permitted by permitedHandler {
+        data class NoGPS(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager), Permitted {
 
-            val enable : suspend () -> Enabled.Idle = {
-                Enabled.Idle(location, locationManager)
+            private val permittedHandler = PermittedHandler(location, locationManager)
+
+            override val revokePermission: suspend () -> NotPermitted = permittedHandler.revokePermission
+
+            val enable : suspend () -> Enabled = {
+                Enabled(location, locationManager)
             }
 
             override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
-                permitedHandler.beforeOldStateIsRemoved(oldState)
+                permittedHandler.beforeOldStateIsRemoved(oldState)
                 when (oldState) {
                     !is NoGPS -> if(locationManager.autoEnableLocations) locationManager.requestLocationEnable()
                 }
             }
 
+            override suspend fun afterNewStateIsSet(newState: LocationState) {
+                permittedHandler.afterNewStateIsSet(newState)
+            }
+
+            override suspend fun initialState() {
+                permittedHandler.initialState()
+            }
+
+            override suspend fun finalState() {
+                permittedHandler.finalState()
+            }
         }
 
     }
 
-    sealed class Enabled(location: Location, private val locationManager: BaseLocationManager) : LocationState(location, locationManager), Permitted by PermittedHandler(location, locationManager) {
+    data class Enabled(override val location: Location, private val locationManager: BaseLocationManager) : LocationState(location, locationManager), Permitted {
+
+        private val permittedHandler = PermittedHandler(location, locationManager)
+
+        override val revokePermission: suspend () -> Disabled.NotPermitted = permittedHandler.revokePermission
 
         val disable: suspend () -> Disabled.NoGPS = {
             Disabled.NoGPS(location, locationManager)
         }
 
-        data class Idle(override val location: Location, private val locationManager: BaseLocationManager) : Enabled(location, locationManager) {
-
-            val startScanning: suspend () -> Scanning = {
-                Scanning(location, locationManager)
+        override suspend fun afterNewStateIsSet(newState: LocationState) {
+            permittedHandler.afterNewStateIsSet(newState)
+            when (newState) {
+                !is Enabled -> locationManager.stopMonitoringLocation()
             }
-
         }
 
-        data class Scanning(override val location: Location, private val locationManager: BaseLocationManager) : Enabled(location, locationManager) {
-
-            val stopScanning: suspend () -> Idle = {
-                Idle(location, locationManager)
+        override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
+            permittedHandler.beforeOldStateIsRemoved(oldState)
+            when (oldState) {
+                !is Enabled -> locationManager.startMonitoringLocation()
             }
+        }
 
-            override suspend fun afterNewStateIsSet(newState: LocationState) {
-                super.afterNewStateIsSet(newState)
-                when (newState) {
-                    !is Scanning -> locationManager.stopMonitoringLocation()
-                }
-            }
+        override suspend fun initialState() {
+            permittedHandler.initialState()
+            locationManager.startMonitoringLocation()
+        }
 
-            override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
-                super.beforeOldStateIsRemoved(oldState)
-                when (oldState) {
-                    !is Scanning -> locationManager.startMonitoringLocation()
-                }
-            }
-
+        override suspend fun finalState() {
+            permittedHandler.finalState()
+            locationManager.stopMonitoringLocation()
         }
 
     }
@@ -130,7 +152,7 @@ class LocationStateRepo(locationPermissionRepo: LocationPermissionStateRepo, aut
         } else if (!locationManager.isLocationEnabled()) {
             LocationState.Disabled.NoGPS(lastKnownLocation, locationManager)
         } else {
-            LocationState.Enabled.Idle(lastKnownLocation, locationManager)
+            LocationState.Enabled(lastKnownLocation, locationManager)
         }
     }
 

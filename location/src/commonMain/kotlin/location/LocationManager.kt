@@ -85,8 +85,7 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
             when(state) {
                 is LocationState.Disabled.NoGPS -> {{state.copy(location = location)}}
                 is LocationState.Disabled.NotPermitted -> {{state.copy(location = location)}}
-                is LocationState.Enabled.Idle -> {{state.copy(location = location)}}
-                is LocationState.Enabled.Scanning -> {{state.copy(location = location)}}
+                is LocationState.Enabled -> {{state.copy(location = location)}}
             }
         }
     }
