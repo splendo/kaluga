@@ -26,13 +26,16 @@ import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.PermissionsPrinter
 import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.Logger
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.location.LocationManager
+import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -158,11 +161,20 @@ class KotlinNativeFramework {
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
-        val location = LocationFlowable.Builder(locationManager).create()
-        LocationPrinter(location).printTo {
+        val locationManagerBuilder = LocationManager.Builder(locationManager)
+        val locationPermissionStateRepo = LocationPermissionStateRepo(
+            Permission.Location(background = true, precise = true),
+            LocationPermissionManagerBuilder()
+        )
+        val locationStateRepo = LocationStateRepo(
+            locationPermissionStateRepo,
+            autoRequestPermission = true,
+            autoEnableLocations = true,
+            locationManagerBuilder = locationManagerBuilder
+        )
+        LocationPrinter(locationStateRepo).printTo {
             label.text = it
         }
         debug("proceed executing after location coroutines")
     }
-
 }

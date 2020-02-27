@@ -28,7 +28,7 @@ import kotlin.test.assertNotEquals
 
 open abstract class LocationFlowableTest : FlowableTest<Location>() {
 
-    lateinit var locationFlowable: LocationFlowable
+    // lateinit var locationFlowable: LocationFlowable
 
     private val location1 = KnownLocation(latitude = 52.15, longitude = 4.4303, time = Time.MeasuredTime(1000), horizontalAccuracy = 1.0, verticalAccuracy = 1.0, altitude = 1.0, speed = 1.0, course = 1.0)
     private val location2 = KnownLocation(latitude = 52.079, longitude = 4.3413, time = Time.MeasuredTime(1000), horizontalAccuracy = 2.0, verticalAccuracy = 2.0, altitude = 2.0, speed = 2.0, course = 2.0)
@@ -37,14 +37,14 @@ open abstract class LocationFlowableTest : FlowableTest<Location>() {
     override fun setUp() {
         super.setUp()
 
-        locationFlowable = generateLocationFlowable()
-        flowable.complete(locationFlowable)
+        // locationFlowable = generateLocationFlowable()
+        // flowable.complete(locationFlowable)
     }
 
-    open abstract fun generateLocationFlowable(): LocationFlowable
+    // open abstract fun generateLocationFlowable(): LocationFlowable
 
     open suspend fun setLocationUnknown(reason:UnknownReason = UnknownReason.NOT_CLEAR) {
-        locationFlowable.setUnknownLocation(reason)
+        // locationFlowable.setUnknownLocation(reason)
     }
 
     open suspend fun setLocation(location:KnownLocation) {
