@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -41,7 +42,7 @@ class LocationBackgroundService : Service(), CoroutineScope {
     private val notificationManager: NotificationManagerCompat by lazy { NotificationManagerCompat.from(applicationContext) }
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
-    override fun onBind(p0: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
@@ -60,38 +61,26 @@ class LocationBackgroundService : Service(), CoroutineScope {
             autoEnableLocations = true,
             locationManagerBuilder = locationManagerBuilder
         )
+
+        startForeground(notificationId, getNotification(""))
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val result = super.onStartCommand(intent, flags, startId)
-
         locationJob = launch {
             val printer = LocationPrinter(locationStateRepo, this)
             printer.printTo{message ->
-                createChannelIfNeeded()
-                val builder = NotificationCompat.Builder(applicationContext, channelId)
-                    .setSmallIcon(R.drawable.ic_launcher_foreground)
-                    .setContentTitle(applicationContext.getString(R.string.location_background))
-                    .setContentText(message)
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .setSound(null)
-                    .setVibrate(null)
-                    .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-                val notification = builder.build()
-
-                notification.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
-
-                NotificationManagerCompat.from(applicationContext).notify(notificationId, notification)
+                NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
                 debug("Background Location: $message")
             }
         }
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
     override fun onDestroy() {
         super.onDestroy()
         coroutineJob.cancel()
         locationJob?.cancel()
+        stopForeground(true)
         NotificationManagerCompat.from(applicationContext).cancel(notificationId)
     }
 
@@ -106,4 +95,21 @@ class LocationBackgroundService : Service(), CoroutineScope {
             notificationService.createNotificationChannel(channel)
         }
     }
+
+    private fun getNotification(message: String): Notification {
+        createChannelIfNeeded()
+        val builder = NotificationCompat.Builder(applicationContext, channelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(applicationContext.getString(R.string.location_background))
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setSound(null)
+            .setVibrate(null)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
+        val notification = builder.build()
+
+        notification.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+        return notification
+    }
+
 }
