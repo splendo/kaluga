@@ -19,18 +19,13 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import com.splendo.kaluga.utils.applyIf
 import com.splendo.kaluga.utils.byOrdinalOrDefault
 import kotlinx.coroutines.runBlocking
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
-import platform.Foundation.NSBundle
 import platform.Foundation.NSError
-import platform.Foundation.NSURL
-import platform.UIKit.UIAlertController
-import platform.UIKit.UIApplication
 import platform.darwin.NSObject
 
 actual class LocationManager(
