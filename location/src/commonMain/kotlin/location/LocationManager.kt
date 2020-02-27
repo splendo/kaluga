@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.*
@@ -38,7 +40,8 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
     internal suspend fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch {
-            locationPermissionRepo.flow().collect { state ->
+            locationPermissionRepo.flow().collect {
+                    state ->
                 when(state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
                 }
@@ -65,7 +68,7 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
     internal abstract suspend fun startMonitoringLocationEnabled()
     internal abstract suspend fun stopMonitoringLocationEnabled()
     internal abstract suspend fun isLocationEnabled(): Boolean
-    internal abstract suspend fun requestLocationEnable(): Boolean
+    internal abstract suspend fun requestLocationEnable()
 
     internal fun handleLocationEnabledChanged(enabled: Boolean) {
         launch {
@@ -94,10 +97,10 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
         locationStateRepo.takeAndChangeState { state ->
             when (state) {
                 is LocationState.Disabled.NoGPS -> {
-                    { state.copy(location = location) }
+                    { state.copy(location = LocationState.Disabled.NoGPS.generateLocation(location)) }
                 }
                 is LocationState.Disabled.NotPermitted -> {
-                    { state.copy(location = location) }
+                    { state.copy(location = LocationState.Disabled.NotPermitted.generateLocation(location)) }
                 }
                 is LocationState.Enabled -> {
                     { state.copy(location = location) }

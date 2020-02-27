@@ -114,9 +114,9 @@ actual class LocationManager(private val context: Context,
         return fusedLocationProviderClient.locationAvailability.await().isLocationAvailable
     }
 
-    override suspend fun requestLocationEnable(): Boolean {
+    override suspend fun requestLocationEnable(){
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
-        return try {
+        try {
             LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null
         } catch (e: ApiException) {
             when(e) {
@@ -128,11 +128,10 @@ actual class LocationManager(private val context: Context,
                         val intent = EnableLocationActivity.intent(context, hashCode(), e)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
-                    }
 
-                    enablingHandler.await().also { enablingHandlers.remove(hashCode()) }
+                        handleLocationEnabledChanged(enablingHandler.await().also { enablingHandlers.remove(hashCode()) })
+                    }
                 }
-                else -> false
             }
         }
     }

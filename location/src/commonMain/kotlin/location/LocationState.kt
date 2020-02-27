@@ -25,8 +25,18 @@ import com.splendo.kaluga.state.State
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State<LocationState>() {
+
+    @InternalCoroutinesApi
+    override suspend fun initialState() {
+        locationManager.startMonitoringPermissions()
+    }
+
+    override suspend fun finalState() {
+        locationManager.stopMonitoringPermissions()
+    }
 
     interface Permitted : HandleBeforeOldStateIsRemoved<LocationState>, HandleAfterNewStateIsSet<LocationState> {
         val revokePermission: suspend () -> Disabled.NotPermitted
@@ -37,7 +47,7 @@ sealed class LocationState(open val location: Location, private val locationMana
     class PermittedHandler(val location: Location, private val locationManager: BaseLocationManager) : Permitted {
 
         override val revokePermission: suspend () -> Disabled.NotPermitted = {
-            Disabled.NotPermitted(location, locationManager)
+            Disabled.NotPermitted(Disabled.NotPermitted.generateLocation(location), locationManager)
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
@@ -65,13 +75,33 @@ sealed class LocationState(open val location: Location, private val locationMana
 
         data class NotPermitted(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager) {
 
+            companion object {
+                fun generateLocation(fromLocation: Location): Location {
+                    return when (fromLocation) {
+                        is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(fromLocation, Location.UnknownLocation.Reason.PERMISSION_DENIED)
+                        is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(fromLocation.lastKnownLocation, Location.UnknownLocation.Reason.PERMISSION_DENIED)
+                        is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.PERMISSION_DENIED)
+                    }
+                }
+            }
+
             fun permit(enabled: Boolean) : suspend () -> LocationState = {
-                if (enabled) Enabled(location, locationManager) else NoGPS(location, locationManager)
+                if (enabled) Enabled(location, locationManager) else NoGPS(NoGPS.generateLocation(location), locationManager)
             }
 
         }
 
         data class NoGPS(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager), Permitted {
+
+            companion object {
+                fun generateLocation(fromLocation: Location): Location {
+                    return when (fromLocation) {
+                        is Location.KnownLocation -> Location.UnknownLocation.WithLastLocation(fromLocation, Location.UnknownLocation.Reason.NO_GPS)
+                        is Location.UnknownLocation.WithLastLocation -> Location.UnknownLocation.WithLastLocation(fromLocation.lastKnownLocation, Location.UnknownLocation.Reason.NO_GPS)
+                        is Location.UnknownLocation.WithoutLastLocation -> Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NO_GPS)
+                    }
+                }
+            }
 
             private val permittedHandler = PermittedHandler(location, locationManager)
 
@@ -92,11 +122,15 @@ sealed class LocationState(open val location: Location, private val locationMana
                 permittedHandler.afterNewStateIsSet(newState)
             }
 
+            @InternalCoroutinesApi
             override suspend fun initialState() {
+                super.initialState()
                 permittedHandler.initialState()
+                if (locationManager.autoEnableLocations) locationManager.requestLocationEnable()
             }
 
             override suspend fun finalState() {
+                super.finalState()
                 permittedHandler.finalState()
             }
         }
@@ -110,7 +144,7 @@ sealed class LocationState(open val location: Location, private val locationMana
         override val revokePermission: suspend () -> Disabled.NotPermitted = permittedHandler.revokePermission
 
         val disable: suspend () -> Disabled.NoGPS = {
-            Disabled.NoGPS(location, locationManager)
+            Disabled.NoGPS(Disabled.NoGPS.generateLocation(location), locationManager)
         }
 
         override suspend fun afterNewStateIsSet(newState: LocationState) {
@@ -127,12 +161,15 @@ sealed class LocationState(open val location: Location, private val locationMana
             }
         }
 
+        @InternalCoroutinesApi
         override suspend fun initialState() {
+            super.initialState()
             permittedHandler.initialState()
             locationManager.startMonitoringLocation()
         }
 
         override suspend fun finalState() {
+            super.finalState()
             permittedHandler.finalState()
             locationManager.stopMonitoringLocation()
         }
@@ -143,23 +180,21 @@ sealed class LocationState(open val location: Location, private val locationMana
 
 class LocationStateRepo(locationPermissionRepo: LocationPermissionStateRepo, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
 
-    private var lastKnownLocation: Location = Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR)
+    private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
     private val locationManager = locationManagerBuilder.create(locationPermissionRepo, autoRequestPermission, autoEnableLocations, this)
 
     @InternalCoroutinesApi
     override suspend fun initialValue(): LocationState {
-        locationManager.startMonitoringPermissions()
         return if (!locationManager.isPermitted()) {
-            LocationState.Disabled.NotPermitted(lastKnownLocation, locationManager)
+            LocationState.Disabled.NotPermitted(LocationState.Disabled.NotPermitted.generateLocation(lastKnownLocation), locationManager)
         } else if (!locationManager.isLocationEnabled()) {
-            LocationState.Disabled.NoGPS(lastKnownLocation, locationManager)
+            LocationState.Disabled.NoGPS(LocationState.Disabled.NoGPS.generateLocation(lastKnownLocation), locationManager)
         } else {
             LocationState.Enabled(lastKnownLocation, locationManager)
         }
     }
 
     override suspend fun deinitialize(state: LocationState) {
-        locationManager.stopMonitoringPermissions()
         lastKnownLocation = state.location
     }
 }
