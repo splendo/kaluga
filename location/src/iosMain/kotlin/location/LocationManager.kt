@@ -17,8 +17,16 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.utils.byOrdinalOrDefault
+import kotlinx.coroutines.runBlocking
+import platform.CoreLocation.CLAuthorizationStatus
+import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.Foundation.NSError
+import platform.darwin.NSObject
 
 actual class LocationManager(
     private val locationManager: CLLocationManager,
@@ -27,7 +35,8 @@ actual class LocationManager(
     autoEnableLocations: Boolean,
     locationStateRepo: LocationStateRepo
 ) : BaseLocationManager(
-    locationPermissionRepo, autoRequestPermission,
+    locationPermissionRepo,
+    autoRequestPermission,
     autoEnableLocations,
     locationStateRepo
 ) {
@@ -47,28 +56,71 @@ actual class LocationManager(
         )
     }
 
+    private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
+
+        override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) =  runBlocking {
+            val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
+            if (locations.isNotEmpty()) {
+                handleLocationChanged(locations)
+            }
+        }
+
+        override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) = runBlocking {
+            handleLocationChanged(didUpdateToLocation.knownLocation)
+        }
+
+        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) = runBlocking {
+        }
+
+        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) = runBlocking {
+            when (authorizationStatus) {
+                CLAuthorizationStatusKotlin.restricted,
+                CLAuthorizationStatusKotlin.denied -> handleLocationEnabledChanged(false)
+                CLAuthorizationStatusKotlin.authorizedAlways,
+                CLAuthorizationStatusKotlin.authorizedWhenInUse -> handleLocationEnabledChanged(true)
+                CLAuthorizationStatusKotlin.notDetermined -> {}
+            }
+        }
+    }
+
+    init {
+        locationManager.delegate = locationManagerDelegate
+    }
+
+    private val authorizationStatus: CLAuthorizationStatusKotlin
+        get() = Enum.byOrdinalOrDefault(
+            CLLocationManager.authorizationStatus(),
+            CLAuthorizationStatusKotlin.notDetermined
+        )
+
     override suspend fun startMonitoringLocationEnabled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        locationManager.startUpdatingLocation()
     }
 
     override suspend fun stopMonitoringLocationEnabled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        locationManager.stopUpdatingLocation()
     }
 
-    override suspend fun isLocationEnabled(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun isLocationEnabled(): Boolean = when (authorizationStatus) {
+        // Enabled
+        CLAuthorizationStatusKotlin.authorizedAlways,
+        CLAuthorizationStatusKotlin.authorizedWhenInUse -> true
+        // Disabled
+        CLAuthorizationStatusKotlin.restricted,
+        CLAuthorizationStatusKotlin.denied,
+        CLAuthorizationStatusKotlin.notDetermined -> false
     }
 
     override suspend fun requestLocationEnable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // No access to UIApplication.openSettingsURLString
+        // We have to fallback to alert then?
     }
 
     override suspend fun startMonitoringLocation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        locationManager.startUpdatingLocation()
     }
 
     override suspend fun stopMonitoringLocation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        locationManager.stopUpdatingLocation()
     }
 }
-
