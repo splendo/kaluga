@@ -18,15 +18,18 @@
 package com.splendo.kaluga.location
 
 import android.app.PendingIntent
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.IBinder
 import android.os.Looper
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
@@ -174,7 +177,7 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
         val locationManagerId = intent.getIntExtra(LOCATION_MANAGER_ID_KEY, 0)
-        val backgroundLocationManager: LocationManager = LocationManager.updatingLocationEnabledInBackgroundManagers[locationManagerId] ?: return
+        val backgroundLocationManager: LocationManager = LocationManager.updatingLocationInBackgroundManagers[locationManagerId] ?: return
         val locationResult = LocationResult.extractResult(intent) ?: return
         backgroundLocationManager.handleLocationChanged(locationResult.toKnownLocations())
     }
