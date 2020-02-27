@@ -75,9 +75,7 @@ actual class LocationManager(private val context: Context,
         override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
             super.onLocationAvailability(locationAvailability)
 
-            locationAvailability?.let {
-                handleLocationEnabledChanged(it.isLocationAvailable)
-            }
+            handleLocationEnabledChanged()
         }
 
     }
@@ -116,7 +114,12 @@ actual class LocationManager(private val context: Context,
     }
 
     override suspend fun isLocationEnabled(): Boolean {
-        return fusedLocationProviderClient.locationAvailability.await().isLocationAvailable
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
+        return try {
+            LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null
+        } catch (e: ApiException) {
+            false
+        }
     }
 
     override suspend fun requestLocationEnable(){
@@ -133,8 +136,9 @@ actual class LocationManager(private val context: Context,
                         val intent = EnableLocationActivity.intent(context, identifier, e)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
-
-                        handleLocationEnabledChanged(enablingHandler.await().also { enablingHandlers.remove(identifier) })
+                        enablingHandler.await()
+                        enablingHandlers.remove(identifier)
+                        handleLocationEnabledChanged()
                     }
                 }
             }
@@ -203,7 +207,7 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
         if (intent == null) return
         val locationAvailability = LocationAvailability.extractLocationAvailability(intent) ?: return
         intent.categories.forEach {category ->
-            LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged(locationAvailability.isLocationAvailable)
+            LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged()
         }
     }
 }
