@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import com.splendo.kaluga.log.debug
 import kotlinx.coroutines.CoroutineScope
 
-class LocationPrinter(private val locationState: LocationStateRepo, val coroutineScope: CoroutineScope = MainScope()) {
+class LocationPrinter(private val locationState: LocationStateRepo, val coroutineScope: CoroutineScope) {
 
     fun printTo(printer: (String) -> Unit) = runBlocking {
         coroutineScope.launch {

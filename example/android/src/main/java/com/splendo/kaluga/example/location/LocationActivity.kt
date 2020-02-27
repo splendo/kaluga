@@ -32,17 +32,16 @@ import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.android.synthetic.main.activity_location.*
 import kotlinx.android.synthetic.main.activity_main.info
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @SuppressLint("SetTextI18n")
 class LocationActivity : AppCompatActivity(R.layout.activity_location) {
-    
+
+    private var locationRequest: Job? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        flowLocation()
-
-
         enable_background.setOnClickListener {
             startService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
@@ -52,8 +51,10 @@ class LocationActivity : AppCompatActivity(R.layout.activity_location) {
         }
     }
 
-    private fun flowLocation() {
-        lifecycle.coroutineScope.launch {
+    override fun onResume() {
+        super.onResume()
+        locationRequest?.cancel()
+        locationRequest = lifecycle.coroutineScope.launch {
             val locationManagerBuilder = LocationManager.Builder(this@LocationActivity, inBackground = false)
             val locationPermissionStateRepo = LocationPermissionStateRepo(Permission.Location(
                 background = false,
@@ -64,7 +65,7 @@ class LocationActivity : AppCompatActivity(R.layout.activity_location) {
                 autoEnableLocations = true,
                 locationManagerBuilder = locationManagerBuilder
             )
-            val printer = LocationPrinter(locationStateRepo)
+            val printer = LocationPrinter(locationStateRepo, this)
             printer.printTo {
                 info.text = it
                 info.animate().withEndAction {
@@ -72,6 +73,11 @@ class LocationActivity : AppCompatActivity(R.layout.activity_location) {
                 }.alpha(1f).setDuration(100).start()
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        locationRequest?.cancel()
     }
 
 }

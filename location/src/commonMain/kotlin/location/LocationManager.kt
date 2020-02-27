@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.CoroutineScope
@@ -71,13 +72,13 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
     internal abstract suspend fun isLocationEnabled(): Boolean
     internal abstract suspend fun requestLocationEnable()
 
-    internal fun handleLocationEnabledChanged(enabled: Boolean) {
+    internal fun handleLocationEnabledChanged() {
         launch {
             locationStateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is LocationState.Disabled.NoGPS -> if (enabled) state.enable else state.remain
+                    is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain
                     is LocationState.Disabled.NotPermitted -> state.remain
-                    is LocationState.Enabled -> if (enabled) state.remain else state.disable
+                    is LocationState.Enabled -> if (isLocationEnabled()) state.remain else state.disable
                 }
             }
         }
