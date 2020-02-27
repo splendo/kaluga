@@ -67,12 +67,14 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
     internal abstract suspend fun isLocationEnabled(): Boolean
     internal abstract suspend fun requestLocationEnable(): Boolean
 
-    internal suspend fun handleLocationEnabledChanged(enabled: Boolean) {
-        locationStateRepo.takeAndChangeState{ state ->
-            when(state) {
-                is LocationState.Disabled.NoGPS -> if (enabled) state.enable else state.remain
-                is LocationState.Disabled.NotPermitted -> state.remain
-                is LocationState.Enabled -> if (enabled) state.remain else state.disable
+    internal fun handleLocationEnabledChanged(enabled: Boolean) {
+        launch {
+            locationStateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is LocationState.Disabled.NoGPS -> if (enabled) state.enable else state.remain
+                    is LocationState.Disabled.NotPermitted -> state.remain
+                    is LocationState.Enabled -> if (enabled) state.remain else state.disable
+                }
             }
         }
     }
@@ -80,12 +82,26 @@ abstract class BaseLocationManager(private val locationPermissionRepo: LocationP
     internal abstract suspend fun startMonitoringLocation()
     internal abstract suspend fun stopMonitoringLocation()
 
+    internal fun handleLocationChanged(locations: List<Location>) {
+        launch {
+            locations.forEach { location ->
+                handleLocationChanged(location)
+            }
+        }
+    }
+
     internal suspend fun handleLocationChanged(location: Location) {
-        locationStateRepo.takeAndChangeState{ state ->
-            when(state) {
-                is LocationState.Disabled.NoGPS -> {{state.copy(location = location)}}
-                is LocationState.Disabled.NotPermitted -> {{state.copy(location = location)}}
-                is LocationState.Enabled -> {{state.copy(location = location)}}
+        locationStateRepo.takeAndChangeState { state ->
+            when (state) {
+                is LocationState.Disabled.NoGPS -> {
+                    { state.copy(location = location) }
+                }
+                is LocationState.Disabled.NotPermitted -> {
+                    { state.copy(location = location) }
+                }
+                is LocationState.Enabled -> {
+                    { state.copy(location = location) }
+                }
             }
         }
     }

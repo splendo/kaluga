@@ -23,6 +23,8 @@ import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State<LocationState>() {
 
@@ -160,5 +162,9 @@ class LocationStateRepo(locationPermissionRepo: LocationPermissionStateRepo, aut
         locationManager.stopMonitoringPermissions()
         lastKnownLocation = state.location
     }
+}
+
+fun Flow<LocationState>.location(): Flow<Location> {
+    return this.map { it.location }
 }
 
