@@ -6,6 +6,9 @@
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
 
+    <string name="location_enable_background">Enable Background</string>
+    <string name="location_disable_background">Disable Background</string>
+
     <string name="permissions_list">Permissions List</string>
     <string name="permissions_bluetooth">Bluetooth Demo</string>
     <string name="permissions_calendar">Calendar Demo</string>

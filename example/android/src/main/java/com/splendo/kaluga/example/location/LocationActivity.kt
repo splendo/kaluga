@@ -19,6 +19,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.coroutineScope
@@ -29,23 +32,33 @@ import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_location.*
+import kotlinx.android.synthetic.main.activity_main.info
 import kotlinx.coroutines.launch
 
 @SuppressLint("SetTextI18n")
-class LocationActivity : AppCompatActivity(R.layout.activity_main) {
+class LocationActivity : AppCompatActivity(R.layout.activity_location) {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         flowLocation()
+
+
+        enable_background.setOnClickListener {
+            startService(Intent(this, LocationBackgroundService::class.java))
+        }
+
+        disable_background.setOnClickListener {
+            stopService(Intent(this, LocationBackgroundService::class.java))
+        }
     }
 
     private fun flowLocation() {
         lifecycle.coroutineScope.launch {
             val locationManagerBuilder = LocationManager.Builder(this@LocationActivity, inBackground = false)
             val locationPermissionStateRepo = LocationPermissionStateRepo(Permission.Location(
-                background = true,
+                background = false,
                 precise = true
             ), LocationPermissionManagerBuilder(this@LocationActivity))
             val locationStateRepo = LocationStateRepo(locationPermissionStateRepo,
@@ -62,4 +75,5 @@ class LocationActivity : AppCompatActivity(R.layout.activity_main) {
             }
         }
     }
+
 }

@@ -63,6 +63,9 @@
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"
                   android:label="Loading Indicator"/>
+
+        <service android:name=".location.LocationBackgroundService"/>
+
     </application>
 
 </manifest>
