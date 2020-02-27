@@ -24,11 +24,12 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.splendo.kaluga.log.debug
+import kotlinx.coroutines.CoroutineScope
 
-class LocationPrinter(private val locationState: LocationStateRepo) {
+class LocationPrinter(private val locationState: LocationStateRepo, val coroutineScope: CoroutineScope = MainScope()) {
 
     fun printTo(printer: (String) -> Unit) = runBlocking {
-        MainScope().launch {
+        coroutineScope.launch {
             debug("main..")
             locationState.flow().location().collect {location ->
                 debug("collecting...")

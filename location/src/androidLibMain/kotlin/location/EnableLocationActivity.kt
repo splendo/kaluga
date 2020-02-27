@@ -42,12 +42,10 @@ class EnableLocationActivity : AppCompatActivity() {
             try {
                 startIntentSenderForResult(it.intentSender, REQUEST_CHECK_SETTINGS, null, 0, 0, 0)
             } catch (e: IntentSender.SendIntentException) {
-                LocationManager.enablingHandlers[getLocationManagerId(intent)]?.complete(false)
-                finish()
+                complete(false)
             }
         } ?: run {
-            LocationManager.enablingHandlers[getLocationManagerId(intent)]?.complete(false)
-            finish()
+            complete(false)
         }
     }
 
@@ -55,10 +53,16 @@ class EnableLocationActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
             REQUEST_CHECK_SETTINGS -> {
-                LocationManager.enablingHandlers[getLocationManagerId(intent)]?.complete(resultCode == Activity.RESULT_OK)
-                finish()
+                complete(resultCode == Activity.RESULT_OK)
             }
         }
+    }
+
+    private fun complete(success: Boolean) {
+        getLocationManagerId(intent)?.let {
+            LocationManager.enablingHandlers[it]?.complete(false)
+        }
+        finish()
     }
 
     companion object {
@@ -66,7 +70,7 @@ class EnableLocationActivity : AppCompatActivity() {
         private const val EXTRA_LOCATION_MANAGER_ID = "EXTRA_LOCATION_MANAGER_ID"
         private const val REQUEST_CHECK_SETTINGS = 12568
 
-        fun intent(context: Context, locationManagerId: Int, resolvableApiException: ResolvableApiException): Intent {
+        fun intent(context: Context, locationManagerId: String, resolvableApiException: ResolvableApiException): Intent {
             val intent = Intent(context, EnableLocationActivity::class.java)
 
             intent.putExtra(EXTRA_LOCATION_MANAGER_ID, locationManagerId)
@@ -79,8 +83,8 @@ class EnableLocationActivity : AppCompatActivity() {
             return intent.getParcelableExtra(EXTRA_RESOLVABLE_API_EXCEPTION)
         }
 
-        fun getLocationManagerId(intent: Intent): Int {
-            return intent.getIntExtra(EXTRA_LOCATION_MANAGER_ID, 0)
+        fun getLocationManagerId(intent: Intent): String? {
+            return intent.getStringExtra(EXTRA_LOCATION_MANAGER_ID)
         }
     }
 

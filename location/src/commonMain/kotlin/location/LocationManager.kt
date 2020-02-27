@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(private val locationPermissionRepo: LocationPermissionStateRepo,
                                    private val autoRequestPermission: Boolean,

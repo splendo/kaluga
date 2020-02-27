@@ -62,10 +62,12 @@ actual class LocationManager(private val context: Context,
     }
 
     companion object {
-        val updatingLocationInBackgroundManagers: MutableMap<Int, LocationManager> = mutableMapOf()
-        val updatingLocationEnabledInBackgroundManagers: MutableMap<Int, LocationManager> = mutableMapOf()
-        val enablingHandlers: MutableMap<Int, CompletableDeferred<Boolean>> = mutableMapOf()
+        val updatingLocationInBackgroundManagers: MutableMap<String, LocationManager> = mutableMapOf()
+        val updatingLocationEnabledInBackgroundManagers: MutableMap<String, LocationManager> = mutableMapOf()
+        val enablingHandlers: MutableMap<String, CompletableDeferred<Boolean>> = mutableMapOf()
     }
+
+    private val identifier = hashCode().toString()
 
     private val fusedLocationProviderClient = FusedLocationProviderClient(context)
     private val locationEnabledCallback = object : LocationCallback() {
@@ -92,12 +94,12 @@ actual class LocationManager(private val context: Context,
 
     }
 
-    private val locationEnabledUpdatedPendingIntent = LocationEnabledUpdatesBroadcastReceiver.intent(context, hashCode())
-    private val locationUpdatedPendingIntent = LocationUpdatesBroadcastReceiver.intent(context, hashCode())
+    private val locationEnabledUpdatedPendingIntent = LocationEnabledUpdatesBroadcastReceiver.intent(context, identifier)
+    private val locationUpdatedPendingIntent = LocationUpdatesBroadcastReceiver.intent(context, identifier)
 
     override suspend fun startMonitoringLocationEnabled() {
         if (inBackground) {
-            updatingLocationEnabledInBackgroundManagers[hashCode()] = this
+            updatingLocationEnabledInBackgroundManagers[identifier] = this
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationEnabledUpdatedPendingIntent)
         } else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationEnabledCallback, Looper.getMainLooper())
@@ -106,7 +108,7 @@ actual class LocationManager(private val context: Context,
 
     override suspend fun stopMonitoringLocationEnabled() {
         if (inBackground) {
-            updatingLocationEnabledInBackgroundManagers.remove(hashCode())
+            updatingLocationEnabledInBackgroundManagers.remove(identifier)
             fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationEnabledCallback)
@@ -125,14 +127,14 @@ actual class LocationManager(private val context: Context,
             when(e) {
                 is ResolvableApiException -> {
                     val enablingHandler = CompletableDeferred<Boolean>()
-                    enablingHandlers[hashCode()] = enablingHandler
+                    enablingHandlers[identifier] = enablingHandler
 
                     MainScope().launch(MainQueueDispatcher) {
-                        val intent = EnableLocationActivity.intent(context, hashCode(), e)
+                        val intent = EnableLocationActivity.intent(context, identifier, e)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
 
-                        handleLocationEnabledChanged(enablingHandler.await().also { enablingHandlers.remove(hashCode()) })
+                        handleLocationEnabledChanged(enablingHandler.await().also { enablingHandlers.remove(identifier) })
                     }
                 }
             }
@@ -141,7 +143,7 @@ actual class LocationManager(private val context: Context,
 
     override suspend fun startMonitoringLocation() {
         if (inBackground) {
-            updatingLocationInBackgroundManagers[hashCode()] = this
+            updatingLocationInBackgroundManagers[identifier] = this
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationUpdatedPendingIntent)
         } else {
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
@@ -150,7 +152,7 @@ actual class LocationManager(private val context: Context,
 
     override suspend fun stopMonitoringLocation() {
         if (inBackground) {
-            updatingLocationEnabledInBackgroundManagers.remove(hashCode())
+            updatingLocationEnabledInBackgroundManagers.remove(identifier)
             fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
         } else {
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
@@ -162,13 +164,13 @@ actual class LocationManager(private val context: Context,
 class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        private const val LOCATION_MANAGER_ID_KEY = "LOCATION_MANAGER_ID"
         private const val ACTION_NAME = "com.splendo.kaluga.location.locationupdates.action"
 
-        fun intent(context: Context, locationManagerId: Int): PendingIntent {
+        fun intent(context: Context, locationManagerId: String): PendingIntent {
             val intent = Intent(context, LocationUpdatesBroadcastReceiver::class.java).apply {
                 action = ACTION_NAME
-                putExtra(LOCATION_MANAGER_ID_KEY, locationManagerId)
+                addCategory(locationManagerId)
+
             }
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -176,23 +178,22 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
-        val locationManagerId = intent.getIntExtra(LOCATION_MANAGER_ID_KEY, 0)
-        val backgroundLocationManager: LocationManager = LocationManager.updatingLocationInBackgroundManagers[locationManagerId] ?: return
         val locationResult = LocationResult.extractResult(intent) ?: return
-        backgroundLocationManager.handleLocationChanged(locationResult.toKnownLocations())
+        intent.categories.forEach {category ->
+            LocationManager.updatingLocationInBackgroundManagers[category]?.handleLocationChanged(locationResult.toKnownLocations())
+        }
     }
 }
 
 class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     companion object {
-        private const val LOCATION_MANAGER_ID_KEY = "LOCATION_MANAGER_ID"
         private const val ACTION_NAME = "com.splendo.kaluga.location.locationenabledupdates.action"
 
-        fun intent(context: Context, locationManagerId: Int): PendingIntent {
+        fun intent(context: Context, locationManagerId: String): PendingIntent {
             val intent = Intent(context, LocationEnabledUpdatesBroadcastReceiver::class.java).apply {
                 action = ACTION_NAME
-                putExtra(LOCATION_MANAGER_ID_KEY, locationManagerId)
+                addCategory(locationManagerId)
             }
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -200,9 +201,9 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
-        val locationManagerId = intent.getIntExtra(LOCATION_MANAGER_ID_KEY, 0)
-        val backgroundLocationManager: LocationManager = LocationManager.updatingLocationInBackgroundManagers[locationManagerId] ?: return
         val locationAvailability = LocationAvailability.extractLocationAvailability(intent) ?: return
-        backgroundLocationManager.handleLocationEnabledChanged(locationAvailability.isLocationAvailable)
+        intent.categories.forEach {category ->
+            LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged(locationAvailability.isLocationAvailable)
+        }
     }
 }

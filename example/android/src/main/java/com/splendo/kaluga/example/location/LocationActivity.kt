@@ -19,8 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -46,11 +44,11 @@ class LocationActivity : AppCompatActivity(R.layout.activity_location) {
 
 
         enable_background.setOnClickListener {
-            startService(Intent(this, LocationBackgroundService::class.java))
+            startService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
 
         disable_background.setOnClickListener {
-            stopService(Intent(this, LocationBackgroundService::class.java))
+            stopService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
     }
 

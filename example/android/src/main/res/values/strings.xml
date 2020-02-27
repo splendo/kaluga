@@ -6,6 +6,7 @@
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
 
+    <string name="location_background">Kaluga Background</string>
     <string name="location_enable_background">Enable Background</string>
     <string name="location_disable_background">Disable Background</string>
 
