@@ -17,13 +17,35 @@
 
 package com.splendo.kaluga.location
 
-
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import platform.CoreLocation.CLLocationManager
 
-actual class LocationManager(locationPermissionRepo: LocationPermissionStateRepo, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermissionRepo, autoRequestPermission,
+actual class LocationManager(
+    private val locationManager: CLLocationManager,
+    locationPermissionRepo: LocationPermissionStateRepo,
+    autoRequestPermission: Boolean,
+    autoEnableLocations: Boolean,
+    locationStateRepo: LocationStateRepo
+) : BaseLocationManager(
+    locationPermissionRepo, autoRequestPermission,
     autoEnableLocations,
     locationStateRepo
 ) {
+
+    class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationManager.Builder {
+        override fun create(
+            locationPermissionRepo: LocationPermissionStateRepo,
+            autoRequestPermission: Boolean,
+            autoEnableLocations: Boolean,
+            locationStateRepo: LocationStateRepo
+        ): BaseLocationManager = LocationManager(
+            locationManager,
+            locationPermissionRepo,
+            autoRequestPermission,
+            autoEnableLocations,
+            locationStateRepo
+        )
+    }
 
     override suspend fun startMonitoringLocationEnabled() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

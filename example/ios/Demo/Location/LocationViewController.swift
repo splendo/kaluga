@@ -33,10 +33,6 @@ class LocationViewController: UIViewController {
 
         // show how dependencies are also exposed if we declare them in a method
         KotlinNativeFramework().logger().log(level: Hydra_logLogLevel.debug, tag: "hidra", message: "hi")
-
-        let lm = CLLocationManager()
-        lm.requestWhenInUseAuthorization()
-
-        KotlinNativeFramework().location(label: label, locationManager: lm)
+        KotlinNativeFramework().location(label: label, locationManager: CLLocationManager())
     }
 }

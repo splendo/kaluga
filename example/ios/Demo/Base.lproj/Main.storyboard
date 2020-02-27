@@ -123,6 +123,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="BYZ-38-t0r" kind="show" id="Qr4-Dx-8Db"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="K5B-ue-zky" style="IBUITableViewCellStyleDefault" id="wtr-im-C6c">
                                         <rect key="frame" x="0.0" y="158.5" width="414" height="43.5"/>
