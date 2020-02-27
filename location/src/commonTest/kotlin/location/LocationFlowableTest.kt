@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.Location.*
-import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.test.FlowableTest
 import kotlin.test.BeforeTest
