@@ -25,15 +25,28 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import com.splendo.kaluga.log.debug
 
-class LocationPrinter(private val location: LocationFlowable) {
+class LocationPrinter(private val locationState: LocationStateRepo) {
 
     fun printTo(printer: (String) -> Unit) = runBlocking {
         MainScope().launch {
             debug("main..")
-            location.flow().collect {
+            locationState.flow().location().collect {location ->
                 debug("collecting...")
-                printer("received location: $it")
-                debug("location: $it")
+                val toPrint = when(location) {
+                    is Location.KnownLocation -> {
+                        "${location.latitudeDMS} ${location.longitudeDMS}"
+                    }
+                    is Location.UnknownLocation -> {
+                        val lastLocation = if (location is Location.UnknownLocation.WithLastLocation) {
+                            " Last Known Location: ${location.lastKnownLocation
+                                .latitudeDMS} ${location.lastKnownLocation.longitudeDMS}"
+                        } else
+                            ""
+                        "Unknown Location. Reason: ${location.reason.name}${lastLocation}"
+                    }
+                }
+                printer("Received location: $toPrint")
+                debug("location: $toPrint")
             }
             debug("bye main")
         }

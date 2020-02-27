@@ -19,8 +19,10 @@ package com.splendo.kaluga.location
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -37,7 +39,12 @@ class EnableLocationActivity : AppCompatActivity() {
         val resolvableApiException = getResolvableApiException(intent)
 
         resolvableApiException?.let {
-            it.startResolutionForResult(this, REQUEST_CHECK_SETTINGS)
+            try {
+                startIntentSenderForResult(it.intentSender, REQUEST_CHECK_SETTINGS, null, 0, 0, 0)
+            } catch (e: IntentSender.SendIntentException) {
+                LocationManager.enablingHandlers[getLocationManagerId(intent)]?.complete(false)
+                finish()
+            }
         } ?: run {
             LocationManager.enablingHandlers[getLocationManagerId(intent)]?.complete(false)
             finish()
@@ -57,19 +64,19 @@ class EnableLocationActivity : AppCompatActivity() {
     companion object {
         private const val EXTRA_RESOLVABLE_API_EXCEPTION = "EXTRA_RESOLVABLE_API_EXCEPTION"
         private const val EXTRA_LOCATION_MANAGER_ID = "EXTRA_LOCATION_MANAGER_ID"
-        private const val REQUEST_CHECK_SETTINGS = 125689
+        private const val REQUEST_CHECK_SETTINGS = 12568
 
         fun intent(context: Context, locationManagerId: Int, resolvableApiException: ResolvableApiException): Intent {
             val intent = Intent(context, EnableLocationActivity::class.java)
 
             intent.putExtra(EXTRA_LOCATION_MANAGER_ID, locationManagerId)
-            intent.putExtra(EXTRA_RESOLVABLE_API_EXCEPTION, resolvableApiException)
+            intent.putExtra(EXTRA_RESOLVABLE_API_EXCEPTION, resolvableApiException.resolution)
 
             return intent
         }
 
-        fun getResolvableApiException(intent: Intent): ResolvableApiException? {
-            return intent.getSerializableExtra(EXTRA_RESOLVABLE_API_EXCEPTION) as? ResolvableApiException
+        fun getResolvableApiException(intent: Intent): PendingIntent? {
+            return intent.getParcelableExtra(EXTRA_RESOLVABLE_API_EXCEPTION)
         }
 
         fun getLocationManagerId(intent: Intent): Int {

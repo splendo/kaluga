@@ -37,7 +37,7 @@ actual class LocationManager(locationPermissionRepo: LocationPermissionStateRepo
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun requestLocationEnable(): Boolean {
+    override suspend fun requestLocationEnable() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
