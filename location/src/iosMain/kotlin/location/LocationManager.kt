@@ -73,13 +73,7 @@ actual class LocationManager(
         }
 
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) = runBlocking {
-            when (authorizationStatus) {
-                CLAuthorizationStatusKotlin.restricted,
-                CLAuthorizationStatusKotlin.denied -> handleLocationEnabledChanged(false)
-                CLAuthorizationStatusKotlin.authorizedAlways,
-                CLAuthorizationStatusKotlin.authorizedWhenInUse -> handleLocationEnabledChanged(true)
-                CLAuthorizationStatusKotlin.notDetermined -> {}
-            }
+            handleLocationEnabledChanged()
         }
     }
 
