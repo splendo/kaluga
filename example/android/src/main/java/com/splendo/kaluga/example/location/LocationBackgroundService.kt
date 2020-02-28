@@ -15,6 +15,7 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
@@ -49,18 +50,7 @@ class LocationBackgroundService : Service(), CoroutineScope {
     override fun onCreate() {
         super.onCreate()
 
-        val locationManagerBuilder = LocationManager.Builder(applicationContext, inBackground = true)
-        val locationPermissionStateRepo = LocationPermissionStateRepo(
-            Permission.Location(
-                background = true,
-                precise = true
-            ), LocationPermissionManagerBuilder(applicationContext)
-        )
-        locationStateRepo = LocationStateRepo(locationPermissionStateRepo,
-            autoRequestPermission = true,
-            autoEnableLocations = true,
-            locationManagerBuilder = locationManagerBuilder
-        )
+        locationStateRepo = LocationStateRepoBuilder(applicationContext).create(Permission.Location(background = true, precise = true))
 
         startForeground(notificationId, getNotification(""))
     }

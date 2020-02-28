@@ -98,6 +98,11 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
             }
             if (changed) {
                 updateLastPermissions()
+                if (hasPermissions) {
+                    permissionManager.grantPermission()
+                } else {
+                    permissionManager.revokePermission(true)
+                }
             }
         }
     }
@@ -121,12 +126,6 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
     private fun updateLastPermissions() {
         permissions.forEach {
             lastPermission[it] = ContextCompat.checkSelfPermission(context, it)
-        }
-
-        if (hasPermissions) {
-            permissionManager.grantPermission()
-        } else {
-            permissionManager.revokePermission(true)
         }
     }
 

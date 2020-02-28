@@ -27,6 +27,7 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
@@ -55,16 +56,8 @@ class LocationActivity : AppCompatActivity(R.layout.activity_location) {
         super.onResume()
         locationRequest?.cancel()
         locationRequest = lifecycle.coroutineScope.launch {
-            val locationManagerBuilder = LocationManager.Builder(this@LocationActivity, inBackground = false)
-            val locationPermissionStateRepo = LocationPermissionStateRepo(Permission.Location(
-                background = false,
-                precise = true
-            ), LocationPermissionManagerBuilder(this@LocationActivity))
-            val locationStateRepo = LocationStateRepo(locationPermissionStateRepo,
-                autoRequestPermission = true,
-                autoEnableLocations = true,
-                locationManagerBuilder = locationManagerBuilder
-            )
+            val locationStateRepo = LocationStateRepoBuilder(this@LocationActivity).create(
+                Permission.Location(background = false, precise = true))
             val printer = LocationPrinter(locationStateRepo, this)
             printer.printTo {
                 info.text = it

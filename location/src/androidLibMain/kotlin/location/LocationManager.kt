@@ -30,6 +30,8 @@ import com.google.android.gms.location.*
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
@@ -37,27 +39,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 actual class LocationManager(private val context: Context,
-                             private val locationRequest: LocationRequest,
-                             private val inBackground: Boolean,
-                             locationPermissionRepo: LocationPermissionStateRepo,
+                             locationPermission: Permission.Location,
+                             locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
                              locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermissionRepo, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext,
-                  private val locationRequest: LocationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-                      LocationRequest.PRIORITY_HIGH_ACCURACY
-                  ),
-                  private val inBackground: Boolean) : BaseLocationManager.Builder {
+    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationManager.Builder {
 
         override fun create(
-            locationPermissionRepo: LocationPermissionStateRepo,
+            locationPermission: Permission.Location,
+            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager {
-            return LocationManager(context, locationRequest, inBackground, locationPermissionRepo, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return LocationManager(context, locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
 
@@ -69,6 +67,9 @@ actual class LocationManager(private val context: Context,
 
     private val identifier = hashCode().toString()
 
+    private val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
+        if (locationPermission.precise) LocationRequest.PRIORITY_HIGH_ACCURACY else LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+    )
     private val fusedLocationProviderClient = FusedLocationProviderClient(context)
     private val locationEnabledCallback = object : LocationCallback() {
 
@@ -96,7 +97,7 @@ actual class LocationManager(private val context: Context,
     private val locationUpdatedPendingIntent = LocationUpdatesBroadcastReceiver.intent(context, identifier)
 
     override suspend fun startMonitoringLocationEnabled() {
-        if (inBackground) {
+        if (locationPermission.background) {
             updatingLocationEnabledInBackgroundManagers[identifier] = this
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationEnabledUpdatedPendingIntent)
         } else {
@@ -105,7 +106,7 @@ actual class LocationManager(private val context: Context,
     }
 
     override suspend fun stopMonitoringLocationEnabled() {
-        if (inBackground) {
+        if (locationPermission.background) {
             updatingLocationEnabledInBackgroundManagers.remove(identifier)
             fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
         } else {
@@ -146,7 +147,7 @@ actual class LocationManager(private val context: Context,
     }
 
     override suspend fun startMonitoringLocation() {
-        if (inBackground) {
+        if (locationPermission.background) {
             updatingLocationInBackgroundManagers[identifier] = this
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationUpdatedPendingIntent)
         } else {
@@ -155,7 +156,7 @@ actual class LocationManager(private val context: Context,
     }
 
     override suspend fun stopMonitoringLocation() {
-        if (inBackground) {
+        if (locationPermission.background) {
             updatingLocationEnabledInBackgroundManagers.remove(identifier)
             fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
         } else {
@@ -205,9 +206,16 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
-        val locationAvailability = LocationAvailability.extractLocationAvailability(intent) ?: return
+        LocationAvailability.extractLocationAvailability(intent) ?: return
         intent.categories.forEach {category ->
             LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged()
         }
+    }
+}
+
+actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext) : LocationStateRepo.Builder {
+
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
+        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(context), autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
     }
 }
