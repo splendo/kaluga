@@ -22,7 +22,6 @@ import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.utils.byOrdinalOrDefault
-import kotlinx.coroutines.runBlocking
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
@@ -59,28 +58,22 @@ actual class LocationManager(
 
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
-        override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) =  runBlocking {
+        override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
             val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
             if (locations.isNotEmpty()) {
                 handleLocationChanged(locations)
             }
         }
 
-        override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) = runBlocking {
-            handleLocationChanged(didUpdateToLocation.knownLocation)
+        override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) {
+            handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
         }
 
-        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) = runBlocking {
+        override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
 
-        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) = runBlocking {
-            when (authorizationStatus) {
-                CLAuthorizationStatusKotlin.restricted,
-                CLAuthorizationStatusKotlin.denied -> handleLocationEnabledChanged()
-                CLAuthorizationStatusKotlin.authorizedAlways,
-                CLAuthorizationStatusKotlin.authorizedWhenInUse -> handleLocationEnabledChanged()
-                CLAuthorizationStatusKotlin.notDetermined -> {}
-            }
+        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) {
+            handleLocationEnabledChanged()
         }
     }
 
