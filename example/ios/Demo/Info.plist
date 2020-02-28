@@ -28,8 +28,6 @@
 	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSMicrophoneUsageDescription</key>
