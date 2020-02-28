@@ -18,12 +18,27 @@
 package com.splendo.kaluga.location
 
 
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 
-actual class LocationManager(locationPermissionRepo: LocationPermissionStateRepo, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermissionRepo, autoRequestPermission,
-    autoEnableLocations,
-    locationStateRepo
-) {
+actual class LocationManager(locationPermission: Permission.Location,
+                             locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+                             autoRequestPermission: Boolean,
+                             autoEnableLocations: Boolean,
+                             locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+
+    class Builder : BaseLocationManager.Builder {
+
+        override fun create(
+            locationPermission: Permission.Location,
+            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+            autoRequestPermission: Boolean,
+            autoEnableLocations: Boolean,
+            locationStateRepo: LocationStateRepo
+        ): BaseLocationManager {
+            return LocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo)
+        }
+    }
 
     override suspend fun startMonitoringLocationEnabled() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -47,6 +62,13 @@ actual class LocationManager(locationPermissionRepo: LocationPermissionStateRepo
 
     override suspend fun stopMonitoringLocation() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+}
+
+actual class LocationStateRepoBuilder() : LocationStateRepo.Builder {
+
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
+        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(), autoRequestPermission, autoEnableLocations, LocationManager.Builder())
     }
 }
 

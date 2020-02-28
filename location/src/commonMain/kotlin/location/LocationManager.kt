@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
@@ -27,15 +28,18 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BaseLocationManager(private val locationPermissionRepo: LocationPermissionStateRepo,
+abstract class BaseLocationManager(protected val locationPermission: Permission.Location,
+                                   locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
                                    private val autoRequestPermission: Boolean,
                                    internal val autoEnableLocations: Boolean,
                                    private val locationStateRepo: LocationStateRepo) : CoroutineScope by locationStateRepo {
 
     interface Builder {
-        fun create(locationPermissionRepo: LocationPermissionStateRepo, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
+        fun create(locationPermission: Permission.Location, locationPermissionManagerBuilder: LocationPermissionManagerBuilder, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
     }
 
+
+    private val locationPermissionRepo: LocationPermissionStateRepo = LocationPermissionStateRepo(locationPermission, locationPermissionManagerBuilder)
     private var monitoringPermissionsJob: Job? = null
 
     @InternalCoroutinesApi
