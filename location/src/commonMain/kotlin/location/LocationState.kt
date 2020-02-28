@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
@@ -178,10 +180,19 @@ sealed class LocationState(open val location: Location, private val locationMana
 
 }
 
-class LocationStateRepo(locationPermissionRepo: LocationPermissionStateRepo, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+class LocationStateRepo(locationPermission: Permission.Location,
+                        locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+                        autoRequestPermission: Boolean,
+                        autoEnableLocations: Boolean,
+                        locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+
+    interface Builder {
+        fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,
+                   autoEnableLocations: Boolean = true): LocationStateRepo
+    }
 
     private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
-    private val locationManager = locationManagerBuilder.create(locationPermissionRepo, autoRequestPermission, autoEnableLocations, this)
+    private val locationManager = locationManagerBuilder.create(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, this)
 
     @InternalCoroutinesApi
     override suspend fun initialValue(): LocationState {
@@ -198,6 +209,8 @@ class LocationStateRepo(locationPermissionRepo: LocationPermissionStateRepo, aut
         lastKnownLocation = state.location
     }
 }
+
+expect class LocationStateRepoBuilder : LocationStateRepo.Builder
 
 fun Flow<LocationState>.location(): Flow<Location> {
     return this.map { it.location }
