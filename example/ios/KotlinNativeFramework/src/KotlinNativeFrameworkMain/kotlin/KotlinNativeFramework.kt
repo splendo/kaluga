@@ -172,8 +172,11 @@ class KotlinNativeFramework {
             autoEnableLocations = true,
             locationManagerBuilder = locationManagerBuilder
         )
-        LocationPrinter(locationStateRepo).printTo {
-            label.text = it
+
+        MainScope().launch(MainQueueDispatcher) {
+            LocationPrinter(locationStateRepo, this).printTo {
+                label.text = it
+            }
         }
         debug("proceed executing after location coroutines")
     }

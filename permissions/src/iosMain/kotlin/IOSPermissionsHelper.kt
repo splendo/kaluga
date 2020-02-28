@@ -34,19 +34,21 @@ class IOSPermissionsHelper {
     companion object {
 
         private const val TAG = "Permissions"
+
         fun missingDeclarationsInPList(bundle: NSBundle, vararg requiredDeclarationName: String): List<String> {
 
-            val missingDeclarations = requiredDeclarationName.toMutableList()
-            missingDeclarations.forEach { declaration ->
+            val missingDeclarations = mutableListOf<String>()
+
+            requiredDeclarationName.forEach { declaration ->
                 try {
 
                     val objectForInfoDictionaryKey = bundle.objectForInfoDictionaryKey(declaration)
 
                     if (objectForInfoDictionaryKey == null) {
                         error(TAG, "$declaration was not declared")
+                        missingDeclarations.add(declaration)
                     } else {
                         debug(TAG, "$declaration was declared")
-                        missingDeclarations.remove(declaration)
                     }
 
                 } catch (error: Exception) {

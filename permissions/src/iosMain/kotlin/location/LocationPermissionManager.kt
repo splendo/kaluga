@@ -51,7 +51,7 @@ actual class LocationPermissionManager(
     override suspend fun requestPermission() {
         val locationDeclarations = mutableListOf("NSLocationWhenInUseUsageDescription")
         if (location.background) {
-            locationDeclarations.addAll(listOf("NSLocationAlwaysAndWhenInUseUsageDescription", "NSLocationAlwaysUsageDescription"))
+            locationDeclarations.addAll(listOf("NSLocationAlwaysAndWhenInUseUsageDescription"))
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             if (location.background)
