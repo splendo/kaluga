@@ -59,26 +59,28 @@ actual class LocationManager(
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(manager: CLLocationManager, didUpdateLocations: List<*>) {
-            val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
-            if (locations.isNotEmpty()) {
-                handleLocationChanged(locations)
+            if (isMonitoringLocationUpdate) {
+                val locations = didUpdateLocations.mapNotNull { (it as? CLLocation)?.knownLocation }
+                if (locations.isNotEmpty()) {
+                    handleLocationChanged(locations)
+                }
             }
         }
 
         override fun locationManager(manager: CLLocationManager, didUpdateToLocation: CLLocation, fromLocation: CLLocation) {
-            handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
+            if (isMonitoringLocationUpdate) {
+                handleLocationChanged(listOf(didUpdateToLocation.knownLocation))
+            }
         }
 
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
 
         override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) {
-            handleLocationEnabledChanged()
+            if (isMonitoringLocationEnable) {
+                handleLocationEnabledChanged()
+            }
         }
-    }
-
-    init {
-        locationManager.delegate = locationManagerDelegate
     }
 
     private val authorizationStatus: CLAuthorizationStatusKotlin
@@ -87,12 +89,18 @@ actual class LocationManager(
             CLAuthorizationStatusKotlin.notDetermined
         )
 
+    var isMonitoringLocationEnable = false
+    var isMonitoringLocationUpdate = false
+
     override suspend fun startMonitoringLocationEnabled() {
+        isMonitoringLocationEnable = true
+        locationManager.delegate = locationManagerDelegate
         locationManager.startUpdatingLocation()
     }
 
     override suspend fun stopMonitoringLocationEnabled() {
         locationManager.stopUpdatingLocation()
+        isMonitoringLocationEnable = false
     }
 
     override suspend fun isLocationEnabled(): Boolean = when (authorizationStatus) {
@@ -111,11 +119,14 @@ actual class LocationManager(
     }
 
     override suspend fun startMonitoringLocation() {
+        locationManager.delegate = locationManagerDelegate
         locationManager.startUpdatingLocation()
+        isMonitoringLocationUpdate = true
     }
 
     override suspend fun stopMonitoringLocation() {
         locationManager.stopUpdatingLocation()
+        isMonitoringLocationUpdate = false
     }
 }
 
