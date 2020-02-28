@@ -17,38 +17,39 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.utils.byOrdinalOrDefault
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
+import platform.Foundation.NSBundle
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 
 actual class LocationManager(
     private val locationManager: CLLocationManager,
-    locationPermissionRepo: LocationPermissionStateRepo,
+    locationPermission: Permission.Location,
+    locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
-    locationStateRepo: LocationStateRepo
-) : BaseLocationManager(
-    locationPermissionRepo,
-    autoRequestPermission,
-    autoEnableLocations,
-    locationStateRepo
-) {
+    locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationManager.Builder {
+
         override fun create(
-            locationPermissionRepo: LocationPermissionStateRepo,
+            locationPermission: Permission.Location,
+            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager = LocationManager(
             locationManager,
-            locationPermissionRepo,
+            locationPermission,
+            locationPermissionManagerBuilder,
             autoRequestPermission,
             autoEnableLocations,
             locationStateRepo
@@ -126,5 +127,12 @@ actual class LocationManager(
     override suspend fun stopMonitoringLocation() {
         locationManager.stopUpdatingLocation()
         isMonitoringLocationUpdate = false
+    }
+}
+
+actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle, private val locationManager: CLLocationManager = CLLocationManager()) : LocationStateRepo.Builder {
+
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
+        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(bundle), autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
     }
 }
