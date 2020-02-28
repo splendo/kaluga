@@ -24,16 +24,9 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":base", ""))
                 implementation(project(":permissions", ""))
-                implementation(project(":logging", ""))
-            }
-        }
-        getByName("commonTest") {
-            dependencies {
-                implementation(project(":test-utils", ""))
             }
         }
     }
@@ -46,8 +39,6 @@ kotlin {
         val ext =  (gradle as ExtensionAware).extra
         getByName("${ext["ios_primary_arch"]}Main") {
             dependencies {
-                implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
                 implementation(project(":permissions", "${ext["ios_primary_arch"]}Default"))
             }
         }
@@ -62,8 +53,6 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
@@ -72,8 +61,6 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                     implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
