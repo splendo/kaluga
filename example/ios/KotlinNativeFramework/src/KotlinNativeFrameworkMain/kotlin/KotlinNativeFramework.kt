@@ -34,10 +34,10 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
 import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocationManager
@@ -161,17 +161,8 @@ class KotlinNativeFramework {
     fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
-        val locationManagerBuilder = LocationManager.Builder(locationManager)
-        val locationPermissionStateRepo = LocationPermissionStateRepo(
-            Permission.Location(background = true, precise = true),
-            LocationPermissionManagerBuilder()
-        )
-        val locationStateRepo = LocationStateRepo(
-            locationPermissionStateRepo,
-            autoRequestPermission = true,
-            autoEnableLocations = true,
-            locationManagerBuilder = locationManagerBuilder
-        )
+        val locationStateRepo = LocationStateRepoBuilder(locationManager = locationManager)
+            .create(Permission.Location(background = false, precise = true))
 
         MainScope().launch(MainQueueDispatcher) {
             LocationPrinter(locationStateRepo, this).printTo {
