@@ -38,15 +38,9 @@ android {
 kotlin {
 
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":logging", ""))
-                implementation(project(":base", ""))
-            }
-        }
-        getByName("commonTest") {
-            dependencies {
-                implementation(project(":test-utils", ""))
+                api(project(":base", ""))
             }
         }
     }
@@ -59,8 +53,7 @@ kotlin {
         val ext =  (gradle as ExtensionAware).extra
         getByName("${ext["ios_primary_arch"]}Main") {
             dependencies {
-                implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
+                api(project(":base", "${ext["ios_primary_arch"]}Default"))
             }
         }
     }
@@ -74,8 +67,7 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
+                    api(project(":base", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
@@ -83,8 +75,7 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
+                    api(project(":base", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
