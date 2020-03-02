@@ -1,4 +1,4 @@
-package com.splendo.kaluga.log
+package com.splendo.kaluga.logging
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
