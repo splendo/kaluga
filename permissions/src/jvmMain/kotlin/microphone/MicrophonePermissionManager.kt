@@ -42,7 +42,7 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
 
 actual class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
+    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
         return MicrophonePermissionManager(repo)
     }
 }

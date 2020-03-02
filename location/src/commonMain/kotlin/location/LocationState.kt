@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.state.ColdStateRepo
@@ -55,12 +56,14 @@ sealed class LocationState(open val location: Location, private val locationMana
         override suspend fun afterNewStateIsSet(newState: LocationState) {
             when (newState) {
                 is Disabled.NotPermitted -> locationManager.stopMonitoringLocationEnabled()
+                else -> {}
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
             when (oldState) {
                 is Disabled.NotPermitted -> locationManager.startMonitoringLocationEnabled()
+                else -> {}
             }
         }
 
@@ -117,6 +120,7 @@ sealed class LocationState(open val location: Location, private val locationMana
                 permittedHandler.beforeOldStateIsRemoved(oldState)
                 when (oldState) {
                     !is NoGPS -> if(locationManager.autoEnableLocations) locationManager.requestLocationEnable()
+                    else -> {}
                 }
             }
 
@@ -153,6 +157,7 @@ sealed class LocationState(open val location: Location, private val locationMana
             permittedHandler.afterNewStateIsSet(newState)
             when (newState) {
                 !is Enabled -> locationManager.stopMonitoringLocation()
+                else -> {}
             }
         }
 
@@ -160,6 +165,7 @@ sealed class LocationState(open val location: Location, private val locationMana
             permittedHandler.beforeOldStateIsRemoved(oldState)
             when (oldState) {
                 !is Enabled -> locationManager.startMonitoringLocation()
+                else -> {}
             }
         }
 
@@ -181,10 +187,10 @@ sealed class LocationState(open val location: Location, private val locationMana
 }
 
 class LocationStateRepo(locationPermission: Permission.Location,
-                        locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
-                        autoRequestPermission: Boolean,
-                        autoEnableLocations: Boolean,
-                        locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                             autoRequestPermission: Boolean,
+                             autoEnableLocations: Boolean,
+                             locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
 
     interface Builder {
         fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,

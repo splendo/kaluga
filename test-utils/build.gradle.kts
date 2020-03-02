@@ -24,6 +24,7 @@ kotlin {
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
+                implementation(project(":permissions", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
             }

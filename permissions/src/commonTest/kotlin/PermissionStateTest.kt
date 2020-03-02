@@ -19,15 +19,14 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.FlowableTest
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
+import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import kotlin.test.*
 
 class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>() {
 
-    private lateinit var permissionStateRepo: MockPermissionStateRepo
+    private lateinit var permissionStateRepo: MockPermissionStateRepo<Permission.Microphone>
 
     @BeforeTest
     fun setup() {
@@ -78,7 +77,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
 
     @Test
     fun testPermissionDenied() = runBlocking {
-        permissionStateRepo.permissionManager.initialState = PermissionState.Allowed(permissionStateRepo.permissionManager)
+        permissionStateRepo.permissionManager.currentState = PermissionState.Allowed(permissionStateRepo.permissionManager)
         testWithFlow {
             test {
                 assertTrue(it is PermissionState.Allowed<Permission.Microphone>)
@@ -123,35 +122,4 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         assertFalse(hasRequested.await())
     }
 
-}
-
-private class MockPermissionStateRepo : PermissionStateRepo<Permission.Microphone>() {
-
-    override val permissionManager = MockPermissionManager(this)
-
-}
-
-private class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<Permission.Microphone>(mockPermissionRepo) {
-
-    var initialState: PermissionState<Permission.Microphone> = PermissionState.Denied.Requestable(this)
-
-    val hasRequestedPermission = EmptyCompletableDeferred()
-    val hasStartedMonitoring = CompletableDeferred<Long>()
-    val hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    override suspend fun requestPermission() {
-        hasRequestedPermission.complete()
-    }
-
-    override suspend fun initializeState(): PermissionState<Permission.Microphone> {
-        return initialState
-    }
-
-    override suspend fun startMonitoring(interval: Long) {
-        hasStartedMonitoring.complete(interval)
-    }
-
-    override suspend fun stopMonitoring() {
-        hasStoppedMonitoring.complete()
-    }
 }

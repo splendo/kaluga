@@ -26,12 +26,12 @@ expect class LocationPermissionManager : PermissionManager<Permission.Location> 
 }
 
 interface BaseLocationPermissionManagerBuilder {
-    fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager
+    fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location>
 }
 
 expect class LocationPermissionManagerBuilder :BaseLocationPermissionManagerBuilder
 
-class LocationPermissionStateRepo(location: Permission.Location, builder: LocationPermissionManagerBuilder) : PermissionStateRepo<Permission.Location>() {
+class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder) : PermissionStateRepo<Permission.Location>() {
 
     override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this)
 

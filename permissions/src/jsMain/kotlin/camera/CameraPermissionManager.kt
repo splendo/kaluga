@@ -42,7 +42,7 @@ actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : Permissi
 
 actual class CameraPermissionManagerBuilder :BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
+    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
         return CameraPermissionManager(repo)
     }
 }

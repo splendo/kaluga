@@ -49,7 +49,7 @@ actual class MicrophonePermissionManager(
 
 actual class MicrophonePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
+    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
         return MicrophonePermissionManager(bundle, repo)
     }
 

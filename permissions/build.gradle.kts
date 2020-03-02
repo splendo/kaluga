@@ -43,6 +43,11 @@ kotlin {
                 api(project(":base", ""))
             }
         }
+        commonTest {
+            dependencies {
+                implementation(project(":test-utils"))
+            }
+        }
     }
 }
 

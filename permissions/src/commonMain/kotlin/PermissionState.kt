@@ -23,7 +23,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
 
-    class Allowed<P : Permission>internal constructor(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
+    class Allowed<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
         internal fun deny(locked: Boolean) : suspend () -> Denied<P> = {
             if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
@@ -45,7 +45,8 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 
         }
 
-        class Requestable<P : Permission> internal constructor(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+        class Requestable<P : Permission>(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+
             suspend fun request() {
                 permissionManager.requestPermission()
             }
@@ -59,7 +60,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 
 }
 
-abstract class PermissionStateRepo<P : Permission> internal constructor(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
+abstract class PermissionStateRepo<P : Permission>(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000

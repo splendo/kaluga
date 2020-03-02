@@ -57,7 +57,7 @@ actual class StoragePermissionManager(
 
 actual class StoragePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
+    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage> {
         return StoragePermissionManager(context, storage, repo)
     }
 

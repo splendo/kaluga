@@ -29,6 +29,11 @@ kotlin {
                 implementation(project(":permissions", ""))
             }
         }
+        commonTest {
+            dependencies {
+                implementation(project(":test-utils", ""))
+            }
+        }
     }
 }
 

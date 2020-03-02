@@ -24,12 +24,12 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 expect class MicrophonePermissionManager : PermissionManager<Permission.Microphone>
 
 interface BaseMicrophonePermissionManagerBuilder {
-    fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager
+    fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone>
 }
 
 expect class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder
 
-class MicrophonePermissionStateRepo(builder: MicrophonePermissionManagerBuilder) : PermissionStateRepo<Permission.Microphone>() {
+class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder) : PermissionStateRepo<Permission.Microphone>() {
 
     override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this)
 

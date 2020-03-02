@@ -19,10 +19,11 @@ package com.splendo.kaluga.location
 
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 
 actual class LocationManager(locationPermission: Permission.Location,
-                             locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
                              locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
@@ -31,7 +32,7 @@ actual class LocationManager(locationPermission: Permission.Location,
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo

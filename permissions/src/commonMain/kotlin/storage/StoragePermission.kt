@@ -26,12 +26,12 @@ expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
 }
 
 interface BaseStoragePermissionManagerBuilder {
-    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager
+    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage>
 }
 
 expect class StoragePermissionManagerBuilder :BaseStoragePermissionManagerBuilder
 
-class StoragePermissionStateRepo(storage: Permission.Storage, builder: StoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
+class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
 
     override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)
 

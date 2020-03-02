@@ -44,7 +44,7 @@ actual class NotificationsPermissionManager(actual val notifications: Permission
 
 actual class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
+    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications> {
         return NotificationsPermissionManager(notifications, repo)
     }
 }

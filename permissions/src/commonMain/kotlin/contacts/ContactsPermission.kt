@@ -26,12 +26,12 @@ expect class ContactsPermissionManager : PermissionManager<Permission.Contacts> 
 }
 
 interface BaseContactsPermissionManagerBuilder {
-    fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager
+    fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts>
 }
 
 expect class ContactsPermissionManagerBuilder :BaseContactsPermissionManagerBuilder
 
-class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: ContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
+class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
 
     override val permissionManager: PermissionManager<Permission.Contacts> = builder.create(contacts, this)
 
