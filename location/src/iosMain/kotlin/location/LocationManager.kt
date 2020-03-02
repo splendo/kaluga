@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
@@ -33,7 +34,7 @@ import platform.darwin.NSObject
 actual class LocationManager(
     private val locationManager: CLLocationManager,
     locationPermission: Permission.Location,
-    locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+    locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
     locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
@@ -42,7 +43,7 @@ actual class LocationManager(
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo

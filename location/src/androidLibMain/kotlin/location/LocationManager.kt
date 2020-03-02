@@ -31,6 +31,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
@@ -40,7 +41,7 @@ import kotlinx.coroutines.tasks.await
 
 actual class LocationManager(private val context: Context,
                              locationPermission: Permission.Location,
-                             locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
                              locationStateRepo: LocationStateRepo
@@ -50,7 +51,7 @@ actual class LocationManager(private val context: Context,
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: LocationPermissionManagerBuilder,
+            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
