@@ -18,7 +18,6 @@
 package com.splendo.kaluga.location
 
 import android.app.Activity
-import android.app.Instrumentation
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent

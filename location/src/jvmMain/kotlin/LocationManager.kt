@@ -19,25 +19,25 @@ package com.splendo.kaluga.location
 
 
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 actual class LocationManager(locationPermission: Permission.Location,
-                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                             permissions: Permissions,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
-                             locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+                             locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder : BaseLocationManager.Builder {
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+            permissions: Permissions,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager {
-            return LocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return LocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
 
@@ -69,7 +69,7 @@ actual class LocationManager(locationPermission: Permission.Location,
 actual class LocationStateRepoBuilder() : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(), autoRequestPermission, autoEnableLocations, LocationManager.Builder())
+        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder()), autoRequestPermission, autoEnableLocations, LocationManager.Builder())
     }
 }
 

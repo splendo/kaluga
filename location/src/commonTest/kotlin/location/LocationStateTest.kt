@@ -18,24 +18,15 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManager
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.permissions.MockPermissionManager
-import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
+import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.test.*
 
 
@@ -63,11 +54,13 @@ class LocationStateTest : FlowableTest<LocationState>() {
         )
     }
 
-    private val locationStateRepoBuilder = MockLocationStateRepoBuilder()
+    private val permissionsBuilder = MockPermissionsBuilder()
+    private val permissions = Permissions(permissionsBuilder)
+    private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
     lateinit var locationStateRepo: LocationStateRepo
 
     private val permissionManager: MockPermissionManager<Permission.Location> get() {
-        return locationStateRepoBuilder.permissionManager
+        return permissionsBuilder.locationPMManager
     }
     private val locationManager: MockLocationManager get() {
         return locationStateRepoBuilder.locationManager
@@ -486,45 +479,40 @@ class LocationStateTest : FlowableTest<LocationState>() {
     private fun setupLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean) {
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations)
         flowable.complete(locationStateRepo.flowable.value)
+        // Make sure permissionState has been created as it may break the tests otherwise
+        permissions[locationPermission]
     }
 
 }
 
-class MockLocationStateRepoBuilder : LocationStateRepo.Builder {
+class MockLocationStateRepoBuilder(private val permissions: Permissions) : LocationStateRepo.Builder {
 
-    lateinit var permissionManager: MockPermissionManager<Permission.Location>
     lateinit var locationManager: MockLocationManager
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, object: BaseLocationPermissionManagerBuilder{
-
-            override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
-                permissionManager = MockPermissionManager(repo)
-                return permissionManager
-            }
-        }, autoRequestPermission, autoEnableLocations, object: BaseLocationManager.Builder {
-
-
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, object: BaseLocationManager.Builder {
+            
             override fun create(
                 locationPermission: Permission.Location,
-                locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                permissions: Permissions,
                 autoRequestPermission: Boolean,
                 autoEnableLocations: Boolean,
                 locationStateRepo: LocationStateRepo
             ): BaseLocationManager {
-                locationManager = MockLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo)
+                locationManager = MockLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
                 return locationManager
             }
+            
         })
     }
 }
 
 
 class MockLocationManager(locationPermission: Permission.Location,
-                          locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                          permissions: Permissions,
                           autoRequestPermission: Boolean, autoEnableLocations: Boolean,
                           locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission,
+) : BaseLocationManager(locationPermission, permissions, autoRequestPermission,
     autoEnableLocations, locationStateRepo
 ) {
 

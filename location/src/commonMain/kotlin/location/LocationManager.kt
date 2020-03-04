@@ -19,8 +19,7 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -28,23 +27,23 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(protected val locationPermission: Permission.Location,
-                                   locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                                   private val permissions: Permissions,
                                    private val autoRequestPermission: Boolean,
                                    internal val autoEnableLocations: Boolean,
                                    private val locationStateRepo: LocationStateRepo) : CoroutineScope by locationStateRepo {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
+        fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
     }
 
 
-    private val locationPermissionRepo: LocationPermissionStateRepo = LocationPermissionStateRepo(locationPermission, locationPermissionManagerBuilder)
+    private val locationPermissionRepo get() = permissions[locationPermission]
     private var monitoringPermissionsJob: Job? = null
 
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch {
-            locationPermissionRepo.flow().collect { state ->
+            locationPermissionRepo.collect { state ->
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
                 }
@@ -65,7 +64,7 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
     }
 
     internal suspend fun isPermitted(): Boolean {
-        return locationPermissionRepo.flow().first() is PermissionState.Allowed
+        return locationPermissionRepo.first() is PermissionState.Allowed
     }
 
     internal abstract suspend fun startMonitoringLocationEnabled()

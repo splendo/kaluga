@@ -18,10 +18,9 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.utils.byOrdinalOrDefault
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -34,23 +33,23 @@ import platform.darwin.NSObject
 actual class LocationManager(
     private val locationManager: CLLocationManager,
     locationPermission: Permission.Location,
-    locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+    permissions: Permissions,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
-    locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+    locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationManager.Builder {
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+            permissions: Permissions,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager = LocationManager(
             locationManager,
             locationPermission,
-            locationPermissionManagerBuilder,
+            permissions,
             autoRequestPermission,
             autoEnableLocations,
             locationStateRepo
@@ -134,6 +133,6 @@ actual class LocationManager(
 actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle, private val locationManager: CLLocationManager = CLLocationManager()) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(bundle), autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
+        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder(bundle)), autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
     }
 }
