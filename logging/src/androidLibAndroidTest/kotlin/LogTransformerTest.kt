@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.log.transformTag
+import com.splendo.kaluga.logging.transformTag
 import org.junit.Test
 import kotlin.test.assertEquals
 
