@@ -1,7 +1,4 @@
-package com.splendo.kaluga.example.shared
-
 /*
-
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +15,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.location.*
+package com.splendo.kaluga.example.shared
+
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.MainScope
+import com.splendo.kaluga.location.Location
+import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.location.location
+import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import com.splendo.kaluga.log.debug
-import kotlinx.coroutines.CoroutineScope
 
 class LocationPrinter(private val locationState: LocationStateRepo, val coroutineScope: CoroutineScope) {
 

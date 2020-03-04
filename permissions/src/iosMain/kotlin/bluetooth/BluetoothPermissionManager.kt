@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import platform.CoreBluetooth.*
 import platform.Foundation.NSBundle

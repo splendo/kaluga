@@ -79,7 +79,7 @@ private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         UNAuthorizationStatusProvisional -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         UNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            com.splendo.kaluga.logging.error(
                 "CalendarPermissionManager",
                 "Unknown CBManagerAuthorization status={$this}"
             )
