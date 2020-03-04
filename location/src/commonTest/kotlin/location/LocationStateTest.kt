@@ -481,6 +481,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         flowable.complete(locationStateRepo.flowable.value)
         // Make sure permissionState has been created as it may break the tests otherwise
         permissions[locationPermission]
+        locationManager.reset()
     }
 
 }
