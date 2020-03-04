@@ -1,8 +1,3 @@
-package com.splendo.kaluga.permissions
-
-import com.splendo.kaluga.state.ColdStateRepo
-import com.splendo.kaluga.state.State
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,6 +15,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.permissions
+
+import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.state.State
 
 sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
 

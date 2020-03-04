@@ -18,22 +18,18 @@
 package com.splendo.kaluga.location
 
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.IBinder
 import android.os.Looper
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -41,22 +37,22 @@ import kotlinx.coroutines.tasks.await
 
 actual class LocationManager(private val context: Context,
                              locationPermission: Permission.Location,
-                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+                             permissions: Permissions,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
                              locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationManager.Builder {
 
         override fun create(
             locationPermission: Permission.Location,
-            locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
+            permissions: Permissions,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager {
-            return LocationManager(context, locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return LocationManager(context, locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
 
@@ -217,6 +213,6 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, LocationPermissionManagerBuilder(context), autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
+        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder(context)), autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
     }
 }

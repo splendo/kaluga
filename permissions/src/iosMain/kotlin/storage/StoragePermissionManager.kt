@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.permissions.*
 import platform.Foundation.NSBundle
 import platform.Photos.*

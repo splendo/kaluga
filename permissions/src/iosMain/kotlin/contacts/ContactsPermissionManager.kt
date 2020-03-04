@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.log.debug
 import com.splendo.kaluga.permissions.*
 import platform.Contacts.*

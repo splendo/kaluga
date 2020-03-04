@@ -1,29 +1,3 @@
-import android.Manifest
-import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.permissions.AndroidPermissionsManager
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.*
-import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-
 /*
  Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
 
@@ -40,6 +14,27 @@ import kotlin.test.assertTrue
     limitations under the License.
 
  */
+
+package com.splendo.kaluga.permissions
+
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.BaseTest
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.Mock
+import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AndroidPermissionsManagerTest : BaseTest() {
 

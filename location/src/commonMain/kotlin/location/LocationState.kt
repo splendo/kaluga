@@ -18,9 +18,7 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
@@ -28,7 +26,6 @@ import com.splendo.kaluga.state.State
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State<LocationState>() {
 
@@ -187,10 +184,10 @@ sealed class LocationState(open val location: Location, private val locationMana
 }
 
 class LocationStateRepo(locationPermission: Permission.Location,
-                             locationPermissionManagerBuilder: BaseLocationPermissionManagerBuilder,
-                             autoRequestPermission: Boolean,
-                             autoEnableLocations: Boolean,
-                             locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+                        permissions: Permissions,
+                        autoRequestPermission: Boolean,
+                        autoEnableLocations: Boolean,
+                        locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
 
     interface Builder {
         fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,
@@ -198,7 +195,7 @@ class LocationStateRepo(locationPermission: Permission.Location,
     }
 
     private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
-    private val locationManager = locationManagerBuilder.create(locationPermission, locationPermissionManagerBuilder, autoRequestPermission, autoEnableLocations, this)
+    private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this)
 
     @InternalCoroutinesApi
     override suspend fun initialValue(): LocationState {

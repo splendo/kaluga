@@ -1,7 +1,4 @@
-package com.splendo.kaluga.permissions.bluetooth
-
 /*
-
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +14,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.log.error

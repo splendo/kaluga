@@ -1,8 +1,3 @@
-package com.splendo.kaluga.location
-
-import kotlin.math.absoluteValue
-import kotlin.math.roundToInt
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,6 +15,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.location
+
+import kotlin.math.absoluteValue
 
 sealed class Location {
 
