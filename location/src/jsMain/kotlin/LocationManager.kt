@@ -66,10 +66,11 @@ actual class LocationManager(locationPermission: Permission.Location,
     }
 }
 
-actual class LocationStateRepoBuilder() : LocationStateRepo.Builder {
+actual class LocationStateRepoBuilder(private val permissions: Permissions = Permissions(PermissionsBuilder())) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder()), autoRequestPermission, autoEnableLocations, LocationManager.Builder())
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder())
     }
+    
 }
 

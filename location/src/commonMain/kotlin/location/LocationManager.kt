@@ -46,6 +46,7 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
             locationPermissionRepo.collect { state ->
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
+                    else -> {}
                 }
                 val hasPermission = state is PermissionState.Allowed
                 locationStateRepo.takeAndChangeState { locationState ->

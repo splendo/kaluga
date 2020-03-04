@@ -130,9 +130,13 @@ actual class LocationManager(
     }
 }
 
-actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle, private val locationManager: CLLocationManager = CLLocationManager()) : LocationStateRepo.Builder {
-
+actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle,
+                                      private val locationManager: CLLocationManager = CLLocationManager(),
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(bundle)))
+    : LocationStateRepo.Builder {
+    
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder(bundle)), autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
     }
+    
 }

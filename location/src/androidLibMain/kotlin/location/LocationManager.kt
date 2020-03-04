@@ -210,9 +210,12 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
     }
 }
 
-actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext) : LocationStateRepo.Builder {
+actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext,
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context)))
+    : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, Permissions(PermissionsBuilder(context)), autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
     }
+
 }
