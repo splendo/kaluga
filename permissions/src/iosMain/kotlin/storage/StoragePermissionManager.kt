@@ -75,7 +75,7 @@ private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            com.splendo.kaluga.logging.error(
                 "StoragePermissionManager",
                 "Unknown StorageManagerAuthorization status={$this}"
             )

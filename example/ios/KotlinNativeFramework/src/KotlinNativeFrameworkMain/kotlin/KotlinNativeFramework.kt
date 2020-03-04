@@ -26,8 +26,8 @@ import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.PermissionsPrinter
 import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder

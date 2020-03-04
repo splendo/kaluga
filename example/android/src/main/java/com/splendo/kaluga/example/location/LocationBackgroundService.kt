@@ -16,7 +16,7 @@ import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.location.LocationStateRepo
 import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo

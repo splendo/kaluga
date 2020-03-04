@@ -94,7 +94,7 @@ private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         AVAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            com.splendo.kaluga.logging.error(
                 "AVPermissionManager",
                 "Unknown AVManagerAuthorization status={$this}"
             )

@@ -29,7 +29,7 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.*
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder

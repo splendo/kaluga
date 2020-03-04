@@ -23,9 +23,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.log.debug
-import com.splendo.kaluga.log.error
-import com.splendo.kaluga.log.warn
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.*
 import java.util.*
 import kotlin.concurrent.fixedRateTimer
