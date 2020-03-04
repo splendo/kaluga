@@ -23,7 +23,7 @@ import android.os.Looper
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import kotlinx.coroutines.CoroutineScope
