@@ -119,9 +119,9 @@ actual class LocationManager(
     }
 
     override suspend fun startMonitoringLocation() {
+        isMonitoringLocationUpdate = true
         locationManager.delegate = locationManagerDelegate
         locationManager.startUpdatingLocation()
-        isMonitoringLocationUpdate = true
     }
 
     override suspend fun stopMonitoringLocation() {
