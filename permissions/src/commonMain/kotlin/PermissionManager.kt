@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,24 +16,44 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-interface PermissionManager {
-    fun checkSupport(): Support
-    fun checkPermit(): Permit
-    fun openSettings()
-    fun requestPermissions()
-}
+package com.splendo.kaluga.permissions
 
-enum class Support {
-    POWER_ON,
-    POWER_OFF,
-    NOT_SUPPORTED,
-    RESETTING,
-    UNAUTHORIZED
-}
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
-enum class Permit {
-    ALLOWED,
-    RESTRICTED,
-    DENIED,
-    UNDEFINED
+abstract class PermissionManager<P : Permission> (private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
+
+    abstract suspend fun requestPermission()
+    abstract suspend fun initializeState() : PermissionState<P>
+
+    abstract suspend fun startMonitoring(interval: Long)
+    abstract suspend fun stopMonitoring()
+
+    open fun grantPermission() {
+        stateRepo.launch {
+            stateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is PermissionState.Denied -> state.allow
+                    is PermissionState.Allowed -> state.remain
+                }
+            }
+        }
+    }
+
+    open fun revokePermission(locked: Boolean) {
+        stateRepo.launch {
+            stateRepo.takeAndChangeState { state ->
+                when (state) {
+                    is PermissionState.Allowed -> state.deny(locked)
+                    is PermissionState.Denied.Requestable -> {
+                        if (locked) state.lock else state.remain
+                    }
+                    is PermissionState.Denied.Locked -> {
+                        if (locked) state.remain else state.unlock
+                    }
+                }
+            }
+        }
+    }
+
 }

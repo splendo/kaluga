@@ -1,7 +1,4 @@
-package com.splendo.kaluga.example.shared
-
 /*
-
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,22 +15,39 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.location.*
+package com.splendo.kaluga.example.shared
+
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.MainScope
+import com.splendo.kaluga.location.Location
+import com.splendo.kaluga.location.LocationStateRepo
+import com.splendo.kaluga.location.location
+import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import com.splendo.kaluga.log.debug
 
-class LocationPrinter(private val location: LocationFlowable) {
+class LocationPrinter(private val locationState: LocationStateRepo, val coroutineScope: CoroutineScope) {
 
     fun printTo(printer: (String) -> Unit) = runBlocking {
-        MainScope().launch {
+        coroutineScope.launch {
             debug("main..")
-            location.flow().collect {
+            locationState.flow().location().collect {location ->
                 debug("collecting...")
-                printer("received location: $it")
-                debug("location: $it")
+                val toPrint = when(location) {
+                    is Location.KnownLocation -> {
+                        "${location.latitudeDMS} ${location.longitudeDMS}"
+                    }
+                    is Location.UnknownLocation -> {
+                        val lastLocation = if (location is Location.UnknownLocation.WithLastLocation) {
+                            " Last Known Location: ${location.lastKnownLocation
+                                .latitudeDMS} ${location.lastKnownLocation.longitudeDMS}"
+                        } else
+                            ""
+                        "Unknown Location. Reason: ${location.reason.name}${lastLocation}"
+                    }
+                }
+                printer("Received location: $toPrint")
+                debug("location: $toPrint")
             }
             debug("bye main")
         }

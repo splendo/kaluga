@@ -1,4 +1,3 @@
-package com.splendo.kaluga.location
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,14 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-sealed class Location {
+package com.splendo.kaluga.location
 
-    enum class UnknownReason {
-        NO_PERMISSION_GRANTED,
-        PERMISSION_DENIED,
-        NO_GPS,
-        NOT_CLEAR
-    }
+import kotlin.math.absoluteValue
+
+sealed class Location {
 
     /**
      * [ms] holds the unixtime (ms since 1970) for when the location was detected. Either a time provided by the location framework,
@@ -47,17 +43,72 @@ sealed class Location {
         val speed: Double? = null,
         val course: Double? = null,
         val time: Time
-    ):Location()
+    ):Location() {
 
-    open class UnknownLocation protected constructor(open val reason:UnknownReason):Location()
+        val latitudeDMS: DMSCoordinate = DMSCoordinate.fromLatitude(latitude)
+        val longitudeDMS: DMSCoordinate = DMSCoordinate.fromLongitude(longitude)
 
-    /**
-     * The current location is unknown, and there is no last known location
-     */
-    data class UnknownLocationWithNoLastLocation(override val reason:UnknownReason):UnknownLocation(reason)
+    }
 
-    /**
-     * The current location is unknown, but there is a last known location
-     */
-    data class UnknownLocationWithLastLocation(val lastKnownLocation:KnownLocation, override val reason:UnknownReason):UnknownLocation(reason)
+    sealed class UnknownLocation(open val reason:Reason):Location() {
+
+        enum class Reason {
+            PERMISSION_DENIED,
+            NO_GPS,
+            NOT_CLEAR
+        }
+
+        /**
+         * The current location is unknown, and there is no last known location
+         */
+        data class WithoutLastLocation(override val reason: Reason) : UnknownLocation(reason)
+
+        /**
+         * The current location is unknown, but there is a last known location
+         */
+        data class WithLastLocation(val lastKnownLocation: KnownLocation, override val reason: Reason) : UnknownLocation(reason)
+    }
+}
+
+data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double, val windDirection: WindDirection) {
+
+    enum class WindDirection {
+        North,
+        West,
+        South,
+        East
+    }
+
+    companion object {
+        fun fromLatitude(latitude: Double): DMSCoordinate {
+            val windDirection = if (latitude >= 0.0) WindDirection.North else WindDirection.South
+            return fromDecimalDegrees(latitude, windDirection)
+        }
+
+        fun fromLongitude(longitude: Double): DMSCoordinate {
+            val windDirection = if (longitude >= 0.0) WindDirection.East else WindDirection.West
+            return fromDecimalDegrees(longitude, windDirection)
+        }
+
+        private fun fromDecimalDegrees(decimalDegrees: Double, windDirection: WindDirection): DMSCoordinate {
+            val degrees = decimalDegrees.absoluteValue.toInt()
+            val minutesWithRemainder = (decimalDegrees - degrees) * 60
+            val minutes = minutesWithRemainder.toInt()
+            val seconds = ((minutesWithRemainder - minutes) * 60)
+            return DMSCoordinate(degrees, minutes, seconds, windDirection)
+        }
+    }
+
+    val decimalDegrees: Double get() {
+        val sign = when(windDirection) {
+            WindDirection.North, WindDirection.East -> 1.0
+            WindDirection.South, WindDirection.West -> -1.0
+        }
+        return sign * degrees.toDouble() * (minutes.toDouble() / 60.0) * (seconds / 3600.0)
+    }
+
+    override fun toString(): String {
+        return "${degrees}°${minutes}\'${seconds}\" ${windDirection.name}"
+    }
+
 }

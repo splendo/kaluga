@@ -3,19 +3,18 @@
 This library provide support for out-of-the-box access to device permissions.
 
 Supported device features:
- - bluetooth (android/ios only)
- - TODO:
-    * Location
+ - Bluetooth
+ - Calendar
+ - Camera
+ - Contacts
+ - Location (both with and without background)
+ - Microphone
+ - Notifications
+ - Storage (aka Photos on iOS)
 
 ### Usage
-`Permissions` class is used to provide platform specific builder. 
-`Permissions` instance provides a set of methods `get[Deveice-feature-name]Manager()`,
-which returns instance of `PermissionManager`. `PermissionManager` implementation provides set of methods:
+Permissions can be requested through an instance of the `Permissions` class. This class is instantiated with a `PermissionsBuilder`, which defaults to requesting permissions for the Application Context (Android) or Main NSBundle (iOS).
 
- - `fun checkSupport(): Support` - returns `Support` object which specifies if this feature is supported by device
- - `fun checkPermit(): Permit` - returns `Permit` object which specifies if user allows/denies access to this device feature
- - `fun openSettings()` - call this to open device settings to allow user to change feature settings
+Permissions are modelled as a `Flowable` `State`, providing updates should the state change during observation. A permission can either be `Allowed` or `Denied`. A `Denied` permission can in turn be `Locked`, preventing the app from requesting it, or `Requestable`.
 
-#### TODO:
- - finish tests for ios bluetooth
- - provide function request user permission
+To request a permission, simply call `permissions[$type].request()`, where `$type` is the `Permission` you want to request. This function will return true or false when the user has given or explicitly denied the permission. This function returns false if the user denies any part of the permission, even if the other permissions are granted. For instance the `Location` permission will be denied if background support is requested but only foreground is given. If a request fails, a new request with a more limited scope can then be made.

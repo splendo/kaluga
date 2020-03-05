@@ -24,7 +24,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.splendo.kaluga.log.info
+import androidx.core.content.ContextCompat
+import com.splendo.kaluga.logging.info
 
 
 class PermissionsActivity : AppCompatActivity() {
@@ -48,13 +49,10 @@ class PermissionsActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            permissions.forEachIndexed { index, permission ->
-                val permissionStatus = when (grantResults[index]) {
-                    PackageManager.PERMISSION_GRANTED -> "GRANTED"
-                    PackageManager.PERMISSION_DENIED -> "DENIED"
-                    else -> "UNKNOWN"
-                }
+            permissions.forEach { permission ->
+                AndroidPermissionsManager.waitingPermissions.remove(permission)
 
+                val permissionStatus = ContextCompat.checkSelfPermission(this, permission)
                 info(TAG, "$permission was $permissionStatus")
             }
         }

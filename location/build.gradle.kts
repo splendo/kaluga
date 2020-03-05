@@ -19,17 +19,17 @@ repositories {
 dependencies {
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
+    implementation("androidx.appcompat:appcompat:1.1.0")
 }
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":logging", ""))
+                implementation(project(":permissions", ""))
             }
         }
-        getByName("commonTest") {
+        commonTest {
             dependencies {
                 implementation(project(":test-utils", ""))
             }
@@ -44,8 +44,7 @@ kotlin {
         val ext =  (gradle as ExtensionAware).extra
         getByName("${ext["ios_primary_arch"]}Main") {
             dependencies {
-                implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
+                implementation(project(":permissions", "${ext["ios_primary_arch"]}Default"))
             }
         }
     }
@@ -59,17 +58,15 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
+                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }
         sourceSets {
             val ext =  (gradle as ExtensionAware).extra
-            getByName("iosarm32Main") {
+            getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "iosarm32Default"))
-                    implementation(project(":logging", "iosarm32Default"))
+                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }

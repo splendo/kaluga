@@ -1,26 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_bluetooth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/permissions_bluetooth"/>
 
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_permissions_list_bluetooth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Bluetooth demo"/>
+            android:id="@+id/btn_permissions_list_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_calendar"/>
 
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_permissions_list_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Location demo"/>
+            android:id="@+id/btn_permissions_list_camera"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_camera"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_contacts"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_location"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_microphone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_microphone"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_notifications"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions_list_storage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/permissions_storage"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
