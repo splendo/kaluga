@@ -131,17 +131,19 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
     }
 
     internal suspend fun initialize() : S {
-        val value = initialValue()
-        changedState = value
-        value.initialState()
-        return value
+        stateMutex.withLock {
+            val value = initialValue()
+            changedState = value
+            value.initialState()
+            return value
+        }
     }
 
     /**
      * Gets the initial value of the repo
      * @return the initial value of the repo
      */
-    abstract fun initialValue() : S
+    abstract suspend fun initialValue() : S
 
     internal fun state():S {
         return changedState
@@ -260,6 +262,6 @@ abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = Ma
         })
     }
 
-    abstract fun deinitialize(state: S)
+    abstract suspend fun deinitialize(state: S)
 
 }
