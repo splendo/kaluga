@@ -37,7 +37,8 @@ class Bluetooth internal constructor(permissions: Permissions,
                                      coroutineContext: CoroutineContext) {
 
     interface Builder {
-        fun create(autoRequestPermission: Boolean = true,
+        fun create(connectionSettings: ConnectionSettings,
+                   autoRequestPermission: Boolean = true,
                    autoEnableBluetooth: Boolean = true,
                    coroutineContext: CoroutineContext = Dispatchers.Main): Bluetooth
     }

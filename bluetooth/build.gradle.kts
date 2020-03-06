@@ -70,13 +70,5 @@ if (!singleSet)  {
                 }
             }
         }
-        sourceSets {
-            val ext =  (gradle as ExtensionAware).extra
-            getByName("${ext["ios_secondary_arch"]}Main") {
-                dependencies {
-                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
-                }
-            }
-        }
     }
 }
