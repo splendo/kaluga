@@ -42,20 +42,20 @@ sealed class DeviceAction {
 
 }
 
-sealed class DeviceState (open val lastKnownRssi: Int,
+sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                           internal open val connectionManager: BaseDeviceConnectionManager)
     : State<DeviceState>(),
-    DeviceInfo by connectionManager.deviceInfoHolder, CoroutineScope by connectionManager.stateRepo {
+    DeviceInfo by deviceInfo, CoroutineScope by connectionManager.stateRepo {
 
     sealed class Connected(open val services: List<Service>,
-                           lastKnownRssi: Int,
+                           deviceInfo: DeviceInfoImpl,
                            connectionManager: BaseDeviceConnectionManager)
-        : DeviceState(lastKnownRssi, connectionManager) {
+        : DeviceState(deviceInfo, connectionManager) {
 
         data class Idle internal constructor(override val services: List<Service>,
-                                             override val lastKnownRssi: Int,
+                                             override val deviceInfo: DeviceInfoImpl,
                                              override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(services, lastKnownRssi, connectionManager) {
+            : Connected(services, deviceInfo, connectionManager) {
 
             fun startDiscovering() {
                 launch {
@@ -69,22 +69,22 @@ sealed class DeviceState (open val lastKnownRssi: Int,
             }
 
             val discoverServices = suspend {
-                Discovering(lastKnownRssi, connectionManager)
+                Discovering(deviceInfo, connectionManager)
             }
 
             fun handleAction(action: DeviceAction): suspend () -> HandlingAction {
-                return { HandlingAction(action, emptyList(), services, lastKnownRssi, connectionManager) }
+                return { HandlingAction(action, emptyList(), services, deviceInfo, connectionManager) }
             }
 
         }
 
-        data class Discovering internal constructor(override val lastKnownRssi: Int,
+        data class Discovering internal constructor(override val deviceInfo: DeviceInfoImpl,
                                                     override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(emptyList(), lastKnownRssi, connectionManager),
+            : Connected(emptyList(), deviceInfo, connectionManager),
             HandleAfterOldStateIsRemoved<DeviceState> {
 
             internal fun didDiscoverServices(services: List<Service>): suspend () -> Idle {
-                return {Idle(services, lastKnownRssi, connectionManager)}
+                return {Idle(services, deviceInfo, connectionManager)}
             }
 
             override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -96,13 +96,13 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         data class HandlingAction internal constructor(internal val action: DeviceAction,
                                                        internal val nextActions: List<DeviceAction>,
                                                        override val services: List<Service>,
-                                                       override val lastKnownRssi: Int,
+                                                       override val deviceInfo: DeviceInfoImpl,
                                                        override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(services, lastKnownRssi, connectionManager),
+            : Connected(services, deviceInfo, connectionManager),
         HandleAfterOldStateIsRemoved<DeviceState> {
 
             fun addAction(newAction: DeviceAction) : suspend () -> HandlingAction {
-                return {HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), services, lastKnownRssi, connectionManager)}
+                return {HandlingAction(action, listOf(*nextActions.toTypedArray(), newAction), services, deviceInfo, connectionManager)}
             }
 
             internal val actionCompleted = suspend {
@@ -118,11 +118,11 @@ sealed class DeviceState (open val lastKnownRssi: Int,
                 }
 
                 if (nextActions.isEmpty()) {
-                    Idle(services, lastKnownRssi, connectionManager)
+                    Idle(services, deviceInfo, connectionManager)
                 } else {
                     val nextAction = nextActions.first()
                     val remainingActions = nextActions.drop(1)
-                    HandlingAction(nextAction, remainingActions, services, lastKnownRssi, connectionManager)
+                    HandlingAction(nextAction, remainingActions, services, deviceInfo, connectionManager)
                 }
             }
 
@@ -153,7 +153,7 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         val disconnect = disconnecting
 
         val reconnect = suspend {
-            Reconnecting(0, services, lastKnownRssi, connectionManager)
+            Reconnecting(0, services, deviceInfo, connectionManager)
         }
 
         suspend fun readRssi() {
@@ -166,9 +166,9 @@ sealed class DeviceState (open val lastKnownRssi: Int,
             connectionManager.disconnect()
         }
     }
-    data class Connecting internal constructor(override val lastKnownRssi: Int,
+    data class Connecting internal constructor(override val deviceInfo: DeviceInfoImpl,
                                                override val connectionManager: BaseDeviceConnectionManager)
-        : DeviceState(lastKnownRssi, connectionManager),
+        : DeviceState(deviceInfo, connectionManager),
     HandleAfterOldStateIsRemoved<DeviceState>{
 
         val cancelConnection = disconnecting
@@ -186,7 +186,7 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         }
 
         internal val didConnect = suspend {
-            Connected.Idle(emptyList(), lastKnownRssi, connectionManager)
+            Connected.Idle(emptyList(), deviceInfo, connectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -198,9 +198,9 @@ sealed class DeviceState (open val lastKnownRssi: Int,
 
     data class Reconnecting internal constructor(val attempt: Int,
                                                  val services: List<Service>,
-                                                 override val lastKnownRssi: Int,
+                                                 override val deviceInfo: DeviceInfoImpl,
                                                  override val connectionManager: BaseDeviceConnectionManager)
-        : DeviceState(lastKnownRssi, connectionManager),
+        : DeviceState(deviceInfo, connectionManager),
         HandleAfterOldStateIsRemoved<DeviceState>{
 
         fun retry(): suspend () -> DeviceState {
@@ -232,7 +232,7 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         val cancelConnection = disconnecting
 
         internal val didConnect = suspend {
-            Connected.Idle(services, lastKnownRssi, connectionManager)
+            Connected.Idle(services, deviceInfo, connectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -243,9 +243,9 @@ sealed class DeviceState (open val lastKnownRssi: Int,
 
     }
 
-    data class Disconnected internal constructor(override val lastKnownRssi: Int,
+    data class Disconnected internal constructor(override val deviceInfo: DeviceInfoImpl,
                                                  override val connectionManager: BaseDeviceConnectionManager)
-        : DeviceState(lastKnownRssi, connectionManager) {
+        : DeviceState(deviceInfo, connectionManager) {
 
         fun startConnecting() {
             launch {
@@ -260,13 +260,13 @@ sealed class DeviceState (open val lastKnownRssi: Int,
         }
 
         val connect = suspend {
-            Connecting(lastKnownRssi, connectionManager)
+            Connecting(deviceInfo, connectionManager)
         }
 
     }
-    data class Disconnecting internal constructor(override val lastKnownRssi: Int,
+    data class Disconnecting internal constructor(override val deviceInfo: DeviceInfoImpl,
                                                   override val connectionManager: BaseDeviceConnectionManager)
-        : DeviceState(lastKnownRssi, connectionManager),
+        : DeviceState(deviceInfo, connectionManager),
         HandleAfterOldStateIsRemoved<DeviceState> {
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -277,40 +277,48 @@ sealed class DeviceState (open val lastKnownRssi: Int,
     }
 
     fun rssiDidUpdate(rssi: Int): suspend () -> DeviceState {
+        return updateDeviceInfo(deviceInfo.copy(rssi = rssi))
+    }
+
+    fun advertisementDataDidUpdate(advertisementData: AdvertisementData): suspend () -> DeviceState {
+        return updateDeviceInfo(deviceInfo.copy(advertisementData = advertisementData))
+    }
+
+    private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
             when (this) {
-                is Connected.Idle -> copy(lastKnownRssi = rssi)
-                is Connected.HandlingAction -> copy(lastKnownRssi = rssi)
-                is Connected.Discovering -> copy(lastKnownRssi = rssi)
-                is Connecting -> copy(lastKnownRssi = rssi)
-                is Reconnecting -> copy(lastKnownRssi = rssi)
-                is Disconnecting -> copy(lastKnownRssi = rssi)
-                is Disconnected -> copy(lastKnownRssi = rssi)
+                is Connected.Idle -> copy(deviceInfo = newDeviceInfo)
+                is Connected.HandlingAction -> copy(deviceInfo = newDeviceInfo)
+                is Connected.Discovering -> copy(deviceInfo = newDeviceInfo)
+                is Connecting -> copy(deviceInfo = newDeviceInfo)
+                is Reconnecting -> copy(deviceInfo = newDeviceInfo)
+                is Disconnecting -> copy(deviceInfo = newDeviceInfo)
+                is Disconnected -> copy(deviceInfo = newDeviceInfo)
             }
         }
     }
 
     internal val didDisconnect = suspend {
-        Disconnected(lastKnownRssi, connectionManager)
+        Disconnected(deviceInfo, connectionManager)
     }
 
     protected val disconnecting = suspend {
-        Disconnecting(lastKnownRssi, connectionManager)
+        Disconnecting(deviceInfo, connectionManager)
     }
 
 }
 
 class Device internal constructor(connectionSettings: ConnectionSettings,
-                                  private val deviceInfoHolder: DeviceInfoHolder,
-                                  private val initialRssi: Int,
+                                  private val initialDeviceInfo: DeviceInfoImpl,
                                   connectionBuilder: BaseDeviceConnectionManager.Builder,
                                   coroutineContext: CoroutineContext = MainQueueDispatcher)
-    : HotStateRepo<DeviceState>(coroutineContext), DeviceInfo by deviceInfoHolder {
+    : HotStateRepo<DeviceState>(coroutineContext) {
 
-    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, deviceInfoHolder, this)
+    val identifier: Identifier = initialDeviceInfo.identifier
+    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, this)
 
-    override fun initialValue(): DeviceState {
-        return DeviceState.Disconnected(initialRssi, deviceConnectionManager)
+    override suspend fun initialValue(): DeviceState {
+        return DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
     }
 
 }

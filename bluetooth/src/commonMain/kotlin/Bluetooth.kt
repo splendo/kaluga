@@ -18,45 +18,31 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.permissions.BasePermissions
+import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.jvm.JvmName
 
-class Bluetooth internal constructor(private val builder: Builder, coroutineContext: CoroutineContext = Dispatchers.Main) {
+class Bluetooth internal constructor(permissions: Permissions,
+                                     connectionSettings: ConnectionSettings,
+                                     autoRequestPermission: Boolean,
+                                     autoEnableBluetooth: Boolean,
+                                     scannerBuilder: BaseScanner.Builder,
+                                     coroutineContext: CoroutineContext) {
 
-    class Builder(internal val scannerBuilder: BaseScanner.Builder, private val permissions: BasePermissions) {
-
-        var requestPermission = suspend {permissions.getBluetoothManager().requestPermissions()}
-        var notifyBluetoothDisabled = suspend {}
-
-        fun setOnRequestPermission(onRequestPermissions:suspend  () -> Unit) : Builder {
-            requestPermission = onRequestPermissions
-            return this
-        }
-
-        fun setOnNotifyBluetoothDisabled(onBluetoothDisabled: suspend () -> Unit) : Builder {
-            notifyBluetoothDisabled = onBluetoothDisabled
-            return this
-        }
-
-        fun build(): Bluetooth {
-            return Bluetooth(this)
-        }
+    interface Builder {
+        fun create(autoRequestPermission: Boolean = true,
+                   autoEnableBluetooth: Boolean = true,
+                   coroutineContext: CoroutineContext = Dispatchers.Main): Bluetooth
     }
 
-    internal val scanningStateRepo = ScanningStateRepo(builder.scannerBuilder, coroutineContext)
-    private val requestPermission = builder.requestPermission
-    private val notifyBluetoothDisabled = builder.notifyBluetoothDisabled
+    internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineContext)
 
     private val scanFilter = HotFlowable<Set<UUID>?>(null)
 
@@ -97,7 +83,6 @@ class Bluetooth internal constructor(private val builder: Builder, coroutineCont
                     }
                 }
                 is ScanningState.NoBluetoothState -> {
-                    handleNoBluetooth(scanState)
                     emptyList()
                 }
             }
@@ -112,16 +97,9 @@ class Bluetooth internal constructor(private val builder: Builder, coroutineCont
         scanFilter.set(null)
     }
 
-    private suspend fun handleNoBluetooth(noBluetoothState: ScanningState.NoBluetoothState) {
-        when (noBluetoothState) {
-            is ScanningState.NoBluetoothState.MissingPermissions ->
-                requestPermission()
-            is ScanningState.NoBluetoothState.Disabled ->
-                notifyBluetoothDisabled()
-        }
-    }
-
 }
+
+expect class BluetoothBuilder : Bluetooth.Builder
 
 operator fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
     return this.map { devices ->
@@ -168,9 +146,15 @@ suspend fun Flow<Device?>.disconnect() {
     }.first()
 }
 
+fun Flow<Device?>.advertisement() : Flow<AdvertisementData> {
+    return this.mapDeviceState { deviceState ->
+        emit(deviceState.deviceInfo.advertisementData)
+    }
+}
+
 suspend fun Flow<Device?>.rssi() : Flow<Int> {
     return this.mapDeviceState { deviceState ->
-            emit(deviceState.lastKnownRssi)
+            emit(deviceState.deviceInfo.rssi)
         }
 }
 

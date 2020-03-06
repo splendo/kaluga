@@ -17,28 +17,71 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
-import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.permissions.BasePermissions
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BaseScanner internal constructor(internal val permissions: BasePermissions,
+abstract class BaseScanner internal constructor(internal val permissions: Permissions,
+                                                private val connectionSettings: ConnectionSettings,
+                                                private val autoRequestPermission: Boolean,
+                                                internal val autoEnableBluetooth: Boolean,
                                                 internal val stateRepo: StateRepo<ScanningState>)
     : CoroutineScope by stateRepo {
 
     interface Builder {
-        val autoEnableBluetooth: Boolean
-        fun create(scanningStateRepo: StateRepo<ScanningState>): BaseScanner
+        fun create(permissions: Permissions,
+                   connectionSettings: ConnectionSettings,
+                   autoRequestPermission: Boolean,
+                   autoEnableBluetooth: Boolean,
+                   scanningStateRepo: StateRepo<ScanningState>): BaseScanner
+    }
+
+    private val bluetoothPermissionRepo get() = permissions[Permission.Bluetooth]
+    private var monitoringPermissionsJob: Job? = null
+
+    internal open fun startMonitoringPermissions() {
+        if (monitoringPermissionsJob != null) return
+        monitoringPermissionsJob = launch {
+            bluetoothPermissionRepo.collect { state ->
+                when (state) {
+                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
+                    else -> {}
+                }
+                val hasPermission = state is PermissionState.Allowed
+                stateRepo.takeAndChangeState { scanState ->
+                    when (scanState) {
+                        is ScanningState.NoBluetoothState.Disabled, is ScanningState.Enabled -> if (hasPermission) scanState.remain else (scanState as ScanningState.Permitted).revokePermission
+                        is ScanningState.NoBluetoothState.MissingPermissions -> if (hasPermission) scanState.permit(isBluetoothEnabled()) else scanState.remain
+                    }
+                }
+            }
+        }
+    }
+
+    internal open fun stopMonitoringPermissions() {
+        monitoringPermissionsJob?.cancel()
+        monitoringPermissionsJob = null
+    }
+
+    internal suspend fun isPermitted(): Boolean {
+        return bluetoothPermissionRepo.first() is PermissionState.Allowed
     }
 
     internal abstract fun scanForDevices(filter: Set<UUID>)
     internal abstract fun stopScanning()
     internal abstract fun startMonitoringBluetooth()
     internal abstract fun stopMonitoringBluetooth()
+    internal abstract suspend fun isBluetoothEnabled(): Boolean
+    internal abstract suspend fun requestBluetoothEnable()
 
     internal fun bluetoothEnabled() {
         launch {
@@ -62,12 +105,12 @@ abstract class BaseScanner internal constructor(internal val permissions: BasePe
         }
     }
 
-    internal fun handleDevicesDiscovered(devices: List<Device> ) {
+    internal fun handleDeviceDiscovered(identifier: Identifier, advertisementData: AdvertisementData, deviceCreator: () -> Device) {
         launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is ScanningState.Enabled.Scanning -> {
-                        state.discoverDevices(*devices.toTypedArray())
+                        state.discoverDevice(identifier, advertisementData, deviceCreator)
                     }
                     else -> {
                         state.logError(Error("Discovered Device while not scanning"))

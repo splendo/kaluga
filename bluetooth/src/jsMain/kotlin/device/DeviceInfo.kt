@@ -17,12 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-expect class Identifier
+import com.splendo.kaluga.bluetooth.UUID
 
-interface DeviceInfo {
-    val name: String?
-    val identifier: Identifier
-    val advertisementData: AdvertisementData
-}
+actual typealias Identifier = UUID
 
-expect class DeviceInfoHolder : DeviceInfo
+actual class DeviceHolder(actual val name: String? = null, actual val identifier: Identifier = UUID(""))
