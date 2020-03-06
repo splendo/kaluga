@@ -17,20 +17,28 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBPeripheral
-import platform.Foundation.NSUUID
+expect class Identifier
 
-actual typealias Identifier = NSUUID
+expect class DeviceHolder {
+    val name: String?
+    val identifier: Identifier
+}
 
-actual class DeviceInfoHolder(internal val peripheral: CBPeripheral,
-                              internal val centralManager: CBCentralManager,
-                              override val advertisementData: AdvertisementData) : DeviceInfo {
+interface DeviceInfo {
 
-    override val name: String?
-        get() =
-            peripheral.name
+    val identifier: Identifier
+    val name: String?
+    val rssi: Int
+    val advertisementData: AdvertisementData
+
+}
+
+data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val rssi: Int, override val advertisementData: AdvertisementData) : DeviceInfo {
 
     override val identifier: Identifier
-        get() = peripheral.identifier
+        get() = deviceHolder.identifier
+
+    override val name: String?
+        get() = deviceHolder.name
+
 }

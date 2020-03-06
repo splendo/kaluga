@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
@@ -29,18 +30,25 @@ import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
-                                          permissions: Permissions,
+actual class Scanner internal constructor(permissions: Permissions,
                                           private val connectionSettings: ConnectionSettings,
+                                          autoRequestPermission: Boolean,
+                                          autoEnableBluetooth: Boolean,
                                           stateRepo: StateRepo<ScanningState>)
-    : BaseScanner(permissions, stateRepo)  {
+    : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo)  {
 
-    class Builder(override val autoEnableBluetooth: Boolean, private val permissions: Permissions,
-                  private val connectionSettings: ConnectionSettings) : BaseScanner.Builder {
+    class Builder() : BaseScanner.Builder {
 
-        override fun create(stateRepo: StateRepo<ScanningState>): Scanner {
-            return Scanner(autoEnableBluetooth, permissions, connectionSettings, stateRepo)
+        override fun create(
+            permissions: Permissions,
+            connectionSettings: ConnectionSettings,
+            autoRequestPermission: Boolean,
+            autoEnableBluetooth: Boolean,
+            scanningStateRepo: StateRepo<ScanningState>
+        ): BaseScanner {
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
         }
+
     }
 
     @Suppress("CONFLICTING_OVERLOADS")
@@ -50,33 +58,33 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
             discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
-        override fun centralManagerDidUpdateState(central: CBCentralManager) {
+        override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
             when (central.state) {
                 CBCentralManagerStatePoweredOn -> bluetoothEnabled()
                 else -> bluetoothDisabled()
             }
-        }
+        }.invoke()
 
-        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            val connectionManager = connectionManagerMap[didConnectPeripheral.identifier] ?: return
+        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) = mainContinuation {
+            val connectionManager = connectionManagerMap[didConnectPeripheral.identifier] ?: return@mainContinuation
             launch {
                 connectionManager.handleConnect()
             }
-        }
+        }.invoke()
 
-        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            val connectionManager = connectionManagerMap[didDisconnectPeripheral.identifier] ?: return
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
+            val connectionManager = connectionManagerMap[didDisconnectPeripheral.identifier] ?: return@mainContinuation
             launch {
                 connectionManager.handleDisconnect()
             }
-        }
+        }.invoke()
 
-        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            val connectionManager = connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
+            val connectionManager = connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return@mainContinuation
             launch {
                 connectionManager.handleDisconnect()
             }
-        }
+        }.invoke()
     }
 
     private val mainCentralManager: CBCentralManager
@@ -123,19 +131,26 @@ actual class Scanner internal constructor(autoEnableBluetooth: Boolean,
         mainCentralManager.delegate = null
     }
 
+    override suspend fun isBluetoothEnabled(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun requestBluetoothEnable() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         if (central == mainCentralManager)
             return
-        // Since multiple managers may discover device, make sure even is only triggered once
-        if (connectionManagerMap.containsKey(peripheral.identifier))
-            return
-
 
         val advertisementData = AdvertisementData(advertisementDataMap)
-        val deviceInfo = DeviceInfoHolder(peripheral, central, advertisementData)
-        val device = Device(connectionSettings, deviceInfo, rssi, DeviceConnectionManager.Builder(central))
-        connectionManagerMap[device.identifier] = device.deviceConnectionManager
-        handleDevicesDiscovered(listOf(device))
+        val deviceHolder = DeviceHolder(peripheral, central)
+        handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
+            val deviceInfo = DeviceInfoImpl(deviceHolder, rssi, advertisementData)
+            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central)).also {
+                connectionManagerMap[it.identifier] = it.deviceConnectionManager
+            }
+        }
     }
 
 

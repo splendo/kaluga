@@ -31,17 +31,17 @@ import kotlinx.coroutines.launch
 
 internal actual class DeviceConnectionManager(private val context: Context,
                                               connectionSettings: ConnectionSettings,
-                                              deviceInfoHolder: DeviceInfoHolder,
+                                              deviceHolder: DeviceHolder,
                                               stateRepo: StateRepo<DeviceState>)
-    : BaseDeviceConnectionManager(connectionSettings, deviceInfoHolder, stateRepo), CoroutineScope by stateRepo  {
+    : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo  {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceInfo: DeviceInfoHolder, repoAccessor: StateRepo<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, connectionSettings, deviceInfo, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, repoAccessor: StateRepo<DeviceState>): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(context, connectionSettings, deviceHolder, repoAccessor)
         }
     }
 
-    private val device = deviceInfoHolder.device
+    private val device = deviceHolder.device
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
     private val callback = object : BluetoothGattCallback() {
 

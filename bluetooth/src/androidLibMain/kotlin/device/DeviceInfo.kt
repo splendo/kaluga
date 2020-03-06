@@ -17,16 +17,14 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.bluetooth.UUID
+actual typealias Identifier = String
 
-actual typealias Identifier = UUID
+actual open class DeviceHolder(internal val device: DeviceWrapper) {
 
-actual class DeviceInfoHolder : DeviceInfo {
+    actual val name: String?
+        get() = device.name
 
-    override val name: String?
-        get() = null
-    override val identifier: Identifier
-        get() = UUID("")
-    override val advertisementData: AdvertisementData
-        get() = AdvertisementData()
+    actual val identifier: Identifier
+        get() = device.address
+
 }
