@@ -18,14 +18,26 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 
-actual class Scanner(permissions: Permissions, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions, stateRepo) {
+actual class Scanner(permissions: Permissions,
+                     connectionSettings: ConnectionSettings,
+                     autoRequestPermission: Boolean,
+                     autoEnableBluetooth: Boolean,
+                     stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
 
-    class Builder(override val autoEnableBluetooth: Boolean) : BaseScanner.Builder {
-        override fun create(stateRepo: StateRepo<ScanningState>): Scanner {
-            return Scanner(Permissions(), stateRepo)
+    class Builder() : BaseScanner.Builder {
+
+        override fun create(
+            permissions: Permissions,
+            connectionSettings: ConnectionSettings,
+            autoRequestPermission: Boolean,
+            autoEnableBluetooth: Boolean,
+            scanningStateRepo: StateRepo<ScanningState>
+        ): BaseScanner {
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
         }
     }
 
@@ -42,6 +54,14 @@ actual class Scanner(permissions: Permissions, stateRepo: StateRepo<ScanningStat
     }
 
     override fun stopMonitoringBluetooth() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun isBluetoothEnabled(): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override suspend fun requestBluetoothEnable() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

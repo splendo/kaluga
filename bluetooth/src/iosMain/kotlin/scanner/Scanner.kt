@@ -23,6 +23,7 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.*
 import platform.Foundation.NSError
@@ -54,14 +55,18 @@ actual class Scanner internal constructor(permissions: Permissions,
     @Suppress("CONFLICTING_OVERLOADS")
     private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
 
+        internal var isCheckEnabledCompleted: CompletableDeferred<Boolean>? = null
+
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            when (central.state) {
-                CBCentralManagerStatePoweredOn -> bluetoothEnabled()
-                else -> bluetoothDisabled()
+            val isEnabled = central.state == CBCentralManagerStatePoweredOn
+            if (central == checkEnabledCentralManager)
+                isCheckEnabledCompleted?.complete(isEnabled)
+            else if (central == mainCentralManager) {
+                if (isEnabled) bluetoothEnabled() else bluetoothDisabled()
             }
         }.invoke()
 
@@ -88,12 +93,14 @@ actual class Scanner internal constructor(permissions: Permissions,
     }
 
     private val mainCentralManager: CBCentralManager
+    private val checkEnabledCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
     private var connectionManagerMap = emptyMap<Identifier, BaseDeviceConnectionManager>().toMutableMap()
 
     init {
         val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
         mainCentralManager = CBCentralManager(null, dispatch_get_main_queue(), options)
+        checkEnabledCentralManager = CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>())
     }
 
     override fun scanForDevices(filter: Set<UUID>) {
@@ -132,15 +139,22 @@ actual class Scanner internal constructor(permissions: Permissions,
     }
 
     override suspend fun isBluetoothEnabled(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val completable = CompletableDeferred<Boolean>()
+        centralManagerDelegate.isCheckEnabledCompleted = completable
+        checkEnabledCentralManager.delegate = centralManagerDelegate
+        return completable.await().also {
+            checkEnabledCentralManager.delegate = null
+            centralManagerDelegate.isCheckEnabledCompleted = null
+        }
     }
 
     override suspend fun requestBluetoothEnable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // No access to UIApplication.openSettingsURLString
+        // We have to fallback to alert then?
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
-        if (central == mainCentralManager)
+        if (central == mainCentralManager || central == checkEnabledCentralManager)
             return
 
         val advertisementData = AdvertisementData(advertisementDataMap)
