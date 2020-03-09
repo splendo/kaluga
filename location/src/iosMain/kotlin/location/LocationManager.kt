@@ -28,6 +28,8 @@ import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
 import platform.Foundation.NSError
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationBackgroundFetchIntervalMinimum
 import platform.darwin.NSObject
 
 actual class LocationManager(
