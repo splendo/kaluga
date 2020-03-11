@@ -142,6 +142,9 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
             suspend fun discoverDevice(identifier: Identifier, advertisementData: AdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
                 return discoveredDevices.firstOrNull { it.identifier == identifier }?.let { knownDevice ->
+                    if (!knownDevice.flowable.isInitialized()) {
+                        knownDevice.flowable.value
+                    }
                     knownDevice.takeAndChangeState { state ->
                         state.advertisementDataDidUpdate(advertisementData)
                     }
@@ -162,6 +165,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                 super.afterNewStateIsSet(oldState)
                 when (oldState) {
                     !is Scanning -> scanner.scanForDevices(filter)
+                    else -> {}
                 }
             }
 
@@ -170,6 +174,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                     !is Scanning -> {
                         scanner.stopScanning()
                     }
+                    else -> {}
                 }
             }
 
@@ -275,6 +280,7 @@ class ScanningStateRepo(permissions: Permissions,
                     is ScanningState.Enabled.Scanning -> state.filter
                 }
             }
+            else ->{}
         }
     }
 }

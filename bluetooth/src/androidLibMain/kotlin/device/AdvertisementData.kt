@@ -18,20 +18,30 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
-import no.nordicsemi.android.support.v18.scanner.ScanRecord
+import no.nordicsemi.android.support.v18.scanner.ScanResult
+import java.nio.ByteBuffer
 
-actual class AdvertisementData(private val scanRecord: ScanRecord?) : BaseAdvertisementData {
+actual class AdvertisementData(private val scanResult: ScanResult) : BaseAdvertisementData {
 
+    private val scanRecord = scanResult.scanRecord
+    
     override val name: String?
         get() = scanRecord?.deviceName
+    override val manufacturerId: Int?
+        get() = scanRecord?.manufacturerSpecificData?.let { if (it.size() > 0) it.keyAt(0) else null }
     override val manufacturerData: ByteArray?
-        get() = scanRecord?.manufacturerSpecificData?.let {
-            if (it.size() > 0) it.get(0) else null
+        get() = scanRecord?.manufacturerSpecificData?.let { manufacturerSpecificData ->
+            manufacturerId?.let { key ->
+                val keyBytes = ByteBuffer.allocate(2).putShort(key.toShort()).array()
+                byteArrayOf(*keyBytes, *manufacturerSpecificData[key])
+            }
         }
     override val serviceUUIDs: List<UUID>
         get() = scanRecord?.serviceUuids?.map { it.uuid } ?: emptyList()
     override val serviceData: Map<UUID, ByteArray?>
         get() = scanRecord?.serviceData?.mapKeys { it.key.uuid } ?: emptyMap()
     override val txPowerLevel: Int
-        get() = scanRecord?.txPowerLevel ?: 0
+        get() = scanRecord?.txPowerLevel ?: Int.MIN_VALUE
+    override val isConnectible: Boolean
+        get() = scanResult.isConnectable
 }

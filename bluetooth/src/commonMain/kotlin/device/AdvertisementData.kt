@@ -21,10 +21,12 @@ import com.splendo.kaluga.bluetooth.UUID
 
 interface BaseAdvertisementData {
     val name: String?
+    val manufacturerId: Int?
     val manufacturerData: ByteArray?
     val serviceUUIDs: List<UUID>
     val serviceData: Map<UUID, ByteArray?>
     val txPowerLevel: Int
+    val isConnectible: Boolean
 }
 
 expect class AdvertisementData : BaseAdvertisementData

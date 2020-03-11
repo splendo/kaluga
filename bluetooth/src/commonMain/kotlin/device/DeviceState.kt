@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
@@ -132,6 +133,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                         if (oldState.action == action)
                             return
                     }
+                    else -> {}
                 }
 
                 connectionManager.performAction(action)
@@ -192,6 +194,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when(oldState) {
                 is Disconnected -> connectionManager.connect()
+                else -> {}
             }
         }
     }
@@ -238,6 +241,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when (oldState) {
                 is Connected, is Reconnecting -> connectionManager.connect()
+                else -> {}
             }
         }
 
@@ -251,7 +255,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Disconnected) {
-                        connect
+                        connect()
                     } else {
                         remain
                     }
@@ -259,8 +263,14 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
             }
         }
 
-        val connect = suspend {
-            Connecting(deviceInfo, connectionManager)
+        fun connect(): suspend () -> DeviceState {
+            return if (deviceInfo.advertisementData.isConnectible) {
+                suspend {
+                    Connecting(deviceInfo, connectionManager)
+                }
+            } else {
+                remain
+            }
         }
 
     }
@@ -272,6 +282,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when (oldState) {
                 is Connecting, is Reconnecting, is Connected -> connectionManager.disconnect()
+                else -> {}
             }
         }
     }
