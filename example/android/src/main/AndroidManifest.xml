@@ -41,7 +41,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".location.LocationActivity"
-                  android:label="Location"/>
+                  android:label="@string/feature_location"/>
         <activity android:name=".permissions.PermissionsDemoListActivity"
                   android:label="@string/permissions_list"/>
         <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
@@ -61,9 +61,11 @@
         <activity android:name=".permissions.storage.StoragePermissionsDemoActivity"
             android:label="@string/permissions_storage"/>
         <activity android:name=".alerts.AlertsActivity"
-                  android:label="Alerts"/>
+                  android:label="@string/feature_alerts"/>
         <activity android:name=".loading.LoadingActivity"
-                  android:label="Loading Indicator"/>
+                  android:label="@string/feature_hud"/>
+        <activity android:name=".bluetooth.BluetoothActivity"
+            android:label="@string/feature_bluetooth"/>
 
         <service android:name=".location.LocationBackgroundService"/>
 

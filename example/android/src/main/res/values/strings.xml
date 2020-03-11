@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">Kaluga Example</string>
+
+    <string name="feature_location">Location</string>
+    <string name="feature_permissions">Permissions</string>
+    <string name="feature_alerts">Alerts</string>
+    <string name="feature_hud">Loading Indicator</string>
+    <string name="feature_bluetooth">Bluetooth</string>
+
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
     <string name="alert_list">Show Alert List</string>
@@ -19,5 +26,23 @@
     <string name="permissions_microphone">Microphone Demo</string>
     <string name="permissions_notifications">Notifications Demo</string>
     <string name="permissions_storage">Storage Demo</string>
+
+    <string name="bluetooth_start_scanning">Start Scanning</string>
+    <string name="bluetooth_stop_scanning">Stop Scanning</string>
+    <string name="bluetooth_no_name">Unnamed Bluetooth Device</string>
+
+    <string name="rssi">%d dBm</string>
+    <string name="txPower">%s dBm</string>
+
+    <string name="bluetooth_connected">Connected</string>
+    <string name="bluetooth_connecting">Connecting</string>
+    <string name="bluetooth_disconnected">Disconnected</string>
+    <string name="bluetooth_disconneting">Disconnecting</string>
+    <string name="bluetooth_reconnecting">Reconnecting</string>
+
+    <string name="bluetooth_service_uuids">Service UUIDs: %s</string>
+    <string name="bluetooth_service_data">Service Data: %s</string>
+    <string name="bluetooth_manufacturer_id">Manufacturer Data: %d</string>
+    <string name="bluetooth_manufacturer_data">Manufacturer Data: %s</string>
 
 </resources>

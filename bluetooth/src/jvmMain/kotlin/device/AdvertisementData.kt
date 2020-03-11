@@ -23,6 +23,8 @@ actual class AdvertisementData : BaseAdvertisementData {
 
     override val name: String?
         get() = null
+    override val manufacturerId: Int?
+        get() = null
     override val manufacturerData: ByteArray?
         get() = null
     override val serviceUUIDs: List<UUID>
@@ -31,4 +33,6 @@ actual class AdvertisementData : BaseAdvertisementData {
         get() = emptyMap()
     override val txPowerLevel: Int
         get() = Int.MIN_VALUE
+    override val isConnectible: Boolean
+        get() = false
 }

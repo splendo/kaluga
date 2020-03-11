@@ -92,15 +92,18 @@ actual class Scanner internal constructor(permissions: Permissions,
         }.invoke()
     }
 
-    private val mainCentralManager: CBCentralManager
-    private val checkEnabledCentralManager: CBCentralManager
+    private lateinit var mainCentralManager: CBCentralManager
+    private lateinit var checkEnabledCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
     private var connectionManagerMap = emptyMap<Identifier, BaseDeviceConnectionManager>().toMutableMap()
 
-    init {
-        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
-        mainCentralManager = CBCentralManager(null, dispatch_get_main_queue(), options)
-        checkEnabledCentralManager = CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>())
+    private fun initMainManagers() {
+        if (!::mainCentralManager.isInitialized) {
+            mainCentralManager = CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>())
+        }
+        if (!::checkEnabledCentralManager.isInitialized) {
+            checkEnabledCentralManager = CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>())
+        }
     }
 
     override fun scanForDevices(filter: Set<UUID>) {
@@ -129,16 +132,19 @@ actual class Scanner internal constructor(permissions: Permissions,
     }
 
     override fun startMonitoringBluetooth() {
+        initMainManagers()
         connectionManagerMap.clear()
         mainCentralManager.delegate = centralManagerDelegate
     }
 
     override fun stopMonitoringBluetooth() {
+        initMainManagers()
         connectionManagerMap.clear()
         mainCentralManager.delegate = null
     }
 
     override suspend fun isBluetoothEnabled(): Boolean {
+        initMainManagers()
         val completable = CompletableDeferred<Boolean>()
         centralManagerDelegate.isCheckEnabledCompleted = completable
         checkEnabledCentralManager.delegate = centralManagerDelegate
@@ -149,11 +155,13 @@ actual class Scanner internal constructor(permissions: Permissions,
     }
 
     override suspend fun requestBluetoothEnable() {
-        // No access to UIApplication.openSettingsURLString
-        // We have to fallback to alert then?
+        // Trigger Enable Bluetooth popup
+        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
+        CBCentralManager(null, dispatch_get_main_queue(), options)
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
+        initMainManagers()
         if (central == mainCentralManager || central == checkEnabledCentralManager)
             return
 

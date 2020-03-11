@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_feature_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="@string/feature_location"/>
 
         <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_feature_location"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Location"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btn_feature_permissions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Permissions"/>
+            android:id="@+id/btn_feature_permissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feature_permissions"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_feature_alerts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Alerts"/>
+            android:text="@string/feature_alerts"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_feature_loading_indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Loading Indicator"/>
+            android:text="@string/feature_hud"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_feature_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feature_bluetooth"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

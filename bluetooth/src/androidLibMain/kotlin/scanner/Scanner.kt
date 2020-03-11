@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.*
 
 actual class Scanner internal constructor(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-                                          private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
+                                          private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
                                           private val scanSettings: ScanSettings = defaultScanSettings,
                                           private val context: Context = ApplicationHolder.applicationContext,
                                           permissions: Permissions,
@@ -44,7 +44,7 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
-                  private val bluetoothAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
+                  private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
                   private val scanSettings: ScanSettings = defaultScanSettings,
                   private val context: Context = ApplicationHolder.applicationContext) : BaseScanner.Builder {
 
@@ -106,8 +106,9 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
         }
 
         private fun handleScanResult(scanResult: ScanResult) {
-            val advertisementData = AdvertisementData(scanResult.scanRecord)
+            val advertisementData = AdvertisementData(scanResult)
             val deviceHolder = DeviceHolder(DefaultDeviceWrapper(scanResult.device))
+
             handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
                 val deviceInfo = DeviceInfoImpl(deviceHolder, scanResult.rssi, advertisementData)
                 Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder)
@@ -134,10 +135,10 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
         context.unregisterReceiver(broadcastReceiver)
     }
 
-    override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter.isEnabled
+    override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled ?: false
 
     override suspend fun requestBluetoothEnable() {
-        bluetoothAdapter.enable()
+        bluetoothAdapter?.enable()
     }
 
 }

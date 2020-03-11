@@ -28,20 +28,31 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
 
     override val name: String?
         get() = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+    override val manufacturerId: Int?
+        get() = {
+            manufacturerData?.let {manufacturerDataArray ->
+                manufacturerDataArray.indices.fold(0) { result, index ->
+                    result or (manufacturerDataArray[index].toInt() shl 8 * index)
+                }
+            }
+        }()
     override val manufacturerData: ByteArray?
         get() = (advertisementData[CBAdvertisementDataManufacturerDataKey] as? NSData)?.toByteArray()
     override val serviceUUIDs: List<UUID>
         get() = {
             (advertisementData[CBAdvertisementDataServiceUUIDsKey] as? List<*>)?.
-                typedList<CBUUID>() ?: emptyList()
+                typedList() ?: emptyList()
         }()
     override val serviceData: Map<UUID, ByteArray?>
         get() = {
-            (advertisementData[CBAdvertisementDataManufacturerDataKey] as? Map<*, *>)?.
+            (advertisementData[CBAdvertisementDataServiceDataKey] as? Map<*, *>)?.
                 typedMap<CBUUID, NSData>()?.
                 mapNotNull { Pair(it.key, it.value.toByteArray()) }?.
                 toMap() ?: emptyMap()
         }()
     override val txPowerLevel: Int
-        get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? Int) ?: 0
+        get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? Int) ?: Int.MIN_VALUE
+
+    override val isConnectible: Boolean
+        get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? Boolean) ?: false)
 }

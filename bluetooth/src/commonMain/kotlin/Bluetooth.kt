@@ -37,7 +37,7 @@ class Bluetooth internal constructor(permissions: Permissions,
                                      coroutineContext: CoroutineContext) {
 
     interface Builder {
-        fun create(connectionSettings: ConnectionSettings,
+        fun create(connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
                    autoRequestPermission: Boolean = true,
                    autoEnableBluetooth: Boolean = true,
                    coroutineContext: CoroutineContext = Dispatchers.Main): Bluetooth
@@ -98,6 +98,10 @@ class Bluetooth internal constructor(permissions: Permissions,
         scanFilter.set(null)
     }
 
+    suspend fun isScanning(): Boolean {
+        return scanFilter.flow().first() != null && scanningStateRepo.flow().first() is ScanningState.Enabled.Scanning
+    }
+
 }
 
 expect class BluetoothBuilder : Bluetooth.Builder
@@ -118,6 +122,7 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
                                 if (deviceState.services.isEmpty())
                                     deviceState.startDiscovering()
                             }
+                            else -> {}
                         }
                         deviceState.services
                     }
@@ -132,6 +137,7 @@ suspend fun Flow<Device?>.connect() {
             when (deviceState) {
                 is DeviceState.Disconnected -> deviceState.startConnecting()
                 is DeviceState.Connected -> emit(Unit)
+                else -> {}
             }
     }.first()
 }
@@ -143,6 +149,7 @@ suspend fun Flow<Device?>.disconnect() {
                 is DeviceState.Connecting -> deviceState.handleConnect()
                 is DeviceState.Reconnecting -> deviceState.handleCancel()
                 is DeviceState.Disconnected -> emit(Unit)
+                is DeviceState.Disconnecting -> {}
             }
     }.first()
 }
@@ -166,6 +173,7 @@ suspend fun Flow<Device?>.updateRssi() {
                     deviceState.readRssi()
                     emit(Unit)
                 }
+                else -> {}
             }
     }.first()
 }

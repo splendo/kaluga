@@ -53,6 +53,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":permissions")
     project(":permissions").projectDir = file("../../../permissions")
 
+    include(":bluetooth")
+    project(":bluetooth").projectDir = file("../../../bluetooth")
+
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
