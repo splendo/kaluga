@@ -7,8 +7,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -20,7 +19,7 @@ import kotlinx.coroutines.launch
 
 class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothAdapter.BluetoothItemViewHolder>() {
 
-    class BluetoothItemViewHolder(itemView: View, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
+    class BluetoothItemViewHolder(itemView: View, private val bluetooth: Bluetooth, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
 
         internal var device: Device? = null
         private var deviceJob: Job? = null
@@ -33,6 +32,10 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
         private val txPowerField = itemView.txPower
         
         private val statusField = itemView.status
+
+        private val connectButtonContainer = itemView.button_container
+        private val connectButton = itemView.connect_button
+        private val disconnectButton = itemView.disconnect_button
 
         private val foldOutBlock = itemView.fold_out_block
         private val serviceUuids = itemView.service_uuids
@@ -49,6 +52,18 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                 } else {
                     foldOutBlock.visibility = View.VISIBLE
                     foldedOut.add(identifier)
+                }
+            }
+            connectButton.setOnClickListener {
+                val identifier = device?.identifier ?: return@setOnClickListener
+                lifecycle.coroutineScope.launch {
+                    bluetooth.devices()[identifier].connect()
+                }
+            }
+            disconnectButton.setOnClickListener {
+                val identifier = device?.identifier ?: return@setOnClickListener
+                lifecycle.coroutineScope.launch {
+                    bluetooth.devices()[identifier].disconnect()
                 }
             }
         }
@@ -68,6 +83,17 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                     } else {
                         txPowerField.visibility = View.INVISIBLE
                         txPowerField.text = ""
+                    }
+
+                    connectButtonContainer.visibility = if (deviceState.deviceInfo.advertisementData.isConnectible) View.VISIBLE else View.GONE
+
+                    connectButton.visibility = when(deviceState) {
+                        is DeviceState.Disconnected, is DeviceState.Disconnecting -> View.VISIBLE
+                        else -> View.GONE
+                    }
+                    disconnectButton.visibility = when(deviceState) {
+                        is DeviceState.Disconnected, is DeviceState.Disconnecting -> View.GONE
+                        else -> View.VISIBLE
                     }
 
                     statusField.text = context.getString(when(deviceState) {
@@ -129,7 +155,7 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.bluetooth_item, parent, false)
-        return BluetoothItemViewHolder(view, lifecycle)
+        return BluetoothItemViewHolder(view, bluetooth, lifecycle)
     }
 
     override fun getItemCount(): Int = bluetoothDevices.size

@@ -22,13 +22,10 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.logging.LogLevel
-import com.splendo.kaluga.logging.logger
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlin.coroutines.CoroutineContext
 
 sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>() {
@@ -38,7 +35,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
     }
 
     fun logError(error: Error) {
-        error.message?.let { logger().log(LogLevel.ERROR, TAG, it) }
+        error.message?.let { com.splendo.kaluga.logging.error(TAG, it) }
     }
 
     @InternalCoroutinesApi

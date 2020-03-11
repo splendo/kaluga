@@ -34,6 +34,9 @@
     <string name="rssi">%d dBm</string>
     <string name="txPower">%s dBm</string>
 
+    <string name="bluetooth_connect">Connect</string>
+    <string name="bluetooth_disconnect">Disconnect</string>
+
     <string name="bluetooth_connected">Connected</string>
     <string name="bluetooth_connecting">Connecting</string>
     <string name="bluetooth_disconnected">Disconnected</string>
@@ -42,7 +45,7 @@
 
     <string name="bluetooth_service_uuids">Service UUIDs: %s</string>
     <string name="bluetooth_service_data">Service Data: %s</string>
-    <string name="bluetooth_manufacturer_id">Manufacturer Data: %d</string>
+    <string name="bluetooth_manufacturer_id">Manufacturer Id: %d</string>
     <string name="bluetooth_manufacturer_data">Manufacturer Data: %s</string>
 
 </resources>
