@@ -31,7 +31,7 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
 
     protected var currentAction: DeviceAction? = null
     protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
-
+    
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
     abstract suspend fun disconnect()
