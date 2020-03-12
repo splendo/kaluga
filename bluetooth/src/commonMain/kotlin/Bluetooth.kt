@@ -112,8 +112,14 @@ operator fun Flow<List<Device>>.get(identifier: Identifier) : Flow<Device?> {
     }
 }
 
+fun Flow<Device?>.state() : Flow<DeviceState> {
+    return this.flatMapLatest { device ->
+        device?.flow() ?: emptyFlow()
+    }
+}
+
 suspend fun Flow<Device?>.services(): Flow<List<Service>> {
-    return this.mapDeviceState { deviceState ->
+    return state().transformLatest { deviceState ->
             emit(
                 when (deviceState) {
                     is DeviceState.Connected -> {
@@ -133,7 +139,7 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
 }
 
 suspend fun Flow<Device?>.connect() {
-    this.mapDeviceState<Unit> { deviceState ->
+    state().transformLatest { deviceState ->
             when (deviceState) {
                 is DeviceState.Disconnected -> deviceState.startConnecting()
                 is DeviceState.Connected -> emit(Unit)
@@ -143,7 +149,7 @@ suspend fun Flow<Device?>.connect() {
 }
 
 suspend fun Flow<Device?>.disconnect() {
-    this.mapDeviceState<Unit> { deviceState ->
+    state().transformLatest { deviceState ->
             when (deviceState) {
                 is DeviceState.Connected -> deviceState.startDisconnected()
                 is DeviceState.Connecting -> deviceState.handleConnect()
@@ -154,20 +160,39 @@ suspend fun Flow<Device?>.disconnect() {
     }.first()
 }
 
-fun Flow<Device?>.advertisement() : Flow<AdvertisementData> {
-    return this.mapDeviceState { deviceState ->
-        emit(deviceState.deviceInfo.advertisementData)
+fun Flow<Device?>.info() : Flow<DeviceInfoImpl> {
+    return state().transformLatest { deviceState ->
+        emit(deviceState.deviceInfo)
     }
 }
 
-suspend fun Flow<Device?>.rssi() : Flow<Int> {
-    return this.mapDeviceState { deviceState ->
-            emit(deviceState.deviceInfo.rssi)
-        }
+fun Flow<Device?>.advertisement() : Flow<AdvertisementData> {
+    return this.info().map { it.advertisementData }
 }
 
+fun Flow<Device?>.rssi() : Flow<Int> {
+    return this.info().map { it.rssi }
+}
+
+fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5) : Flow<Double> {
+    val lastNResults = mutableListOf<Double>()
+    return this.info().map { deviceInfo ->
+        while (lastNResults.size >= averageOver) {
+            lastNResults.removeAt(0)
+        }
+        val distance = deviceInfo.distance(environmentalFactor)
+        if (!distance.isNaN())
+            lastNResults.add(distance)
+        if (lastNResults.isNotEmpty())
+            (lastNResults.reduce { acc, d -> acc + d }) / lastNResults.size.toDouble()
+        else
+            Double.NaN
+    }
+}
+
+
 suspend fun Flow<Device?>.updateRssi() {
-    this.mapDeviceState<Unit> { deviceState ->
+    state().transformLatest { deviceState ->
             when (deviceState) {
                 is DeviceState.Connected -> {
                     deviceState.readRssi()
@@ -178,11 +203,6 @@ suspend fun Flow<Device?>.updateRssi() {
     }.first()
 }
 
-fun <T> Flow<Device?>.mapDeviceState(transform: suspend FlowCollector<T>.(value: DeviceState) -> Unit) : Flow<T> {
-    return this.flatMapLatest { device ->
-        device?.flow()?.transformLatest(transform) ?: emptyFlow()
-    }
-}
 
 @JvmName("getService")
 operator fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {

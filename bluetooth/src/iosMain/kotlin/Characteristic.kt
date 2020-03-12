@@ -22,8 +22,7 @@ import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
-import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.*
 
 actual open class Characteristic(val characteristic: CBCharacteristic, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
 

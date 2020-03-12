@@ -109,7 +109,8 @@ internal actual class DeviceConnectionManager(private val context: Context,
         if (gatt.isCompleted) {
             gatt.getCompleted().connect()
         } else {
-            gatt.complete(device.connectGatt(context, false, callback))
+            val gattService = device.connectGatt(context, false, callback)
+            gatt.complete(gattService)
         }
     }
 

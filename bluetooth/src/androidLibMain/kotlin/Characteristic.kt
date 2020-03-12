@@ -70,20 +70,20 @@ interface CharacteristicWrapper {
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 
     override val uuid: java.util.UUID
-        get() = gattCharacteristic.uuid
+        get() { return gattCharacteristic.uuid }
     override var value: ByteArray?
-        get() = gattCharacteristic.value
+        get() { return gattCharacteristic.value }
         set(newValue) { gattCharacteristic.value = newValue }
     override val service: GattServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
     override val descriptors: List<DescriptorWrapper>
-        get() = gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) }
+        get() { return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) }}
     override val permissions: Int
-        get() = gattCharacteristic.permissions
+        get() { return gattCharacteristic.permissions }
     override val properties: Int
-        get() = gattCharacteristic.properties
+        get() { return gattCharacteristic.properties }
     override var writeType: Int
-        get() = gattCharacteristic.writeType
+        get() { return gattCharacteristic.writeType }
         set(value) {gattCharacteristic.writeType = value}
 
     override fun setValue(newValue: String): Boolean {
