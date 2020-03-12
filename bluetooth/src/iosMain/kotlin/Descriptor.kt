@@ -21,6 +21,9 @@ import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
+import platform.CoreBluetooth.CBCharacteristicPropertyIndicateEncryptionRequired
+import platform.CoreBluetooth.CBCharacteristicPropertyRead
+import platform.CoreBluetooth.CBCharacteristicPropertyWrite
 import platform.CoreBluetooth.CBDescriptor
 import platform.Foundation.NSData
 

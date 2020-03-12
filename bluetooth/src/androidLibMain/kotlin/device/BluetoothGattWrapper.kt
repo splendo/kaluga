@@ -39,7 +39,8 @@ interface BluetoothGattWrapper {
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
 
     override fun connect(): Boolean {
-        return gatt.connect()
+        val result = gatt.connect()
+        return result
     }
 
     override fun discoverServices(): Boolean {

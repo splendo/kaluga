@@ -66,6 +66,8 @@
                   android:label="@string/feature_hud"/>
         <activity android:name=".bluetooth.BluetoothActivity"
             android:label="@string/feature_bluetooth"/>
+        <activity android:name=".bluetooth.BluetoothMoreActivity"
+            android:label="@string/feature_bluetooth"/>
 
         <service android:name=".location.LocationBackgroundService"/>
 

@@ -1,5 +1,7 @@
 package com.splendo.kaluga.example.bluetooth
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +38,7 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
         private val connectButtonContainer = itemView.button_container
         private val connectButton = itemView.connect_button
         private val disconnectButton = itemView.disconnect_button
+        private val moreButton = itemView.more_button
 
         private val foldOutBlock = itemView.fold_out_block
         private val serviceUuids = itemView.service_uuids
@@ -66,6 +69,12 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                     bluetooth.devices()[identifier].disconnect()
                 }
             }
+            moreButton.setOnClickListener {
+                val identifier = device?.identifier ?: return@setOnClickListener
+                val intent = Intent(itemView.context, BluetoothMoreActivity::class.java)
+                intent.putExtra(BluetoothMoreActivity.IDENTIFIER_KEY, identifier)
+                itemView.context.startActivity(intent)
+            }
         }
         
         @ExperimentalStdlibApi
@@ -85,7 +94,7 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                         txPowerField.text = ""
                     }
 
-                    connectButtonContainer.visibility = if (deviceState.deviceInfo.advertisementData.isConnectible) View.VISIBLE else View.GONE
+                    connectButtonContainer.visibility = if (deviceState.deviceInfo.advertisementData.isConnectible) View.VISIBLE else View.INVISIBLE
 
                     connectButton.visibility = when(deviceState) {
                         is DeviceState.Disconnected, is DeviceState.Disconnecting -> View.VISIBLE
@@ -95,6 +104,8 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                         is DeviceState.Disconnected, is DeviceState.Disconnecting -> View.GONE
                         else -> View.VISIBLE
                     }
+                    moreButton.visibility = if (deviceState is DeviceState.Connected) View.VISIBLE else View.GONE
+
 
                     statusField.text = context.getString(when(deviceState) {
                         is DeviceState.Disconnecting -> R.string.bluetooth_disconneting

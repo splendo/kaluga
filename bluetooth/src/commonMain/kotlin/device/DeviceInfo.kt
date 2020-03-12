@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import kotlin.math.pow
+
 expect class Identifier
 
 expect class DeviceHolder {
@@ -30,6 +32,7 @@ interface DeviceInfo {
     val name: String?
     val rssi: Int
     val advertisementData: AdvertisementData
+    fun distance(environmentalFactor: Double = 2.0): Double
 
 }
 
@@ -40,5 +43,11 @@ data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val 
 
     override val name: String?
         get() = deviceHolder.name
+
+    override fun distance(environmentalFactor: Double): Double {
+        if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())
+            return Double.NaN
+        return 10.0.pow((advertisementData.txPowerLevel.toDouble() - rssi.toDouble())/(10.0*environmentalFactor))
+    }
 
 }

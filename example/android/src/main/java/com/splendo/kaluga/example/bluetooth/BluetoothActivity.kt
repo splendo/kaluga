@@ -19,7 +19,9 @@ import kotlinx.coroutines.runBlocking
 
 class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
     
-    private val bluetooth: Bluetooth = BluetoothBuilder().create(coroutineContext = lifecycle.coroutineScope.coroutineContext)
+    companion object {
+        val bluetooth: Bluetooth = BluetoothBuilder().create()
+    }
     private val bluetoothAdapter = BluetoothAdapter(bluetooth, lifecycle)
     
     @ExperimentalCoroutinesApi
