@@ -6,13 +6,13 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
+        maven("https://plugins.gradle.org/m2/")
     }
 
     dependencies {
-
-
         classpath("com.android.tools.build:gradle:$android_gradle_plugin_version")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("com.google.gms:google-services:4.3.3")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:9.2.1")
     }
 }
