@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
         google()
         jcenter()
-        maven("https://plugins.gradle.org/m2/")
+        gradlePluginPortal()
     }
 
     dependencies {
