@@ -1,9 +1,9 @@
 package com.splendo.kaluga.alerts
 
-import kotlinx.coroutines.*
-import kotlin.coroutines.resume
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 /*
 
