@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.*
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.StateRepo
 
 internal abstract class BaseDeviceConnectionManager(internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
@@ -29,10 +28,6 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
         fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager
     }
 
-    companion object {
-        const val TAG = "KALUGA-Connection"
-    }
-
 
     protected var currentAction: DeviceAction? = null
     protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
@@ -41,18 +36,16 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
     abstract suspend fun discoverServices()
     abstract suspend fun disconnect()
     abstract suspend fun readRssi()
-    abstract suspend fun performAction(action: DeviceAction): Boolean
+    abstract suspend fun performAction(action: DeviceAction)
 
     internal suspend fun handleNewRssi(rssi: Int) {
         stateRepo.takeAndChangeState {
-            debug(TAG, "rssiUpdate")
             it.rssiDidUpdate(rssi)
         }
     }
 
     internal suspend fun handleConnect() {
         stateRepo.takeAndChangeState { state ->
-            debug(TAG, "handleConnect")
             when (state) {
                 is DeviceState.Connecting -> state.didConnect
                 is DeviceState.Reconnecting -> state.didConnect
@@ -75,7 +68,6 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
         }
 
         stateRepo.takeAndChangeState { state ->
-            debug(TAG, "handleDisconnect")
             when (state) {
                 is DeviceState.Reconnecting -> {
                     state.retry().also {
@@ -107,7 +99,6 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
 
     internal suspend fun handleScanCompleted(services: List<Service>) {
         stateRepo.takeAndChangeState { state ->
-            debug(TAG, "scanComplete")
             when (state) {
                 is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
                 else -> state.remain
@@ -117,7 +108,6 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
 
     internal suspend fun handleCurrentActionCompleted() {
         stateRepo.takeAndChangeState { state ->
-            debug(TAG, "currentActionComplete")
             val newState = when (state) {
                 is DeviceState.Connected.HandlingAction -> {
                     if (state.action == currentAction) {

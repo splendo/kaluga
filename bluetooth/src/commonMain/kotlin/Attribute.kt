@@ -21,6 +21,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 
 abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: StateRepo<DeviceState>) : BaseFlowable<ByteArray?>() {
     abstract val uuid: UUID
@@ -42,7 +44,9 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     internal abstract fun createWriteAction(newValue: ByteArray?): W
 
     internal open suspend fun updateValue() {
-        set(getUpdatedValue())
+        val currentVal = channel.value.asFlow().first()
+        val nextValue = getUpdatedValue()
+        set(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?

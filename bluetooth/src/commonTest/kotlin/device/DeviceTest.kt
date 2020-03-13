@@ -406,7 +406,7 @@ internal class MockDeviceConnectionManager(connectionSettings: ConnectionSetting
         readRssiCompleted.complete()
     }
 
-    override suspend fun performAction(action: DeviceAction): Boolean {
+    override suspend fun performAction(action: DeviceAction) {
         performActionCompleted.complete(action)
         return true
     }

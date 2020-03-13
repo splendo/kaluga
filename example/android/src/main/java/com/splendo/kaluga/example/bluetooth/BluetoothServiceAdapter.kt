@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.coroutineScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Service
@@ -12,9 +14,11 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.example.R
+import kotlinx.android.synthetic.main.activity_bluetooth.*
 import kotlinx.android.synthetic.main.bluetooth_service_item.view.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @InternalCoroutinesApi
 class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val identifier: Identifier, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothServiceAdapter.BluetoothServiceItemViewHolder>() {
@@ -24,9 +28,24 @@ class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val iden
         private val serviceUUID = itemView.service_uuid
         private val characterisicList = itemView.characteristics_list
 
+        private var characteristicsAdapter: BluetoothCharacteristicAdapter? = null
+            set(value) {
+                characterisicList.adapter = value
+                field = value
+            }
+
         fun bindData(service: Service) {
+            characterisicList.addItemDecoration(DividerItemDecoration(itemView.context, LinearLayoutManager.VERTICAL))
             serviceUUID.text = service.uuid.toString()
-            characterisicList.adapter = BluetoothCharacteristicAdapter(bluetooth, identifier, service.uuid, lifecycle)
+            characteristicsAdapter = BluetoothCharacteristicAdapter(bluetooth, identifier, service.uuid, lifecycle)
+        }
+
+        fun startUpdating() {
+            characteristicsAdapter?.startMonitoring()
+        }
+
+        fun stopUpdating() {
+            characteristicsAdapter?.stopMonitoring()
         }
 
     }
@@ -35,8 +54,8 @@ class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val iden
 
     init {
         lifecycle.coroutineScope.launchWhenResumed {
-            bluetooth.devices()[identifier].services().collect{ services ->
-                this@BluetoothServiceAdapter.services = services
+            bluetooth.devices()[identifier].services().collect{ newServices ->
+                services = newServices
                 notifyDataSetChanged()
             }
         }
@@ -56,5 +75,18 @@ class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val iden
 
     override fun onBindViewHolder(holder: BluetoothServiceItemViewHolder, position: Int) {
         holder.bindData(services[position])
+    }
+
+    @ExperimentalStdlibApi
+    override fun onViewAttachedToWindow(holder: BluetoothServiceItemViewHolder) {
+        super.onViewAttachedToWindow(holder)
+
+        holder.startUpdating()
+    }
+
+    override fun onViewDetachedFromWindow(holder: BluetoothServiceItemViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+
+        holder.stopUpdating()
     }
 }

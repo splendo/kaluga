@@ -72,8 +72,12 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
     override val uuid: java.util.UUID
         get() { return gattCharacteristic.uuid }
     override var value: ByteArray?
-        get() { return gattCharacteristic.value }
-        set(newValue) { gattCharacteristic.value = newValue }
+        get() {
+            return gattCharacteristic.value
+        }
+        set(newValue) {
+            gattCharacteristic.value = newValue
+        }
     override val service: GattServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
     override val descriptors: List<DescriptorWrapper>

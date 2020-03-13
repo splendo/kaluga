@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.coroutineScope
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.*
@@ -14,6 +16,8 @@ import com.splendo.kaluga.example.R
 import kotlinx.android.synthetic.main.bluetooth_characteristic_item.view.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class BluetoothCharacteristicAdapter(private val bluetooth: Bluetooth, private val identifier: Identifier, private val serviceUUID: UUID, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothCharacteristicAdapter.BluetoothCharacteristicItemViewHolder>() {
@@ -23,20 +27,21 @@ class BluetoothCharacteristicAdapter(private val bluetooth: Bluetooth, private v
         private val uuid = itemView.characteristic_uuid
         private val valueField = itemView.characteristic_value
         private val descriptors = itemView.descriptors
+        private var descriptorsAdapter: BluetoothDescriptorAdapter? = null
+            set(value) {
+                descriptors.adapter = value
+                field = value
+            }
 
         private var characteristic: Characteristic? = null
         private var valueJob: Job? = null
 
         fun bindData(characteristic: Characteristic) {
+            descriptors.addItemDecoration(DividerItemDecoration(itemView.context, LinearLayoutManager.VERTICAL))
             this.characteristic = characteristic
             uuid.text = characteristic.uuid.toString()
-            descriptors.text = characteristic.descriptors.fold("") { result, descriptor ->
-                val descriptorString = descriptor.uuid.toString()
-                if (result.isEmpty())
-                    descriptorString
-                else
-                    "$result\n$descriptorString"
-            }
+            descriptorsAdapter = BluetoothDescriptorAdapter(bluetooth, identifier, serviceUUID, characteristic.uuid, lifecycle)
+
         }
 
         @ExperimentalStdlibApi
@@ -44,25 +49,36 @@ class BluetoothCharacteristicAdapter(private val bluetooth: Bluetooth, private v
             valueJob?.cancel()
             valueJob = lifecycle.coroutineScope.launch {
                 val characteristicUUID = characteristic?.uuid ?: return@launch
-                bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].value().asLiveData().observe({lifecycle}) {valueField.text = it?.toHexString()}
+                bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].first()?.readValue()
+                bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].value().asLiveData().observe({lifecycle}) {
+                    valueField.text = it?.toHexString()
+                }
             }
+            descriptorsAdapter?.startMonitoring()
         }
 
         internal fun stopUpdating() {
             valueJob?.cancel()
+            descriptorsAdapter?.stopMonitoring()
         }
 
     }
 
     private var characteristics = emptyList<Characteristic>()
+    private var characteristicsJob: Job? = null
 
-    init {
-        lifecycle.coroutineScope.launchWhenResumed {
-            bluetooth.devices()[identifier].services()[serviceUUID].characteristics().collect{ characteristics ->
-                this@BluetoothCharacteristicAdapter.characteristics = characteristics
+    fun startMonitoring() {
+        characteristicsJob?.cancel()
+        characteristicsJob = lifecycle.coroutineScope.launch {
+            bluetooth.devices()[identifier].services()[serviceUUID].characteristics().collect{ newCharacteristics ->
+                characteristics = newCharacteristics
                 notifyDataSetChanged()
             }
         }
+    }
+
+    fun stopMonitoring() {
+        characteristicsJob?.cancel()
     }
 
     override fun onCreateViewHolder(
