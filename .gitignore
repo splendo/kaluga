@@ -61,6 +61,8 @@ projectFilesBackup*/
 !**/.idea/runConfigurations/*
 !**/.idea/fileTemplates/
 !**/.idea/fileTemplates/*
+!**/.idea/copyright/
+!**/.idea/copyright/*
 
 # for now supply your own
 google-services.json
