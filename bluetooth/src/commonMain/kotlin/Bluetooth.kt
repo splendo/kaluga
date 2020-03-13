@@ -124,13 +124,14 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
                 when (deviceState) {
                     is DeviceState.Connected -> {
                         when (deviceState) {
-                            is DeviceState.Connected.Idle -> {
-                                if (deviceState.services.isEmpty())
-                                    deviceState.startDiscovering()
+                            is DeviceState.Connected.NoServices -> {
+                                deviceState.startDiscovering()
+                                emptyList()
                             }
-                            else -> {}
+                            is DeviceState.Connected.Idle -> deviceState.services
+                            is DeviceState.Connected.HandlingAction -> deviceState.services
+                            else -> emptyList()
                         }
-                        deviceState.services
                     }
                     else -> emptyList()
                 }
@@ -152,7 +153,7 @@ suspend fun Flow<Device?>.disconnect() {
     state().transformLatest { deviceState ->
             when (deviceState) {
                 is DeviceState.Connected -> deviceState.startDisconnected()
-                is DeviceState.Connecting -> deviceState.handleConnect()
+                is DeviceState.Connecting -> deviceState.handleCancel()
                 is DeviceState.Reconnecting -> deviceState.handleCancel()
                 is DeviceState.Disconnected -> emit(Unit)
                 is DeviceState.Disconnecting -> {}
