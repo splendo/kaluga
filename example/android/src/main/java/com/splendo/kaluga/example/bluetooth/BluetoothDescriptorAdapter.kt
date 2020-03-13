@@ -13,13 +13,14 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.R
 import kotlinx.android.synthetic.main.bluetooth_descriptor_item.view.*
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class BluetoothDescriptorAdapter(private val bluetooth: Bluetooth, private val identifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothDescriptorAdapter.BluetoothDescriptorItemViewHolder>() {
+class BluetoothDescriptorAdapter(private val descriptorsFlow: Flow<List<Descriptor>>, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothDescriptorAdapter.BluetoothDescriptorItemViewHolder>() {
 
-    class BluetoothDescriptorItemViewHolder(itemView: View, private val bluetooth: Bluetooth, private val identifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
+    class BluetoothDescriptorItemViewHolder(itemView: View, private val descriptorsFlow: Flow<List<Descriptor>>, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
 
         private val uuid = itemView.descriptor_uuid
         private val valueField = itemView.descriptor_value
@@ -37,8 +38,8 @@ class BluetoothDescriptorAdapter(private val bluetooth: Bluetooth, private val i
             valueJob?.cancel()
             valueJob = lifecycle.coroutineScope.launch {
                 val descriptorUUID = descriptor?.uuid ?: return@launch
-                bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors()[descriptorUUID].first()?.readValue()
-                bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors()[descriptorUUID].value().asLiveData().observe({lifecycle}) {
+                descriptorsFlow[descriptorUUID].first()?.readValue()
+                descriptorsFlow[descriptorUUID].value().asLiveData().observe({lifecycle}) {
                     valueField.text = it?.toHexString()
                 }
             }
@@ -56,7 +57,7 @@ class BluetoothDescriptorAdapter(private val bluetooth: Bluetooth, private val i
     fun startMonitoring() {
         descriptorsJob?.cancel()
         descriptorsJob = lifecycle.coroutineScope.launch {
-            bluetooth.devices()[identifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors().collect{ newDescriptors ->
+            descriptorsFlow.collect{ newDescriptors ->
                 descriptors = newDescriptors
                 notifyDataSetChanged()
             }
@@ -72,7 +73,7 @@ class BluetoothDescriptorAdapter(private val bluetooth: Bluetooth, private val i
         viewType: Int
     ): BluetoothDescriptorItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.bluetooth_descriptor_item, parent, false)
-        return BluetoothDescriptorItemViewHolder(view, bluetooth, identifier, serviceUUID, characteristicUUID, lifecycle)
+        return BluetoothDescriptorItemViewHolder(view, descriptorsFlow, lifecycle)
     }
 
     override fun getItemCount(): Int {

@@ -28,14 +28,12 @@ class BluetoothMoreActivity : AppCompatActivity(R.layout.activity_bluetooth_more
     private lateinit var identifier: Identifier
     private var timer: Timer? = null
 
-    suspend fun device() : Flow<Device?> {
-        return BluetoothActivity.bluetooth.devices()[identifier]
-    }
+    val device = lazy{BluetoothActivity.bluetooth.devices()[identifier]}
 
     @InternalCoroutinesApi
     fun <T> handleDevice(transform: suspend (Flow<Device?>) -> Flow<T>, collector: (T) -> Unit)  {
         lifecycle.coroutineScope.launchWhenResumed {
-            transform(device()).collect{collector(it)}
+            transform(device.value).collect{collector(it)}
         }
     }
 
@@ -51,10 +49,10 @@ class BluetoothMoreActivity : AppCompatActivity(R.layout.activity_bluetooth_more
         identifier_field.text = identifier
 
         lifecycle.coroutineScope.launch {
-            device().info().map { it.name }.asLiveData().observe({lifecycle}) { name.text = it ?: getText(R.string.bluetooth_no_name) }
-            device().rssi().asLiveData().observe({lifecycle}) {rssi.text = getString(R.string.rssi).format(it)}
-            device().distance().asLiveData().observe({lifecycle}) {distance_field.text = getString(R.string.distance).format(it)}
-            device().state().map{deviceState -> when(deviceState) {
+            device.value.info().map { it.name }.asLiveData().observe({lifecycle}) { name.text = it ?: getText(R.string.bluetooth_no_name) }
+            device.value.rssi().asLiveData().observe({lifecycle}) {rssi.text = getString(R.string.rssi).format(it)}
+            device.value.distance().asLiveData().observe({lifecycle}) {distance_field.text = getString(R.string.distance).format(it)}
+            device.value.state().map{deviceState -> when(deviceState) {
                     is DeviceState.Disconnecting -> R.string.bluetooth_disconneting
                     is DeviceState.Disconnected -> R.string.bluetooth_disconnected
                     is DeviceState.Connected.Discovering -> R.string.bluetooth_discovering
@@ -62,9 +60,9 @@ class BluetoothMoreActivity : AppCompatActivity(R.layout.activity_bluetooth_more
                     is DeviceState.Connecting -> R.string.bluetooth_connecting
                     is DeviceState.Reconnecting -> R.string.bluetooth_reconnecting
                 }}.asLiveData().observe({lifecycle}) {status.text = getString(it)}
-        }
 
-        service_list.adapter = BluetoothServiceAdapter(BluetoothActivity.bluetooth, identifier, lifecycle)
+            service_list.adapter = BluetoothServiceAdapter(device.value.services(), lifecycle)
+        }
     }
 
     override fun onResume() {
@@ -72,7 +70,7 @@ class BluetoothMoreActivity : AppCompatActivity(R.layout.activity_bluetooth_more
         timer?.cancel()
         timer = fixedRateTimer(period = rssi_frequency) {
             lifecycle.coroutineScope.launch {
-                device().updateRssi()
+                device.value.updateRssi()
             }
         }
     }
