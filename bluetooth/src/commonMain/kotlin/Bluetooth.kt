@@ -48,7 +48,7 @@ class Bluetooth internal constructor(permissions: Permissions,
     private val scanFilter = HotFlowable<Set<UUID>?>(null)
 
     @ExperimentalCoroutinesApi
-    suspend fun devices(): Flow<List<Device>> {
+    fun devices(): Flow<List<Device>> {
         return scanningStateRepo.flow().combine(scanFilter.flow()) { scanState, filter ->
             when (scanState) {
                 is ScanningState.Enabled.Idle -> {
@@ -118,7 +118,7 @@ fun Flow<Device?>.state() : Flow<DeviceState> {
     }
 }
 
-suspend fun Flow<Device?>.services(): Flow<List<Service>> {
+fun Flow<Device?>.services(): Flow<List<Service>> {
     return state().transformLatest { deviceState ->
             emit(
                 when (deviceState) {
