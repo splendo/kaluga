@@ -1,0 +1,66 @@
+/*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply from: "../gradle/publishable_component.gradle"
+
+group = "com.splendo.kaluga"
+version = gradle.library_version
+
+repositories {
+    google()
+    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.mockito:mockito-core:3.1.0'
+    androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+}
+
+android {
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+}
+
+kotlin {
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+            }
+        }
+    }
+
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation project(":base", "")
+                implementation 'co.touchlab:stately:0.9.5'
+            }
+        }
+    }
+}
