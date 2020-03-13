@@ -7,11 +7,20 @@
     <TextView
         android:id="@+id/characteristic_uuid"
         style="@style/ListContent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/characteristic_value"/>
+
+    <TextView
+        android:id="@+id/characteristic_value"
+        style="@style/ListContent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/characteristic_uuid"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <LinearLayout

@@ -27,6 +27,7 @@ interface BluetoothGattWrapper {
     fun connect(): Boolean
     fun discoverServices(): Boolean
     fun disconnect()
+    fun close()
     fun readRemoteRssi(): Boolean
 
     fun readCharacteristic(wrapper: CharacteristicWrapper): Boolean
@@ -39,8 +40,7 @@ interface BluetoothGattWrapper {
 class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGattWrapper {
 
     override fun connect(): Boolean {
-        val result = gatt.connect()
-        return result
+        return gatt.connect()
     }
 
     override fun discoverServices(): Boolean {
@@ -49,6 +49,10 @@ class DefaultBluetoothGattWrapper(private val gatt: BluetoothGatt) : BluetoothGa
 
     override fun disconnect() {
         gatt.disconnect()
+    }
+
+    override fun close() {
+        gatt.close()
     }
 
     override fun readRemoteRssi(): Boolean {

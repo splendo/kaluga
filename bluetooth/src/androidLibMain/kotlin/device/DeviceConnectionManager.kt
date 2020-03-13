@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -48,7 +49,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
             launch {
-                stateRepo.takeAndChangeState { it.rssiDidUpdate(rssi) }
+                handleNewRssi(rssi)
             }
         }
 
@@ -88,12 +89,12 @@ internal actual class DeviceConnectionManager(private val context: Context,
         }
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            lastKnownState = newState
             launch {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         handleDisconnect {
-                            gatt?.close()
-                            this@DeviceConnectionManager.gatt = CompletableDeferred()
+                            closeGatt()
                         }
                     }
                     BluetoothProfile.STATE_CONNECTED -> {
@@ -103,14 +104,29 @@ internal actual class DeviceConnectionManager(private val context: Context,
             }
         }
     }
+    private var lastKnownState = BluetoothProfile.STATE_DISCONNECTED
 
     override suspend fun connect() {
-        unpair()
-        if (gatt.isCompleted) {
-            gatt.getCompleted().connect()
+        if (lastKnownState != BluetoothProfile.STATE_CONNECTED || !gatt.isCompleted) {
+            unpair()
+            if (gatt.isCompleted) {
+                if (!gatt.getCompleted().connect()) {
+                    launch {
+                        handleDisconnect { closeGatt() }
+                    }
+                } else if (lastKnownState != BluetoothProfile.STATE_CONNECTED) {
+                    launch {
+                        handleConnect()
+                    }
+                }
+            } else {
+                val gattService = device.connectGatt(context, false, callback)
+                gatt.complete(gattService)
+            }
         } else {
-            val gattService = device.connectGatt(context, false, callback)
-            gatt.complete(gattService)
+            launch {
+                handleConnect()
+            }
         }
     }
 
@@ -119,11 +135,26 @@ internal actual class DeviceConnectionManager(private val context: Context,
     }
 
     override suspend fun disconnect() {
-        gatt.await().disconnect()
+        if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED)
+            gatt.await().disconnect()
+        else
+            launch {
+                handleDisconnect {
+                    closeGatt()
+                }
+            }
+    }
+
+    private fun closeGatt() {
+        if (gatt.isCompleted) {
+            gatt.getCompleted().close()
+        }
+        gatt = CompletableDeferred()
     }
 
     override suspend fun readRssi() {
-        gatt.await().readRemoteRssi()
+        val result = gatt.await().readRemoteRssi()
+        debug("$result")
     }
 
     override suspend fun performAction(action: DeviceAction): Boolean {

@@ -19,14 +19,14 @@ import kotlinx.coroutines.InternalCoroutinesApi
 @InternalCoroutinesApi
 class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val identifier: Identifier, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothServiceAdapter.BluetoothServiceItemViewHolder>() {
 
-    class BluetoothServiceItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class BluetoothServiceItemViewHolder(itemView: View, private val bluetooth: Bluetooth, private val identifier: Identifier, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
 
-        val serviceUUID = itemView.service_uuid
-        val characterisicList = itemView.characteristics_list
+        private val serviceUUID = itemView.service_uuid
+        private val characterisicList = itemView.characteristics_list
 
         fun bindData(service: Service) {
             serviceUUID.text = service.uuid.toString()
-            characterisicList.adapter = BluetoothCharacteristicAdapter(service.characteristics)
+            characterisicList.adapter = BluetoothCharacteristicAdapter(bluetooth, identifier, service.uuid, lifecycle)
         }
 
     }
@@ -47,7 +47,7 @@ class BluetoothServiceAdapter(private val bluetooth: Bluetooth, private val iden
         viewType: Int
     ): BluetoothServiceItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.bluetooth_service_item, parent, false)
-        return BluetoothServiceItemViewHolder(view)
+        return BluetoothServiceItemViewHolder(view, bluetooth, identifier, lifecycle)
     }
 
     override fun getItemCount(): Int {

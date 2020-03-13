@@ -17,15 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
@@ -48,20 +46,19 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
     : State<DeviceState>(),
     DeviceInfo by deviceInfo, CoroutineScope by connectionManager.stateRepo {
 
-    sealed class Connected(open val services: List<Service>,
-                           deviceInfo: DeviceInfoImpl,
+    sealed class Connected(deviceInfo: DeviceInfoImpl,
                            connectionManager: BaseDeviceConnectionManager)
         : DeviceState(deviceInfo, connectionManager) {
 
-        data class Idle internal constructor(override val services: List<Service>,
-                                             override val deviceInfo: DeviceInfoImpl,
+        data class NoServices internal constructor(override val deviceInfo: DeviceInfoImpl,
                                              override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(services, deviceInfo, connectionManager) {
+            : Connected(deviceInfo, connectionManager) {
 
             fun startDiscovering() {
                 launch {
                     connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                        if (deviceState is Idle)
+                        debug(BaseDeviceConnectionManager.TAG, "Start Discovering")
+                        if (deviceState is NoServices)
                             discoverServices
                         else
                             remain
@@ -73,15 +70,11 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                 Discovering(deviceInfo, connectionManager)
             }
 
-            fun handleAction(action: DeviceAction): suspend () -> HandlingAction {
-                return { HandlingAction(action, emptyList(), services, deviceInfo, connectionManager) }
-            }
-
         }
 
         data class Discovering internal constructor(override val deviceInfo: DeviceInfoImpl,
                                                     override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(emptyList(), deviceInfo, connectionManager),
+            : Connected(deviceInfo, connectionManager),
             HandleAfterOldStateIsRemoved<DeviceState> {
 
             internal fun didDiscoverServices(services: List<Service>): suspend () -> Idle {
@@ -94,12 +87,22 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
 
         }
 
+        data class Idle internal constructor(val services: List<Service>,
+                                                   override val deviceInfo: DeviceInfoImpl,
+                                                   override val connectionManager: BaseDeviceConnectionManager) : Connected(deviceInfo, connectionManager) {
+
+            fun handleAction(action: DeviceAction): suspend () -> HandlingAction {
+                return { HandlingAction(action, emptyList(), services, deviceInfo, connectionManager) }
+            }
+
+        }
+
         data class HandlingAction internal constructor(internal val action: DeviceAction,
                                                        internal val nextActions: List<DeviceAction>,
-                                                       override val services: List<Service>,
+                                                       val services: List<Service>,
                                                        override val deviceInfo: DeviceInfoImpl,
                                                        override val connectionManager: BaseDeviceConnectionManager)
-            : Connected(services, deviceInfo, connectionManager),
+            : Connected(deviceInfo, connectionManager),
         HandleAfterOldStateIsRemoved<DeviceState> {
 
             fun addAction(newAction: DeviceAction) : suspend () -> HandlingAction {
@@ -144,17 +147,21 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun startDisconnected() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    debug(BaseDeviceConnectionManager.TAG, "Start Disconnected")
                     if (deviceState is Connected)
-                        disconnect
+                        disconnecting
                     else
                         remain
                 }
             }
         }
 
-        val disconnect = disconnecting
-
         val reconnect = suspend {
+            val services = when (this) {
+                is Idle -> this.services
+                is HandlingAction -> this.services
+                else -> null
+            }
             Reconnecting(0, services, deviceInfo, connectionManager)
         }
 
@@ -175,11 +182,12 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
 
         val cancelConnection = disconnecting
 
-        fun handleConnect() {
+        fun handleCancel() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    debug(BaseDeviceConnectionManager.TAG, "Handle Cancel")
                     if (deviceState is Connecting) {
-                        didConnect
+                        cancelConnection
                     } else {
                         remain
                     }
@@ -188,7 +196,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         }
 
         internal val didConnect = suspend {
-            Connected.Idle(emptyList(), deviceInfo, connectionManager)
+            Connected.NoServices(deviceInfo, connectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -200,7 +208,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
     }
 
     data class Reconnecting internal constructor(val attempt: Int,
-                                                 val services: List<Service>,
+                                                 val services: List<Service>?,
                                                  override val deviceInfo: DeviceInfoImpl,
                                                  override val connectionManager: BaseDeviceConnectionManager)
         : DeviceState(deviceInfo, connectionManager),
@@ -224,6 +232,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun handleCancel() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    debug(BaseDeviceConnectionManager.TAG, "Handle Cancel")
                     if (deviceState is Reconnecting)
                         cancelConnection
                     else
@@ -235,7 +244,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         val cancelConnection = disconnecting
 
         internal val didConnect = suspend {
-            Connected.Idle(services, deviceInfo, connectionManager)
+            services?.let { Connected.Idle(services, deviceInfo, connectionManager) } ?: Connected.NoServices(deviceInfo, connectionManager)
         }
 
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
@@ -254,6 +263,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun startConnecting() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
+                    debug(BaseDeviceConnectionManager.TAG, "Start Connecting")
                     if (deviceState is Disconnected) {
                         connect()
                     } else {
@@ -298,6 +308,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {
         return {
             when (this) {
+                is Connected.NoServices -> copy(deviceInfo = newDeviceInfo)
                 is Connected.Idle -> copy(deviceInfo = newDeviceInfo)
                 is Connected.HandlingAction -> copy(deviceInfo = newDeviceInfo)
                 is Connected.Discovering -> copy(deviceInfo = newDeviceInfo)
