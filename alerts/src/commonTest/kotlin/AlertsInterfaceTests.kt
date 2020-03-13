@@ -2,12 +2,12 @@ package com.splendo.kaluga.test
 
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 abstract class AlertsInterfaceTests {
 
