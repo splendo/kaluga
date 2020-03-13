@@ -136,7 +136,7 @@ suspend fun Flow<Device?>.services(): Flow<List<Service>> {
                     else -> emptyList()
                 }
             )
-        }
+        }.distinctUntilChanged()
 }
 
 suspend fun Flow<Device?>.connect() {
@@ -168,11 +168,11 @@ fun Flow<Device?>.info() : Flow<DeviceInfoImpl> {
 }
 
 fun Flow<Device?>.advertisement() : Flow<AdvertisementData> {
-    return this.info().map { it.advertisementData }
+    return this.info().map { it.advertisementData }.distinctUntilChanged()
 }
 
 fun Flow<Device?>.rssi() : Flow<Int> {
-    return this.info().map { it.rssi }
+    return this.info().map { it.rssi }.distinctUntilChanged()
 }
 
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5) : Flow<Double> {
@@ -215,11 +215,11 @@ operator fun Flow<List<Service>>.get(uuid: UUID) : Flow<Service?> {
 }
 
 fun Flow<Service?>.characteristics() : Flow<List<Characteristic>> {
-    return this.mapLatest { service -> service?.characteristics ?: emptyList() }
+    return this.mapLatest { service -> service?.characteristics ?: emptyList() }.distinctUntilChanged()
 }
 
 fun Flow<Characteristic?>.descriptors() : Flow<List<Descriptor>> {
-    return this.mapLatest{ characteristic -> characteristic?.descriptors ?: emptyList() }
+    return this.mapLatest{ characteristic -> characteristic?.descriptors ?: emptyList() }.distinctUntilChanged()
 }
 
 @JvmName("getAttribute")
@@ -234,5 +234,5 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value() : Flow<ByteArray?> {
     return this.flatMapLatest{attribute ->
         attribute?.flow() ?: emptyFlow()
-    }
+    }.distinctUntilChanged()
 }

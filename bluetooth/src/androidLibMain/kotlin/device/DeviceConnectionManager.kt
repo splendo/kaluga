@@ -23,12 +23,10 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 internal actual class DeviceConnectionManager(private val context: Context,
@@ -153,13 +151,12 @@ internal actual class DeviceConnectionManager(private val context: Context,
     }
 
     override suspend fun readRssi() {
-        val result = gatt.await().readRemoteRssi()
-        debug("$result")
+        gatt.await().readRemoteRssi()
     }
 
-    override suspend fun performAction(action: DeviceAction): Boolean {
+    override suspend fun performAction(action: DeviceAction) {
         currentAction = action
-        return when(action) {
+        val shouldWait = when(action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.characteristic)
             is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.descriptor)
             is DeviceAction.Write.Characteristic -> {
@@ -175,12 +172,14 @@ internal actual class DeviceConnectionManager(private val context: Context,
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                val result = gatt.await().setCharacteristicNotification(action.characteristic.characteristic, action.enable)
-                // Action always completes. Launch in separate coroutine to make sure this action can be completed
-                launch {
-                    handleCurrentActionCompleted()
-                }
-                result
+                gatt.await().setCharacteristicNotification(action.characteristic.characteristic, action.enable)
+                false
+            }
+        }
+        // Action Failed or Already Completed
+        if (!shouldWait) {
+            launch {
+                handleCurrentActionCompleted()
             }
         }
     }

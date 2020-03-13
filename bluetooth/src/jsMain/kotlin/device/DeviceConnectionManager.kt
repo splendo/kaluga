@@ -44,7 +44,7 @@ internal actual class DeviceConnectionManager(connectionSettings: ConnectionSett
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override suspend fun performAction(action: DeviceAction): Boolean {
+    override suspend fun performAction(action: DeviceAction) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

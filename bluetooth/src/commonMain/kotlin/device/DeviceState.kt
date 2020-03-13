@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
@@ -57,7 +56,6 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
             fun startDiscovering() {
                 launch {
                     connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                        debug(BaseDeviceConnectionManager.TAG, "Start Discovering")
                         if (deviceState is NoServices)
                             discoverServices
                         else
@@ -130,6 +128,8 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                 }
             }
 
+
+
             override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
                 when (oldState) {
                     is HandlingAction -> {
@@ -147,7 +147,6 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun startDisconnected() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    debug(BaseDeviceConnectionManager.TAG, "Start Disconnected")
                     if (deviceState is Connected)
                         disconnecting
                     else
@@ -185,7 +184,6 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun handleCancel() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    debug(BaseDeviceConnectionManager.TAG, "Handle Cancel")
                     if (deviceState is Connecting) {
                         cancelConnection
                     } else {
@@ -232,7 +230,6 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun handleCancel() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    debug(BaseDeviceConnectionManager.TAG, "Handle Cancel")
                     if (deviceState is Reconnecting)
                         cancelConnection
                     else
@@ -263,7 +260,6 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         fun startConnecting() {
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    debug(BaseDeviceConnectionManager.TAG, "Start Connecting")
                     if (deviceState is Disconnected) {
                         connect()
                     } else {

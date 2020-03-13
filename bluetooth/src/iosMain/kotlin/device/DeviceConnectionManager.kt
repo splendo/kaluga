@@ -115,7 +115,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         peripheral.readRSSI()
     }
 
-    override suspend fun performAction(action: DeviceAction): Boolean {
+    override suspend fun performAction(action: DeviceAction) {
         currentAction = action
         when(action) {
             is DeviceAction.Read.Characteristic -> peripheral.readValueForCharacteristic(action.characteristic.characteristic)
@@ -138,7 +138,6 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
                 peripheral.setNotifyValue(action.enable, action.characteristic.characteristic)
             }
         }
-        return true
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic) {
