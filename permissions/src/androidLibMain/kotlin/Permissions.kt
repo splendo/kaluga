@@ -22,9 +22,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.log.debug
-import com.splendo.kaluga.log.warn
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.warn
+import com.splendo.kaluga.logging.error
 
 actual class Permissions constructor(private val context: Context) {
 

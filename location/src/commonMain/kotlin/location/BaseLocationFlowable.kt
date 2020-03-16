@@ -19,7 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.location.Location.UnknownReason
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 
 open class BaseLocationFlowable : BaseFlowable<Location>() {
 

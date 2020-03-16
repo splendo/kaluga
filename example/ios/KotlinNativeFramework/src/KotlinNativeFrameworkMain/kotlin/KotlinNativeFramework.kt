@@ -20,8 +20,8 @@ import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface

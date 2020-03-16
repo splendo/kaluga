@@ -21,7 +21,7 @@ import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.Location.*
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.test.FlowableTest
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import kotlin.test.*
 
 open class LocationFlowableTest : FlowableTest<Location>() {
