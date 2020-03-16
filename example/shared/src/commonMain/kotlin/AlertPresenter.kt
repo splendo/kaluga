@@ -3,7 +3,7 @@ package com.splendo.kaluga.example.shared
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.*
 
 /*

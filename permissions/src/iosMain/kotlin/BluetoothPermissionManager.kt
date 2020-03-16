@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.error
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBManagerState
 import platform.CoreBluetooth.CBPeripheralManager

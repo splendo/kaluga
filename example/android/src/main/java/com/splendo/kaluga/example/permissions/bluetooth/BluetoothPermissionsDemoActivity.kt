@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.Permit

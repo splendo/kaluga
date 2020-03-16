@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import android.os.Looper
 import com.google.android.gms.location.*
 import com.google.android.gms.tasks.Task
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
