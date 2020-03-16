@@ -24,7 +24,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class HUDTests {
 
-    class MockHUD(val style: HUD.Style, val title: String?): HUD {
+    class MockHUD(val style: HUD.Style, val title: String?) : HUD {
         lateinit var onPresentCalled: () -> Unit
         lateinit var onDismissCalled: () -> Unit
 
@@ -43,7 +43,7 @@ class HUDTests {
         }
     }
 
-    class MockBuilder: HUD.Builder() {
+    class MockBuilder : HUD.Builder() {
         override fun create(hudConfig: HudConfig) = MockHUD(hudConfig.style, hudConfig.title)
     }
 

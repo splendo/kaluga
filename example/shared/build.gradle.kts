@@ -17,7 +17,7 @@ apply(from = "../../gradle/component.gradle")
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             val ext =  (gradle as ExtensionAware).extra
             var primaryIosArch = ext["ios_primary_arch"]
 
