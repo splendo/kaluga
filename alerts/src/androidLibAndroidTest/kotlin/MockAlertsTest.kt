@@ -5,11 +5,16 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.*
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.*
+import kotlinx.coroutines.withContext
+import org.junit.Rule
 import org.junit.Test
-import kotlin.test.*
 
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
