@@ -21,7 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-open class HudViewModel: ViewModel() {
+open class HudViewModel : ViewModel() {
 
     val builder = AndroidHUD.Builder()
 

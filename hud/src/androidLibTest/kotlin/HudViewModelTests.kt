@@ -2,16 +2,19 @@ package com.splendo.kaluga.hud
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
-import kotlinx.coroutines.*
+import kotlin.test.assertFails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import kotlin.test.assertFails
+import org.mockito.Mockito.mock
 
 /*
 

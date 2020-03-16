@@ -23,7 +23,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-internal class UiContextObserver: CoroutineScope by MainScope() {
+internal class UiContextObserver : CoroutineScope by MainScope() {
 
     data class UiContextData(
         val lifecycleOwner: LifecycleOwner,
