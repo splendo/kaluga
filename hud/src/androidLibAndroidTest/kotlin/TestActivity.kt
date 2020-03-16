@@ -1,8 +1,8 @@
 package com.splendo.kaluga.hud
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 
 /*
 

@@ -3,13 +3,13 @@ package com.splendo.kaluga.hud
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import kotlin.test.assertFails
+import kotlin.test.assertNull
 import org.hamcrest.core.IsEqual.equalTo
 import org.junit.Assert.assertThat
 import org.junit.Test
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
-import kotlin.test.assertFails
-import kotlin.test.assertNull
+import org.mockito.Mockito.mock
 
 /*
 

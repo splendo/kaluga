@@ -11,14 +11,17 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.annotation.*
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 /*
 
@@ -135,8 +138,8 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
     }
 
     private sealed class DialogState {
-        object Gone: DialogState()
-        object Visible: DialogState()
+        object Gone : DialogState()
+        object Visible : DialogState()
     }
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
