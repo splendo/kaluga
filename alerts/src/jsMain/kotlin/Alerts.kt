@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder: BaseAlertBuilder() {
+actual class AlertBuilder : BaseAlertBuilder() {
 
     override fun create(): AlertInterface {
         return AlertInterface(createAlert())
@@ -27,7 +27,7 @@ actual class AlertBuilder: BaseAlertBuilder() {
 
 actual class AlertInterface(
     alert: Alert
-): BaseAlertPresenter(alert) {
+) : BaseAlertPresenter(alert) {
 
     override fun showAsync(animated: Boolean, completion: (() -> Unit)) {
         TODO("not implemented")

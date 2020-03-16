@@ -2,7 +2,16 @@ package com.splendo.kaluga.alerts
 
 import platform.Foundation.NSString
 import platform.Foundation.localizedStringWithFormat
-import platform.UIKit.*
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyle
+import platform.UIKit.UIAlertActionStyleCancel
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertActionStyleDestructive
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyle
+import platform.UIKit.UIAlertControllerStyleActionSheet
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIViewController
 
 /*
 

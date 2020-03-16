@@ -1,7 +1,14 @@
 package com.splendo.kaluga.hud
 
-import platform.UIKit.*
-import kotlin.test.*
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import platform.UIKit.UIScreen
+import platform.UIKit.UIViewController
+import platform.UIKit.UIWindow
 
 /*
 
