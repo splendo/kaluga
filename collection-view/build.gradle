@@ -35,6 +35,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha01'
     testImplementation 'org.mockito:mockito-core:3.1.0'
     androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
