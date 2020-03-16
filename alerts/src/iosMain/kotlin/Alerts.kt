@@ -2,7 +2,16 @@ package com.splendo.kaluga.alerts
 
 import platform.Foundation.NSString
 import platform.Foundation.localizedStringWithFormat
-import platform.UIKit.*
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyle
+import platform.UIKit.UIAlertActionStyleCancel
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertActionStyleDestructive
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyle
+import platform.UIKit.UIAlertControllerStyleActionSheet
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIViewController
 
 /*
 
@@ -68,8 +77,11 @@ actual class AlertInterface(
                     }
                 )
             }
+            val cancelButtonIndex = alert.actions.indexOfFirst {
+                (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
+            }
             // If there is no Cancel action inject it by default
-            if (alert.style == Alert.Style.ACTION_LIST && alert.actions.indexOfFirst { it.style == Alert.Action.Style.CANCEL} == -1) {
+            if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
                 addAction(
                     UIAlertAction.actionWithTitle(
                         NSString.localizedStringWithFormat("Cancel"),

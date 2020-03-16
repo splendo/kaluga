@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class TestActivity: AppCompatActivity() {
+class TestActivity : AppCompatActivity() {
 
     val viewModel: HudViewModel by viewModels()
 
