@@ -19,7 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel

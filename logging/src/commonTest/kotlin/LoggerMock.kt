@@ -1,4 +1,4 @@
-package com.splendo.kaluga.log
+package com.splendo.kaluga.logging
 import co.touchlab.stately.collections.frozenCopyOnWriteList
 
 /*
