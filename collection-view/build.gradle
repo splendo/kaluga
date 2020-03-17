@@ -39,6 +39,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha01'
     testImplementation 'org.mockito:mockito-core:3.1.0'
     androidTestImplementation 'androidx.appcompat:appcompat:1.1.0'
+    androidTestImplementation 'androidx.fragment:fragment-ktx:1.1.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 }
 
@@ -61,6 +62,7 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation project(":base", "")
+                implementation project(":logging", "")
                 implementation 'co.touchlab:stately:0.9.5'
             }
         }

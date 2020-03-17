@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.collectionView
 
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
-class TestActivity : AppCompatActivity()
+class TestActivity : AppCompatActivity() {
+    val viewModel: CollectionViewModel by viewModels()
+}

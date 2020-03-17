@@ -17,18 +17,22 @@
 
 package com.splendo.kaluga.collectionView
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.UiDevice
+import kotlin.test.assertNotNull
+import org.junit.Rule
+import org.junit.Test
 
-actual open class CollectionViewModel actual constructor() {
+class CollectionViewTests {
 
-    private val job = SupervisorJob()
+    @get:Rule
+    var activityRule = ActivityTestRule(TestActivity::class.java)
 
-    actual val coroutineScope = CoroutineScope(MainQueueDispatcher + job)
+    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    protected actual open fun onCleared() {
-        job.cancelChildren()
+    @Test
+    fun testViewModel() {
+        assertNotNull(activityRule.activity.viewModel)
     }
 }
