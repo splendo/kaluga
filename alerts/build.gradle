@@ -40,8 +40,8 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation project(":base", "")
-                implementation 'co.touchlab:stately-common:1.0.0-a2'
-                implementation 'co.touchlab:stately-concurrency:1.0.0-a2'
+                implementation "co.touchlab:stately-common:$gradle.stately_version"
+                implementation "co.touchlab:stately-concurrency:$gradle.stately_version"
             }
         }
     }
