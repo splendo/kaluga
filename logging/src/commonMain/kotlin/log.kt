@@ -75,8 +75,8 @@ fun log(level: LogLevel, function: () -> String) {
     KydraLog.log(level.logLevel, null, function)
 }
 
-//================================================================
-//== LogLevel.INFO ===============================================
+// ================================================================
+// == LogLevel.INFO ===============================================
 /**
  * Writes log with INFO log level and provided tag.
  * @param tag Tag of the log record. Nullable
@@ -128,8 +128,8 @@ fun info(function: () -> String) {
     KydraLog.log(LogLevel.INFO.logLevel, null, function)
 }
 
-//================================================================
-//== LogLevel.DEBUG ==============================================
+// ================================================================
+// == LogLevel.DEBUG ==============================================
 /**
  * Writes log with DEBUG log level and provided tag.
  * @param tag Tag of the log record. Nullable
@@ -181,8 +181,8 @@ fun debug(function: () -> String) {
     KydraLog.log(LogLevel.DEBUG.logLevel, null, function)
 }
 
-//================================================================
-//== LogLevel.WARNING ============================================
+// ================================================================
+// == LogLevel.WARNING ============================================
 /**
  * Writes log with WARNING log level and provided tag.
  * @param tag Tag of the log record. Nullable
@@ -234,8 +234,8 @@ fun warn(function: () -> String) {
     KydraLog.log(LogLevel.WARNING.logLevel, null, function)
 }
 
-//================================================================
-//== LogLevel.ERROR ==============================================
+// ================================================================
+// == LogLevel.ERROR ==============================================
 /**
  * Writes log with ERROR log level and provided tag.
  * @param tag Tag of the log record. Nullable

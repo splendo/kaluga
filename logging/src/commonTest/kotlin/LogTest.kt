@@ -1,5 +1,3 @@
-package com.splendo.kaluga.logging.common
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,8 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.logging.*
-import kotlin.test.*
+package com.splendo.kaluga.logging
+
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class LogTest {
 
