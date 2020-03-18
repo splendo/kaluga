@@ -22,7 +22,7 @@ import co.touchlab.stately.collections.IsoMutableList
 
 class LoggerMock : Logger {
 
-    val exceptionsList: IsoMutableList<Throwable?> = IsoMutableList()
+    val exceptionsList = IsoMutableList<Throwable?>()
     val messageList = IsoMutableList<String?>()
     val tagList = IsoMutableList<String?>()
     val levelList = IsoMutableList<LogLevel?>()
