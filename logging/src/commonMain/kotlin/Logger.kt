@@ -34,7 +34,6 @@ interface Logger {
      * @param exception Exception to be written into log
      */
     fun log(level: LogLevel, tag: String?, exception: Throwable)
-
 }
 
 internal inline fun ru.pocketbyte.kydra.log.LogLevel.getLogLevel(): LogLevel {
