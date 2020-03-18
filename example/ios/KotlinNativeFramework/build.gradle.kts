@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("xcode-compat") version "0.2.3"
+    kotlin("xcode-compat") version "0.2.5"
 }
 
 repositories {
