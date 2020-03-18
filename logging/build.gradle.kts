@@ -28,8 +28,10 @@ kotlin {
         }
         commonTest {
             dependencies {
-                implementation("co.touchlab:stately-isolate:1.0.0-a2")
-                implementation("co.touchlab:stately-iso-collections:1.0.0-a2")
+                val ext = (gradle as ExtensionAware).extra
+
+                implementation("co.touchlab:stately-isolate:${ext["stately_version"]}")
+                implementation("co.touchlab:stately-iso-collections:${ext["stately_version"]}")
             }
         }
     }
