@@ -17,21 +17,21 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import ru.pocketbyte.hydra.log.HydraLog
+import ru.pocketbyte.kydra.log.KydraLog
 
 /**
- * Initializes HydraLog with given logger.
+ * Initializes KydraLog with given logger.
  *
- * Be aware that once initialized HydraLog cannot be initialised with new loggers. You will get first logger you have used for initialisation.
+ * Be aware that once initialized KydraLog cannot be initialised with new loggers. You will get first logger you have used for initialisation.
  *
  * @param logger - logged to be used for log output
  * @return first logger used for initialisation.
  */
 fun initLogger(logger: Logger): Logger {
     try {
-        HydraLog.init(InternalLogger(logger))
+        KydraLog.init(InternalLogger(logger))
     } catch (e: IllegalStateException) {
-        println("LOG: HydraLog was already initialised. {${e.message}}")
+        println("LOG: KydraLog was already initialised. {${e.message}}")
     }
 
     return logger()
@@ -42,7 +42,7 @@ fun initLogger(logger: Logger): Logger {
  */
 fun logger(): Logger {
     try {
-        return (HydraLog.logger as InternalLogger).logger
+        return (KydraLog.logger as InternalLogger).logger
     } catch (e: Exception) {
         throw IllegalStateException("You should use initLogger for logging initialisation", e)
     }
@@ -54,7 +54,7 @@ fun logger(): Logger {
  * @param message Message to be written into log
  */
 fun log(level: LogLevel, message: String) {
-    HydraLog.log(level.logLevel, null, message)
+    KydraLog.log(level.logLevel, null, message)
 }
 
 /**
@@ -63,7 +63,7 @@ fun log(level: LogLevel, message: String) {
  * @param exception Exception to be written into log
  */
 fun log(level: LogLevel, exception: Throwable) {
-    HydraLog.log(level.logLevel, null, exception)
+    KydraLog.log(level.logLevel, null, exception)
 }
 
 /**
@@ -72,7 +72,7 @@ fun log(level: LogLevel, exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun log(level: LogLevel, function: () -> String) {
-    HydraLog.log(level.logLevel, null, function)
+    KydraLog.log(level.logLevel, null, function)
 }
 
 //================================================================
@@ -83,7 +83,7 @@ fun log(level: LogLevel, function: () -> String) {
  * @param message Message to be written into log.
  */
 fun info(tag: String?, message: String) {
-    HydraLog.log(LogLevel.INFO.logLevel, tag, message)
+    KydraLog.log(LogLevel.INFO.logLevel, tag, message)
 }
 
 /**
@@ -91,7 +91,7 @@ fun info(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun info(message: String) {
-    HydraLog.log(LogLevel.INFO.logLevel, null, message)
+    KydraLog.log(LogLevel.INFO.logLevel, null, message)
 }
 
 /**
@@ -100,7 +100,7 @@ fun info(message: String) {
  * @param exception Exception to be written into log.
  */
 fun info(tag: String?, exception: Throwable) {
-    HydraLog.log(LogLevel.INFO.logLevel, tag, exception)
+    KydraLog.log(LogLevel.INFO.logLevel, tag, exception)
 }
 
 /**
@@ -108,7 +108,7 @@ fun info(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun info(exception: Throwable) {
-    HydraLog.log(LogLevel.INFO.logLevel, null, exception)
+    KydraLog.log(LogLevel.INFO.logLevel, null, exception)
 }
 
 /**
@@ -117,7 +117,7 @@ fun info(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun info(tag: String?, function: () -> String) {
-    HydraLog.log(LogLevel.INFO.logLevel, tag, function)
+    KydraLog.log(LogLevel.INFO.logLevel, tag, function)
 }
 
 /**
@@ -125,7 +125,7 @@ fun info(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun info(function: () -> String) {
-    HydraLog.log(LogLevel.INFO.logLevel, null, function)
+    KydraLog.log(LogLevel.INFO.logLevel, null, function)
 }
 
 //================================================================
@@ -136,7 +136,7 @@ fun info(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun debug(tag: String?, message: String) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, tag, message)
+    KydraLog.log(LogLevel.DEBUG.logLevel, tag, message)
 }
 
 /**
@@ -144,7 +144,7 @@ fun debug(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun debug(message: String) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, null, message)
+    KydraLog.log(LogLevel.DEBUG.logLevel, null, message)
 }
 
 /**
@@ -153,7 +153,7 @@ fun debug(message: String) {
  * @param exception Exception to be written into log.
  */
 fun debug(tag: String?, exception: Throwable) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, tag, exception)
+    KydraLog.log(LogLevel.DEBUG.logLevel, tag, exception)
 }
 
 /**
@@ -161,7 +161,7 @@ fun debug(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun debug(exception: Throwable) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, null, exception)
+    KydraLog.log(LogLevel.DEBUG.logLevel, null, exception)
 }
 
 /**
@@ -170,7 +170,7 @@ fun debug(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun debug(tag: String?, function: () -> String) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, tag, function)
+    KydraLog.log(LogLevel.DEBUG.logLevel, tag, function)
 }
 
 /**
@@ -178,7 +178,7 @@ fun debug(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun debug(function: () -> String) {
-    HydraLog.log(LogLevel.DEBUG.logLevel, null, function)
+    KydraLog.log(LogLevel.DEBUG.logLevel, null, function)
 }
 
 //================================================================
@@ -189,7 +189,7 @@ fun debug(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun warn(tag: String?, message: String) {
-    HydraLog.log(LogLevel.WARNING.logLevel, tag, message)
+    KydraLog.log(LogLevel.WARNING.logLevel, tag, message)
 }
 
 /**
@@ -197,7 +197,7 @@ fun warn(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun warn(message: String) {
-    HydraLog.log(LogLevel.WARNING.logLevel, null, message)
+    KydraLog.log(LogLevel.WARNING.logLevel, null, message)
 }
 
 /**
@@ -206,7 +206,7 @@ fun warn(message: String) {
  * @param exception Exception to be written into log.
  */
 fun warn(tag: String?, exception: Throwable) {
-    HydraLog.log(LogLevel.WARNING.logLevel, tag, exception)
+    KydraLog.log(LogLevel.WARNING.logLevel, tag, exception)
 }
 
 /**
@@ -214,7 +214,7 @@ fun warn(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun warn(exception: Throwable) {
-    HydraLog.log(LogLevel.WARNING.logLevel, null, exception)
+    KydraLog.log(LogLevel.WARNING.logLevel, null, exception)
 }
 
 /**
@@ -223,7 +223,7 @@ fun warn(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun warn(tag: String?, function: () -> String) {
-    HydraLog.log(LogLevel.WARNING.logLevel, tag, function)
+    KydraLog.log(LogLevel.WARNING.logLevel, tag, function)
 }
 
 /**
@@ -231,7 +231,7 @@ fun warn(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun warn(function: () -> String) {
-    HydraLog.log(LogLevel.WARNING.logLevel, null, function)
+    KydraLog.log(LogLevel.WARNING.logLevel, null, function)
 }
 
 //================================================================
@@ -242,7 +242,7 @@ fun warn(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun error(tag: String?, message: String) {
-    HydraLog.log(LogLevel.ERROR.logLevel, tag, message)
+    KydraLog.log(LogLevel.ERROR.logLevel, tag, message)
 }
 
 /**
@@ -250,7 +250,7 @@ fun error(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun error(message: String) {
-    HydraLog.log(LogLevel.ERROR.logLevel, null, message)
+    KydraLog.log(LogLevel.ERROR.logLevel, null, message)
 }
 
 /**
@@ -259,7 +259,7 @@ fun error(message: String) {
  * @param exception Exception to be written into log.
  */
 fun error(tag: String?, exception: Throwable) {
-    HydraLog.log(LogLevel.ERROR.logLevel, tag, exception)
+    KydraLog.log(LogLevel.ERROR.logLevel, tag, exception)
 }
 
 /**
@@ -267,7 +267,7 @@ fun error(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun error(exception: Throwable) {
-    HydraLog.log(LogLevel.ERROR.logLevel, null, exception)
+    KydraLog.log(LogLevel.ERROR.logLevel, null, exception)
 }
 
 /**
@@ -276,7 +276,7 @@ fun error(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun error(tag: String?, function: () -> String) {
-    HydraLog.log(LogLevel.ERROR.logLevel, tag, function)
+    KydraLog.log(LogLevel.ERROR.logLevel, tag, function)
 }
 
 /**
@@ -284,5 +284,5 @@ fun error(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun error(function: () -> String) {
-    HydraLog.log(LogLevel.ERROR.logLevel, null, function)
+    KydraLog.log(LogLevel.ERROR.logLevel, null, function)
 }

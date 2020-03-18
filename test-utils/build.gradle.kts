@@ -13,10 +13,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 kotlin {
     sourceSets {
         getByName("commonMain") {
