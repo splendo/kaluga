@@ -10,10 +10,6 @@ apply from: "../gradle/publishable_component.gradle"
 group = "com.splendo.kaluga"
 version = gradle.library_version
 
-repositories {
-    maven { url "https://dl.bintray.com/pocketbyte/hydra/" }
-}
-
 android {
     testOptions {
         unitTests.returnDefaultValues = true
@@ -21,6 +17,6 @@ android {
 }
 
 dependencies {
-    commonMainImplementation 'ru.pocketbyte.hydra:hydra-log:1.0.2'
-    commonTestImplementation 'co.touchlab:stately-collections:0.9.4'
+    commonMainImplementation 'ru.pocketbyte.kydra:kydra-log:1.0.4'
+    commonTestImplementation "co.touchlab:stately-collections:$gradle.stately_version"
 }

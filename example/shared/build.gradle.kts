@@ -10,7 +10,6 @@ repositories {
     mavenCentral()
     google()
     jcenter()
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
 }
 
 apply(from = "../../gradle/component.gradle")
