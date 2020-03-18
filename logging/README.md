@@ -1,11 +1,11 @@
 ## Logging
 
-This module provided simplified access to logging capabilities of [Hydra-log](https://github.com/PocketByte/kotlin-hydra-log).
+This module provided simplified access to logging capabilities of [Kotlin Kydra Log](https://github.com/PocketByte/kotlin-kydra-log).
 
 ### How to
 
 #### NOTE
-* Because of Hydra-log limitation logger can be initialized only once. All subsequent calls to initialize will return first logger used for initialization.
+* Because of Kydra Log limitation logger can be initialized only once. All subsequent calls to initialize will return first logger used for initialization.
 * If `initLogger(logger: Logger)` was not called before any logging calls, then default logger will be instantiated.
 
 #### Initialization

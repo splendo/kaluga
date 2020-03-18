@@ -5,7 +5,6 @@ apply plugin: 'org.jetbrains.kotlin.multiplatform'
 
 repositories {
     google()
-    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
     mavenCentral()
 }
 

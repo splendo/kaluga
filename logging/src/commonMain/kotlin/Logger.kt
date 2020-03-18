@@ -37,11 +37,11 @@ interface Logger {
 
 }
 
-internal inline fun ru.pocketbyte.hydra.log.LogLevel.getLogLevel(): LogLevel {
+internal inline fun ru.pocketbyte.kydra.log.LogLevel.getLogLevel(): LogLevel {
     return when (this) {
-        ru.pocketbyte.hydra.log.LogLevel.DEBUG -> LogLevel.DEBUG
-        ru.pocketbyte.hydra.log.LogLevel.INFO -> LogLevel.INFO
-        ru.pocketbyte.hydra.log.LogLevel.WARNING -> LogLevel.WARNING
-        ru.pocketbyte.hydra.log.LogLevel.ERROR -> LogLevel.ERROR
+        ru.pocketbyte.kydra.log.LogLevel.DEBUG -> LogLevel.DEBUG
+        ru.pocketbyte.kydra.log.LogLevel.INFO -> LogLevel.INFO
+        ru.pocketbyte.kydra.log.LogLevel.WARNING -> LogLevel.WARNING
+        ru.pocketbyte.kydra.log.LogLevel.ERROR -> LogLevel.ERROR
     }
 }

@@ -7,7 +7,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
     maven(url="https://kotlin.bintray.com/kotlinx")
 }
 

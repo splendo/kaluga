@@ -12,10 +12,6 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 dependencies {
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
