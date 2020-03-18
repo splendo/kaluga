@@ -1,6 +1,3 @@
-package com.splendo.kaluga.logging
-import co.touchlab.stately.collections.frozenCopyOnWriteList
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,12 +16,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.logging
+
+import co.touchlab.stately.collections.IsoMutableList
+
 class LoggerMock : Logger {
 
-    val exceptionsList = frozenCopyOnWriteList<Throwable?>()
-    val messageList = frozenCopyOnWriteList<String?>()
-    val tagList = frozenCopyOnWriteList<String?>()
-    val levelList = frozenCopyOnWriteList<LogLevel?>()
+    val exceptionsList: IsoMutableList<Throwable?> = IsoMutableList()
+    val messageList = IsoMutableList<String?>()
+    val tagList = IsoMutableList<String?>()
+    val levelList = IsoMutableList<LogLevel?>()
 
     override fun log(level: LogLevel, tag: String?, message: String) {
         levelList.add(level)
