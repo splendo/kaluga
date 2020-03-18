@@ -18,5 +18,5 @@ android {
 
 dependencies {
     commonMainImplementation 'ru.pocketbyte.kydra:kydra-log:1.0.4'
-    commonTestImplementation 'co.touchlab:stately-collections:1.0.0-a2'
+    commonTestImplementation "co.touchlab:stately-collections:$gradle.stately_version"
 }
