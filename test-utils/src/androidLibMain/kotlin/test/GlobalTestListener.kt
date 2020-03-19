@@ -1,8 +1,8 @@
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.log.LogLevel
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.initLogger
+import com.splendo.kaluga.logging.LogLevel
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.initLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext

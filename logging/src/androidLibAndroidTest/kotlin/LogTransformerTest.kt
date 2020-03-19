@@ -16,9 +16,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.log.transformTag
-import org.junit.Test
+import com.splendo.kaluga.logging.transformTag
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class LogTransformerTest {
 
