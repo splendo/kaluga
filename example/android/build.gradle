@@ -50,8 +50,7 @@ dependencies {
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
         implementation project(':shared')
-    }
-    else {
+    } else {
         implementation project(':location')
         implementation project(':base')
         implementation project(':shared')
@@ -62,6 +61,8 @@ dependencies {
     }
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc03'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha03'

@@ -46,5 +46,13 @@ class FeaturesListActivity : AppCompatActivity(R.layout.activity_features_list) 
                 )
             )
         }
+        btn_collection_view.setOnClickListener {
+            startActivity(
+                Intent(
+                    this,
+                    CollectionViewActivity::class.java
+                )
+            )
+        }
     }
 }

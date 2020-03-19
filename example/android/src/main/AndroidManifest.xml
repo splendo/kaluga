@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.splendo.kaluga.example">
+
     <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <!-- If your app targets Android 9 or lower,  -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"/> <!-- If your app targets Android 9 or lower, -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
@@ -17,24 +18,32 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.splendo.kaluga.example.FeaturesListActivity"
-                  android:label="Features list">
+        <activity
+            android:name=".FeaturesListActivity"
+            android:label="Features list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".location.LocationActivity"
-                  android:label="Location"/>
-        <activity android:name=".permissions.PermissionsDemoListActivity"
-                  android:label="Permissions list"/>
-        <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
-                  android:label="Bluetooth"/>
-        <activity android:name=".alerts.AlertsActivity"
-                  android:label="Alerts"/>
-        <activity android:name=".loading.LoadingActivity"
-                  android:label="Loading Indicator"/>
+        <activity
+            android:name=".location.LocationActivity"
+            android:label="Location"/>
+        <activity
+            android:name=".permissions.PermissionsDemoListActivity"
+            android:label="Permissions list"/>
+        <activity
+            android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
+            android:label="Bluetooth"/>
+        <activity
+            android:name=".alerts.AlertsActivity"
+            android:label="Alerts"/>
+        <activity
+            android:name=".loading.LoadingActivity"
+            android:label="Loading Indicator"/>
+        <activity
+            android:name=".CollectionViewActivity"
+            android:label="Collection View"/>
     </application>
-
 </manifest>
