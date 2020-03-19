@@ -17,8 +17,12 @@
 
 package com.splendo.kaluga.example.ui.collectionview
 
-import androidx.lifecycle.ViewModel
+import com.splendo.kaluga.collectionView.CollectionItemRepository
+import com.splendo.kaluga.collectionView.CollectionItemsViewModel
+import com.splendo.kaluga.collectionView.CollectionViewItem
 
-class CollectionViewViewModel : ViewModel() {
+class CollectionViewViewModel(
+    repository: CollectionItemRepository<CollectionViewItem>
+) : CollectionItemsViewModel<CollectionViewItem>(repository) {
     // TODO: Implement the ViewModel
 }

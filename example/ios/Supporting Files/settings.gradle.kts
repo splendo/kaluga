@@ -58,6 +58,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
 
     include(":hud")
     project(":hud").projectDir = file("../../../hud")
+
+    include(":collection-view")
+    project(":collection-view").projectDir = file("../../../collection-view")
 }
 
 include(":android")
