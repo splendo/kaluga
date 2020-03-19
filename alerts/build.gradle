@@ -13,7 +13,6 @@ version = gradle.library_version
 
 repositories {
     google()
-    maven { url = "https://dl.bintray.com/pocketbyte/hydra/" }
     mavenCentral()
 }
 
@@ -41,7 +40,8 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation project(":base", "")
-                implementation 'co.touchlab:stately:0.9.5'
+                implementation "co.touchlab:stately-common:$gradle.stately_version"
+                implementation "co.touchlab:stately-concurrency:$gradle.stately_version"
             }
         }
     }
