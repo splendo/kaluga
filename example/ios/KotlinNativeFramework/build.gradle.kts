@@ -1,13 +1,12 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("xcode-compat") version "0.2.3"
+    kotlin("xcode-compat") version "0.2.5"
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
     maven(url="https://kotlin.bintray.com/kotlinx")
 }
 

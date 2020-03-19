@@ -20,8 +20,8 @@ import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.location.LocationFlowable
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
@@ -33,7 +33,7 @@ import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
-import ru.pocketbyte.hydra.log.HydraLog
+import ru.pocketbyte.kydra.log.KydraLog
 import platform.UIKit.UIViewController
 
 class KNAlertFramework {
@@ -53,7 +53,7 @@ class KotlinNativeFramework {
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
-    fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
+    fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         val location = LocationFlowable.Builder(locationManager).create()

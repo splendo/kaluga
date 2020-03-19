@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.google.android.gms.location.*
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
