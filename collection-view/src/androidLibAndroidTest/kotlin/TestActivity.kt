@@ -21,5 +21,16 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity() {
-    val viewModel: CollectionViewModel by viewModels()
+
+    class TestRepository : CollectionItemRepository<CollectionViewItem>() {
+        override suspend fun getItems() = listOf(
+            CollectionViewItem("One"),
+            CollectionViewItem("Two"),
+            CollectionViewItem("Tri")
+        )
+    }
+
+    class TestViewModel : CollectionItemsViewModel<CollectionViewItem>(TestRepository())
+
+    val viewModel: TestViewModel by viewModels()
 }

@@ -17,25 +17,26 @@
 
 package com.splendo.kaluga.collectionView
 
-import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
-import org.junit.Test
-import kotlin.test.assertEquals
 
-class CollectionViewTests {
+open class CollectionItemsViewModel<Item : CollectionViewItem>(
+    private val repository: CollectionItemRepository<Item>
+) : CollectionViewModel() {
 
-    @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
+    private val items = ConflatedBroadcastChannel<List<Item>>()
 
-    @Test
-    fun testViewModel() = runBlockingTest {
-        MainScope().launch(Dispatchers.Main) {
-            activityRule.activity.viewModel.subscribe {
-                assertEquals(it.count(), 3)
+    init {
+        coroutineScope.launch {
+            items.offer(repository.getItems())
+        }
+    }
+
+    fun subscribe(block: (List<Item>) -> Unit) {
+        coroutineScope.launch {
+            items.consumeEach {
+                block(it)
             }
         }
     }

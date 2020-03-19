@@ -17,26 +17,4 @@
 
 package com.splendo.kaluga.collectionView
 
-import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
-import org.junit.Test
-import kotlin.test.assertEquals
-
-class CollectionViewTests {
-
-    @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
-
-    @Test
-    fun testViewModel() = runBlockingTest {
-        MainScope().launch(Dispatchers.Main) {
-            activityRule.activity.viewModel.subscribe {
-                assertEquals(it.count(), 3)
-            }
-        }
-    }
-}
+open class CollectionViewItem(val title: String)
