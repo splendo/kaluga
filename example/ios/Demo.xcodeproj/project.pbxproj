@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
+		4B9F5C012424EF3F00C37F57 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F5C002424EF3F00C37F57 /* CollectionViewController.swift */; };
+		4B9F5C052424F4D200C37F57 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9F5C032424F4D200C37F57 /* CollectionViewCell.swift */; };
+		4B9F5C062424F4D200C37F57 /* CollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4B9F5C042424F4D200C37F57 /* CollectionViewCell.xib */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
 		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
 		7450B266B7AD1FE0B79C10EA /* KotlinNativeFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -62,6 +65,9 @@
 /* Begin PBXFileReference section */
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
+		4B9F5C002424EF3F00C37F57 /* CollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
+		4B9F5C032424F4D200C37F57 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		4B9F5C042424F4D200C37F57 /* CollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionViewCell.xib; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
 		741A9B938B05534BD1B508C6 /* settings.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = settings.gradle.kts; sourceTree = "<group>"; };
@@ -139,6 +145,24 @@
 			path = Alerts;
 			sourceTree = "<group>";
 		};
+		4B9F5BFF2424EF1600C37F57 /* Collections */ = {
+			isa = PBXGroup;
+			children = (
+				4B9F5C022424F4BD00C37F57 /* Cells */,
+				4B9F5C002424EF3F00C37F57 /* CollectionViewController.swift */,
+			);
+			path = Collections;
+			sourceTree = "<group>";
+		};
+		4B9F5C022424F4BD00C37F57 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				4B9F5C032424F4D200C37F57 /* CollectionViewCell.swift */,
+				4B9F5C042424F4D200C37F57 /* CollectionViewCell.xib */,
+			);
+			path = Cells;
+			sourceTree = "<group>";
+		};
 		743414FDF97167BD81A5293E /* wrapper */ = {
 			isa = PBXGroup;
 			children = (
@@ -200,6 +224,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				4B9F5BFF2424EF1600C37F57 /* Collections */,
 				4B02E502236B2206003F0B36 /* LoadingIndicator */,
 				4B54CB1F2369DA4E00B69B2D /* Alerts */,
 				4B54CB1E2369DA2B00B69B2D /* Location */,
@@ -408,6 +433,7 @@
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
 				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
+				4B9F5C062424F4D200C37F57 /* CollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -442,8 +468,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B9F5C012424EF3F00C37F57 /* CollectionViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
+				4B9F5C052424F4D200C37F57 /* CollectionViewCell.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
