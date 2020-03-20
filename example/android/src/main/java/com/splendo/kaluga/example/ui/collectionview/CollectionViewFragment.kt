@@ -23,8 +23,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.CollectionViewViewModel
+import kotlinx.android.synthetic.main.collection_view_fragment.*
 
 class CollectionViewFragment : Fragment() {
 
@@ -33,6 +35,7 @@ class CollectionViewFragment : Fragment() {
     }
 
     private val viewModel: CollectionViewViewModel by viewModels { ItemsRepositoryFactory() }
+    private val itemsAdapter by lazy { CollectionViewAdapter() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,8 +47,11 @@ class CollectionViewFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        recyclerView.layoutManager = GridLayoutManager(this.context, 1)
+        recyclerView.adapter = itemsAdapter
+
         viewModel.subscribe {
-            println("Has new items $it")
+            itemsAdapter.submitList(it)
         }
     }
 }
