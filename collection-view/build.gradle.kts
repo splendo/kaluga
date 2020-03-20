@@ -49,7 +49,7 @@ kotlin {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
                 implementation("androidx.appcompat:appcompat:1.1.0")
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha01")
+                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
                 implementation("co.touchlab:stately-common:${ext["stately_version"]}")
             }
         }
