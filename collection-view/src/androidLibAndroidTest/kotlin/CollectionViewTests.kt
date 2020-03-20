@@ -18,13 +18,13 @@
 package com.splendo.kaluga.collectionView
 
 import androidx.test.rule.ActivityTestRule
+import kotlin.test.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class CollectionViewTests {
 

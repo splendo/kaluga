@@ -19,7 +19,6 @@ import kotlin.test.assertNotNull
 
  */
 
-
 class CollectionViewTests {
 
     @Test
