@@ -28,14 +28,20 @@ import com.splendo.kaluga.collectionView.CollectionViewItem
 import com.splendo.kaluga.example.R
 import kotlinx.android.synthetic.main.list_collection_item.view.*
 
-class CollectionViewAdapter : ListAdapter<CollectionViewItem, RecyclerView.ViewHolder>(
-    object : DiffUtil.ItemCallback<CollectionViewItem>() {
-        override fun areItemsTheSame(oldItem: CollectionViewItem, newItem: CollectionViewItem) = oldItem.title == newItem.title
-        override fun areContentsTheSame(oldItem: CollectionViewItem, newItem: CollectionViewItem) = oldItem == newItem
-    }
-) {
+class CollectionViewAdapter : ListAdapter<CollectionViewItem, RecyclerView.ViewHolder>(ItemDiffCallback()) {
 
-    class ItemViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    class ItemDiffCallback : DiffUtil.ItemCallback<CollectionViewItem>() {
+
+        override fun areItemsTheSame(oldItem: CollectionViewItem, newItem: CollectionViewItem): Boolean {
+            return oldItem == newItem
+        }
+
+        override fun areContentsTheSame(oldItem: CollectionViewItem, newItem: CollectionViewItem): Boolean {
+            return oldItem.title == newItem.title
+        }
+    }
+
+    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val titleLabel: TextView = view.titleLabel
     }
 
@@ -50,6 +56,8 @@ class CollectionViewAdapter : ListAdapter<CollectionViewItem, RecyclerView.ViewH
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = getItem(position)
         val viewHolder = holder as ItemViewHolder
-        viewHolder.titleLabel.text = item.title
+        viewHolder.apply {
+            titleLabel.text = item.title
+        }
     }
 }
