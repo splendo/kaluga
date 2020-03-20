@@ -14,6 +14,12 @@ repositories {
 
 apply(from = "../../gradle/component.gradle")
 
+dependencies {
+    val lifecycleVersion = "2.2.0"
+    implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+}
+
 kotlin {
     sourceSets {
         commonMain {
@@ -21,7 +27,6 @@ kotlin {
             var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":location", ""))
                     implementation(project(":base", ""))
@@ -29,6 +34,7 @@ kotlin {
                     implementation(project(":alerts", ""))
                     implementation(project(":permissions", ""))
                     implementation(project(":hud", ""))
+                    implementation(project(":collection-view", ""))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:location:$libraryVersion")
@@ -37,6 +43,7 @@ kotlin {
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:hud:$libraryVersion")
+                    implementation("com.splendo.kaluga:collection-view:$libraryVersion")
                 }
             }
         }

@@ -15,21 +15,15 @@
 
  */
 
-package com.splendo.kaluga.example
+package com.splendo.kaluga.example.ui.collectionview
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.splendo.kaluga.example.ui.collectionview.CollectionViewFragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.splendo.kaluga.example.shared.CollectionViewViewModel
 
-class CollectionViewActivity : AppCompatActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.collection_view_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, CollectionViewFragment.newInstance())
-                .commitNow()
-        }
+class ItemsRepositoryFactory : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        return CollectionViewViewModel.create() as T
     }
 }

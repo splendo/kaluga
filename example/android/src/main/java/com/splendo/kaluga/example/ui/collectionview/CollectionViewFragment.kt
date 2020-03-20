@@ -23,11 +23,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.collectionView.CollectionItemRepository
-import com.splendo.kaluga.collectionView.CollectionViewItem
+import com.splendo.kaluga.example.shared.CollectionViewViewModel
 
 class CollectionViewFragment : Fragment() {
 
@@ -35,21 +32,7 @@ class CollectionViewFragment : Fragment() {
         fun newInstance() = CollectionViewFragment()
     }
 
-    class Repo : CollectionItemRepository<CollectionViewItem>() {
-        override suspend fun getItems() = listOf(
-            CollectionViewItem("One"),
-            CollectionViewItem("Two"),
-            CollectionViewItem("3")
-        )
-    }
-
-    class RepoFactory : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return CollectionViewViewModel(Repo()) as T
-        }
-    }
-
-    private val viewModel: CollectionViewViewModel by viewModels { RepoFactory() }
+    private val viewModel: CollectionViewViewModel by viewModels { ItemsRepositoryFactory() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +43,9 @@ class CollectionViewFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // TODO: Use the ViewModel
-    }
 
+        viewModel.subscribe {
+            println("Has new items $it")
+        }
+    }
 }

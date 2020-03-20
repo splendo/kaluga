@@ -15,14 +15,15 @@
 
  */
 
-package com.splendo.kaluga.example.ui.collectionview
+package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.collectionView.CollectionItemRepository
-import com.splendo.kaluga.collectionView.CollectionItemsViewModel
 import com.splendo.kaluga.collectionView.CollectionViewItem
 
-class CollectionViewViewModel(
-    repository: CollectionItemRepository<CollectionViewItem>
-) : CollectionItemsViewModel<CollectionViewItem>(repository) {
-    // TODO: Implement the ViewModel
+class ItemsRepository : CollectionItemRepository<CollectionViewItem>() {
+    override suspend fun getItems() = listOf(
+        CollectionViewItem("One"),
+        CollectionViewItem("Two"),
+        CollectionViewItem("3")
+    )
 }
