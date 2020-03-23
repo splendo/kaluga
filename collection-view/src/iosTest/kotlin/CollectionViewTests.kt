@@ -35,7 +35,7 @@ class CollectionViewTests {
     }
 
     @Test
-    fun testViewModelNonEmptyList()  {
+    fun testViewModelNonEmptyList() {
         val viewModel = makeViewModel(listOf(
             CollectionViewItem("One"),
             CollectionViewItem("Two"),
