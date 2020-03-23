@@ -53,10 +53,5 @@ kotlin {
                 implementation("co.touchlab:stately-common:${ext["stately_version"]}")
             }
         }
-        commonTest {
-            dependencies {
-                implementation("org.mockito:mockito-core:3.1.0")
-            }
-        }
     }
 }

@@ -1,7 +1,3 @@
-import com.splendo.kaluga.collectionView.CollectionViewModel
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -19,10 +15,34 @@ import kotlin.test.assertNotNull
 
  */
 
+import com.splendo.kaluga.collectionView.CollectionViewItem
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
 class CollectionViewTests {
 
+    companion object {
+        fun makeViewModel(items: List<CollectionViewItem>) = TestViewModel(TestRepository(items))
+    }
+
     @Test
-    fun testCollectionViewModel() {
-        assertNotNull(CollectionViewModel())
+    fun testViewModelEmptyList() {
+        val viewModel = makeViewModel(emptyList())
+        viewModel.subscribe {
+            assertTrue(it.isEmpty())
+        }
+    }
+
+    @Test
+    fun testViewModelNonEmptyList()  {
+        val viewModel = makeViewModel(listOf(
+            CollectionViewItem("One"),
+            CollectionViewItem("Two"),
+            CollectionViewItem("Tri")
+        ))
+        viewModel.subscribe {
+            assertEquals(it.count(), 3)
+        }
     }
 }

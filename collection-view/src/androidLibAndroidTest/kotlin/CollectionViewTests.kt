@@ -19,6 +19,7 @@ package com.splendo.kaluga.collectionView
 
 import androidx.test.rule.ActivityTestRule
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -32,7 +33,22 @@ class CollectionViewTests {
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
     @Test
-    fun testViewModel() = runBlockingTest {
+    fun testViewModelEmptyList() = runBlockingTest {
+        activityRule.activity.items = emptyList()
+        MainScope().launch(Dispatchers.Main) {
+            activityRule.activity.viewModel.subscribe {
+                assertTrue(it.isEmpty())
+            }
+        }
+    }
+
+    @Test
+    fun testViewModelNonEmptyList() = runBlockingTest {
+        activityRule.activity.items = listOf(
+            CollectionViewItem("One"),
+            CollectionViewItem("Two"),
+            CollectionViewItem("Tri")
+        )
         MainScope().launch(Dispatchers.Main) {
             activityRule.activity.viewModel.subscribe {
                 assertEquals(it.count(), 3)
