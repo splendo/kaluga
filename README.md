@@ -10,7 +10,7 @@ Where appropriate it uses Coroutines, Channels and Flow. This enables developers
 
 This project uses Android Studio. You might need a canary version at times. 
 ______
-Both idea and android studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
+Both IDEA and Android Studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
 
 Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
 ______
@@ -49,7 +49,7 @@ Consider using a Gradle task configuration to run JVM tests (you can use the `--
 
 ### iOS tests
 
-iOs tests can be run using the `iosTest` task in gradle which uses XCTest. 
+iOS tests can be run using the `iosTest` task in gradle which uses XCTest. 
 Make sure you have the Simulator setup with a working target device. For now you can change the target device inside the gradle build file.
 
 The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
@@ -66,3 +66,19 @@ The libraries are not published on any hosted repository yet, but can be publish
 
 The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.
 
+### Code style verification
+
+This project uses [ktlint](https://github.com/pinterest/ktlint) Kotlin linter with standard rules.
+Each component should setup ktlint gradle [plugin](https://github.com/jlleitschuh/ktlint-gradle) in `build.gradle.kts` file:
+
+```kotlin
+apply(plugin = "org.jlleitschuh.gradle.ktlint")
+```
+
+You can run `Ktlint Check` configuration from IDE before commit changes to git.
+
+#### Formatting
+
+You can run `Ktlint Format` configuration to reformat source code if needed.
+
+See ktlint and gradle plugin documentation for more details.
