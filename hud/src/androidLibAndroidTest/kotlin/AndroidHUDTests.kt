@@ -5,15 +5,15 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import kotlinx.coroutines.launch
-import kotlin.test.Test
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
-import kotlin.test.assertFalse
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Rule
 
 /*
 
@@ -34,11 +34,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 const val DEFAULT_TIMEOUT = 2_500L
 
-fun UiDevice.assertTextAppears(text:String) {
+fun UiDevice.assertTextAppears(text: String) {
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))
 }
 
-fun UiDevice.assertTextDisappears(text:String) {
+fun UiDevice.assertTextDisappears(text: String) {
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
@@ -95,7 +95,7 @@ class AndroidHUDTests {
 
     @Test
     fun testPresentDuring() = runBlockingTest {
-        lateinit var indicatorProcessing:HUD
+        lateinit var indicatorProcessing: HUD
 
         val loading1 = EmptyCompletableDeferred()
         val loading2 = EmptyCompletableDeferred()
@@ -120,7 +120,7 @@ class AndroidHUDTests {
         device.assertTextAppears(LOADING)
         assertTrue(indicatorLoading.isVisible)
         loading1.complete()
-        
+
         // check the Processing dialog is popped on top
         device.assertTextDisappears(LOADING)
         device.assertTextAppears(PROCESSING)

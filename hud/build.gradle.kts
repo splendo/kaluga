@@ -6,7 +6,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 apply(from = "../gradle/publishable_component.gradle")
 
@@ -33,7 +33,6 @@ android {
         unitTests.isReturnDefaultValues = true
     }
 }
-
 
 kotlin {
     targets {
