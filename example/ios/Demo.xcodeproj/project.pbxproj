@@ -20,6 +20,7 @@
 		74D656BE6B4BD50115400411 /* DemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744CF99B70DA1947AA98CA3B /* DemoTests.swift */; };
 		74E6599B023623BD96737582 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 74F483E9C1890D693F808DDA /* Main.storyboard */; };
 		978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */; };
+		E4DFA663EDF502244A70C027 /* Pods_Demo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 749B9359F1831B5F575D17A2 /* Pods_Demo.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -76,6 +77,7 @@
 		746834742E284396FD5452F4 /* DemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		746885BADB9F6661211345DA /* KotlinNativeFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KotlinNativeFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		746E133CAEC5C7B1D516B11F /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		749B9359F1831B5F575D17A2 /* Pods_Demo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Demo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74A0718952D0CC604E49709B /* DemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		74B0C3AB70AAB7878B48F6B1 /* gradle-wrapper.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = "gradle-wrapper.properties"; sourceTree = "<group>"; };
 		74BBBF2C57521E71982179E0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -87,6 +89,8 @@
 		74E253D6EF4BB7BA4916943D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		74F1F3223C9CF11420F72B08 /* gradle.properties */ = {isa = PBXFileReference; lastKnownFileType = file.properties; path = gradle.properties; sourceTree = "<group>"; };
 		978348A6235DF586005B140B /* BluetoothPermissionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothPermissionViewController.swift; sourceTree = "<group>"; };
+		A3724CDDF90CE695B8D6219C /* Pods-Demo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.release.xcconfig"; path = "Target Support Files/Pods-Demo/Pods-Demo.release.xcconfig"; sourceTree = "<group>"; };
+		ACF5092D8C534702EF2316E4 /* Pods-Demo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo.debug.xcconfig"; path = "Target Support Files/Pods-Demo/Pods-Demo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +113,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */,
+				E4DFA663EDF502244A70C027 /* Pods_Demo.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2EE36DA0ED0EFF4F4468BEB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +178,7 @@
 				74D6698E6E24A4F93E6B289A /* DemoUITests */,
 				747F646D72854D37D5686909 /* KotlinNativeFramework */,
 				74588EBE65D1E22D05BFD2A5 /* Supporting Files */,
+				BB85EE7B56C124CFAFA56F5C /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -236,6 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				742C6ACDA3C877A6128316ED /* KotlinNativeFramework.framework */,
+				749B9359F1831B5F575D17A2 /* Pods_Demo.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -284,6 +298,16 @@
 			path = Permissions;
 			sourceTree = "<group>";
 		};
+		BB85EE7B56C124CFAFA56F5C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				ACF5092D8C534702EF2316E4 /* Pods-Demo.debug.xcconfig */,
+				A3724CDDF90CE695B8D6219C /* Pods-Demo.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -310,6 +334,7 @@
 			buildConfigurationList = 7455FEDF902D83B941B78621 /* Build configuration list for PBXNativeTarget "KotlinNativeFramework" */;
 			buildPhases = (
 				74EB9E9C533BEEA0282341AE /* Compile Kotlin/Native */,
+				B2EE36DA0ED0EFF4F4468BEB /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -324,10 +349,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 74C754F7F747073B076C3A91 /* Build configuration list for PBXNativeTarget "Demo" */;
 			buildPhases = (
+				CE536F21E66DB62F5CF14A98 /* [CP] Check Pods Manifest.lock */,
 				744156D82DB12C1F9CC3C68F /* Sources */,
 				74B635A880CB81844D31A213 /* Frameworks */,
 				746C535FD7586B544C684D34 /* Resources */,
 				74A05339C53B02B14407A5BD /* Embed Frameworks */,
+				3FF3E1C1D5CD56AB1A3FFF0A /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -421,6 +448,36 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		3FF3E1C1D5CD56AB1A3FFF0A /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Demo/Pods-Demo-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Demo/Pods-Demo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		74EB9E9C533BEEA0282341AE /* Compile Kotlin/Native */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -434,6 +491,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if [ -z \"$KOTLIN_NATIVE_BUILD_CAPABLE\" ]; then\necho \"arch: $ARCHS\"\ncd \"$SRCROOT/Supporting Files\"\nsh -c \". gradlew buildForXcode\"\nfi\n            \n";
+		};
+		CE536F21E66DB62F5CF14A98 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Demo-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -610,11 +689,12 @@
 		};
 		74BDCF7AC0CDEAF092DB5F7F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = ACF5092D8C534702EF2316E4 /* Pods-Demo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
+				FRAMEWORK_SEARCH_PATHS = "$BUILT_PRODUCTS_DIR";
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.Demo;
@@ -728,11 +808,12 @@
 		};
 		74FB1F493C4D48DDF9E1C969 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = A3724CDDF90CE695B8D6219C /* Pods-Demo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
+				FRAMEWORK_SEARCH_PATHS = "$BUILT_PRODUCTS_DIR";
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.Demo;

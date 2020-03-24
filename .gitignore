@@ -15,6 +15,9 @@ build/
 DerivedData/
 .gradle/
 
+## Cocoapods
+Pods/
+
 ## Various settings
 *.pbxuser
 !default.pbxuser

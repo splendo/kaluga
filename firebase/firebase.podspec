@@ -3,8 +3,8 @@ Pod::Spec.new do |spec|
     spec.version                  = '0.0.5'
     spec.homepage                 = 'https://kaluga.splendo.com'
     spec.source                   = { :git => "Not Published", :tag => "Cocoapods/#{spec.name}/#{spec.version}" }
-    spec.authors                  = ''
-    spec.license                  = ''
+    spec.authors                  = 'Splendo'
+    spec.license                  = 'Apache Licence, Version 2.0'
     spec.summary                  = 'Kaluga'
 
     spec.static_framework         = true
@@ -12,17 +12,12 @@ Pod::Spec.new do |spec|
     spec.libraries                = "c++"
     spec.module_name              = "#{spec.name}_umbrella"
 
-    spec.dependency 'FirebaseCore', '~> 6.0.2'
-    spec.dependency 'FirebaseFirestore', '~> 1.3.2'
+    spec.dependency 'FirebaseCore', '6.0.2'
+    spec.dependency 'FirebaseFirestore', '1.3.2'
 
     spec.pod_target_xcconfig = {
         'KOTLIN_TARGET[sdk=iphonesimulator*]' => 'ios_x64',
-        'KOTLIN_TARGET[sdk=iphoneos*]' => 'ios_arm',
-        'KOTLIN_TARGET[sdk=watchsimulator*]' => 'watchos_x86',
-        'KOTLIN_TARGET[sdk=watchos*]' => 'watchos_arm',
-        'KOTLIN_TARGET[sdk=appletvsimulator*]' => 'tvos_x64',
-        'KOTLIN_TARGET[sdk=appletvos*]' => 'tvos_arm64',
-        'KOTLIN_TARGET[sdk=macosx*]' => 'macos_x64'
+        'KOTLIN_TARGET[sdk=iphoneos*]' => 'ios_arm'
     }
 
     spec.script_phases = [

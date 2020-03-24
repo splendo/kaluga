@@ -36,9 +36,9 @@ kotlin {
                     packageName("cocoapods.FirebaseCore")
                     defFile(project.file("$projectDir/src/iosMain/c_interop/FirebaseCore.def"))
                     includeDirs.apply {
-                        allHeaders("$projectDir/../example/ios/Pods/FirebaseCore/Firebase/Core/Public")
+                        allHeaders("$projectDir/../example/ios/Pods/FirebaseCore/FirebaseCore/Source/Public")
                     }
-                    compilerOpts("-F$projectDir/src/iosMain/c_interop/modules/FirebaseCore-6.0.2")
+                    compilerOpts("-F$projectDir/src/iosMain/c_interop/modules/FirebaseCore-6.0.2/")
                 }
             }
         }
