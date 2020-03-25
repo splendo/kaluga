@@ -1,8 +1,7 @@
 package com.splendo.kaluga.hud
 
-import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
 
 /*
 
@@ -22,17 +21,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class TestActivity : AppCompatActivity() {
+open class HudViewModel : ViewModel() {
 
-    val viewModel: HudViewModel by viewModels()
+    val builder = AndroidHUD.Builder()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.subscribe(this)
+    fun subscribe(activity: AppCompatActivity) {
+        builder.subscribe(activity, activity.supportFragmentManager)
     }
 
-    override fun onDestroy() {
-        viewModel.unsubscribe()
-        super.onDestroy()
+    fun unsubscribe() {
+        builder.unsubscribe()
     }
 }
