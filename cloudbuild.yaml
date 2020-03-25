@@ -1,7 +1,7 @@
 steps:
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: assemble
-    args: ["./gradlew", "assemble"]
+    args: ["./gradlew", "-x", "carthageBootstrap", "assemble"]
     env:
       - 'TERM=dumb'
       - 'GRADLE_USER_HOME=/workspace/gradle_home'
