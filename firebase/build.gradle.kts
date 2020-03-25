@@ -30,8 +30,8 @@ kotlin {
             }
         }
 
-        ios {
-            compilations.getByName("main") {
+        targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
+            it.compilations.getByName("main") {
                 val firebaseCore by cinterops.creating {
                     packageName("cocoapods.FirebaseCore")
                     defFile(project.file("$projectDir/src/iosMain/c_interop/FirebaseCore.def"))
@@ -43,6 +43,7 @@ kotlin {
             }
         }
     }
+
     cocoapods {
         summary = "Kaluga"
         homepage = "https://kaluga.splendo.com"
