@@ -42,7 +42,7 @@ internal class UiContextObserver : CoroutineScope by MainScope() {
                 }
                 else -> {
                     check(field == null) {
-                        "Can't set UiContextData if it is already set." +
+                        "Can't set UiContextData if it is already set. " +
                         "The Android lifecycle requires your existing UI context to be unset before a new one is set"
                     }
                 }
