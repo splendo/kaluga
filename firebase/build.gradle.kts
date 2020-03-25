@@ -21,7 +21,6 @@ android {
 }
 
 kotlin {
-    iosX64()
 
     sourceSets {
         commonMain {
@@ -30,7 +29,8 @@ kotlin {
                 implementation("com.google.firebase:firebase-auth:17.0.0")
             }
         }
-        iosX64 {
+
+        ios {
             compilations.getByName("main") {
                 val firebaseCore by cinterops.creating {
                     packageName("cocoapods.FirebaseCore")
