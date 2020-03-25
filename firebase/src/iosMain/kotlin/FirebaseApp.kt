@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.firebase
 
-actual class FirebaseApp
+actual typealias FirebaseApp = Firebase.FirebaseCore.FIRApp

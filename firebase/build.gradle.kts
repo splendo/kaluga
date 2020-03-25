@@ -3,7 +3,6 @@ plugins {
     id("jacoco")
     id("com.android.library")
     id("maven-publish")
-    id("org.jetbrains.kotlin.native.cocoapods")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -32,20 +31,17 @@ kotlin {
 
         targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
             it.compilations.getByName("main") {
-                val firebaseCore by cinterops.creating {
-                    packageName("cocoapods.FirebaseCore")
-                    defFile(project.file("$projectDir/src/iosMain/c_interop/FirebaseCore.def"))
-                    includeDirs.apply {
-                        allHeaders("$projectDir/../example/ios/Pods/FirebaseCore/FirebaseCore/Source/Public")
+                listOf("Core", "Auth", "Firestore").forEach {
+                    cinterops.create("Firebase$it") {
+                        packageName("Firebase.Firebase$it")
+                        defFile(project.file("$projectDir/src/iosMain/c_interop/Firebase$it.def"))
+                        includeDirs.apply {
+                            allHeaders("$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/Firebase$it.framework/Headers/")
+                        }
+                        compilerOpts("-F$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/")
                     }
-                    compilerOpts("-F$projectDir/src/iosMain/c_interop/modules/FirebaseCore-6.0.2/")
                 }
             }
         }
-    }
-
-    cocoapods {
-        summary = "Kaluga"
-        homepage = "https://kaluga.splendo.com"
     }
 }

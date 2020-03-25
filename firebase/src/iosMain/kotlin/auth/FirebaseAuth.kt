@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.firebase.auth
 
-actual class FirebaseAuth
+actual typealias FirebaseAuth = Firebase.FirebaseAuth.FIRAuth

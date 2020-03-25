@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-actual class FirebaseFirestore
+actual typealias FirebaseFirestore = Firebase.FirebaseFirestore.FIRFirestore
