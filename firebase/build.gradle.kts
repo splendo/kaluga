@@ -29,14 +29,16 @@ kotlin {
             }
         }
 
+        val firebaseModules = listOf("FirebaseCore", "FirebaseAuth", "FirebaseFirestore")
+
         targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
             it.compilations.getByName("main") {
-                listOf("Core", "Auth", "Firestore").forEach {
-                    cinterops.create("Firebase$it") {
-                        packageName("Firebase.Firebase$it")
-                        defFile(project.file("$projectDir/src/iosMain/c_interop/Firebase$it.def"))
+                firebaseModules.forEach {
+                    cinterops.create(it) {
+                        packageName("Firebase.$it")
+                        defFile(project.file("$projectDir/src/iosMain/c_interop/$it-generated.def"))
                         includeDirs.apply {
-                            allHeaders("$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/Firebase$it.framework/Headers/")
+                            allHeaders("$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/$it.framework/Headers/")
                         }
                         compilerOpts("-F$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/")
                     }
@@ -44,15 +46,53 @@ kotlin {
             }
         }
 
-        task<Exec>("carthageUpdate") {
+        // linkerOpts not supported by cinterops
+        tasks.create("generateDefs") {
             group = "carthage"
-            executable = "carthage"
-            args(
-                "update",
-                "--project-directory", "src/iosMain/c_interop",
-                "--platform", "iOS",
-                "--cache-builds"
-            )
+            firebaseModules.forEach {
+                val templateFile = File("$projectDir/src/iosMain/c_interop/Firebase.def")
+                val generatedFile = File("$projectDir/src/iosMain/c_interop/$it-generated.def")
+                val content = templateFile.readText()
+                    .replace(
+                    "\$CARTHAGE_BUILD_PATH",
+                    "$projectDir/src/iosMain/c_interop/Carthage/Build/iOS/"
+                    ).replace(
+                        "\$FRAMEWORK",
+                        it
+                    )
+                delete(generatedFile)
+                generatedFile.createNewFile()
+                generatedFile.writeText(content)
+            }
+        }
+
+        tasks.create("cleanDefs", Delete::class.java) {
+            group = "carthage"
+            firebaseModules.forEach {
+                delete(File("$projectDir/src/iosMain/c_interop/$it-generated.def"))
+            }
+        }
+
+        tasks.named<Delete>("clean") {
+            dependsOn("cleanDefs")
+        }
+
+        listOf("bootstrap", "update").forEach {
+            task<Exec>("carthage${it.capitalize()}") {
+                group = "carthage"
+                executable = "carthage"
+                args(
+                    it,
+                    "--project-directory", "src/iosMain/c_interop",
+                    "--platform", "iOS",
+                    "--cache-builds"
+                )
+            }
+        }
+
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.CInteropProcess::class) {
+            dependsOn("carthageBootstrap")
+            dependsOn("generateDefs")
         }
     }
 }

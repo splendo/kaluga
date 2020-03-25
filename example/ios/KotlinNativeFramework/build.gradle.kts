@@ -7,6 +7,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     jcenter()
+    google()
     maven(url="https://kotlin.bintray.com/kotlinx")
 }
 
