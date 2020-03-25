@@ -43,5 +43,16 @@ kotlin {
                 }
             }
         }
+
+        task<Exec>("carthageUpdate") {
+            group = "carthage"
+            executable = "carthage"
+            args(
+                "update",
+                "--project-directory", "src/iosMain/c_interop",
+                "--platform", "iOS",
+                "--cache-builds"
+            )
+        }
     }
 }
