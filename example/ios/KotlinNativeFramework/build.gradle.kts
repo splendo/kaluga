@@ -25,13 +25,16 @@ kotlin {
 
             dependencies {
                 implementation(project(":shared", "${primaryIosArch}Default"))
-                implementation(project(":location", "${primaryIosArch}Default"))
-                implementation(project(":base", "${primaryIosArch}Default"))
-                implementation(project(":logging", "${primaryIosArch}Default"))
-                implementation(project(":alerts", "${primaryIosArch}Default"))
-                implementation(project(":permissions", "${primaryIosArch}Default"))
-                implementation(project(":hud", "${primaryIosArch}Default"))
-                implementation(project(":firebase", "${primaryIosArch}Default"))
+
+                if (!(ext["exampleAsRoot"] as Boolean)) {
+                    implementation(project(":location", "${primaryIosArch}Default"))
+                    implementation(project(":base", "${primaryIosArch}Default"))
+                    implementation(project(":logging", "${primaryIosArch}Default"))
+                    implementation(project(":alerts", "${primaryIosArch}Default"))
+                    implementation(project(":permissions", "${primaryIosArch}Default"))
+                    implementation(project(":hud", "${primaryIosArch}Default"))
+                    implementation(project(":firebase", "${primaryIosArch}Default"))
+                }
             }
         }
     }
