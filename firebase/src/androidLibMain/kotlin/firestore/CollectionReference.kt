@@ -17,10 +17,20 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+actual typealias CollectionReference = com.google.firebase.firestore.CollectionReference
 
-actual typealias FirebaseFirestore = FirebaseFirestore
+actual fun CollectionReference.document(documentPath: String?): DocumentReference {
+    TODO("Not yet implemented")
+}
 
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
+@Suppress("ConflictingExtensionProperty")
+actual val CollectionReference.id: String
+    get() = id
 
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+@Suppress("ConflictingExtensionProperty")
+actual val CollectionReference.path: String
+    get() = path
+
+@Suppress("ConflictingExtensionProperty")
+actual val CollectionReference.parent: DocumentReference?
+    get() = parent

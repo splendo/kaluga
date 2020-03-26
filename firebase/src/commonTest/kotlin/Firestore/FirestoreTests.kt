@@ -17,10 +17,13 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
-actual typealias FirebaseFirestore = FirebaseFirestore
+class FirestoreTests {
 
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+    @Test
+    fun testFirestoreInitialized() {
+        assertNotNull(getFirestoreInstance())
+    }
+}

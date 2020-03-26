@@ -17,10 +17,15 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+actual class CollectionReference : Query()
 
-actual typealias FirebaseFirestore = FirebaseFirestore
+actual fun CollectionReference.document(documentPath: String?): DocumentReference {
+    TODO("Not yet implemented")
+}
 
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+actual val CollectionReference.id: String
+    get() = TODO("Not yet implemented")
+actual val CollectionReference.path: String
+    get() = TODO("Not yet implemented")
+actual val CollectionReference.parent: DocumentReference?
+    get() = TODO("Not yet implemented")

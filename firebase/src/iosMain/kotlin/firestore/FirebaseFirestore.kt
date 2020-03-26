@@ -17,4 +17,10 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-actual typealias FirebaseFirestore = Firebase.FirebaseFirestore.FIRFirestore
+import Firebase.FirebaseFirestore.FIRFirestore
+
+actual typealias FirebaseFirestore = FIRFirestore
+
+actual fun getFirestoreInstance(): FirebaseFirestore = FIRFirestore.firestore()
+
+actual fun FirebaseFirestore.document(documentPath: String) = documentWithPath(documentPath)

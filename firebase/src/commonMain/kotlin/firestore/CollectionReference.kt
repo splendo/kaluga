@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+expect class CollectionReference : Query
 
-actual typealias FirebaseFirestore = FirebaseFirestore
+expect fun CollectionReference.document(documentPath: String? = null): DocumentReference
 
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+expect val CollectionReference.id: String
+expect val CollectionReference.path: String
+expect val CollectionReference.parent: DocumentReference?

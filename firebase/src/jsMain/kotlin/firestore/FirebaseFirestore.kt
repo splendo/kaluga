@@ -18,3 +18,11 @@
 package com.splendo.kaluga.firebase.firestore
 
 actual class FirebaseFirestore
+
+actual fun getFirestoreInstance(): FirebaseFirestore {
+    TODO("Not yet implemented")
+}
+
+actual fun FirebaseFirestore.document(documentPath: String): DocumentReference {
+    TODO("Not yet implemented")
+}

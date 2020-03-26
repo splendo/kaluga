@@ -17,10 +17,19 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+actual typealias CollectionReference = Firebase.FirebaseFirestore.FIRCollectionReference
 
-actual typealias FirebaseFirestore = FirebaseFirestore
+actual fun CollectionReference.document(documentPath: String?): DocumentReference {
+    TODO("Not yet implemented")
+}
 
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
+actual val CollectionReference.id: String
+    get() = collectionID
 
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual val CollectionReference.path: String
+    get() = path
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual val CollectionReference.parent: DocumentReference?
+    get() = parent

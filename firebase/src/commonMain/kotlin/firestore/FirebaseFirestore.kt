@@ -18,3 +18,7 @@
 package com.splendo.kaluga.firebase.firestore
 
 expect class FirebaseFirestore
+
+expect fun getFirestoreInstance(): FirebaseFirestore
+
+expect fun FirebaseFirestore.document(documentPath: String): DocumentReference
