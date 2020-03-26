@@ -20,7 +20,11 @@ package com.splendo.kaluga.firebase.firestore
 actual typealias CollectionReference = Firebase.FirebaseFirestore.FIRCollectionReference
 
 actual fun CollectionReference.document(documentPath: String?): DocumentReference {
-    TODO("Not yet implemented")
+    return if (documentPath != null) {
+        documentWithPath(documentPath)
+    } else {
+        documentWithAutoID()
+    }
 }
 
 actual val CollectionReference.id: String

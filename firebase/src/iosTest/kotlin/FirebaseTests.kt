@@ -15,4 +15,6 @@
 
  */
 
+package com.splendo.kaluga.firebase.firestore
+
 class FirebaseTests

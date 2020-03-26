@@ -17,10 +17,16 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-actual typealias CollectionReference = com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.CollectionReference
+
+actual typealias CollectionReference = CollectionReference
 
 actual fun CollectionReference.document(documentPath: String?): DocumentReference {
-    TODO("Not yet implemented")
+    return if (documentPath != null) {
+        document(documentPath)
+    } else {
+        document() /* Auto ID */
+    }
 }
 
 @Suppress("ConflictingExtensionProperty")
