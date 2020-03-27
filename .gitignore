@@ -70,5 +70,6 @@ projectFilesBackup*/
 
 # for now supply your own
 google-services.json
+GoogleService-Info.plist
 
 *.framework

@@ -4,6 +4,7 @@ plugins {
     id("com.android.library")
     id("maven-publish")
     id("org.jlleitschuh.gradle.ktlint")
+    id("com.google.gms.google-services")
 }
 
 val ext = (gradle as ExtensionAware).extra
@@ -30,12 +31,20 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("com.google.firebase:firebase-firestore:19.0.2")
-                implementation("com.google.firebase:firebase-auth:17.0.0")
+                implementation("com.google.firebase:firebase-firestore:21.4.1")
+                implementation("com.google.firebase:firebase-auth:19.3.0")
+                implementation("com.google.gms:google-services:3.2.1")
             }
         }
 
         targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
+
+            // Copy GoogleService-Info.plist into test binary
+            File("$projectDir/src/debug/GoogleService-Info.plist").copyTo(
+                File("${it.binaries.getTest("DEBUG").outputDirectory}/GoogleService-Info.plist"),
+                overwrite = true
+            )
+
             it.compilations.getByName("main") {
                 firebaseModules.forEach {
                     cinterops.create(it) {

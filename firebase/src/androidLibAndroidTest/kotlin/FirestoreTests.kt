@@ -15,21 +15,22 @@
 
  */
 
-package com.splendo.kaluga.firebase.firestore
-
-import Firebase.FirebaseCore.FIRApp
-import kotlin.test.BeforeTest
-import kotlin.test.Test
+import android.app.Application
+import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
+import com.splendo.kaluga.firebase.firestore.getFirestoreInstance
+import org.junit.Before
+import org.junit.Test
 
 class FirestoreTests {
 
-    @BeforeTest
+    @Before
     fun setUp() {
-        FIRApp.configure()
+        FirebaseApp.initializeApp(Application())
     }
 
     @Test
-    fun `Test if Firestore instance exists`() {
+    fun testIfFirestoreInstanceExists() {
         getFirestoreInstance()
     }
 }
