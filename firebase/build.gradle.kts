@@ -29,7 +29,11 @@ kotlin {
             }
         }
 
-        val firebaseModules = listOf("FirebaseCore", "FirebaseAuth", "FirebaseFirestore")
+        val firebaseModules = listOf(
+            "FirebaseCore",
+            "FirebaseAuth",
+            "FirebaseFirestore"
+        )
 
         targets.filterIsInstance<org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget>().forEach {
             it.compilations.getByName("main") {

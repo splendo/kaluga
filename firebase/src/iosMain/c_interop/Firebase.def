@@ -1,4 +1,4 @@
 language = Objective-C
 modules = $FRAMEWORK
 compilerOpts = -framework $FRAMEWORK
-linkerOpts = -F$CARTHAGE_BUILD_PATH -framework $FRAMEWORK
+linkerOpts = -F$CARTHAGE_BUILD_PATH -framework $FRAMEWORK -framework abseil -framework gRPC-Core -framework gRPC-C++ -framework BoringSSL-GRPC -framework leveldb-library -framework FIRAnalyticsConnector -framework GoogleUtilities -framework SystemConfiguration
