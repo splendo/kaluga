@@ -26,7 +26,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-@UseExperimental(InternalCoroutinesApi::class)
 internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
 
     // Dispatch block on given queue

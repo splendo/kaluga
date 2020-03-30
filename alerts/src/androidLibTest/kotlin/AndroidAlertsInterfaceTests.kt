@@ -6,7 +6,7 @@ import org.junit.Before
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-class AndroidAlertsInterfaceTests: AlertsInterfaceTests() {
+class AndroidAlertsInterfaceTests : AlertsInterfaceTests() {
 
     private lateinit var mockContext: Context
 

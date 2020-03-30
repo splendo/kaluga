@@ -12,15 +12,13 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                api("co.touchlab:stately:0.9.5")
+                val ext = (gradle as ExtensionAware).extra
+                api("co.touchlab:stately-common:${ext["stately_version"]}")
+                api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
                 api(project(":logging", ""))
             }
         }
@@ -40,7 +38,8 @@ kotlin {
         val ext =  (gradle as ExtensionAware).extra
         getByName("${ext["ios_primary_arch"]}Main") {
             dependencies {
-                api("co.touchlab:stately:0.9.5")
+                api("co.touchlab:stately-common:${ext["stately_version"]}")
+                api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
                 api(project(":logging", "${ext["ios_primary_arch"]}Default"))
             }
         }
@@ -55,7 +54,8 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    api("co.touchlab:stately:0.9.5")
+                    api("co.touchlab:stately-common:${ext["stately_version"]}")
+                    api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
                     api(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
@@ -64,7 +64,8 @@ if (!singleSet)  {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    api("co.touchlab:stately:0.9.5")
+                    api("co.touchlab:stately-common:${ext["stately_version"]}")
+                    api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
                     api(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
