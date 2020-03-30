@@ -17,25 +17,25 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-enum class LogLevel(val logLevel: ru.pocketbyte.hydra.log.LogLevel) {
+enum class LogLevel(val logLevel: ru.pocketbyte.kydra.log.LogLevel) {
 
     /**
      * Debug Log Level. Should be shown only for debugging.
      */
-    DEBUG(ru.pocketbyte.hydra.log.LogLevel.DEBUG),
+    DEBUG(ru.pocketbyte.kydra.log.LogLevel.DEBUG),
 
     /**
      * Information Log Level.
      */
-    INFO(ru.pocketbyte.hydra.log.LogLevel.INFO),
+    INFO(ru.pocketbyte.kydra.log.LogLevel.INFO),
 
     /**
      * Warning Log Level. Should be used to log some warnings.
      */
-    WARNING(ru.pocketbyte.hydra.log.LogLevel.WARNING),
+    WARNING(ru.pocketbyte.kydra.log.LogLevel.WARNING),
 
     /**
      * Error Log Level. Should be used to log some errors.
      */
-    ERROR(ru.pocketbyte.hydra.log.LogLevel.ERROR)
+    ERROR(ru.pocketbyte.kydra.log.LogLevel.ERROR)
 }

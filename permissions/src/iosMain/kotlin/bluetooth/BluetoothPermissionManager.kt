@@ -43,11 +43,7 @@ actual class BluetoothPermissionManager(
     }
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
-            if (!centralManager.isInitialized()) {
-                centralManager.value
-            }
-        } else {
+        if (setupCentralManager() == null) {
             revokePermission(true)
         }
     }
@@ -57,17 +53,29 @@ actual class BluetoothPermissionManager(
     }
 
     override suspend fun startMonitoring(interval: Long) {
-        centralManager.value.delegate = delegate
+        setupCentralManager()?.let {
+            it.delegate = delegate
+        }
     }
 
     override suspend fun stopMonitoring() {
-        centralManager.value.delegate = null
+        setupCentralManager()?.let {
+            it.delegate = null
+        }
+    }
+
+    private fun setupCentralManager(): CBCentralManager? {
+        return if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
+            centralManager.value
+        } else {
+            null
+        }
     }
 
     private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
         val version = IOSVersion.systemVersion
         return when {
-            version.isOSVersionOrNewer(IOSVersion(13,0,0)) -> CBCentralManager().authorization.toAuthorizationStatus()
+            version.isOSVersionOrNewer(IOSVersion(13,0,0)) -> CBManager().authorization.toAuthorizationStatus()
             else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
         }
     }

@@ -129,6 +129,7 @@ kotlin {
             languageSettings {
                 useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 enableLanguageFeature("InlineClasses")
 

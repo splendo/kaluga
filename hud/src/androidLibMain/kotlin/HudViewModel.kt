@@ -1,6 +1,11 @@
+package com.splendo.kaluga.hud
+
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+
 /*
 
-Copyright ${YEAR} Splendo Consulting B.V. The Netherlands
+Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -13,5 +18,18 @@ Copyright ${YEAR} Splendo Consulting B.V. The Netherlands
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
    limitations under the License.
-   
+
 */
+
+open class HudViewModel : ViewModel() {
+
+    val builder = AndroidHUD.Builder()
+
+    fun subscribe(activity: AppCompatActivity) {
+        builder.subscribe(activity, activity.supportFragmentManager)
+    }
+
+    fun unsubscribe() {
+        builder.unsubscribe()
+    }
+}

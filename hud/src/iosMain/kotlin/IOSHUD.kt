@@ -3,11 +3,39 @@ package com.splendo.kaluga.hud
 import kotlinx.cinterop.CValue
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
-import platform.UIKit.*
-import platform.darwin.DISPATCH_TIME_NOW
-import platform.darwin.dispatch_after
-import platform.darwin.dispatch_get_main_queue
-import platform.darwin.dispatch_time
+import platform.UIKit.NSLayoutConstraint
+import platform.UIKit.UIActivityIndicatorView
+import platform.UIKit.UIActivityIndicatorViewStyleWhiteLarge
+import platform.UIKit.UIColor
+import platform.UIKit.UILabel
+import platform.UIKit.UILayoutConstraintAxisVertical
+import platform.UIKit.UIModalPresentationOverFullScreen
+import platform.UIKit.UIModalTransitionStyleCrossDissolve
+import platform.UIKit.UIScreen
+import platform.UIKit.UIStackView
+import platform.UIKit.UIStackViewAlignmentCenter
+import platform.UIKit.UIStackViewDistributionFill
+import platform.UIKit.UIUserInterfaceStyle
+import platform.UIKit.UIView
+import platform.UIKit.UIViewAutoresizingFlexibleHeight
+import platform.UIKit.UIViewAutoresizingFlexibleWidth
+import platform.UIKit.UIViewController
+import platform.UIKit.addSubview
+import platform.UIKit.autoresizingMask
+import platform.UIKit.backgroundColor
+import platform.UIKit.bottomAnchor
+import platform.UIKit.centerXAnchor
+import platform.UIKit.centerYAnchor
+import platform.UIKit.colorNamed
+import platform.UIKit.heightAnchor
+import platform.UIKit.hidden
+import platform.UIKit.leadingAnchor
+import platform.UIKit.setBackgroundColor
+import platform.UIKit.topAnchor
+import platform.UIKit.trailingAnchor
+import platform.UIKit.translatesAutoresizingMaskIntoConstraints
+import platform.UIKit.widthAnchor
+import platform.UIKit.window
 
 /*
 
@@ -41,7 +69,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         frame: CValue<CGRect>
     ) : UIView(frame) {
 
-        val titleLabel: UILabel
+        private val titleLabel: UILabel
 
         private val backgroundColor: UIColor
             get() = when (hudConfig.style) {
@@ -121,13 +149,14 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         view.addSubview(containerView)
     }
 
-    private val topViewController: UIViewController get() {
-        var result: UIViewController? = viewController
-        while (result?.presentedViewController != null) {
-            result = result.presentedViewController
+    private val topViewController: UIViewController
+        get() {
+            var result: UIViewController? = viewController
+            while (result?.presentedViewController != null) {
+                result = result.presentedViewController
+            }
+            return result ?: viewController
         }
-        return result ?: viewController
-    }
 
     override val isVisible get() = hudViewController.presentingViewController != null
 
@@ -145,16 +174,5 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         } else {
             completion()
         }
-    }
-
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatch_get_main_queue()) {
-            dismiss(animated)
-        }
-    }
-
-    override fun setTitle(title: String?) {
-        containerView.titleLabel.text = title
-        containerView.titleLabel.hidden = title?.isEmpty() ?: true
     }
 }

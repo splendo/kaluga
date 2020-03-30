@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
 import platform.UserNotifications.UNAuthorizationOptions
-import ru.pocketbyte.hydra.log.HydraLog
+import ru.pocketbyte.kydra.log.KydraLog
 
 class KNAlertFramework {
     companion object {
@@ -158,7 +158,7 @@ class KotlinNativeFramework {
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
-    fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
+    fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         val locationStateRepo = LocationStateRepoBuilder(locationManager = locationManager)
