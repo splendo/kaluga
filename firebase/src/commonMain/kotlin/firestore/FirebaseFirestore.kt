@@ -22,3 +22,5 @@ expect class FirebaseFirestore
 expect fun getFirestoreInstance(): FirebaseFirestore
 
 expect fun FirebaseFirestore.document(documentPath: String): DocumentReference
+expect fun FirebaseFirestore.collection(collectionPath: String): CollectionReference
+expect fun FirebaseFirestore.batch(): WriteBatch

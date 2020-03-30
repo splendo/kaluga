@@ -17,17 +17,27 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.WriteBatch
 
-actual typealias FirebaseFirestore = FirebaseFirestore
-
-actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
+actual typealias WriteBatch = WriteBatch
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)
+actual fun WriteBatch.set(
+    documentReference: DocumentReference,
+    data: Map<String, Any?>
+): WriteBatch = set(documentReference, data)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-actual fun FirebaseFirestore.collection(collectionPath: String) = collection(collectionPath)
+actual fun WriteBatch.update(
+    documentReference: DocumentReference,
+    data: Map<String, Any?>
+): WriteBatch = update(documentReference, data)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
-actual fun FirebaseFirestore.batch() = batch()
+actual fun WriteBatch.delete(documentReference: DocumentReference): WriteBatch = delete(documentReference)
+
+actual fun WriteBatch.commit(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
+    commit()
+        .addOnCompleteListener { onSuccess() }
+        .addOnFailureListener(onFailure)
+}

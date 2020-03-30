@@ -26,3 +26,11 @@ actual fun getFirestoreInstance(): FirebaseFirestore {
 actual fun FirebaseFirestore.document(documentPath: String): DocumentReference {
     TODO("Not yet implemented")
 }
+
+actual fun FirebaseFirestore.collection(collectionPath: String): CollectionReference {
+    TODO("Not yet implemented")
+}
+
+actual fun FirebaseFirestore.batch(): WriteBatch {
+    TODO("Not yet implemented")
+}

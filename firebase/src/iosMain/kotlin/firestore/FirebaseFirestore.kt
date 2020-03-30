@@ -24,3 +24,7 @@ actual typealias FirebaseFirestore = FIRFirestore
 actual fun getFirestoreInstance(): FirebaseFirestore = FIRFirestore.firestore()
 
 actual fun FirebaseFirestore.document(documentPath: String) = documentWithPath(documentPath)
+actual fun FirebaseFirestore.collection(collectionPath: String) = collectionWithPath(collectionPath)
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual fun FirebaseFirestore.batch() = batch()

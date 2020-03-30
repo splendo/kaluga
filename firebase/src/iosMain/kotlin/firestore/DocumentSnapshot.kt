@@ -17,31 +17,13 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import Firebase.FirebaseCore.FIRApp
-import kotlin.test.BeforeClass
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import Firebase.FirebaseFirestore.FIRDocumentSnapshot
 
-class FirestoreTests {
+actual typealias DocumentSnapshot = FIRDocumentSnapshot
 
-    // @BeforeAll
-    companion object {
+actual val DocumentSnapshot.id: String
+    get() = documentID
 
-        @BeforeClass
-        fun setUp() {
-            FIRApp.configure()
-        }
-    }
-
-    @Test
-    fun `Test if Firestore instance exists`() {
-        getFirestoreInstance()
-    }
-
-    @Test
-    fun `Test document method`() {
-        assertNotNull(
-            getFirestoreInstance().document("/some/path")
-        )
-    }
-}
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual val DocumentSnapshot.reference: DocumentReference
+    get() = reference

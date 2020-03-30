@@ -17,31 +17,25 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import Firebase.FirebaseCore.FIRApp
-import kotlin.test.BeforeClass
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+actual class WriteBatch
 
-class FirestoreTests {
+actual fun WriteBatch.set(
+    documentReference: DocumentReference,
+    data: Map<String, Any?>
+): WriteBatch {
+    TODO("Not yet implemented")
+}
 
-    // @BeforeAll
-    companion object {
+actual fun WriteBatch.update(
+    documentReference: DocumentReference,
+    data: Map<String, Any?>
+): WriteBatch {
+    TODO("Not yet implemented")
+}
 
-        @BeforeClass
-        fun setUp() {
-            FIRApp.configure()
-        }
-    }
+actual fun WriteBatch.delete(documentReference: DocumentReference): WriteBatch {
+    TODO("Not yet implemented")
+}
 
-    @Test
-    fun `Test if Firestore instance exists`() {
-        getFirestoreInstance()
-    }
-
-    @Test
-    fun `Test document method`() {
-        assertNotNull(
-            getFirestoreInstance().document("/some/path")
-        )
-    }
+actual fun WriteBatch.commit(onSuccess: () -> Unit, onFailure: (Exception) -> Unit) {
 }

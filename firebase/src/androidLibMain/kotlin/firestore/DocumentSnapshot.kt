@@ -17,31 +17,14 @@
 
 package com.splendo.kaluga.firebase.firestore
 
-import Firebase.FirebaseCore.FIRApp
-import kotlin.test.BeforeClass
-import kotlin.test.Test
-import kotlin.test.assertNotNull
+import com.google.firebase.firestore.DocumentSnapshot
 
-class FirestoreTests {
+actual typealias DocumentSnapshot = DocumentSnapshot
 
-    // @BeforeAll
-    companion object {
+@Suppress("ConflictingExtensionProperty")
+actual val DocumentSnapshot.id: String
+    get() = id
 
-        @BeforeClass
-        fun setUp() {
-            FIRApp.configure()
-        }
-    }
-
-    @Test
-    fun `Test if Firestore instance exists`() {
-        getFirestoreInstance()
-    }
-
-    @Test
-    fun `Test document method`() {
-        assertNotNull(
-            getFirestoreInstance().document("/some/path")
-        )
-    }
-}
+@Suppress("ConflictingExtensionProperty")
+actual val DocumentSnapshot.reference: DocumentReference
+    get() = reference
