@@ -18,18 +18,29 @@
 package com.splendo.kaluga.firebase.firestore
 
 import Firebase.FirebaseCore.FIRApp
-import kotlin.test.BeforeTest
+import kotlin.test.BeforeClass
 import kotlin.test.Test
+import kotlin.test.assertNull
 
 class FirestoreTests {
 
-    @BeforeTest
-    fun setUp() {
-        FIRApp.configure()
+    // @BeforeAll
+    companion object {
+        @BeforeClass
+        fun setUp() {
+            FIRApp.configure()
+        }
     }
 
     @Test
     fun `Test if Firestore instance exists`() {
         getFirestoreInstance()
+    }
+
+    @Test
+    fun `Test document method`() {
+        val firestore = getFirestoreInstance()
+        val document = firestore.document("/some/path")
+        assertNull(document)
     }
 }

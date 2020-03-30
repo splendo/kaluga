@@ -17,7 +17,6 @@
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
-import com.google.firebase.FirebaseOptions
 import com.splendo.kaluga.firebase.firestore.getFirestoreInstance
 import org.junit.Before
 import org.junit.Test
