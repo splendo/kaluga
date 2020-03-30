@@ -15,16 +15,13 @@
 
  */
 
-package com.splendo.kaluga.firebase.firestore
+package com.splendo.kaluga.firebase
 
-import com.splendo.kaluga.firebase.DataTask
+actual class DataTask<T> {
 
-expect class CollectionReference : Query
+    actual fun addOnSuccessListener(onSuccessListener: (T) -> Unit) {
+    }
 
-expect fun CollectionReference.document(documentPath: String? = null): DocumentReference
-
-expect val CollectionReference.id: String
-expect val CollectionReference.path: String
-expect val CollectionReference.parent: DocumentReference?
-
-expect fun CollectionReference.addDocument(data: Map<String, Any?>): DataTask<DocumentReference>
+    actual fun addOnFailureListener(onFailureListener: (Exception) -> Unit) {
+    }
+}

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.firebase.firestore
 
 import com.google.firebase.firestore.CollectionReference
+import com.splendo.kaluga.firebase.DataTask
 
 actual typealias CollectionReference = CollectionReference
 
@@ -40,3 +41,7 @@ actual val CollectionReference.path: String
 @Suppress("ConflictingExtensionProperty")
 actual val CollectionReference.parent: DocumentReference?
     get() = parent
+
+actual fun CollectionReference.addDocument(
+    data: Map<String, Any?>
+): DataTask<DocumentReference> = DataTask(add(data))

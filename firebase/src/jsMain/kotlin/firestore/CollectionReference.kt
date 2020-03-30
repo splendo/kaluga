@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.firebase.firestore
 
+import com.splendo.kaluga.firebase.DataTask
+
 actual class CollectionReference : Query()
 
 actual fun CollectionReference.document(documentPath: String?): DocumentReference {
@@ -29,3 +31,7 @@ actual val CollectionReference.path: String
     get() = TODO("Not yet implemented")
 actual val CollectionReference.parent: DocumentReference?
     get() = TODO("Not yet implemented")
+
+actual fun CollectionReference.addDocument(data: Map<String, Any?>): DataTask<DocumentReference> {
+    TODO("Not yet implemented")
+}

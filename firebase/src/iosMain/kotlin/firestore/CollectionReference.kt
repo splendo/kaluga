@@ -17,6 +17,11 @@
 
 package com.splendo.kaluga.firebase.firestore
 
+import com.splendo.kaluga.firebase.DataTask
+import kotlinx.cinterop.StableRef
+import platform.Foundation.NSError
+import kotlin.native.concurrent.freeze
+
 actual typealias CollectionReference = Firebase.FirebaseFirestore.FIRCollectionReference
 
 actual fun CollectionReference.document(documentPath: String?): DocumentReference {
@@ -37,3 +42,20 @@ actual val CollectionReference.path: String
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual val CollectionReference.parent: DocumentReference?
     get() = parent
+
+@Suppress("UNCHECKED_CAST")
+actual fun CollectionReference.addDocument(data: Map<String, Any?>): DataTask<DocumentReference> {
+    val dataTask = DataTask<DocumentReference>()
+    val ref = StableRef.create(dataTask)
+    val completion = { error: NSError? ->
+        val task = ref.get()
+        ref.dispose()
+        if (error != null) {
+            task.failure(error)
+        } else {
+            task.success()
+        }
+    }
+    dataTask.value = addDocumentWithData(data as Map<Any?, *>, completion.freeze())
+    return dataTask
+}
