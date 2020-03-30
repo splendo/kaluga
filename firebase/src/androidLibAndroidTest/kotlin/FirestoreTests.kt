@@ -18,18 +18,30 @@
 import android.app.Application
 import com.google.firebase.FirebaseApp
 import com.splendo.kaluga.firebase.firestore.getFirestoreInstance
-import org.junit.Before
+import kotlin.test.assertNotNull
+import org.junit.BeforeClass
 import org.junit.Test
 
 class FirestoreTests {
 
-    @Before
-    fun setUp() {
-        FirebaseApp.initializeApp(Application())
+    // @BeforeAll
+    companion object {
+
+        @BeforeClass
+        fun setUp() {
+            FirebaseApp.initializeApp(Application())
+        }
     }
 
     @Test
     fun testIfFirestoreInstanceExists() {
         getFirestoreInstance()
+    }
+
+    @Test
+    fun testDocumentMethod() {
+        assertNotNull(
+            getFirestoreInstance().document("/some/path")
+        )
     }
 }

@@ -20,7 +20,7 @@ package com.splendo.kaluga.firebase.firestore
 import Firebase.FirebaseCore.FIRApp
 import kotlin.test.BeforeClass
 import kotlin.test.Test
-import kotlin.test.assertNull
+import kotlin.test.assertNotNull
 
 class FirestoreTests {
 
@@ -39,8 +39,8 @@ class FirestoreTests {
 
     @Test
     fun `Test document method`() {
-        val firestore = getFirestoreInstance()
-        val document = firestore.document("/some/path")
-        assertNull(document)
+        assertNotNull(
+            getFirestoreInstance().document("/some/path")
+        )
     }
 }
