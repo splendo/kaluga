@@ -18,3 +18,9 @@
 package com.splendo.kaluga.firebase.firestore
 
 expect class DocumentReference
+
+expect val DocumentReference.id: String
+expect val DocumentReference.path: String
+expect val DocumentReference.parent: CollectionReference
+
+expect fun DocumentReference.collection(collectionPath: String): CollectionReference

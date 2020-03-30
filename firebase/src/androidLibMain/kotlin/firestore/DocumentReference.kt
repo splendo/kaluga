@@ -18,3 +18,18 @@
 package com.splendo.kaluga.firebase.firestore
 
 actual typealias DocumentReference = com.google.firebase.firestore.DocumentReference
+
+@Suppress("ConflictingExtensionProperty")
+actual val DocumentReference.id: String
+    get() = id
+
+@Suppress("ConflictingExtensionProperty")
+actual val DocumentReference.path: String
+    get() = path
+
+@Suppress("ConflictingExtensionProperty")
+actual val DocumentReference.parent: CollectionReference
+    get() = parent
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+actual fun DocumentReference.collection(collectionPath: String): CollectionReference = collection(collectionPath)

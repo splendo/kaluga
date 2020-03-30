@@ -23,4 +23,5 @@ actual typealias FirebaseFirestore = FirebaseFirestore
 
 actual fun getFirestoreInstance(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 actual fun FirebaseFirestore.document(documentPath: String) = document(documentPath)

@@ -18,3 +18,14 @@
 package com.splendo.kaluga.firebase.firestore
 
 actual class DocumentReference
+
+actual val DocumentReference.id: String
+    get() = TODO("Not yet implemented")
+actual val DocumentReference.path: String
+    get() = TODO("Not yet implemented")
+actual val DocumentReference.parent: CollectionReference
+    get() = TODO("Not yet implemented")
+
+actual fun DocumentReference.collection(collectionPath: String): CollectionReference {
+    TODO("Not yet implemented")
+}
