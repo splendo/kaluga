@@ -18,9 +18,9 @@
 package com.splendo.kaluga.firebase.firestore
 
 import com.splendo.kaluga.firebase.DataTask
+import kotlin.native.concurrent.freeze
 import kotlinx.cinterop.StableRef
 import platform.Foundation.NSError
-import kotlin.native.concurrent.freeze
 
 actual typealias CollectionReference = Firebase.FirebaseFirestore.FIRCollectionReference
 
@@ -51,9 +51,7 @@ actual fun CollectionReference.addDocument(data: Map<String, Any?>): DataTask<Do
         val task = ref.get()
         ref.dispose()
         if (error != null) {
-            task.failure(error)
-        } else {
-            task.success()
+            task.error = error
         }
     }
     dataTask.value = addDocumentWithData(data as Map<Any?, *>, completion.freeze())

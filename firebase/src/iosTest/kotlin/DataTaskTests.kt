@@ -18,43 +18,93 @@
 package kotlin
 
 import com.splendo.kaluga.firebase.DataTask
-import kotlinx.cinterop.StableRef
-import platform.Foundation.NSError
 import kotlin.native.concurrent.freeze
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlinx.cinterop.StableRef
+import platform.Foundation.NSError
+import platform.Foundation.NSLocalizedDescriptionKey
 
 class DataTaskTests {
 
     @Test
-    fun `test if data task works`() {
+    fun `test DataTask success offline case`() {
+
+        val dataTask = DataTask<String>()
+
+        fun successfulTask(): String {
+            // No callback called here
+            return "OK"
+        }
+
+        dataTask.value = successfulTask()
+        dataTask.addOnSuccessListener {
+            assertEquals(it, "OK")
+        }
+        dataTask.addOnFailureListener {
+            // Shouldn't be called
+            assertTrue(false)
+        }
+    }
+
+    @Test
+    fun `test DataTask success online case`() {
+
         val dataTask = DataTask<String>()
         val ref = StableRef.create(dataTask)
         val completion = { error: NSError? ->
             val task = ref.get()
             ref.dispose()
             if (error != null) {
-                task.failure(error)
-            } else {
-                task.success()
+                task.error = error
             }
-            println("completion was called")
         }
-        fun asyncTask(completion: (NSError?) -> Unit): String {
-            completion(NSError.errorWithDomain("eee", 123, null))
+
+        fun successfulTask(completion: (NSError?) -> Unit): String {
+            // No error case
+            completion(null)
             return "OK"
         }
-        // This is called before listeners are set
-        dataTask.value = asyncTask(completion.freeze())
+
+        dataTask.value = successfulTask(completion.freeze())
         dataTask.addOnSuccessListener {
-            println("HERE IS CALLED OK")
             assertEquals(it, "OK")
         }
         dataTask.addOnFailureListener {
-            println("HERE IS CALLEDFAIL")
+            // Shouldn't be called
             assertTrue(false)
         }
-        println("FAILEDSDD")
+    }
+
+    @Test
+    fun `test DataTask failed case`() {
+
+        val dataTask = DataTask<String>()
+        val ref = StableRef.create(dataTask)
+        val completion = { error: NSError? ->
+            val task = ref.get()
+            ref.dispose()
+            if (error != null) {
+                task.error = error
+            }
+        }
+
+        fun failedTask(completion: (NSError?) -> Unit): String {
+            completion(NSError.errorWithDomain(
+                "com.splendo.kaluga.firebase",
+                0,
+                mapOf(NSLocalizedDescriptionKey to "ERROR")
+            ))
+            return "OK"
+        }
+
+        dataTask.value = failedTask(completion.freeze())
+        dataTask.addOnSuccessListener {
+            assertEquals(it, "OK")
+        }
+        dataTask.addOnFailureListener {
+            assertEquals(it.message, "ERROR")
+        }
     }
 }

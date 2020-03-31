@@ -23,44 +23,57 @@ actual class DataTask<T> {
 
     @Suppress("UNCHECKED_CAST")
     var value: T
-        get() = if (internal != null) {
+        get() = if (internalValue != null) {
             println("value is read")
-            internal as T
+            internalValue as T
         } else {
             throw Exception("Value is not set")
         }
 
         set(value) {
             println("value is set")
-            internal = value
+            internalValue = value
+            postUpdates()
         }
 
-    private var internal: T? = null
+    var error: NSError
+        get() = if (internalError != null) {
+            println("error is read")
+            internalError as NSError
+        } else {
+            throw Exception("Error is not set")
+        }
+        set(value) {
+            println("error is set")
+            internalError = value
+            postUpdates()
+        }
+
+    private var internalValue: T? = null
+    private var internalError: NSError? = null
 
     private var onSuccessListeners: MutableList<((T) -> Unit)> = mutableListOf()
     private var onFailureListeners: MutableList<((Exception) -> Unit)> = mutableListOf()
 
+    @Suppress("UNCHECKED_CAST")
+    private fun postUpdates() {
+        if (internalValue != null) {
+            onSuccessListeners.forEach { it.invoke(value) }
+        }
+        if (internalError != null) {
+            onFailureListeners.forEach { it.invoke(Exception(error.localizedDescription)) }
+        }
+    }
+
     actual fun addOnSuccessListener(onSuccessListener: (T) -> Unit) {
         println("success added")
         onSuccessListeners.add(onSuccessListener)
+        postUpdates()
     }
 
     actual fun addOnFailureListener(onFailureListener: (Exception) -> Unit) {
         println("failure added")
         onFailureListeners.add(onFailureListener)
-    }
-
-    fun success() {
-        println("success called")
-        onSuccessListeners.forEach {
-            it.invoke(value)
-        }
-    }
-
-    fun failure(error: NSError) {
-        println("failure called")
-        onFailureListeners.forEach {
-            it.invoke(Exception(error.localizedDescription))
-        }
+        postUpdates()
     }
 }
