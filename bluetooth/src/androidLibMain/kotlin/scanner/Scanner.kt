@@ -119,11 +119,11 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
     private val broadcastReceiver = AvailabilityReceiver(this)
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(context)
 
-    override fun scanForDevices(filter: Set<UUID>) {
+    override suspend fun scanForDevices(filter: Set<UUID>) {
         bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build() }, scanSettings, callback)
     }
 
-    override fun stopScanning() {
+    override suspend fun stopScanning() {
         bluetoothScanner.stopScan(callback)
     }
 

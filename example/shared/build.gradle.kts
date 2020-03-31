@@ -29,6 +29,7 @@ kotlin {
                     implementation(project(":alerts", ""))
                     implementation(project(":permissions", ""))
                     implementation(project(":hud", ""))
+                    implementation(project(":bluetooth", ""))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:location:$libraryVersion")
@@ -37,6 +38,7 @@ kotlin {
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:hud:$libraryVersion")
+                    implementation("com.splendo.kaluga:bluetooth:$libraryVersion")
                 }
             }
         }

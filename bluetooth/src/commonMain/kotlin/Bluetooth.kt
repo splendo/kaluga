@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -33,17 +34,15 @@ class Bluetooth internal constructor(permissions: Permissions,
                                      connectionSettings: ConnectionSettings,
                                      autoRequestPermission: Boolean,
                                      autoEnableBluetooth: Boolean,
-                                     scannerBuilder: BaseScanner.Builder,
-                                     coroutineContext: CoroutineContext) {
+                                     scannerBuilder: BaseScanner.Builder) {
 
     interface Builder {
         fun create(connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
                    autoRequestPermission: Boolean = true,
-                   autoEnableBluetooth: Boolean = true,
-                   coroutineContext: CoroutineContext = Dispatchers.Main): Bluetooth
+                   autoEnableBluetooth: Boolean = true): Bluetooth
     }
 
-    internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineContext)
+    internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder)
 
     private val scanFilter = HotFlowable<Set<UUID>?>(null)
 

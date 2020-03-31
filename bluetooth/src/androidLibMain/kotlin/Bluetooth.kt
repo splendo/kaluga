@@ -13,8 +13,8 @@ actual class BluetoothBuilder(private val context: Context = ApplicationHolder.a
                               private val scannerBuilder: Scanner.Builder = Scanner.Builder(context=context)
 ) : Bluetooth.Builder {
 
-    override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, coroutineContext: CoroutineContext): Bluetooth {
-        return Bluetooth(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineContext)
+    override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean): Bluetooth {
+        return Bluetooth(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder)
     }
 
 }
