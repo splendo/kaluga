@@ -21,9 +21,13 @@ import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.*
 import platform.Foundation.NSError
@@ -52,44 +56,61 @@ actual class Scanner internal constructor(permissions: Permissions,
 
     }
 
-    @Suppress("CONFLICTING_OVERLOADS")
-    private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
-
-        internal var isCheckEnabledCompleted: CompletableDeferred<Boolean>? = null
-
-        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
-            discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
-        }
-
+    private class MainCBCentralManagerDelegate(private val scanner: Scanner) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
-            if (central == checkEnabledCentralManager)
-                isCheckEnabledCompleted?.complete(isEnabled)
-            else if (central == mainCentralManager) {
-                if (isEnabled) bluetoothEnabled() else bluetoothDisabled()
+            if (isEnabled) scanner.bluetoothEnabled() else scanner.bluetoothDisabled()
+        }.invoke()
+    }
+
+    private class EnabledCBCentralManagerDelegate(private val isCheckEnabledCompleted: CompletableDeferred<Boolean>) : NSObject(), CBCentralManagerDelegateProtocol {
+        override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
+            val isEnabled = central.state == CBCentralManagerStatePoweredOn
+            isCheckEnabledCompleted.complete(isEnabled)
+            
+        }.invoke()
+    }
+
+    @Suppress("CONFLICTING_OVERLOADS")
+    private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
+
+        override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
+            info("IOS Scanner", "Powered On Did Update State")
+            if (central.state == CBCentralManagerStatePoweredOn) {
+                isEnabledCompleted.complete()
             }
+
         }.invoke()
 
+        override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
+            info("IOS Scanner", "Did Discover")
+            scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
+        }
+
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) = mainContinuation {
-            val connectionManager = connectionManagerMap[didConnectPeripheral.identifier] ?: return@mainContinuation
-            launch {
+            info("IOS Scanner", "Did Connect Peripheral")
+            val connectionManager = scanner.connectionManagerMap[didConnectPeripheral.identifier] ?: return@mainContinuation
+            scanner.launch {
                 connectionManager.handleConnect()
             }
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
-            val connectionManager = connectionManagerMap[didDisconnectPeripheral.identifier] ?: return@mainContinuation
-            launch {
+            info("IOS Scanner", "Did Disconnect Peripheral")
+            val connectionManager = scanner.connectionManagerMap[didDisconnectPeripheral.identifier] ?: return@mainContinuation
+            scanner.launch {
                 connectionManager.handleDisconnect()
             }
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
-            val connectionManager = connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return@mainContinuation
-            launch {
+            info("IOS Scanner", "Did Fail to Connect to Peripheral")
+            val connectionManager = scanner.connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return@mainContinuation
+            scanner.launch {
                 connectionManager.handleDisconnect()
             }
         }.invoke()
+        
     }
 
     private lateinit var mainCentralManager: CBCentralManager
@@ -106,27 +127,37 @@ actual class Scanner internal constructor(permissions: Permissions,
         }
     }
 
-    override fun scanForDevices(filter: Set<UUID>) {
+    override suspend fun scanForDevices(filter: Set<UUID>) {
         connectionManagerMap.clear()
-
+        
         if (filter.isEmpty()) {
-            val centralManager = CBCentralManager(centralManagerDelegate, dispatch_get_main_queue())
+            info("IOS Scanner", "Start Scanning Empty Filter")
+            val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
+            val awaitPoweredOn = EmptyCompletableDeferred()
+            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+            awaitPoweredOn.await()
+            info("IOS Scanner", "Start Scanning Powered On")
             centralManager.scanForPeripheralsWithServices(null, null)
         }
 
         filter.forEach {
-            val centralManager = CBCentralManager(centralManagerDelegate, dispatch_get_main_queue())
+            val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
+            val awaitPoweredOn = EmptyCompletableDeferred()
+            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+            awaitPoweredOn.await()
+            info("IOS Scanner", "Start Scanning Filter: $it Powered On")
             centralManager.scanForPeripheralsWithServices(listOf(it), null)
         }
     }
 
-    override fun stopScanning() {
-        centralManagers.forEach {
-            when(it.state) {
-                CBCentralManagerStatePoweredOn -> it.stopScan()
-            }
+    override suspend fun stopScanning() {
+        centralManagers.forEach {centralManager ->
+            val awaitPoweredOn = EmptyCompletableDeferred()
+            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+            awaitPoweredOn.await()
+            centralManager.stopScan()
         }
         centralManagers.clear()
     }
@@ -134,7 +165,7 @@ actual class Scanner internal constructor(permissions: Permissions,
     override fun startMonitoringBluetooth() {
         initMainManagers()
         connectionManagerMap.clear()
-        mainCentralManager.delegate = centralManagerDelegate
+        mainCentralManager.delegate = MainCBCentralManagerDelegate(this)
     }
 
     override fun stopMonitoringBluetooth() {
@@ -146,11 +177,9 @@ actual class Scanner internal constructor(permissions: Permissions,
     override suspend fun isBluetoothEnabled(): Boolean {
         initMainManagers()
         val completable = CompletableDeferred<Boolean>()
-        centralManagerDelegate.isCheckEnabledCompleted = completable
-        checkEnabledCentralManager.delegate = centralManagerDelegate
+        checkEnabledCentralManager.delegate = EnabledCBCentralManagerDelegate(completable)
         return completable.await().also {
             checkEnabledCentralManager.delegate = null
-            centralManagerDelegate.isCheckEnabledCompleted = null
         }
     }
 

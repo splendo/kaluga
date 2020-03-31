@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -248,7 +249,7 @@ class ScanningStateRepo(permissions: Permissions,
                         connectionSettings: ConnectionSettings,
                         autoRequestPermission: Boolean,
                         autoEnableBluetooth: Boolean,
-                        builder: BaseScanner.Builder, coroutineContext: CoroutineContext = Dispatchers.Main) : ColdStateRepo<ScanningState>(coroutineContext) {
+                        builder: BaseScanner.Builder) : ColdStateRepo<ScanningState>() {
 
     private val scanner = builder.create(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth,this)
 

@@ -41,11 +41,11 @@ actual class Scanner(permissions: Permissions,
         }
     }
 
-    override fun scanForDevices(filter: Set<UUID>) {
+    override suspend fun scanForDevices(filter: Set<UUID>) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun stopScanning() {
+    override suspend fun stopScanning() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
