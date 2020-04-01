@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.UUID
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 actual class AdvertisementData(private val scanResult: ScanResult) : BaseAdvertisementData {
 
@@ -32,7 +33,7 @@ actual class AdvertisementData(private val scanResult: ScanResult) : BaseAdverti
     override val manufacturerData: ByteArray?
         get() = scanRecord?.manufacturerSpecificData?.let { manufacturerSpecificData ->
             manufacturerId?.let { key ->
-                val keyBytes = ByteBuffer.allocate(2).putShort(key.toShort()).array()
+                val keyBytes = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(key.toShort()).array()
                 byteArrayOf(*keyBytes, *manufacturerSpecificData[key])
             }
         }
