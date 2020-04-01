@@ -32,28 +32,31 @@ import platform.darwin.NSObject
 
 internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo {
 
+    class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
+        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceHolder, stateRepo)
+        }
+    }
+
+    companion object {
+        private const val TAG = "IOS Bluetooth DeviceConnectionManager"
+    }
+
     private val peripheral = deviceHolder.peripheral
 
     private val discoveringServices = emptyList<CBUUID>().toMutableList()
     private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
 
-    class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
-            info("IOS DeviceConnectionManager", "Create Has Delegate: ${cbCentralManager.delegate != null}")
-            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceHolder, stateRepo)
-        }
-    }
-
     @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Discover Descriptors")
+            info(TAG, "Did Discover Descriptors for Characteristic ${didDiscoverDescriptorsForCharacteristic.UUID.UUIDString}")
             didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Update Notification State")
+            info(TAG, "Did Update Notification State for Characteristic ${didUpdateNotificationStateForCharacteristic.UUID.UUIDString}")
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
@@ -66,37 +69,37 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Update Characteristic")
+            info(TAG, "Did Update Value for Characteristic ${didUpdateValueForCharacteristic.UUID.UUIDString}")
             updateCharacteristic(didUpdateValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Write Characteristic")
+            info(TAG, "Did Write Value for Characteristic ${didWriteValueForCharacteristic.UUID.UUIDString}")
             updateCharacteristic(didWriteValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Update Descriptor")
+            info(TAG, "Did Update Value for Descriptor ${didUpdateValueForDescriptor.UUID.UUIDString}")
             updateDescriptor(didUpdateValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Write Descriptor")
+            info(TAG, "Did Write Value for Descriptor ${didWriteValueForDescriptor.UUID.UUIDString}")
             updateDescriptor(didWriteValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Discover Characteristics")
+            info(TAG, "Did Discover Characteristics for Service ${didDiscoverCharacteristicsForService.UUID.UUIDString}")
             didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Discover Services")
+            info(TAG, "Did Discover Services for Peripheral ${peripheral.identifier.UUIDString}")
             didDiscoverServices()
         }
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
-            info("IOS DeviceConnectionManager", "Did Read RSSI")
+            info(TAG, "Did Read RSSI for Peripheral ${peripheral.identifier.UUIDString}")
             launch {
                 handleNewRssi(didReadRSSI.intValue)
             }
@@ -109,25 +112,24 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     }
 
     override suspend fun connect() {
-        info("IOS DeviceConnectionManager", "Request Connect")
-        info("IOS DeviceConnectionManager", "Has Delegate: ${cbCentralManager.delegate != null}")
+        info(TAG, "Request Connect for Peripheral ${peripheral.identifier.UUIDString}")
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
     override suspend fun discoverServices() {
-        info("IOS DeviceConnectionManager", "Discover Services")
+        info(TAG, "Discover Services for Peripheral ${peripheral.identifier.UUIDString}")
         discoveringServices.clear()
         discoveringCharacteristics.clear()
         peripheral.discoverServices(null)
     }
 
     override suspend fun disconnect() {
-        info("IOS DeviceConnectionManager", "Disconnect")
+        info(TAG, "Request Disconnect for Peripheral ${peripheral.identifier.UUIDString}")
         cbCentralManager.cancelPeripheralConnection(peripheral)
     }
 
     override suspend fun readRssi() {
-        info("IOS DeviceConnectionManager", "Read RSSI")
+        info(TAG, "Read RSSI for Peripheral ${peripheral.identifier.UUIDString}")
         peripheral.readRSSI()
     }
 
