@@ -203,6 +203,8 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     private var descriptors: [BluetoothDescriptor] = []
     private var descriptorsJob: Kotlinx_coroutines_coreJob?
     
+    private var readJob: Kotlinx_coroutines_coreJob?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -216,6 +218,7 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     
     fileprivate func startMonitoring() {
         descriptorsJob?.cancel(cause: nil)
+        readJob?.cancel(cause: nil)
         descriptorsHeader.text = NSLocalizedString("bluetooth_descriptors", comment: "")
         
         guard let characteristic = self.characteristic else {
@@ -232,11 +235,18 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
             self.descriptors = descriptors
             self.updateList()
         }
+        
+        readJob = bluetooth.characteristicValue(forDeviceIdentifier: deviceIdentifier, service: service, andCharacteristic: characteristic, onChange: { value in
+            self.characteristicValue.text = value
+        })
     }
     
     fileprivate func stopMonitoring() {
         descriptorsJob?.cancel(cause: nil)
         descriptorsJob = nil
+        
+        readJob?.cancel(cause: nil)
+        readJob = nil
     }
     
     private func updateList() {
@@ -293,16 +303,28 @@ class BluetoothDescriptorView : UICollectionViewCell {
     @IBOutlet var descriptorIdentifier: UILabel!
     @IBOutlet var descriptorValue: UILabel!
     
+    private var readJob: Kotlinx_coroutines_coreJob?
+    
     fileprivate func startMonitoring() {
+        readJob?.cancel(cause: nil)
         guard let descriptor = self.descriptor else {
             return
         }
         
         descriptorIdentifier.text = bluetooth?.descriptorIdentifier(forDescriptor: descriptor)
+        
+        guard let bluetooth = self.bluetooth, let deviceIdentifier = self.deviceIdentifier, let service = self.service, let characteristic = self.characteristic else {
+            return
+        }
+        
+        readJob = bluetooth.desciptorValue(forDeviceIdentifier: deviceIdentifier, service: service, characteristic: characteristic, andDescriptor: descriptor, onChange: { value in
+            self.descriptorValue.text = value
+        })
     }
     
     fileprivate func stopMonitoring() {
-        
+        readJob?.cancel(cause: nil)
+        readJob = nil
     }
     
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
