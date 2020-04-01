@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
 		2032F4FA2433820B009F4420 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2032F4F92433820B009F4420 /* Localizable.strings */; };
+		20519B592434A84A009C0D19 /* BluetoothMoreViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20519B582434A84A009C0D19 /* BluetoothMoreViewController.swift */; };
+		20519B5B2434D664009C0D19 /* BluetoothCharacteristicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20519B5A2434D664009C0D19 /* BluetoothCharacteristicCell.xib */; };
+		20519B5D2434D6A3009C0D19 /* BluetoothDescriptorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 20519B5C2434D6A3009C0D19 /* BluetoothDescriptorCell.xib */; };
 		208BC01A243233F6009ECCD3 /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208BC019243233F6009ECCD3 /* BluetoothViewController.swift */; };
 		208BC01D2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208BC01C2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
@@ -66,6 +69,9 @@
 /* Begin PBXFileReference section */
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
 		2032F4F92433820B009F4420 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		20519B582434A84A009C0D19 /* BluetoothMoreViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothMoreViewController.swift; sourceTree = "<group>"; };
+		20519B5A2434D664009C0D19 /* BluetoothCharacteristicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothCharacteristicCell.xib; sourceTree = "<group>"; };
+		20519B5C2434D6A3009C0D19 /* BluetoothDescriptorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothDescriptorCell.xib; sourceTree = "<group>"; };
 		208BC019243233F6009ECCD3 /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
 		208BC01C2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -127,6 +133,9 @@
 			isa = PBXGroup;
 			children = (
 				208BC019243233F6009ECCD3 /* BluetoothViewController.swift */,
+				20519B582434A84A009C0D19 /* BluetoothMoreViewController.swift */,
+				20519B5A2434D664009C0D19 /* BluetoothCharacteristicCell.xib */,
+				20519B5C2434D6A3009C0D19 /* BluetoothDescriptorCell.xib */,
 			);
 			path = Bluetooth;
 			sourceTree = "<group>";
@@ -437,9 +446,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				2032F4FA2433820B009F4420 /* Localizable.strings in Resources */,
+				20519B5B2434D664009C0D19 /* BluetoothCharacteristicCell.xib in Resources */,
 				74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */,
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
+				20519B5D2434D6A3009C0D19 /* BluetoothDescriptorCell.xib in Resources */,
 				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -475,6 +486,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20519B592434A84A009C0D19 /* BluetoothMoreViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,

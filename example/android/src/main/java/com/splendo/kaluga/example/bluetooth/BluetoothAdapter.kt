@@ -147,7 +147,7 @@ class BluetoothAdapter(private val bluetooth: Bluetooth, private val lifecycle: 
                 if (result.isEmpty())
                     nextString
                 else
-                    "$result/n$nextString"
+                    "$result\n$nextString"
             }
             serviceData.text = context.getString(R.string.bluetooth_service_data).format(dataString)
         }

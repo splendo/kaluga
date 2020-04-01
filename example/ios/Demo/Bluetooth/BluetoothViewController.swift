@@ -69,8 +69,9 @@ class BluetoothViewController : UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let bluetoothCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCell.Companion.identifier, for: indexPath) as! BluetoothCell
         bluetoothCell.bluetooth = bluetooth
+        bluetoothCell.isFoldedOut = foldedOut.contains(indexPath)
         bluetoothCell.device = devices[indexPath.row]
-        bluetoothCell.collectionView = collectionView
+        bluetoothCell.bluetoothViewController = self
         return bluetoothCell
     }
     
@@ -91,6 +92,10 @@ class BluetoothViewController : UICollectionViewController {
             foldedOut.update(with: indexPath)
             (cell as? BluetoothCell)?.setFoldedOut(isFoldedOut: true)
         }
+        
+        let context = UICollectionViewFlowLayoutInvalidationContext()
+        context.invalidateItems(at: [indexPath])
+        collectionView.collectionViewLayout.invalidateLayout()
     }
     
 }
@@ -101,7 +106,7 @@ class BluetoothCell: UICollectionViewCell {
         static let identifier = "BluetoothCell"
     }
     
-    weak fileprivate var collectionView: UICollectionView? = nil
+    weak fileprivate var bluetoothViewController: BluetoothViewController? = nil
     
     @IBOutlet var deviceName: UILabel!
     @IBOutlet var deviceIdentifier: UILabel!
@@ -122,8 +127,15 @@ class BluetoothCell: UICollectionViewCell {
     
     fileprivate var bluetooth: KNBluetoothFramework? = nil
     fileprivate var device: BluetoothDevice? = nil
-    private var isFoldedOut: Bool = false
+    fileprivate var isFoldedOut: Bool = false
     private var deviceJob: Kotlinx_coroutines_coreJob? = nil
+    
+    func setFoldedOut(isFoldedOut: Bool) {
+         if (self.isFoldedOut != isFoldedOut) {
+             self.isFoldedOut = isFoldedOut
+             foldOutMenu.isHidden = !isFoldedOut
+         }
+     }
     
     @IBAction func onConnectPressed() {
         if let identifier = device?.identifier {
@@ -137,20 +149,29 @@ class BluetoothCell: UICollectionViewCell {
         }
     }
     
-    func setFoldedOut(isFoldedOut: Bool) {
-        if (self.isFoldedOut != isFoldedOut) {
-            self.isFoldedOut = isFoldedOut
-            foldOutMenu.isHidden = !isFoldedOut
-            collectionView?.collectionViewLayout.invalidateLayout()
+    @IBAction func onMorePressed() {
+        guard let bluetooth = self.bluetooth, let identifier = self.device?.identifier else {
+            return
         }
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let bluetoothMoreVC: BluetoothMoreViewController
+        if #available(iOS 13.0, *) {
+            bluetoothMoreVC = sb.instantiateViewController(identifier: "bluetoothMoreVC") as! BluetoothMoreViewController
+        } else {
+            bluetoothMoreVC = sb.instantiateViewController(withIdentifier: "bluetoothMoreVC") as! BluetoothMoreViewController
+        }
+        bluetoothMoreVC.bluetooth = bluetooth
+        bluetoothMoreVC.identifier = identifier
+        bluetoothViewController?.navigationController?.pushViewController(bluetoothMoreVC, animated: true)
     }
     
     func startMonitoring() {
+        foldOutMenu.isHidden = !isFoldedOut
         deviceJob?.cancel(cause: nil)
         guard let device = device else {
             return
         }
-        deviceJob = bluetooth?.deviceState(forDevice: device, onChange: { deviceState in
+        deviceJob = bluetooth?.deviceState(forIdentifier: device.identifier, onChange: { deviceState in
             self.deviceName.text = deviceState.advertisementData.name ?? NSLocalizedString("bluetooth_no_name", comment: "")
             self.deviceIdentifier.text = deviceState.identifier.uuidString
             self.rssi.text = String(format: NSLocalizedString("rssi", comment: ""), deviceState.rssi)
@@ -170,14 +191,38 @@ class BluetoothCell: UICollectionViewCell {
                 self.connectionStatus.text = nil
             }
             
-            self.moreButtonContainer.isHidden = !(self.bluetooth?.isConnected(deviceState: deviceState) ?? false)
+            var hasChanged = self.foldOutMenu.isHidden == self.isFoldedOut
+            self.foldOutMenu.isHidden = !self.isFoldedOut
+            
+            let showMoreButton = self.bluetooth?.isConnected(deviceState: deviceState) ?? false
+            hasChanged = hasChanged || showMoreButton == self.moreButtonContainer.isHidden
+            self.moreButtonContainer.isHidden = !showMoreButton
 
-            self.serviceId.text = String(format: NSLocalizedString("bluetooth_service_uuids", comment: ""), self.bluetooth?.serviceUUIDString(deviceState: deviceState) ?? "")
-            self.serviceData.text = String(format: NSLocalizedString("bluetooth_service_data", comment: ""), self.bluetooth?.serviceDataString(deviceState: deviceState) ?? "")
+            let serviceIdText = String(format: NSLocalizedString("bluetooth_service_uuids", comment: ""), self.bluetooth?.serviceUUIDString(deviceState: deviceState) ?? "")
+            if (serviceIdText != self.serviceId.text) {
+                self.serviceId.text = serviceIdText
+                hasChanged = hasChanged || self.isFoldedOut
+            }
+            let serviceDataText = String(format: NSLocalizedString("bluetooth_service_data", comment: ""), self.bluetooth?.serviceDataString(deviceState: deviceState) ?? "")
+            if (serviceDataText != self.serviceData.text) {
+                self.serviceData.text = serviceDataText
+                hasChanged = hasChanged || self.isFoldedOut
+            }
             
-            self.manufacturerId.text = String(format: NSLocalizedString("bluetooth_manufacturer_id", comment: ""), deviceState.advertisementData.manufacturerId?.intValue ?? -1)
-            self.manufacturerData.text = String(format: NSLocalizedString("bluetooth_manufacturer_data", comment: ""), self.bluetooth?.hexString(data: deviceState.advertisementData.manufacturerData) ?? "")
-            
+            let manufacturerIdText = String(format: NSLocalizedString("bluetooth_manufacturer_id", comment: ""), deviceState.advertisementData.manufacturerId?.intValue ?? -1)
+            if (manufacturerIdText != self.manufacturerId.text) {
+                self.manufacturerId.text = manufacturerIdText
+                hasChanged = hasChanged || self.isFoldedOut
+            }
+            let manufacturerDataText = String(format: NSLocalizedString("bluetooth_manufacturer_data", comment: ""), self.bluetooth?.hexString(data: deviceState.advertisementData.manufacturerData) ?? "")
+            if (manufacturerDataText != self.manufacturerData.text) {
+                self.manufacturerData.text = manufacturerDataText
+                hasChanged = hasChanged || self.isFoldedOut
+            }
+
+            if hasChanged {
+                self.bluetoothViewController?.collectionView.collectionViewLayout.invalidateLayout()
+            }
         })
     }
     
