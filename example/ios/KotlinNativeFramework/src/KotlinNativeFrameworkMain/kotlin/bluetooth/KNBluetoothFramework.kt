@@ -106,16 +106,6 @@ class KNBluetoothFramework {
         return forCharacteristic.uuid.UUIDString
     }
 
-    fun characteristicValue(forDeviceIdentifier: Identifier, service: Service, andCharacteristic: Characteristic, onChange: (String?) -> Unit): Job {
-        return mainScope.launch(MainQueueDispatcher) {
-            val flow = bluetooth.devices()[forDeviceIdentifier].services()[service.uuid].characteristics()[andCharacteristic.uuid]
-            flow.first()?.readValue()
-            flow.value().collect { value ->
-                onChange(value?.toHexString())
-            }
-        }
-    }
-
     fun descriptors(forDeviceIdentifier: Identifier, service: Service, andCharacteristic: Characteristic, onChange: (List<Descriptor>) -> Unit): Job {
         return mainScope.launch(MainQueueDispatcher) {
             bluetooth.devices()[forDeviceIdentifier].services()[service.uuid].characteristics()[andCharacteristic.uuid].descriptors().collect { descriptors ->
@@ -126,16 +116,6 @@ class KNBluetoothFramework {
 
     fun descriptorIdentifier(forDescriptor: Descriptor): String {
         return forDescriptor.uuid.UUIDString
-    }
-
-    fun desciptorValue(forDeviceIdentifier: Identifier, service: Service, characteristic: Characteristic, andDescriptor: Descriptor, onChange: (String?) -> Unit): Job {
-        return mainScope.launch(MainQueueDispatcher) {
-            val flow = bluetooth.devices()[forDeviceIdentifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[andDescriptor.uuid]
-            flow.first()?.readValue()
-            flow.value().collect { value ->
-                onChange(value?.toHexString())
-            }
-        }
     }
 
     fun isDisconnectedOrDisconnecting(deviceState: DeviceState): Boolean {
