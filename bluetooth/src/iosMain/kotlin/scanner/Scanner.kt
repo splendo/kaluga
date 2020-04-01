@@ -56,10 +56,14 @@ actual class Scanner internal constructor(permissions: Permissions,
 
     }
 
-    private class MainCBCentralManagerDelegate(private val scanner: Scanner) : NSObject(), CBCentralManagerDelegateProtocol {
+    companion object {
+        private const val TAG = "IOS Bluetooth Scanner"
+    }
+
+    private val mainCBCentralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
-            if (isEnabled) scanner.bluetoothEnabled() else scanner.bluetoothDisabled()
+            if (isEnabled) bluetoothEnabled() else bluetoothDisabled()
         }.invoke()
     }
 
@@ -75,7 +79,7 @@ actual class Scanner internal constructor(permissions: Permissions,
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            info("IOS Scanner", "Powered On Did Update State")
+            info(TAG, "Powered On Did Update State")
             if (central.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
@@ -83,12 +87,12 @@ actual class Scanner internal constructor(permissions: Permissions,
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
-            info("IOS Scanner", "Did Discover")
+            info(TAG, "Did Discover Peripheral ${didDiscoverPeripheral.identifier.UUIDString}")
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) = mainContinuation {
-            info("IOS Scanner", "Did Connect Peripheral")
+            info(TAG, "Did Connect Peripheral ${didConnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didConnectPeripheral.identifier] ?: return@mainContinuation
             scanner.launch {
                 connectionManager.handleConnect()
@@ -96,7 +100,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
-            info("IOS Scanner", "Did Disconnect Peripheral")
+            info(TAG, "Did Disconnect Peripheral ${didDisconnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didDisconnectPeripheral.identifier] ?: return@mainContinuation
             scanner.launch {
                 connectionManager.handleDisconnect()
@@ -104,7 +108,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
-            info("IOS Scanner", "Did Fail to Connect to Peripheral")
+            info(TAG, "Did Fail to Connect to Peripheral ${didFailToConnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return@mainContinuation
             scanner.launch {
                 connectionManager.handleDisconnect()
@@ -117,6 +121,8 @@ actual class Scanner internal constructor(permissions: Permissions,
     private lateinit var checkEnabledCentralManager: CBCentralManager
     private val centralManagers = emptyList<CBCentralManager>().toMutableList()
     private var connectionManagerMap = emptyMap<Identifier, BaseDeviceConnectionManager>().toMutableMap()
+    private val discoveringDelegates = mutableListOf<CBCentralManagerDelegateProtocol>()
+    private val activeDelegates = mutableSetOf<CBCentralManagerDelegateProtocol>()
 
     private fun initMainManagers() {
         if (!::mainCentralManager.isInitialized) {
@@ -129,15 +135,15 @@ actual class Scanner internal constructor(permissions: Permissions,
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
         connectionManagerMap.clear()
-        
+        info(TAG, "Scan For Devices")
         if (filter.isEmpty()) {
-            info("IOS Scanner", "Start Scanning Empty Filter")
             val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
             val awaitPoweredOn = EmptyCompletableDeferred()
-            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+            val delegate = PoweredOnCBCentralManagerDelegate( this, awaitPoweredOn)
+            discoveringDelegates.add(delegate)
+            centralManager.delegate = delegate
             awaitPoweredOn.await()
-            info("IOS Scanner", "Start Scanning Powered On")
             centralManager.scanForPeripheralsWithServices(null, null)
         }
 
@@ -145,31 +151,37 @@ actual class Scanner internal constructor(permissions: Permissions,
             val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
             val awaitPoweredOn = EmptyCompletableDeferred()
-            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+            val delegate = PoweredOnCBCentralManagerDelegate( this, awaitPoweredOn)
+            discoveringDelegates.add(delegate)
+            centralManager.delegate = delegate
             awaitPoweredOn.await()
-            info("IOS Scanner", "Start Scanning Filter: $it Powered On")
             centralManager.scanForPeripheralsWithServices(listOf(it), null)
         }
     }
 
     override suspend fun stopScanning() {
+        info(TAG, "Stop Scanning")
         centralManagers.forEach {centralManager ->
-            val awaitPoweredOn = EmptyCompletableDeferred()
-            centralManager.delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
-            awaitPoweredOn.await()
-            centralManager.stopScan()
+            if (centralManager.state == CBCentralManagerStatePoweredOn) {
+                centralManager.stopScan()
+            }
         }
+        discoveringDelegates.clear()
         centralManagers.clear()
     }
 
     override fun startMonitoringBluetooth() {
         initMainManagers()
+        discoveringDelegates.clear()
+        activeDelegates.clear()
         connectionManagerMap.clear()
-        mainCentralManager.delegate = MainCBCentralManagerDelegate(this)
+        mainCentralManager.delegate = mainCBCentralManagerDelegate
     }
 
     override fun stopMonitoringBluetooth() {
         initMainManagers()
+        discoveringDelegates.clear()
+        activeDelegates.clear()
         connectionManagerMap.clear()
         mainCentralManager.delegate = null
     }
@@ -177,7 +189,8 @@ actual class Scanner internal constructor(permissions: Permissions,
     override suspend fun isBluetoothEnabled(): Boolean {
         initMainManagers()
         val completable = CompletableDeferred<Boolean>()
-        checkEnabledCentralManager.delegate = EnabledCBCentralManagerDelegate(completable)
+        val delegate = EnabledCBCentralManagerDelegate(completable)
+        checkEnabledCentralManager.delegate = delegate
         return completable.await().also {
             checkEnabledCentralManager.delegate = null
         }
@@ -191,8 +204,10 @@ actual class Scanner internal constructor(permissions: Permissions,
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
         initMainManagers()
-        if (central == mainCentralManager || central == checkEnabledCentralManager)
-            return
+
+        central.delegate?.let {
+            activeDelegates.add(it)
+        }
 
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceHolder = DeviceHolder(peripheral, central)

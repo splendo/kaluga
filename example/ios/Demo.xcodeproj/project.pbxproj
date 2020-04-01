@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
+		2032F4FA2433820B009F4420 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2032F4F92433820B009F4420 /* Localizable.strings */; };
 		208BC01A243233F6009ECCD3 /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208BC019243233F6009ECCD3 /* BluetoothViewController.swift */; };
 		208BC01D2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 208BC01C2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
@@ -64,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
+		2032F4F92433820B009F4420 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		208BC019243233F6009ECCD3 /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
 		208BC01C2433574E009ECCD3 /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -233,6 +235,7 @@
 				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
 				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				74F483E9C1890D693F808DDA /* Main.storyboard */,
+				2032F4F92433820B009F4420 /* Localizable.strings */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -433,6 +436,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2032F4FA2433820B009F4420 /* Localizable.strings in Resources */,
 				74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */,
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,

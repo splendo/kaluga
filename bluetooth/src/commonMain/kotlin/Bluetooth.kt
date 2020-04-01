@@ -97,8 +97,10 @@ class Bluetooth internal constructor(permissions: Permissions,
         scanFilter.set(null)
     }
 
-    suspend fun isScanning(): Boolean {
-        return scanFilter.flow().first() != null && scanningStateRepo.flow().first() is ScanningState.Enabled.Scanning
+    fun isScanning(): Flow<Boolean> {
+        return scanningStateRepo.flow().combine(scanFilter.flow()) { scanState, filter ->
+            filter != null && scanState is ScanningState.Enabled.Scanning
+        }.distinctUntilChanged()
     }
 
 }

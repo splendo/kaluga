@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  Demo
+
+  Created by Gijs van Veen on 31/03/2020.
+  Copyright © 2020 Splendo. All rights reserved.
+*/
+
+"bluetooth_start_scanning" = "Start Scanning";
+"bluetooth_stop_scanning" = "Stop Scanning";
+"bluetooth_no_name" = "Unnamed Bluetooth Device";
+
+"rssi" = "%d dBm";
+"txPower" = "%d dBm";
+"distance" = "%.2f m";
+
+"bluetooth_connect" = "Connect";
+"bluetooth_disconnect" = "Disconnect";
+
+"bluetooth_connected" = "Connected";
+"bluetooth_connecting" = "Connecting";
+"bluetooth_disconnected" = "Disconnected";
+"bluetooth_disconneting" = "Disconnecting";
+"bluetooth_reconnecting" = "Reconnecting";
+"bluetooth_discovering" = "Discovering";
+
+"bluetooth_service_uuids" = "Service UUIDs: %@";
+"bluetooth_service_data" = "Service Data: %@";
+"bluetooth_manufacturer_id" = "Manufacturer Id: %d";
+"bluetooth_manufacturer_data" = "Manufacturer Data: %@";
+
+"bluetooth_more" = "More";
+
+"bluetooth_services_header" = "Services";
+"bluetooth_service" = "Service";
+"bluetooth_characteristics" = "Characteristics";
+"bluetooth_descriptors" = "Descriptors";
+"bluetooth_permissions_read" = "Read";
+"bluetooth_permissions_write" = "Write";
+"bluetooth_permissions_read_encrypted" = "Read Encrypted";
+"bluetooth_permissions_write_encrypted" = "Write Encrypted";

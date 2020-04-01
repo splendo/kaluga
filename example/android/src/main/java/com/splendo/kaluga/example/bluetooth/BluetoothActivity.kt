@@ -5,6 +5,9 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +26,8 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
         val bluetooth: Bluetooth = BluetoothBuilder().create()
     }
     private val bluetoothAdapter = BluetoothAdapter(bluetooth, lifecycle)
+
+    private lateinit var isScanning: LiveData<Boolean>
     
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +36,11 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
 
         devices_list.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
         devices_list.adapter = bluetoothAdapter
+
+        lifecycle.coroutineScope.launchWhenResumed {
+            isScanning = bluetooth.isScanning().asLiveData()
+            isScanning.observe(this@BluetoothActivity, Observer { invalidateOptionsMenu() })
+        }
 
         lifecycle.coroutineScope.launchWhenResumed {
             bluetooth.devices().collect{ devices ->
@@ -45,7 +55,7 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean = runBlocking {
-        val scanning = bluetooth.isScanning()
+        val scanning = isScanning.value ?: false
         menu?.forEach { item ->
             when(item.itemId) {
                 R.id.start_scanning -> item.isVisible = !scanning
@@ -60,14 +70,12 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
             R.id.start_scanning -> {
                 lifecycle.coroutineScope.launch {
                     bluetooth.startScanning()
-                    invalidateOptionsMenu()
                 }
                 true
             }
             R.id.stop_scanning -> {
                 lifecycle.coroutineScope.launch {
                     bluetooth.stopScanning()
-                    invalidateOptionsMenu()
                 }
                 true
             }

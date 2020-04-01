@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
 
     class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
         override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
+            info("IOS DeviceConnectionManager", "Create Has Delegate: ${cbCentralManager.delegate != null}")
             return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceHolder, stateRepo)
         }
     }
@@ -46,10 +48,12 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Discover Descriptors")
             didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Update Notification State")
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
@@ -62,30 +66,37 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Update Characteristic")
             updateCharacteristic(didUpdateValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Write Characteristic")
             updateCharacteristic(didWriteValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Update Descriptor")
             updateDescriptor(didUpdateValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Write Descriptor")
             updateDescriptor(didWriteValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Discover Characteristics")
             didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Discover Services")
             didDiscoverServices()
         }
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
+            info("IOS DeviceConnectionManager", "Did Read RSSI")
             launch {
                 handleNewRssi(didReadRSSI.intValue)
             }
@@ -98,20 +109,25 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     }
 
     override suspend fun connect() {
+        info("IOS DeviceConnectionManager", "Request Connect")
+        info("IOS DeviceConnectionManager", "Has Delegate: ${cbCentralManager.delegate != null}")
         cbCentralManager.connectPeripheral(peripheral, null)
     }
 
     override suspend fun discoverServices() {
+        info("IOS DeviceConnectionManager", "Discover Services")
         discoveringServices.clear()
         discoveringCharacteristics.clear()
         peripheral.discoverServices(null)
     }
 
     override suspend fun disconnect() {
+        info("IOS DeviceConnectionManager", "Disconnect")
         cbCentralManager.cancelPeripheralConnection(peripheral)
     }
 
     override suspend fun readRssi() {
+        info("IOS DeviceConnectionManager", "Read RSSI")
         peripheral.readRSSI()
     }
 

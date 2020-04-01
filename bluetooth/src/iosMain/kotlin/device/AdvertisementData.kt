@@ -21,19 +21,23 @@ import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.logging.info
 import platform.CoreBluetooth.*
 import platform.Foundation.NSData
+import platform.Foundation.NSNumber
 
 actual class AdvertisementData(private val advertisementData: Map<String, Any>) : BaseAdvertisementData {
 
     override val name: String?
         get() = advertisementData[CBAdvertisementDataLocalNameKey] as? String
+    @ExperimentalUnsignedTypes
     override val manufacturerId: Int?
         get() = {
             manufacturerData?.let {manufacturerDataArray ->
-                manufacturerDataArray.indices.fold(0) { result, index ->
-                    result or (manufacturerDataArray[index].toInt() shl 8 * index)
+                if (manufacturerDataArray.size >= 2) {
+                    (manufacturerDataArray[0].toUInt() + (manufacturerDataArray[1].toUInt() shl 8)).toInt()
                 }
+                else null
             }
         }()
     override val manufacturerData: ByteArray?
@@ -51,8 +55,8 @@ actual class AdvertisementData(private val advertisementData: Map<String, Any>) 
                 toMap() ?: emptyMap()
         }()
     override val txPowerLevel: Int
-        get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? Int) ?: Int.MIN_VALUE
+        get() = (advertisementData[CBAdvertisementDataTxPowerLevelKey] as? NSNumber)?.intValue ?: Int.MIN_VALUE
 
     override val isConnectible: Boolean
-        get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? Boolean) ?: false)
+        get() = ((advertisementData[CBAdvertisementDataIsConnectable] as? NSNumber)?.boolValue ?: false)
 }
