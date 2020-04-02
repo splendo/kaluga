@@ -15,6 +15,7 @@ class BluetoothViewController : UICollectionViewController {
     let bluetooth = KNBluetoothFramework()
     
     private var devices: [BluetoothDevice] = []
+    private var isInvalidating: Bool = false
     
     private var foldedOut: Set<IndexPath> = Set()
     
@@ -32,6 +33,7 @@ class BluetoothViewController : UICollectionViewController {
         bluetooth.devices { newDevices in
             self.devices = newDevices
             self.collectionView.reloadData()
+            self.collectionView.layoutIfNeeded()
         }
     }
     
@@ -76,11 +78,22 @@ class BluetoothViewController : UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        (cell as? BluetoothCell)?.startMonitoring()
+        guard let btCell = cell as? BluetoothCell else {
+            return
+        }
+        if (!isInvalidating) {
+            btCell.startMonitoring()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        (cell as? BluetoothCell)?.stopMonitoring()
+        guard let btCell = cell as? BluetoothCell else {
+            return
+        }
+        
+        if (!isInvalidating) {
+            btCell.stopMonitoring()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -96,6 +109,13 @@ class BluetoothViewController : UICollectionViewController {
         let context = UICollectionViewFlowLayoutInvalidationContext()
         context.invalidateItems(at: [indexPath])
         collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    fileprivate func resizeCollectionView() {
+        isInvalidating = true
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.layoutIfNeeded()
+        isInvalidating = false
     }
     
 }
@@ -221,7 +241,7 @@ class BluetoothCell: UICollectionViewCell {
             }
 
             if hasChanged {
-                self.bluetoothViewController?.collectionView.collectionViewLayout.invalidateLayout()
+                self.bluetoothViewController?.resizeCollectionView()
             }
         })
     }

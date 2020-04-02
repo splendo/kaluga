@@ -35,6 +35,7 @@
 "bluetooth_service" = "Service";
 "bluetooth_characteristics" = "Characteristics";
 "bluetooth_descriptors" = "Descriptors";
+"bluetooth_attribute_no_value" = "No Value";
 "bluetooth_permissions_read" = "Read";
 "bluetooth_permissions_write" = "Write";
 "bluetooth_permissions_read_encrypted" = "Read Encrypted";

@@ -134,6 +134,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     }
 
     override suspend fun performAction(action: DeviceAction) {
+        info(TAG, "Perform Action for Peripheral ${peripheral.identifier.UUIDString}")
         currentAction = action
         when(action) {
             is DeviceAction.Read.Characteristic -> peripheral.readValueForCharacteristic(action.characteristic.characteristic)

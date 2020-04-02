@@ -566,7 +566,6 @@
         <!--Bluetooth More View Controller-->
         <scene sceneID="2dN-Ki-Y9V">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xwz-q1-GIQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <viewController storyboardIdentifier="bluetoothMoreVC" id="PHA-hf-85f" customClass="BluetoothMoreViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="CtD-yu-wAr">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
@@ -601,15 +600,16 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connection Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbW-oZ-Mzd">
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connection Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lbW-oZ-Mzd">
                                 <rect key="frame" x="8" y="101" width="398" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Abi-Up-lZz">
-                                <rect key="frame" x="0.0" y="150" width="414" height="712"/>
+                                <rect key="frame" x="0.0" y="158" width="414" height="704"/>
                                 <color key="backgroundColor" name="darker_color"/>
+                                <inset key="scrollIndicatorInsets" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Vbv-Oq-cPk">
                                     <size key="itemSize" width="128" height="128"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -633,7 +633,7 @@
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="300" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="Service Identifier" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FIp-5m-E3e">
+                                                        <label opaque="NO" userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="left" horizontalHuggingPriority="300" verticalHuggingPriority="251" horizontalCompressionResistancePriority="500" text="Service Identifier" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FIp-5m-E3e">
                                                             <rect key="frame" x="61" y="0.0" width="129" height="20.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
@@ -694,7 +694,7 @@
                                 </connections>
                             </collectionView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Services" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Gg-R4-tnz">
-                                <rect key="frame" x="8" y="125.5" width="414" height="20.5"/>
+                                <rect key="frame" x="8" y="133.5" width="414" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -708,7 +708,7 @@
                             <constraint firstItem="0fz-zg-6Df" firstAttribute="trailing" secondItem="dza-4j-F1E" secondAttribute="trailing" constant="8" id="MTC-95-lD2"/>
                             <constraint firstItem="dza-4j-F1E" firstAttribute="top" secondItem="YXb-k7-PXE" secondAttribute="bottom" constant="4" id="MeH-2c-CEZ"/>
                             <constraint firstItem="Abi-Up-lZz" firstAttribute="leading" secondItem="0fz-zg-6Df" secondAttribute="leading" id="VL6-vS-zc0"/>
-                            <constraint firstItem="6Gg-R4-tnz" firstAttribute="top" secondItem="lbW-oZ-Mzd" secondAttribute="bottom" constant="4" id="ZbM-pW-5mD"/>
+                            <constraint firstItem="6Gg-R4-tnz" firstAttribute="top" secondItem="lbW-oZ-Mzd" secondAttribute="bottom" constant="12" id="ZbM-pW-5mD"/>
                             <constraint firstItem="lbW-oZ-Mzd" firstAttribute="top" secondItem="dza-4j-F1E" secondAttribute="bottom" constant="4" id="ZdQ-kL-voF"/>
                             <constraint firstItem="Abi-Up-lZz" firstAttribute="top" secondItem="6Gg-R4-tnz" secondAttribute="bottom" constant="4" id="aBr-TP-gTJ"/>
                             <constraint firstItem="0fz-zg-6Df" firstAttribute="trailing" secondItem="Abi-Up-lZz" secondAttribute="trailing" id="dIc-uK-7KP"/>
@@ -731,6 +731,7 @@
                         <outlet property="txPower" destination="PRG-4D-Y4j" id="lv9-VT-Pcw"/>
                     </connections>
                 </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xwz-q1-GIQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3328.985507246377" y="1781.9196428571427"/>
         </scene>
