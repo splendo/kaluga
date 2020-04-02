@@ -1,10 +1,12 @@
-import com.splendo.kaluga.bluetooth.BluetoothTest
+// import com.splendo.kaluga.bluetooth.BluetoothTest
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
+import com.splendo.kaluga.bluetooth.device.DeviceHolder
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceTest
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
@@ -26,19 +28,19 @@ import com.splendo.kaluga.state.StateRepo
 
  */
 
-class AndroidBluetoothTest : BluetoothTest() {
-
-    override fun createFilter(): Set<UUID> {
-        return setOf(UUID.randomUUID())
-    }
-
-    override fun createDeviceInfoHolder(): DeviceInfoHolder {
-        return DeviceInfoHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState), AdvertisementData(null))
-    }
-
-    override fun createService(stateRepo: StateRepo<DeviceState>): Service {
-        val uuid = UUID.randomUUID()
-        val serviceWrapper = MockServiceWrapper(uuid, listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
-        return Service(serviceWrapper, stateRepo)
-    }
-}
+// class AndroidBluetoothTest : BluetoothTest() {
+//
+//     override fun createFilter(): Set<UUID> {
+//         return setOf(UUID.randomUUID())
+//     }
+//
+//     override fun createDeviceInfoImpl(): DeviceInfoImpl {
+//         return DeviceInfoImpl(DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState)), DeviceTest.initialRssi, AdvertisementData(null))
+//     }
+//
+//     override fun createService(stateRepo: StateRepo<DeviceState>): Service {
+//         val uuid = UUID.randomUUID()
+//         val serviceWrapper = MockServiceWrapper(uuid, listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
+//         return Service(serviceWrapper, stateRepo)
+//     }
+// }

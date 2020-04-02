@@ -27,28 +27,28 @@ import com.splendo.kaluga.state.StateRepo
 
 class IOSDeviceTest : DeviceTest() {
 
-    override val deviceInfoHolder: DeviceInfoHolder
-        get() = DeviceInfoHolder(MockCBPeripheral(), MockCBCentralManager(), AdvertisementData(emptyMap()))
+    override val deviceInfo: DeviceInfoImpl
+        get() = DeviceInfoImpl(DeviceHolder(MockCBPeripheral(), MockCBCentralManager()), initialRssi, AdvertisementData(emptyMap()))
 
     override fun createServices(stateRepo: StateRepo<DeviceState>): List<Service> {
         val service = Service(MockCBService(), stateRepo)
         return listOf(service)
     }
 
-    override fun createCharacteristic(stateRepo: StateRepo<DeviceState>) : Characteristic {
-
+    override fun createCharacteristic(stateRepo: StateRepo<DeviceState>): Characteristic {
+        TODO("Not yet implemented")
     }
 
     override fun createDescriptor(stateRepo: StateRepo<DeviceState>) : Descriptor {
-
+        TODO("Not yet implemented")
     }
 
     override fun validateCharacteristicUpdated() : Boolean {
-
+        TODO("Not yet implemented")
     }
 
     override fun validateDescriptorUpdated() : Boolean {
-
+        TODO("Not yet implemented")
     }
 
 }

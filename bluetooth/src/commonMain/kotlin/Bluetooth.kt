@@ -17,17 +17,28 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.bluetooth.device.*
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.Permissions
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.transformLatest
 import kotlin.jvm.JvmName
 
 class Bluetooth internal constructor(permissions: Permissions,
@@ -168,7 +179,7 @@ fun Flow<Device?>.info() : Flow<DeviceInfoImpl> {
     }
 }
 
-fun Flow<Device?>.advertisement() : Flow<AdvertisementData> {
+fun Flow<Device?>.advertisement() : Flow<BaseAdvertisementData> {
     return this.info().map { it.advertisementData }.distinctUntilChanged()
 }
 

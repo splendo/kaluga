@@ -20,17 +20,19 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
-import com.splendo.kaluga.bluetooth.device.DeviceInfoHolder
+import com.splendo.kaluga.bluetooth.device.DeviceHolder
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.DeviceTest
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 
-class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
-
-    override fun createFilter(): Set<UUID> {
-        return setOf(UUID.randomUUID())
-    }
-
-    override fun createDeviceInfoHolder(): DeviceInfoHolder {
-        return DeviceInfoHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState), AdvertisementData(null))
-    }
-}
+// class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
+//
+//     override fun createFilter(): Set<UUID> {
+//         return setOf(UUID.randomUUID())
+//     }
+//
+//     override fun createDeviceInfo(): DeviceInfoImpl {
+//         return DeviceInfoImpl(DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState)), DeviceTest.initialRssi, AdvertisementData(null))
+//     }
+// }
 

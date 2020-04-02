@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,24 +15,16 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.mock
+package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.randomUUID
-import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBService
-import platform.CoreBluetooth.CBUUID
 
-class MockCBService(private val uuid: UUID = randomUUID()) : CBService() {
-
-    external override fun UUID(): CBUUID {
-        return uuid
-    }
-
-    external override fun characteristics(): List<CBCharacteristic>? {
-        return super.characteristics()?.typedList()
-    }
-
-}
+data class MockAdvertisementData(
+    override var name: String? = null,
+    override var manufacturerId: Int? = null,
+    override var manufacturerData: ByteArray? = null,
+    override var serviceUUIDs: List<UUID> = emptyList(),
+    override var serviceData: Map<UUID, ByteArray?> = emptyMap(),
+    override var txPowerLevel: Int = Int.MIN_VALUE,
+    override var isConnectible: Boolean = true) : BaseAdvertisementData
 
