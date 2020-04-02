@@ -21,13 +21,21 @@ import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
-import platform.CoreBluetooth.CBCharacteristicPropertyIndicateEncryptionRequired
-import platform.CoreBluetooth.CBCharacteristicPropertyRead
-import platform.CoreBluetooth.CBCharacteristicPropertyWrite
 import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.CBUUID
+import platform.CoreBluetooth.CBUUIDCharacteristicExtendedPropertiesString
+import platform.CoreBluetooth.CBUUIDCharacteristicFormatString
+import platform.CoreBluetooth.CBUUIDCharacteristicUserDescriptionString
+import platform.CoreBluetooth.CBUUIDClientCharacteristicConfigurationString
+import platform.CoreBluetooth.CBUUIDServerCharacteristicConfigurationString
 import platform.Foundation.NSData
+import platform.Foundation.NSNumber
+import platform.Foundation.NSString
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.dataUsingEncoding
 
-actual class Descriptor(internal val descriptor: CBDescriptor, stateRepo: StateRepo<DeviceState>) : BaseDescriptor((descriptor.value as? NSData)?.toByteArray(), stateRepo) {
+actual open class Descriptor(internal val descriptor: DescriptorWrapper, stateRepo: StateRepo<DeviceState>) : BaseDescriptor(descriptor.value?.toByteArray(), stateRepo) {
 
     override val uuid = descriptor.UUID
 
@@ -40,7 +48,55 @@ actual class Descriptor(internal val descriptor: CBDescriptor, stateRepo: StateR
     }
 
     override fun getUpdatedValue(): ByteArray? {
-        return (descriptor.value as? NSData)?.toByteArray()
+        return descriptor.value?.toByteArray()
     }
 }
 
+interface DescriptorWrapper {
+    val UUID: CBUUID
+    val value: NSData?
+
+    fun readValue(peripheral: CBPeripheral)
+    fun writeValue(value: NSData, peripheral: CBPeripheral)
+}
+
+class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
+
+    override val UUID: CBUUID get() {return descriptor.UUID }
+    override val value: NSData? get() {
+        return when(descriptor.UUID.uuidString) {
+            CBUUIDCharacteristicFormatString -> {
+                descriptor.value as? NSData
+            }
+            CBUUIDCharacteristicUserDescriptionString -> {
+                (descriptor.value as? NSString)?.dataUsingEncoding(NSUTF8StringEncoding)
+            }
+            CBUUIDCharacteristicExtendedPropertiesString -> {
+                (descriptor.value as? NSNumber)?.let {
+                    null
+                }
+            }
+            CBUUIDClientCharacteristicConfigurationString -> {
+                (descriptor.value as? NSNumber)?.let {
+                    null
+                }
+            }
+            CBUUIDServerCharacteristicConfigurationString -> {
+                (descriptor.value as? NSNumber)?.let {
+                    null
+                }
+            }
+            else -> descriptor.value as? NSData
+        }
+
+    }
+
+    override fun readValue(peripheral: CBPeripheral) {
+        peripheral.readValueForDescriptor(descriptor)
+    }
+
+    override fun writeValue(value: NSData, peripheral: CBPeripheral) {
+        peripheral.writeValue(value, descriptor)
+    }
+
+}

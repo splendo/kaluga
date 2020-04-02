@@ -17,22 +17,13 @@
 
 package com.splendo.kaluga.bluetooth.mock
 
-import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.randomUUID
-import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBService
+import com.splendo.kaluga.bluetooth.CharacteristicWrapper
+import com.splendo.kaluga.bluetooth.ServiceWrapper
 import platform.CoreBluetooth.CBUUID
 
-class MockCBService(private val uuid: UUID = randomUUID()) : CBService() {
+class MockServiceWrapper(override val UUID: CBUUID = CBUUID(), characteristicUuids: List<Pair<CBUUID, List<CBUUID>>> = emptyList()) : ServiceWrapper {
 
-    external override fun UUID(): CBUUID {
-        return uuid
-    }
-
-    external override fun characteristics(): List<CBCharacteristic>? {
-        return super.characteristics()?.typedList()
-    }
+    override val characteristics: List<CharacteristicWrapper> = characteristicUuids.map { MockCharacteristicWrapper(it.first, it.second) }
 
 }
 

@@ -17,14 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import platform.CoreBluetooth.CBCentralManager
-import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSUUID
+import kotlin.device.CBPeripheralWrapper
 
 actual typealias Identifier = NSUUID
 
-actual class DeviceHolder(internal val peripheral: CBPeripheral,
-                              internal val centralManager: CBCentralManager) {
+actual class DeviceHolder(internal val peripheral: CBPeripheralWrapper) {
 
     actual val name: String?
         get() =

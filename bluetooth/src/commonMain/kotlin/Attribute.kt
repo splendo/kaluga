@@ -41,7 +41,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     internal abstract fun createWriteAction(newValue: ByteArray?): W
 
-    internal open suspend fun updateValue() {
+    open suspend fun updateValue() {
         val nextValue = getUpdatedValue()
         set(nextValue)
     }

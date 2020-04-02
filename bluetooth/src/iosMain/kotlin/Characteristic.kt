@@ -23,12 +23,13 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.*
+import platform.Foundation.NSData
 
-actual open class Characteristic(val characteristic: CBCharacteristic, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
+actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
 
     override val uuid = characteristic.UUID
 
-    override val descriptors = characteristic.descriptors?.typedList<CBDescriptor>()?.map { Descriptor(it, stateRepo) } ?: emptyList()
+    override val descriptors = characteristic.descriptors?.map { Descriptor( it, stateRepo) } ?: emptyList()
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)
@@ -45,5 +46,35 @@ actual open class Characteristic(val characteristic: CBCharacteristic, stateRepo
     override fun getUpdatedValue(): ByteArray? {
         return characteristic.value?.toByteArray()
     }
+}
+
+interface CharacteristicWrapper {
+    val UUID: CBUUID
+    val descriptors: List<DescriptorWrapper>?
+    val value: NSData?
+
+    fun readValue(peripheral: CBPeripheral)
+    fun writeValue(value: NSData, peripheral: CBPeripheral)
+    fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral)
+}
+
+class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : CharacteristicWrapper {
+
+    override val UUID: CBUUID get() {return characteristic.UUID }
+    override val descriptors: List<DescriptorWrapper>? = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) }
+    override val value: NSData? get() {return characteristic.value }
+
+    override fun readValue(peripheral: CBPeripheral) {
+        peripheral.readValueForCharacteristic(characteristic)
+    }
+
+    override fun writeValue(value: NSData, peripheral: CBPeripheral) {
+        peripheral.writeValue(value, characteristic, CBCharacteristicWriteWithResponse)
+    }
+
+    override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral) {
+        peripheral.setNotifyValue(enabled, characteristic)
+    }
+
 }
 

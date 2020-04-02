@@ -20,20 +20,31 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.*
+import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.DeviceHolder
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import platform.CoreBluetooth.*
+import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
+import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
+import platform.CoreBluetooth.CBPeripheral
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
+import kotlin.device.DefaultCBPeripheralWrapper
 
 actual class Scanner internal constructor(permissions: Permissions,
                                           private val connectionSettings: ConnectionSettings,
@@ -210,10 +221,10 @@ actual class Scanner internal constructor(permissions: Permissions,
         }
 
         val advertisementData = AdvertisementData(advertisementDataMap)
-        val deviceHolder = DeviceHolder(peripheral, central)
+        val deviceHolder = DeviceHolder(DefaultCBPeripheralWrapper(peripheral))
         handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
             val deviceInfo = DeviceInfoImpl(deviceHolder, rssi, advertisementData)
-            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central)).also {
+            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central, peripheral)).also {
                 connectionManagerMap[it.identifier] = it.deviceConnectionManager
             }
         }

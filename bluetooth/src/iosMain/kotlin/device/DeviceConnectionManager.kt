@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
+import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.info
@@ -30,19 +31,17 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo {
+internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral, connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo {
 
-    class Builder(private val cbCentralManager: CBCentralManager) : BaseDeviceConnectionManager.Builder {
+    class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(cbCentralManager, connectionSettings, deviceHolder, stateRepo)
+            return DeviceConnectionManager(cbCentralManager, peripheral, connectionSettings, deviceHolder, stateRepo)
         }
     }
 
     companion object {
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
-
-    private val peripheral = deviceHolder.peripheral
 
     private val discoveringServices = emptyList<CBUUID>().toMutableList()
     private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
@@ -137,16 +136,16 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
         info(TAG, "Perform Action for Peripheral ${peripheral.identifier.UUIDString}")
         currentAction = action
         when(action) {
-            is DeviceAction.Read.Characteristic -> peripheral.readValueForCharacteristic(action.characteristic.characteristic)
-            is DeviceAction.Read.Descriptor -> peripheral.readValueForDescriptor(action.descriptor.descriptor)
+            is DeviceAction.Read.Characteristic -> action.characteristic.characteristic.readValue(peripheral)
+            is DeviceAction.Read.Descriptor -> action.descriptor.descriptor.readValue(peripheral)
             is DeviceAction.Write.Characteristic -> {
                 action.newValue?.toNSData()?.let {
-                    peripheral.writeValue(it, action.characteristic.characteristic, CBCharacteristicWriteWithResponse)
+                    action.characteristic.characteristic.writeValue(it, peripheral)
                 }
             }
             is DeviceAction.Write.Descriptor -> {
                 action.newValue?.toNSData()?.let {
-                    peripheral.writeValue(it, action.descriptor.descriptor)
+                    action.descriptor.descriptor.writeValue(it, peripheral)
                 }
             }
             is DeviceAction.Notification -> {
@@ -154,7 +153,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                peripheral.setNotifyValue(action.enable, action.characteristic.characteristic)
+                action.characteristic.characteristic.setNotificationValue(action.enable, peripheral)
             }
         }
     }
@@ -197,7 +196,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
             launch {
-                val services = peripheral.services?.typedList<CBService>()?.map { Service(it, stateRepo) } ?: emptyList()
+                val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), stateRepo) } ?: emptyList()
                 handleScanCompleted(services)
             }
         }
