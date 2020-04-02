@@ -28,4 +28,5 @@ actual open class Service(private val service: CBService, private val stateRepo:
     override val uuid = service.UUID
 
     override val characteristics = service.characteristics?.typedList<CBCharacteristic>()?.map { Characteristic(it, stateRepo) } ?: emptyList()
+
 }
