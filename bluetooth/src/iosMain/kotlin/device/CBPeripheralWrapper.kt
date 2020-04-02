@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,14 +15,21 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.mock
+package kotlin.device
 
-import platform.CoreBluetooth.CBCentralManager
-import platform.darwin.dispatch_get_main_queue
+import platform.CoreBluetooth.CBPeripheral
+import platform.Foundation.NSUUID
 
-class MockCBCentralManager : CBCentralManager(null, dispatch_get_main_queue()) {
+interface CBPeripheralWrapper {
 
-
+    val name: String?
+    val identifier: NSUUID
 
 }
 
+class DefaultCBPeripheralWrapper(private val peripheral: CBPeripheral) : CBPeripheralWrapper {
+
+    override val name: String? get() { return peripheral.name }
+    override val identifier: NSUUID get() {return peripheral.identifier }
+
+}

@@ -17,11 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.mock
 
-import platform.CoreBluetooth.CBPeripheral
+import platform.Foundation.NSUUID
+import kotlin.device.CBPeripheralWrapper
 
-class MockCBPeripheral : CBPeripheral() {
-
-
-
-}
+data class MockCBPeripheralWrapper(override val name: String? = null, override val identifier: NSUUID = NSUUID()) : CBPeripheralWrapper
 

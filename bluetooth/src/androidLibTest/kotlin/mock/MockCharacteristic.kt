@@ -31,7 +31,7 @@ class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, state
 
     val didUpdate = EmptyCompletableDeferred()
 
-    internal override suspend fun updateValue() {
+    override suspend fun updateValue() {
         didUpdate.complete()
     }
 

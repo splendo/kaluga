@@ -22,11 +22,25 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBService
+import platform.CoreBluetooth.CBUUID
+import platform.Foundation.NSUUID
 
-actual open class Service(private val service: CBService, private val stateRepo: StateRepo<DeviceState>) : BaseService {
+actual open class Service(service: ServiceWrapper, private val stateRepo: StateRepo<DeviceState>) : BaseService {
 
     override val uuid = service.UUID
 
-    override val characteristics = service.characteristics?.typedList<CBCharacteristic>()?.map { Characteristic(it, stateRepo) } ?: emptyList()
+    override val characteristics = service.characteristics?.map { Characteristic(it, stateRepo) } ?: emptyList()
+
+}
+
+interface ServiceWrapper {
+    val UUID: CBUUID
+    val characteristics: List<CharacteristicWrapper>?
+}
+
+class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
+
+    override val UUID: CBUUID = service.UUID
+    override val characteristics: List<CharacteristicWrapper>? = service.characteristics?.typedList<CBCharacteristic>()?.map{ DefaultCharacteristicWrapper(it) }
 
 }

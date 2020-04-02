@@ -19,36 +19,47 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.mock.MockCBCentralManager
-import com.splendo.kaluga.bluetooth.mock.MockCBPeripheral
-import com.splendo.kaluga.bluetooth.mock.MockCBService
+import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
+import com.splendo.kaluga.bluetooth.mock.MockCharacteristic
+import com.splendo.kaluga.bluetooth.mock.MockDescriptor
+import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
+import platform.CoreBluetooth.CBCharacteristic
+import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.CBUUID
 
 class IOSDeviceTest : DeviceTest() {
 
-    override val deviceInfo: DeviceInfoImpl
-        get() = DeviceInfoImpl(DeviceHolder(MockCBPeripheral(), MockCBCentralManager()), initialRssi, AdvertisementData(emptyMap()))
+    private lateinit var service: MockServiceWrapper
+    private lateinit var characteristic: MockCharacteristic
+    private lateinit var descriptor: MockDescriptor
+
+    override val deviceHolder: DeviceHolder
+        get() = DeviceHolder(MockCBPeripheralWrapper())
 
     override fun createServices(stateRepo: StateRepo<DeviceState>): List<Service> {
-        val service = Service(MockCBService(), stateRepo)
-        return listOf(service)
+        service = MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID()))))
+        return listOf(Service(service, stateRepo))
     }
 
     override fun createCharacteristic(stateRepo: StateRepo<DeviceState>): Characteristic {
-        TODO("Not yet implemented")
+        characteristic = MockCharacteristic(service.characteristics.first(), stateRepo)
+        return characteristic
     }
 
     override fun createDescriptor(stateRepo: StateRepo<DeviceState>) : Descriptor {
-        TODO("Not yet implemented")
+        descriptor = MockDescriptor(characteristic.characteristic.descriptors!!.first(), stateRepo)
+        return descriptor
     }
 
     override fun validateCharacteristicUpdated() : Boolean {
-        TODO("Not yet implemented")
+        return characteristic.didUpdate.isCompleted
     }
 
     override fun validateDescriptorUpdated() : Boolean {
-        TODO("Not yet implemented")
+        return descriptor.didUpdate.isCompleted
     }
 
 }
