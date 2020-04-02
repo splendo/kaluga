@@ -1,6 +1,7 @@
 package com.splendo.kaluga.example.ios.bluetooth
 
 import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceState
@@ -12,8 +13,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import com.splendo.kaluga.base.utils.toHexString
-import platform.CoreBluetooth.CBUUID
 
 class KNBluetoothFramework {
 

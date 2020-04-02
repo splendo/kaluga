@@ -1,33 +1,16 @@
-package com.splendo.kaluga.example.ios
+package com.splendo.kaluga.example.ios.permissions
 
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.example.shared.AlertPresenter
-import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.PermissionsPrinter
-import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
-import com.splendo.kaluga.location.LocationManager
-import com.splendo.kaluga.location.LocationStateRepo
-import com.splendo.kaluga.location.LocationStateRepoBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import platform.CoreLocation.CLLocationManager
-import platform.UIKit.UILabel
 import platform.UserNotifications.UNAuthorizationOptions
-import ru.pocketbyte.kydra.log.KydraLog
 
 class KNPermissionsFramework {
     private val permissions = Permissions(PermissionsBuilder())
