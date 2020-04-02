@@ -18,8 +18,9 @@
 package com.splendo.kaluga.bluetooth.mock
 
 import platform.CoreBluetooth.CBCentralManager
+import platform.darwin.dispatch_get_main_queue
 
-class MockCBCentralManager : CBCentralManager() {
+class MockCBCentralManager : CBCentralManager(null, dispatch_get_main_queue()) {
 
 
 

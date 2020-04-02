@@ -22,9 +22,9 @@ import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
-actual class AdvertisementData(private val scanResult: ScanResult) : BaseAdvertisementData {
+actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvertisementData {
 
-    private val scanRecord = scanResult.scanRecord
+    private val scanRecord = scanResult?.scanRecord
     
     override val name: String?
         get() = scanRecord?.deviceName
@@ -44,5 +44,5 @@ actual class AdvertisementData(private val scanResult: ScanResult) : BaseAdverti
     override val txPowerLevel: Int
         get() = scanRecord?.txPowerLevel ?: Int.MIN_VALUE
     override val isConnectible: Boolean
-        get() = scanResult.isConnectable
+        get() = scanResult?.isConnectable == true
 }

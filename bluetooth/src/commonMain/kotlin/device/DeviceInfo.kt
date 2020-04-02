@@ -31,12 +31,12 @@ interface DeviceInfo {
     val identifier: Identifier
     val name: String?
     val rssi: Int
-    val advertisementData: AdvertisementData
+    val advertisementData: BaseAdvertisementData
     fun distance(environmentalFactor: Double = 2.0): Double
 
 }
 
-data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val rssi: Int, override val advertisementData: AdvertisementData) : DeviceInfo {
+data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val rssi: Int, override val advertisementData: BaseAdvertisementData) : DeviceInfo {
 
     override val identifier: Identifier
         get() = deviceHolder.identifier

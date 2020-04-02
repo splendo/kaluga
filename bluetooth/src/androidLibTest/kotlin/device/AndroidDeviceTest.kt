@@ -18,13 +18,16 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.BluetoothDevice
-import com.splendo.kaluga.bluetooth.*
-import com.splendo.kaluga.bluetooth.mock.*
+import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.mock.MockCharacteristic
+import com.splendo.kaluga.bluetooth.mock.MockCharacteristicWrapper
+import com.splendo.kaluga.bluetooth.mock.MockDescriptor
+import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
+import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
-import org.junit.Test
-import java.util.*
 import java.util.UUID
-import kotlin.test.assertTrue
 
 class AndroidDeviceTest : DeviceTest() {
 
@@ -38,8 +41,9 @@ class AndroidDeviceTest : DeviceTest() {
     private lateinit var characteristic: MockCharacteristic
     private lateinit var descriptor: MockDescriptor
 
-    override val deviceInfoHolder: DeviceInfoHolder
-        get() = DeviceInfoHolder(MockDeviceWrapper(deviceName, address, deviceState), AdvertisementData(null))
+    override val deviceHolder: DeviceHolder get() {
+        return DeviceHolder(MockDeviceWrapper(deviceName, address, deviceState))
+    }
 
     override fun createServices(stateRepo: StateRepo<DeviceState>): List<Service> {
         gattServiceWrapper = MockServiceWrapper(UUID.randomUUID(), listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))

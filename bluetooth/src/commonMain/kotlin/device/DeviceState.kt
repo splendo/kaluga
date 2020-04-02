@@ -320,7 +320,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         Disconnected(deviceInfo, connectionManager)
     }
 
-    protected val disconnecting = suspend {
+    internal val disconnecting = suspend {
         Disconnecting(deviceInfo, connectionManager)
     }
 

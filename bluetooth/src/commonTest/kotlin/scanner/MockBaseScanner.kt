@@ -18,18 +18,26 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.permissions.BasePermissions
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 
-class MockBaseScanner(permissions: BasePermissions, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions, stateRepo) {
+class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions,
+    connectionSettings,
+    autoRequestPermissions,
+    autoEnableBluetooth,
+    stateRepo) {
 
     lateinit var scanForDevicesCompleted: CompletableDeferred<Set<UUID>>
     lateinit var stopScanningCompleted: EmptyCompletableDeferred
+    lateinit var requestEnableCompleted: EmptyCompletableDeferred
     lateinit var startMonitoringBluetoothCompleted: EmptyCompletableDeferred
     lateinit var stopMonitoringBluetoothCompleted: EmptyCompletableDeferred
+
+    var isEnabled: Boolean = false
 
     init {
         reset()
@@ -42,11 +50,11 @@ class MockBaseScanner(permissions: BasePermissions, stateRepo: StateRepo<Scannin
         startMonitoringBluetoothCompleted = EmptyCompletableDeferred()
     }
 
-    override fun scanForDevices(filter: Set<UUID>) {
+    override suspend fun scanForDevices(filter: Set<UUID>) {
         scanForDevicesCompleted.complete(filter)
     }
 
-    override fun stopScanning() {
+    override suspend fun stopScanning() {
         stopScanningCompleted.complete()
     }
 
@@ -56,6 +64,14 @@ class MockBaseScanner(permissions: BasePermissions, stateRepo: StateRepo<Scannin
 
     override fun stopMonitoringBluetooth() {
         stopMonitoringBluetoothCompleted.complete()
+    }
+
+    override suspend fun isBluetoothEnabled(): Boolean {
+        return isEnabled
+    }
+
+    override suspend fun requestBluetoothEnable() {
+        requestEnableCompleted.complete()
     }
 }
 
