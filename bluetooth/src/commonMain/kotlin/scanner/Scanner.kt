@@ -22,7 +22,6 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -54,13 +53,9 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
     private var monitoringPermissionsJob: Job? = null
 
     internal open fun startMonitoringPermissions() {
-        info("Scanner", "Start Monitoring")
         if (monitoringPermissionsJob != null) return
-        info("Scanner", "Start Monitoring Will Launch")
         monitoringPermissionsJob = launch {
-            info("Scanner", "Start Monitoring Did Launch")
             bluetoothPermissionRepo.collect { state ->
-                info("Scanner", "Start Monitoring Did Collect")
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
                     else -> {}

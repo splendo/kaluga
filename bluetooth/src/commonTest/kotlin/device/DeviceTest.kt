@@ -28,8 +28,10 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 abstract class DeviceTest : FlowableTest<DeviceState>() {
 
@@ -100,7 +102,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
                 deviceStateRepo.takeAndChangeState {deviceState ->
                     when (deviceState) {
                         is DeviceState.Disconnected -> {
-                            val newState = deviceState.connect()
+                            val newState = deviceState.connect(deviceState)
                             assertEquals(deviceState.remain, newState)
                             newState
                         }
@@ -390,7 +392,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         flowTest.action {
             deviceStateRepo.takeAndChangeState {deviceState ->
                 when (deviceState) {
-                    is DeviceState.Disconnected -> deviceState.connect()
+                    is DeviceState.Disconnected -> deviceState.connect(deviceState)
                     else -> deviceState.remain
                 }
             }

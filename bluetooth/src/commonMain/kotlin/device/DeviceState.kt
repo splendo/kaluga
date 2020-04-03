@@ -57,7 +57,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                         if (deviceState is NoServices)
                             discoverServices
                         else
-                            remain
+                            deviceState.remain
                     }
                 }
             }
@@ -148,7 +148,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                     if (deviceState is Connected)
                         disconnecting
                     else
-                        remain
+                        deviceState.remain
                 }
             }
         }
@@ -185,7 +185,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                     if (deviceState is Connecting) {
                         cancelConnection
                     } else {
-                        remain
+                        deviceState.remain
                     }
                 }
             }
@@ -231,7 +231,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                     if (deviceState is Reconnecting)
                         cancelConnection
                     else
-                        remain
+                        deviceState.remain
                 }
             }
         }
@@ -259,21 +259,21 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
             launch {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Disconnected) {
-                        connect()
+                        connect(deviceState)
                     } else {
-                        remain
+                        deviceState.remain
                     }
                 }
             }
         }
 
-        fun connect(): suspend () -> DeviceState {
+        fun connect(deviceState: DeviceState): suspend () -> DeviceState {
             return if (deviceInfo.advertisementData.isConnectible) {
                 suspend {
                     Connecting(deviceInfo, connectionManager)
                 }
             } else {
-                remain
+                deviceState.remain
             }
         }
 

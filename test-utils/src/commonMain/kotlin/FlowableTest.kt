@@ -17,16 +17,21 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import kotlin.test.BeforeTest
 
 typealias TestBlock<T> = suspend(T)->Unit
@@ -55,7 +60,7 @@ abstract class FlowableTest<T>: BaseTest() {
     }
 }
 
-open class FlowTest<T>(private val flow: Flow<T>) {
+open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: CoroutineScope = MainScope()) {
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -63,16 +68,14 @@ open class FlowTest<T>(private val flow: Flow<T>) {
 
     lateinit var job: Job
 
-    private val mainScope = MainScope()
-
     private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
-        debug("Ending flow")
-        testChannel.close()
         debug("test channel closed")
         job.cancel()
+        debug("Ending flow")
+        testChannel.close()
         tests.clear()
     }
 
@@ -99,7 +102,7 @@ open class FlowTest<T>(private val flow: Flow<T>) {
 
     private suspend fun startFlow() {
         debug("start flow...")
-        job = mainScope.launch {
+        job = coroutineScope.launch {
             debug("main scope launched, about to flow")
             flow.filter(filter).collect { value ->
                 debug("in flow received $value")

@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.asFlow
  */
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    protected var channel = lazy {channelFactory()}
+    protected var channel = lazy {channelFactory() }
 
     @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {

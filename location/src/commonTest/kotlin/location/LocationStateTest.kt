@@ -55,7 +55,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         )
     }
 
-    private val permissionsBuilder = MockPermissionsBuilder()
+    private lateinit var permissionsBuilder: MockPermissionsBuilder
     lateinit private var permissions: Permissions
     private val locationStateRepoBuilder = lazy { MockLocationStateRepoBuilder(permissions) }
     lateinit var locationStateRepo: LocationStateRepo
@@ -473,11 +473,11 @@ class LocationStateTest : FlowableTest<LocationState>() {
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationEnabledCompleted.await()
-
     }
 
 
     private fun setupLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineScope: CoroutineScope) {
+        permissionsBuilder = MockPermissionsBuilder()
         permissions = Permissions(permissionsBuilder, coroutineScope)
         locationStateRepo = locationStateRepoBuilder.value.create(locationPermission, autoRequestPermission, autoEnableLocations, coroutineScope)
         flowable.complete(locationStateRepo.flowable.value)

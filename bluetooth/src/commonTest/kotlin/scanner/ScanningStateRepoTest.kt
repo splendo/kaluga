@@ -28,7 +28,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.device.MockDeviceConnectionManager
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -37,9 +36,7 @@ import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.first
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -47,7 +44,7 @@ import kotlin.test.assertTrue
 
 abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
 
-    private val permissionsBuilder = MockPermissionsBuilder()
+    private lateinit var permissionsBuilder: MockPermissionsBuilder
     private lateinit var permissions: Permissions
     private val permissionManager: com.splendo.kaluga.test.permissions.MockPermissionManager<Permission.Bluetooth>
         get() {
@@ -82,34 +79,27 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     fun testStartWithoutPermissions() = runBlocking {
         setupPermissions(this)
         setupScanningState(permissionState = PermissionState.Denied.Requestable(permissionManager), coroutineScope = this)
-        info("Test", "Did Setup")
         testWithFlow {
             assertFalse(mockBaseScanner.startMonitoringPermissions.isCompleted)
             test {
-                info("Test", "Test 1")
                 assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
                 assertTrue(it is ScanningState.NoBluetoothState.MissingPermissions)
                 assertFalse(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
                 assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
             }
             action {
-                info("Test", "Action 1")
                 permissionManager.hasRequestedPermission.await()
                 permissionManager.setPermissionAllowed()
             }
             test {
-                info("Test", "Test2")
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(emptySet(), it.oldFilter)
                 assertEquals(emptyList(), it.discoveredDevices)
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
         }
-        info("Test", "Start Wait")
         permissionManager.hasStoppedMonitoring.await()
-        info("Test", "Wait 1")
         mockBaseScanner.stopMonitoringPermissions.await()
-        info("Test", "Wait 2")
     }
 
     @Test
@@ -429,6 +419,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     }
 
     private fun setupPermissions(coroutineScope: CoroutineScope) {
+        permissionsBuilder = MockPermissionsBuilder()
         permissions = Permissions(permissionsBuilder, coroutineScope)
         permissions[Permission.Bluetooth]
     }
