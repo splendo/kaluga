@@ -110,12 +110,12 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
         }
     }
 
-    internal fun handleDeviceDiscovered(identifier: Identifier, advertisementData: AdvertisementData, deviceCreator: () -> Device) {
+    internal fun handleDeviceDiscovered(identifier: Identifier, rssi: Int, advertisementData: AdvertisementData, deviceCreator: () -> Device) {
         launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is ScanningState.Enabled.Scanning -> {
-                        state.discoverDevice(identifier, advertisementData, deviceCreator)
+                        state.discoverDevice(identifier, rssi, advertisementData, deviceCreator)
                     }
                     else -> {
                         state.logError(Error("Discovered Device while not scanning"))

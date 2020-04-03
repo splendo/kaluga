@@ -196,7 +196,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
             action {
                 scanningStateRepo.takeAndChangeState {scanningState ->
                     when(scanningState) {
-                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, advertisementData) {device}
+                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, 0, advertisementData) {device}
                         else -> scanningState.remain
                     }
                 }
@@ -249,6 +249,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
         setupScanningState(coroutineScope = this)
         val filter = createFilter()
         val deviceHolder = createDeviceHolder()
+        val initialRssi = -100
         val advertisementData = MockAdvertisementData(name = "Name")
         val device = createDevice(deviceHolder, advertisementData, this)
         testWithFlow {
@@ -275,7 +276,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
             action {
                 scanningStateRepo.takeAndChangeState { scanningState ->
                     when (scanningState) {
-                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, advertisementData) { device }
+                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, initialRssi, advertisementData) { device }
                         else -> scanningState.remain
                     }
                 }
@@ -287,10 +288,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                     when (scanningState) {
                         is ScanningState.Enabled.Scanning -> {
                             val newAdvertisementData = MockAdvertisementData(name = "New Name")
-                            val newState = scanningState.discoverDevice(deviceHolder.identifier, newAdvertisementData) { device }
+                            val newRssi = -42
+                            val newState = scanningState.discoverDevice(deviceHolder.identifier, newRssi, newAdvertisementData) { device }
                             assertEquals(scanningState.remain, newState)
                             assertEquals(listOf(device), scanningState.discoveredDevices)
                             assertEquals(newAdvertisementData, scanningState.discoveredDevices[0].flow().first().advertisementData)
+                            assertEquals(newRssi, scanningState.discoveredDevices[0].flow().first().rssi)
                             newState
                         }
                         else -> scanningState.remain

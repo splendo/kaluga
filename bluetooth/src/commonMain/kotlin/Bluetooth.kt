@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
@@ -28,13 +29,15 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import kotlin.jvm.JvmName
+import kotlin.math.pow
 
 class Bluetooth internal constructor(permissions: Permissions,
                                      connectionSettings: ConnectionSettings,
                                      autoRequestPermission: Boolean,
                                      autoEnableBluetooth: Boolean,
-                                     scannerBuilder: BaseScanner.Builder, coroutineScope: CoroutineScope) {
+                                     scannerBuilder: BaseScanner.Builder, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(connectionSettings: ConnectionSettings = ConnectionSettings(ConnectionSettings.ReconnectionSettings.Always),
@@ -94,13 +97,17 @@ class Bluetooth internal constructor(permissions: Permissions,
             }
     }
 
-    suspend fun startScanning(filter: Set<UUID> = emptySet()) {
-        scanFilter.send(filter)
+    fun startScanning(filter: Set<UUID> = emptySet()) {
+        launch(MainQueueDispatcher) {
+            scanFilter.send(filter)
+        }
     }
 
-    suspend fun stopScanning() {
-        info(LOG_TAG, "Stop Scanning")
-        scanFilter.send(null)
+    fun stopScanning() {
+        launch(MainQueueDispatcher) {
+            info(LOG_TAG, "Stop Scanning")
+            scanFilter.send(null)
+        }
     }
 
     fun isScanning(): Flow<Boolean> {
@@ -191,8 +198,9 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
         val distance = deviceInfo.distance(environmentalFactor)
         if (!distance.isNaN())
             lastNResults.add(distance)
-        if (lastNResults.isNotEmpty())
-            (lastNResults.reduce { acc, d -> acc + d }) / lastNResults.size.toDouble()
+        if (lastNResults.isNotEmpty()) {
+            lastNResults.reduce { acc, d -> acc + d } / lastNResults.size.toDouble()
+        }
         else
             Double.NaN
     }
