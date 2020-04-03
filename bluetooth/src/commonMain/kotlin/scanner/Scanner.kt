@@ -22,6 +22,7 @@ import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -36,24 +37,30 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
                                                 private val connectionSettings: ConnectionSettings,
                                                 private val autoRequestPermission: Boolean,
                                                 internal val autoEnableBluetooth: Boolean,
-                                                internal val stateRepo: StateRepo<ScanningState>)
-    : CoroutineScope by stateRepo {
+                                                internal val stateRepo: StateRepo<ScanningState>,
+                                                coroutineScope: CoroutineScope)
+    : CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(permissions: Permissions,
                    connectionSettings: ConnectionSettings,
                    autoRequestPermission: Boolean,
                    autoEnableBluetooth: Boolean,
-                   scanningStateRepo: StateRepo<ScanningState>): BaseScanner
+                   scanningStateRepo: StateRepo<ScanningState>,
+                   coroutineScope: CoroutineScope): BaseScanner
     }
 
     private val bluetoothPermissionRepo get() = permissions[Permission.Bluetooth]
     private var monitoringPermissionsJob: Job? = null
 
     internal open fun startMonitoringPermissions() {
+        info("Scanner", "Start Monitoring")
         if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch() {
+        info("Scanner", "Start Monitoring Will Launch")
+        monitoringPermissionsJob = launch {
+            info("Scanner", "Start Monitoring Did Launch")
             bluetoothPermissionRepo.collect { state ->
+                info("Scanner", "Start Monitoring Did Collect")
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
                     else -> {}

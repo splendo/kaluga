@@ -34,6 +34,7 @@ import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
@@ -50,8 +51,9 @@ actual class Scanner internal constructor(permissions: Permissions,
                                           private val connectionSettings: ConnectionSettings,
                                           autoRequestPermission: Boolean,
                                           autoEnableBluetooth: Boolean,
-                                          stateRepo: StateRepo<ScanningState>)
-    : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo)  {
+                                          stateRepo: StateRepo<ScanningState>,
+                                          private val coroutineScope: CoroutineScope)
+    : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo, coroutineScope)  {
 
     class Builder() : BaseScanner.Builder {
 
@@ -60,9 +62,10 @@ actual class Scanner internal constructor(permissions: Permissions,
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
             autoEnableBluetooth: Boolean,
-            scanningStateRepo: StateRepo<ScanningState>
+            scanningStateRepo: StateRepo<ScanningState>,
+            coroutineScope: CoroutineScope
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo, coroutineScope)
         }
 
     }
@@ -224,7 +227,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         val deviceHolder = DeviceHolder(DefaultCBPeripheralWrapper(peripheral))
         handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
             val deviceInfo = DeviceInfoImpl(deviceHolder, rssi, advertisementData)
-            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central, peripheral)).also {
+            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central, peripheral), coroutineScope).also {
                 connectionManagerMap[it.identifier] = it.deviceConnectionManager
             }
         }

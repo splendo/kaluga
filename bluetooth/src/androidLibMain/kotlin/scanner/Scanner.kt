@@ -29,6 +29,7 @@ import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.*
 
@@ -40,8 +41,9 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
                                           connectionSettings: ConnectionSettings,
                                           autoRequestPermission: Boolean,
                                           autoEnableBluetooth: Boolean,
-                                          stateRepo: StateRepo<ScanningState>
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
+                                          stateRepo: StateRepo<ScanningState>,
+                                          private val coroutineScope: CoroutineScope
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo, coroutineScope) {
 
     class Builder(private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
                   private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
@@ -53,9 +55,10 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
             autoEnableBluetooth: Boolean,
-            scanningStateRepo: StateRepo<ScanningState>
+            scanningStateRepo: StateRepo<ScanningState>,
+            coroutineScope: CoroutineScope
         ): BaseScanner {
-            return Scanner(bluetoothScanner, bluetoothAdapter, scanSettings, context, permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+            return Scanner(bluetoothScanner, bluetoothAdapter, scanSettings, context, permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo, coroutineScope)
         }
 
     }
@@ -111,7 +114,7 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
 
             handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
                 val deviceInfo = DeviceInfoImpl(deviceHolder, scanResult.rssi, advertisementData)
-                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder)
+                Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, coroutineScope)
             }
         }
 

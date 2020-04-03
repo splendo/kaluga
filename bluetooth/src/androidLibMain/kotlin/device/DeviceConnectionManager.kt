@@ -32,12 +32,13 @@ import kotlinx.coroutines.launch
 internal actual class DeviceConnectionManager(private val context: Context,
                                               connectionSettings: ConnectionSettings,
                                               deviceHolder: DeviceHolder,
-                                              stateRepo: StateRepo<DeviceState>)
-    : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo  {
+                                              stateRepo: StateRepo<DeviceState>,
+                                              coroutineScope: CoroutineScope)
+    : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope  {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, repoAccessor: StateRepo<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, connectionSettings, deviceHolder, repoAccessor)
+        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, repoAccessor: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(context, connectionSettings, deviceHolder, repoAccessor, coroutineScope)
         }
     }
 

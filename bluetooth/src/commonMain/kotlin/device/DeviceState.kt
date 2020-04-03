@@ -17,14 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
     sealed class Read : DeviceAction() {
@@ -43,7 +41,7 @@ sealed class DeviceAction {
 sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
                           internal open val connectionManager: BaseDeviceConnectionManager)
     : State<DeviceState>(),
-    DeviceInfo by deviceInfo, CoroutineScope by connectionManager.stateRepo {
+    DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
 
     sealed class Connected(deviceInfo: DeviceInfoImpl,
                            connectionManager: BaseDeviceConnectionManager)
@@ -297,7 +295,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         return updateDeviceInfo(deviceInfo.copy(rssi = rssi))
     }
 
-    fun advertisementDataDidUpdate(advertisementData: AdvertisementData): suspend () -> DeviceState {
+    fun advertisementDataDidUpdate(advertisementData: BaseAdvertisementData): suspend () -> DeviceState {
         return updateDeviceInfo(deviceInfo.copy(advertisementData = advertisementData))
     }
 
@@ -329,11 +327,11 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
 class Device internal constructor(connectionSettings: ConnectionSettings,
                                   private val initialDeviceInfo: DeviceInfoImpl,
                                   connectionBuilder: BaseDeviceConnectionManager.Builder,
-                                  coroutineContext: CoroutineContext = MainQueueDispatcher)
-    : HotStateRepo<DeviceState>(coroutineContext) {
+                                  coroutineScope: CoroutineScope)
+    : HotStateRepo<DeviceState>(coroutineContext = coroutineScope.coroutineContext) {
 
     val identifier: Identifier = initialDeviceInfo.identifier
-    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, this)
+    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, this, coroutineScope)
 
     override suspend fun initialValue(): DeviceState {
         return DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)

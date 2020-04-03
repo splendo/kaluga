@@ -17,17 +17,20 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.state.*
-import kotlinx.coroutines.Dispatchers
+import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.state.HandleAfterCreating
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.state.State
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
-import kotlin.coroutines.CoroutineContext
 
 sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>() {
 
@@ -138,7 +141,7 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                                             private val scanner: BaseScanner
         ) : Enabled(discoveredDevices, scanner), HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
 
-            suspend fun discoverDevice(identifier: Identifier, advertisementData: AdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
+            suspend fun discoverDevice(identifier: Identifier, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
                 return discoveredDevices.firstOrNull { it.identifier == identifier }?.let { knownDevice ->
                     if (!knownDevice.flowable.isInitialized()) {
                         knownDevice.flowable.value
@@ -249,9 +252,10 @@ class ScanningStateRepo(permissions: Permissions,
                         connectionSettings: ConnectionSettings,
                         autoRequestPermission: Boolean,
                         autoEnableBluetooth: Boolean,
-                        builder: BaseScanner.Builder) : ColdStateRepo<ScanningState>() {
+                        builder: BaseScanner.Builder,
+                        coroutineScope: CoroutineScope) : ColdStateRepo<ScanningState>(coroutineContext = coroutineScope.coroutineContext) {
 
-    private val scanner = builder.create(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth,this)
+    private val scanner = builder.create(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth,this, coroutineScope)
 
     private var lastDevices: List<Device> = emptyList()
     private var lastFilter: Set<UUID> = emptySet()
