@@ -202,7 +202,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
                         val beforeState = state()
                         val transition = action(beforeState)
                         // No Need to Transition if remain is used
-                        if (transition == state().remain) {
+                        if (transition == beforeState.remain) {
                             result.complete(beforeState)
                             return@launch
                         }
