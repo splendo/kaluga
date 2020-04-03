@@ -47,7 +47,9 @@ data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val 
     override fun distance(environmentalFactor: Double): Double {
         if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())
             return Double.NaN
-        return 10.0.pow((advertisementData.txPowerLevel.toDouble() - rssi.toDouble())/(10.0*environmentalFactor))
+        val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
+        val factor = 10.0 * environmentalFactor
+        return 10.0.pow(difference/factor)
     }
 
 }

@@ -296,8 +296,8 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         return updateDeviceInfo(deviceInfo.copy(rssi = rssi))
     }
 
-    fun advertisementDataDidUpdate(advertisementData: BaseAdvertisementData): suspend () -> DeviceState {
-        return updateDeviceInfo(deviceInfo.copy(advertisementData = advertisementData))
+    fun advertisementDataAndRssiDidUpdate(advertisementData: BaseAdvertisementData, rssi: Int): suspend () -> DeviceState {
+        return updateDeviceInfo(deviceInfo.copy(rssi = rssi, advertisementData = advertisementData))
     }
 
     private fun updateDeviceInfo(newDeviceInfo: DeviceInfoImpl): suspend () -> DeviceState {

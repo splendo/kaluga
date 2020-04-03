@@ -226,7 +226,7 @@ actual class Scanner internal constructor(permissions: Permissions,
 
         val advertisementData = AdvertisementData(advertisementDataMap)
         val deviceHolder = DeviceHolder(DefaultCBPeripheralWrapper(peripheral))
-        handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
+        handleDeviceDiscovered(deviceHolder.identifier, rssi, advertisementData) {
             val deviceInfo = DeviceInfoImpl(deviceHolder, rssi, advertisementData)
             Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central, peripheral), coroutineScope).also {
                 connectionManagerMap[it.identifier] = it.deviceConnectionManager

@@ -113,7 +113,7 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
             val advertisementData = AdvertisementData(scanResult)
             val deviceHolder = DeviceHolder(DefaultDeviceWrapper(scanResult.device))
 
-            handleDeviceDiscovered(deviceHolder.identifier, advertisementData) {
+            handleDeviceDiscovered(deviceHolder.identifier, scanResult.rssi, advertisementData) {
                 val deviceInfo = DeviceInfoImpl(deviceHolder, scanResult.rssi, advertisementData)
                 Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, coroutineScope)
             }

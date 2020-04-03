@@ -30,7 +30,6 @@ import com.splendo.kaluga.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -42,15 +41,14 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -58,6 +56,7 @@ abstract class BluetoothTest : BaseTest() {
 
     companion object {
         val initialRssi = -100
+        val initialAdvertisementData = MockAdvertisementData()
     }
 
     private lateinit var permissionsBuilder: MockPermissionsBuilder
@@ -72,6 +71,34 @@ abstract class BluetoothTest : BaseTest() {
     abstract fun createFilter() : Set<UUID>
     abstract fun createDeviceHolder() : DeviceHolder
     abstract fun createService(stateRepo: StateRepo<DeviceState>) : Service
+
+    @Test
+    fun testIsScanning() = runBlocking {
+        setupPermissions(this)
+        setupBluetooth(coroutineScope = this)
+        val devicesJob = launch {
+            bluetooth.devices().collect {  }
+        }
+        val flowTest = FlowTest(bluetooth.isScanning(), this)
+        flowTest.testWithFlow {
+            test {
+                assertFalse(it)
+            }
+            action {
+                bluetooth.startScanning()
+            }
+            test {
+                assertTrue(it)
+            }
+            action {
+                bluetooth.stopScanning()
+            }
+            test {
+                assertFalse(it)
+            }
+        }
+        devicesJob.cancel()
+    }
 
     @Test
     fun testScanDevice() = runBlocking {
@@ -110,12 +137,11 @@ abstract class BluetoothTest : BaseTest() {
                 assertEquals(emptyList(), it)
             }
             val deviceHolder = createDeviceHolder()
-            val advertisementData = MockAdvertisementData()
-            val device = createDevice(deviceHolder, advertisementData, this@runBlocking)
+            val device = createDevice(deviceHolder, coroutineScope = this@runBlocking)
             val scanCompleted = EmptyCompletableDeferred()
             action {
                 this@runBlocking.launch {
-                    scanDevice(device, deviceHolder, advertisementData, scanCompleted)
+                    scanDevice(device, deviceHolder, scanCompleted = scanCompleted)
                 }
             }
             test {
@@ -145,10 +171,9 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
         val flowTest = FlowTest(bluetooth.devices()[device.identifier], this)
@@ -173,9 +198,9 @@ abstract class BluetoothTest : BaseTest() {
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
         val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
         val deviceConnectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
@@ -192,12 +217,11 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope = this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val newRssi = -42
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
         val flowTest = FlowTest(bluetooth.devices()[device.identifier].rssi(), this)
@@ -224,16 +248,100 @@ abstract class BluetoothTest : BaseTest() {
     }
 
     @Test
+    fun testAdvertisementData() = runBlocking {
+        setupPermissions(this)
+        setupBluetooth(coroutineScope = this)
+        val deviceHolder = createDeviceHolder()
+        val advertisementData = MockAdvertisementData(name = "Name")
+        val device = createDevice(deviceHolder, initialRssi, advertisementData, this)
+        val newAdvertisementData = MockAdvertisementData(name = "New Name")
+        launch {
+            scanDevice(device, deviceHolder, initialRssi, advertisementData)
+        }
+        bluetooth.startScanning()
+        val flowTest = FlowTest(bluetooth.devices()[device.identifier].advertisement(), this)
+        flowTest.testWithFlow {
+            test {
+                assertEquals(advertisementData, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, initialRssi, newAdvertisementData)
+            }
+            test {
+                assertEquals(newAdvertisementData, it)
+            }
+
+        }
+
+        permissionManager.hasStoppedMonitoring.await()
+        mockBaseScanner.stopMonitoringPermissions.await()
+        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
+    }
+
+    @Test
+    fun testDistance() = runBlocking {
+        setupPermissions(this)
+        setupBluetooth(coroutineScope = this)
+        val deviceHolder = createDeviceHolder()
+        val advertisementData = MockAdvertisementData(txPowerLevel = -50)
+        val device = createDevice(deviceHolder, -50, advertisementData, this)
+        launch {
+            scanDevice(device, deviceHolder, -50, advertisementData)
+        }
+        bluetooth.startScanning()
+        val flowTest = FlowTest(bluetooth.devices()[device.identifier].distance(), this)
+        flowTest.testWithFlow {
+            test {
+                assertEquals(1.0, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, -70, advertisementData)
+            }
+            test {
+                assertEquals(5.5, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, -50, advertisementData)
+            }
+            test {
+                assertEquals(4.0, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, -30, advertisementData)
+            }
+            test {
+                assertEquals(3.025, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, -30, advertisementData)
+            }
+            test {
+                assertEquals(2.44, it)
+            }
+            action {
+                scanDevice(device, deviceHolder, -70, advertisementData)
+            }
+            test {
+                assertEquals(4.24, it)
+            }
+
+        }
+
+        permissionManager.hasStoppedMonitoring.await()
+        mockBaseScanner.stopMonitoringPermissions.await()
+        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
+    }
+
+    @Test
     fun testGetServices() = runBlocking {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope = this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder, initialRssi)
         }
         bluetooth.startScanning()
 
@@ -262,12 +370,11 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
 
@@ -296,12 +403,11 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
 
@@ -331,13 +437,12 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         val characteristic = service.characteristics.first()
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
 
@@ -367,8 +472,7 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope = this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         val characteristic = service.characteristics.first()
@@ -379,7 +483,7 @@ abstract class BluetoothTest : BaseTest() {
             action {
                 val isScanning = EmptyCompletableDeferred()
                 this@runBlocking.launch {
-                    scanDevice(device, deviceHolder, advertisementData)
+                    scanDevice(device, deviceHolder)
                     isScanning.complete()
                 }
                 val startScanning = EmptyCompletableDeferred()
@@ -404,14 +508,13 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         val characteristic = service.characteristics.first()
 
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
 
@@ -437,15 +540,14 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope =  this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         val characteristic = service.characteristics.first()
         val descriptor = characteristic.descriptors.first()
 
         launch {
-            scanDevice(device, deviceHolder, advertisementData)
+            scanDevice(device, deviceHolder)
         }
         bluetooth.startScanning()
 
@@ -470,8 +572,7 @@ abstract class BluetoothTest : BaseTest() {
         setupPermissions(this)
         setupBluetooth(coroutineScope = this)
         val deviceHolder = createDeviceHolder()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceHolder, advertisementData, this)
+        val device = createDevice(deviceHolder, coroutineScope = this)
         val connectionManager = device.deviceConnectionManager as MockDeviceConnectionManager
         val service = createService(connectionManager.stateRepo)
         val characteristic = service.characteristics.first()
@@ -483,7 +584,7 @@ abstract class BluetoothTest : BaseTest() {
             action {
                 val isScanning = EmptyCompletableDeferred()
                 this@runBlocking.launch {
-                    scanDevice(device, deviceHolder, advertisementData)
+                    scanDevice(device, deviceHolder)
                     isScanning.complete()
                 }
                 val startScanning = EmptyCompletableDeferred()
@@ -532,14 +633,14 @@ abstract class BluetoothTest : BaseTest() {
         permissionManager.currentState = permissionState
     }
 
-    private suspend fun scanDevice(device: Device, deviceHolder: DeviceHolder, advertisementData: BaseAdvertisementData, scanCompleted: EmptyCompletableDeferred? = null) {
+    private suspend fun scanDevice(device: Device, deviceHolder: DeviceHolder, rssi: Int = initialRssi, advertisementData: BaseAdvertisementData = initialAdvertisementData, scanCompleted: EmptyCompletableDeferred? = null) {
         bluetooth.scanningStateRepo.flow().filter{
             it is ScanningState.Enabled.Scanning
         }.first()
         bluetooth.scanningStateRepo.takeAndChangeState {state ->
             when(state) {
                 is ScanningState.Enabled.Scanning -> {
-                    state.discoverDevice(deviceHolder.identifier, advertisementData) { device }
+                    state.discoverDevice(deviceHolder.identifier, rssi, advertisementData) { device }
                 }
                 else -> {
                     state.remain
@@ -644,8 +745,8 @@ abstract class BluetoothTest : BaseTest() {
         }
     }
 
-    private fun createDevice(deviceHolder: DeviceHolder, advertisementData: BaseAdvertisementData, coroutineScope: CoroutineScope): Device {
-        return Device(ConnectionSettings(), DeviceInfoImpl(deviceHolder, initialRssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
+    private fun createDevice(deviceHolder: DeviceHolder, rssi: Int = initialRssi, advertisementData: BaseAdvertisementData = initialAdvertisementData, coroutineScope: CoroutineScope): Device {
+        return Device(ConnectionSettings(), DeviceInfoImpl(deviceHolder, rssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
 
             override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
                 return MockDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope)

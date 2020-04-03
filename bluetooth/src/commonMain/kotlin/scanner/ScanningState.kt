@@ -141,13 +141,13 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
                                             private val scanner: BaseScanner
         ) : Enabled(discoveredDevices, scanner), HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
 
-            suspend fun discoverDevice(identifier: Identifier, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
+            suspend fun discoverDevice(identifier: Identifier, rssi: Int, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
                 return discoveredDevices.firstOrNull { it.identifier == identifier }?.let { knownDevice ->
                     if (!knownDevice.flowable.isInitialized()) {
                         knownDevice.flowable.value
                     }
                     knownDevice.takeAndChangeState { state ->
-                        state.advertisementDataDidUpdate(advertisementData)
+                        state.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
                     }
                     remain
                 } ?: run {
