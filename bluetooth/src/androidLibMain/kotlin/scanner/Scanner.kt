@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.*
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
@@ -83,7 +84,7 @@ actual class Scanner internal constructor(private val bluetoothScanner: Bluetoot
                 else -> Pair("Reason Unknown", true)
             }
 
-            launch {
+            launch(MainQueueDispatcher) {
                 stateRepo.peekState().logError(Error(error.first))
                 if (error.second) {
                     stateRepo.takeAndChangeState { state ->

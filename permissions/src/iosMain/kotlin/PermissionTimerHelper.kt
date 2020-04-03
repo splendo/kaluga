@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,7 +37,7 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
     }
 
     private fun launchTimerJob(interval: Long) {
-        timerJob = launch {
+        timerJob = launch(MainQueueDispatcher) {
             delay(interval)
             val status = authorizationStatus()
             if (!isWaiting && lastPermission != status) {

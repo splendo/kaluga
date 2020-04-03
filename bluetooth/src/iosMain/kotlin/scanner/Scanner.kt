@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
@@ -108,7 +109,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) = mainContinuation {
             info(TAG, "Did Connect Peripheral ${didConnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didConnectPeripheral.identifier] ?: return@mainContinuation
-            scanner.launch {
+            scanner.launch(MainQueueDispatcher) {
                 connectionManager.handleConnect()
             }
         }.invoke()
@@ -116,7 +117,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
             info(TAG, "Did Disconnect Peripheral ${didDisconnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didDisconnectPeripheral.identifier] ?: return@mainContinuation
-            scanner.launch {
+            scanner.launch(MainQueueDispatcher) {
                 connectionManager.handleDisconnect()
             }
         }.invoke()
@@ -124,7 +125,7 @@ actual class Scanner internal constructor(permissions: Permissions,
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) = mainContinuation {
             info(TAG, "Did Fail to Connect to Peripheral ${didFailToConnectPeripheral.identifier.UUIDString}")
             val connectionManager = scanner.connectionManagerMap[didFailToConnectPeripheral.identifier] ?: return@mainContinuation
-            scanner.launch {
+            scanner.launch(MainQueueDispatcher) {
                 connectionManager.handleDisconnect()
             }
         }.invoke()

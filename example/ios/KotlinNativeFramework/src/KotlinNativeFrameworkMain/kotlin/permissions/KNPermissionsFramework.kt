@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import platform.UserNotifications.UNAuthorizationOptions
 
 class KNPermissionsFramework {
+
     private val permissions = Permissions(PermissionsBuilder())
 
     fun permissionStatusBluetooth(alertBuilder: AlertBuilder) {

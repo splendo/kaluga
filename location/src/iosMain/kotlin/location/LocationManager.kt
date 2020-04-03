@@ -138,8 +138,7 @@ actual class LocationManager(
 
 actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle,
                                       private val locationManager: CLLocationManager = CLLocationManager(),
-                                        coroutineScope: CoroutineScope,
-                                      private val permissions: Permissions = Permissions(PermissionsBuilder(bundle), coroutineScope))
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(bundle)))
     : LocationStateRepo.Builder {
     
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineScope: CoroutineScope): LocationStateRepo {

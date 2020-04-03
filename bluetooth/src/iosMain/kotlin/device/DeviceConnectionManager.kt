@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
@@ -64,7 +65,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
-                        launch {
+                        launch(MainQueueDispatcher) {
                             handleCurrentActionCompleted()
                         }
                     }
@@ -104,7 +105,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
             info(TAG, "Did Read RSSI for Peripheral ${peripheral.identifier.UUIDString}")
-            launch {
+            launch(MainQueueDispatcher) {
                 handleNewRssi(didReadRSSI.intValue)
             }
         }
@@ -164,13 +165,13 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic) {
-        launch {
+        launch(MainQueueDispatcher) {
             handleUpdatedCharacteristic(characteristic.UUID)
         }
     }
 
     private fun updateDescriptor(descriptor: CBDescriptor) {
-        launch {
+        launch(MainQueueDispatcher) {
             handleUpdatedDescriptor(descriptor.UUID)
         }
     }
@@ -200,7 +201,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
 
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
-            launch {
+            launch(MainQueueDispatcher) {
                 val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), stateRepo) } ?: emptyList()
                 handleScanCompleted(services)
             }

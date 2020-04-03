@@ -25,6 +25,7 @@ import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -192,8 +193,10 @@ class LocationStateRepo(locationPermission: Permission.Location,
                         coroutineScope: CoroutineScope) : ColdStateRepo<LocationState>(coroutineContext = coroutineScope.coroutineContext) {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,
-                   autoEnableLocations: Boolean = true, coroutineScope: CoroutineScope): LocationStateRepo
+        fun create(locationPermission: Permission.Location,
+                   autoRequestPermission: Boolean = true,
+                   autoEnableLocations: Boolean = true,
+                   coroutineScope: CoroutineScope = MainScope()): LocationStateRepo
     }
 
     private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)

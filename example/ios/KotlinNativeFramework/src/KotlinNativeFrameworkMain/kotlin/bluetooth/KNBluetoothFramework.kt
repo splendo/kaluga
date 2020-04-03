@@ -7,6 +7,8 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -17,7 +19,7 @@ import kotlinx.coroutines.flow.first
 class KNBluetoothFramework {
 
     val mainScope = MainScope()
-    val bluetooth = BluetoothBuilder().create()
+    val bluetooth = BluetoothBuilder().create(coroutineScope = mainScope)
 
     fun isScanning(onResult: (Boolean) -> Unit) {
         mainScope.launch(MainQueueDispatcher) {

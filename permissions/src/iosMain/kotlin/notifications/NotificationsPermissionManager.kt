@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.permissions.*
 import kotlinx.coroutines.CompletableDeferred
@@ -34,7 +35,7 @@ actual class NotificationsPermissionManager(actual val notifications: Permission
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
         val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
-        launch {
+        launch(MainQueueDispatcher) {
             notificationCenter.getNotificationSettingsWithCompletionHandler(mainContinuation { settings ->
                 authorizationStatus.complete(settings?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
             })

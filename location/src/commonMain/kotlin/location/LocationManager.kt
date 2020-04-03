@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -43,7 +44,7 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
 
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch {
+        monitoringPermissionsJob = launch(MainQueueDispatcher) {
             locationPermissionRepo.collect { state ->
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
@@ -75,7 +76,7 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
     internal abstract suspend fun requestLocationEnable()
 
     internal fun handleLocationEnabledChanged() {
-        launch {
+        launch(MainQueueDispatcher) {
             locationStateRepo.takeAndChangeState { state ->
                 when (state) {
                     is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain
@@ -90,7 +91,7 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
     internal abstract suspend fun stopMonitoringLocation()
 
     internal fun handleLocationChanged(locations: List<Location>) {
-        launch {
+        launch(MainQueueDispatcher) {
             locations.forEach { location ->
                 handleLocationChanged(location)
             }

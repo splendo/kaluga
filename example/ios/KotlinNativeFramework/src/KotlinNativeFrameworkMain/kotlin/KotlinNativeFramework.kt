@@ -63,7 +63,7 @@ class KotlinNativeFramework {
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         val locationStateRepo = LocationStateRepoBuilder(locationManager = locationManager)
-            .create(Permission.Location(background = false, precise = true))
+            .create(Permission.Location(background = false, precise = true), coroutineScope = MainScope())
 
         MainScope().launch(MainQueueDispatcher) {
             LocationPrinter(locationStateRepo, this).printTo {

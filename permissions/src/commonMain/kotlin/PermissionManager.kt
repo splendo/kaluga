@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -30,7 +31,7 @@ abstract class PermissionManager<P : Permission> (private val stateRepo: Permiss
     abstract suspend fun stopMonitoring()
 
     open fun grantPermission() {
-        launch {
+        launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is PermissionState.Denied -> state.allow
@@ -41,7 +42,7 @@ abstract class PermissionManager<P : Permission> (private val stateRepo: Permiss
     }
 
     open fun revokePermission(locked: Boolean) {
-        launch {
+        launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is PermissionState.Allowed -> state.deny(locked)

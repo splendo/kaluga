@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateRepo
@@ -52,7 +53,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
             : Connected(deviceInfo, connectionManager) {
 
             fun startDiscovering() {
-                launch {
+                launch(MainQueueDispatcher) {
                     connectionManager.stateRepo.takeAndChangeState { deviceState ->
                         if (deviceState is NoServices)
                             discoverServices
@@ -143,7 +144,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         }
 
         fun startDisconnected() {
-            launch {
+            launch(MainQueueDispatcher) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Connected)
                         disconnecting
@@ -180,7 +181,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         val cancelConnection = disconnecting
 
         fun handleCancel() {
-            launch {
+            launch(MainQueueDispatcher) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Connecting) {
                         cancelConnection
@@ -226,7 +227,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         }
 
         fun handleCancel() {
-            launch {
+            launch(MainQueueDispatcher) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Reconnecting)
                         cancelConnection
@@ -256,7 +257,7 @@ sealed class DeviceState (open val deviceInfo: DeviceInfoImpl,
         : DeviceState(deviceInfo, connectionManager) {
 
         fun startConnecting() {
-            launch {
+            launch(MainQueueDispatcher) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Disconnected) {
                         connect(deviceState)
