@@ -70,6 +70,7 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
         }
 
         stateRepo.takeAndChangeState { state ->
+
             when (state) {
                 is DeviceState.Reconnecting -> {
                     state.retry().also {

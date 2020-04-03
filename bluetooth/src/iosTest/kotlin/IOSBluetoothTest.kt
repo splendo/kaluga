@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,26 +17,25 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
+import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
+import platform.CoreBluetooth.CBUUID
 
-class AndroidBluetoothTest : BluetoothTest() {
+class IOSScanningStateRepoTest : BluetoothTest() {
 
     override fun createFilter(): Set<UUID> {
-        return setOf(UUID.randomUUID())
+        return setOf(CBUUID())
     }
 
     override fun createDeviceHolder(): DeviceHolder {
-        return DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState))
+        return DeviceHolder(MockCBPeripheralWrapper())
     }
 
     override fun createService(stateRepo: StateRepo<DeviceState>): Service {
-        val uuid = UUID.randomUUID()
-        val serviceWrapper = MockServiceWrapper(uuid, listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
-        return Service(serviceWrapper, stateRepo)
+        return Service(MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID())))), stateRepo)
     }
 }
+
