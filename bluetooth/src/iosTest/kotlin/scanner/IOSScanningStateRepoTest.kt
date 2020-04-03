@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,18 +18,17 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
-import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
+import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
+import platform.CoreBluetooth.CBUUID
 
-class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
+class IOSScanningStateRepoTest : ScanningStateRepoTest() {
 
     override fun createFilter(): Set<UUID> {
-        return setOf(UUID.randomUUID())
+        return setOf(CBUUID())
     }
 
     override fun createDeviceHolder(): DeviceHolder {
-        return DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState))
+        return DeviceHolder(MockCBPeripheralWrapper())
     }
 }
-

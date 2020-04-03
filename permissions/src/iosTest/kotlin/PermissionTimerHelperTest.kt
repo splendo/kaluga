@@ -22,29 +22,17 @@ import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlin.test.*
 
 class PermissionTimerHelperTest : BaseTest() {
 
-
-    private lateinit var permissionsManager: MockStoragePermissionManager
-
-    @BeforeTest
-    fun setUp() {
-        super.beforeTest()
-
-        val repo = MockStoragePermissionStateRepo()
-        permissionsManager = repo.permissionManager
-    }
-
-    @AfterTest
-    fun tearDown() {
-        super.afterTest()
-    }
-
     @Test
     fun testStartMonitoring() = runBlocking {
+        val repo = MockStoragePermissionStateRepo(this)
+        val permissionsManager = repo.permissionManager
         var authorization: IOSPermissionsHelper.AuthorizationStatus = IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         val timerHelper = PermissionTimerHelper(permissionsManager, {authorization}, this)
 
@@ -80,13 +68,13 @@ class PermissionTimerHelperTest : BaseTest() {
 
 }
 
-private class MockStoragePermissionStateRepo : PermissionStateRepo<Permission.Storage>() {
+private class MockStoragePermissionStateRepo(coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Storage>(coroutineScope = coroutineScope) {
 
-    override val permissionManager = MockStoragePermissionManager(this)
+    override val permissionManager = MockStoragePermissionManager(this, coroutineScope)
 
 }
 
-private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<Permission.Storage>(mockPermissionRepo) {
+private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo, coroutineScope: CoroutineScope) : PermissionManager<Permission.Storage>(mockPermissionRepo, coroutineScope) {
 
     var didGrantPermission: EmptyCompletableDeferred
     var didRevokePermission: CompletableDeferred<Boolean>

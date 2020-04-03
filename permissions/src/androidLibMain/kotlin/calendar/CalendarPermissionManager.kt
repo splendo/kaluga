@@ -24,13 +24,14 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class CalendarPermissionManager(
     context: Context,
     actual val calendar: Permission.Calendar,
-    stateRepo: CalendarPermissionStateRepo
-) : PermissionManager<Permission.Calendar>(stateRepo) {
+    stateRepo: CalendarPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Calendar>(stateRepo, coroutineScope) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, if (calendar.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR))
 
@@ -58,8 +59,8 @@ actual class CalendarPermissionManager(
 
 actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
-        return CalendarPermissionManager(context, calendar, repo)
+    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Calendar> {
+        return CalendarPermissionManager(context, calendar, repo, coroutineScope)
     }
 
 }

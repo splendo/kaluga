@@ -23,6 +23,7 @@ import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -187,15 +188,16 @@ class LocationStateRepo(locationPermission: Permission.Location,
                         permissions: Permissions,
                         autoRequestPermission: Boolean,
                         autoEnableLocations: Boolean,
-                        locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+                        locationManagerBuilder: BaseLocationManager.Builder,
+                        coroutineScope: CoroutineScope) : ColdStateRepo<LocationState>(coroutineContext = coroutineScope.coroutineContext) {
 
     interface Builder {
         fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,
-                   autoEnableLocations: Boolean = true): LocationStateRepo
+                   autoEnableLocations: Boolean = true, coroutineScope: CoroutineScope): LocationStateRepo
     }
 
     private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
-    private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this)
+    private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this, coroutineScope)
 
     @InternalCoroutinesApi
     override suspend fun initialValue(): LocationState {

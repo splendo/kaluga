@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.toByteArray
+import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
@@ -73,17 +74,17 @@ class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : Descripto
             }
             CBUUIDCharacteristicExtendedPropertiesString -> {
                 (descriptor.value as? NSNumber)?.let {
-                    null
+                    byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
             CBUUIDClientCharacteristicConfigurationString -> {
                 (descriptor.value as? NSNumber)?.let {
-                    null
+                    byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
             CBUUIDServerCharacteristicConfigurationString -> {
                 (descriptor.value as? NSNumber)?.let {
-                    null
+                    byteArrayOf(it.shortValue.toByte()).toNSData()
                 }
             }
             else -> descriptor.value as? NSData

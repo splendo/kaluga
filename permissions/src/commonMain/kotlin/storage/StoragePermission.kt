@@ -20,19 +20,20 @@ package com.splendo.kaluga.permissions.storage
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
     val storage: Permission.Storage
 }
 
 interface BaseStoragePermissionManagerBuilder {
-    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage>
+    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Storage>
 }
 
 expect class StoragePermissionManagerBuilder :BaseStoragePermissionManagerBuilder
 
-class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
+class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder, coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Storage>(coroutineScope = coroutineScope) {
 
-    override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)
+    override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this, coroutineScope)
 
 }

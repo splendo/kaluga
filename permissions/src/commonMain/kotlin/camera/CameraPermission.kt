@@ -20,17 +20,18 @@ package com.splendo.kaluga.permissions.camera
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 expect class CameraPermissionManager : PermissionManager<Permission.Camera>
 
 interface BaseCameraPermissionManagerBuilder {
-    fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera>
+    fun create(repo: CameraPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Camera>
 }
 
 expect class CameraPermissionManagerBuilder :BaseCameraPermissionManagerBuilder
 
-class CameraPermissionStateRepo(builder: BaseCameraPermissionManagerBuilder) : PermissionStateRepo<Permission.Camera>() {
+class CameraPermissionStateRepo(builder: BaseCameraPermissionManagerBuilder, coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Camera>(coroutineScope = coroutineScope) {
 
-    override val permissionManager: PermissionManager<Permission.Camera> = builder.create(this)
+    override val permissionManager: PermissionManager<Permission.Camera> = builder.create(this, coroutineScope)
 
 }

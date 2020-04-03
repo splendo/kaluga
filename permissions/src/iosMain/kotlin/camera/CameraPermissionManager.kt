@@ -21,12 +21,14 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.av.AVPermissionHelper
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 
 actual class CameraPermissionManager(
     private val bundle: NSBundle,
-    stateRepo: CameraPermissionStateRepo
-) : PermissionManager<Permission.Camera>(stateRepo) {
+    stateRepo: CameraPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Camera>(stateRepo, coroutineScope) {
 
     private val avPermissionHelper = AVPermissionHelper(bundle, AVPermissionHelper.Type.Camera(this))
 
@@ -49,8 +51,8 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
-        return CameraPermissionManager(bundle, repo)
+    override fun create(repo: CameraPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Camera> {
+        return CameraPermissionManager(bundle, repo, coroutineScope)
     }
 
 }

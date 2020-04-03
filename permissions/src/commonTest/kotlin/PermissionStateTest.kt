@@ -18,9 +18,11 @@
 package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.permissions.MockPermissionStateRepo
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlin.test.*
 
@@ -30,9 +32,9 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
 
     @BeforeTest
     fun setup() {
-        super.beforeTest()
+        super.setUp()
 
-        permissionStateRepo = MockPermissionStateRepo()
+        permissionStateRepo = MockPermissionStateRepo(MainScope())
         flowable.complete(permissionStateRepo.flowable.value)
     }
 
@@ -85,7 +87,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
             action {
                 permissionStateRepo.takeAndChangeState { state ->
                     when(state) {
-                        is PermissionState.Allowed -> state.deny(true)
+                        is PermissionState.Allowed -> state.deniedLocked
                         else -> state.remain
                     }
                 }

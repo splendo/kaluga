@@ -20,14 +20,16 @@ package com.splendo.kaluga.permissions.calendar
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.*
+import kotlinx.coroutines.CoroutineScope
 import platform.EventKit.*
 import platform.Foundation.NSBundle
 
 actual class CalendarPermissionManager(
     private val bundle: NSBundle,
     actual val calendar: Permission.Calendar,
-    stateRepo: CalendarPermissionStateRepo
-) : PermissionManager<Permission.Calendar>(stateRepo) {
+    stateRepo: CalendarPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Calendar>(stateRepo, coroutineScope) {
 
     private val eventStore = EKEventStore()
     private val authorizationStatus = suspend {
@@ -68,8 +70,8 @@ actual class CalendarPermissionManager(
 
 actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
-        return CalendarPermissionManager(bundle, calendar, repo)
+    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Calendar> {
+        return CalendarPermissionManager(bundle, calendar, repo, coroutineScope)
     }
 
 }

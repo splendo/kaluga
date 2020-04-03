@@ -24,13 +24,14 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class ContactsPermissionManager(
     context: Context,
     actual val contacts: Permission.Contacts,
-    stateRepo: ContactsPermissionStateRepo
-) : PermissionManager<Permission.Contacts>(stateRepo) {
+    stateRepo: ContactsPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Contacts>(stateRepo, coroutineScope) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, if (contacts.allowWrite) arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS) else arrayOf(Manifest.permission.READ_CONTACTS))
 
@@ -58,8 +59,8 @@ actual class ContactsPermissionManager(
 
 actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
-        return ContactsPermissionManager(context, contacts, repo)
+    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo, coroutineScope: CoroutineScope): ContactsPermissionManager {
+        return ContactsPermissionManager(context, contacts, repo, coroutineScope)
     }
 
 }

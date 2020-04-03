@@ -18,32 +18,38 @@
 package com.splendo.kaluga.permissions
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import platform.Foundation.NSTimer
 
 class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
     var isWaiting: Boolean = false
-    private var timer: NSTimer? = null
+    private var timerJob: Job? = null
 
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
-        if (timer != null) return
-        timer = NSTimer.scheduledTimerWithTimeInterval(interval.toDouble(), true) {
-            launch {
-                val status = authorizationStatus()
-                if (!isWaiting && lastPermission != status) {
-                    updateLastPermission()
-                    IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
-                }
+        if (timerJob != null) return
+
+        launchTimerJob(interval)
+    }
+
+    private fun launchTimerJob(interval: Long) {
+        timerJob = launch {
+            delay(interval)
+            val status = authorizationStatus()
+            if (!isWaiting && lastPermission != status) {
+                updateLastPermission()
+                IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
             }
+            launchTimerJob(interval)
         }
     }
 
     suspend fun stopMonitoring() {
-        timer?.invalidate()
-        timer = null
+        timerJob?.cancel()
+        timerJob = null
     }
 
     private suspend fun updateLastPermission() {

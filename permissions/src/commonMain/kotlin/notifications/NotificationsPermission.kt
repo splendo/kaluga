@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 expect class NotificationOptions
 
@@ -28,13 +29,13 @@ expect class NotificationsPermissionManager : PermissionManager<Permission.Notif
 }
 
 interface BaseNotificationsPermissionManagerBuilder {
-    fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications>
+    fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Notifications>
 }
 
 expect class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder
 
-class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
+class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder, coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Notifications>(coroutineScope = coroutineScope) {
 
-    override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)
+    override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this, coroutineScope)
 
 }

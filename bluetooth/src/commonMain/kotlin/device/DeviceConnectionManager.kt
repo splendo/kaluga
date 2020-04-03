@@ -19,13 +19,15 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CoroutineScope
 
 internal abstract class BaseDeviceConnectionManager(internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
                                                     internal val deviceHolder: DeviceHolder,
-                                                    internal val stateRepo: StateRepo<DeviceState>) {
+                                                    internal val stateRepo: StateRepo<DeviceState>,
+                                                    coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     interface Builder {
-        fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager
+        fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager
     }
 
 

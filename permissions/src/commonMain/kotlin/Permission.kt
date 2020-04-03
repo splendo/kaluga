@@ -34,6 +34,7 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -64,7 +65,7 @@ interface BasePermissionsBuilder {
 
 expect class PermissionsBuilder : BasePermissionsBuilder
 
-class Permissions(private val builder: BasePermissionsBuilder) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineScope: CoroutineScope) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
@@ -75,14 +76,14 @@ class Permissions(private val builder: BasePermissionsBuilder) {
 
     private fun createPermissionStateRepo(permission: Permission): PermissionStateRepo<*> {
         return when (permission) {
-            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
-            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder)
-            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder)
-            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder)
-            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder)
-            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder)
-            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder)
-            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
+            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder, coroutineScope)
+            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder, coroutineScope)
+            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder, coroutineScope)
+            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder, coroutineScope)
+            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder, coroutineScope)
+            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder, coroutineScope)
+            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder, coroutineScope)
+            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder, coroutineScope)
         }
     }
 

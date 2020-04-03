@@ -24,13 +24,14 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class LocationPermissionManager(
     context: Context,
     actual val location: Permission.Location,
-    stateRepo: LocationPermissionStateRepo
-) : PermissionManager<Permission.Location>(stateRepo) {
+    stateRepo: LocationPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Location>(stateRepo, coroutineScope) {
 
     private val permissions: Array<String> get() {
         val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -67,8 +68,8 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
-        return LocationPermissionManager(context, location, repo)
+    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Location> {
+        return LocationPermissionManager(context, location, repo, coroutineScope)
     }
 
 }

@@ -20,13 +20,16 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.permissions.*
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.UserNotifications.*
 
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
 actual class NotificationsPermissionManager(actual val notifications: Permission.Notifications,
-                                            stateRepo: NotificationsPermissionStateRepo) : PermissionManager<Permission.Notifications>(stateRepo) {
+                                            stateRepo: NotificationsPermissionStateRepo,
+                                            coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Notifications>(stateRepo, coroutineScope) {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
@@ -67,8 +70,8 @@ actual class NotificationsPermissionManager(actual val notifications: Permission
 
 actual class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications> {
-        return NotificationsPermissionManager(notifications, repo)
+    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Notifications> {
+        return NotificationsPermissionManager(notifications, repo, coroutineScope)
     }
 }
 

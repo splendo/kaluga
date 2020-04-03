@@ -24,15 +24,19 @@ import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
-class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState>) : BaseScanner(permissions,
+class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions,
     connectionSettings,
     autoRequestPermissions,
     autoEnableBluetooth,
-    stateRepo) {
+    stateRepo,
+    coroutineScope) {
 
     lateinit var scanForDevicesCompleted: CompletableDeferred<Set<UUID>>
     lateinit var stopScanningCompleted: EmptyCompletableDeferred
+    lateinit var startMonitoringPermissions: EmptyCompletableDeferred
+    lateinit var stopMonitoringPermissions: EmptyCompletableDeferred
     lateinit var requestEnableCompleted: EmptyCompletableDeferred
     lateinit var startMonitoringBluetoothCompleted: EmptyCompletableDeferred
     lateinit var stopMonitoringBluetoothCompleted: EmptyCompletableDeferred
@@ -48,6 +52,19 @@ class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSe
         stopScanningCompleted = EmptyCompletableDeferred()
         stopMonitoringBluetoothCompleted = EmptyCompletableDeferred()
         startMonitoringBluetoothCompleted = EmptyCompletableDeferred()
+        startMonitoringPermissions = EmptyCompletableDeferred()
+        stopMonitoringPermissions = EmptyCompletableDeferred()
+        requestEnableCompleted = EmptyCompletableDeferred()
+    }
+
+    override fun startMonitoringPermissions() {
+        super.startMonitoringPermissions()
+        startMonitoringPermissions.complete()
+    }
+
+    override fun stopMonitoringPermissions() {
+        super.stopMonitoringPermissions()
+        stopMonitoringPermissions.complete()
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) {

@@ -31,11 +31,16 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral, connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo {
+internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager,
+    private val peripheral: CBPeripheral,
+    connectionSettings: ConnectionSettings,
+    deviceHolder: DeviceHolder,
+    stateRepo: StateRepo<DeviceState>,
+    coroutineScope: CoroutineScope) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(cbCentralManager, peripheral, connectionSettings, deviceHolder, stateRepo)
+        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(cbCentralManager, peripheral, connectionSettings, deviceHolder, stateRepo, coroutineScope)
         }
     }
 

@@ -30,7 +30,7 @@ class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: StateRepo<
 
     val didUpdate = EmptyCompletableDeferred()
 
-    internal override suspend fun updateValue() {
+    override suspend fun updateValue() {
         didUpdate.complete()
     }
 

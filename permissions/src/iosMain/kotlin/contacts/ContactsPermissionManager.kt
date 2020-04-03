@@ -20,14 +20,16 @@ package com.splendo.kaluga.permissions.contacts
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.*
+import kotlinx.coroutines.CoroutineScope
 import platform.Contacts.*
 import platform.Foundation.NSBundle
 
 actual class ContactsPermissionManager(
     private val bundle: NSBundle,
     actual val contacts: Permission.Contacts,
-    stateRepo: ContactsPermissionStateRepo
-) : PermissionManager<Permission.Contacts>(stateRepo) {
+    stateRepo: ContactsPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Contacts>(stateRepo, coroutineScope) {
 
     private val contactStore = CNContactStore()
     private val authorizationStatus = suspend {
@@ -68,8 +70,8 @@ actual class ContactsPermissionManager(
 
 actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
-        return ContactsPermissionManager(bundle, contacts, repo)
+    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Contacts> {
+        return ContactsPermissionManager(bundle, contacts, repo, coroutineScope)
     }
 
 }

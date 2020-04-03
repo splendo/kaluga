@@ -24,13 +24,14 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class StoragePermissionManager(
     context: Context,
     actual val storage: Permission.Storage,
-    stateRepo: StoragePermissionStateRepo
-) : PermissionManager<Permission.Storage>(stateRepo) {
+    stateRepo: StoragePermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Storage>(stateRepo, coroutineScope) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, if (storage.allowWrite) arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) else arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
 
@@ -57,8 +58,8 @@ actual class StoragePermissionManager(
 
 actual class StoragePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage> {
-        return StoragePermissionManager(context, storage, repo)
+    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Storage> {
+        return StoragePermissionManager(context, storage, repo, coroutineScope)
     }
 
 }

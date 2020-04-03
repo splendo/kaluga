@@ -21,12 +21,14 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.av.AVPermissionHelper
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 
 actual class MicrophonePermissionManager(
     private val bundle: NSBundle,
-    stateRepo: MicrophonePermissionStateRepo
-) : PermissionManager<Permission.Microphone>(stateRepo) {
+    stateRepo: MicrophonePermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Microphone>(stateRepo, coroutineScope) {
 
     private val avPermissionHelper = AVPermissionHelper(bundle, AVPermissionHelper.Type.Microphone(this))
 
@@ -49,8 +51,8 @@ actual class MicrophonePermissionManager(
 
 actual class MicrophonePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
-        return MicrophonePermissionManager(bundle, repo)
+    override fun create(repo: MicrophonePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Microphone> {
+        return MicrophonePermissionManager(bundle, repo, coroutineScope)
     }
 
 }

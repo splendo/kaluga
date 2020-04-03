@@ -22,6 +22,7 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.utils.byOrdinalOrDefault
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -31,8 +32,9 @@ import platform.darwin.NSObject
 actual class LocationPermissionManager(
     private val bundle: NSBundle,
     actual val location: Permission.Location,
-    stateRepo: LocationPermissionStateRepo
-) : PermissionManager<Permission.Location>(stateRepo) {
+    stateRepo: LocationPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Location>(stateRepo, coroutineScope) {
 
     private val locationManager = CLLocationManager()
     private val authorizationStatus = {
@@ -79,8 +81,8 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
-        return LocationPermissionManager(bundle, location, repo)
+    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Location> {
+        return LocationPermissionManager(bundle, location, repo, coroutineScope)
     }
 
 }

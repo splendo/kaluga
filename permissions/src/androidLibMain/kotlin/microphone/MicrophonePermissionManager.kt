@@ -25,12 +25,13 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class MicrophonePermissionManager(
     context: Context,
-    stateRepo: MicrophonePermissionStateRepo
-) : PermissionManager<Permission.Microphone>(stateRepo) {
+    stateRepo: MicrophonePermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Microphone>(stateRepo, coroutineScope) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.RECORD_AUDIO))
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
@@ -63,8 +64,8 @@ actual class MicrophonePermissionManager(
 
 actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
-        return MicrophonePermissionManager(context, repo)
+    override fun create(repo: MicrophonePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Microphone> {
+        return MicrophonePermissionManager(context, repo, coroutineScope)
     }
 
 }

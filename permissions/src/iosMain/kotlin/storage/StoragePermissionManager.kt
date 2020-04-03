@@ -19,14 +19,16 @@ package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.permissions.*
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSBundle
 import platform.Photos.*
 
 actual class StoragePermissionManager(
     private val bundle: NSBundle,
     actual val storage: Permission.Storage,
-    stateRepo: StoragePermissionStateRepo
-) : PermissionManager<Permission.Storage>(stateRepo) {
+    stateRepo: StoragePermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Storage>(stateRepo, coroutineScope) {
 
     private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
@@ -61,8 +63,8 @@ actual class StoragePermissionManager(
 
 actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseStoragePermissionManagerBuilder {
 
-    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage> {
-        return StoragePermissionManager(bundle, storage, repo)
+    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Storage> {
+        return StoragePermissionManager(bundle, storage, repo, coroutineScope)
     }
 
 }

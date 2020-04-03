@@ -20,13 +20,24 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
 
     class Allowed<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
-        internal fun deny(locked: Boolean) : suspend () -> Denied<P> = {
-            if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
+        @ExperimentalCoroutinesApi
+        internal fun deny(locked: Boolean) : suspend () -> PermissionState<P> {
+            return if (locked) deniedLocked else deniedRequestable
+        }
+
+        internal val deniedLocked: suspend () -> Denied<P> = {
+            Denied.Locked(permissionManager)
+        }
+
+        internal val deniedRequestable: suspend () -> Denied<P> = {
+            Denied.Requestable(permissionManager)
         }
 
     }
@@ -60,7 +71,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
 
 }
 
-abstract class PermissionStateRepo<P : Permission>(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
+abstract class PermissionStateRepo<P : Permission>(private val monitoringInterval: Long = defaultMonitoringInterval, coroutineScope: CoroutineScope) : ColdStateRepo<PermissionState<P>>(coroutineContext = coroutineScope.coroutineContext) {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000

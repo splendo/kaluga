@@ -31,6 +31,7 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -40,8 +41,9 @@ actual class LocationManager(private val context: Context,
                              permissions: Permissions,
                              autoRequestPermission: Boolean,
                              autoEnableLocations: Boolean,
-                             locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+                             locationStateRepo: LocationStateRepo,
+                             coroutineScope: CoroutineScope
+) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo, coroutineScope) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationManager.Builder {
 
@@ -50,9 +52,10 @@ actual class LocationManager(private val context: Context,
             permissions: Permissions,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
-            locationStateRepo: LocationStateRepo
+            locationStateRepo: LocationStateRepo,
+            coroutineScope: CoroutineScope
         ): BaseLocationManager {
-            return LocationManager(context, locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return LocationManager(context, locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo, coroutineScope)
         }
     }
 
@@ -211,11 +214,12 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 }
 
 actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext,
-                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context)))
+                                        coroutineScope: CoroutineScope,
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context), coroutineScope))
     : LocationStateRepo.Builder {
 
-    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineScope: CoroutineScope): LocationStateRepo {
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context), coroutineScope)
     }
 
 }

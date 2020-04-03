@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.bluetooth
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreBluetooth.*
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
@@ -27,8 +28,9 @@ import platform.darwin.dispatch_get_main_queue
 
 actual class BluetoothPermissionManager(
     private val bundle: NSBundle,
-    stateRepo: BluetoothPermissionStateRepo
-) : PermissionManager<Permission.Bluetooth>(stateRepo) {
+    stateRepo: BluetoothPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Bluetooth>(stateRepo, coroutineScope) {
 
     private val centralManager = lazy {
         val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to false)
@@ -85,8 +87,9 @@ actual class BluetoothPermissionManager(
 actual class BluetoothPermissionManagerBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle) : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth> {
-        return BluetoothPermissionManager(bundle, repo)
+    override fun create(repo: BluetoothPermissionStateRepo,
+        coroutineScope: CoroutineScope): PermissionManager<Permission.Bluetooth> {
+        return BluetoothPermissionManager(bundle, repo, coroutineScope)
     }
 
 }

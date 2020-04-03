@@ -20,19 +20,20 @@ package com.splendo.kaluga.permissions.location
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 expect class LocationPermissionManager : PermissionManager<Permission.Location> {
     val location : Permission.Location
 }
 
 interface BaseLocationPermissionManagerBuilder {
-    fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location>
+    fun create(location: Permission.Location, repo: LocationPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Location>
 }
 
 expect class LocationPermissionManagerBuilder :BaseLocationPermissionManagerBuilder
 
-class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder) : PermissionStateRepo<Permission.Location>() {
+class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder, coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Location>(coroutineScope = coroutineScope) {
 
-    override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this)
+    override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this, coroutineScope)
 
 }

@@ -30,10 +30,11 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
                                    private val permissions: Permissions,
                                    private val autoRequestPermission: Boolean,
                                    internal val autoEnableLocations: Boolean,
-                                   private val locationStateRepo: LocationStateRepo) : CoroutineScope by locationStateRepo {
+                                   private val locationStateRepo: LocationStateRepo,
+                                    coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
+        fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo, coroutineScope: CoroutineScope): BaseLocationManager
     }
 
 

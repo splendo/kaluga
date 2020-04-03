@@ -25,12 +25,13 @@ import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-
+import kotlinx.coroutines.CoroutineScope
 
 actual class CameraPermissionManager(
     context: Context,
-    stateRepo: CameraPermissionStateRepo
-) : PermissionManager<Permission.Camera>(stateRepo) {
+    stateRepo: CameraPermissionStateRepo,
+    coroutineScope: CoroutineScope
+) : PermissionManager<Permission.Camera>(stateRepo, coroutineScope) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
@@ -64,8 +65,8 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
-        return CameraPermissionManager(context, repo)
+    override fun create(repo: CameraPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Camera> {
+        return CameraPermissionManager(context, repo, coroutineScope)
     }
 
 }

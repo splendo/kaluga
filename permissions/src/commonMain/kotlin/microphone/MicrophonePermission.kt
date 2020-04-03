@@ -20,17 +20,18 @@ package com.splendo.kaluga.permissions.microphone
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlinx.coroutines.CoroutineScope
 
 expect class MicrophonePermissionManager : PermissionManager<Permission.Microphone>
 
 interface BaseMicrophonePermissionManagerBuilder {
-    fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone>
+    fun create(repo: MicrophonePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Microphone>
 }
 
 expect class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder
 
-class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder) : PermissionStateRepo<Permission.Microphone>() {
+class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder, coroutineScope: CoroutineScope) : PermissionStateRepo<Permission.Microphone>(coroutineScope = coroutineScope) {
 
-    override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this)
+    override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this, coroutineScope)
 
 }

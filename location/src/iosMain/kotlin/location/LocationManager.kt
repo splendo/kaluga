@@ -22,6 +22,7 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.utils.byOrdinalOrDefault
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
@@ -38,7 +39,8 @@ actual class LocationManager(
     permissions: Permissions,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
-    locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+    locationStateRepo: LocationStateRepo,
+    coroutineScope: CoroutineScope) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo, coroutineScope) {
 
     class Builder(private val locationManager: CLLocationManager = CLLocationManager()) : BaseLocationManager.Builder {
 
@@ -47,14 +49,16 @@ actual class LocationManager(
             permissions: Permissions,
             autoRequestPermission: Boolean,
             autoEnableLocations: Boolean,
-            locationStateRepo: LocationStateRepo
+            locationStateRepo: LocationStateRepo,
+            coroutineScope: CoroutineScope
         ): BaseLocationManager = LocationManager(
             locationManager,
             locationPermission,
             permissions,
             autoRequestPermission,
             autoEnableLocations,
-            locationStateRepo
+            locationStateRepo,
+            coroutineScope
         )
     }
 
@@ -134,11 +138,12 @@ actual class LocationManager(
 
 actual class LocationStateRepoBuilder(private val bundle: NSBundle = NSBundle.mainBundle,
                                       private val locationManager: CLLocationManager = CLLocationManager(),
-                                      private val permissions: Permissions = Permissions(PermissionsBuilder(bundle)))
+                                        coroutineScope: CoroutineScope,
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(bundle), coroutineScope))
     : LocationStateRepo.Builder {
     
-    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager))
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineScope: CoroutineScope): LocationStateRepo {
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager), coroutineScope)
     }
     
 }
