@@ -20,6 +20,7 @@ package com.splendo.kaluga.bluetooth.device
 import android.bluetooth.*
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
@@ -47,7 +48,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
     private val callback = object : BluetoothGattCallback() {
 
         override fun onReadRemoteRssi(gatt: BluetoothGatt?, rssi: Int, status: Int) {
-            launch {
+            launch(MainQueueDispatcher) {
                 handleNewRssi(rssi)
             }
         }
@@ -65,7 +66,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-            launch {
+            launch(MainQueueDispatcher) {
                 val services = gatt?.services?.map { Service(DefaultGattServiceWrapper(it), stateRepo) } ?: emptyList()
                 handleScanCompleted(services)
             }
@@ -89,7 +90,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             lastKnownState = newState
-            launch {
+            launch(MainQueueDispatcher) {
                 when (newState) {
                     BluetoothProfile.STATE_DISCONNECTED -> {
                         handleDisconnect {
@@ -110,11 +111,11 @@ internal actual class DeviceConnectionManager(private val context: Context,
             unpair()
             if (gatt.isCompleted) {
                 if (!gatt.getCompleted().connect()) {
-                    launch {
+                    launch(MainQueueDispatcher) {
                         handleDisconnect { closeGatt() }
                     }
                 } else if (lastKnownState != BluetoothProfile.STATE_CONNECTED) {
-                    launch {
+                    launch(MainQueueDispatcher) {
                         handleConnect()
                     }
                 }
@@ -123,7 +124,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
                 gatt.complete(gattService)
             }
         } else {
-            launch {
+            launch(MainQueueDispatcher) {
                 handleConnect()
             }
         }
@@ -137,7 +138,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
         if (lastKnownState != BluetoothProfile.STATE_DISCONNECTED)
             gatt.await().disconnect()
         else
-            launch {
+            launch(MainQueueDispatcher) {
                 handleDisconnect {
                     closeGatt()
                 }
@@ -179,14 +180,14 @@ internal actual class DeviceConnectionManager(private val context: Context,
         }
         // Action Failed or Already Completed
         if (!shouldWait) {
-            launch {
+            launch(MainQueueDispatcher) {
                 handleCurrentActionCompleted()
             }
         }
     }
 
     private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic) {
-        launch {
+        launch(MainQueueDispatcher) {
             handleUpdatedCharacteristic(characteristic.uuid) {
                 it.characteristic.value = characteristic.value
             }
@@ -194,7 +195,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
     }
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor) {
-        launch {
+        launch(MainQueueDispatcher) {
             handleUpdatedDescriptor(descriptor.uuid) {
                 it.descriptor.value = descriptor.value
             }

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -54,7 +55,7 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
 
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch {
+        monitoringPermissionsJob = launch(MainQueueDispatcher) {
             bluetoothPermissionRepo.collect { state ->
                 when (state) {
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
@@ -88,7 +89,7 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
     internal abstract suspend fun requestBluetoothEnable()
 
     internal fun bluetoothEnabled() {
-        launch {
+        launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is ScanningState.NoBluetoothState.Disabled -> state.enable
@@ -99,7 +100,7 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
     }
 
     internal fun bluetoothDisabled() {
-        launch {
+        launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is ScanningState.Enabled -> state.disable
@@ -110,7 +111,7 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
     }
 
     internal fun handleDeviceDiscovered(identifier: Identifier, advertisementData: AdvertisementData, deviceCreator: () -> Device) {
-        launch {
+        launch(MainQueueDispatcher) {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is ScanningState.Enabled.Scanning -> {
