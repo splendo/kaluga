@@ -8,17 +8,18 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class MockPermissionStateRepo<P:Permission> : PermissionStateRepo<P>() {
+class MockPermissionStateRepo<P:Permission>(coroutineScope: CoroutineScope) : PermissionStateRepo<P>(coroutineScope = coroutineScope) {
 
-    override val permissionManager = MockPermissionManager(this)
+    override val permissionManager = MockPermissionManager(this, coroutineScope)
 
 }
 
-class MockPermissionManager<P:Permission>(val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
+class MockPermissionManager<P:Permission>(val permissionRepo: PermissionStateRepo<P>, coroutineScope: CoroutineScope) : PermissionManager<P>(permissionRepo, coroutineScope) {
 
     var currentState: PermissionState<P> = PermissionState.Denied.Requestable(this)
 
