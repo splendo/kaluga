@@ -20,8 +20,9 @@ package com.splendo.kaluga.permissions.location
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import kotlinx.coroutines.CoroutineScope
 
-actual class LocationPermissionManager(actual val location: Permission.Location, repo: LocationPermissionStateRepo) : PermissionManager<Permission.Location>(repo) {
+actual class LocationPermissionManager(actual val location: Permission.Location, repo: LocationPermissionStateRepo, coroutineScope: CoroutineScope) : PermissionManager<Permission.Location>(repo, coroutineScope) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
@@ -42,7 +43,7 @@ actual class LocationPermissionManager(actual val location: Permission.Location,
 
 actual class LocationPermissionManagerBuilder :BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
-        return LocationPermissionManager(location, repo)
+    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Location> {
+        return LocationPermissionManager(location, repo, coroutineScope)
     }
 }

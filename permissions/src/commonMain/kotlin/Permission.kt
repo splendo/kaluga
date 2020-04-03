@@ -35,6 +35,7 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionState
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -65,7 +66,7 @@ interface BasePermissionsBuilder {
 
 expect class PermissionsBuilder : BasePermissionsBuilder
 
-class Permissions(private val builder: BasePermissionsBuilder, private val coroutineScope: CoroutineScope) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineScope: CoroutineScope = MainScope()) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 

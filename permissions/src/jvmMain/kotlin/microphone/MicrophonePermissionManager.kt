@@ -20,8 +20,9 @@ package com.splendo.kaluga.permissions.microphone
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import kotlinx.coroutines.CoroutineScope
 
-actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : PermissionManager<Permission.Microphone>(repo) {
+actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo, coroutineScope: CoroutineScope) : PermissionManager<Permission.Microphone>(repo, coroutineScope) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
@@ -42,7 +43,7 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
 
 actual class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
-        return MicrophonePermissionManager(repo)
+    override fun create(repo: MicrophonePermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Microphone> {
+        return MicrophonePermissionManager(repo, coroutineScope)
     }
 }

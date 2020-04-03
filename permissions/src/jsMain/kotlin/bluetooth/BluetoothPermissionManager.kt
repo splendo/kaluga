@@ -20,8 +20,9 @@ package com.splendo.kaluga.permissions.bluetooth
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import kotlinx.coroutines.CoroutineScope
 
-actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : PermissionManager<Permission.Bluetooth>(repo) {
+actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo, coroutineScope: CoroutineScope) : PermissionManager<Permission.Bluetooth>(repo, coroutineScope) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
@@ -42,7 +43,7 @@ actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : Pe
 
 actual class BluetoothPermissionManagerBuilder :BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth> {
-        return BluetoothPermissionManager(repo)
+    override fun create(repo: BluetoothPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Bluetooth> {
+        return BluetoothPermissionManager(repo, coroutineScope)
     }
 }

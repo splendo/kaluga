@@ -24,7 +24,13 @@ import android.content.Intent
 import android.os.Looper
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
@@ -214,8 +220,7 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 }
 
 actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext,
-                                        coroutineScope: CoroutineScope,
-                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context), coroutineScope))
+                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context)))
     : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineScope: CoroutineScope): LocationStateRepo {

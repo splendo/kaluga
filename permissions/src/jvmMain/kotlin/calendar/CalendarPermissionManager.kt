@@ -20,8 +20,9 @@ package com.splendo.kaluga.permissions.calendar
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
+import kotlinx.coroutines.CoroutineScope
 
-actual class CalendarPermissionManager(actual val calendar: Permission.Calendar, repo: CalendarPermissionStateRepo) : PermissionManager<Permission.Calendar>(repo) {
+actual class CalendarPermissionManager(actual val calendar: Permission.Calendar, repo: CalendarPermissionStateRepo, coroutineScope: CoroutineScope) : PermissionManager<Permission.Calendar>(repo, coroutineScope) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
@@ -42,7 +43,7 @@ actual class CalendarPermissionManager(actual val calendar: Permission.Calendar,
 
 actual class CalendarPermissionManagerBuilder :BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
-        return CalendarPermissionManager(calendar, repo)
+    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo, coroutineScope: CoroutineScope): PermissionManager<Permission.Calendar> {
+        return CalendarPermissionManager(calendar, repo, coroutineScope)
     }
 }
