@@ -18,33 +18,22 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.log.debug
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
 import platform.CoreBluetooth.CBCentralManager
 import platform.Foundation.NSBundle
 import platform.posix.remove
 
-actual class Permissions {
-
-    private lateinit var bundle: NSBundle
+actual class Permissions(private val bundle: NSBundle) {
 
     actual fun getBluetoothManager(): PermissionManager {
         return BluetoothPermissionManager(CBCentralManager())
     }
 
-    actual open class Builder {
-        private lateinit var bundle: NSBundle
-
-        fun bundle(bundle: NSBundle) = apply { this.bundle = bundle }
+    actual open class Builder(private val bundle: NSBundle) {
 
         actual open fun build(): Permissions {
-            val permissions = Permissions()
-
-            with(permissions) {
-                this.bundle = this@Builder.bundle
-            }
-
-            return permissions
+            return Permissions(bundle)
         }
     }
 

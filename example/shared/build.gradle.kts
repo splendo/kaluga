@@ -10,14 +10,13 @@ repositories {
     mavenCentral()
     google()
     jcenter()
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
 }
 
 apply(from = "../../gradle/component.gradle")
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             val ext =  (gradle as ExtensionAware).extra
             var primaryIosArch = ext["ios_primary_arch"]
 
@@ -30,7 +29,7 @@ kotlin {
                     implementation(project(":alerts", ""))
                     implementation(project(":keyboard", ""))
                     implementation(project(":permissions", ""))
-                    implementation(project(":loadingIndicator", ""))
+                    implementation(project(":hud", ""))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:location:$libraryVersion")
@@ -39,7 +38,7 @@ kotlin {
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
                     implementation("com.splendo.kaluga:keyboard:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
-                    implementation("com.splendo.kaluga:loadingIndicator:$libraryVersion")
+                    implementation("com.splendo.kaluga:hud:$libraryVersion")
                 }
             }
         }

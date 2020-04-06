@@ -59,8 +59,8 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":keyboard")
     project(":keyboard").projectDir = file("../../../keyboard")
 
-    include(":loadingIndicator")
-    project(":loadingIndicator").projectDir = file("../../../loadingIndicator")
+    include(":hud")
+    project(":hud").projectDir = file("../../../hud")
 }
 
 include(":android")

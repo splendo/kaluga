@@ -12,10 +12,6 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 dependencies {
     implementation("com.google.android.gms:play-services-location:17.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
@@ -66,10 +62,10 @@ if (!singleSet)  {
         }
         sourceSets {
             val ext =  (gradle as ExtensionAware).extra
-            getByName("iosarm32Main") {
+            getByName("${ext["ios_secondary_arch"]}Main") {
                 dependencies {
-                    implementation(project(":base", "iosarm32Default"))
-                    implementation(project(":logging", "iosarm32Default"))
+                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
+                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
                 }
             }
         }

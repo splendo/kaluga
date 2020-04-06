@@ -11,20 +11,14 @@ import KotlinNativeFramework
 
 class LoadingViewController: UITableViewController {
 
+    private lazy var hudPresenter = SharedHudPresenter(builder: HudIOSHUD.Builder(viewController: self))
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch (indexPath.row) {
-        case 0: showLoadingIndicator(.system)
-        case 1: showLoadingIndicator(.custom)
+        case 0: hudPresenter.showSystem()
+        case 1: hudPresenter.showCustom()
         default: ()
-        }
-    }
-
-    fileprivate func showLoadingIndicator(_ style: LoadingIndicatorLoadingIndicatorStyle) {
-        let indicator = KotlinNativeFrameworkKt.activityIndicator(viewController: self, style: style)
-        indicator.show(animated: true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            indicator.dismiss(animated: true)
         }
     }
 }

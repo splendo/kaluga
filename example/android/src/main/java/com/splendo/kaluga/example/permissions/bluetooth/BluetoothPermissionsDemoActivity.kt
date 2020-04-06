@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.log.error
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.Permit
@@ -21,7 +21,7 @@ class BluetoothPermissionsDemoActivity : AppCompatActivity(R.layout.activity_per
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissions = Permissions.Builder().context(this).build()
+        permissions = Permissions.Builder(this).build()
         bluetoothManager = permissions.getBluetoothManager()
 
         btn_permissions_bluetooth_check_manifest_declaration.setOnClickListener {

@@ -3,14 +3,11 @@ package com.splendo.kaluga.example.loading
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.ActivityIndicator
-import com.splendo.kaluga.loadingIndicator.AndroidLoadingIndicator
-import com.splendo.kaluga.loadingIndicator.LoadingIndicator
+import com.splendo.kaluga.example.shared.HudPresenter
+import com.splendo.kaluga.hud.HudViewModel
 import kotlinx.android.synthetic.main.activity_loading.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /*
 
@@ -33,26 +30,28 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 @SuppressLint("SetTextI18n")
 class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 
+    private val viewModel: ViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel.subscribe(this)
 
         btn_show_loading_indicator_system.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.SYSTEM)
+            viewModel.showSystem()
         }
 
         btn_show_loading_indicator_custom.setOnClickListener {
-            showLoadingIndicator(LoadingIndicator.Style.CUSTOM)
+            viewModel.showCustom()
         }
     }
 
-    private fun showLoadingIndicator(style: LoadingIndicator.Style) {
-        val indicator = ActivityIndicator(AndroidLoadingIndicator.Builder(this)) {
-            setStyle(style)
-        }.show()
-
-        GlobalScope.launch {
-            delay(3_000)
-            indicator.dismiss()
-        }
+    override fun onDestroy() {
+        viewModel.unsubscribe()
+        super.onDestroy()
     }
+}
+
+class ViewModel: HudViewModel() {
+    fun showSystem() = HudPresenter(builder).showSystem()
+    fun showCustom() = HudPresenter(builder).showCustom()
 }

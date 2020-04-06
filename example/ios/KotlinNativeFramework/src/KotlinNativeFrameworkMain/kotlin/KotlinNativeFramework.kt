@@ -17,31 +17,38 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.example.shared.AlertFactory
-import com.splendo.kaluga.example.shared.ActivityIndicator
+import com.splendo.kaluga.example.shared.AlertPresenter
+import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.example.shared.ExampleKeyboardManager
 import com.splendo.kaluga.location.LocationFlowable
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
-import com.splendo.kaluga.loadingIndicator.*
+import com.splendo.kaluga.hud.IOSHUD
 import com.splendo.kaluga.keyboard.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
+import ru.pocketbyte.kydra.log.KydraLog
 import platform.UIKit.UITextField
-import ru.pocketbyte.hydra.log.HydraLog
 import platform.UIKit.UIViewController
 
-fun alertFactory(builder: AlertBuilder) = AlertFactory(builder)
-fun activityIndicator(viewController : UIViewController, style: LoadingIndicator.Style) = ActivityIndicator(IOSLoadingIndicator.Builder(viewController)) {
-    setStyle(style)
+class KNAlertFramework {
+    companion object {
+        fun makeAlertPresenter(builder: AlertBuilder) = AlertPresenter(builder)
+    }
+}
+
+class KNHudFramework {
+    companion object {
+        fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
+    }
 }
 
 class KotlinNativeFramework {
@@ -49,7 +56,7 @@ class KotlinNativeFramework {
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
-    fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
+    fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         val location = LocationFlowable.Builder(locationManager).create()
@@ -60,8 +67,7 @@ class KotlinNativeFramework {
     }
 
     fun permissions(nsBundle: NSBundle) = Permissions
-        .Builder()
-        .bundle(nsBundle)
+        .Builder(nsBundle)
         .build()
 
     fun keyboardManager(textField: UITextField) = ExampleKeyboardManager(KeyboardManagerBuilder(), textField)

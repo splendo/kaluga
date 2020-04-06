@@ -1,4 +1,4 @@
-package com.splendo.kaluga.log
+package com.splendo.kaluga.logging
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,11 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 /**
- * This class is used to wrap the HydraLog dependency.
+ * This class is used to wrap the KydraLog dependency.
  */
-inline class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger {
+inline class InternalLogger(val logger: Logger) : ru.pocketbyte.kydra.log.Logger {
 
-    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, message: String) {
+    override fun log(level: ru.pocketbyte.kydra.log.LogLevel, tag: String?, message: String) {
         logger.log(
             level.getLogLevel(),
             transformTag(tag),
@@ -30,7 +30,7 @@ inline class InternalLogger(val logger: Logger) : ru.pocketbyte.hydra.log.Logger
         )
     }
 
-    override fun log(level: ru.pocketbyte.hydra.log.LogLevel, tag: String?, exception: Throwable) {
+    override fun log(level: ru.pocketbyte.kydra.log.LogLevel, tag: String?, exception: Throwable) {
         logger.log(
             level.getLogLevel(),
             transformTag(tag),

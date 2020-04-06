@@ -1,4 +1,3 @@
-package com.splendo.kaluga.log
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,25 +16,29 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.logging
+
+import co.touchlab.stately.collections.IsoMutableList
+
 class LoggerMock : Logger {
 
-    val exceptionsList: MutableList<Throwable?> = mutableListOf()
-    val messageList: MutableList<String?> = mutableListOf()
-    val tagList: MutableList<String?> = mutableListOf()
-    val levelList: MutableList<LogLevel?> = mutableListOf()
+    val exceptionsList = IsoMutableList<Throwable?>()
+    val messageList = IsoMutableList<String?>()
+    val tagList = IsoMutableList<String?>()
+    val levelList = IsoMutableList<LogLevel?>()
 
     override fun log(level: LogLevel, tag: String?, message: String) {
-        this.levelList.add(level)
-        this.tagList.add(tag)
-        this.messageList.add(message)
-        this.exceptionsList.add(null)
+        levelList.add(level)
+        tagList.add(tag)
+        messageList.add(message)
+        exceptionsList.add(null)
     }
 
     override fun log(level: LogLevel, tag: String?, exception: Throwable) {
-        this.levelList.add(level)
-        this.tagList.add(tag)
-        this.messageList.add(null)
-        this.exceptionsList.add(exception)
+        levelList.add(level)
+        tagList.add(tag)
+        messageList.add(null)
+        exceptionsList.add(exception)
     }
 
     fun clear() {
@@ -44,5 +47,4 @@ class LoggerMock : Logger {
         tagList.clear()
         exceptionsList.clear()
     }
-
 }

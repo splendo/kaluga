@@ -25,7 +25,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.splendo.kaluga.location.test.LocationFlowableTest
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.tasks.await
 import org.junit.Before
 import org.junit.Rule
