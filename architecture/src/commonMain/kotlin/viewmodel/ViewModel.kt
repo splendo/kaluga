@@ -17,10 +17,39 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
+
 expect open class ViewModel() {
+    val coroutineScope: CoroutineScope
+    fun onClear()
 }
 
-class TestViewModel : ViewModel() {
+open class BaseViewModel : ViewModel(){
+
+    private val resumedJobs = SupervisorJob()
+
+    fun didResume() {
+        onResume.invoke(CoroutineScope(coroutineScope.coroutineContext + resumedJobs))
+    }
+
+    protected open val onResume: (CoroutineScope) -> Unit = {}
+
+    fun didPause() {
+        resumedJobs.cancelChildren()
+    }
+
+    protected open val onPause: () -> Unit = {}
 
 }
 
+class TestViewModel : BaseViewModel() {
+
+    override val onResume: (CoroutineScope) -> Unit = {
+        it.launch {  }
+    }
+
+}
