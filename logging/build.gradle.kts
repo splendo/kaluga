@@ -23,13 +23,13 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("ru.pocketbyte.kydra:kydra-log:1.0.4")
+                implementation("ru.pocketbyte.kydra:kydra-log:1.0.5")
             }
         }
         commonTest {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
-
+                // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
                 implementation("co.touchlab:stately-isolate:1.0.2-a4")
                 implementation("co.touchlab:stately-iso-collections:1.0.2-a4")
             }
