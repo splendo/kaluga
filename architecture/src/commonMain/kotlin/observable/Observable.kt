@@ -15,18 +15,8 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.architecture.observable
 
-import androidx.lifecycle.viewModelScope
-
-actual open class ViewModel actual internal constructor(test: String) : androidx.lifecycle.ViewModel() {
-
-    actual internal constructor() : this("")
-
-    actual val coroutineScope = viewModelScope
-
-    actual fun onClear() {
-        super.onCleared()
-    }
-
-}
+// expect class Observable<T> {
+//
+// }

@@ -21,9 +21,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
-expect open class ViewModel() {
+expect open class ViewModel internal constructor(test: String) {
+    internal constructor()
     val coroutineScope: CoroutineScope
     fun onClear()
 }
