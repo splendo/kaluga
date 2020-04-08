@@ -20,14 +20,18 @@ apply plugin: 'kotlin-android'
 
 
 android {
-    compileSdkVersion gradle.android_target_version
-    buildToolsVersion "29.0.2"
+    compileSdkVersion gradle.android_target_sdk_version
+    buildToolsVersion gradle.android_build_tools_version
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+        freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+    }
 
     defaultConfig {
         applicationId "com.splendo.kaluga.androidtesthelper"
-        minSdkVersion 19
-        targetSdkVersion gradle.android_target_version
+        minSdkVersion gradle.android_min_sdk_version
+        targetSdkVersion gradle.android_target_sdk_version
         versionCode 1
         versionName "1.0"
 
@@ -41,14 +45,30 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'META-INF/shared_debug.kotlin_module'
+        exclude 'META-INF/hud_debug.kotlin_module'
+    }
+
 }
 
+apply from: "../gradle/android_dependencies.gradle"
+
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation("androidx.fragment:fragment:$gradle.androidx_fragment_version")
+    androidTestImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
+
+    androidTestImplementation("co.touchlab:stately-isolate:$gradle.stately_version")
+    androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_version")
+
+    def excluded = ["androidtesthelper", // this project
+                    "logging",  // can not initialize after other projects
+                    "location"] // in rework at the moment
+    rootProject.subprojects.findAll{ !excluded.contains(it.name) }.each {
+        implementation project(path: ":$it.name")
+        androidTestImplementation project(path: ":$it.name", configuration:"androidTestHelperDebugImplementation")
+    }
+
 }
