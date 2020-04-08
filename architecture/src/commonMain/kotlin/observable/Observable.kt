@@ -17,9 +17,27 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
 
-expect abstract class Observable<T>
+sealed class ObservableResult<T> {
+    data class Result<T>(val value: T) : ObservableResult<T>()
+    class Nothing<T> : ObservableResult<T>()
+}
+
+expect abstract class Observable<T> : ReadOnlyProperty<Any, ObservableResult<T>>
+
+expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any, ObservableResult<T>>
+
+expect fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T>
+
+expect fun <T> ReadOnlyProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 
 expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+
+expect fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+
+expect fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>

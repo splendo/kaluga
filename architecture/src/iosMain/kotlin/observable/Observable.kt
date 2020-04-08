@@ -18,41 +18,25 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-sealed class ObservableResult<T> {
-    data class Result<T>(val value: T) : ObservableResult<T>()
-    class Nothing<T> : ObservableResult<T>()
-}
-
-actual abstract class Observable<T> {
-
-    abstract fun observe(onNext: (T) -> Unit): Disposable
-
-}
-
-class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>(), CoroutineScope by coroutineScope {
+actual abstract class Observable<T>: ReadOnlyProperty<Any, ObservableResult<T>> {
 
     private val observers = mutableListOf<(T) -> Unit>()
-
-    init {
-        launch(MainQueueDispatcher) {
-            flow.collect {
-                value = ObservableResult.Result(it)
-            }
-        }
-    }
-
-    private var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
+    protected var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
         val result = new as? ObservableResult.Result<T> ?: return@observable
         observers.forEach { it.invoke(result.value) }
     }
 
-    override fun observe(onNext: (T) -> Unit): Disposable {
+    fun observe(onNext: (T) -> Unit): Disposable {
         observers.add(onNext)
         val lastResult = value
         if (lastResult is ObservableResult.Result<T>) {
@@ -60,7 +44,74 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
         }
         return Disposable { observers.remove(onNext) }
     }
+
+    override fun getValue(thisRef: Any, property: KProperty<*>): ObservableResult<T> {
+        return value
+    }
 }
 
+class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Observable<T>() {
+    private val initialValue by readOnlyProperty
+    init {
+        value = ObservableResult.Result(initialValue)
+    }
+}
+
+class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
+
+    init {
+        coroutineScope.launch(MainQueueDispatcher) {
+            flow.collect {
+                value = ObservableResult.Result(it)
+            }
+        }
+    }
+}
+
+actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any, ObservableResult<T>> {
+
+    abstract fun post(newValue: T)
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: ObservableResult<T>) {
+        this.value = value
+    }
+}
+
+class ReadOnlyPropertySubject<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Subject<T>() {
+    private val initialValue by readOnlyProperty
+    init {
+        value = ObservableResult.Result(initialValue)
+    }
+
+    override fun post(newValue: T) {
+        value = ObservableResult.Result(newValue)
+    }
+}
+
+class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+
+    init {
+        coroutineScope.launch(MainQueueDispatcher) {
+            flowable.flow().collect {
+                value = ObservableResult.Result(it)
+            }
+        }
+    }
+
+    override fun post(newValue: T) {
+        coroutineScope.launch(MainQueueDispatcher) {
+            flowable.set(newValue)
+        }
+    }
+
+}
+actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
+
+actual fun <T> ReadOnlyProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadOnlyPropertySubject(this)
+
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
+
+actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
+
+actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
