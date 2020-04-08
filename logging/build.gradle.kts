@@ -13,12 +13,6 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-android {
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
-}
-
 kotlin {
     sourceSets {
         commonMain {
