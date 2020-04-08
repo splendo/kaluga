@@ -17,9 +17,11 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 
-expect abstract class Observable<T>
+actual typealias Observable<T> = LiveData<T>
 
-expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope) = this.asLiveData(coroutineScope.coroutineContext)

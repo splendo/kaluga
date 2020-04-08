@@ -17,9 +17,27 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
+class Disposable(private val onDispose: () -> Unit) {
+    fun dispose() {
+        onDispose.invoke()
+    }
 
-expect abstract class Observable<T>
+    fun putIn(disposeBag: DisposeBag) {
+        disposeBag.add(this)
+    }
+}
 
-expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+class DisposeBag() {
+    private val disposables = mutableListOf<Disposable>()
+
+    fun add(disposable: Disposable) {
+        disposables.add(disposable)
+    }
+
+    fun dispose() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
+    }
+
+}
+
