@@ -52,14 +52,13 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
 
     protected abstract val providerLiveData: LiveData<T>
     override val liveData: MutableLiveData<T> = MediatorLiveData<T>().apply { addSource(providerLiveData) {value -> setValue(value)} }
-    protected abstract val liveDataObserver: Observer<T>?
+    protected abstract val liveDataObserver: Observer<T>
 
     protected fun initialize() {
-        val observer = liveDataObserver ?: return
         coroutineScope.launch {
-            liveData.observeForever(observer)
+            liveData.observeForever(liveDataObserver)
         }.invokeOnCompletion {
-            liveData.removeObserver(observer)
+            liveData.removeObserver(liveDataObserver)
         }
     }
 
@@ -73,11 +72,13 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
     }
 }
 
-class ReadOnlyPropertySubject<T>(readOnlyProperty: ReadOnlyProperty<Any, T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
+class ReadWritePropertySubject<T>(readWriteProperty: ReadWriteProperty<Any, T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
 
-    private val initialValue by readOnlyProperty
-    override val providerLiveData: LiveData<T> = MutableLiveData(initialValue)
-    override val liveDataObserver: Observer<T>? = null
+    private var value by readWriteProperty
+    override val providerLiveData: LiveData<T> = MutableLiveData(value)
+    override val liveDataObserver = Observer<T> { t ->
+       value = t
+    }
 
     init {
         initialize()
@@ -99,7 +100,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
 
 actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
 
-actual fun <T> ReadOnlyProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadOnlyPropertySubject(this, coroutineScope)
+actual fun <T> ReadWriteProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadWritePropertySubject(this, coroutineScope)
 
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
 

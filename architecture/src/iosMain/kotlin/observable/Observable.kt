@@ -77,13 +77,16 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any, Obser
     }
 }
 
-class ReadOnlyPropertySubject<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Subject<T>() {
-    private val initialValue by readOnlyProperty
+class ReadWritePropertySubject<T>(readWriteProperty: ReadWriteProperty<Any, T>): Subject<T>() {
+
+    private var remoteValue by readWriteProperty
+
     init {
-        value = ObservableResult.Result(initialValue)
+        value = ObservableResult.Result(remoteValue)
     }
 
     override fun post(newValue: T) {
+        remoteValue = newValue
         value = ObservableResult.Result(newValue)
     }
 }
@@ -107,7 +110,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
 }
 actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
 
-actual fun <T> ReadOnlyProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadOnlyPropertySubject(this)
+actual fun <T> ReadWriteProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadWritePropertySubject(this)
 
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
 

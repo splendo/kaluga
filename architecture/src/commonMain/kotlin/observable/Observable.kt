@@ -34,7 +34,7 @@ expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any, Observa
 
 expect fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T>
 
-expect fun <T> ReadOnlyProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
+expect fun <T> ReadWriteProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 
 expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
