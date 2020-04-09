@@ -60,8 +60,9 @@ dependencies {
     implementation("androidx.fragment:fragment:$gradle.androidx_fragment_version")
     androidTestImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
 
-    androidTestImplementation("co.touchlab:stately-isolate:$gradle.stately_version")
-    androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_version")
+    // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
+    androidTestImplementation("co.touchlab:stately-isolate:$gradle.stately_isolate_version")
+    androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_isolate_version")
 
     def excluded = ["androidtesthelper", // this project
                     "logging",  // can not initialize after other projects

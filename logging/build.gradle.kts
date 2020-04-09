@@ -24,8 +24,8 @@ kotlin {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
                 // Stately Isolite is in flux and not part of the current statelyVersion. Upgrade this when tracked properly
-                implementation("co.touchlab:stately-isolate:1.0.2-a4")
-                implementation("co.touchlab:stately-iso-collections:1.0.2-a4")
+                implementation("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
+                implementation("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
             }
         }
     }
