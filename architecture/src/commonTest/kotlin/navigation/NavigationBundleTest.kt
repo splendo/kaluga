@@ -20,6 +20,7 @@ package com.splendo.kaluga.architecture.navigation
 import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class NavigationBundleTest : BaseTest() {
 
@@ -53,6 +54,7 @@ class NavigationBundleTest : BaseTest() {
         val bundleResult = bundle.get(MockSpecRow.NestedBundleSpecRow)
         val optionalStringResult = bundle.get(MockSpecRow.OptionalString)
         val optionalFloatResult = bundle.get(MockSpecRow.OptionalFloat)
+
         assertEquals(booleanValue, booleanResult)
         assertEquals(serializableValue, serializableResult)
         assertEquals(nestedBundle, bundleResult)
@@ -61,6 +63,8 @@ class NavigationBundleTest : BaseTest() {
 
         val nestedStringResult = bundleResult.get(NestedSpecRow.StringSpecRow)
         assertEquals(nestedString, nestedStringResult)
+
+        assertFailsWith(NavigationBundleGetError::class) {bundle.get(NestedSpecRow.StringSpecRow)}
     }
 
 }

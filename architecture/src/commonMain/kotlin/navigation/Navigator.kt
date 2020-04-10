@@ -17,5 +17,10 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-interface NavigationAction
+interface NavigationAction {
+    val bundle: NavigationBundle<*>?
+}
 
+expect class Navigator<A: NavigationAction> {
+    suspend fun navigate(action: A)
+}

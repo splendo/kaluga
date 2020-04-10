@@ -29,6 +29,7 @@ dependencies {
     androidTestImplementation("androidx.appcompat:appcompat:1.1.0")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.20.0")
+    implementation("androidx.appcompat:appcompat:1.1.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.2.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
