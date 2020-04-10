@@ -17,15 +17,27 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 
 actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -> NavigationSpec) {
 
-    private var activity: AppCompatActivity? = null
+    private var activity: Activity? = null
+    private var fragmentManager: FragmentManager? = null
+
+    fun subscribe(activity: Activity?, fragmentManager: FragmentManager?) {
+        this.activity = activity
+        this.fragmentManager = fragmentManager
+    }
+
+    fun unsubscribe() {
+        activity = null
+        fragmentManager = null
+    }
 
     actual suspend fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
@@ -73,7 +85,7 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
     }
 
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment, bundle: NavigationBundle<*>?) {
-        val fragmentManager = activity?.supportFragmentManager ?: return
+        val fragmentManager = fragmentManager ?: return
         val transaction = fragmentManager.beginTransaction()
 
         when(val backtrackSettings = fragmentSpec.backStackSettings) {
@@ -94,7 +106,7 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
     }
 
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog, bundle: NavigationBundle<*>?) {
-        val fragmentManager = activity?.supportFragmentManager ?: return
+        val fragmentManager = fragmentManager ?: return
         dialogSpec.createDialog(bundle).show(fragmentManager, dialogSpec.tag)
     }
 

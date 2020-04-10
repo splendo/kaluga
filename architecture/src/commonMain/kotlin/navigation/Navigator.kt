@@ -24,3 +24,7 @@ interface NavigationAction {
 expect class Navigator<A: NavigationAction> {
     suspend fun navigate(action: A)
 }
+
+interface NavigatorBuilder<A : NavigationAction> {
+    fun build(): Navigator<A>
+}
