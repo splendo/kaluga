@@ -30,18 +30,20 @@ sealed class NavigationBundleSpecType<T> {
 
     abstract fun convertValue(value: T): NavigationBundleValue<T>
 
-    class BooleanType : NavigationBundleSpecType<Boolean>() {
+    object BooleanType : NavigationBundleSpecType<Boolean>() {
 
         override fun convertValue(value: Boolean): NavigationBundleValue<Boolean> {
             return NavigationBundleValue.BooleanValue(value)
         }
     }
-    class BooleanArrayType : NavigationBundleSpecType<BooleanArray>() {
+
+    object BooleanArrayType : NavigationBundleSpecType<BooleanArray>() {
         override fun convertValue(value: BooleanArray): NavigationBundleValue<BooleanArray> {
             return NavigationBundleValue.BooleanArrayValue(value)
         }
     }
-    class ByteType : NavigationBundleSpecType<Byte>() {
+
+    object ByteType : NavigationBundleSpecType<Byte>() {
         override fun convertValue(value: Byte): NavigationBundleValue<Byte> {
             return NavigationBundleValue.ByteValue(value)
         }
@@ -51,62 +53,74 @@ sealed class NavigationBundleSpecType<T> {
             return NavigationBundleValue.BundleValue(value)
         }
     }
-    class ByteArrayType : NavigationBundleSpecType<ByteArray>() {
+
+    object ByteArrayType : NavigationBundleSpecType<ByteArray>() {
         override fun convertValue(value: ByteArray): NavigationBundleValue<ByteArray> {
             return NavigationBundleValue.ByteArrayValue(value)
         }
     }
-    class CharType : NavigationBundleSpecType<Char>() {
+
+    object CharType : NavigationBundleSpecType<Char>() {
         override fun convertValue(value: Char): NavigationBundleValue<Char> {
             return NavigationBundleValue.CharValue(value)
         }
     }
-    class CharArrayType : NavigationBundleSpecType<CharArray>() {
+
+    object CharArrayType : NavigationBundleSpecType<CharArray>() {
         override fun convertValue(value: CharArray): NavigationBundleValue<CharArray> {
             return NavigationBundleValue.CharArrayValue(value)
         }
     }
-    class CharSequenceType : NavigationBundleSpecType<CharSequence>() {
+
+    object CharSequenceType : NavigationBundleSpecType<CharSequence>() {
         override fun convertValue(value: CharSequence): NavigationBundleValue<CharSequence> {
             return NavigationBundleValue.CharSequenceValue(value)
         }
     }
-    class DoubleType : NavigationBundleSpecType<Double>() {
+
+    object DoubleType : NavigationBundleSpecType<Double>() {
         override fun convertValue(value: Double): NavigationBundleValue<Double> {
             return NavigationBundleValue.DoubleValue(value)
         }
     }
-    class DoubleArrayType : NavigationBundleSpecType<DoubleArray>() {
+
+    object DoubleArrayType : NavigationBundleSpecType<DoubleArray>() {
         override fun convertValue(value: DoubleArray): NavigationBundleValue<DoubleArray> {
             return NavigationBundleValue.DoubleArrayValue(value)
         }
     }
-    class FloatType : NavigationBundleSpecType<Float>() {
+
+    object FloatType : NavigationBundleSpecType<Float>() {
         override fun convertValue(value: Float): NavigationBundleValue<Float> {
             return NavigationBundleValue.FloatValue(value)
         }
     }
-    class FloatArrayType : NavigationBundleSpecType<FloatArray>() {
+
+    object FloatArrayType : NavigationBundleSpecType<FloatArray>() {
         override fun convertValue(value: FloatArray): NavigationBundleValue<FloatArray> {
             return NavigationBundleValue.FloatArrayValue(value)
         }
     }
-    class IntegerType : NavigationBundleSpecType<Int>() {
+
+    object IntegerType : NavigationBundleSpecType<Int>() {
         override fun convertValue(value: Int): NavigationBundleValue<Int> {
             return NavigationBundleValue.IntegerValue(value)
         }
     }
-    class IntegerArrayType : NavigationBundleSpecType<IntArray>() {
+
+    object IntegerArrayType : NavigationBundleSpecType<IntArray>() {
         override fun convertValue(value: IntArray): NavigationBundleValue<IntArray> {
             return NavigationBundleValue.IntegerArrayValue(value)
         }
     }
-    class LongType : NavigationBundleSpecType<Long>() {
+
+    object LongType : NavigationBundleSpecType<Long>() {
         override fun convertValue(value: Long): NavigationBundleValue<Long> {
             return NavigationBundleValue.LongValue(value)
         }
     }
-    class LongArrayType : NavigationBundleSpecType<LongArray>() {
+
+    object LongArrayType : NavigationBundleSpecType<LongArray>() {
         override fun convertValue(value: LongArray): NavigationBundleValue<LongArray> {
             return NavigationBundleValue.LongArrayValue(value)
         }
@@ -125,22 +139,26 @@ sealed class NavigationBundleSpecType<T> {
         }
 
     }
-    class ShortType : NavigationBundleSpecType<Short>() {
+
+    object ShortType : NavigationBundleSpecType<Short>() {
         override fun convertValue(value: Short): NavigationBundleValue<Short> {
             return NavigationBundleValue.ShortValue(value)
         }
     }
-    class ShortArrayType : NavigationBundleSpecType<ShortArray>() {
+
+    object ShortArrayType : NavigationBundleSpecType<ShortArray>() {
         override fun convertValue(value: ShortArray): NavigationBundleValue<ShortArray> {
             return NavigationBundleValue.ShortArrayValue(value)
         }
     }
-    class StringType : NavigationBundleSpecType<String>() {
+
+    object StringType : NavigationBundleSpecType<String>() {
         override fun convertValue(value: String): NavigationBundleValue<String> {
             return NavigationBundleValue.StringValue(value)
         }
     }
-    class StringArrayType : NavigationBundleSpecType<List<String>>() {
+
+    object StringArrayType : NavigationBundleSpecType<List<String>>() {
         override fun convertValue(value: List<String>): NavigationBundleValue<List<String>> {
             return NavigationBundleValue.StringArrayValue(value)
         }
