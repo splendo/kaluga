@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-interface NavigationAction {
-    val bundle: NavigationBundle<*>?
+abstract class NavigationAction<B : NavigationBundleSpecRow<*>> {
+    abstract val bundle: NavigationBundle<B>?
 }
 
-expect class Navigator<A: NavigationAction> {
-    suspend fun navigate(action: A)
+expect class Navigator<A: NavigationAction<*>> {
+    fun navigate(action: A)
 }
 
-interface NavigatorBuilder<A : NavigationAction> {
+interface NavigatorBuilder<A : NavigationAction<*>> {
     fun build(): Navigator<A>
 }

@@ -15,21 +15,12 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+actual class Navigator<A : NavigationAction<*>> {
 
-actual open class ViewModel internal actual constructor() {
-
-    private val lifecycleJob = SupervisorJob()
-
-    actual val coroutineScope = CoroutineScope(MainQueueDispatcher + lifecycleJob)
-
-    actual fun onClear() {
-        lifecycleJob.cancelChildren()
+    actual fun navigate(action: A) {
+        TODO("Not Yet Implemented")
     }
 
 }

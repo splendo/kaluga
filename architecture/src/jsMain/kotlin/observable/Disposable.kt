@@ -15,21 +15,28 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+class Disposable(private val onDispose: () -> Unit) {
+    fun dispose() {
+        onDispose.invoke()
+    }
 
-actual open class ViewModel internal actual constructor() {
+    fun putIn(disposeBag: DisposeBag) {
+        disposeBag.add(this)
+    }
+}
 
-    private val lifecycleJob = SupervisorJob()
+class DisposeBag() {
+    private val disposables = mutableListOf<Disposable>()
 
-    actual val coroutineScope = CoroutineScope(MainQueueDispatcher + lifecycleJob)
+    fun add(disposable: Disposable) {
+        disposables.add(disposable)
+    }
 
-    actual fun onClear() {
-        lifecycleJob.cancelChildren()
+    fun dispose() {
+        disposables.forEach { it.dispose() }
+        disposables.clear()
     }
 
 }

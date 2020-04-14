@@ -24,7 +24,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.fragment.app.FragmentManager
 
-actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -> NavigationSpec) {
+actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) {
 
     private var activity: Activity? = null
     private var fragmentManager: FragmentManager? = null
@@ -39,7 +39,7 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         fragmentManager = null
     }
 
-    actual suspend fun navigate(action: A) {
+    actual fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 
@@ -47,14 +47,15 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         when(spec) {
             is NavigationSpec.Activity -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
-            is NavigationSpec.Fragment -> navigateToFragment(spec, bundle)
-            is NavigationSpec.Dialog -> navigateToDialog(spec, bundle)
-            is NavigationSpec.Camera -> navigateToCamera(spec, bundle)
-            is NavigationSpec.Email -> navigateToEmail(spec, bundle)
-            is NavigationSpec.FileSelector -> navigateToFileSelector(spec, bundle)
-            is NavigationSpec.Settings -> navigateToSettings(spec, bundle)
-            is NavigationSpec.TextMessenger -> navigateToMessenger(spec, bundle)
-            is NavigationSpec.Browser -> navigateToBrowser(spec, bundle)
+            is NavigationSpec.Fragment -> navigateToFragment(spec)
+            is NavigationSpec.Dialog -> navigateToDialog(spec)
+            is NavigationSpec.Camera -> navigateToCamera(spec)
+            is NavigationSpec.Email -> navigateToEmail(spec)
+            is NavigationSpec.FileSelector -> navigateToFileSelector(spec)
+            is NavigationSpec.Phone -> navigateToPhone(spec)
+            is NavigationSpec.Settings -> navigateToSettings(spec)
+            is NavigationSpec.TextMessenger -> navigateToMessenger(spec)
+            is NavigationSpec.Browser -> navigateToBrowser(spec)
         }
     }
 
@@ -84,7 +85,7 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         activity.finish()
     }
 
-    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment, bundle: NavigationBundle<*>?) {
+    private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
         val fragmentManager = fragmentManager ?: return
         val transaction = fragmentManager.beginTransaction()
 
@@ -96,7 +97,7 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
             transaction.setCustomAnimations(animationSettings.enter, animationSettings.exit, animationSettings.popEnter, animationSettings.popExit)
         }
 
-        val fragment = fragmentSpec.createFragment(bundle)
+        val fragment = fragmentSpec.createFragment()
         when(fragmentSpec.type) {
             is NavigationSpec.Fragment.Type.Add -> transaction.add(fragmentSpec.containerId, fragment, fragmentSpec.tag)
             is NavigationSpec.Fragment.Type.Replace -> transaction.replace(fragmentSpec.containerId, fragment, fragmentSpec.tag)
@@ -105,19 +106,19 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         transaction.commit()
     }
 
-    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog, bundle: NavigationBundle<*>?) {
+    private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
         val fragmentManager = fragmentManager ?: return
-        dialogSpec.createDialog(bundle).show(fragmentManager, dialogSpec.tag)
+        dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
     }
 
-    private fun navigateToCamera(cameraSpec: NavigationSpec.Camera, bundle: NavigationBundle<*>?) {
+    private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {
         val activity = this.activity ?: return
         val intent = when(cameraSpec.type) {
             is NavigationSpec.Camera.Type.Image -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             is NavigationSpec.Camera.Type.Video -> Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         }
 
-        cameraSpec.createUri(bundle)?.let { uri ->
+        cameraSpec.uri?.let { uri ->
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri)
         }
 
@@ -126,22 +127,28 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToEmail(emailSpec: NavigationSpec.Email, bundle: NavigationBundle<*>?) {
+    private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
         val activity = this.activity ?: return
-        val settings = emailSpec.emailSettings(bundle)
-        val intent = when(settings.attachements.size) {
+        val settings = emailSpec.emailSettings
+        val intent = when(settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SENDTO)
-            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachements[0]) }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachements)) }
+            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
             data = Uri.parse("mailto:")
             type = when(settings.type) {
                 is NavigationSpec.Email.Type.Plain -> "text/plain"
                 is NavigationSpec.Email.Type.Stylized -> "*/*"
             }
-            settings.to?.let { putExtra(Intent.EXTRA_EMAIL, it) }
-            settings.cc?.let { putExtra(Intent.EXTRA_CC, it) }
-            settings.bcc?.let { putExtra(Intent.EXTRA_BCC, it) }
+            if (settings.to.isNotEmpty()) {
+                putExtra(Intent.EXTRA_EMAIL, settings.to.toTypedArray())
+            }
+            if (settings.cc.isNotEmpty()) {
+                putExtra(Intent.EXTRA_CC, settings.cc.toTypedArray())
+            }
+            if (settings.bcc.isNotEmpty()) {
+                putExtra(Intent.EXTRA_BCC, settings.bcc.toTypedArray())
+            }
             settings.subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
             settings.body?.let {putExtra(Intent.EXTRA_TEXT, it) }
         }
@@ -151,9 +158,9 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToFileSelector(fileSelectorSpec: NavigationSpec.FileSelector, bundle: NavigationBundle<*>?) {
+    private fun navigateToFileSelector(fileSelectorSpec: NavigationSpec.FileSelector) {
         val activity = this.activity ?: return
-        val settings = fileSelectorSpec.fileSelectorSettings(bundle)
+        val settings = fileSelectorSpec.fileSelectorSettings
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = settings.type
             putExtra(Intent.EXTRA_ALLOW_MULTIPLE, settings.allowMultiple)
@@ -165,14 +172,14 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToPhone(phoneSpec: NavigationSpec.Phone, bundle: NavigationBundle<*>?) {
+    private fun navigateToPhone(phoneSpec: NavigationSpec.Phone) {
         val activity = this.activity ?: return
 
         val intent = when(phoneSpec.type) {
             is NavigationSpec.Phone.Type.Dial -> Intent(Intent.ACTION_DIAL)
             is NavigationSpec.Phone.Type.Call -> Intent(Intent.ACTION_CALL)
         }.apply {
-            data = Uri.parse("tel:${phoneSpec.phoneNumber(bundle)}")
+            data = Uri.parse("tel:${phoneSpec.phoneNumber}")
         }
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -180,9 +187,9 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToSettings(settingsSpec: NavigationSpec.Settings, bundle: NavigationBundle<*>?) {
+    private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
         val activity = this.activity ?: return
-        val intent = when(settingsSpec.type(bundle)) {
+        val intent = when(settingsSpec.type) {
             is NavigationSpec.Settings.Type.General -> Intent(Settings.ACTION_SETTINGS)
             is NavigationSpec.Settings.Type.Wireless -> Intent(Settings.ACTION_WIRELESS_SETTINGS)
             is NavigationSpec.Settings.Type.AirplaneMode -> Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS)
@@ -204,13 +211,13 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger, bundle: NavigationBundle<*>?) {
+    private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
         val activity = this.activity ?: return
-        val settings = messengerSpec.settings(bundle)
-        val intent = when(settings.attachements.size) {
+        val settings = messengerSpec.settings
+        val intent = when(settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SENDTO)
-            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachements[0]) }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachements)) }
+            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
             data = Uri.parse("smsto:${settings.phoneNumber?.let { "$it" } ?: ""}")
             type = when(settings.type) {
@@ -227,9 +234,9 @@ actual class Navigator<A : NavigationAction>(private val navigationMapper: (A) -
         }
     }
 
-    private fun navigateToBrowser(browserSpec: NavigationSpec.Browser, bundle: NavigationBundle<*>?) {
+    private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
         val activity = this.activity ?: return
-        val uri = Uri.parse(browserSpec.url(bundle).toURI().toString())
+        val uri = Uri.parse(browserSpec.url.toURI().toString())
         val intent = Intent(Intent.ACTION_VIEW, uri)
 
         intent.resolveActivity(activity.packageManager)?.let {

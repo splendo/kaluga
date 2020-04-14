@@ -47,7 +47,7 @@ open class BaseViewModel : ViewModel(){
 
 }
 
-open class NavigatingViewModel<A : NavigationAction>(private val navigationBuilder: NavigatorBuilder<A>) : BaseViewModel() {
+open class NavigatingViewModel<A : NavigationAction<*>>(private val navigationBuilder: NavigatorBuilder<A>) : BaseViewModel() {
 
     val navigator = navigationBuilder.build()
 

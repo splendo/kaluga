@@ -19,9 +19,7 @@ package com.splendo.kaluga.architecture.viewmodel
 
 import androidx.lifecycle.viewModelScope
 
-actual open class ViewModel actual internal constructor(test: String) : androidx.lifecycle.ViewModel() {
-
-    actual internal constructor() : this("")
+actual open class ViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 

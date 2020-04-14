@@ -25,15 +25,15 @@ import androidx.fragment.app.DialogFragment
 import java.net.URL
 
 sealed class NavigationSpec {
-    class Activity(val activityClass: Class<android.app.Activity>, val flags: Set<IntentFlag>, val requestCode: Int?) : NavigationSpec()
-    class Close(val result: Int?) : NavigationSpec()
-    class Fragment(
+    data class Activity(val activityClass: Class<android.app.Activity>, val flags: Set<IntentFlag>, val requestCode: Int?) : NavigationSpec()
+    data class Close(val result: Int?) : NavigationSpec()
+    data class Fragment(
         val type: Type = Type.Replace,
         @IdRes val containerId: Int,
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
-        val createFragment: (NavigationBundle<*>?) -> androidx.fragment.app.Fragment) : NavigationSpec() {
+        val createFragment: () -> androidx.fragment.app.Fragment) : NavigationSpec() {
 
         sealed class Type {
             object Add : Type()
@@ -50,37 +50,37 @@ sealed class NavigationSpec {
             @AnimatorRes @AnimRes val popEnter: Int = 0,
             @AnimatorRes @AnimRes val popExit: Int = 0)
     }
-    class Dialog(val tag: String?, val createDialog: (NavigationBundle<*>?) -> DialogFragment): NavigationSpec()
-    class Camera(val type: Type, val requestCode: Int, val createUri: (NavigationBundle<*>?) -> Uri?) : NavigationSpec() {
+    data class Dialog(val tag: String?, val createDialog: () -> DialogFragment): NavigationSpec()
+    data class Camera(val type: Type, val requestCode: Int, val uri: Uri?) : NavigationSpec() {
         sealed class Type {
             object Image: Type()
             object Video: Type()
         }
     }
-    class Email(val emailSettings: (NavigationBundle<*>?) -> EmailSettings) : NavigationSpec() {
+    data class Email(val emailSettings: EmailSettings) : NavigationSpec() {
         sealed class Type {
             object Plain : Type()
             object Stylized : Type()
         }
         data class EmailSettings(
             val type: Type = Type.Plain,
-            val to: String? = null,
-            val cc: String? = null,
-            val bcc: String? = null,
+            val to: List<String> = emptyList(),
+            val cc: List<String> = emptyList(),
+            val bcc: List<String> = emptyList(),
             val subject: String? = null,
             val body: String? = null,
-            val attachements: List<Uri>)
+            val attachments: List<Uri> = emptyList())
     }
-    class FileSelector(val requestCode: Int, val fileSelectorSettings: (NavigationBundle<*>?) -> FileSelectorSettings) : NavigationSpec() {
+    data class FileSelector(val requestCode: Int, val fileSelectorSettings: FileSelectorSettings) : NavigationSpec() {
         data class FileSelectorSettings(val type: String, val allowMultiple: Boolean = false, val localOnly: Boolean = true)
     }
-    class Phone(val type: Type, val phoneNumber: (NavigationBundle<*>?) -> Int) : NavigationSpec() {
+    data class Phone(val type: Type, val phoneNumber: Int) : NavigationSpec() {
         sealed class Type {
             object Dial: Type()
             object Call: Type()
         }
     }
-    class Settings(val type: (NavigationBundle<*>?) -> Type) : NavigationSpec() {
+    data class Settings(val type: Type) : NavigationSpec() {
         sealed class Type {
             object General : Type()
             object Wireless : Type()
@@ -98,16 +98,16 @@ sealed class NavigationSpec {
             object MemoryCard : Type()
         }
     }
-    class TextMessenger(val settings: (NavigationBundle<*>?) -> TextMessengerSettings) : NavigationSpec() {
+    data class TextMessenger(val settings: TextMessengerSettings) : NavigationSpec() {
         sealed class Type {
             object Plain : Type()
             object Image : Type()
             object Video : Type()
         }
 
-        data class TextMessengerSettings(val type: Type = Type.Plain, val phoneNumber: Int?, val subject: String? = null, val body: String? = null, val attachements: List<Uri> = emptyList())
+        data class TextMessengerSettings(val type: Type = Type.Plain, val phoneNumber: Int?, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList())
 
     }
-    class Browser(val url: (NavigationBundle<*>?) -> URL) : NavigationSpec()
+    data class Browser(val url: URL) : NavigationSpec()
 }
 

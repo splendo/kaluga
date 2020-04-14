@@ -26,6 +26,7 @@ import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -72,9 +73,9 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
     }
 }
 
-class ReadWritePropertySubject<T>(readWriteProperty: ReadWriteProperty<Any, T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
+class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
 
-    private var value by readWriteProperty
+    private var value by observableProperty
     override val providerLiveData: LiveData<T> = MutableLiveData(value)
     override val liveDataObserver = Observer<T> { t ->
        value = t
@@ -100,7 +101,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
 
 actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
 
-actual fun <T> ReadWriteProperty<Any, T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ReadWritePropertySubject(this, coroutineScope)
+actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ObservablePropertySubject(this, coroutineScope)
 
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
 
