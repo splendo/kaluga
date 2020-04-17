@@ -1,50 +1,55 @@
 package com.splendo.kaluga.example
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.example.alerts.AlertsActivity
-import com.splendo.kaluga.example.loading.LoadingActivity
-import com.splendo.kaluga.example.location.LocationActivity
-import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.KalugaViewModelActivity
+import com.splendo.kaluga.example.shared.viewmodel.Feature
+import com.splendo.kaluga.example.shared.viewmodel.FeatureListViewModel
 import kotlinx.android.synthetic.main.activity_features_list.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FeaturesListActivity : AppCompatActivity(R.layout.activity_features_list) {
+class FeaturesListActivity : KalugaViewModelActivity<FeatureListViewModel>(R.layout.activity_features_list) {
+
+    override val viewModel: FeatureListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_feature_location.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    LocationActivity::class.java
-                )
-            )
+        val adapter = FeaturesAdapter(viewModel).apply {
+            features_list.adapter = this
         }
-        btn_feature_permissions.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    PermissionsDemoListActivity::class.java
-                )
-            )
+        viewModel.feature.observe(this, Observer { adapter.features = it })
+    }
+}
+
+class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
+
+    class FeatureViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
+
+    var features: List<Feature> = emptyList()
+        set(newValue) {
+            field = newValue
+            notifyDataSetChanged()
         }
-        btn_feature_alerts.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    AlertsActivity::class.java
-                )
-            )
-        }
-        btn_feature_loading_indicator.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    LoadingActivity::class.java
-                )
-            )
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureViewHolder {
+        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
+        return FeatureViewHolder(button)
+    }
+
+    override fun getItemCount(): Int = features.size
+
+    override fun onBindViewHolder(holder: FeatureViewHolder, position: Int) {
+        features.getOrNull(position)?.let { feature ->
+            holder.button.text = feature.title
+            holder.button.setOnClickListener { viewModel.onFeaturePressed(feature) }
+        } ?: run {
+            holder.button.text = null
+            holder.button.setOnClickListener(null)
         }
     }
 }

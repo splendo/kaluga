@@ -45,7 +45,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
 
     private fun navigate(spec: NavigationSpec, bundle: NavigationBundle<*>?) {
         when(spec) {
-            is NavigationSpec.Activity -> navigateToActivity(spec, bundle)
+            is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
             is NavigationSpec.Dialog -> navigateToDialog(spec)
@@ -59,7 +59,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         }
     }
 
-    private fun navigateToActivity(activitySpec: NavigationSpec.Activity, bundle: NavigationBundle<*>?) {
+    private fun navigateToActivity(activitySpec: NavigationSpec.Activity<*>, bundle: NavigationBundle<*>?) {
         val activity = this.activity ?: return
         val intent = Intent(activity, activitySpec.activityClass).apply {
             bundle?.let {

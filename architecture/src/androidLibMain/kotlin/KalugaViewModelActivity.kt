@@ -19,17 +19,18 @@ package com.splendo.kaluga.architecture
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-abstract class KalugaViewModelActivity<VM : BaseViewModel> : AppCompatActivity() {
+abstract class KalugaViewModelActivity<VM : BaseViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
 
     abstract val viewModel: VM
 
-    lateinit var viewModelWrapper: KalugaViewModelWrapper<VM>
+    private lateinit var viewModelWrapper: KalugaViewModelWrapper<VM>
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         viewModelWrapper = KalugaViewModelWrapper(viewModel)
     }
 

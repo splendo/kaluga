@@ -51,6 +51,12 @@ actual abstract class Observable<T>: ReadOnlyProperty<Any, ObservableResult<T>> 
     }
 }
 
+class DefaultObservable<T>(initialValue: T) : Observable<T>() {
+    init {
+        value = ObservableResult.Result(initialValue)
+    }
+}
+
 class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
@@ -75,6 +81,17 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any, Obser
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: ObservableResult<T>) {
         this.value = value
+    }
+}
+
+class DefaultSubject<T>(initialValue: T): Subject<T>() {
+
+    init {
+        value = ObservableResult.Result(initialValue)
+    }
+
+    override fun post(newValue: T) {
+        value = ObservableResult.Result(newValue)
     }
 }
 
@@ -119,3 +136,6 @@ actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Obs
 
 actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
+actual fun <T> observableOf(initialValue: T) : Observable<T> = DefaultObservable(initialValue)
+
+actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T> = DefaultSubject(initialValue)

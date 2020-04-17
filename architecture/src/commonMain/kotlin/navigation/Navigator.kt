@@ -24,7 +24,3 @@ abstract class NavigationAction<B : NavigationBundleSpecRow<*>> {
 expect class Navigator<A: NavigationAction<*>> {
     fun navigate(action: A)
 }
-
-interface NavigatorBuilder<A : NavigationAction<*>> {
-    fun build(): Navigator<A>
-}

@@ -17,11 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.*
 import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -35,16 +31,24 @@ actual abstract class Observable<T>: ReadOnlyProperty<Any, ObservableResult<T>> 
 
     abstract val liveData: LiveData<T>
 
+    fun observe(owner: LifecycleOwner, observer: Observer<T>) {
+        liveData.observe(owner, observer)
+    }
+
     override fun getValue(thisRef: Any, property: KProperty<*>): ObservableResult<T> {
         return liveData.value?.let {ObservableResult.Result(it)} ?: ObservableResult.Nothing()
     }
 }
 
+class DefaultObservable<T>(initialValue: T) : Observable<T>() {
+    override val liveData = MutableLiveData(initialValue)
+}
+
+
 class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Observable<T>() {
     val value by readOnlyProperty
     override val liveData: LiveData<T> = MutableLiveData(value)
 }
-
 class FlowObservable<T>(flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
     override val liveData: LiveData<T> = flow.asLiveData(coroutineScope.coroutineContext)
 }
@@ -63,6 +67,10 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
         }
     }
 
+    fun postValue(value: T) {
+        liveData.postValue(value)
+    }
+
     override fun getValue(thisRef: Any, property: KProperty<*>): ObservableResult<T> {
         return liveData.value?.let {ObservableResult.Result(it)} ?: ObservableResult.Nothing()
     }
@@ -71,6 +79,16 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
         val newValue = value as? ObservableResult.Result ?: return
         liveData.postValue(newValue.value)
     }
+}
+
+class DefaultSubject<T>(initialValue: T, coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
+    override val providerLiveData: LiveData<T> = MutableLiveData(initialValue)
+    override val liveDataObserver = Observer<T> {}
+
+    init {
+        initialize()
+    }
+
 }
 
 class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
@@ -97,6 +115,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
     init {
         initialize()
     }
+
 }
 
 actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
@@ -109,3 +128,6 @@ actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Obs
 
 actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
+actual fun <T> observableOf(initialValue: T) : Observable<T> = DefaultObservable(initialValue)
+
+actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T> = DefaultSubject(initialValue, coroutineScope)

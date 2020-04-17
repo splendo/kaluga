@@ -20,7 +20,7 @@ package com.splendo.kaluga.architecture.navigation
 import kotlin.test.assertEquals
 import org.junit.Test
 
-class AndroidNavigationBundleTest{
+class AndroidNavigationBundleTest {
 
     @Test
     fun testConvertBundle() {

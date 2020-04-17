@@ -18,11 +18,10 @@
 package com.splendo.kaluga.architecture.viewmodel
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigatorBuilder
+import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.launch
 
 expect open class ViewModel internal constructor() {
     val coroutineScope: CoroutineScope
@@ -47,9 +46,7 @@ open class BaseViewModel : ViewModel(){
 
 }
 
-open class NavigatingViewModel<A : NavigationAction<*>>(private val navigationBuilder: NavigatorBuilder<A>) : BaseViewModel() {
-
-    val navigator = navigationBuilder.build()
+open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>) : BaseViewModel() {
 
 }
 

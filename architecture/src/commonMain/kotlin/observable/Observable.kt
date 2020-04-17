@@ -42,3 +42,7 @@ expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<
 expect fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
 expect fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
+
+expect fun <T> observableOf(initialValue: T) : Observable<T>
+
+expect fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T>
