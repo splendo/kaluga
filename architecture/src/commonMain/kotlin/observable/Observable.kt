@@ -23,17 +23,26 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
-sealed class ObservableResult<T> {
-    data class Result<T>(val value: T) : ObservableResult<T>()
-    class Nothing<T> : ObservableResult<T>()
+sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
+    data class Result<T>(val value: T) : ObservableResult<T>() {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
+            return value
+        }
+    }
+    class Nothing<T> : ObservableResult<T>() {
+        override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
+            return null
+        }
+    }
 }
 
-expect abstract class Observable<T> : ReadOnlyProperty<Any, ObservableResult<T>>
+expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>>
 
-expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any, ObservableResult<T>>
+expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableResult<T>>
 
-expect fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T>
+expect fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T>
 
 expect fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 

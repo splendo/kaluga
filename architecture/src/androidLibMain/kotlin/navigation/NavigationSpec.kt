@@ -28,8 +28,8 @@ sealed class NavigationSpec {
     data class Activity<A: android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val requestCode: Int? = null) : NavigationSpec()
     data class Close(val result: Int?) : NavigationSpec()
     data class Fragment(
-        val type: Type = Type.Replace,
         @IdRes val containerId: Int,
+        val type: Type = Type.Replace,
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
@@ -50,7 +50,7 @@ sealed class NavigationSpec {
             @AnimatorRes @AnimRes val popEnter: Int = 0,
             @AnimatorRes @AnimRes val popExit: Int = 0)
     }
-    data class Dialog(val tag: String?, val createDialog: () -> DialogFragment): NavigationSpec()
+    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment): NavigationSpec()
     data class Camera(val type: Type, val requestCode: Int, val uri: Uri?) : NavigationSpec() {
         sealed class Type {
             object Image: Type()

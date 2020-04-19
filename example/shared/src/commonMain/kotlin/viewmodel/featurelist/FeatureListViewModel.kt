@@ -1,4 +1,4 @@
-package com.splendo.kaluga.example.shared.viewmodel
+package com.splendo.kaluga.example.shared.viewmodel.featureList
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
@@ -16,27 +16,21 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>() {
     object LoadingIndicator : FeatureListNavigationAction()
 }
 
-sealed class Feature {
-    abstract val title: String
-
-    object Location : Feature() {
-        override val title: String = "Location"
-    }
-    object Permissions : Feature() {
-        override val title: String = "Permissions"
-    }
-    object Alerts : Feature() {
-        override val title: String = "Alerts"
-    }
-    object LoadingIndicator : Feature() {
-        override val title: String = "Loading Indicator"
-    }
-
+sealed class Feature(val title: String) {
+    object Location : Feature("Location")
+    object Permissions : Feature("Permissions")
+    object Alerts : Feature("Alerts")
+    object LoadingIndicator : Feature("Loading Indicator")
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
-    val feature = observableOf(listOf(Feature.Location, Feature.Permissions, Feature.Alerts, Feature.LoadingIndicator))
+    val feature = observableOf(listOf(
+        Feature.Location,
+        Feature.Permissions,
+        Feature.Alerts,
+        Feature.LoadingIndicator
+    ))
 
     fun onFeaturePressed(feature: Feature) {
         navigator.navigate(when(feature) {

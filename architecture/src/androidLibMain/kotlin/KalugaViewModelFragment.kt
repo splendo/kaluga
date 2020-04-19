@@ -18,10 +18,11 @@
 package com.splendo.kaluga.architecture
 
 import android.os.Bundle
+import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-abstract class KalugaViewModelFragment<VM : BaseViewModel> : Fragment() {
+abstract class KalugaViewModelFragment<VM : BaseViewModel>(@LayoutRes layout: Int = 0) : Fragment(layout) {
 
     abstract val viewModel: VM
 

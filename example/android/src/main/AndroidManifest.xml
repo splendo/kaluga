@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.splendo.kaluga.example.FeaturesListActivity"
+        <activity android:name="com.splendo.kaluga.example.ExampleActivity"
                   android:label="Features list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

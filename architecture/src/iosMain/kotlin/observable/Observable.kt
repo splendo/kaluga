@@ -29,7 +29,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-actual abstract class Observable<T>: ReadOnlyProperty<Any, ObservableResult<T>> {
+actual abstract class Observable<T>: ReadOnlyProperty<Any?, ObservableResult<T>> {
 
     private val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
@@ -46,7 +46,7 @@ actual abstract class Observable<T>: ReadOnlyProperty<Any, ObservableResult<T>> 
         return Disposable { observers.remove(onNext) }
     }
 
-    override fun getValue(thisRef: Any, property: KProperty<*>): ObservableResult<T> {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
         return value
     }
 }
@@ -57,7 +57,7 @@ class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     }
 }
 
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any, T>): Observable<T>() {
+class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>): Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
         value = ObservableResult.Result(initialValue)
@@ -75,11 +75,11 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
     }
 }
 
-actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any, ObservableResult<T>> {
+actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
 
     abstract fun post(newValue: T)
 
-    override fun setValue(thisRef: Any, property: KProperty<*>, value: ObservableResult<T>) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableResult<T>) {
         this.value = value
     }
 }
@@ -126,7 +126,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
     }
 
 }
-actual fun <T> ReadOnlyProperty<Any, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
+actual fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
 
 actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ObservablePropertySubject(this)
 

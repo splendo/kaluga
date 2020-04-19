@@ -2,22 +2,23 @@ package com.splendo.kaluga.example
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.architecture.KalugaViewModelActivity
-import com.splendo.kaluga.example.shared.viewmodel.Feature
-import com.splendo.kaluga.example.shared.viewmodel.FeatureListViewModel
-import kotlinx.android.synthetic.main.activity_features_list.*
+import com.splendo.kaluga.architecture.KalugaViewModelFragment
+import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
+import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
+import kotlinx.android.synthetic.main.fragment_features_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FeaturesListActivity : KalugaViewModelActivity<FeatureListViewModel>(R.layout.activity_features_list) {
+class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.layout.fragment_features_list) {
 
     override val viewModel: FeatureListViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val adapter = FeaturesAdapter(viewModel).apply {
             features_list.adapter = this
