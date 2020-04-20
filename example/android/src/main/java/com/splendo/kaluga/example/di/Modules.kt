@@ -14,6 +14,7 @@ import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -64,8 +65,13 @@ val viewModelModule = module {
     viewModel {
         ArchitectureInputViewModel(
             Navigator {
-                NavigationSpec.Activity(ArchitectureDetailsActivity::class.java)
+                NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
             }
         )
+    }
+    viewModel { (name: String, number: Int) ->
+        ArchitectureDetailsViewModel(name, number, Navigator {
+            NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
+        })
     }
 }

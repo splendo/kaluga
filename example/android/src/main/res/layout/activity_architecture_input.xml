@@ -39,7 +39,7 @@
             app:layout_constraintTop_toBottomOf="@id/name_input_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.nameHeader.liveData}"
+            android:hint="@{viewModel.numberHeader.liveData}"
             app:errorEnabled="@{viewModel.isNumberValid.liveData}">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -56,7 +56,8 @@
             android:onClick="@{view -> viewModel.onShowDetailsPressed()}"
             app:layout_constraintTop_toBottomOf="@id/number_input_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/architecture_details"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

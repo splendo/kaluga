@@ -26,7 +26,7 @@ import java.net.URL
 
 sealed class NavigationSpec {
     data class Activity<A: android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val requestCode: Int? = null) : NavigationSpec()
-    data class Close(val result: Int?) : NavigationSpec()
+    data class Close(val result: Int? = null) : NavigationSpec()
     data class Fragment(
         @IdRes val containerId: Int,
         val type: Type = Type.Replace,

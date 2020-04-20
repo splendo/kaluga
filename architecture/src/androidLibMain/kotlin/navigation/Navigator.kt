@@ -131,7 +131,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         val activity = this.activity ?: return
         val settings = emailSpec.emailSettings
         val intent = when(settings.attachments.size) {
-            0 -> Intent(Intent.ACTION_SENDTO)
+            0 -> Intent(Intent.ACTION_SEND)
             1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
@@ -215,7 +215,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         val activity = this.activity ?: return
         val settings = messengerSpec.settings
         val intent = when(settings.attachments.size) {
-            0 -> Intent(Intent.ACTION_SENDTO)
+            0 -> Intent(Intent.ACTION_SEND)
             1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
