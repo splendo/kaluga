@@ -46,24 +46,24 @@ class InfoViewModel(navigator: Navigator<InfoNavigation<*>>) : NavigatingViewMod
         navigator.navigate(when(button) {
             is Button.About -> InfoNavigation.Dialog( DialogSpec().toBundle { row ->
                 when (row) {
-                    is DialogSpecRow.TitleRow -> row.associatedType.convertValue("About Us")
-                    is DialogSpecRow.MessageRow -> row.associatedType.convertValue("Kaluga is developed by Splendo Consulting BV")
+                    is DialogSpecRow.TitleRow -> row.convertValue("About Us")
+                    is DialogSpecRow.MessageRow -> row.convertValue("Kaluga is developed by Splendo Consulting BV")
                 }
             })
             is Button.Website -> InfoNavigation.Link(LinkSpec().toBundle { row ->
                 when (row) {
-                    is LinkSpecRow.LinkRow -> row.associatedType.convertValue("https://kaluga.splendo.com")
+                    is LinkSpecRow.LinkRow -> row.convertValue("https://kaluga.splendo.com")
                 }
             })
             is Button.GitHub -> InfoNavigation.Link(LinkSpec().toBundle { row ->
                 when (row) {
-                    is LinkSpecRow.LinkRow -> row.associatedType.convertValue("https://github.com/splendo/kaluga")
+                    is LinkSpecRow.LinkRow -> row.convertValue("https://github.com/splendo/kaluga")
                 }
             })
             is Button.Mail -> InfoNavigation.Mail( MailSpec().toBundle { row ->
                 when (row) {
-                    is MailSpecRow.ToRow -> row.associatedType.convertValue(listOf("info@splendo.com"))
-                    is MailSpecRow.SubjectRow -> row.associatedType.convertValue("Question about Kaluga")
+                    is MailSpecRow.ToRow -> row.convertValue(listOf("info@splendo.com"))
+                    is MailSpecRow.SubjectRow -> row.convertValue("Question about Kaluga")
                 }
             })
         })

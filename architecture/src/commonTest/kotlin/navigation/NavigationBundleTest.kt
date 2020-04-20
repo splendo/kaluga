@@ -32,7 +32,7 @@ class NavigationBundleTest : BaseTest() {
         val nestedSpec = NestedSpec()
         val nestedBundle: NavigationBundle<NestedSpecRow<*>> = nestedSpec.toBundle { entry ->
             when(entry) {
-                is NestedSpecRow.StringSpecRow -> entry.associatedType.convertValue(nestedString)
+                is NestedSpecRow.StringSpecRow -> entry.convertValue(nestedString)
             }
         }
         val optionalString: String? = "Some String"
@@ -41,11 +41,11 @@ class NavigationBundleTest : BaseTest() {
         val mockSpec = MockSpec()
         val bundle = mockSpec.toBundle { entry ->
             when (entry) {
-                is MockSpecRow.BooleanSpecRow -> entry.associatedType.convertValue(booleanValue)
-                is MockSpecRow.SerializableSpecRow -> entry.associatedType.convertValue(serializableValue)
-                is MockSpecRow.NestedBundleSpecRow -> entry.associatedType.convertValue(nestedBundle)
-                is MockSpecRow.OptionalString -> entry.associatedType.convertValue(optionalString)
-                is MockSpecRow.OptionalFloat -> entry.associatedType.convertValue(optionalFloat)
+                is MockSpecRow.BooleanSpecRow -> entry.convertValue(booleanValue)
+                is MockSpecRow.SerializableSpecRow -> entry.convertValue(serializableValue)
+                is MockSpecRow.NestedBundleSpecRow -> entry.convertValue(nestedBundle)
+                is MockSpecRow.OptionalString -> entry.convertValue(optionalString)
+                is MockSpecRow.OptionalFloat -> entry.convertValue(optionalFloat)
             }
         }
 

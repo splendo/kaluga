@@ -53,8 +53,8 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
             if(isValid.first()) {
                 navigator.navigate(InputNavigation(DetailsSpec().toBundle { row ->
                     when (row) {
-                        is DetailsSpecRow.NameRow -> row.associatedType.convertValue(name ?: "")
-                        is DetailsSpecRow.NumberRow -> row.associatedType.convertValue(number?.toIntOrNull() ?: 0)
+                        is DetailsSpecRow.NameRow -> row.convertValue(name ?: "")
+                        is DetailsSpecRow.NumberRow -> row.convertValue(number?.toIntOrNull() ?: 0)
                     }
                 }))
             }
