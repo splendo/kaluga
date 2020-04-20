@@ -13,7 +13,9 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class InputNavigation(val name: String, val number: Int): NavigationAction<DetailsSpecRow<*>>() {
 
@@ -38,25 +40,28 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
     private val _numberInput  = BaseFlowable<String>().apply { runBlocking{set("")} }
     val numberInput = _numberInput.toSubject(coroutineScope)
 
-    private val _isNameValid: Flow<Boolean> get() {return _nameInput.flow().map { it.isNotEmpty() }}
+    private val _isNameValid: Flow<Boolean> get() {return _nameInput.flow().map {
+        it.isNotEmpty()
+    }}
     val isNameValid = _isNameValid.toObservable(coroutineScope)
 
-    private val _isNumberValid: Flow<Boolean> get() {return _numberInput.flow().map { it.toIntOrNull() != null  } }
+    private val _isNumberValid: Flow<Boolean> get() {return _numberInput.flow().map {
+        it.toIntOrNull() != null
+    } }
     val isNumberValid = _isNumberValid.toObservable(coroutineScope)
 
-    val isValid = combine(_isNameValid, _isNumberValid) {validName, validNumber -> validName && validNumber}.toObservable(coroutineScope)
+    private val isValid = combine(_isNameValid, _isNumberValid) {
+            validName, validNumber -> validName && validNumber
+    }
 
     fun onShowDetailsPressed() {
         val nameResult: ObservableResult<String> by nameInput
         val name: String? by nameResult
         val numberResult: ObservableResult<String> by numberInput
         val number: String? by numberResult
-        val isValid: ObservableResult<Boolean>  by isValid
-        when(val valid = isValid) {
-            is ObservableResult.Result -> {
-                if (valid.value) {
-                    navigator.navigate(InputNavigation(name ?: "", number?.toIntOrNull() ?: 0))
-                }
+        coroutineScope.launch {
+            if(isValid.first()) {
+                navigator.navigate(InputNavigation(name ?: "", number?.toIntOrNull() ?: 0))
             }
         }
     }

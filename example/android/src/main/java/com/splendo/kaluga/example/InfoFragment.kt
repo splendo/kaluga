@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
@@ -56,5 +57,18 @@ class InfoAdapter(private val viewModel: InfoViewModel) : RecyclerView.Adapter<I
 }
 
 class InfoDialog(val title: String, val message: String) : DialogFragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val v = inflater.inflate(R.layout.dialog_info, container, false)
+
+        v.findViewById<TextView>(R.id.title).text = title
+        v.findViewById<TextView>(R.id.message).text = message
+
+        return v
+    }
 
 }

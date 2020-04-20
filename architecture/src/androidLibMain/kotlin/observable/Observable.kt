@@ -22,6 +22,7 @@ import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.properties.ObservableProperty
@@ -29,7 +30,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-actual abstract class Observable<T>: ReadOnlyProperty<Any?, ObservableResult<T>> {
+actual abstract class Observable<T> :  ReadOnlyProperty<Any?, ObservableResult<T>> {
 
     abstract val liveData: LiveData<T>
 
@@ -63,7 +64,9 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
     protected abstract val liveDataObserver: Observer<T>
 
     protected fun initialize() {
-        mediatorLiveData.addSource(providerLiveData) { value -> mediatorLiveData.postValue(value)}
+        mediatorLiveData.addSource(providerLiveData) {
+            value -> mediatorLiveData.postValue(value)
+        }
         coroutineScope.launch {
             liveData.observeForever(liveDataObserver)
             while(isActive) {
@@ -111,7 +114,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, co
 }
 
 class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
-    override val providerLiveData: LiveData<T> = flowable.flow().asLiveData(coroutineScope.coroutineContext)
+    override val providerLiveData: LiveData<T> = flowable.flow().distinctUntilChanged().asLiveData(coroutineScope.coroutineContext)
     override val liveDataObserver = Observer<T> { t ->
         coroutineScope.launch {
             flowable.set(t)

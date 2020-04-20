@@ -35,6 +35,8 @@
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"
                   android:label="Loading Indicator"/>
+        <activity android:name=".architecture.ArchitectureInputActivity"
+            android:label="Architecture"/>
     </application>
 
 </manifest>

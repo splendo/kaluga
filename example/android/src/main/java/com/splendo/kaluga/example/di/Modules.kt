@@ -7,11 +7,14 @@ import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
+import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
+import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
@@ -34,18 +37,11 @@ val viewModelModule = module {
         FeatureListViewModel(
             Navigator { action ->
                 when (action) {
-                    is FeatureListNavigationAction.Location -> NavigationSpec.Activity(
-                        LocationActivity::class.java
-                    )
-                    is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(
-                        PermissionsDemoListActivity::class.java
-                    )
-                    is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(
-                        AlertsActivity::class.java
-                    )
-                    is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(
-                        LoadingActivity::class.java
-                    )
+                    is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
+                    is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
+                    is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
+                    is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
+                    is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                 }
             })
     }
@@ -64,5 +60,12 @@ val viewModelModule = module {
                     is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
             })
+    }
+    viewModel {
+        ArchitectureInputViewModel(
+            Navigator {
+                NavigationSpec.Activity(ArchitectureDetailsActivity::class.java)
+            }
+        )
     }
 }

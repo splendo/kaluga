@@ -14,6 +14,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>() {
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
+    object Architecture:  FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
@@ -21,6 +22,7 @@ sealed class Feature(val title: String) {
     object Permissions : Feature("Permissions")
     object Alerts : Feature("Alerts")
     object LoadingIndicator : Feature("Loading Indicator")
+    object Architecture : Feature("Architecture")
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
@@ -29,7 +31,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
         Feature.Location,
         Feature.Permissions,
         Feature.Alerts,
-        Feature.LoadingIndicator
+        Feature.LoadingIndicator,
+        Feature.Architecture
     ))
 
     fun onFeaturePressed(feature: Feature) {
@@ -38,6 +41,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             is Feature.Permissions -> FeatureListNavigationAction.Permissions
             is Feature.Alerts -> FeatureListNavigationAction.Alerts
             is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
+            is Feature.Architecture -> FeatureListNavigationAction.Architecture
         })
     }
 

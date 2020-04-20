@@ -33,6 +33,10 @@ android {
         exclude 'META-INF/kotlinx-serialization-runtime.kotlin_module'
     }
 
+    dataBinding {
+        enabled = true
+    }
+
 }
 
 dependencies {
