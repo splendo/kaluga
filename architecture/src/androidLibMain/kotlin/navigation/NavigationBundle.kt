@@ -23,7 +23,7 @@ fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle() : Bundle {
     val bundle = Bundle()
 
     values.entries.forEach { entry ->
-        val key = entry.key.key
+        val key = entry.key.key ?: entry.key.javaClass.simpleName
         mapValue(key, entry.value, bundle)
     }
 
@@ -59,7 +59,7 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
 
 fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>) : NavigationBundle<R> {
     return NavigationBundle(spec, spec.rows.associate { row ->
-        mapValue(row.key, row.associatedType)?.let {
+        mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
             Pair(row, it)
         } ?: throw BundleConversionError()
     })

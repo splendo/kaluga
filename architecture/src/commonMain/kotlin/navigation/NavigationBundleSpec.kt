@@ -22,7 +22,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
 open class NavigationBundleSpecRow<T>(internal val associatedType: NavigationBundleSpecType<T>) {
-    open val key: String get() {return javaClass.simpleName}
+    open val key: String? get() {return this::class.simpleName }
     fun convertValue(value: T): NavigationBundleValue<T> = associatedType.convertValue(value)
 }
 
