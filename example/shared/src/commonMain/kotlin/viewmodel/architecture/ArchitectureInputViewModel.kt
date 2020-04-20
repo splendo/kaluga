@@ -17,17 +17,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class InputNavigation(val name: String, val number: Int): NavigationAction<DetailsSpecRow<*>>() {
-
-    private val dialogSpec = DetailsSpec()
-    override val bundle: NavigationBundle<DetailsSpecRow<*>>?
-        get() = dialogSpec.toBundle { row ->
-            when (row) {
-                is DetailsSpecRow.NameRow -> row.associatedType.convertValue(name)
-                is DetailsSpecRow.NumberRow -> row.associatedType.convertValue(number)
-            }
-        }
-}
+class InputNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>): NavigationAction<DetailsSpecRow<*>>(bundle)
 
 class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : NavigatingViewModel<InputNavigation>(navigator) {
 
@@ -61,7 +51,12 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
         val number: String? by numberResult
         coroutineScope.launch {
             if(isValid.first()) {
-                navigator.navigate(InputNavigation(name ?: "", number?.toIntOrNull() ?: 0))
+                navigator.navigate(InputNavigation(DetailsSpec().toBundle { row ->
+                    when (row) {
+                        is DetailsSpecRow.NameRow -> row.associatedType.convertValue(name ?: "")
+                        is DetailsSpecRow.NumberRow -> row.associatedType.convertValue(number?.toIntOrNull() ?: 0)
+                    }
+                }))
             }
         }
     }

@@ -19,17 +19,7 @@ sealed class DetailsSpecRow<V> : NavigationBundleSpecRow<V> {
     }
 }
 
-class CloseDetailsNavigation(val name: String, val number: Int): NavigationAction<DetailsSpecRow<*>>() {
-
-    private val dialogSpec = DetailsSpec()
-    override val bundle: NavigationBundle<DetailsSpecRow<*>>?
-        get() = dialogSpec.toBundle { row ->
-            when (row) {
-                is DetailsSpecRow.NameRow -> row.associatedType.convertValue(name)
-                is DetailsSpecRow.NumberRow -> row.associatedType.convertValue(number)
-            }
-        }
-}
+class CloseDetailsNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>): NavigationAction<DetailsSpecRow<*>>(bundle)
 
 class ArchitectureDetailsViewModel(initialName: String, initialNumber: Int, navigator: Navigator<CloseDetailsNavigation>) : NavigatingViewModel<CloseDetailsNavigation>(navigator) {
 
@@ -56,7 +46,12 @@ class ArchitectureDetailsViewModel(initialName: String, initialNumber: Int, navi
     fun onClosePressed() {
         val name: String? by nameResult
         val number: String? by numberResult
-        navigator.navigate(CloseDetailsNavigation(name ?: "", number?.toIntOrNull() ?: 0))
+        navigator.navigate(CloseDetailsNavigation(DetailsSpec().toBundle {row ->
+            when (row) {
+                is DetailsSpecRow.NameRow -> row.associatedType.convertValue(name ?: "")
+                is DetailsSpecRow.NumberRow -> row.associatedType.convertValue(number?.toIntOrNull() ?: 0)
+            }
+        }))
     }
 
 }

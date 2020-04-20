@@ -39,37 +39,11 @@ sealed class MailSpecRow<V> : NavigationBundleSpecRow<V> {
     }
 }
 
-sealed class InfoNavigation<B: NavigationBundleSpecRow<*>> : NavigationAction<B>() {
+sealed class InfoNavigation<B: NavigationBundleSpecRow<*>>(bundle: NavigationBundle<B>) : NavigationAction<B>(bundle) {
 
-    data class Dialog(private val title: String, private val message: String) : InfoNavigation<DialogSpecRow<*>>() {
-        private val dialogSpec = DialogSpec()
-        override val bundle: NavigationBundle<DialogSpecRow<*>>?
-            get() = dialogSpec.toBundle { row ->
-                when (row) {
-                    is DialogSpecRow.TitleRow -> row.associatedType.convertValue(title)
-                    is DialogSpecRow.MessageRow -> row.associatedType.convertValue(message)
-                }
-            }
-    }
-    data class Link(val url: String) : InfoNavigation<LinkSpecRow<*>>() {
-        private val linkSped = LinkSpec()
-        override val bundle: NavigationBundle<LinkSpecRow<*>>?
-            get() = linkSped.toBundle { row ->
-                when (row) {
-                    is LinkSpecRow.LinkRow -> row.associatedType.convertValue(url)
-                }
-            }
-    }
-    data class Mail(val to: String, val subject: String) : InfoNavigation<MailSpecRow<*>>() {
-        private val mailSpec = MailSpec()
-        override val bundle: NavigationBundle<MailSpecRow<*>>?
-            get() = mailSpec.toBundle { row ->
-                when (row) {
-                    is MailSpecRow.ToRow -> row.associatedType.convertValue(listOf(to))
-                    is MailSpecRow.SubjectRow -> row.associatedType.convertValue(subject)
-                }
-            }
-    }
+    class Dialog(bundle: NavigationBundle<DialogSpecRow<*>>) : InfoNavigation<DialogSpecRow<*>>(bundle)
+    class Link(bundle: NavigationBundle<LinkSpecRow<*>>) : InfoNavigation<LinkSpecRow<*>>(bundle)
+    class Mail(bundle: NavigationBundle<MailSpecRow<*>>) : InfoNavigation<MailSpecRow<*>>(bundle)
 }
 
 class InfoViewModel(navigator: Navigator<InfoNavigation<*>>) : NavigatingViewModel<InfoNavigation<*>>(navigator) {
@@ -85,10 +59,28 @@ class InfoViewModel(navigator: Navigator<InfoNavigation<*>>) : NavigatingViewMod
 
     fun onButtonPressed(button: Button) {
         navigator.navigate(when(button) {
-            is Button.About -> InfoNavigation.Dialog("About Us", "Kaluga is developed by Splendo Consulting BV")
-            is Button.Website -> InfoNavigation.Link("https://kaluga.splendo.com")
-            is Button.GitHub -> InfoNavigation.Link("https://github.com/splendo/kaluga")
-            is Button.Mail -> InfoNavigation.Mail("info@splendo.com", "Question about Kaluga")
+            is Button.About -> InfoNavigation.Dialog( DialogSpec().toBundle { row ->
+                when (row) {
+                    is DialogSpecRow.TitleRow -> row.associatedType.convertValue("About Us")
+                    is DialogSpecRow.MessageRow -> row.associatedType.convertValue("Kaluga is developed by Splendo Consulting BV")
+                }
+            })
+            is Button.Website -> InfoNavigation.Link(LinkSpec().toBundle { row ->
+                when (row) {
+                    is LinkSpecRow.LinkRow -> row.associatedType.convertValue("https://kaluga.splendo.com")
+                }
+            })
+            is Button.GitHub -> InfoNavigation.Link(LinkSpec().toBundle { row ->
+                when (row) {
+                    is LinkSpecRow.LinkRow -> row.associatedType.convertValue("https://github.com/splendo/kaluga")
+                }
+            })
+            is Button.Mail -> InfoNavigation.Mail( MailSpec().toBundle { row ->
+                when (row) {
+                    is MailSpecRow.ToRow -> row.associatedType.convertValue(listOf("info@splendo.com"))
+                    is MailSpecRow.SubjectRow -> row.associatedType.convertValue("Question about Kaluga")
+                }
+            })
         })
     }
 

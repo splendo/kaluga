@@ -6,9 +6,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
-sealed class FeatureListNavigationAction : NavigationAction<Nothing>() {
-
-    override val bundle: NavigationBundle<Nothing>? = null
+sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
 
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()

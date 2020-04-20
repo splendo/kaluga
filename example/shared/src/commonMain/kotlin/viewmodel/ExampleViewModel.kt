@@ -14,9 +14,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-sealed class ExampleTabNavigation : NavigationAction<Nothing>() {
-
-    override val bundle: NavigationBundle<Nothing>? = null
+sealed class ExampleTabNavigation : NavigationAction<Nothing>(null) {
 
     object FeatureList : ExampleTabNavigation()
     object Info : ExampleTabNavigation()

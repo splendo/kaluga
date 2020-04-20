@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-abstract class NavigationAction<B : NavigationBundleSpecRow<*>> {
-    abstract val bundle: NavigationBundle<B>?
-}
+abstract class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
 
 expect class Navigator<A: NavigationAction<*>> {
     fun navigate(action: A)
