@@ -24,37 +24,19 @@ data class MockSerializable(val value: String)
 
 class MockSpec : NavigationBundleSpec<MockSpecRow<*>>(setOf(MockSpecRow.BooleanSpecRow, MockSpecRow.SerializableSpecRow, MockSpecRow.NestedBundleSpecRow, MockSpecRow.OptionalString, MockSpecRow.OptionalFloat))
 
-sealed class MockSpecRow<V> : NavigationBundleSpecRow<V> {
-    object BooleanSpecRow : MockSpecRow<Boolean>() {
-        override val key: String = "BooleanSpec"
-        override val associatedType = NavigationBundleSpecType.BooleanType
-    }
-    object SerializableSpecRow : MockSpecRow<MockSerializable>() {
-        override val key: String = "SerializableSpec"
-        override val associatedType = NavigationBundleSpecType.SerializedType(MockSerializable.serializer())
-    }
-    object NestedBundleSpecRow : MockSpecRow<NavigationBundle<NestedSpecRow<*>>>() {
-        override val key: String = "NestedSpec"
-        override val associatedType = NavigationBundleSpecType.BundleType(NestedSpec())
-    }
-    object OptionalString : MockSpecRow<String?>() {
-        override val key: String = "OptionalStringSpec"
-        override val associatedType = NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType)
-    }
-    object OptionalFloat : MockSpecRow<Float?>() {
-        override val key: String = "OptionalFloatSpec"
-        override val associatedType = NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType)
-    }
+sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+    object BooleanSpecRow : MockSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
+    object SerializableSpecRow : MockSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
+    object NestedBundleSpecRow : MockSpecRow<NavigationBundle<NestedSpecRow<*>>>(NavigationBundleSpecType.BundleType(NestedSpec()))
+    object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
+    object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))
 
-sealed class NestedSpecRow<V> : NavigationBundleSpecRow<V> {
+sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
 
-    object StringSpecRow : NestedSpecRow<String>() {
-        override val key: String = "StringSpec"
-        override val associatedType: NavigationBundleSpecType<String> = NavigationBundleSpecType.StringType
-    }
+    object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
 
 }
 

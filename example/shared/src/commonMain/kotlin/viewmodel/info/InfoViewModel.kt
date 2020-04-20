@@ -4,45 +4,30 @@ import com.splendo.kaluga.architecture.navigation.*
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
-class DialogSpec : NavigationBundleSpec<DialogSpecRow<*>>(setOf(DialogSpecRow.TitleRow, DialogSpecRow.MessageRow))
+class DialogSpec : NavigationBundleSpec<DialogSpecRow>(setOf(DialogSpecRow.TitleRow, DialogSpecRow.MessageRow))
 
-sealed class DialogSpecRow<V> : NavigationBundleSpecRow<V> {
-    object TitleRow : DialogSpecRow<String>() {
-        override val key: String = "TitleRow"
-        override val associatedType = NavigationBundleSpecType.StringType
-    }
-    object MessageRow : DialogSpecRow<String>() {
-        override val key: String = "MessageRow"
-        override val associatedType = NavigationBundleSpecType.StringType
-    }
+sealed class DialogSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSpecType.StringType) {
+    object TitleRow : DialogSpecRow()
+    object MessageRow : DialogSpecRow()
 }
 
-class LinkSpec : NavigationBundleSpec<LinkSpecRow<*>>(setOf(LinkSpecRow.LinkRow))
+class LinkSpec : NavigationBundleSpec<LinkSpecRow>(setOf(LinkSpecRow.LinkRow))
 
-sealed class LinkSpecRow<V> : NavigationBundleSpecRow<V> {
-    object LinkRow : LinkSpecRow<String>() {
-        override val key: String = "LinkRow"
-        override val associatedType = NavigationBundleSpecType.StringType
-    }
+sealed class LinkSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSpecType.StringType) {
+    object LinkRow : LinkSpecRow()
 }
 
 class MailSpec : NavigationBundleSpec<MailSpecRow<*>>(setOf(MailSpecRow.ToRow, MailSpecRow.SubjectRow))
 
-sealed class MailSpecRow<V> : NavigationBundleSpecRow<V> {
-    object ToRow : MailSpecRow<List<String>>() {
-        override val key: String = "ToRow"
-        override val associatedType = NavigationBundleSpecType.StringArrayType
-    }
-    object SubjectRow : MailSpecRow<String>() {
-        override val key: String = "SubjectRow"
-        override val associatedType = NavigationBundleSpecType.StringType
-    }
+sealed class MailSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+    object ToRow : MailSpecRow<List<String>>(NavigationBundleSpecType.StringArrayType)
+    object SubjectRow : MailSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
 sealed class InfoNavigation<B: NavigationBundleSpecRow<*>>(bundle: NavigationBundle<B>) : NavigationAction<B>(bundle) {
 
-    class Dialog(bundle: NavigationBundle<DialogSpecRow<*>>) : InfoNavigation<DialogSpecRow<*>>(bundle)
-    class Link(bundle: NavigationBundle<LinkSpecRow<*>>) : InfoNavigation<LinkSpecRow<*>>(bundle)
+    class Dialog(bundle: NavigationBundle<DialogSpecRow>) : InfoNavigation<DialogSpecRow>(bundle)
+    class Link(bundle: NavigationBundle<LinkSpecRow>) : InfoNavigation<LinkSpecRow>(bundle)
     class Mail(bundle: NavigationBundle<MailSpecRow<*>>) : InfoNavigation<MailSpecRow<*>>(bundle)
 }
 

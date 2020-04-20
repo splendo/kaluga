@@ -8,15 +8,9 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
 class DetailsSpec : NavigationBundleSpec<DetailsSpecRow<*>>(setOf(DetailsSpecRow.NameRow, DetailsSpecRow.NumberRow))
 
-sealed class DetailsSpecRow<V> : NavigationBundleSpecRow<V> {
-    object NameRow : DetailsSpecRow<String>() {
-        override val key: String = "NameRow"
-        override val associatedType = NavigationBundleSpecType.StringType
-    }
-    object NumberRow : DetailsSpecRow<Int>() {
-        override val key: String = "NumberRow"
-        override val associatedType = NavigationBundleSpecType.IntegerType
-    }
+sealed class DetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+    object NameRow : DetailsSpecRow<String>(NavigationBundleSpecType.StringType)
+    object NumberRow : DetailsSpecRow<Int>( NavigationBundleSpecType.IntegerType)
 }
 
 class CloseDetailsNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>): NavigationAction<DetailsSpecRow<*>>(bundle)
