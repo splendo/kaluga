@@ -164,14 +164,14 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
-            MainScope().launch {
-                dialogState.observe(uiContextData.lifecycleOwner, Observer {
+            dialogState.observe(uiContextData.lifecycleOwner, Observer {
+                MainScope().launch {
                     when (it) {
                         is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
                         is DialogState.Gone -> loadingDialog.dismiss()
                     }
-                })
-            }
+                }
+            })
         }
     }
 
@@ -179,11 +179,11 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         loadingDialog.presentCompletionBlock = completion
-        dialogState.postValue(DialogState.Visible)
+        dialogState.value = DialogState.Visible
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
         loadingDialog.dismissCompletionBlock = completion
-        dialogState.postValue(DialogState.Gone)
+        dialogState.value = DialogState.Gone
     }
 }
