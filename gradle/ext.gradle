@@ -10,7 +10,7 @@ gradle.ext {
     library_version = '0.0.5'
     android_min_sdk_version = 21
     android_target_sdk_version = 29
-    android_build_tools_version = "29.0.2"
+    android_build_tools_version = "29.0.3"
 
     play_services_version = "17.0.0"
 
