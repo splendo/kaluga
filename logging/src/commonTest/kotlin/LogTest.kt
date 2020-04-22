@@ -17,8 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 package com.splendo.kaluga.logging
-import com.splendo.kaluga.logging.*
-import kotlin.test.*
 
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

@@ -1,0 +1,74 @@
+package com.splendo.kaluga.hud
+
+<<<<<<< HEAD
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+=======
+<<<<<<< HEAD:example/shared/src/commonMain/kotlin/HudPresenter.kt
+import com.splendo.kaluga.hud.HUD
+import kotlinx.coroutines.*
+=======
+import android.os.Bundle
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+>>>>>>> origin/master:hud/src/androidLibAndroidTest/kotlin/TestActivity.kt
+>>>>>>> origin/master
+
+/*
+
+Copyright 2019 Splendo Consulting B.V. The Netherlands
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+*/
+
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD:example/shared/src/commonMain/kotlin/HudPresenter.kt
+class HudPresenter(private val builder: HUD.Builder) {
+
+    fun showSystem() {
+        // SYSTEM style by default
+        // No title by default
+        builder.build().present().dismissAfter(3_000)
+    }
+
+    fun showCustom() {
+        builder.build {
+            setStyle(HUD.Style.CUSTOM)
+            setTitle("This is a custom title")
+        }.presentDuring {
+            // Simulate heavy task
+            delay(3_000)
+        }
+=======
+>>>>>>> origin/master
+class TestActivity : AppCompatActivity() {
+
+    val viewModel: HudViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.subscribe(this)
+    }
+
+    override fun onDestroy() {
+        viewModel.unsubscribe()
+        super.onDestroy()
+<<<<<<< HEAD
+=======
+>>>>>>> origin/master:hud/src/androidLibAndroidTest/kotlin/TestActivity.kt
+>>>>>>> origin/master
+    }
+}
