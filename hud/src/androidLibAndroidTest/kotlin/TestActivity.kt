@@ -24,24 +24,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class TestActivity : AppCompatActivity() {
 
-<<<<<<< HEAD
-<<<<<<<< HEAD:hud/src/androidLibAndroidTest/kotlin/TestActivity.kt
-=======
->>>>>>> origin/master
     val viewModel: HudViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.subscribe(this)
-<<<<<<< HEAD
-========
-    actual open class Builder {
-        actual open fun build(): Permissions {
-            return Permissions()
-        }
->>>>>>>> origin/master:permissions/src/jsMain/kotlin/Permissions.kt
-=======
->>>>>>> origin/master
     }
 
     override fun onDestroy() {

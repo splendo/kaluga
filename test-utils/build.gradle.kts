@@ -17,6 +17,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
