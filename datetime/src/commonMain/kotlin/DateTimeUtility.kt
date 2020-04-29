@@ -2,15 +2,21 @@ package com.splendo.kaluga.datetime
 
 import kotlin.native.concurrent.ThreadLocal
 
+interface DateTimeUtility {
+    fun configure(transformUtility: DateTimeTransformUtility, formatterFactory: DateTimeFormatterFactory)
+    var transform: DateTimeTransformUtility
+    var formatterFactory: DateTimeFormatterFactory
+}
+
 @ThreadLocal
-object DateTimeUtility {
-    fun configure(transformUtility: DateTimeTransformUtility, formatterFactory: DateTimeFormatterFactory) {
+object StandardDateTimeUtility : DateTimeUtility {
+    override fun configure(transformUtility: DateTimeTransformUtility, formatterFactory: DateTimeFormatterFactory) {
         this.transform = transformUtility
         this.formatterFactory = formatterFactory
     }
 
-    lateinit var transform: DateTimeTransformUtility
-    lateinit var formatterFactory: DateTimeFormatterFactory
+    override lateinit var transform: DateTimeTransformUtility
+    override lateinit var formatterFactory: DateTimeFormatterFactory
 }
 
 interface DateTimeTransformUtility {
@@ -26,4 +32,5 @@ interface DateTimeFormatterFactory {
     fun defaultTimeZoneOffset(): Int
 }
 
-expect fun getTimeMillis(): Long
+fun getUtility(): DateTimeUtility =
+    StandardDateTimeUtility

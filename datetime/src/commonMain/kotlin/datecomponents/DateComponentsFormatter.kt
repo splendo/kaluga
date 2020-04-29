@@ -1,8 +1,8 @@
 package com.splendo.kaluga.datetime.datecomponents
 
 import com.splendo.kaluga.datetime.DateTime
-import com.splendo.kaluga.datetime.DateTimeUtility
 import com.splendo.kaluga.datetime.dayComponent
+import com.splendo.kaluga.datetime.getUtility
 import com.splendo.kaluga.datetime.monthComponent
 import com.splendo.kaluga.datetime.yearComponent
 import com.splendo.kaluga.formatted.Formatter
@@ -44,4 +44,4 @@ private class YearFormatter(override val dateTimeFormatter: Formatter<DateTime> 
 }
 
 private fun getFormatter(format: String): Formatter<DateTime> =
-        DateTimeUtility.formatterFactory.getFormatter(format)
+    getUtility().formatterFactory.getFormatter(format)

@@ -31,10 +31,10 @@ data class DateTimeComponents(
 fun DateTimeComponents.month0() = month - 1
 
 fun DateTimeComponents.localDateTime(): DateTime =
-        DateTimeUtility.transform.dateTimeFromLocalComponents(this)
+    getUtility().transform.dateTimeFromLocalComponents(this)
 
 fun DateTimeComponents.gmtDateTime(): DateTime =
-        DateTimeUtility.transform.dateTimeFromGMTComponents(this)
+    getUtility().transform.dateTimeFromGMTComponents(this)
 
 fun DateTimeComponents.yearDateComponent(): Year = Year(year)
 

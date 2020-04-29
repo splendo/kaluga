@@ -25,7 +25,7 @@ fun DateTime.millisUntil(dateTime: DateTime): Long =
 // components
 
 fun DateTime.components(): DateTimeComponents =
-        DateTimeUtility.transform.componentsFromLocalDateTime(this)
+        getUtility().transform.componentsFromLocalDateTime(this)
 
 fun DateTime.yearComponent(): Year {
     val components = this.components()
