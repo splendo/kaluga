@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.hud
 
-class ModifiersScopeTests {}
+class ModifiersScopeTests

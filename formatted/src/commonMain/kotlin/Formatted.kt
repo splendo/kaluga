@@ -13,7 +13,7 @@ package com.splendo.kaluga.formatted
  * @property formatter [Formatter] which should be used to represent [value]
  * @property modifier Optional property can be used if there are some limitation for value which should be formatted. For instance we can show 0 length if it is negative
  */
-interface Formatted <T, Self: Formatted<T, Self>> {
+interface Formatted <T, Self : Formatted<T, Self>> {
     val value: T?
     val formatter: Formatter<T>
     val modifier: Modifier<T>?
@@ -44,4 +44,3 @@ interface Formatted <T, Self: Formatted<T, Self>> {
         modifier = this.modifier
     )
 }
-

@@ -18,4 +18,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class FormattersScopeTests {}
+class FormattersScopeTests

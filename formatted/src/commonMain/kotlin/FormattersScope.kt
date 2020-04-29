@@ -11,31 +11,31 @@ package com.splendo.kaluga.formatted
  * @property primary primary formatter
  * @property secondary list of secondary formatters
  */
-class FormattersScope<T: Any>(private val primary: Formatter<T>, private val secondary: List<Formatter<T>>) :Formatter<T> {
+class FormattersScope<T : Any>(private val primary: Formatter<T>, private val secondary: List<Formatter<T>>) : Formatter<T> {
     /**
      * Converts string value to the value of type T
      *
      * First tries to parse string using primary formatter, if it throws an error, will try to apply any of secondary formatters until it finds the correct one.
      * Exception [FormattersScopeException] will be thrown if no suitable formatters will be found.
      */
-    override fun value(string: String): T
-            = value(primary, string) ?:
-        secondary.mapNotNull { formatter ->
+    override fun value(string: String): T =
+            value(primary, string)
+        ?: secondary.mapNotNull { formatter ->
             value(formatter, string)
-    }.firstOrNull() ?:
-            throw FormattersScopeException()
+    }.firstOrNull()
+            ?: throw FormattersScopeException()
 
-    private fun value(formatter: Formatter<T>, string: String): T?
-        = try { formatter.value(string) } catch(e: Exception) { null }
+    private fun value(formatter: Formatter<T>, string: String): T? =
+        try { formatter.value(string) } catch (e: Exception) { null }
 
     /**
      * Converts value of type T to string using primary formatter
      */
-    override fun string(value: T): String
-            = primary.string(value)
+    override fun string(value: T): String =
+            primary.string(value)
 }
 
 /**
  * Exception will be thrown by Formatters scope if no suitable formatter was found
  */
-class FormattersScopeException(message: String = "No suitable formatter was found"):  Exception(message)
+class FormattersScopeException(message: String = "No suitable formatter was found") : Exception(message)
