@@ -1,11 +1,10 @@
 package com.splendo.kaluga.datetime
 
-import com.splendo.kaluga.datetime.getTimeMillis
 import com.splendo.kaluga.datetime.datecomponents.Day
 import com.splendo.kaluga.datetime.datecomponents.Month
 import com.splendo.kaluga.datetime.datecomponents.Year
 
-data class DateTime (
+data class DateTime(
     val timestamp: Double
 ) {
     companion object {
@@ -15,25 +14,23 @@ data class DateTime (
         }
     }
 
-    override fun equals(other: Any?): Boolean
-            = if( other is DateTime) timestamp == other.timestamp
+    override fun equals(other: Any?): Boolean =
+            if (other is DateTime) timestamp == other.timestamp
             else false
 }
 
-fun DateTime.millisUntil(dateTime: DateTime): Long
-        = (dateTime.timestamp - timestamp).toLong()
+fun DateTime.millisUntil(dateTime: DateTime): Long =
+        (dateTime.timestamp - timestamp).toLong()
 
 // components
 
-
-fun DateTime.components(): DateTimeComponents
-        = DateTimeUtility.transform.componentsFromLocalDateTime(this)
+fun DateTime.components(): DateTimeComponents =
+        DateTimeUtility.transform.componentsFromLocalDateTime(this)
 
 fun DateTime.yearComponent(): Year {
     val components = this.components()
     return Year(components.year)
 }
-
 
 fun DateTime.monthComponent(): Month {
     val components = this.components()

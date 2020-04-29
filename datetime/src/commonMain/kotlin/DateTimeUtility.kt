@@ -25,3 +25,5 @@ interface DateTimeFormatterFactory {
     fun getFormatter(format: String, defaultTimeZoneOffset: Int = defaultTimeZoneOffset()): DateTimeFormatter
     fun defaultTimeZoneOffset(): Int
 }
+
+expect fun getTimeMillis(): Long

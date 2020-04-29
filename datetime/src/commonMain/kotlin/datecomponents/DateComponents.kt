@@ -20,26 +20,26 @@ sealed class DateComponents {
             )
     }
 
-    fun intYear(): Int?
-            = when(this) {
+    fun intYear(): Int? =
+            when (this) {
         is Year -> this.year
         is Month -> this.year
         is Day -> this.year
         is DateComponentsUndefined -> null
     }
 
-    fun intMonth(): Int?
-            = when(this) {
+    fun intMonth(): Int? =
+            when (this) {
         is Year -> null
         is Month -> this.month
         is Day -> this.month
         is DateComponentsUndefined -> null
     }
 
-    fun intMonth0(): Int? = intMonth()?.let { it -1 }
+    fun intMonth0(): Int? = intMonth()?.let { it - 1 }
 
-    fun intDay(): Int?
-            = when(this) {
+    fun intDay(): Int? =
+            when (this) {
         is Year -> null
         is Month -> null
         is Day -> this.day
@@ -47,7 +47,7 @@ sealed class DateComponents {
     }
 }
 
-data class Year(val year: Int): DateComponents() {
+data class Year(val year: Int) : DateComponents() {
     override fun dateTime(): DateTime? {
         val components =
             DateTimeComponents(
@@ -61,7 +61,7 @@ data class Year(val year: Int): DateComponents() {
     }
 }
 
-data class Month(val year: Int, val month: Int): DateComponents() {
+data class Month(val year: Int, val month: Int) : DateComponents() {
     override fun dateTime(): DateTime? {
         val components =
             DateTimeComponents(
@@ -75,7 +75,7 @@ data class Month(val year: Int, val month: Int): DateComponents() {
     }
 }
 
-data class Day(val year: Int, val month: Int, val day: Int): DateComponents() {
+data class Day(val year: Int, val month: Int, val day: Int) : DateComponents() {
     override fun dateTime(): DateTime? {
         val components =
             DateTimeComponents(
@@ -89,14 +89,14 @@ data class Day(val year: Int, val month: Int, val day: Int): DateComponents() {
     }
 }
 
-data class DateComponentsUndefined(val components: DateComponents): DateComponents() {
+data class DateComponentsUndefined(val components: DateComponents) : DateComponents() {
     override fun dateTime(): DateTime? = null
 }
 
-fun DateComponents.new(dateTime: DateTime): DateComponents
-        = when(this) {
+fun DateComponents.new(dateTime: DateTime): DateComponents =
+        when (this) {
         is Year -> dateTime.components().yearDateComponent()
         is Month -> dateTime.components().monthDateComponent()
         is Day -> dateTime.components().dayDateComponent()
-        is DateComponentsUndefined ->  components.new(dateTime)
+        is DateComponentsUndefined -> components.new(dateTime)
 }

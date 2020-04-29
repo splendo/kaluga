@@ -10,14 +10,15 @@ import com.splendo.kaluga.formatted.Modifier
     If we need to create DateTime object with the same formatting and rounding we can use method new of this class
 */
 
-data class FormattedDateTime(override val value: DateTime?,
-                             override val formatter: Formatter<DateTime>,
-                             override val modifier: Modifier<DateTime>? = null
-): Formatted<DateTime, FormattedDateTime> {
+data class FormattedDateTime(
+    override val value: DateTime?,
+    override val formatter: Formatter<DateTime>,
+    override val modifier: Modifier<DateTime>? = null
+) : Formatted<DateTime, FormattedDateTime> {
     override fun spawn(
         value: DateTime?,
         formatter: Formatter<DateTime>,
         modifier: Modifier<DateTime>?
-    ): FormattedDateTime
-        = FormattedDateTime(value, formatter, modifier)
+    ): FormattedDateTime =
+        FormattedDateTime(value, formatter, modifier)
 }
