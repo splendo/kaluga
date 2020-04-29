@@ -2,6 +2,9 @@ package com.splendo.kaluga.datetime.datecomponents
 
 import com.splendo.kaluga.datetime.DateTime
 import com.splendo.kaluga.datetime.DateTimeUtility
+import com.splendo.kaluga.datetime.dayComponent
+import com.splendo.kaluga.datetime.monthComponent
+import com.splendo.kaluga.datetime.yearComponent
 import com.splendo.kaluga.formatted.Formatter
 
 interface DateComponentsFormatter : Formatter<DateComponents> {
@@ -32,12 +35,12 @@ private class DayFormatter(override val dateTimeFormatter: Formatter<DateTime> =
 
 private class MonthFormatter(override val dateTimeFormatter: Formatter<DateTime> = getFormatter("MMMM yyyy")) : DateComponentsFormatter {
     override fun value(string: String): DateComponents =
-            dateTimeFormatter.value(string).dayComponent()
+            dateTimeFormatter.value(string).monthComponent()
 }
 
 private class YearFormatter(override val dateTimeFormatter: Formatter<DateTime> = getFormatter("yyyy")) : DateComponentsFormatter {
     override fun value(string: String): DateComponents =
-            dateTimeFormatter.value(string).dayComponent()
+            dateTimeFormatter.value(string).yearComponent()
 }
 
 private fun getFormatter(format: String): Formatter<DateTime> =
