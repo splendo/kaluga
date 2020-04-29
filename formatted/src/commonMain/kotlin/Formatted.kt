@@ -1,4 +1,4 @@
-package ccom.splendo.kaluga.formatted
+package com.splendo.kaluga.formatted
 
 /**
  * Generic formatted type

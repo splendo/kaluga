@@ -1,4 +1,4 @@
-package com.splendo.kaluga.datetime
+package com.splendo.kaluga.hud
 
 /*
 
@@ -18,4 +18,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-interface DateTime {}
+class FormattersScopeTests {}
