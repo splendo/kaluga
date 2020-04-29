@@ -49,9 +49,10 @@ kotlin {
 
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
-                implementation(project(":formatted", ""))
+                implementation(project(":datetime", ""))
                 implementation("co.touchlab:stately-common:${ext["stately_version"]}")
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                implementation("com.soywiz.korlibs.klock:klock:1.10.3")
             }
         }
     }
