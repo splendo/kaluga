@@ -14,7 +14,7 @@ fun UiDevice.assertTextDisappears(text: String) {
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
-class TestInstrumentedTest {
+class ExampleInstrumentedTest {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
