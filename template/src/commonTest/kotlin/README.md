@@ -8,5 +8,5 @@ To run all common tests:
 5. In a field "Tasks" enter cleanAllTests allTests.
 6. Press "Ok" or "Apply". Now you can choose and run configuration.
 
-Please note that this scheme will run all gradle test tasks including iOS. Use [test filtering](https://docs.gradle.org/current/userguide/java_testing.html#test_filtering)   if you want tu run some specific tests.   
+Please note that this scheme will run all gradle test tasks including iOS. Use [test filtering](https://docs.gradle.org/current/userguide/java_testing.html#test_filtering) if you want to run some specific tests.   
 Use cleanJvmTest jvmTest if you want to run only JVM tests.
