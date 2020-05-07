@@ -1,3 +1,4 @@
+package com.splendo.kaluga.template
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -15,8 +16,6 @@
 
  */
 
-package kotlin
-
-class SomeClass {
-    fun test() = "This is some iOS class"
+class  ExampleClass {
+    val someProperty: Int? = 0
 }

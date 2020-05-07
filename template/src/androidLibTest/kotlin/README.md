@@ -17,7 +17,7 @@ class ExampleTest {
 
 ```
 
-To run all unit tests:
+To run all android unit tests:
 1. Run > Edit Configurations. The Run/Debug Configurations dialog appears.
 2. Press "+" button and select "Android JUnit".
 3. In the right part of dialog enter name.

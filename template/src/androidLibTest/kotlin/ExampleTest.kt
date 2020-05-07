@@ -1,3 +1,8 @@
+package com.splendo.kaluga.template
+
+import org.junit.Test
+import kotlin.test.assertNotNull
+
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -15,8 +20,12 @@
 
  */
 
-package kotlin
+class ExampleTest {
 
-class SomeClass {
-    fun test() = "This is some iOS class"
+    val instance = ExampleClass()
+
+    @Test
+    fun exampleTest() {
+        assertNotNull(instance.someProperty)
+    }
 }

@@ -14,9 +14,15 @@
     limitations under the License.
 
  */
+import kotlin.test.Test
+import kotlin.test.assertNotNull
 
-package kotlin
+class SampleIOSTest {
 
-class SomeClass {
-    fun test() = "This is some iOS class"
+    val instance = SomeClass()
+
+    @Test
+    fun exampleTest() {
+        assertNotNull(instance.test())
+    }
 }

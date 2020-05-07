@@ -15,8 +15,6 @@
 
  */
 
-package kotlin
-
-class SomeClass {
-    fun test() = "This is some iOS class"
+class CommonClass {
+    fun test() = "This is common class"
 }

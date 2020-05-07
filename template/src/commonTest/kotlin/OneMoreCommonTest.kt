@@ -1,3 +1,6 @@
+import kotlin.test.Test
+import kotlin.test.assertNotNull
+
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -15,8 +18,12 @@
 
  */
 
-package kotlin
+class OneMoreCommonTest {
 
-class SomeClass {
-    fun test() = "This is some iOS class"
+    val instance = CommonClass()
+
+    @Test
+    fun exampleTest() {
+        assertNotNull(instance.test())
+    }
 }
