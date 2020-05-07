@@ -1,5 +1,7 @@
 package com.splendo.kaluga.formatted
 
+import kotlin.test.Test
+
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -19,5 +21,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 class FormattedTests {
-    //TODO: Test new
+
+    @Test
+    fun `new() calls spawn`() {}
+
+    @Test
+    fun `new() copies modifier`() {}
+
+    @Test
+    fun `new() copies formatter`() {}
+
+    @Test
+    fun `new() applies modifier for value`() {}
 }
