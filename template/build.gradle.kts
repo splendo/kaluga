@@ -19,38 +19,28 @@ repositories {
 }
 
 dependencies {
-    implementation("androidx.fragment:fragment:1.1.0")
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    testImplementation("org.mockito:mockito-core:2.28.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.1")
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
-    androidTestImplementation("androidx.fragment:fragment-ktx:1.1.0")
-}
+    /* Uncomment this line if you are using mockito
+     testImplementation("org.mockito:mockito-core:2.28.2")
+    */
 
-android {
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
+    /* Uncomment these lines if you are using fragments
+    implementation("androidx.fragment:fragment:1.1.0")
+    androidTestImplementation("androidx.fragment:fragment-ktx:1.1.0")
+    */
+
 }
 
 kotlin {
-    targets {
-        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
-
     sourceSets {
         getByName("commonMain") {
             dependencies {
-
-                val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
+
+                /* Uncomment these lines if you want to use touchlab stately for concurrency
+                val ext = (gradle as ExtensionAware).extra
                 implementation("co.touchlab:stately-common:${ext["stately_version"]}")
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                */
             }
         }
     }
