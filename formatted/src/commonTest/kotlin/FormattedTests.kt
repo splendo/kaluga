@@ -1,4 +1,4 @@
-package com.splendo.kaluga.datetime
+package com.splendo.kaluga.formatted
 
 /*
 
@@ -18,4 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class FormattedTests
+class FormattedTests {
+    //TODO: Test new
+}

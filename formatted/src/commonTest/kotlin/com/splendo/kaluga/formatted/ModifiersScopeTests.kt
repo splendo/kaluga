@@ -1,3 +1,5 @@
+package com.splendo.kaluga.formatted
+
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -14,7 +16,5 @@
     limitations under the License.
 
  */
-
-package com.splendo.kaluga.hud
 
 class ModifiersScopeTests

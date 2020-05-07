@@ -1,4 +1,4 @@
-package com.splendo.kaluga.hud
+package com.splendo.kaluga.formatted
 
 /*
 
