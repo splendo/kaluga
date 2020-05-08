@@ -11,7 +11,7 @@ This project includes all common dependencies and settings for kaluga subproject
 	And add in the end of the file:
 	`include(":<your subproject>")`.
 6. Add your source code. For more derails check README.md in source root and each platform folder.
-7. Remove this markdown file from your subproject.
+7. Remove template README files from your subproject when you don't need them anymore.
 8. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
 9. Add documentation to your code if needed.
 10. Add an example of usage to the example project.
