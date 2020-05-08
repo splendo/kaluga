@@ -27,8 +27,4 @@ class TestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 }
