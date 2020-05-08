@@ -13,21 +13,12 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    google()
-    mavenCentral()
-}
-
 dependencies {
-    /* Uncomment this line if you are using mockito
-     testImplementation("org.mockito:mockito-core:2.28.2")
-    */
-
     /* Uncomment these lines if you are using fragments
-    implementation("androidx.fragment:fragment:1.1.0")
-    androidTestImplementation("androidx.fragment:fragment-ktx:1.1.0")
-    */
-
+    val ext = (gradle as ExtensionAware).extra
+    implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
+    androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
+*/
 }
 
 kotlin {
