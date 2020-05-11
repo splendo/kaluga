@@ -17,7 +17,7 @@ dependencies {
     /* Uncomment these lines if you are using fragments
     val ext = (gradle as ExtensionAware).extra
     androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
-*/
+    */
 }
 
 kotlin {

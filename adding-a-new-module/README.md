@@ -1,7 +1,7 @@
 ## Template 
 This **project** includes all common dependencies and settings for kaluga module.
 
-#Steps for adding new module
+# Steps for adding a new module
 1. CopyPaste template module, select name for your module (we recommend to use only lowercase characters).
 2. `<your module>src/androidLibMain/AndroidManifest.xml` change `com.splendo.kaluga.template` to your module package name.	
 3. `<your module>src/androidLibAndroidTests/AndroidManifest.xml` change `com.splendo.kaluga.template` to your module package name.
