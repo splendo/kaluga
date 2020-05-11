@@ -22,9 +22,4 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 class TestActivity : AppCompatActivity() {
-    // val viewModel: <Concrete ViewModel here> by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 }
