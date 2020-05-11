@@ -26,7 +26,6 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation "androidx.test:core:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test:core-ktx:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
