@@ -11,10 +11,11 @@ This **project** includes all common dependencies and settings for kaluga module
 	And add in the end of the file:
 	`include(":<your module>")`.
 6. Add your source code.
-    * <a name="commonMain-sources">**commonMain**</a> sources should include
-    * <a name="iosMain-sources">**iosMain**</a> sources should include
-    * <a name="jvmMain-sources">**jvmMain**</a> sources should include
-    * <a name="jsMain-sources">**jvmMain**</a> sources should include
+    * <a name="commonMain-sources">**commonMain**</a> - non-platform-specific implementation and `expect` declaration.
+    * <a name="iosMain-sources">**iosMain**</a> - iOS specific implementation.
+    * <a name="androidLibMain-sources">**androidLibMain**</a> - Android specific implementation.
+    * <a name="jvmMain-sources">**jvmMain**</a> - jvm specific implementation.
+    * <a name="jsMain-sources">**jvmMain**</a> - js specific implementation.
 7. Remove template README files from your module when you don't need them anymore.
 8. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
 9. Add documentation to your code if needed.
