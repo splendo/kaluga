@@ -16,7 +16,6 @@ version = ext["library_version"]!!
 dependencies {
     /* Uncomment these lines if you are using fragments
     val ext = (gradle as ExtensionAware).extra
-    implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
     androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
 */
 }
