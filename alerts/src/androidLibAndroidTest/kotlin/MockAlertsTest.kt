@@ -36,7 +36,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class MockAlertsTest {
 
     @get:Rule
-    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java)
+    var activityRule = ActivityTestRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
