@@ -29,6 +29,11 @@ class Disposable(private val onDispose: () -> Unit) {
 
 class DisposeBag() {
     private val disposables = mutableListOf<Disposable>()
+    private val nestedBags = mutableListOf<DisposeBag>()
+
+    fun add(disposeBag: DisposeBag) {
+        nestedBags.add(disposeBag)
+    }
 
     fun add(disposable: Disposable) {
         disposables.add(disposable)
@@ -37,6 +42,8 @@ class DisposeBag() {
     fun dispose() {
         disposables.forEach { it.dispose() }
         disposables.clear()
+        nestedBags.forEach { it.dispose() }
+        nestedBags.clear()
     }
 
 }

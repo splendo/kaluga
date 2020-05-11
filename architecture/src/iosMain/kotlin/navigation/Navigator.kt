@@ -22,20 +22,7 @@ import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
-import platform.UIKit.NSLayoutConstraint
-import platform.UIKit.UIApplication
-import platform.UIKit.UIApplicationOpenSettingsURLString
-import platform.UIKit.UIDocumentBrowserViewController
-import platform.UIKit.UIImagePickerController
-import platform.UIKit.UIViewController
-import platform.UIKit.addChildViewController
-import platform.UIKit.addSubview
-import platform.UIKit.childViewControllers
-import platform.UIKit.didMoveToParentViewController
-import platform.UIKit.navigationController
-import platform.UIKit.removeFromParentViewController
-import platform.UIKit.removeFromSuperview
-import platform.UIKit.willMoveToParentViewController
+import platform.UIKit.*
 
 actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
 
@@ -106,9 +93,14 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
         }
 
         val child = nestedSpec.nested()
+        child.view.translatesAutoresizingMaskIntoConstraints = false
         parent.addChildViewController(child)
         nestedSpec.containerView.addSubview(child.view)
-        NSLayoutConstraint.activateConstraints(nestedSpec.constraints(child.view, nestedSpec.containerView))
+        val constraints = nestedSpec.constraints?.invoke(child.view, nestedSpec.containerView) ?: listOf(
+            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute ->
+            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
+        }
+        constraints.forEach { nestedSpec.containerView.addConstraint(it) }
         child.didMoveToParentViewController(parent)
     }
 

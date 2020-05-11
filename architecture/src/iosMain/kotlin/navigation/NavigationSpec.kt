@@ -69,7 +69,7 @@ sealed class NavigationSpec {
         val type: Type = Type.Add,
         val containerView: UIView,
         val nested: () -> UIViewController,
-        val constraints: (UIView, UIView) -> List<NSLayoutConstraint>) : NavigationSpec() {
+        val constraints: ((UIView, UIView) -> List<NSLayoutConstraint>)? = null) : NavigationSpec() {
         sealed class Type {
             object Add : Type()
             object Replace : Type()
