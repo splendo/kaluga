@@ -143,7 +143,7 @@ sealed class NavigationSpec {
 
     data class Email(
         val emailSettings: EmailSettings,
-        val delegate: MFMailComposeViewControllerDelegateProtocol,
+        val delegate: MFMailComposeViewControllerDelegateProtocol? = null,
         val animated: Boolean = false,
         val complete: (() -> Unit)? = null) : NavigationSpec() {
 

@@ -11,15 +11,25 @@ import KotlinNativeFramework
 
 class ExampleViewController : UIViewController {
     
+    struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let featuresList = "FeaturesList"
+        static let infoView = "InfoViewController"
+    }
+    
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var bottomView: UIStackView!
     
-    let disposeBag = ArchitectureDisposeBag()
+    lazy var featuresListController = Const.storyboard.instantiateViewController(withIdentifier: Const.featuresList) as! FeaturesListViewController
+    lazy var infoViewController = Const.storyboard.instantiateViewController(withIdentifier: Const.infoView) as! InfoViewController
     
     lazy var viewModel: SharedExampleViewModel = KNArchitectureFramework().createExampleViewModel(parent: self,
                                                                                                   containerView: containerView,
-                                                                                                  featuresList: { UIViewController() },
-                                                                                                  info:  { UIViewController() })
+                                                                                                  featuresList: { self.featuresListController },
+                                                                                                  info:  { self.infoViewController })
+    
+    
+    let disposeBag = ArchitectureDisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
