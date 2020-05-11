@@ -1,5 +1,5 @@
 ## Template 
-This project includes all common dependencies and settings for kaluga module.
+This **project** includes all common dependencies and settings for kaluga module.
 
 #Steps for adding new module
 1. CopyPaste template module, select name for your module (we recommend to use only lowercase characters).
@@ -10,7 +10,11 @@ This project includes all common dependencies and settings for kaluga module.
 	go to `kaluga/settings.gradle/kts`
 	And add in the end of the file:
 	`include(":<your module>")`.
-6. Add your source code. For more derails check README.md in source root and each platform folder.
+6. Add your source code.
+    * <a name="commonMain-sources">**commonMain**</a> sources should include
+    * <a name="iosMain-sources">**iosMain**</a> sources should include
+    * <a name="jvmMain-sources">**jvmMain**</a> sources should include
+    * <a name="jsMain-sources">**jvmMain**</a> sources should include
 7. Remove template README files from your module when you don't need them anymore.
 8. Don't forget to update copyright if files were imported from another project. To do that use **Code > Update Copyright...**.
 9. Add documentation to your code if needed.
