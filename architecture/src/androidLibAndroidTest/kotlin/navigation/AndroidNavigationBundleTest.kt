@@ -29,7 +29,7 @@ class AndroidNavigationBundleTest {
         val nestedString = "NestedString"
         val nestedSpec = NestedSpec()
         val nestedBundle: NavigationBundle<NestedSpecRow<*>> = nestedSpec.toBundle { entry ->
-            when(entry) {
+            when (entry) {
                 is NestedSpecRow.StringSpecRow -> entry.associatedType.convertValue(nestedString)
             }
         }
@@ -63,4 +63,3 @@ class AndroidNavigationBundleTest {
     }
 
 }
-
