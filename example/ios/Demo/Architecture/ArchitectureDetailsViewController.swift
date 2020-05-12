@@ -53,6 +53,7 @@ class ArchitectureDetailsViewController: UIViewController {
         super.viewDidDisappear(animated)
         
         viewModel.didPause()
+        disposeBag.dispose()
     }
     
     @objc @IBAction func onInversePressed(sender: Any?) {
