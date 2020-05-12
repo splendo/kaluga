@@ -7,6 +7,9 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
@@ -66,6 +69,28 @@ class KNArchitectureFramework {
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
             })
+    }
+
+    fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
+        return ArchitectureInputViewModel(
+            Navigator(parent) { action ->
+                NavigationSpec.Present(present = {
+                    val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
+                    val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
+                    createDetailsViewController(name, number)
+                })
+            }
+        )
+    }
+
+    fun createArchitectureDetailsViewModel(parent: UIViewController, name: String, number: Int, onDismiss: (String, Int) -> Unit): ArchitectureDetailsViewModel {
+        return ArchitectureDetailsViewModel(name, number, Navigator(parent) { action ->
+            NavigationSpec.Dismiss(complete = {
+                val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
+                val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
+                onDismiss(name, number)
+            })
+        })
     }
 
 }
