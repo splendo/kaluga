@@ -178,16 +178,12 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
     override val isVisible get() = loadingDialog.isVisible
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        MainScope().launch {
-            loadingDialog.presentCompletionBlock = completion
-            dialogState.value = DialogState.Visible
-        }
+        loadingDialog.presentCompletionBlock = completion
+        dialogState.postValue(DialogState.Visible)
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        MainScope().launch {
-            loadingDialog.dismissCompletionBlock = completion
-            dialogState.value = DialogState.Gone
-        }
+        loadingDialog.dismissCompletionBlock = completion
+        dialogState.postValue(DialogState.Gone)
     }
 }

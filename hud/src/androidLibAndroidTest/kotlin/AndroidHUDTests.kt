@@ -153,14 +153,4 @@ class AndroidHUDTests {
         device.assertTextDisappears(LOADING)
         assertFalse(indicator.isVisible)
     }
-
-    @Test
-    fun testShowAndDismissInstantly() {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }
-        indicator.present()
-        indicator.dismiss()
-        assertFalse(indicator.isVisible)
-    }
 }
