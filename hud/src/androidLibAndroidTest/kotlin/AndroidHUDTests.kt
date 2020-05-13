@@ -7,6 +7,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlinx.coroutines.MainScope
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -160,7 +161,17 @@ class AndroidHUDTests {
             setTitle(LOADING)
         }
         indicator.present()
+        Thread.sleep(200)
+
+        // keep the main thread busy
+        MainScope().launch {
+            @Suppress("BlockingMethodInNonBlockingContext") // deliberate block for test
+            Thread.sleep(1000)
+        }
+        Thread.sleep(200)
         indicator.dismiss()
+
+        // this will fail because the method is asynchronous, and the mainscope is busy
         assertFalse(indicator.isVisible)
     }
 }
