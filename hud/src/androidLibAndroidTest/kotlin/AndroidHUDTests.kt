@@ -7,6 +7,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlinx.coroutines.MainScope
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
