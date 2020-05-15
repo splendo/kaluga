@@ -4,9 +4,9 @@ enableFeaturePreview("GRADLE_METADATA")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlin_version
-    kotlinx_coroutines_version = '1.3.4'
-    stately_version = '1.0.2'
-    stately_isolate_version = '1.0.2-a4'
+    kotlinx_coroutines_version = '1.3.6'
+    stately_version = '1.0.3'
+    stately_isolate_version = '1.0.3-a4'
     library_version = '0.0.5'
     android_min_sdk_version = 21
     android_target_sdk_version = 29
