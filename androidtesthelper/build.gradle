@@ -53,6 +53,11 @@ android {
         exclude 'META-INF/LGPL2.1'
     }
 
+    lintOptions {
+        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
+    }
+
+
 }
 
 apply from: "../gradle/android_dependencies.gradle"
