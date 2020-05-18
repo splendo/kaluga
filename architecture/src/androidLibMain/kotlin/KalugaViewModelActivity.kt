@@ -18,7 +18,6 @@
 package com.splendo.kaluga.architecture
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
@@ -27,23 +26,9 @@ abstract class KalugaViewModelActivity<VM : BaseViewModel>(@LayoutRes layout: In
 
     abstract val viewModel: VM
 
-    private lateinit var viewModelWrapper: KalugaViewModelWrapper<VM>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModelWrapper = KalugaViewModelWrapper(viewModel)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModelWrapper.onResume(this, supportFragmentManager)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        viewModelWrapper.onPause()
+        KalugaViewModelLifecycleObserver.bind(viewModel, this)
     }
 
 }

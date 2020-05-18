@@ -33,15 +33,13 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
     private val _tab  = BaseFlowable<Tab>().apply { runBlocking{set(Tab.FeatureList)} }
     val tab = _tab.toSubject(coroutineScope)
 
-    override val onResume: (CoroutineScope) -> Unit
-        get() = {
-            super.onResume
-
-            it.launch(MainQueueDispatcher) { _tab.flow().distinctUntilChanged().collect { currentTab ->
-                navigator.navigate(when (currentTab) {
-                    is Tab.FeatureList -> ExampleTabNavigation.FeatureList
-                    is Tab.Info -> ExampleTabNavigation.Info
-                })
-            } }
-        }
+    override fun onResume(scope: CoroutineScope) {
+        super.onResume(scope)
+        scope.launch(MainQueueDispatcher) { _tab.flow().distinctUntilChanged().collect { currentTab ->
+            navigator.navigate(when (currentTab) {
+                is Tab.FeatureList -> ExampleTabNavigation.FeatureList
+                is Tab.Info -> ExampleTabNavigation.Info
+            })
+        } }
+    }
 }

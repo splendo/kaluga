@@ -18,14 +18,33 @@
 package com.splendo.kaluga.architecture
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
-class KalugaViewModelWrapper<VM : BaseViewModel>(val viewModel: VM) {
+class KalugaViewModelLifecycleObserver<VM : BaseViewModel> private constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
-    fun onResume(activity: Activity? = null, fragmentManager: FragmentManager? = null) {
+    companion object {
+        fun <VM : BaseViewModel> bind(viewModel: VM, to: AppCompatActivity) {
+            to.lifecycle.addObserver(KalugaViewModelLifecycleObserver(viewModel, to, to.supportFragmentManager))
+        }
+
+        fun <VM : BaseViewModel> bind(viewModel: VM, to: Fragment): Boolean {
+            val activity = to.activity ?: return false
+            val fragmentManager = to.fragmentManager ?: return false
+            to.lifecycle.addObserver(KalugaViewModelLifecycleObserver(viewModel, activity, fragmentManager))
+            return true
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() {
         if (viewModel is NavigatingViewModel<*>) {
             val navigator: Navigator<*> = viewModel.navigator
             navigator.subscribe(activity, fragmentManager)
@@ -33,6 +52,7 @@ class KalugaViewModelWrapper<VM : BaseViewModel>(val viewModel: VM) {
         viewModel.didResume()
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         if (viewModel is NavigatingViewModel<*>) {
             val navigator: Navigator<*> = viewModel.navigator

@@ -26,24 +26,10 @@ abstract class KalugaViewModelFragment<VM : BaseViewModel>(@LayoutRes layout: In
 
     abstract val viewModel: VM
 
-    lateinit var viewModelWrapper: KalugaViewModelWrapper<VM>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModelWrapper = KalugaViewModelWrapper(viewModel)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        viewModelWrapper.onResume(activity, fragmentManager)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        viewModelWrapper.onPause()
+        KalugaViewModelLifecycleObserver.bind(viewModel, this)
     }
 
 }
