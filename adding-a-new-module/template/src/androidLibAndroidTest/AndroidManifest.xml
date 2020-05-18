@@ -1,0 +1,6 @@
+<manifest package="com.splendo.kaluga.template"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:theme="@style/Theme.AppCompat">
+        <activity android:name=".TestActivity"/>
+    </application>
+</manifest>
