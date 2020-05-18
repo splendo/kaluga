@@ -33,16 +33,17 @@ open class BaseViewModel : ViewModel(){
     private val resumedJobs = SupervisorJob()
 
     fun didResume() {
-        onResume.invoke(CoroutineScope(coroutineScope.coroutineContext + resumedJobs))
+        onResume(CoroutineScope(coroutineScope.coroutineContext + resumedJobs))
     }
 
-    protected open val onResume: (CoroutineScope) -> Unit = {}
+    protected open fun onResume(scope: CoroutineScope) {}
 
     fun didPause() {
+        onPause()
         resumedJobs.cancelChildren()
     }
 
-    protected open val onPause: () -> Unit = {}
+    protected open fun onPause() {}
 
 }
 

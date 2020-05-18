@@ -97,8 +97,8 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
         parent.addChildViewController(child)
         nestedSpec.containerView.addSubview(child.view)
         val constraints = nestedSpec.constraints?.invoke(child.view, nestedSpec.containerView) ?: listOf(
-            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute ->
-            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0, 0.0)
+            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute ->CGFloat
+            NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }
         child.didMoveToParentViewController(parent)
