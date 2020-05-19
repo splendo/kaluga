@@ -3,7 +3,7 @@ package com.splendo.kaluga.example
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import com.google.android.material.tabs.TabLayout
-import com.splendo.kaluga.architecture.KalugaViewModelActivity
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import kotlinx.android.synthetic.main.activity_example.*
 import org.koin.androidx.viewmodel.ext.android.viewModel

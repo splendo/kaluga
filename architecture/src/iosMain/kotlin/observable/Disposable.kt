@@ -17,28 +17,52 @@
 
 package com.splendo.kaluga.architecture.observable
 
+/**
+ * Reference to an object that should be disposed in time
+ * @param onDispose Function to call when disposing the object
+ */
 class Disposable(private val onDispose: () -> Unit) {
+
+    /**
+     * Disposes the associated object
+     */
     fun dispose() {
         onDispose.invoke()
     }
 
+    /**
+     * Adds this disposable to a [DisposeBag]
+     */
     fun putIn(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }
 
+/**
+ * Container for multiple [Disposable]. Allows nested [DisposeBag]
+ */
 class DisposeBag() {
     private val disposables = mutableListOf<Disposable>()
     private val nestedBags = mutableListOf<DisposeBag>()
 
+    /**
+     * Adds a nested [DisposeBag]
+     */
     fun add(disposeBag: DisposeBag) {
         nestedBags.add(disposeBag)
     }
 
+    /**
+     * Adds a [Disposable] to this [DisposeBag]
+     */
     fun add(disposable: Disposable) {
         disposables.add(disposable)
     }
 
+    /**
+     * Disposes all [Disposable]s and nested [DisposeBag]s added to this [DisposeBag].
+     * Added elements can only be disposed once
+     */
     fun dispose() {
         disposables.forEach { it.dispose() }
         disposables.clear()

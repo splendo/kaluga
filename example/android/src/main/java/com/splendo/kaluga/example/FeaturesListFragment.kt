@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.architecture.KalugaViewModelFragment
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import kotlinx.android.synthetic.main.fragment_features_list.*

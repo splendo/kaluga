@@ -17,8 +17,19 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+/**
+ * Action that describes the intent to navigate
+ * @param bundle The [NavigationBundle] containing data used to configure navigation
+ */
 abstract class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
 
+/**
+ * Class that can trigger a given [NavigationAction]
+ */
 expect class Navigator<A: NavigationAction<*>> {
+    /**
+     * Triggers a given [NavigationAction]
+     * @param action The [NavigationAction] to trigger
+     */
     fun navigate(action: A)
 }

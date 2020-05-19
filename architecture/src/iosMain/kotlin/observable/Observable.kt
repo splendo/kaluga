@@ -37,6 +37,11 @@ actual abstract class Observable<T>: ReadOnlyProperty<Any?, ObservableResult<T>>
         observers.forEach { it.invoke(result.value) }
     }
 
+    /**
+     * Adds an observing function to the Observable to be notified on each change to the observable
+     * @param onNext Function to be called each time the value of the Observable changes
+     * @return [Disposable] that removes the observing function when disposed
+     */
     fun observe(onNext: (T) -> Unit): Disposable {
         observers.add(onNext)
         val lastResult = value
@@ -51,12 +56,20 @@ actual abstract class Observable<T>: ReadOnlyProperty<Any?, ObservableResult<T>>
     }
 }
 
+/**
+ * Simple [Observable] that takes an initial value
+ * @param initialValue The initial value of the Observable
+ */
 class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     init {
         value = ObservableResult.Result(initialValue)
     }
 }
 
+/**
+ * [Observable] whose initial value matches a given [ReadOnlyProperty]
+ * @param readOnlyProperty The [ReadOnlyProperty] to match with the initial value
+ */
 class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>): Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
@@ -64,6 +77,11 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
     }
 }
 
+/**
+ * [Observable] whose value matches a given [Flow]
+ * @param flow The [Flow] whose value to match
+ * @param coroutineScope The [CoroutineScope] on which the observe the [Flow]
+ */
 class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
 
     init {
@@ -77,6 +95,10 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
 
 actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
 
+    /**
+     * Updates the value of the [Subject]
+     * @param newValue The new value of the subject
+     */
     abstract fun post(newValue: T)
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableResult<T>) {
@@ -84,6 +106,10 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, Obse
     }
 }
 
+/**
+ * Simple [Subject] that takes an initial value
+ * @param initialValue The initial value of the subject
+ */
 class DefaultSubject<T>(initialValue: T): Subject<T>() {
 
     init {
@@ -95,6 +121,11 @@ class DefaultSubject<T>(initialValue: T): Subject<T>() {
     }
 }
 
+/**
+ * [Subject] that matches its value to a [ObservableProperty].
+ * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
+ * Use [FlowSubject] if synchronized values are required
+ */
 class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>): Subject<T>() {
 
     private var remoteValue by observableProperty
@@ -109,6 +140,11 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>): S
     }
 }
 
+/**
+ * [Subject] that synchronizes its value to a [BaseFlowable]
+ * @param flowable The [BaseFlowable] to synchronize to
+ * @param coroutineScope The [CoroutineScope] on which to observe changes to the [BaseFlowable]
+ */
 class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {

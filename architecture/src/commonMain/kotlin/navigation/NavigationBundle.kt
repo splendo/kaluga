@@ -21,6 +21,9 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
+/**
+ * Value of a [NavigationBundleSpecRow]
+ */
 sealed class NavigationBundleValue<T> {
 
     abstract val value: T
@@ -190,8 +193,17 @@ sealed class NavigationBundleValue<T> {
 
 class NavigationBundleGetError: Exception()
 
-class NavigationBundle<R : NavigationBundleSpecRow<*>> (val spec: NavigationBundleSpec<R>, internal val values: Map<R, NavigationBundleValue<*>>) {
+/**
+ * A container class that bundles a set of data for sharing between classes. Only takes values in a [NavigationBundleSpec] [R]
+ */
+class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>, internal val values: Map<R, NavigationBundleValue<*>>) {
 
+    /**
+     * Tries to get data of a given [NavigationBundleSpecRow] from this bundle
+     * @param row The [NavigationBundleSpecRow] for which to get the value from the bundle
+     * @return The value for the [row] according to its type
+     * @throws [NavigationBundleGetError] if the [row] does not match the [spec]
+     */
     fun <V, S : NavigationBundleSpecRow<V>> get(row: S): V {
         row as? R ?: throw NavigationBundleGetError()
         val value = values[row] as? NavigationBundleValue<V> ?: throw NavigationBundleGetError()

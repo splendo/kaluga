@@ -21,13 +21,35 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 
+/**
+ * A row within a [NavigationBundleSpec] that is associated with a given [NavigationBundleSpecType]
+ * @param associatedType The [NavigationBundleSpecType] associated with this row
+ */
 open class NavigationBundleSpecRow<T>(internal val associatedType: NavigationBundleSpecType<T>) {
+    /**
+     * Key for this row. Used for converting rows to data types.
+     * Defaults to the name of the row, but can be overwritten if required
+     */
     open val key: String? get() {return this::class.simpleName }
+
+    /**
+     * Converts a given value to the [NavigationBundleValue] associated with this row
+     * @param value The value to convert
+     * @return The [NavigationBundleValue] associated with the value
+     */
     fun convertValue(value: T): NavigationBundleValue<T> = associatedType.convertValue(value)
 }
 
+/**
+ * Types of data a [NavigationBundleSpecRow] can be associated with
+ */
 sealed class NavigationBundleSpecType<T> {
 
+    /**
+     * Converts a given value to the [NavigationBundleValue] associated with this type
+     * @param value The value to convert
+     * @return The [NavigationBundleValue] associated with the value
+     */
     abstract fun convertValue(value: T): NavigationBundleValue<T>
 
     object BooleanType : NavigationBundleSpecType<Boolean>() {
@@ -174,8 +196,16 @@ sealed class NavigationBundleSpecType<T> {
 
 }
 
+/**
+ * A set of [NavigationBundleSpecRow]s that can be used to form a [NavigationBundle] using [NavigationBundleSpec.toBundle]
+ */
 open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val rows: Set<R>)
 
+/**
+ * Creates a [NavigationBundle] from the [NavigationBundleSpec]
+ * @param mapper Function mapping the [NavigationBundleSpecRow] in this spec to their respective [NavigationBundleValue]
+ * @return A [NavigationBundle] matching this [NavigationBundleSpec]
+ */
 fun  <R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.toBundle(mapper: (R) -> NavigationBundleValue<*>): NavigationBundle<R> {
     return NavigationBundle(this, rows.associateWith { mapper.invoke(it) })
 }

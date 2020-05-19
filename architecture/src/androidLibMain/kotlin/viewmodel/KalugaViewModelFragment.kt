@@ -15,13 +15,16 @@
 
  */
 
-package com.splendo.kaluga.architecture
+package com.splendo.kaluga.architecture.viewmodel
 
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
 
-abstract class KalugaViewModelDialogFragment<VM: BaseViewModel> : DialogFragment() {
+/**
+ * Convenience [Fragment] that is bound to a [ViewModel]
+ */
+abstract class KalugaViewModelFragment<VM : BaseViewModel>(@LayoutRes layout: Int = 0) : Fragment(layout) {
 
     abstract val viewModel: VM
 

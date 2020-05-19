@@ -70,7 +70,7 @@ val subject: Subject<Int>
 val mutableLiveData = subject.liveData
 
 init {
-    liveData.observe(lifeCycle, new Observer { value ->
+    liveData.observe(lifeCycle, Observer { value ->
         mutableLiveData.postValue(value)
     })
 }
@@ -103,10 +103,88 @@ init {
 Navigation is available through a specialized `NavigatingViewModel`.
 This ViewModel takes a `Navigator` object that responds to a given `NavigationAction`.
 The Navigation action specifies the action(s) that can navigate.
+
+```kotlin
+sealed class SomeNavigationAction : NavigationAction<Nothing>(null) {
+    object ActionA : SomeNavigationAction()
+    object ActionB : SomeNavigationAction()
+}
+
+class SomeNavigatingViewModel(navigator: Navigator<SomeNavigationAction>): NavigatingViewModel<SomeNavigationAction>(navigator) {
+    
+    fun performActionA() {
+        navigator.navigate(ActionA)
+    }   
+
+    fun performActionB() {
+        navigator.navigate(ActionB)
+    }
+
+}
+```
+
 On the platform side the created Navigator should specify the `NavigationSpec` to be used for navigating.
 Multiple specs exist per platform, including all common navigation patterns within the app (both new screens and nested elements) as well as navigating to common OS screens (e.g opening the mail app).
+
+```kotlin
+// Android
+val viewModel = SomeNavigatingViewModel(
+    Navigator { action ->
+        when (action) {
+            is ActionA -> NavigationSpec.Activity(SomeActivity::class.java)
+            is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = {SomeFragment()})
+        }   
+    })
+
+// iOS
+val viewModel = SomeNavigatingViewModeel(
+    Navigator(viewController) { action ->
+        when (action) {
+            is ActionA -> NavigationSpec.Present(present = { someViewController() })
+            is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = {someNestedViewController()})
+        }
+    }
+)
+```
 
 To share data between navigating objects a `NavigationBundle` class can be passed via the `NavigationAction`.
 This Bundle supports all common data types as well as optionals, nested bundles and serializable objects.
 Values can be extracted from the bundle given a known `NavigationSpecRow`.
 Note that it is possible to request a NavigationSpecRow not supported by the Bundle, which will result in a `NavigationBundleGetError`.
+
+```kotlin
+sealed class SomeSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+    object BooleanSpecRow : SomeSpecRow<Boolean>(NavigationBundleSpecType.BooleanType)
+    object SerializableSpecRow : SomeSpecRow<MockSerializable>(NavigationBundleSpecType.SerializedType(SomeSerializable.serializer()))
+    object OptionalString : SomeSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
+    object OptionalFloat : SomeSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
+}
+
+class SomeBundleSpec : NavigationBundleSpec<SomeSpecRow<*>>(setOf(SomeSpecRow.BooleanSpecRow, SomeSpecRow.SerializableSpecRow, SomeSpecRow.OptionalString, SomeSpecRow.OptionalFloat))
+
+sealed class SomeBundleNavigationAction<B: NavigationBundleSpecRow<*>>(bundle: NavigationBundle<B>) : NavigationAction<B>(bundle) {
+    class SomeAction(bundle: NavigationBundle<SomeSpecRow<*>>) : SomeNavigationAction<NavigationBundle<SomeSpecRow<*>>>(bundle)
+}
+
+class SomeBundleNavigatingViewModel(navigator: Navigator<SomeBundleNavigationAction<*>>): NavigatingViewModel<SomeNavigationAction>(navigator) {
+
+    fun performAction() {
+        navigator.navigate(SomeBundleNavigationAction.SomeAction(SomeBundleSpec().toBundle { row ->
+            when(row) {
+                is BooleanSpecRow -> row.convertValue(true)
+                is SerializableSpecRow -> row.convertValue(someSerializable)
+                is OptionalString -> row.convertValue("")
+                is OptionalFloat -> row.convertValue(null)
+            }
+        }))
+    }
+
+}
+
+class BundleProcessor(bundle: NavigationBundle<SomeSpecRow<*>>) {
+    val booleanResult = bundle.get(SomeSpecRow.BooleanSpecRow)
+    val serializableResult = bundle.get(SomeSpecRow.SerializableSpecRow)
+    val optionalStringResult = bundle.get(SomeSpecRow.OptionalString)
+    val optionalFloatResult = bundle.get(SomeSpecRow.OptionalFloat)
+}
+```

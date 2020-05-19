@@ -15,13 +15,15 @@
 
  */
 
-package com.splendo.kaluga.architecture
+package com.splendo.kaluga.architecture.viewmodel
 
 import android.os.Bundle
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
+/**
+ * Convenience [AppCompatActivity] that is bound to a [ViewModel]
+ */
 abstract class KalugaViewModelActivity<VM : BaseViewModel>(@LayoutRes layout: Int = 0) : AppCompatActivity(layout) {
 
     abstract val viewModel: VM

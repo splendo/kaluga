@@ -38,7 +38,6 @@ class KNArchitectureFramework {
         return FeatureListViewModel(
             Navigator(parent) { action ->
                 NavigationSpec.Segue(
-                    parent,
                     when (action) {
                         is FeatureListNavigationAction.Location -> "showLocation"
                         is FeatureListNavigationAction.Permissions -> "showPermissions"

@@ -24,6 +24,12 @@ import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.UIKit.*
 
+/**
+ * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
+ * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
+ * @param parent The [UIViewController] managing the navigation
+ * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
+ */
 actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
 
     actual fun navigate(action: A) {
@@ -73,14 +79,14 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
     private fun showViewController(showSpec: NavigationSpec.Show) {
         val toShow = showSpec.show()
         if (showSpec.detail) {
-            showSpec.parent.showDetailViewController(toShow, showSpec.parent)
+            parent.showDetailViewController(toShow, parent)
         } else {
-            showSpec.parent.showViewController(toShow, null)
+            parent.showViewController(toShow, parent)
         }
     }
 
     private fun segueToViewController(segueSpec: NavigationSpec.Segue, bundle: NavigationBundle<*>?) {
-        segueSpec.parent.performSegueWithIdentifier(segueSpec.identifier, bundle)
+        parent.performSegueWithIdentifier(segueSpec.identifier, bundle)
     }
 
     private fun embedNestedViewController(nestedSpec: NavigationSpec.Nested) {

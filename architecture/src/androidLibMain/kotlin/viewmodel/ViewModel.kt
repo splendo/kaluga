@@ -23,7 +23,7 @@ actual open class ViewModel internal actual constructor() : androidx.lifecycle.V
 
     actual val coroutineScope = viewModelScope
 
-    actual fun onClear() {
+    actual open fun onClear() {
         super.onCleared()
     }
 

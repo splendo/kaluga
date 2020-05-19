@@ -20,6 +20,9 @@ package com.splendo.kaluga.architecture.navigation
 import android.os.Build
 import android.content.Intent
 
+/**
+ * Intent Flags supported for Navigation
+ */
 sealed class IntentFlag {
 
     abstract val value: Int
@@ -138,4 +141,8 @@ sealed class IntentFlag {
 
 }
 
+/**
+ * Transforms a set of [IntentFlag] to its corresponding [Int]
+ * @return The int describing the set of [IntentFlag]
+ */
 fun Set<IntentFlag>.toFlags(): Int = this.fold(0) {acc, flag -> acc or flag.value}

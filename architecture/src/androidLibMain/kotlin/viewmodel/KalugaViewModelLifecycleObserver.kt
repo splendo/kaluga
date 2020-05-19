@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.architecture
+package com.splendo.kaluga.architecture.viewmodel
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
@@ -25,16 +25,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
+/**
+ * [LifecycleObserver] used to manage the lifecycle of a [BaseViewModel]
+ * @param viewModel The [BaseViewModel] whose lifecycle is managed
+ * @param activity The [Activity] managing the lifecycle
+ * @param fragmentManager The [FragmentManager] for this lifecycle
+ */
 class KalugaViewModelLifecycleObserver<VM : BaseViewModel> private constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
     companion object {
+        /**
+         * Binds an [AppCompatActivity] to a [ViewModel] to manage the viewmodel lifecycle
+         * @param viewModel The [ViewModel] to bind
+         * @param to The [Activity] to bind to
+         */
         fun <VM : BaseViewModel> bind(viewModel: VM, to: AppCompatActivity) {
             to.lifecycle.addObserver(KalugaViewModelLifecycleObserver(viewModel, to, to.supportFragmentManager))
         }
 
+        /**
+         * Binds a [Fragment] to a [ViewModel] to manage the viewmodel lifecycle
+         * @param viewModel The [ViewModel] to bind
+         * @param to The [Fragment] to bind to
+         * @return `true` if the ViewModel could be bound to the [Fragment]
+         */
         fun <VM : BaseViewModel> bind(viewModel: VM, to: Fragment): Boolean {
             val activity = to.activity ?: return false
             val fragmentManager = to.fragmentManager ?: return false

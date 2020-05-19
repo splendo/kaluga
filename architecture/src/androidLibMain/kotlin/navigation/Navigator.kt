@@ -24,16 +24,31 @@ import android.provider.MediaStore
 import android.provider.Settings
 import androidx.fragment.app.FragmentManager
 
+/**
+ * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
+ * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
+ * Requires to be subscribed to an activity via [subscribe] to work
+ * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
+ */
 actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) {
 
     private var activity: Activity? = null
     private var fragmentManager: FragmentManager? = null
 
-    fun subscribe(activity: Activity?, fragmentManager: FragmentManager?) {
+    /**
+     * Subscribes the Navigator to a [Activity] and [FragmentManager]
+     * Subscription is used to determine which activity/fragmentManager is responsible for certain navigating actions
+     * @param activity The [Activity] to handle navigation
+     * @param fragmentManager The [FragmentManager] to handle fragment navigation
+     */
+    fun subscribe(activity: Activity, fragmentManager: FragmentManager) {
         this.activity = activity
         this.fragmentManager = fragmentManager
     }
 
+    /**
+     * Unsubscribes the Navigator from its current [Activity] and [FragmentManager]
+     */
     fun unsubscribe() {
         activity = null
         fragmentManager = null
@@ -219,7 +234,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
             1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
-            data = Uri.parse("smsto:${settings.phoneNumber?.let { "$it" } ?: ""}")
+            val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
+            data = Uri.parse("smsto:$recipients")
             type = when(settings.type) {
                 is NavigationSpec.TextMessenger.Type.Plain -> "text/plain"
                 is NavigationSpec.TextMessenger.Type.Image -> "image/*"

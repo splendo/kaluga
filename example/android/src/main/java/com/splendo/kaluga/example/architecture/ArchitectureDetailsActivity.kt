@@ -1,8 +1,8 @@
 package com.splendo.kaluga.example.architecture
 
 import android.os.Bundle
-import com.splendo.kaluga.architecture.KalugaViewModelActivity
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureDetailsBinding
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpec

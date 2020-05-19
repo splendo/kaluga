@@ -19,6 +19,10 @@ package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
 
+/**
+ * Converts a [NavigationBundle] to a [Bundle]
+ * @return The converted [Bundle]
+ */
 fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle() : Bundle {
     val bundle = Bundle()
 
@@ -57,6 +61,11 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
     }
 }
 
+/**
+ * Converts a [Bundle] to a [NavigationBundle] matching a given [NavigationBundleSpec]
+ * @param spec The [NavigationBundleSpec] used to create the [NavigationBundle]
+ * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
+ */
 fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>) : NavigationBundle<R> {
     return NavigationBundle(spec, spec.rows.associate { row ->
         mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
@@ -65,6 +74,9 @@ fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationB
     })
 }
 
+/**
+ * Error indicating a [Bundle] could not be converted to a [NavigationBundle]
+ */
 class BundleConversionError: Exception()
 
 internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? {

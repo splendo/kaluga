@@ -25,12 +25,23 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
+/**
+ * Result type for an [Observable]. Used to allow for the distinction between `null` and optional values
+ */
 sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
+
+    /**
+     * The [Observable] has a result
+     */
     data class Result<T>(val value: T) : ObservableResult<T>() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
             return value
         }
     }
+
+    /**
+     * The Observable does not have a result
+     */
     class Nothing<T> : ObservableResult<T>() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
             return null
@@ -38,8 +49,14 @@ sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
     }
 }
 
+/**
+ * Property that can be observed
+ */
 expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>>
 
+/**
+ * [Observable] that can change its data
+ */
 expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableResult<T>>
 
 expect fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T>
@@ -52,6 +69,14 @@ expect fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Obs
 
 expect fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 
+/**
+ * Converts a value to an [Observable]
+ * @param initialValue the value of the [Observable]
+ */
 expect fun <T> observableOf(initialValue: T) : Observable<T>
 
+/**
+ * Converts a value to a [Subject]
+ * @param initialValue the starting value of the [Subject]
+ */
 expect fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T>

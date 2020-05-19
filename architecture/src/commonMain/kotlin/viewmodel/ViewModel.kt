@@ -23,31 +23,59 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
+/**
+ * Simple ViewModel class
+ */
 expect open class ViewModel internal constructor() {
+    /**
+     * [CoroutineScope] of the ViewModel
+     */
     val coroutineScope: CoroutineScope
-    fun onClear()
+
+    /**
+     * Called when the ViewModel is cleared
+     */
+    open fun onClear()
 }
 
+/**
+ * Default [ViewModel] implementation respecting the Lifecycle of the presenting view
+ */
 open class BaseViewModel : ViewModel(){
 
     private val resumedJobs = SupervisorJob()
 
+    /**
+     * Function to be called when the presenting views lifecycle begins
+     */
     fun didResume() {
         onResume(CoroutineScope(coroutineScope.coroutineContext + resumedJobs))
     }
 
+    /**
+     * Custom handler when the presenting views lifecycle begins
+     * @param scope A [CoroutineScope] that lives during the lifecycle of the presenting view
+     */
     protected open fun onResume(scope: CoroutineScope) {}
 
+    /**
+     * Function to be called when the presenting views lifecycle ends
+     */
     fun didPause() {
         onPause()
         resumedJobs.cancelChildren()
     }
 
+    /**
+     * Custom handler when the presenting views lifecycle ends
+     */
     protected open fun onPause() {}
 
 }
 
-open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>) : BaseViewModel() {
-
-}
+/**
+ * Default [ViewModel] allowing navigation
+ * @param navigator The [Navigator] handling navigation
+ */
+open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>) : BaseViewModel()
 
