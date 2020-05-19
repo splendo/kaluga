@@ -23,6 +23,7 @@ import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.UIKit.*
+import kotlin.native.ref.WeakReference
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -30,7 +31,9 @@ import platform.UIKit.*
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
+actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
+
+    private val parent = WeakReference(parentVC)
 
     actual fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
@@ -52,32 +55,33 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
             is NavigationSpec.Phone -> openDialer(spec)
             is NavigationSpec.Settings -> openSettings()
             is NavigationSpec.Browser -> openBrowser(spec)
-        }
-    }
+                }
+            }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
-        parent.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
+        parent.get()?.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
     }
 
     private fun popViewController(popSpec: NavigationSpec.Pop) {
         popSpec.to?.let {
-            parent.navigationController?.popToViewController(it, popSpec.animated)
-        } ?: parent.navigationController?.popViewControllerAnimated(popSpec.animated)
+            parent.get()?.navigationController?.popToViewController(it, popSpec.animated)
+        } ?: parent.get()?.navigationController?.popViewControllerAnimated(popSpec.animated)
     }
 
     private fun presentViewController(presentSpec: NavigationSpec.Present) {
         val toPresent = presentSpec.present()
         toPresent.modalPresentationStyle = presentSpec.presentationStyle
         toPresent.modalTransitionStyle = presentSpec.transitionStyle
-        parent.presentViewController(toPresent, presentSpec.animated) { presentSpec.complete?.invoke() }
+        parent.get()?.presentViewController(toPresent, presentSpec.animated) { presentSpec.complete?.invoke() }
     }
 
     private fun dismissViewController(dismissSpec: NavigationSpec.Dismiss) {
-        parent.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.complete?.invoke() }
+        parent.get()?.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.complete?.invoke() }
     }
 
     private fun showViewController(showSpec: NavigationSpec.Show) {
         val toShow = showSpec.show()
+        val parent = parent.get() ?: return
         if (showSpec.detail) {
             parent.showDetailViewController(toShow, parent)
         } else {
@@ -86,10 +90,11 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
     }
 
     private fun segueToViewController(segueSpec: NavigationSpec.Segue, bundle: NavigationBundle<*>?) {
-        parent.performSegueWithIdentifier(segueSpec.identifier, bundle)
+        parent.get()?.performSegueWithIdentifier(segueSpec.identifier, bundle)
     }
 
     private fun embedNestedViewController(nestedSpec: NavigationSpec.Nested) {
+        val parent = parent.get() ?: return
         if (nestedSpec.type == NavigationSpec.Nested.Type.Replace) {
             parent.childViewControllers.map { it as UIViewController }.forEach {
                 it.willMoveToParentViewController(null)
@@ -141,7 +146,7 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
             composeVC.addAttachmentData(it.data, it.mimeType, it.fileName)
         }
 
-        parent.presentViewController(composeVC, mailSpec.animated) {mailSpec.complete?.invoke()}
+        parent.get()?.presentViewController(composeVC, mailSpec.animated) {mailSpec.complete?.invoke()}
     }
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
@@ -161,7 +166,7 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
 
         browserVc.delegate = browserSpec.delegate
 
-        parent.presentViewController(browserVc, browserSpec.animated) {browserSpec.complete?.invoke()}
+        parent.get()?.presentViewController(browserVc, browserSpec.animated) {browserSpec.complete?.invoke()}
     }
 
     private fun presentMessageComposer(messageSpec: NavigationSpec.Message) {
@@ -188,7 +193,7 @@ actual class Navigator<A : NavigationAction<*>>(private val parent: UIViewContro
             }
         }
 
-        parent.presentViewController(composeVC, messageSpec.animated) {messageSpec.complete?.invoke()}
+        parent.get()?.presentViewController(composeVC, messageSpec.animated) {messageSpec.complete?.invoke()}
     }
 
     private fun openDialer(phoneSpec: NavigationSpec.Phone) {

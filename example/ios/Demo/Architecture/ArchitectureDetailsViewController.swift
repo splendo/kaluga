@@ -35,6 +35,10 @@ class ArchitectureDetailsViewController: UIViewController {
     @IBOutlet weak var inverseButton: UIButton!
     @IBOutlet weak var closeButton: UIButton!
     
+    deinit {
+        viewModel.clear()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

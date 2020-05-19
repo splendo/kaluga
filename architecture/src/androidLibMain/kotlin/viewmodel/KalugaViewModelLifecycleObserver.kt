@@ -32,31 +32,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
-class KalugaViewModelLifecycleObserver<VM : BaseViewModel> private constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
-
-    companion object {
-        /**
-         * Binds an [AppCompatActivity] to a [ViewModel] to manage the viewmodel lifecycle
-         * @param viewModel The [ViewModel] to bind
-         * @param to The [Activity] to bind to
-         */
-        fun <VM : BaseViewModel> bind(viewModel: VM, to: AppCompatActivity) {
-            to.lifecycle.addObserver(KalugaViewModelLifecycleObserver(viewModel, to, to.supportFragmentManager))
-        }
-
-        /**
-         * Binds a [Fragment] to a [ViewModel] to manage the viewmodel lifecycle
-         * @param viewModel The [ViewModel] to bind
-         * @param to The [Fragment] to bind to
-         * @return `true` if the ViewModel could be bound to the [Fragment]
-         */
-        fun <VM : BaseViewModel> bind(viewModel: VM, to: Fragment): Boolean {
-            val activity = to.activity ?: return false
-            val fragmentManager = to.fragmentManager ?: return false
-            to.lifecycle.addObserver(KalugaViewModelLifecycleObserver(viewModel, activity, fragmentManager))
-            return true
-        }
-    }
+class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {

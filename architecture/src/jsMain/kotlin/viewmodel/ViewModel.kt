@@ -28,7 +28,11 @@ actual open class ViewModel internal actual constructor() {
 
     actual val coroutineScope = CoroutineScope(MainQueueDispatcher + lifecycleJob)
 
-    actual fun onClear() {
+    fun clear() {
+        onCleared()
+    }
+
+    protected actual open fun onCleared() {
         lifecycleJob.cancelChildren()
     }
 

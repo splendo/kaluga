@@ -31,6 +31,10 @@ class ExampleViewController : UIViewController {
     
     let disposeBag = ArchitectureDisposeBag()
     
+    deinit {
+        viewModel.clear()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

@@ -35,7 +35,7 @@ expect open class ViewModel internal constructor() {
     /**
      * Called when the ViewModel is cleared
      */
-    open fun onClear()
+    protected open fun onCleared()
 }
 
 /**

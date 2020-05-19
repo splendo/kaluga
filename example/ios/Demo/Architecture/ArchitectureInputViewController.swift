@@ -26,6 +26,11 @@ class ArchitectureInputViewController: UIViewController  {
             self.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
         }
     }
+    
+    deinit {
+        viewModel.clear()
+    }
+    
     private let disposeBag = ArchitectureDisposeBag()
     
     override func viewDidAppear(_ animated: Bool) {

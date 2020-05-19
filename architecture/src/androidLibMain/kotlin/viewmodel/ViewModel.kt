@@ -17,14 +17,36 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 
 actual open class ViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 
-    actual open fun onClear() {
+    actual override fun onCleared() {
         super.onCleared()
     }
 
+}
+
+/**
+ * Binds an [AppCompatActivity] to the [ViewModel] to manage the viewmodel lifecycle
+ * @param activity The [Activity] to bind to
+ */
+fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
+    activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity.supportFragmentManager))
+}
+
+/**
+ * Binds a [Fragment] to the [ViewModel] to manage the viewmodel lifecycle
+ * @param fragment The [Fragment] to bind to
+ * @return `true` if the ViewModel could be bound to the [Fragment]
+ */
+fun <VM : BaseViewModel> VM.bind(fragment: Fragment): Boolean {
+    val activity = fragment.activity ?: return false
+    val fragmentManager = fragment.fragmentManager ?: return false
+    fragment.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, fragmentManager))
+    return true
 }

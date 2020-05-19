@@ -17,6 +17,10 @@ class InfoViewController : UITableViewController {
     private var buttons = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
     
+    deinit {
+        viewModel.clear()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         viewModel.didResume()

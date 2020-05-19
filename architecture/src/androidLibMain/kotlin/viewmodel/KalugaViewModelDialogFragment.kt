@@ -29,8 +29,7 @@ abstract class KalugaViewModelDialogFragment<VM: BaseViewModel> : DialogFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        KalugaViewModelLifecycleObserver.bind(viewModel, this)
+        viewModel.bind(this)
     }
 
 }

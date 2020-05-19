@@ -30,8 +30,7 @@ abstract class KalugaViewModelFragment<VM : BaseViewModel>(@LayoutRes layout: In
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        KalugaViewModelLifecycleObserver.bind(viewModel, this)
+        viewModel.bind(this)
     }
 
 }
