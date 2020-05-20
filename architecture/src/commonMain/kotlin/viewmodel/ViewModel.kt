@@ -41,7 +41,7 @@ expect open class ViewModel internal constructor() {
 /**
  * Default [ViewModel] implementation respecting the Lifecycle of the presenting view
  */
-open class BaseViewModel : ViewModel(){
+open class BaseViewModel : ViewModel() {
 
     private val resumedJobs = SupervisorJob()
 
@@ -70,7 +70,6 @@ open class BaseViewModel : ViewModel(){
      * Custom handler when the presenting views lifecycle ends
      */
     protected open fun onPause() {}
-
 }
 
 /**
@@ -78,4 +77,3 @@ open class BaseViewModel : ViewModel(){
  * @param navigator The [Navigator] handling navigation
  */
 open class NavigatingViewModel<A : NavigationAction<*>>(val navigator: Navigator<A>) : BaseViewModel()
-

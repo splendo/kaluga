@@ -28,7 +28,6 @@ actual open class ViewModel internal actual constructor() : androidx.lifecycle.V
     actual override fun onCleared() {
         super.onCleared()
     }
-
 }
 
 /**

@@ -31,7 +31,7 @@ class NavigationBundleTest : BaseTest() {
         val nestedString = "NestedString"
         val nestedSpec = NestedSpec()
         val nestedBundle: NavigationBundle<NestedSpecRow<*>> = nestedSpec.toBundle { entry ->
-            when(entry) {
+            when (entry) {
                 is NestedSpecRow.StringSpecRow -> entry.convertValue(nestedString)
             }
         }
@@ -64,8 +64,6 @@ class NavigationBundleTest : BaseTest() {
         val nestedStringResult = bundleResult.get(NestedSpecRow.StringSpecRow)
         assertEquals(nestedString, nestedStringResult)
 
-        assertFailsWith(NavigationBundleGetError::class) {bundle.get(NestedSpecRow.StringSpecRow)}
+        assertFailsWith(NavigationBundleGetError::class) { bundle.get(NestedSpecRow.StringSpecRow) }
     }
-
 }
-

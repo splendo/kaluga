@@ -63,7 +63,7 @@ sealed class NavigationBundleValue<T> {
             return value.contentHashCode()
         }
     }
-    data class BundleValue<R: NavigationBundleSpecRow<*>> internal constructor(override val value: NavigationBundle<R>) : NavigationBundleValue<NavigationBundle<R>>()
+    data class BundleValue<R : NavigationBundleSpecRow<*>> internal constructor(override val value: NavigationBundle<R>) : NavigationBundleValue<NavigationBundle<R>>()
     data class CharValue internal constructor(override val value: Char) : NavigationBundleValue<Char>()
     data class CharArrayValue internal constructor(override val value: CharArray) : NavigationBundleValue<CharArray>() {
         override fun equals(other: Any?): Boolean {
@@ -155,7 +155,7 @@ sealed class NavigationBundleValue<T> {
         }
     }
 
-    data class SerializedValue<T> internal constructor(val serializer: KSerializer<T>, override val value: T): NavigationBundleValue<T>() {
+    data class SerializedValue<T> internal constructor(val serializer: KSerializer<T>, override val value: T) : NavigationBundleValue<T>() {
 
         companion object {
             private val json = Json(JsonConfiguration.Stable)
@@ -188,10 +188,9 @@ sealed class NavigationBundleValue<T> {
     data class OptionalValue<T> internal constructor(val optionalValue: NavigationBundleValue<T>?) : NavigationBundleValue<T?>() {
         override val value: T? = optionalValue?.value
     }
-
 }
 
-class NavigationBundleGetError: Exception()
+class NavigationBundleGetError : Exception()
 
 /**
  * A container class that bundles a set of data for sharing between classes. Only takes values in a [NavigationBundleSpec] [R]
@@ -209,5 +208,4 @@ class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val 
         val value = values[row] as? NavigationBundleValue<V> ?: throw NavigationBundleGetError()
         return value.value
     }
-
 }

@@ -35,6 +35,4 @@ actual open class ViewModel internal actual constructor() {
     protected actual open fun onCleared() {
         lifecycleJob.cancelChildren()
     }
-
 }
-

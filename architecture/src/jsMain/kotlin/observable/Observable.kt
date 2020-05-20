@@ -19,17 +19,17 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.flow.BaseFlowable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-actual abstract class Observable<T>: ReadOnlyProperty<Any?, ObservableResult<T>> {
+actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>> {
 
     private val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
@@ -57,7 +57,7 @@ class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     }
 }
 
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>): Observable<T>() {
+class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
         value = ObservableResult.Result(initialValue)
@@ -84,7 +84,7 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, Obse
     }
 }
 
-class DefaultSubject<T>(initialValue: T): Subject<T>() {
+class DefaultSubject<T>(initialValue: T) : Subject<T>() {
 
     init {
         value = ObservableResult.Result(initialValue)
@@ -95,7 +95,7 @@ class DefaultSubject<T>(initialValue: T): Subject<T>() {
     }
 }
 
-class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>): Subject<T>() {
+class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : Subject<T>() {
 
     private var remoteValue by observableProperty
 
@@ -124,8 +124,8 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
             flowable.set(newValue)
         }
     }
-
 }
+
 actual fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
 
 actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ObservablePropertySubject(this)
@@ -136,6 +136,6 @@ actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Obs
 
 actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
-actual fun <T> observableOf(initialValue: T) : Observable<T> = DefaultObservable(initialValue)
+actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 
-actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T> = DefaultSubject(initialValue)
+actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope): Subject<T> = DefaultSubject(initialValue)

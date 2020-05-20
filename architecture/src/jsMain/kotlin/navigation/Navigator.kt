@@ -22,6 +22,4 @@ actual class Navigator<A : NavigationAction<*>> {
     actual fun navigate(action: A) {
         TODO("Not Yet Implemented")
     }
-
 }
-

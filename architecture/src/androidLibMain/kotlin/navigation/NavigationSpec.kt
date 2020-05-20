@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.annotation.AnimRes
 import androidx.annotation.AnimatorRes
 import androidx.annotation.IdRes
 import androidx.fragment.app.DialogFragment
-import android.os.Bundle
-import android.content.Intent
 import java.net.URL
 
 /**
@@ -38,7 +38,7 @@ sealed class NavigationSpec {
      * @param flags Set of [IntentFlag] to add to the navigation [Intent]
      * @param requestCode Optional request code to add. If passed, [android.app.Activity.startActivityForResult] is called. Otherwise uses [android.app.Activity.startActivity]
      */
-    data class Activity<A: android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val requestCode: Int? = null) : NavigationSpec()
+    data class Activity<A : android.app.Activity>(val activityClass: Class<A>, val flags: Set<IntentFlag> = emptySet(), val requestCode: Int? = null) : NavigationSpec()
 
     /**
      * Closes the current [android.app.Activity]
@@ -61,7 +61,8 @@ sealed class NavigationSpec {
         val tag: String? = null,
         val backStackSettings: BackStackSettings = BackStackSettings.DontAdd,
         val animationSettings: AnimationSettings? = null,
-        val createFragment: () -> androidx.fragment.app.Fragment) : NavigationSpec() {
+        val createFragment: () -> androidx.fragment.app.Fragment
+    ) : NavigationSpec() {
 
         /**
          * Type of fragment transaction.
@@ -105,7 +106,8 @@ sealed class NavigationSpec {
             @AnimatorRes @AnimRes val enter: Int = 0,
             @AnimatorRes @AnimRes val exit: Int = 0,
             @AnimatorRes @AnimRes val popEnter: Int = 0,
-            @AnimatorRes @AnimRes val popExit: Int = 0)
+            @AnimatorRes @AnimRes val popExit: Int = 0
+        )
     }
 
     /**
@@ -113,7 +115,7 @@ sealed class NavigationSpec {
      * @param tag Optional tag to add to the Dialog
      * @param createDialog Function to create the [DialogFragment] to display
      */
-    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment): NavigationSpec()
+    data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
 
     /**
      * Shows the Camera
@@ -127,8 +129,8 @@ sealed class NavigationSpec {
          * Type of media the camera can capture
          */
         sealed class Type {
-            object Image: Type()
-            object Video: Type()
+            object Image : Type()
+            object Video : Type()
         }
     }
 
@@ -163,7 +165,8 @@ sealed class NavigationSpec {
             val bcc: List<String> = emptyList(),
             val subject: String? = null,
             val body: String? = null,
-            val attachments: List<Uri> = emptyList())
+            val attachments: List<Uri> = emptyList()
+        )
     }
 
     /**
@@ -195,12 +198,12 @@ sealed class NavigationSpec {
             /**
              * Opens the Dialer screen and pre-fills the phone number
              */
-            object Dial: Type()
+            object Dial : Type()
 
             /**
              * Opens the phone screen and calls the phone number
              */
-            object Call: Type()
+            object Call : Type()
         }
     }
 
@@ -218,7 +221,7 @@ sealed class NavigationSpec {
             object Bluetooth : Type()
             object Date : Type()
             object Locale : Type()
-            object InputMethod: Type()
+            object InputMethod : Type()
             object Display : Type()
             object Security : Type()
             object LocationSource : Type()
@@ -250,7 +253,6 @@ sealed class NavigationSpec {
          * @param attachments List of [Uri] pointing to attachments to add
          */
         data class TextMessengerSettings(val type: Type = Type.Plain, val recipients: List<String>, val subject: String? = null, val body: String? = null, val attachments: List<Uri> = emptyList())
-
     }
 
     /**
@@ -259,4 +261,3 @@ sealed class NavigationSpec {
      */
     data class Browser(val url: URL) : NavigationSpec()
 }
-

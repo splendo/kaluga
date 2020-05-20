@@ -61,5 +61,4 @@ class AndroidNavigationBundleTest {
         assertEquals(optionalString, optionalStringResult)
         assertEquals(optionalFloat, optionalFloatResult)
     }
-
 }

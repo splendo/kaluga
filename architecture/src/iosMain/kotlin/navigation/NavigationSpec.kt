@@ -80,11 +80,13 @@ sealed class NavigationSpec {
      * @param present Function to create the [UIViewController] to present
      * @param complete Optional function to call when presentation has completed
      */
-    data class Present(val animated: Boolean = true,
+    data class Present(
+        val animated: Boolean = true,
         val presentationStyle: UIModalPresentationStyle = UIModalPresentationAutomatic,
         val transitionStyle: UIModalTransitionStyle = UIModalTransitionStyleCoverVertical,
         val present: () -> UIViewController,
-        val complete: (() -> Unit)? = null) : NavigationSpec()
+        val complete: (() -> Unit)? = null
+    ) : NavigationSpec()
 
     /**
      * Dismisses the parent.
@@ -117,7 +119,8 @@ sealed class NavigationSpec {
         val type: Type = Type.Add,
         val containerView: UIView,
         val nested: () -> UIViewController,
-        val constraints: ((UIView, UIView) -> List<NSLayoutConstraint>)? = null) : NavigationSpec() {
+        val constraints: ((UIView, UIView) -> List<NSLayoutConstraint>)? = null
+    ) : NavigationSpec() {
 
         /**
          * Nested Presentation type
@@ -143,22 +146,24 @@ sealed class NavigationSpec {
      * @param animated Specifies whether transition should be animated
      * @param complete Optional function called when presentation is completed
      */
-    data class ImagePicker(val sourceType: UIImagePickerControllerSourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary,
+    data class ImagePicker(
+        val sourceType: UIImagePickerControllerSourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary,
         val mediaType: Set<MediaType> = setOf(MediaType.Image),
         val navigationDelegate: UINavigationControllerDelegateProtocol,
         val imagePickerDelegate: UIImagePickerControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null) : NavigationSpec() {
+        val complete: (() -> Unit)? = null
+    ) : NavigationSpec() {
 
         @Suppress("CONFLICTING_OVERLOADS")
         internal val delegate: UINavigationControllerDelegateProtocol = object : NSObject(), UIImagePickerControllerDelegateProtocol, UINavigationControllerDelegateProtocol {
 
             override fun navigationController(navigationController: UINavigationController, willShowViewController: UIViewController, animated: Boolean) {
-                navigationDelegate.navigationController(navigationController, willShowViewController=willShowViewController, animated=animated)
+                navigationDelegate.navigationController(navigationController, willShowViewController = willShowViewController, animated = animated)
             }
 
             override fun navigationController(navigationController: UINavigationController, didShowViewController: UIViewController, animated: Boolean) {
-                navigationDelegate.navigationController(navigationController, didShowViewController=didShowViewController, animated=animated)
+                navigationDelegate.navigationController(navigationController, didShowViewController = didShowViewController, animated = animated)
             }
 
             override fun navigationController(
@@ -196,7 +201,6 @@ sealed class NavigationSpec {
             override fun imagePickerControllerDidCancel(picker: UIImagePickerController) {
                 imagePickerDelegate.imagePickerControllerDidCancel(picker)
             }
-
         }
 
         /**
@@ -209,7 +213,6 @@ sealed class NavigationSpec {
             object Image : MediaType() { override val typeString = kUTTypeImage }
             object Movie : MediaType() { override val typeString = kUTTypeMovie }
         }
-
     }
 
     /**
@@ -223,7 +226,8 @@ sealed class NavigationSpec {
         val emailSettings: EmailSettings,
         val delegate: MFMailComposeViewControllerDelegateProtocol? = null,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null) : NavigationSpec() {
+        val complete: (() -> Unit)? = null
+    ) : NavigationSpec() {
 
         /**
          * The type of formatting used for composing the email
@@ -258,7 +262,8 @@ sealed class NavigationSpec {
             val bcc: List<String> = emptyList(),
             val subject: String? = null,
             val body: String? = null,
-            val attachments: List<Attachment> = emptyList())
+            val attachments: List<Attachment> = emptyList()
+        )
     }
 
     /**
@@ -274,7 +279,8 @@ sealed class NavigationSpec {
         val documentSelectorAppearance: DocumentSelectorAppearance,
         val delegate: UIDocumentBrowserViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null) : NavigationSpec() {
+        val complete: (() -> Unit)? = null
+    ) : NavigationSpec() {
 
         /**
          * Configures the settings for a [UIDocumentBrowserViewController]
@@ -289,8 +295,9 @@ sealed class NavigationSpec {
             val trailingNavigationBarButtonItems: List<UIBarButtonItem> = emptyList(),
             val customActions: List<UIDocumentBrowserAction> = emptyList(),
             val createTitle: String,
-            val documentAspectRatio: Double = 2.0 /3.0,
-            val showFileExtensions: Boolean = false)
+            val documentAspectRatio: Double = 2.0 / 3.0,
+            val showFileExtensions: Boolean = false
+        )
     }
 
     /**
@@ -315,7 +322,8 @@ sealed class NavigationSpec {
         val messageSettings: MessageSettings,
         val delegate: MFMessageComposeViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null) : NavigationSpec() {
+        val complete: (() -> Unit)? = null
+    ) : NavigationSpec() {
 
         /**
          * An attachement added to the message
@@ -339,7 +347,8 @@ sealed class NavigationSpec {
             val body: String? = null,
             val message: MSMessage? = null,
             val disableAttachments: Boolean = false,
-            val attachments: List<Attachment> = emptyList())
+            val attachments: List<Attachment> = emptyList()
+        )
     }
 
     /**
@@ -348,4 +357,3 @@ sealed class NavigationSpec {
      */
     data class Browser(val url: NSURL) : NavigationSpec()
 }
-

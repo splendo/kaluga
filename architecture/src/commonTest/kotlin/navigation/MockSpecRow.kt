@@ -37,6 +37,4 @@ class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.St
 sealed class NestedSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
 
     object StringSpecRow : NestedSpecRow<String>(NavigationBundleSpecType.StringType)
-
 }
-

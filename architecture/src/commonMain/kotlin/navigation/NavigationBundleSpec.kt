@@ -30,7 +30,7 @@ open class NavigationBundleSpecRow<T>(internal val associatedType: NavigationBun
      * Key for this row. Used for converting rows to data types.
      * Defaults to the name of the row, but can be overwritten if required
      */
-    open val key: String? get() {return this::class.simpleName }
+    open val key: String? get() { return this::class.simpleName }
 
     /**
      * Converts a given value to the [NavigationBundleValue] associated with this row
@@ -70,7 +70,7 @@ sealed class NavigationBundleSpecType<T> {
             return NavigationBundleValue.ByteValue(value)
         }
     }
-    class BundleType<R: NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>) : NavigationBundleSpecType<NavigationBundle<R>>() {
+    class BundleType<R : NavigationBundleSpecRow<*>> internal constructor(val spec: NavigationBundleSpec<R>) : NavigationBundleSpecType<NavigationBundle<R>>() {
         override fun convertValue(value: NavigationBundle<R>): NavigationBundleValue<NavigationBundle<R>> {
             return NavigationBundleValue.BundleValue(value)
         }
@@ -147,7 +147,7 @@ sealed class NavigationBundleSpecType<T> {
             return NavigationBundleValue.LongArrayValue(value)
         }
     }
-    class SerializedType<T>(private val serializer: KSerializer<T>): NavigationBundleSpecType<T>() {
+    class SerializedType<T>(private val serializer: KSerializer<T>) : NavigationBundleSpecType<T>() {
         companion object {
             private val json = Json(JsonConfiguration.Stable)
         }
@@ -159,7 +159,6 @@ sealed class NavigationBundleSpecType<T> {
         fun generateValue(stringValue: String): NavigationBundleValue<T> {
             return NavigationBundleValue.SerializedValue(serializer, json.parse(serializer, stringValue))
         }
-
     }
 
     object ShortType : NavigationBundleSpecType<Short>() {
@@ -193,7 +192,6 @@ sealed class NavigationBundleSpecType<T> {
             } ?: NavigationBundleValue.OptionalValue<T>(null)
         }
     }
-
 }
 
 /**
@@ -206,6 +204,6 @@ open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val row
  * @param mapper Function mapping the [NavigationBundleSpecRow] in this spec to their respective [NavigationBundleValue]
  * @return A [NavigationBundle] matching this [NavigationBundleSpec]
  */
-fun  <R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.toBundle(mapper: (R) -> NavigationBundleValue<*>): NavigationBundle<R> {
+fun <R : NavigationBundleSpecRow<*>> NavigationBundleSpec<R>.toBundle(mapper: (R) -> NavigationBundleValue<*>): NavigationBundle<R> {
     return NavigationBundle(this, rows.associateWith { mapper.invoke(it) })
 }
