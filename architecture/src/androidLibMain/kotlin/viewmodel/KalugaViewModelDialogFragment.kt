@@ -23,7 +23,7 @@ import androidx.fragment.app.DialogFragment
 /**
  * Convenience [DialogFragment] that is bound to a [ViewModel]
  */
-abstract class KalugaViewModelDialogFragment<VM: BaseViewModel> : DialogFragment() {
+abstract class KalugaViewModelDialogFragment<VM : BaseViewModel> : DialogFragment() {
 
     abstract val viewModel: VM
 
@@ -31,5 +31,4 @@ abstract class KalugaViewModelDialogFragment<VM: BaseViewModel> : DialogFragment
         super.onCreate(savedInstanceState)
         viewModel.bind(this)
     }
-
 }

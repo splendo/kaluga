@@ -17,14 +17,34 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import kotlin.native.internal.GC
+import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
-import platform.UIKit.*
-import kotlin.native.internal.GC
-import kotlin.native.ref.WeakReference
+import platform.UIKit.NSLayoutAttributeBottom
+import platform.UIKit.NSLayoutAttributeLeading
+import platform.UIKit.NSLayoutAttributeTop
+import platform.UIKit.NSLayoutAttributeTrailing
+import platform.UIKit.NSLayoutConstraint
+import platform.UIKit.NSLayoutRelationEqual
+import platform.UIKit.UIApplication
+import platform.UIKit.UIApplicationOpenSettingsURLString
+import platform.UIKit.UIDocumentBrowserViewController
+import platform.UIKit.UIImagePickerController
+import platform.UIKit.UIViewController
+import platform.UIKit.addChildViewController
+import platform.UIKit.addConstraint
+import platform.UIKit.addSubview
+import platform.UIKit.childViewControllers
+import platform.UIKit.didMoveToParentViewController
+import platform.UIKit.navigationController
+import platform.UIKit.removeFromParentViewController
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.translatesAutoresizingMaskIntoConstraints
+import platform.UIKit.willMoveToParentViewController
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -41,7 +61,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun navigate(spec: NavigationSpec, bundle: NavigationBundle<*>?) {
-        when(spec) {
+        when (spec) {
             is NavigationSpec.Push -> pushViewController(spec)
             is NavigationSpec.Pop -> popViewController(spec)
             is NavigationSpec.Present -> presentViewController(spec)
@@ -111,7 +131,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
         parent.addChildViewController(child)
         nestedSpec.containerView.addSubview(child.view)
         val constraints = nestedSpec.constraints?.invoke(child.view, nestedSpec.containerView) ?: listOf(
-            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute ->CGFloat
+            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute -> CGFloat
             NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }
@@ -126,7 +146,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
         pickerVC.sourceType = imagePickerSpec.sourceType
         pickerVC.mediaTypes = mediaTypes
         pickerVC.delegate = imagePickerSpec.delegate
-        pickerVC.presentViewController(pickerVC, imagePickerSpec.animated) {imagePickerSpec.complete?.invoke()}
+        pickerVC.presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.complete?.invoke() }
     }
 
     private fun presentMailComposer(mailSpec: NavigationSpec.Email) {
@@ -149,7 +169,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             composeVC.addAttachmentData(it.data, it.mimeType, it.fileName)
         }
 
-        parent.get()?.presentViewController(composeVC, mailSpec.animated) {mailSpec.complete?.invoke()}
+        parent.get()?.presentViewController(composeVC, mailSpec.animated) { mailSpec.complete?.invoke() }
     }
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
@@ -169,7 +189,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
 
         browserVc.delegate = browserSpec.delegate
 
-        parent.get()?.presentViewController(browserVc, browserSpec.animated) {browserSpec.complete?.invoke()}
+        parent.get()?.presentViewController(browserVc, browserSpec.animated) { browserSpec.complete?.invoke() }
     }
 
     private fun presentMessageComposer(messageSpec: NavigationSpec.Message) {
@@ -196,7 +216,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             }
         }
 
-        parent.get()?.presentViewController(composeVC, messageSpec.animated) {messageSpec.complete?.invoke()}
+        parent.get()?.presentViewController(composeVC, messageSpec.animated) { messageSpec.complete?.invoke() }
     }
 
     private fun openDialer(phoneSpec: NavigationSpec.Phone) {
@@ -216,6 +236,4 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             UIApplication.sharedApplication.openURL(it)
         }
     }
-
 }
-

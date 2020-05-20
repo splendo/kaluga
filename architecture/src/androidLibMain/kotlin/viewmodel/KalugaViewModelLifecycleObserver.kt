@@ -18,8 +18,6 @@
 package com.splendo.kaluga.architecture.viewmodel
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -51,5 +49,4 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
         }
         viewModel.didPause()
     }
-
 }

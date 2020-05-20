@@ -18,12 +18,12 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.flow.BaseFlowable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Result type for an [Observable]. Used to allow for the distinction between `null` and optional values
@@ -73,10 +73,10 @@ expect fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subjec
  * Converts a value to an [Observable]
  * @param initialValue the value of the [Observable]
  */
-expect fun <T> observableOf(initialValue: T) : Observable<T>
+expect fun <T> observableOf(initialValue: T): Observable<T>
 
 /**
  * Converts a value to a [Subject]
  * @param initialValue the starting value of the [Subject]
  */
-expect fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T>
+expect fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope): Subject<T>

@@ -32,5 +32,4 @@ abstract class KalugaViewModelFragment<VM : BaseViewModel>(@LayoutRes layout: In
         super.onCreate(savedInstanceState)
         viewModel.bind(this)
     }
-
 }

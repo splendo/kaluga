@@ -17,20 +17,25 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import com.splendo.kaluga.flow.BaseFlowable
+import kotlin.properties.ObservableProperty
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.properties.ObservableProperty
-import kotlin.properties.ReadOnlyProperty
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-actual abstract class Observable<T> :  ReadOnlyProperty<Any?, ObservableResult<T>> {
+actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>> {
 
     /**
      * [LiveData] syncing with this observable
@@ -47,7 +52,7 @@ actual abstract class Observable<T> :  ReadOnlyProperty<Any?, ObservableResult<T
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
-        return liveData.value?.let {ObservableResult.Result(it)} ?: ObservableResult.Nothing()
+        return liveData.value?.let { ObservableResult.Result(it) } ?: ObservableResult.Nothing()
     }
 }
 
@@ -63,7 +68,7 @@ class DefaultObservable<T>(initialValue: T) : Observable<T>() {
  * [Observable] whose initial value matches a given [ReadOnlyProperty]
  * @param readOnlyProperty The [ReadOnlyProperty] to match with the initial value
  */
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>): Observable<T>() {
+class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
     private val value by readOnlyProperty
     override val liveData: LiveData<T> = MutableLiveData(value)
 }
@@ -77,7 +82,7 @@ class FlowObservable<T>(flow: Flow<T>, coroutineScope: CoroutineScope) : Observa
     override val liveData: LiveData<T> = flow.asLiveData(coroutineScope.coroutineContext)
 }
 
-actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
+actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
 
     protected abstract val providerLiveData: LiveData<T>
     private val mediatorLiveData = MediatorLiveData<T>()
@@ -94,11 +99,10 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
         }
         coroutineScope.launch {
             liveData.observeForever(liveDataObserver)
-            while(isActive) {
+            while (isActive) {
                 delay(100)
             }
         }.invokeOnCompletion { liveData.removeObserver(liveDataObserver) }
-
     }
 
     /**
@@ -110,7 +114,7 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope): Ob
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
-        return liveData.value?.let {ObservableResult.Result(it)} ?: ObservableResult.Nothing()
+        return liveData.value?.let { ObservableResult.Result(it) } ?: ObservableResult.Nothing()
     }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableResult<T>) {
@@ -130,7 +134,6 @@ class DefaultSubject<T>(initialValue: T, coroutineScope: CoroutineScope) : Subje
     init {
         initialize()
     }
-
 }
 
 /**
@@ -138,12 +141,11 @@ class DefaultSubject<T>(initialValue: T, coroutineScope: CoroutineScope) : Subje
  * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
  * Use [FlowSubject] if synchronized values are required
  */
-class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope): Subject<T>(coroutineScope) {
-
+class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     private var value by observableProperty
     override val providerLiveData: LiveData<T> = MutableLiveData(value)
     override val liveDataObserver = Observer<T> { t ->
-       value = t
+        value = t
     }
 
     init {
@@ -167,7 +169,6 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
     init {
         initialize()
     }
-
 }
 
 actual fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
@@ -180,6 +181,6 @@ actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Obs
 
 actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
-actual fun <T> observableOf(initialValue: T) : Observable<T> = DefaultObservable(initialValue)
+actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 
-actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope) : Subject<T> = DefaultSubject(initialValue, coroutineScope)
+actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope): Subject<T> = DefaultSubject(initialValue, coroutineScope)

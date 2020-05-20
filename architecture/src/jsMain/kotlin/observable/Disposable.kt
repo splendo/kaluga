@@ -74,6 +74,4 @@ class DisposeBag() {
         nestedBags.forEach { it.dispose() }
         nestedBags.clear()
     }
-
 }
-

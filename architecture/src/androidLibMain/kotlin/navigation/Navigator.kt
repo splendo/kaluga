@@ -59,7 +59,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigate(spec: NavigationSpec, bundle: NavigationBundle<*>?) {
-        when(spec) {
+        when (spec) {
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
@@ -89,7 +89,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {
         val activity = this.activity ?: return
-        closeSpec.result?.let {resultCode ->
+        closeSpec.result?.let { resultCode ->
             val data = Intent().apply {
                 bundle?.let {
                     putExtras(it.toBundle())
@@ -104,7 +104,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         val fragmentManager = fragmentManager ?: return
         val transaction = fragmentManager.beginTransaction()
 
-        when(val backtrackSettings = fragmentSpec.backStackSettings) {
+        when (val backtrackSettings = fragmentSpec.backStackSettings) {
             is NavigationSpec.Fragment.BackStackSettings.Add -> transaction.addToBackStack(backtrackSettings.name)
         }
 
@@ -113,7 +113,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         }
 
         val fragment = fragmentSpec.createFragment()
-        when(fragmentSpec.type) {
+        when (fragmentSpec.type) {
             is NavigationSpec.Fragment.Type.Add -> transaction.add(fragmentSpec.containerId, fragment, fragmentSpec.tag)
             is NavigationSpec.Fragment.Type.Replace -> transaction.replace(fragmentSpec.containerId, fragment, fragmentSpec.tag)
         }
@@ -128,7 +128,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
 
     private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {
         val activity = this.activity ?: return
-        val intent = when(cameraSpec.type) {
+        val intent = when (cameraSpec.type) {
             is NavigationSpec.Camera.Type.Image -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             is NavigationSpec.Camera.Type.Video -> Intent(MediaStore.ACTION_VIDEO_CAPTURE)
         }
@@ -145,13 +145,13 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
         val activity = this.activity ?: return
         val settings = emailSpec.emailSettings
-        val intent = when(settings.attachments.size) {
+        val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
             1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
             data = Uri.parse("mailto:")
-            type = when(settings.type) {
+            type = when (settings.type) {
                 is NavigationSpec.Email.Type.Plain -> "text/plain"
                 is NavigationSpec.Email.Type.Stylized -> "*/*"
             }
@@ -165,7 +165,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
                 putExtra(Intent.EXTRA_BCC, settings.bcc.toTypedArray())
             }
             settings.subject?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
-            settings.body?.let {putExtra(Intent.EXTRA_TEXT, it) }
+            settings.body?.let { putExtra(Intent.EXTRA_TEXT, it) }
         }
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -190,7 +190,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     private fun navigateToPhone(phoneSpec: NavigationSpec.Phone) {
         val activity = this.activity ?: return
 
-        val intent = when(phoneSpec.type) {
+        val intent = when (phoneSpec.type) {
             is NavigationSpec.Phone.Type.Dial -> Intent(Intent.ACTION_DIAL)
             is NavigationSpec.Phone.Type.Call -> Intent(Intent.ACTION_CALL)
         }.apply {
@@ -204,7 +204,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
 
     private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
         val activity = this.activity ?: return
-        val intent = when(settingsSpec.type) {
+        val intent = when (settingsSpec.type) {
             is NavigationSpec.Settings.Type.General -> Intent(Settings.ACTION_SETTINGS)
             is NavigationSpec.Settings.Type.Wireless -> Intent(Settings.ACTION_WIRELESS_SETTINGS)
             is NavigationSpec.Settings.Type.AirplaneMode -> Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS)
@@ -229,20 +229,20 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
         val activity = this.activity ?: return
         val settings = messengerSpec.settings
-        val intent = when(settings.attachments.size) {
+        val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
             1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
         }.apply {
             val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
             data = Uri.parse("smsto:$recipients")
-            type = when(settings.type) {
+            type = when (settings.type) {
                 is NavigationSpec.TextMessenger.Type.Plain -> "text/plain"
                 is NavigationSpec.TextMessenger.Type.Image -> "image/*"
                 is NavigationSpec.TextMessenger.Type.Video -> "video/*"
             }
             settings.subject?.let { putExtra("subject", it) }
-            settings.body?.let {putExtra("sms_body", it) }
+            settings.body?.let { putExtra("sms_body", it) }
         }
 
         intent.resolveActivity(activity.packageManager)?.let {
@@ -260,4 +260,3 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         }
     }
 }
-
