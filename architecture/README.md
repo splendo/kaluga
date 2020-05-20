@@ -31,8 +31,11 @@ To achieve this, the View should be bound using the `KalugaViewModelLifecycleObs
 For convenience default implementations for `Activity`, `Fragment`, and `DialogFragment` exist (`KalugaViewModelActivity`, `KalugaViewModelFragment`, and `KalugaViewModelDialogFragment` respectively).
 Alternatively the user can call `didResume()` and `didPause()` on the ViewModel manually in the `onResume()` and `onPause()` methods.
 
-On iOS automatic setup was omitted due to ObjC classes requiring to be final.
-To use it, the user must manually call the ViewModels `didResume`/`didPause` in `viewDidAppear`/`viewDidDisappear`.
+On iOS automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
+When bound the viewmodel lifecycle is automatically matched with the viewcontrollers `viewDidAppear` and `viewDidDisappear` methods.
+The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound view model.
+Automatic binding is achieved by adding an invisible child `UIViewController` to the bound ViewController.
+If this behaviour is not desired, the user should call `didResume()` and `didPause()` on the ViewModel manually in the `viewDidAppear()` and `viewDidDisappear()` methods.
 
 ## Observables
 Kaluga supports `Observables` (one way binding) and `Subjects` (Two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
@@ -98,6 +101,10 @@ init {
     disposeBag.dispose()
 }
 ```
+
+When bound to a ViewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
+Use this callback to start observing data that should be bound to the lifecycle and put the disposables in the provided `DisposeBag`.
+At the end of a lifecycle (`viewDidDisappear`) the Observables are automatically disposed.
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.

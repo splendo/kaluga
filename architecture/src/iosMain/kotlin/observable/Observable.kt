@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope

@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import android.os.Build
 import android.content.Intent
+import android.os.Build
 
 /**
  * Intent Flags supported for Navigation
@@ -33,38 +33,38 @@ sealed class IntentFlag {
     object GrantWriteUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     }
-    object FromBackground : IntentFlag(){
+    object FromBackground : IntentFlag() {
         override val value: Int = Intent.FLAG_FROM_BACKGROUND
     }
-    object DebugLogResolution : IntentFlag(){
+    object DebugLogResolution : IntentFlag() {
         override val value: Int = Intent.FLAG_DEBUG_LOG_RESOLUTION
     }
-    object ExcludeStoppedPackages : IntentFlag(){
+    object ExcludeStoppedPackages : IntentFlag() {
         override val value: Int = Intent.FLAG_EXCLUDE_STOPPED_PACKAGES
     }
-    object IncludeStoppedPackages : IntentFlag(){
+    object IncludeStoppedPackages : IntentFlag() {
         override val value: Int = Intent.FLAG_INCLUDE_STOPPED_PACKAGES
     }
-    object GrantPersistableUriPermission : IntentFlag(){
+    object GrantPersistableUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
     }
-    object GrantPrefixUriPermission : IntentFlag(){
+    object GrantPrefixUriPermission : IntentFlag() {
         override val value: Int = Intent.FLAG_GRANT_PREFIX_URI_PERMISSION
     }
-    object ActivityMatchExternal : IntentFlag(){
+    object ActivityMatchExternal : IntentFlag() {
         override val value: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             Intent.FLAG_ACTIVITY_MATCH_EXTERNAL
         } else {
             0
         }
     }
-    object ActivityNoHistory : IntentFlag(){
+    object ActivityNoHistory : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NO_HISTORY
     }
-    object ActivitySingleTop : IntentFlag(){
+    object ActivitySingleTop : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_SINGLE_TOP
     }
-    object ActivityNewTask : IntentFlag(){
+    object ActivityNewTask : IntentFlag() {
         override val value: Int = Intent.FLAG_ACTIVITY_NEW_TASK
     }
     object ActivityMultipleTask : IntentFlag(){

@@ -1,0 +1,95 @@
+/*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.architecture.viewmodel
+
+import com.splendo.kaluga.architecture.observable.DisposeBag
+import platform.UIKit.UIViewController
+import platform.UIKit.addChildViewController
+import platform.UIKit.addSubview
+import platform.UIKit.didMoveToParentViewController
+import platform.UIKit.removeFromParentViewController
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.willMoveToParentViewController
+
+/**
+ * Holds the lifecycle of a [BaseViewModel].
+ * A single lifecycle starts at [UIViewController.viewDidAppear] and ends at [UIViewController.viewDidDisappear] of the bound [UIViewController]
+ * This convenience class is the result of [BaseViewModel.addLifecycleManager].
+ * Invoke [unbind] to unbind the Lifecycle from its bound [UIViewController]
+ */
+class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
+
+    internal val disposeBag: DisposeBag = DisposeBag()
+    private var onUnbind: (() -> Unit)? = clearViewModel
+
+    /**
+     * Unbinds the [BaseViewModel]
+     */
+    fun unbind() {
+        onUnbind?.invoke()
+        onUnbind = null
+    }
+
+}
+
+/**
+ * Callback invoked at the start of a lifecycle (corresponding to [UIViewController.viewDidAppear] of the bound ViewController.
+ * Contains a [DisposeBag] that is cleaned automatically at the end of each lifecycle.
+ */
+typealias onLifeCycleChanged = (DisposeBag) -> Unit
+
+internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewModel: VM, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
+
+    internal val lifecycleManager = LifecycleManager {
+        viewModel.clear()
+        willMoveToParentViewController(null)
+        view.removeFromSuperview()
+        removeFromParentViewController()
+    }
+
+    override fun viewDidAppear(animated: Boolean) {
+        super.viewDidAppear(animated)
+
+        viewModel.didResume()
+        onLifecycle.invoke(lifecycleManager.disposeBag)
+    }
+
+    override fun viewDidDisappear(animated: Boolean) {
+        super.viewDidDisappear(animated)
+
+        viewModel.didPause()
+        lifecycleManager.disposeBag.dispose()
+    }
+
+}
+
+/**
+ * Adds a manager to automatically bind the [LifecycleManager] of a [BaseViewModel] to a [UIViewController].
+ * This is achieved by adding an invisible child [UIViewController].
+ * @param parent The containing [UIViewController]
+ * @param onLifecycle This callback is invoked on each start of a new lifecycle.
+ * @return The [LifecycleManager] bound to the [BaseViewModel]
+ */
+fun <VM: BaseViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
+    val lifecycleManager = ViewModelLifecycleManager(this, onLifecycle)
+    parent.addChildViewController(lifecycleManager)
+    parent.view.addSubview(lifecycleManager.view)
+    lifecycleManager.view.userInteractionEnabled = false
+    lifecycleManager.didMoveToParentViewController(parent)
+    return lifecycleManager.lifecycleManager
+}

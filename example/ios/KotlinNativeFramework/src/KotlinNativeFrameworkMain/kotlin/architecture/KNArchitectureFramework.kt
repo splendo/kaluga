@@ -1,10 +1,15 @@
 package architecture
 
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.Subject
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.architecture.viewmodel.Lifecycle
+import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
+import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
@@ -90,6 +95,10 @@ class KNArchitectureFramework {
                 onDismiss(name, number)
             })
         })
+    }
+
+    fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): Lifecycle {
+        return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
 
 }
