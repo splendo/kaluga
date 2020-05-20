@@ -23,6 +23,7 @@ import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.UIKit.*
+import kotlin.native.internal.GC
 import kotlin.native.ref.WeakReference
 
 /**
@@ -55,8 +56,10 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             is NavigationSpec.Phone -> openDialer(spec)
             is NavigationSpec.Settings -> openSettings()
             is NavigationSpec.Browser -> openBrowser(spec)
-                }
-            }
+        }
+        // Since navigation often references UIViewControllers they should be freed up to keep ARC working
+        GC.collect()
+    }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
         parent.get()?.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)

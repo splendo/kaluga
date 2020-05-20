@@ -44,12 +44,12 @@ class ArchitectureDetailsViewController: UIViewController {
         
         viewModel.didResume()
         
-        viewModel.name.observe { name in
-            self.nameLabel.text = name as? String
+        viewModel.name.observe { [weak self] name in
+            self?.nameLabel.text = name as? String
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.number.observe { number in
-            self.numberLabel.text = number as? String
+        viewModel.number.observe { [weak self] number in
+            self?.numberLabel.text = number as? String
         }.putIn(disposeBag: disposeBag)
     }
     

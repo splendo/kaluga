@@ -21,9 +21,9 @@ class ArchitectureInputViewController: UIViewController  {
     
     @IBOutlet weak var detailsButton: UIButton!
     
-    lazy var viewModel = KNArchitectureFramework().createArchitectureInputViewModel(parent: self) { name, number in
-        return ArchitectureDetailsViewController.create(name: name, number: number.int32Value) { resultName, resultNumber in
-            self.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
+    lazy var viewModel = KNArchitectureFramework().createArchitectureInputViewModel(parent: self) { [weak self] name, number in
+        return ArchitectureDetailsViewController.create(name: name, number: number.int32Value) { [weak self] resultName, resultNumber in
+            self?.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
         }
     }
     
@@ -38,28 +38,28 @@ class ArchitectureInputViewController: UIViewController  {
         
         viewModel.didResume()
         
-        viewModel.nameHeader.observe { header in
-            self.nameLabel.text = header as? String
+        viewModel.nameHeader.observe { [weak self] header in
+            self?.nameLabel.text = header as? String
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.nameInput.observe { name in
-            self.nameInput.text = name as? String
+        viewModel.nameInput.observe { [weak self] name in
+            self?.nameInput.text = name as? String
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.isNameValid.observe { isValid in
-            self.nameError.isHidden = (isValid as? Bool ?? false)
+        viewModel.isNameValid.observe { [weak self] isValid in
+            self?.nameError.isHidden = (isValid as? Bool ?? false)
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.numberHeader.observe { header in
-            self.numberLabel.text = header as? String
+        viewModel.numberHeader.observe { [weak self] header in
+            self?.numberLabel.text = header as? String
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.numberInput.observe { number in
-            self.numberInput.text = number as? String
+        viewModel.numberInput.observe { [weak self] number in
+            self?.numberInput.text = number as? String
         }.putIn(disposeBag: disposeBag)
         
-        viewModel.isNumberValid.observe { isValid in
-            self.numberError.isHidden = (isValid as? Bool ?? false)
+        viewModel.isNumberValid.observe { [weak self] isValid in
+            self?.numberError.isHidden = (isValid as? Bool ?? false)
         }.putIn(disposeBag: disposeBag)
     }
     

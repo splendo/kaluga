@@ -35,17 +35,13 @@ class ExampleViewController : UIViewController {
         viewModel.clear()
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.didResume()
         
         viewModel.observeTabs(stackView: bottomView, disposeBag: disposeBag) { (button: UIButton, action: @escaping () -> KotlinUnit) in
             button.addAction { let _ = action() }
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.didResume()
     }
     
     override func viewDidDisappear(_ animated: Bool) {

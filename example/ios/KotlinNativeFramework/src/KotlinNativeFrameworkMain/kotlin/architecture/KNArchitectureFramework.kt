@@ -98,7 +98,7 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
     val selectedButtonDisposeBag = DisposeBag()
     tabs.observe { tabs ->
         selectedButtonDisposeBag.dispose()
-        stackView.arrangedSubviews.forEach { subView -> stackView.removeArrangedSubview(subView as UIView) }
+        stackView.arrangedSubviews.forEach { subView -> (subView as UIView).removeFromSuperview() }
         tabs.forEach { tab ->
             val button = UIButton()
             button.setTitle(tab.title, UIControlStateNormal)

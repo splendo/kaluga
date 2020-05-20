@@ -17,17 +17,25 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import kotlin.native.internal.GC
+
+typealias DisposeHandler = () -> Unit
+
 /**
  * Reference to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
-class Disposable(private val onDispose: () -> Unit) {
+class Disposable(onDispose: DisposeHandler) {
+
+    private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
     fun dispose() {
-        onDispose.invoke()
+        disposeHandler?.invoke()
+        disposeHandler = null
+        GC.collect()
     }
 
     /**
