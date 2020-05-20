@@ -49,7 +49,8 @@ class Disposable(onDispose: DisposeHandler) {
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag]
  */
-class DisposeBag() {
+class DisposeBag {
+
     private val disposables = mutableListOf<Disposable>()
     private val nestedBags = mutableListOf<DisposeBag>()
 

@@ -63,6 +63,7 @@ dependencies {
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
