@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.flow.BaseFlowable
 import kotlin.properties.Delegates
@@ -36,7 +34,9 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>
     private val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
         val result = new as? ObservableResult.Result<T> ?: return@observable
-        observers.forEach { it.invoke(result.value) }
+        observers.forEach {
+            it.invoke(result.value)
+        }
     }
 
     /**

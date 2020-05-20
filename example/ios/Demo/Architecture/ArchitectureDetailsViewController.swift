@@ -28,7 +28,7 @@ class ArchitectureDetailsViewController: UIViewController {
     }
     
     var viewModel: SharedArchitectureDetailsViewModel!
-    private var lifecycle: ArchitectureLifecycle!
+    private var lifecycleManager: ArchitectureLifecycleManager!
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
@@ -36,13 +36,13 @@ class ArchitectureDetailsViewController: UIViewController {
     @IBOutlet weak var closeButton: UIButton!
     
     deinit {
-        lifecycle.unbind()
+        lifecycleManager.unbind()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycle = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
             self?.viewModel.name.observe { [weak self] name in
                 self?.nameLabel.text = name as? String
             }.putIn(disposeBag: disposeBag)

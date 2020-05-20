@@ -1,5 +1,6 @@
 package com.splendo.kaluga.example.shared.viewmodel
 
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator

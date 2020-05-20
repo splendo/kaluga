@@ -132,9 +132,10 @@ sealed class NavigationSpec {
             object Add : Type()
 
             /**
-             * Replaces the current content from the container before adding the new view
+             * Replaces the current content matching a tag from the container before adding the new view
+             * @param tag Tag added to the [UIView] of the [UIViewController] to determine whether it should be replaced
              */
-            object Replace : Type()
+            data class Replace(val tag: Long) : Type()
         }
     }
 

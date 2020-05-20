@@ -7,7 +7,7 @@ import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.architecture.viewmodel.Lifecycle
+import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -30,7 +30,7 @@ class KNArchitectureFramework {
         info: () -> UIViewController): ExampleViewModel {
         return ExampleViewModel(Navigator(parent) { action ->
             NavigationSpec.Nested(
-                NavigationSpec.Nested.Type.Replace,
+                NavigationSpec.Nested.Type.Replace(1),
                 containerView,
                 when (action) {
                     is ExampleTabNavigation.FeatureList -> featuresList
@@ -97,7 +97,7 @@ class KNArchitectureFramework {
         })
     }
 
-    fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): Lifecycle {
+    fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
 
@@ -118,6 +118,7 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
                 button.setSelected(selectedTab == tab)
             }.putIn(selectedButtonDisposeBag)
             addOnPressed(button) {
+                debug("On Pressed")
                 this.tab.post(tab)
             }
             stackView.addArrangedSubview(button)

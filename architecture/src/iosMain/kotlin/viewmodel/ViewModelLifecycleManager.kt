@@ -44,7 +44,6 @@ class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
         onUnbind?.invoke()
         onUnbind = null
     }
-
 }
 
 /**
@@ -75,7 +74,6 @@ internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewMod
         viewModel.didPause()
         lifecycleManager.disposeBag.dispose()
     }
-
 }
 
 /**
@@ -85,7 +83,7 @@ internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewMod
  * @param onLifecycle This callback is invoked on each start of a new lifecycle.
  * @return The [LifecycleManager] bound to the [BaseViewModel]
  */
-fun <VM: BaseViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
+fun <VM : BaseViewModel> VM.addLifecycleManager(parent: UIViewController, onLifecycle: onLifeCycleChanged): LifecycleManager {
     val lifecycleManager = ViewModelLifecycleManager(this, onLifecycle)
     parent.addChildViewController(lifecycleManager)
     parent.view.addSubview(lifecycleManager.view)

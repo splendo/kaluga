@@ -28,26 +28,21 @@ class ExampleViewController : UIViewController {
                                                                                                   featuresList: { self.featuresListController },
                                                                                                   info:  { self.infoViewController })
     
-    
-    let disposeBag = ArchitectureDisposeBag()
+    var lifecycleManager: ArchitectureLifecycleManager!
     
     deinit {
-        viewModel.clear()
+        lifecycleManager.unbind()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.didResume()
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewModel.observeTabs(stackView: bottomView, disposeBag: disposeBag) { (button: UIButton, action: @escaping () -> KotlinUnit) in
-            button.addAction { let _ = action() }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+            guard let viewModel = self?.viewModel, let bottomView = self?.bottomView else { return }
+            viewModel.observeTabs(stackView: bottomView, disposeBag: disposeBag) { (button: UIButton, action: @escaping () -> KotlinUnit) in
+                button.addAction { let _ = action() }
+            }
         }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        viewModel.didPause()
-        disposeBag.dispose()
     }
     
 }

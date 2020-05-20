@@ -12,30 +12,26 @@ import KotlinNativeFramework
 class FeaturesListViewController : UITableViewController {
     
     private lazy var viewModel: SharedFeatureListViewModel = KNArchitectureFramework().createFeatureListViewModel(parent: self)
-    private let disposeBag = ArchitectureDisposeBag()
+    private var lifecycleManager: ArchitectureLifecycleManager!
 
     private var features = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
     
     deinit {
-        viewModel.clear()
+        lifecycleManager.unbind()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.didResume()
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewModel.observeFeatures(disposeBag: disposeBag) { (features: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
-            self.features = features
-            self.onSelected = onSelected
-            self.tableView.reloadData()
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+            guard let viewModel = self?.viewModel else { return }
+            viewModel.observeFeatures(disposeBag: disposeBag) { (features: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+                self?.features = features
+                self?.onSelected = onSelected
+                self?.tableView.reloadData()
+            }
         }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        viewModel.didPause()
-        disposeBag.dispose()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {
