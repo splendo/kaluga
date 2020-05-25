@@ -20,8 +20,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 /*
 
@@ -156,7 +156,7 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private fun unsubscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
-            MainScope().launch {
+            runBlocking(Dispatchers.Main.immediate) {
                 dialogState.removeObservers(uiContextData.lifecycleOwner)
             }
         }
@@ -164,14 +164,14 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
-            dialogState.observe(uiContextData.lifecycleOwner, Observer {
-                MainScope().launch {
+            runBlocking(Dispatchers.Main.immediate) {
+                dialogState.observe(uiContextData.lifecycleOwner, Observer {
                     when (it) {
                         is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
                         is DialogState.Gone -> loadingDialog.dismiss()
                     }
-                }
-            })
+                })
+            }
         }
     }
 
@@ -179,11 +179,11 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         loadingDialog.presentCompletionBlock = completion
-        dialogState.value = DialogState.Visible
+        dialogState.postValue(DialogState.Visible)
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
         loadingDialog.dismissCompletionBlock = completion
-        dialogState.value = DialogState.Gone
+        dialogState.postValue(DialogState.Gone)
     }
 }

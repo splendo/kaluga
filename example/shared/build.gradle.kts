@@ -18,7 +18,6 @@ kotlin {
     sourceSets {
         commonMain {
             val ext =  (gradle as ExtensionAware).extra
-            var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
 
