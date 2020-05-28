@@ -42,7 +42,7 @@ interface Formatted<T, Self : Formatted<T, Self>> {
      * The most common implementation will be just call constructor with the same parameters
      * In future versions automatic generation of this method will be implemented
      *
-     * @return Concrete formatter
+     * @return Concrete formatted
      */
     fun spawn(value: T?, formatter: Formatter<T>, modifier: Modifier<T>?): Self
 
