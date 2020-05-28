@@ -27,6 +27,7 @@ internal class FormattedTests {
     lateinit var formatter: MockFormatter
     lateinit var modifier: MockModifier
     lateinit var formatted: MockFormatted
+
     @BeforeTest
     fun initialize() {
         initialValue = Dummy()

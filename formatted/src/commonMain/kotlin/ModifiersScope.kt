@@ -24,7 +24,9 @@ package com.splendo.kaluga.formatted
  *
  * @property list list of modifiers
  */
-class ModifiersScope<T>(val list: List<Modifier<T>>) : Modifier<T> {
+class ModifiersScope<T>(private val list: List<Modifier<T>>) : Modifier<T> {
+    constructor(vararg list: Modifier<T>) : this(list.toList())
+
     /**
      * Applies modifiers in the same order as they are in the [list]
      */
