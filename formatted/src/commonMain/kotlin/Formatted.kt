@@ -1,3 +1,20 @@
+/*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
 package com.splendo.kaluga.formatted
 
 /*
@@ -31,7 +48,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
  * @property formatter [Formatter] which should be used to represent [value]
  * @property modifier Optional property can be used if there are some limitation for value which should be formatted. For instance we can show 0 length if it is negative
  */
-interface Formatted <T, Self : Formatted<T, Self>> {
+interface Formatted<T, Self : Formatted<T, Self>> {
     val value: T?
     val formatter: Formatter<T>
     val modifier: Modifier<T>?

@@ -1,3 +1,20 @@
+/*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
 package com.splendo.kaluga.datetimewithklock
 
 import com.soywiz.klock.DateFormat
@@ -11,6 +28,7 @@ class KlockDateTimeFormatter(override val format: String, override val defaultTi
     private companion object {
         const val millisInAnHour = 1000 * 60 * 60
     }
+
     private val dateFormat = DateFormat(format)
     override fun value(string: String): com.splendo.kaluga.datetime.DateTime {
         val dt = dateFormat.parse(string)
@@ -29,12 +47,12 @@ class KlockDateTimeFormatter(override val format: String, override val defaultTi
     override fun string(value: com.splendo.kaluga.datetime.DateTime): String =
         if (!includedTimeZone(dateFormat.format)) {
             DateTime(unixMillis = value.timestamp + defaultTimeZoneOffset * millisInAnHour).format(dateFormat)
-            } else {
+        } else {
             val dateTime = DateTime(unixMillis = value.timestamp)
             val timezoneOffset = TimezoneOffset((defaultTimeZoneOffset * millisInAnHour).toDouble())
             val dateTimeTz = DateTimeTz.local(dateTime, timezoneOffset)
             dateTimeTz.format(dateFormat)
-            }
+        }
 
     private val timezoneRegEx = "(z|z{3}|Z|x{1,3}|X{1,3})".toRegex()
     private fun includedTimeZone(format: String) =
