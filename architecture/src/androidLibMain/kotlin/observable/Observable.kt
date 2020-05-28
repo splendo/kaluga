@@ -24,18 +24,17 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>> {
+actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
 
     /**
      * [LiveData] syncing with this observable
@@ -51,8 +50,8 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>
         liveData.observe(owner, observer)
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
-        return liveData.value?.let { ObservableResult.Result(it) } ?: ObservableResult.Nothing()
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
+        return liveData.value?.let { ObservableOptional.Value(it) } ?: ObservableOptional.Nothing()
     }
 }
 
@@ -82,7 +81,7 @@ class FlowObservable<T>(flow: Flow<T>, coroutineScope: CoroutineScope) : Observa
     override val liveData: LiveData<T> = flow.asLiveData(coroutineScope.coroutineContext)
 }
 
-actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
+actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
 
     protected abstract val providerLiveData: LiveData<T>
     private val mediatorLiveData = MediatorLiveData<T>()
@@ -97,12 +96,15 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : O
         mediatorLiveData.addSource(providerLiveData) {
             value -> mediatorLiveData.postValue(value)
         }
+        // Start observing the LiveData for any changes to propagate to the two way binding
+        // Waits until the coroutine is canceled to remove the observer
         coroutineScope.launch {
             liveData.observeForever(liveDataObserver)
-            while (isActive) {
-                delay(100)
-            }
-        }.invokeOnCompletion { liveData.removeObserver(liveDataObserver) }
+            val neverCompleting = EmptyCompletableDeferred()
+            neverCompleting.await()
+        }.invokeOnCompletion {
+            liveData.removeObserver(liveDataObserver)
+        }
     }
 
     /**
@@ -113,12 +115,12 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : O
         liveData.postValue(value)
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
-        return liveData.value?.let { ObservableResult.Result(it) } ?: ObservableResult.Nothing()
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
+        return liveData.value?.let { ObservableOptional.Value(it) } ?: ObservableOptional.Nothing()
     }
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableResult<T>) {
-        val newValue = value as? ObservableResult.Result ?: return
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
+        val newValue = value as? ObservableOptional.Value ?: return
         liveData.postValue(newValue.value)
     }
 }

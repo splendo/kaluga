@@ -21,7 +21,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
-import com.splendo.kaluga.architecture.observable.ObservableResult
+import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.observable.toSubject
@@ -62,9 +62,9 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
     }
 
     fun onShowDetailsPressed() {
-        val nameResult: ObservableResult<String> by nameInput
+        val nameResult: ObservableOptional<String> by nameInput
         val name: String? by nameResult
-        val numberResult: ObservableResult<String> by numberInput
+        val numberResult: ObservableOptional<String> by numberInput
         val number: String? by numberResult
         coroutineScope.launch {
             if(isValid.first()) {

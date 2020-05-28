@@ -38,7 +38,7 @@ class Disposable(onDispose: DisposeHandler) {
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    fun putIn(disposeBag: DisposeBag) {
+    fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }

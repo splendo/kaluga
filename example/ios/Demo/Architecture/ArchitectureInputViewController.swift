@@ -40,27 +40,27 @@ class ArchitectureInputViewController: UIViewController  {
         
         viewModel.nameHeader.observe { [weak self] header in
             self?.nameLabel.text = header as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.nameInput.observe { [weak self] name in
             self?.nameInput.text = name as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.isNameValid.observe { [weak self] isValid in
             self?.nameError.isHidden = (isValid as? Bool ?? false)
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.numberHeader.observe { [weak self] header in
             self?.numberLabel.text = header as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.numberInput.observe { [weak self] number in
             self?.numberInput.text = number as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.isNumberValid.observe { [weak self] isValid in
             self?.numberError.isHidden = (isValid as? Bool ?? false)
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

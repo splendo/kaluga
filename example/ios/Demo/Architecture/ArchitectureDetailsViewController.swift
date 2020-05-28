@@ -46,11 +46,11 @@ class ArchitectureDetailsViewController: UIViewController {
         
         viewModel.name.observe { [weak self] name in
             self?.nameLabel.text = name as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
         
         viewModel.number.observe { [weak self] number in
             self?.numberLabel.text = number as? String
-        }.putIn(disposeBag: disposeBag)
+        }.addTo(disposeBag: disposeBag)
     }
     
     override func viewDidDisappear(_ animated: Bool) {

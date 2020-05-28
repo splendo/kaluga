@@ -29,38 +29,38 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>> {
+actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
 
     private val observers = mutableListOf<(T) -> Unit>()
-    protected var value: ObservableResult<T> by Delegates.observable(ObservableResult.Nothing()) { _, _, new ->
-        val result = new as? ObservableResult.Result<T> ?: return@observable
+    protected var value: ObservableOptional<T> by Delegates.observable(ObservableOptional.Nothing()) { _, _, new ->
+        val result = new as? ObservableOptional.Value<T> ?: return@observable
         observers.forEach { it.invoke(result.value) }
     }
 
     fun observe(onNext: (T) -> Unit): Disposable {
         observers.add(onNext)
         val lastResult = value
-        if (lastResult is ObservableResult.Result<T>) {
+        if (lastResult is ObservableOptional.Value<T>) {
             onNext.invoke(lastResult.value)
         }
         return Disposable { observers.remove(onNext) }
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableResult<T> {
+    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
         return value
     }
 }
 
 class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     init {
-        value = ObservableResult.Result(initialValue)
+        value = ObservableOptional.Value(initialValue)
     }
 }
 
 class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
-        value = ObservableResult.Result(initialValue)
+        value = ObservableOptional.Value(initialValue)
     }
 }
 
@@ -69,17 +69,17 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
     init {
         coroutineScope.launch(MainQueueDispatcher) {
             flow.collect {
-                value = ObservableResult.Result(it)
+                value = ObservableOptional.Value(it)
             }
         }
     }
 }
 
-actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableResult<T>> {
+actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
 
     abstract fun post(newValue: T)
 
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableResult<T>) {
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
         this.value = value
     }
 }
@@ -87,11 +87,11 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, Obse
 class DefaultSubject<T>(initialValue: T) : Subject<T>() {
 
     init {
-        value = ObservableResult.Result(initialValue)
+        value = ObservableOptional.Value(initialValue)
     }
 
     override fun post(newValue: T) {
-        value = ObservableResult.Result(newValue)
+        value = ObservableOptional.Value(newValue)
     }
 }
 
@@ -100,12 +100,12 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
     private var remoteValue by observableProperty
 
     init {
-        value = ObservableResult.Result(remoteValue)
+        value = ObservableOptional.Value(remoteValue)
     }
 
     override fun post(newValue: T) {
         remoteValue = newValue
-        value = ObservableResult.Result(newValue)
+        value = ObservableOptional.Value(newValue)
     }
 }
 
@@ -114,7 +114,7 @@ class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutin
     init {
         coroutineScope.launch(MainQueueDispatcher) {
             flowable.flow().collect {
-                value = ObservableResult.Result(it)
+                value = ObservableOptional.Value(it)
             }
         }
     }

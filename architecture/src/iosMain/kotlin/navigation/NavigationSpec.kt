@@ -78,22 +78,22 @@ sealed class NavigationSpec {
      * @param presentationStyle The [UIModalPresentationStyle] to present the viewcontroller in. Defaults to [UIModalPresentationAutomatic]
      * @param transitionStyle The [UIModalTransitionStyle] to transition to. Defaults to [UIModalTransitionStyleCoverVertical]
      * @param present Function to create the [UIViewController] to present
-     * @param complete Optional function to call when presentation has completed
+     * @param completion Optional function to call when presentation has completed
      */
     data class Present(
         val animated: Boolean = true,
         val presentationStyle: UIModalPresentationStyle = UIModalPresentationAutomatic,
         val transitionStyle: UIModalTransitionStyle = UIModalTransitionStyleCoverVertical,
         val present: () -> UIViewController,
-        val complete: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null
     ) : NavigationSpec()
 
     /**
      * Dismisses the parent.
      * @param animated Specifies whether transition should be animated
-     * @param complete Optional function to call when dismissal has completed
+     * @param completion Optional function to call when dismissal has completed
      */
-    data class Dismiss(val animated: Boolean = false, val complete: (() -> Unit)? = null) : NavigationSpec()
+    data class Dismiss(val animated: Boolean = false, val completion: (() -> Unit)? = null) : NavigationSpec()
 
     /**
      * Lets the parent show a [UIViewController] using [UIViewController.showViewController]
@@ -144,7 +144,7 @@ sealed class NavigationSpec {
      * @param navigationDelegate The [UINavigationControllerDelegateProtocol] added to the [UIImagePickerController]
      * @param imagePickerDelegate The [UIImagePickerControllerDelegateProtocol] added to the [UIImagePickerController]
      * @param animated Specifies whether transition should be animated
-     * @param complete Optional function called when presentation is completed
+     * @param completion Optional function called when presentation is completed
      */
     data class ImagePicker(
         val sourceType: UIImagePickerControllerSourceType = UIImagePickerControllerSourceType.UIImagePickerControllerSourceTypePhotoLibrary,
@@ -152,7 +152,7 @@ sealed class NavigationSpec {
         val navigationDelegate: UINavigationControllerDelegateProtocol,
         val imagePickerDelegate: UIImagePickerControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null
     ) : NavigationSpec() {
 
         @Suppress("CONFLICTING_OVERLOADS")
@@ -220,13 +220,13 @@ sealed class NavigationSpec {
      * @param emailSettings [EmailSettings] for composing the email
      * @param delegate Optional [MFMailComposeViewControllerDelegateProtocol] added to the [MFMailComposeViewController]
      * @param animated Specifies whether the transition should be animated
-     * @param complete Optional function called when presentation is completed
+     * @param completion Optional function called when presentation is completed
      */
     data class Email(
         val emailSettings: EmailSettings,
         val delegate: MFMailComposeViewControllerDelegateProtocol? = null,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null
     ) : NavigationSpec() {
 
         /**
@@ -272,14 +272,14 @@ sealed class NavigationSpec {
      * @param documentSelectorAppearance The [DocumentSelectorAppearance] for configuring the appearance of the selector
      * @param delegate The [UIDocumentBrowserViewControllerDelegateProtocol] added to the [UIDocumentBrowserViewController]
      * @param animated Specifies whether transition is animated
-     * @param complete Optional function called when presentation is completed
+     * @param completion Optional function called when presentation is completed
      */
     data class DocumentSelector(
         val documentSelectorSettings: DocumentSelectorSettings,
         val documentSelectorAppearance: DocumentSelectorAppearance,
         val delegate: UIDocumentBrowserViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null
     ) : NavigationSpec() {
 
         /**
@@ -316,13 +316,13 @@ sealed class NavigationSpec {
      * @param messageSettings The [MessageSettings] for configuring the message
      * @param delegate The [MFMessageComposeViewControllerDelegateProtocol] to add to the [MFMessageComposeViewController]
      * @param animated Specifies whether transition is animated
-     * @param complete Optional function called when presentation is completed
+     * @param completion Optional function called when presentation is completed
      */
     data class Message(
         val messageSettings: MessageSettings,
         val delegate: MFMessageComposeViewControllerDelegateProtocol,
         val animated: Boolean = false,
-        val complete: (() -> Unit)? = null
+        val completion: (() -> Unit)? = null
     ) : NavigationSpec() {
 
         /**

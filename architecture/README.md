@@ -35,9 +35,9 @@ On iOS automatic setup was omitted due to ObjC classes requiring to be final.
 To use it, the user must manually call the ViewModels `didResume`/`didPause` in `viewDidAppear`/`viewDidDisappear`.
 
 ## Observables
-Kaluga supports `Observables` (one way binding) and `Subjects` (Two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
+Kaluga supports data binding using `Observables` (one way binding) and `Subjects` (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
 Subjects can be created using either an `ObservableProperty` or `BaseFlowable`. All these can easily be converted using `asObservable()` or `asSubject()` respectively.
-Observable values can be accessed through delegation. To account for the difference between empty values and optional values an `ObservableResult` containing either the value or a `Nothing` type is returned.
+Observable values can be accessed through delegation. To account for the difference between uninitialized values and optional values an `ObservableOptional` containing either the value or a `Nothing` type is returned.
 
 ```kotlin
 class SomeViewModel : BaseViewModel() {
@@ -48,17 +48,20 @@ class SomeViewModel : BaseViewModel() {
     val flowableSubject = flowable.toSubject(coroutineScope)
 
     fun readValue(defaultValue: Int): Int? {
-        val currentFlowResult: ObservableResult<Int> by flowObservable
+        val currentFlowResult: ObservableOptional<Int> by flowObservable
         val currentFlowValue: Int? by  currentFlowResult
         return currentFlowValue
     }
 
     fun postValue(value: Int) {
-        var currentSubjectResult: ObservableResult<Int> by flowableSubject
-        currentSubjectResult = ObservableResult.Result(value) 
+        var currentSubjectResult: ObservableOptional<Int> by flowableSubject
+        currentSubjectResult = ObservableOptional.Value(value) 
     }
 }
 ```
+
+On the platform level observables can be observed. The platform specific observer will be notified of any changes to the observable.
+Observables are stateful, so any new observer will receive the last emitted value.
 
 On Android both Observable and Subject are easily converted into `LiveData` objects (Subject being `MutableLiveData`), allowing lifecycle-aware binding.
 
@@ -76,10 +79,9 @@ init {
 }
 ```
 
-On iOS no such option exists.
-Instead observing works similar to `ReactiveX` solutions. Value changes can be observed using `observe(onNext: ...))`.
+On iOS value changes can be observed using `observe(onNext: ...))`.
 Calling this returns a `Disposable` object. The caller is responsible for disposing the disposable after the object should no longer be observed using `dispose()`.
-A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.putIn()` to add a Disposable to a DisposeBag.
+A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.addTo()` to add a Disposable to a DisposeBag.
 DisposeBags can be emptied using `dispose()`. To post new data to the Subject the `post()` method can be called.
 
 ```kotlin
@@ -91,7 +93,7 @@ val disposeBag = DisposeBag()
 init {
     liveData.onNext{value ->
         subject.post(value)
-    }.putIn(disposeBag)
+    }.addTo(disposeBag)
 
     // do Other stuff
 

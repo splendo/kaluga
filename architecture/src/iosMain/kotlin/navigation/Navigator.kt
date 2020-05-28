@@ -82,29 +82,33 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
-        parent.get()?.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
+        val parent = assertParent() ?: return
+        assert(parent.navigationController != null)
+        parent.navigationController?.pushViewController(pushSpec.push(), pushSpec.animated)
     }
 
     private fun popViewController(popSpec: NavigationSpec.Pop) {
+        val parent = assertParent() ?: return
+        assert(parent.navigationController != null)
         popSpec.to?.let {
-            parent.get()?.navigationController?.popToViewController(it, popSpec.animated)
-        } ?: parent.get()?.navigationController?.popViewControllerAnimated(popSpec.animated)
+            parent.navigationController?.popToViewController(it, popSpec.animated)
+        } ?: parent.navigationController?.popViewControllerAnimated(popSpec.animated)
     }
 
     private fun presentViewController(presentSpec: NavigationSpec.Present) {
         val toPresent = presentSpec.present()
         toPresent.modalPresentationStyle = presentSpec.presentationStyle
         toPresent.modalTransitionStyle = presentSpec.transitionStyle
-        parent.get()?.presentViewController(toPresent, presentSpec.animated) { presentSpec.complete?.invoke() }
+        assertParent()?.presentViewController(toPresent, presentSpec.animated) { presentSpec.completion?.invoke() }
     }
 
     private fun dismissViewController(dismissSpec: NavigationSpec.Dismiss) {
-        parent.get()?.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.complete?.invoke() }
+        assertParent()?.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.completion?.invoke() }
     }
 
     private fun showViewController(showSpec: NavigationSpec.Show) {
         val toShow = showSpec.show()
-        val parent = parent.get() ?: return
+        val parent = assertParent() ?: return
         if (showSpec.detail) {
             parent.showDetailViewController(toShow, parent)
         } else {
@@ -113,11 +117,11 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun segueToViewController(segueSpec: NavigationSpec.Segue, bundle: NavigationBundle<*>?) {
-        parent.get()?.performSegueWithIdentifier(segueSpec.identifier, bundle)
+        assertParent()?.performSegueWithIdentifier(segueSpec.identifier, bundle)
     }
 
     private fun embedNestedViewController(nestedSpec: NavigationSpec.Nested) {
-        val parent = parent.get() ?: return
+        val parent = assertParent() ?: return
         if (nestedSpec.type == NavigationSpec.Nested.Type.Replace) {
             parent.childViewControllers.map { it as UIViewController }.forEach {
                 it.willMoveToParentViewController(null)
@@ -139,18 +143,24 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun presentImagePicker(imagePickerSpec: NavigationSpec.ImagePicker) {
-        if (!UIImagePickerController.isSourceTypeAvailable(imagePickerSpec.sourceType)) return
+        val isSourceTypeAvailable = UIImagePickerController.isSourceTypeAvailable(imagePickerSpec.sourceType)
+        assert(isSourceTypeAvailable)
+        if (!isSourceTypeAvailable) return
         val mediaTypes = imagePickerSpec.mediaType.map { it.typeString?.pointed.toString() }
-        if (UIImagePickerController.availableMediaTypesForSourceType(imagePickerSpec.sourceType)?.containsAll(mediaTypes) != true) return
+        val isMediaTypesAvailable = UIImagePickerController.availableMediaTypesForSourceType(imagePickerSpec.sourceType)?.containsAll(mediaTypes) == true
+        assert(isMediaTypesAvailable)
+        if (!isMediaTypesAvailable) return
         val pickerVC = UIImagePickerController()
         pickerVC.sourceType = imagePickerSpec.sourceType
         pickerVC.mediaTypes = mediaTypes
         pickerVC.delegate = imagePickerSpec.delegate
-        pickerVC.presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.complete?.invoke() }
+        assertParent()?.presentViewController(pickerVC, imagePickerSpec.animated) { imagePickerSpec.completion?.invoke() }
     }
 
     private fun presentMailComposer(mailSpec: NavigationSpec.Email) {
-        if (!MFMailComposeViewController.canSendMail()) return
+        val canSendMail = MFMailComposeViewController.canSendMail()
+        assert(canSendMail)
+        if (!canSendMail) return
         val composeVC = MFMailComposeViewController()
         composeVC.mailComposeDelegate = mailSpec.delegate
 
@@ -169,7 +179,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             composeVC.addAttachmentData(it.data, it.mimeType, it.fileName)
         }
 
-        parent.get()?.presentViewController(composeVC, mailSpec.animated) { mailSpec.complete?.invoke() }
+        assertParent()?.presentViewController(composeVC, mailSpec.animated) { mailSpec.completion?.invoke() }
     }
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
@@ -189,11 +199,13 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
 
         browserVc.delegate = browserSpec.delegate
 
-        parent.get()?.presentViewController(browserVc, browserSpec.animated) { browserSpec.complete?.invoke() }
+        assertParent()?.presentViewController(browserVc, browserSpec.animated) { browserSpec.completion?.invoke() }
     }
 
     private fun presentMessageComposer(messageSpec: NavigationSpec.Message) {
-        if (!MFMessageComposeViewController.canSendText()) return
+        val canSendText = MFMessageComposeViewController.canSendText()
+        assert(canSendText)
+        if (!canSendText) return
         val composeVC = MFMessageComposeViewController()
         composeVC.messageComposeDelegate = messageSpec.delegate
 
@@ -216,7 +228,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             }
         }
 
-        parent.get()?.presentViewController(composeVC, messageSpec.animated) { messageSpec.complete?.invoke() }
+        assertParent()?.presentViewController(composeVC, messageSpec.animated) { messageSpec.completion?.invoke() }
     }
 
     private fun openDialer(phoneSpec: NavigationSpec.Phone) {
@@ -236,4 +248,6 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             UIApplication.sharedApplication.openURL(it)
         }
     }
+
+    private fun assertParent() = parent.get().also { assert(it != null) }
 }
