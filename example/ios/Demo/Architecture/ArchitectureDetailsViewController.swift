@@ -28,7 +28,7 @@ class ArchitectureDetailsViewController: UIViewController {
     }
     
     var viewModel: SharedArchitectureDetailsViewModel!
-    private let disposeBag = ArchitectureDisposeBag()
+    private var lifecycleManager: ArchitectureLifecycleManager!
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!
@@ -36,28 +36,21 @@ class ArchitectureDetailsViewController: UIViewController {
     @IBOutlet weak var closeButton: UIButton!
     
     deinit {
-        viewModel.clear()
+        lifecycleManager.unbind()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewModel.didResume()
-        
-        viewModel.name.observe { [weak self] name in
-            self?.nameLabel.text = name as? String
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.number.observe { [weak self] number in
-            self?.numberLabel.text = number as? String
-        }.addTo(disposeBag: disposeBag)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        viewModel.didPause()
-        disposeBag.dispose()
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
+            self?.viewModel.name.observe { name in
+                self?.nameLabel.text = name as? String
+            }.addTo(disposeBag: disposeBag)
+            
+            self?.viewModel.number.observe { number in
+                self?.numberLabel.text = number as? String
+            }.addTo(disposeBag: disposeBag)
+        }
     }
     
     @objc @IBAction func onInversePressed(sender: Any?) {

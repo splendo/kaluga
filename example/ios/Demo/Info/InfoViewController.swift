@@ -12,30 +12,30 @@ import KotlinNativeFramework
 class InfoViewController : UITableViewController {
     
     private lazy var viewModel: SharedInfoViewModel = KNArchitectureFramework().createInfoViewModel(parent: self)
-    private let disposeBag = ArchitectureDisposeBag()
 
     private var buttons = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
+    private var lifecycleManager: ArchitectureLifecycleManager!
     
     deinit {
-        viewModel.clear()
+        lifecycleManager.unbind()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        viewModel.didResume()
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewModel.observeButtons(disposeBag: disposeBag) { (buttons: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
-            self.buttons = buttons
-            self.onSelected = onSelected
-            self.tableView.reloadData()
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+            
+            guard let viewModel = self?.viewModel else {
+                return
+            }
+            
+            viewModel.observeButtons(disposeBag: disposeBag) { (buttons: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+                self?.buttons = buttons
+                self?.onSelected = onSelected
+                self?.tableView.reloadData()
+            }
         }
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        viewModel.didPause()
-        disposeBag.dispose()
     }
     
     override func numberOfSections(in tableView: UITableView) -> Int {

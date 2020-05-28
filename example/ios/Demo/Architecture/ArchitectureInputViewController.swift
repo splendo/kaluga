@@ -26,48 +26,45 @@ class ArchitectureInputViewController: UIViewController  {
             self?.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
         }
     }
+    private var lifecycleManager: ArchitectureLifecycleManager!
     
     deinit {
-        viewModel.clear()
+        lifecycleManager.unbind()
     }
     
-    private let disposeBag = ArchitectureDisposeBag()
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        viewModel.didResume()
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
         
-        viewModel.nameHeader.observe { [weak self] header in
-            self?.nameLabel.text = header as? String
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.nameInput.observe { [weak self] name in
-            self?.nameInput.text = name as? String
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.isNameValid.observe { [weak self] isValid in
-            self?.nameError.isHidden = (isValid as? Bool ?? false)
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.numberHeader.observe { [weak self] header in
-            self?.numberLabel.text = header as? String
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.numberInput.observe { [weak self] number in
-            self?.numberInput.text = number as? String
-        }.addTo(disposeBag: disposeBag)
-        
-        viewModel.isNumberValid.observe { [weak self] isValid in
-            self?.numberError.isHidden = (isValid as? Bool ?? false)
-        }.addTo(disposeBag: disposeBag)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        viewModel.didPause()
-        disposeBag.dispose()
+            guard let viewModel = self?.viewModel else {
+                return
+            }
+            
+            viewModel.nameHeader.observe { header in
+                self?.nameLabel.text = header as? String
+            }.addTo(disposeBag: disposeBag)
+            
+            viewModel.nameInput.observe { name in
+                self?.nameInput.text = name as? String
+            }.addTo(disposeBag: disposeBag)
+            
+            viewModel.isNameValid.observe { isValid in
+                self?.nameError.isHidden = (isValid as? Bool ?? false)
+            }.addTo(disposeBag: disposeBag)
+            
+            viewModel.numberHeader.observe { header in
+                self?.numberLabel.text = header as? String
+            }.addTo(disposeBag: disposeBag)
+            
+            viewModel.numberInput.observe { number in
+                self?.numberInput.text = number as? String
+            }.addTo(disposeBag: disposeBag)
+            
+            viewModel.isNumberValid.observe { isValid in
+                self?.numberError.isHidden = (isValid as? Bool ?? false)
+            }.addTo(disposeBag: disposeBag)
+        }
     }
     
     @objc @IBAction func onShowDetailsPressed(sender: Any?) {
