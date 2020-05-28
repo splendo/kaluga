@@ -28,12 +28,12 @@ import kotlinx.coroutines.flow.Flow
 /**
  * Result type for an [Observable]. Used to allow for the distinction between `null` and optional values
  */
-sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
+sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 
     /**
      * The [Observable] has a result
      */
-    data class Result<T>(val value: T) : ObservableResult<T>() {
+    data class Value<T>(val value: T) : ObservableOptional<T>() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
             return value
         }
@@ -42,7 +42,7 @@ sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
     /**
      * The Observable does not have a result
      */
-    class Nothing<T> : ObservableResult<T>() {
+    class Nothing<T> : ObservableOptional<T>() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): T? {
             return null
         }
@@ -52,12 +52,12 @@ sealed class ObservableResult<T> : ReadOnlyProperty<Any?, T?> {
 /**
  * Property that can be observed
  */
-expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableResult<T>>
+expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>>
 
 /**
  * [Observable] that can change its data
  */
-expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableResult<T>>
+expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableOptional<T>>
 
 expect fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T>
 

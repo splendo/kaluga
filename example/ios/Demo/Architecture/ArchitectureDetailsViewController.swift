@@ -43,13 +43,13 @@ class ArchitectureDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
-            self?.viewModel.name.observe { [weak self] name in
+            self?.viewModel.name.observe { name in
                 self?.nameLabel.text = name as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            self?.viewModel.number.observe { [weak self] number in
+            self?.viewModel.number.observe { number in
                 self?.numberLabel.text = number as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
         }
     }
     

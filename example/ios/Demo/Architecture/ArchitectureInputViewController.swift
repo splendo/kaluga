@@ -41,29 +41,29 @@ class ArchitectureInputViewController: UIViewController  {
                 return
             }
             
-            viewModel.nameHeader.observe { [weak self] header in
+            viewModel.nameHeader.observe { header in
                 self?.nameLabel.text = header as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            viewModel.nameInput.observe { [weak self] name in
+            viewModel.nameInput.observe { name in
                 self?.nameInput.text = name as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            viewModel.isNameValid.observe { [weak self] isValid in
+            viewModel.isNameValid.observe { isValid in
                 self?.nameError.isHidden = (isValid as? Bool ?? false)
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            viewModel.numberHeader.observe { [weak self] header in
+            viewModel.numberHeader.observe { header in
                 self?.numberLabel.text = header as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            viewModel.numberInput.observe { [weak self] number in
+            viewModel.numberInput.observe { number in
                 self?.numberInput.text = number as? String
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
             
-            viewModel.isNumberValid.observe { [weak self] isValid in
+            viewModel.isNumberValid.observe { isValid in
                 self?.numberError.isHidden = (isValid as? Bool ?? false)
-            }.putIn(disposeBag: disposeBag)
+            }.addTo(disposeBag: disposeBag)
         }
     }
     

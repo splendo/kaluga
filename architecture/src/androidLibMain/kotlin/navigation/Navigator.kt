@@ -75,6 +75,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToActivity(activitySpec: NavigationSpec.Activity<*>, bundle: NavigationBundle<*>?) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val intent = Intent(activity, activitySpec.activityClass).apply {
             bundle?.let {
@@ -88,6 +89,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         closeSpec.result?.let { resultCode ->
             val data = Intent().apply {
@@ -101,6 +103,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
+        assert(this.fragmentManager != null)
         val fragmentManager = fragmentManager ?: return
         val transaction = fragmentManager.beginTransaction()
 
@@ -122,11 +125,13 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
+        assert(this.fragmentManager != null)
         val fragmentManager = fragmentManager ?: return
         dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
     }
 
     private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val intent = when (cameraSpec.type) {
             is NavigationSpec.Camera.Type.Image -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -143,6 +148,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val settings = emailSpec.emailSettings
         val intent = when (settings.attachments.size) {
@@ -174,6 +180,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToFileSelector(fileSelectorSpec: NavigationSpec.FileSelector) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val settings = fileSelectorSpec.fileSelectorSettings
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
@@ -188,6 +195,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToPhone(phoneSpec: NavigationSpec.Phone) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
 
         val intent = when (phoneSpec.type) {
@@ -203,6 +211,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val intent = when (settingsSpec.type) {
             is NavigationSpec.Settings.Type.General -> Intent(Settings.ACTION_SETTINGS)
@@ -227,6 +236,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val settings = messengerSpec.settings
         val intent = when (settings.attachments.size) {
@@ -251,6 +261,7 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
+        assert(this.activity != null)
         val activity = this.activity ?: return
         val uri = Uri.parse(browserSpec.url.toURI().toString())
         val intent = Intent(Intent.ACTION_VIEW, uri)

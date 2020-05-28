@@ -36,9 +36,7 @@ sealed class NavigationBundleValue<T> {
 
             other as BooleanArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -54,9 +52,7 @@ sealed class NavigationBundleValue<T> {
 
             other as ByteArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -72,9 +68,7 @@ sealed class NavigationBundleValue<T> {
 
             other as CharArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -91,9 +85,7 @@ sealed class NavigationBundleValue<T> {
 
             other as DoubleArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -109,9 +101,7 @@ sealed class NavigationBundleValue<T> {
 
             other as FloatArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -127,9 +117,7 @@ sealed class NavigationBundleValue<T> {
 
             other as IntegerArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -145,9 +133,7 @@ sealed class NavigationBundleValue<T> {
 
             other as LongArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {
@@ -172,9 +158,7 @@ sealed class NavigationBundleValue<T> {
 
             other as ShortArrayValue
 
-            if (!value.contentEquals(other.value)) return false
-
-            return true
+            return value.contentEquals(other.value)
         }
 
         override fun hashCode(): Int {

@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 
 import com.splendo.kaluga.architecture.navigation.*
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.ObservableResult
+import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
@@ -39,18 +39,18 @@ class ArchitectureDetailsViewModel(initialName: String, initialNumber: Int, navi
     private val _number  = subjectOf(initialNumber.toString(), coroutineScope)
     val number: Observable<String> = _number
 
-    private var nameResult: ObservableResult<String> by _name
-    private var numberResult: ObservableResult<String> by _number
+    private var nameResult: ObservableOptional<String> by _name
+    private var numberResult: ObservableOptional<String> by _number
 
     fun onInversePressed() {
         val newName: String? by nameResult
         val newNumber: String? by numberResult
 
         newName?.let {
-            nameResult = ObservableResult.Result(it.reversed())
+            nameResult = ObservableOptional.Value(it.reversed())
         }
         newNumber?.let {
-            numberResult = ObservableResult.Result(it.reversed())
+            numberResult = ObservableOptional.Value(it.reversed())
         }
     }
 

@@ -106,10 +106,10 @@ class KNArchitectureFramework {
 
     fun createArchitectureDetailsViewModel(parent: UIViewController, name: String, number: Int, onDismiss: (String, Int) -> Unit): ArchitectureDetailsViewModel {
         return ArchitectureDetailsViewModel(name, number, Navigator(parent) { action ->
-            NavigationSpec.Dismiss(complete = {
-                val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
-                val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
-                onDismiss(name, number)
+            NavigationSpec.Dismiss(completion = {
+                val finalName = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
+                val finalNumber = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
+                onDismiss(finalName, finalNumber)
             })
         })
     }
@@ -133,14 +133,14 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
             button.setTitleColor(UIColor.grayColor, UIControlStateNormal)
             this.tab.observe { selectedTab ->
                 button.setSelected(selectedTab == tab)
-            }.putIn(selectedButtonDisposeBag)
+            }.addTo(selectedButtonDisposeBag)
             addOnPressed(button) {
                 debug("On Pressed")
                 this.tab.post(tab)
             }
             stackView.addArrangedSubview(button)
         }
-    }.putIn(disposeBag)
+    }.addTo(disposeBag)
     disposeBag.add(selectedButtonDisposeBag)
 }
 
@@ -148,12 +148,12 @@ fun FeatureListViewModel.observeFeatures(disposeBag: DisposeBag, onFeaturesChang
     feature.observe { features ->
         val titles = features.map { feature -> feature.title }
         onFeaturesChanged(titles) { index -> this.onFeaturePressed(features[index]) }
-    }.putIn(disposeBag)
+    }.addTo(disposeBag)
 }
 
 fun InfoViewModel.observeButtons(disposeBag: DisposeBag, onInfoButtonsChanged: (List<String>, (Int) -> Unit) -> Unit) {
     buttons.observe { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
-    }.putIn(disposeBag)
+    }.addTo(disposeBag)
 }
