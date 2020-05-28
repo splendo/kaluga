@@ -1,10 +1,10 @@
 # Architecture
-Adds a Lifecycle aware ViewModel solution with support for Navigation and Observables. Kaluga favours an MVVM based architecture due to its clean delegation between UI and View State.
+Adds a lifecycle aware viewModel solution with support for navigation and observables. Kaluga favours an MVVM based architecture due to its clean delegation between UI and view state.
 
 ## ViewModels
-ViewModels can be created by subclassing the `BaseViewModel` class. The ViewModel runs within its own coroutine scope that exists for the entire lifetime of the ViewModel.
-In addition ViewModels have their own lifecycle, allowing them to the paused and resumed by the view. When the ViewModel is resumed a `CoroutineScope` with a lifecycle limited to the resumed state is provided.
-Launch any coroutines within this scope to automatically cancel when the ViewModel is paused.
+ViewModels can be created by subclassing the `BaseViewModel` class. The viewModel runs within its own coroutine scope that exists for the entire lifetime of the viewModel.
+In addition viewModels have their own lifecycle, allowing them to the paused and resumed by the view. When the viewModel is resumed a `CoroutineScope` with a lifecycle limited to the resumed state is provided.
+Launch any coroutines within this scope to automatically cancel when the viewModel is paused.
 
 ```kotlin
 class SomeViewModel : BaseViewModel() {
@@ -26,19 +26,19 @@ class SomeViewModel : BaseViewModel() {
 }
 ```
 
-On Android the AndroidX `ViewModel` serves as a base. The Viewmodel lifecycle matches onResume/onPause of the `Activity` or `Fragment` that created it.
+On Android the AndroidX `ViewModel` serves as a base. The viewModel lifecycle matches onResume/onPause of the `Activity` or `Fragment` that created it.
 To achieve this, the View should be bound using the `KalugaViewModelLifecycleObserver.bind()` method.
 For convenience default implementations for `Activity`, `Fragment`, and `DialogFragment` exist (`KalugaViewModelActivity`, `KalugaViewModelFragment`, and `KalugaViewModelDialogFragment` respectively).
 Alternatively the user can call `didResume()` and `didPause()` on the ViewModel manually in the `onResume()` and `onPause()` methods.
 
 On iOS automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
-When bound the viewmodel lifecycle is automatically matched with the viewcontrollers `viewDidAppear` and `viewDidDisappear` methods.
-The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound view model.
-Automatic binding is achieved by adding an invisible child `UIViewController` to the bound ViewController.
-If this behaviour is not desired, the user should call `didResume()` and `didPause()` on the ViewModel manually in the `viewDidAppear()` and `viewDidDisappear()` methods.
+When bound the viewModel lifecycle is automatically matched with the viewControllers `viewDidAppear` and `viewDidDisappear` methods.
+The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound viewModel.
+Automatic binding is achieved by adding an invisible child `UIViewController` to the bound viewController.
+If this behaviour is not desired, the user should call `didResume()` and `didPause()` on the viewModel manually in the `viewDidAppear()` and `viewDidDisappear()` methods.
 
 ## Observables
-Kaluga supports `Observables` (one way binding) and `Subjects` (Two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
+Kaluga supports `Observables` (one way binding) and `Subjects` (Two way binding). An object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
 Subjects can be created using either an `ObservableProperty` or `BaseFlowable`. All these can easily be converted using `asObservable()` or `asSubject()` respectively.
 Observable values can be accessed through delegation. To account for the difference between empty values and optional values an `ObservableResult` containing either the value or a `Nothing` type is returned.
 
@@ -63,7 +63,7 @@ class SomeViewModel : BaseViewModel() {
 }
 ```
 
-On Android both Observable and Subject are easily converted into `LiveData` objects (Subject being `MutableLiveData`), allowing lifecycle-aware binding.
+On Android both observable and subject are easily converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
 
 ```kotlin
 val observable: Observable<Int>
@@ -102,13 +102,13 @@ init {
 }
 ```
 
-When bound to a ViewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
+When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
 Use this callback to start observing data that should be bound to the lifecycle and put the disposables in the provided `DisposeBag`.
 At the end of a lifecycle (`viewDidDisappear`) the Observables are automatically disposed.
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.
-This ViewModel takes a `Navigator` object that responds to a given `NavigationAction`.
+This viewModel takes a `Navigator` object that responds to a given `NavigationAction`.
 The Navigation action specifies the action(s) that can navigate.
 
 ```kotlin
@@ -130,7 +130,7 @@ class SomeNavigatingViewModel(navigator: Navigator<SomeNavigationAction>): Navig
 }
 ```
 
-On the platform side the created Navigator should specify the `NavigationSpec` to be used for navigating.
+On the platform side the created navigator should specify the `NavigationSpec` to be used for navigating.
 Multiple specs exist per platform, including all common navigation patterns within the app (both new screens and nested elements) as well as navigating to common OS screens (e.g opening the mail app).
 
 ```kotlin
@@ -155,9 +155,9 @@ val viewModel = SomeNavigatingViewModeel(
 ```
 
 To share data between navigating objects a `NavigationBundle` class can be passed via the `NavigationAction`.
-This Bundle supports all common data types as well as optionals, nested bundles and serializable objects.
+This bundle supports all common data types as well as optionals, nested bundles and serializable objects.
 Values can be extracted from the bundle given a known `NavigationSpecRow`.
-Note that it is possible to request a NavigationSpecRow not supported by the Bundle, which will result in a `NavigationBundleGetError`.
+Note that it is possible to request a navigationSpecRow not supported by the bundle, which will result in a `NavigationBundleGetError`.
 
 ```kotlin
 sealed class SomeSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
