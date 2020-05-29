@@ -33,6 +33,8 @@ kotlin {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
+                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
+                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
     }

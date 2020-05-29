@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.base.flow
 
-import co.touchlab.stately.concurrency.AtomicInt
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * A [BaseFlowable] that represents a Cold flow. This flowable will only become active once observed and deinitialises once no observers are present.
@@ -35,23 +36,29 @@ import kotlinx.coroutines.flow.*
  */
 class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
-    private val flowingCounter = AtomicInt(0)
+    private val counterMutex = Mutex()
+    private var flowingCounter = 0
 
     @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
         return super.flow(flowConfig).onStart {
-                if (flowingCounter.incrementAndGet() <= 1) {
-                    set(initialize())
+                counterMutex.withLock {
+                    if (flowingCounter <= 0 ) {
+                        set(initialize())
+                    }
+                    flowingCounter += 1
                 }
             }.onCompletion {
-                if (flowingCounter.decrementAndGet() == 0) {
-                    deinitialize(channel.value.asFlow().first())
+                counterMutex.withLock {
+                    flowingCounter -= 1
+                    if (flowingCounter == 0) {
+                        deinitialize(channel.value.asFlow().first())
+                    }
                 }
             }
     }
 
     override suspend fun set(value: T) {
-        if (flowingCounter.get() > 0)
-            super.set(value)
+        counterMutex.withLock { if (flowingCounter > 0) super.set(value) }
     }
 }
