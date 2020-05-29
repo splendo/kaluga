@@ -17,7 +17,6 @@
 
 package architecture
 
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.Subject
 import com.splendo.kaluga.architecture.observable.DisposeBag
@@ -135,7 +134,6 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
                 button.setSelected(selectedTab == tab)
             }.addTo(selectedButtonDisposeBag)
             addOnPressed(button) {
-                debug("On Pressed")
                 this.tab.post(tab)
             }
             stackView.addArrangedSubview(button)
