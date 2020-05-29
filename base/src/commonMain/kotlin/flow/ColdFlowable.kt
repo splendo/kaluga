@@ -44,7 +44,7 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
         return super.flow(flowConfig).onStart {
                 counterMutex.withLock {
                     if (flowingCounter <= 0 ) {
-                        set(initialize())
+                        super.set(initialize())
                     }
                     flowingCounter += 1
                 }
@@ -58,6 +58,14 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                     }
                 }
             }
+    }
+
+    override suspend fun set(value: T) {
+        counterMutex.withLock {
+            if (flowingCounter > 0) {
+                super.set(value)
+            }
+        }
     }
 
 }

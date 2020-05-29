@@ -39,7 +39,7 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
 
     @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return flowConfig.apply(channel?.value?.asFlow() ?: emptyFlow())
+        return channel?.value?.asFlow()?.let { flowConfig.apply(it) } ?: emptyFlow()
     }
 
     protected suspend fun close(): T? {

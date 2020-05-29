@@ -119,7 +119,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         super.setUp()
 
         trafficLight = TrafficLight()
-        flowable.complete(trafficLight.flowable.value)
+        flowable.complete(trafficLight.flowable)
     }
 
     @Test
