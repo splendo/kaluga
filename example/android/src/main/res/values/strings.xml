@@ -5,4 +5,7 @@
     <string name="alert_list">Show Alert List</string>
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
+
+    <string name="architecture_details">Show Details</string>
+    <string name="architecture_details_inverse">Inverse Input</string>
 </resources>

@@ -37,6 +37,15 @@ android {
     packagingOptions {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/shared_debug.kotlin_module'
+        exclude 'META-INF/kotlinx-serialization-runtime.kotlin_module'
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    lintOptions {
+        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
     }
 
 }
@@ -44,6 +53,7 @@ android {
 apply from: "../../gradle/android_dependencies.gradle"
 
 dependencies {
+
 
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
@@ -53,6 +63,7 @@ dependencies {
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -63,9 +74,18 @@ dependencies {
         implementation project(":logging")
         implementation project(":alerts")
         implementation project(":hud")
+        implementation project(":architecture")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
     implementation "com.google.android.gms:play-services-location:$gradle.play_services_version"
+    implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+    // Koin for Android
+    def koin_version = "2.1.5"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-fragment:$koin_version"
 }
