@@ -43,7 +43,11 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
     }
 
     override suspend fun set(value: T) {
-        channel?.value?.send(value)
+        channel?.let {
+            if (it.isInitialized()) {
+                it.value.send(value)
+            }
+        }
     }
 
     /**

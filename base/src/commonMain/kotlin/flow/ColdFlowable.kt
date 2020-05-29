@@ -46,7 +46,7 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
         return super.flow(flowConfig).onStart {
                 counterMutex.withLock {
                     if (flowingCounter <= 0 ) {
-                        super.set(initialize())
+                        set(initialize())
                     }
                     flowingCounter += 1
                 }
@@ -66,14 +66,5 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
     }
 
     private suspend fun currentValue(): T? = channel?.value?.asFlow()?.first()
-
-    override suspend fun set(value: T) {
-        counterMutex.withLock {
-            // Only allow values to be set when actually flowing to ensure initialized is the first value set
-            if (channel?.isInitialized() == true && channel?.value?.isClosedForSend != true) {
-                super.set(value)
-            }
-        }
-    }
 
 }
