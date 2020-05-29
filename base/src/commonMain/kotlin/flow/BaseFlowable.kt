@@ -1,4 +1,3 @@
-package com.splendo.kaluga.flow
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,12 +16,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.flow
+
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
 
 /**
  * Base definition of [Flowable]. Abstract class, use [ColdFlowable] or [HotFlowable] instead.
@@ -32,15 +35,22 @@ import kotlinx.coroutines.flow.asFlow
  */
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    protected var channel = lazy {channelFactory() }
+    protected var channel: Lazy<BroadcastChannel<T>>? = lazy {channelFactory() }
 
     @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return flowConfig.apply(channel.value.asFlow())
+        return flowConfig.apply(channel?.value?.asFlow() ?: emptyFlow())
+    }
+
+    protected suspend fun close(): T? {
+        return channel?.value?.asFlow()?.first().also {
+            channel?.value?.close()
+            channel = null
+        }
     }
 
     override suspend fun set(value: T) {
-        channel.value.send(value)
+        channel?.value?.send(value)
     }
 
     override fun setBlocking(value:T) {

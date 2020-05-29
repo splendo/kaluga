@@ -52,13 +52,12 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                 counterMutex.withLock {
                     flowingCounter -= 1
                     if (flowingCounter == 0) {
-                        deinitialize(channel.value.asFlow().first())
+                        close()?.let {
+                            deinitialize(it)
+                        }
                     }
                 }
             }
     }
 
-    override suspend fun set(value: T) {
-        counterMutex.withLock { if (flowingCounter > 0) super.set(value) }
-    }
 }

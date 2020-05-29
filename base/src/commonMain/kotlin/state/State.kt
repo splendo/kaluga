@@ -27,6 +27,7 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
@@ -111,13 +112,13 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
 
     private val stateMutex = Mutex()
 
-    abstract val flowable: Lazy<BaseFlowable<S>>
+    abstract val flowable: BaseFlowable<S>
 
     @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     internal lateinit var changedState:S
     private suspend fun setChangedState(value: S) {
         changedState = value
-        flowable.value.set(value)
+        flowable.set(value)
     }
 
     /**
@@ -127,7 +128,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * @return a [Flow] of the [State] of this repo
      */
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<S> {
-        return flowable.value.flow(flowConfig)
+        return flowable.flow(flowConfig)
     }
 
     internal suspend fun initialize() : S {
@@ -223,17 +224,6 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
         }
     }
 
-//    suspend inline fun <reified T:S> takeAndChangeIfState(crossinline action: (T) -> suspend () -> S): S {
-//        return takeAndChangeState {
-//            if (it is T) {
-//                val test = action(it)
-//                test
-//            } else {
-//                it.remain
-//            }
-//        }
-//    }
-
 }
 
 /**
@@ -241,9 +231,10 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
  */
 abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
-    override val flowable = lazy {
+    private val hotFlowable = lazy {
         HotFlowable(runBlocking{initialize()})
     }
+    override val flowable: BaseFlowable<S> get() = hotFlowable.value
 
 }
 
@@ -252,14 +243,18 @@ abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = Mai
  */
 abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
-    override val flowable = lazy {
-        ColdFlowable({
-            initialize()
-        }, {
-            state ->
-            state.finalState()
-            this.deinitialize(state)
-        })
+    private var coldFlowable: ColdFlowable<S>? = null
+    override val flowable: ColdFlowable<S> get() {
+        return coldFlowable ?: kotlin.run {
+            ColdFlowable({
+                initialize()
+            }, {
+                    state ->
+                state.finalState()
+                this.deinitialize(state)
+                this.coldFlowable = null
+            }).also { this.coldFlowable = it }
+        }
     }
 
     abstract suspend fun deinitialize(state: S)

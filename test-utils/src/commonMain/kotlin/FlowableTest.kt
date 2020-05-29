@@ -1,4 +1,3 @@
-package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,10 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.test
+
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +69,7 @@ open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: Co
 
     lateinit var job: Job
 
-    private lateinit var testChannel: Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>
+    private lateinit var testChannel: Channel<Pair<TestBlock<T>, EmptyCompletableDeferred>>
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
