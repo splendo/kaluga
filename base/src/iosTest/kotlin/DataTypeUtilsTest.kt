@@ -29,9 +29,8 @@ class DataTypeUtilsTest : BaseTest() {
     fun testByteArrayConverter() {
         val byteArray = byteArrayOf(0x2F, 0x4A, 0x0, 0x01)
         val byteData = byteArray.toNSData()
-        assertNotNull(byteData)
         assertEquals(byteArray.size.toULong(), byteData.length)
-        assertEquals(true, byteData.toByteArray()?.contentEquals(byteArray))
+        assertEquals(true, byteData.toByteArray().contentEquals(byteArray))
     }
 
     @Test
@@ -60,7 +59,7 @@ class DataTypeUtilsTest : BaseTest() {
 
     @Test
     fun testMapTypedToWrongType() {
-        val map: Map<*, *> = mapOf(1 to "one", "two" to 2, 3 to "three")
+        val map: Map<*, *> = mapOf(1 to "one", "two" to 2, "three" to "three")
         val typedMap: Map<String, Int> = map.typedMap()
         assertEquals(1, typedMap.size)
         assertEquals(2, typedMap["two"])
