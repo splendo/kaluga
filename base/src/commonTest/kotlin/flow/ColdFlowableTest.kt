@@ -9,9 +9,19 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlin.test.*
+import kotlinx.coroutines.withContext
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ColdFlowableTest : BaseTest() {
 
@@ -128,6 +138,31 @@ class ColdFlowableTest : BaseTest() {
         job2.cancel()
 
         assertEquals(3, deinitialized.await())
+    }
+
+    @Test
+    fun testClosingFlow() = runBlocking {
+        val scope = MainScope()
+        val job = scope.launch {
+            flowable.flow().collect {}
+        }
+        withContext(scope.coroutineContext) {
+            flowable.set(1)
+        }
+        assertFalse(broadcastChannel.isClosedForSend)
+        job.cancel()
+        deinitialized.await()
+        assertTrue(broadcastChannel.isClosedForSend)
+        val newFlowable = flowable.flow()
+        assertEquals(0, newFlowable.count())
+        val newFlowableJob = scope.launch {
+            newFlowable.collect {}
+        }
+        withContext(scope.coroutineContext) {
+            flowable.set(2)
+        }
+        assertEquals(0, newFlowable.count())
+        newFlowableJob.cancel()
     }
 
 }
