@@ -26,8 +26,8 @@ fun NSData.toByteArray() : ByteArray? {
     return ByteArray(length.toInt()) { index -> ktBytes[index] }
 }
 
-fun ByteArray.toNSData() : NSData? {
-    return NSString.create(string = this.toKString()).dataUsingEncoding(NSUTF8StringEncoding)
+fun ByteArray.toNSData() : NSData? = memScoped {
+    return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong())
 }
 
 inline fun <reified T:Any> List<*>.typedList() : List<T> {
