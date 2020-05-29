@@ -1,26 +1,28 @@
-package com.splendo.kaluga.test
 /*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
 
-     http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
+ */
 
-*/
+package com.splendo.kaluga.base.test.flow
 
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -35,7 +37,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     override fun setUp() {
         super.setUp()
 
-        flowable.complete(HotFlowable<String>(""))
+        flowable.complete(HotFlowable(""))
     }
 
     // doesn't test BaseFlowable directly, but shows some the working of some coroutine principles used in the class
@@ -95,4 +97,16 @@ class BaseFlowableTest : FlowableTest<String>() {
             debug("We got the throwable ($t) we expected")
         }
     }
+
+    @Test
+    fun testCloseFlow() = runBlocking {
+        val flowable = flowable.await()
+        val scope = MainScope()
+        val collectionJob = scope.async {
+            flowable.flow().collect {  }
+        }
+        flowable.close()
+        collectionJob.await()
+    }
+
 }

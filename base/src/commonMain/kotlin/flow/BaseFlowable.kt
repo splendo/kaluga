@@ -46,7 +46,10 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         channel?.value?.send(value)
     }
 
-    fun close() {
+    /**
+     * Closes the flowable from being observed
+     */
+    override fun close() {
         channel?.value?.close()
         channel = null
     }
