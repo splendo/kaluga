@@ -18,23 +18,24 @@
 package com.splendo.kaluga.example.ui.collectionview
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.CollectionViewViewModel
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import kotlinx.android.synthetic.main.collection_view_fragment.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class CollectionViewFragment : Fragment() {
+class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>() {
 
     companion object {
         fun newInstance() = CollectionViewFragment()
     }
 
-    private val viewModel: CollectionViewViewModel by viewModels { ItemsRepositoryFactory() }
+    override val viewModel: CollectionViewViewModel by viewModel()
     private val itemsAdapter by lazy { CollectionViewAdapter() }
 
     override fun onCreateView(
@@ -50,8 +51,10 @@ class CollectionViewFragment : Fragment() {
         recyclerView.layoutManager = GridLayoutManager(this.context, 1)
         recyclerView.adapter = itemsAdapter
 
-        viewModel.subscribe {
-            itemsAdapter.submitList(it)
+        this.activity?.let {activity ->
+            viewModel.items.liveData.observe(activity, Observer {
+                itemsAdapter.submitList(it)
+            })
         }
     }
 }

@@ -15,10 +15,11 @@
 
  */
 
-package com.splendo.kaluga.example.shared
+package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
 import com.splendo.kaluga.collectionView.CollectionItemsViewModel
 import com.splendo.kaluga.collectionView.CollectionViewItem
+import com.splendo.kaluga.example.shared.ItemsRepository
 import kotlin.native.concurrent.ThreadLocal
 
 class CollectionViewViewModel(
@@ -27,6 +28,9 @@ class CollectionViewViewModel(
 
     @ThreadLocal
     companion object {
-        fun create() = CollectionViewViewModel(ItemsRepository())
+        fun create() =
+            CollectionViewViewModel(
+                ItemsRepository()
+            )
     }
 }

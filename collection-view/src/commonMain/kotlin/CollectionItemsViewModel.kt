@@ -20,7 +20,6 @@ package com.splendo.kaluga.collectionView
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class CollectionItemsViewModel<Item : CollectionViewItem>(
@@ -32,11 +31,11 @@ open class CollectionItemsViewModel<Item : CollectionViewItem>(
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        scope.launch(Dispatchers.Main) {repository.loadItems() }
+        scope.launch {repository.loadItems() }
     }
 
     fun reload() {
-        coroutineScope.launch(Dispatchers.Main) {repository.loadItems() }
+        coroutineScope.launch {repository.loadItems() }
     }
 
 }

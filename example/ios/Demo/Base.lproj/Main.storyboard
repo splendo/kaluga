@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="czt-vE-Q3c">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="czt-vE-Q3c">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -319,6 +319,7 @@
                         <segue destination="jUB-i9-u9F" kind="show" identifier="showAlerts" id="2vi-ed-ywq"/>
                         <segue destination="72Q-sg-Ish" kind="show" identifier="showPermissions" id="rEb-MA-9z2"/>
                         <segue destination="irm-WF-A13" kind="show" identifier="showArchitecture" id="IOQ-4E-QhL"/>
+                        <segue destination="o6M-40-efQ" kind="show" identifier="showCollectionView" id="eKl-MA-uY2"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L6W-Hz-iOT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -617,6 +618,41 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="s7d-U9-qTn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="816" y="1073"/>
+        </scene>
+        <!--Collection View Controller-->
+        <scene sceneID="f7D-cK-IBa">
+            <objects>
+                <collectionViewController id="o6M-40-efQ" customClass="CollectionViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                    <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="bSq-lH-1Qs">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ASB-Xt-nFk">
+                            <size key="itemSize" width="128" height="128"/>
+                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        </collectionViewFlowLayout>
+                        <cells>
+                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="y1F-IB-Duy">
+                                <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="qO9-19-7sP">
+                                    <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </collectionViewCellContentView>
+                            </collectionViewCell>
+                        </cells>
+                        <connections>
+                            <outlet property="dataSource" destination="o6M-40-efQ" id="o8h-Op-BZ2"/>
+                            <outlet property="delegate" destination="o6M-40-efQ" id="9Lb-Tf-rwz"/>
+                        </connections>
+                    </collectionView>
+                    <navigationItem key="navigationItem" id="Ips-Cl-24K"/>
+                </collectionViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Eim-jj-7zb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2648" y="2810"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="lr9-hP-8aD">

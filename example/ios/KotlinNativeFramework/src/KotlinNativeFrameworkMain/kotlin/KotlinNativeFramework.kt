@@ -27,7 +27,6 @@ import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
-import com.splendo.kaluga.example.shared.CollectionViewViewModel
 import com.splendo.kaluga.hud.IOSHUD
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -50,8 +49,6 @@ class KNHudFramework {
 }
 
 class KotlinNativeFramework {
-
-    fun collectionViewModel() = CollectionViewViewModel.create()
 
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 

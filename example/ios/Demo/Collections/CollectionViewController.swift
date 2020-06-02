@@ -13,8 +13,13 @@ import KotlinNativeFramework
 class CollectionViewController: UICollectionViewController {
     
     var items = [Collection_viewCollectionViewItem]()
-    let viewModel = SharedCollectionViewViewModel(repository: SharedItemsRepository())
-
+    lazy var viewModel = KNArchitectureFramework().createCollectionViewViewModel()
+    private var lifecycleManager: ArchitectureLifecycleManager!
+    
+    deinit {
+        lifecycleManager.unbind()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -23,10 +28,14 @@ class CollectionViewController: UICollectionViewController {
             forCellWithReuseIdentifier: CollectionViewCell.reuseIdentifier
         )
 
-        viewModel.subscribe { items in
-            self.items = items
-            self.collectionView.reloadData()
-        }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] disposeBag in
+            self?.viewModel.observeItems(disposeBag: disposeBag, onItemsChanged: { (items) in
+                print(items.count)
+                self?.items = items
+                self?.collectionView.reloadData()
+            })
+        })
+
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {

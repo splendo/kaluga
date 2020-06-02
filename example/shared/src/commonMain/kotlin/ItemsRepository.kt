@@ -21,9 +21,12 @@ import com.splendo.kaluga.collectionView.CollectionItemRepository
 import com.splendo.kaluga.collectionView.CollectionViewItem
 
 class ItemsRepository : CollectionItemRepository<CollectionViewItem>() {
-    override suspend fun getItems() = listOf(
-        CollectionViewItem("One"),
-        CollectionViewItem("Two"),
-        CollectionViewItem("3")
-    )
+
+    override suspend fun updateItems(): Result<CollectionViewItem> {
+        return Result.Success(listOf(
+            CollectionViewItem("One"),
+            CollectionViewItem("Two"),
+            CollectionViewItem("3")))
+    }
+
 }

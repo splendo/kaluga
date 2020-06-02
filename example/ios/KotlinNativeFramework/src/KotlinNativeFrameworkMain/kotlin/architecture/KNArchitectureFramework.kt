@@ -27,11 +27,13 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
+import com.splendo.kaluga.collectionView.CollectionViewItem
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
@@ -66,6 +68,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Alerts -> "showAlerts"
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
+                        is FeatureListNavigationAction.CollectionView -> "showCollectionView"
                     })
             })
     }
@@ -114,6 +117,8 @@ class KNArchitectureFramework {
         })
     }
 
+    fun createCollectionViewViewModel(): CollectionViewViewModel = CollectionViewViewModel.create()
+
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
@@ -155,5 +160,11 @@ fun InfoViewModel.observeButtons(disposeBag: DisposeBag, onInfoButtonsChanged: (
     buttons.observe { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
+    }.addTo(disposeBag)
+}
+
+fun CollectionViewViewModel.observeItems(disposeBag: DisposeBag, onItemsChanged: (List<CollectionViewItem>) -> Unit) {
+    items.observe { items ->
+        onItemsChanged(items)
     }.addTo(disposeBag)
 }

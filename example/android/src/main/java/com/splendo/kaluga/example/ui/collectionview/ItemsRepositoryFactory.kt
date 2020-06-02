@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.ui.collectionview
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.splendo.kaluga.example.shared.CollectionViewViewModel
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 
 class ItemsRepositoryFactory : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")

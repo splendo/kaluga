@@ -2,10 +2,7 @@ package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.example.FeaturesListFragment
-import com.splendo.kaluga.example.InfoDialog
-import com.splendo.kaluga.example.InfoFragment
-import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.*
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
@@ -16,6 +13,7 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
@@ -43,6 +41,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
+                    is FeatureListNavigationAction.CollectionView -> NavigationSpec.Activity(CollectionViewActivity::class.java)
                 }
             })
     }
@@ -74,4 +73,6 @@ val viewModelModule = module {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
     }
+
+    viewModel { CollectionViewViewModel.create() }
 }
