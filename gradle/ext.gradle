@@ -4,11 +4,27 @@ enableFeaturePreview("GRADLE_METADATA")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlin_version
-    kotlinx_coroutines_version = '1.3.4'
-    stately_version = '1.0.2'
+    kotlinx_coroutines_version = '1.3.6'
+    stately_version = '1.0.3'
+    stately_isolate_version = '1.0.3-a4'
+    serialization_version = '0.20.0'
     library_version = '0.0.5'
-    android_version = 21
-    android_target_version = 29
+    android_min_sdk_version = 21
+    android_target_sdk_version = 29
+    android_build_tools_version = "29.0.3"
+
+    play_services_version = "17.0.0"
+
+    androidx_appcompat_version = "1.1.0"
+    androidx_fragment_version = "1.2.4"
+    androidx_core_version = "1.2.0"
+    androidx_lifecycle_version = "2.2.0"
+    
+    // sub packages of test have different versions, but alpha/beta/rc releases are harmonized
+    androidx_test_version_postfix = "-alpha05"
+    androidx_test_version = "1.3.0$androidx_test_version_postfix"
+    androidx_test_espresso_version = "3.3.0$androidx_test_version_postfix"
+    androidx_test_junit_version = "1.1.2$androidx_test_version_postfix"
 }
 
 if (System.env.containsKey("EXAMPLE_AS_ROOT")) {
@@ -20,7 +36,7 @@ if (System.env.containsKey("EXAMPLE_AS_ROOT")) {
     def propfile = file("../local.properties")
     if (propfile.exists()) {
         propfile.withInputStream { props.load(it) }
-        gradle.ext.exampleAsRoot = Boolean.parseBoolean(props["exampleAsRoot"])
+        gradle.ext.exampleAsRoot = Boolean.parseBoolean(props["exampleAsRoot"].toString())
         println "local.properties read (exampleAsRoot=${props['exampleAsRoot']}, using $gradle.ext.exampleAsRoot)"
     } else {
         gradle.ext.exampleAsRoot = false

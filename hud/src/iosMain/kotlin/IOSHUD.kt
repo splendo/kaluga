@@ -1,3 +1,5 @@
+@file:Suppress("USELESS_CAST") // as CGFloat is needed for arm32.
+
 package com.splendo.kaluga.hud
 
 import kotlinx.cinterop.CValue

@@ -5,12 +5,33 @@ repositories {
 }
 
 kotlin {
+
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+            }
+        }
+    }
+
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+            }
+        }
+    }
+
+
     android("androidLib") {
         publishAllLibraryVariants()
+
     }
 
     if (gradle.ios_primary_arch == "iosx64")
-          targetFromPreset(presets.iosX64, gradle.ios_primary_arch)
+        targetFromPreset(presets.iosX64, gradle.ios_primary_arch)
 
     if (gradle.ios_primary_arch == "iosarm64")
         targetFromPreset(presets.iosArm64, gradle.ios_primary_arch)
@@ -132,24 +153,39 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 enableLanguageFeature("InlineClasses")
-
             }
         }
 
-        // Android dependencies must be declared below
+        // Android dependencies must be declared below outside of the kotlin block
 
     }
 }
 
+
+
 android {
+
+    kotlinOptions {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
+    lintOptions {
+        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 
     defaultPublishConfig = "debug"
 
-    compileSdkVersion gradle.android_target_version
+    compileSdkVersion gradle.android_target_sdk_version
 
     defaultConfig {
-        minSdkVersion gradle.android_version
-        targetSdkVersion gradle.android_target_version
+        minSdkVersion gradle.android_min_sdk_version
+        targetSdkVersion gradle.android_target_sdk_version
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -176,54 +212,20 @@ android {
     packagingOptions {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
         exclude 'META-INF/shared_debug.kotlin_module'
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
     }
 }
 
-
-configurations {
-    // workaround for https://youtrack.jetbrains.com/issue/KT-27170
-    compileClasspath
-
-}
-
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
-
-    testImplementation 'junit:junit:4.12'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
-
-    androidTestImplementation 'androidx.test:core:1.3.0-alpha03'
-    androidTestImplementation 'androidx.test:core-ktx:1.3.0-alpha03'
-    androidTestImplementation 'androidx.test:rules:1.3.0-alpha03'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2-alpha03'
-    androidTestImplementation 'androidx.test.ext:junit-ktx:1.1.2-alpha03'
-    androidTestImplementation 'androidx.test:runner:1.3.0-alpha03'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0-alpha03'
-    androidTestImplementation 'org.jetbrains.kotlin:kotlin-test'
-    androidTestImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
-}
-
-task iosTest {
-    def device = project.findProperty("iosDevice")?.toString() ?: "iPhone 8"
-    dependsOn "linkDebugTest${gradle.ios_primary_arch.capitalize()}"
-    group = JavaBasePlugin.VERIFICATION_GROUP
-    description = "Runs tests for target '${gradle.ios_primary_arch}' on an iOS simulator"
-
-    doLast {
-        def binary = kotlin.targets.getByName(gradle.ios_primary_arch).binaries.getTest('DEBUG').outputFile
-        exec {
-            // Xcode 11 requires `--standalone`
-            commandLine 'xcrun', 'simctl', 'spawn', "--standalone", device, binary.absolutePath
-        }
-    }
-}
 
 task printConfigurations {
     doLast {
         configurations.each { println it }
     }
 }
+
+// if the include is made from the example project shared module we need to go up one more directory
+String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
+
+apply from: "$path_prefix/gradle/android_dependencies.gradle"
+apply from: "$path_prefix/gradle/componentskt.gradle.kts"
