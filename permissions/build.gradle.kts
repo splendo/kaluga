@@ -14,25 +14,10 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinx_coroutines_version")
-    testImplementation("org.mockito:mockito-core:3.1.0")
-
-    implementation("androidx.appcompat:appcompat:1.1.0")
-
-    commonTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-debug:$kotlinx_coroutines_version")
-
-}
-
-android {
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
+    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
+    implementation("com.google.android.gms:play-services-location:$play_services_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.5")
 }
 
 kotlin {

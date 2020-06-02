@@ -3,9 +3,9 @@ package com.splendo.kaluga.example.permissions
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.example.permissions.bluetooth.BluetoothPermissionsDemoActivity
 import kotlinx.android.synthetic.main.activity_permissions_list.*
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.permissions.bluetooth.BluetoothPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.calendar.CalendarPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.camera.CameraPermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.contacts.ContactsPermissionsDemoActivity

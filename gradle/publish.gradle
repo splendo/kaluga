@@ -1,0 +1,62 @@
+publishing {
+    publications {
+        kotlinMultiplatform {
+            artifactId = module.name
+        }
+    }
+}
+
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "splendo"
+            name "Splendo BV"
+        }
+    }
+    scm {
+        url "https://github.com/splendo/kotlin-components"
+    }
+}
+
+//bintray {
+
+// template from the multiplatform-settings project, here for reference (thanks!)
+//    def keyProps = new Properties()
+//    def keyFile = file("../keys.properties")
+//    if (keyFile.exists()) keyFile.withInputStream { keyProps.load(it) }
+//
+//    user = keyProps.getProperty("bintrayUser")
+//    key = keyProps.getProperty("bintrayKey")
+//
+//    pkg {
+//        userOrg = ''
+//        repo = 'multiplatform-settings'
+//        name = "multiplatform-settings"
+//        licenses = ['Apache-2.0']
+//        vcsUrl = 'https://github.com/russhwolf/multiplatform-settings'
+//    }
+//}
+
+afterEvaluate {
+    project.publishing.publications.forEach { publication ->
+        publication.pom.withXml {
+            def root = asNode()
+            root.appendNode('name', project.name)
+            root.appendNode('description', 'Collection of Kotlin Flow based libraries')
+            root.appendNode('url', 'https://github.com/splendo/kaluga')
+            root.children().last() + pomConfig
+        }
+    }
+}
+
+//bintrayUpload.doFirst {
+//    publications = project.publishing.publications
+//}

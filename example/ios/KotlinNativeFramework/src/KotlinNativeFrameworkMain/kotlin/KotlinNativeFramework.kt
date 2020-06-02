@@ -27,8 +27,8 @@ import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.PermissionsPrinter
 import com.splendo.kaluga.hud.IOSHUD
 import com.splendo.kaluga.location.LocationFlowable
-import com.splendo.kaluga.log.Logger
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -37,10 +37,12 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.splendo.kaluga.logging.debug
 import platform.CoreLocation.CLLocationManager
 import platform.UIKit.UILabel
 import platform.UserNotifications.UNAuthorizationOptions
-import ru.pocketbyte.hydra.log.HydraLog
+import ru.pocketbyte.kydra.log.KydraLog
+import platform.UIKit.UIViewController
 
 class KNAlertFramework {
     companion object {
@@ -155,7 +157,7 @@ class KotlinNativeFramework {
     fun hello() = com.splendo.kaluga.example.shared.helloCommon()
 
     // expose a dependency to Swift as an example
-    fun logger(): ru.pocketbyte.hydra.log.Logger = HydraLog.logger
+    fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
 
     fun location(label: UILabel, locationManager: CLLocationManager) {
         val location = LocationFlowable.Builder(locationManager).create()
@@ -165,4 +167,7 @@ class KotlinNativeFramework {
         debug("proceed executing after location coroutines")
     }
 
+//    fun permissions(nsBundle: NSBundle) = Permissions
+//        .Builder(nsBundle)
+//        .build()
 }

@@ -1,0 +1,29 @@
+plugins {
+    id 'jacoco'
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.multiplatform'
+    id 'maven-publish'
+}
+
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply from: "../gradle/publishable_component.gradle"
+
+group = "com.splendo.kaluga"
+version = gradle.library_version
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+kotlin {
+    sourceSets {
+        getByName("commonMain") {
+            dependencies {
+                implementation project(":base", "")
+                implementation "co.touchlab:stately-common:$gradle.stately_version"
+                implementation "co.touchlab:stately-concurrency:$gradle.stately_version"
+            }
+        }
+    }
+}
