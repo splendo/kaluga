@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.av
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
@@ -94,7 +95,7 @@ private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         AVAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            error(
                 "AVPermissionManager",
                 "Unknown AVManagerAuthorization status={$this}"
             )

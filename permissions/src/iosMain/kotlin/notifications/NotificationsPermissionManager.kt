@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
@@ -79,7 +80,7 @@ private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         UNAuthorizationStatusProvisional -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         UNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            error(
                 "CalendarPermissionManager",
                 "Unknown CBManagerAuthorization status={$this}"
             )

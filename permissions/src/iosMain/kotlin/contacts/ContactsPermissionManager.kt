@@ -19,7 +19,8 @@ package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import platform.Contacts.*
 import platform.Foundation.NSBundle
@@ -82,7 +83,7 @@ private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         CNAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            error(
                 "ContactsPermissionManager",
                 "Unknown ContactManagerAuthorization status={$this}"
             )

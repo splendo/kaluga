@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import platform.Foundation.NSBundle
 import platform.Photos.*
@@ -75,7 +76,7 @@ private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         PHAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            error(
                 "StoragePermissionManager",
                 "Unknown StorageManagerAuthorization status={$this}"
             )

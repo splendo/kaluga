@@ -19,7 +19,8 @@ package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.log.debug
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import platform.EventKit.*
 import platform.Foundation.NSBundle
@@ -82,7 +83,7 @@ private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.
         EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         EKAuthorizationStatusNotDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         else -> {
-            com.splendo.kaluga.log.error(
+            error(
                 "CalendarPermissionManager",
                 "Unknown CBManagerAuthorization status={$this}"
             )
