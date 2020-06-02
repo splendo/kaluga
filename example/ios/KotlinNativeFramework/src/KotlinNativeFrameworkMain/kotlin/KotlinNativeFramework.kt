@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.example.shared.ExampleKeyboardManager
 import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
@@ -29,14 +28,12 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.alerts.AlertActionHandler
 import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.keyboard.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSBundle
 import platform.UIKit.UILabel
 import ru.pocketbyte.kydra.log.KydraLog
-import platform.UIKit.UITextField
 import platform.UIKit.UIViewController
 
 class KNAlertFramework {
@@ -69,6 +66,4 @@ class KotlinNativeFramework {
     fun permissions(nsBundle: NSBundle) = Permissions
         .Builder(nsBundle)
         .build()
-
-    fun keyboardManager(textField: UITextField) = ExampleKeyboardManager(KeyboardManagerBuilder(), textField)
 }

@@ -12,20 +12,27 @@ import KotlinNativeFramework
 class KeyboardManagerViewController : UIViewController {
     
     @IBOutlet private var editField: UITextField!
-    private var exampleKeyboardManager: SharedExampleKeyboardManager!
+    
+    lazy var viewModel = KNArchitectureFramework().createKeyboardViewModel(textField: self.editField)
+    private var lifecycleManager: ArchitectureLifecycleManager!
+    
+    deinit {
+        lifecycleManager.unbind()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        exampleKeyboardManager = KotlinNativeFramework().keyboardManager(textField: editField)
+        
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { _ in })
     }
     
     @IBAction
     func showButtonPressed() {
-        exampleKeyboardManager.show()
+        viewModel.onShowPressed()
     }
     
     @IBAction
     func hideButtonPressed() {
-        exampleKeyboardManager.hide()
+        viewModel.onHidePressed()
     }
 }
