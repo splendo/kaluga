@@ -18,8 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 
 import android.content.Context
+import android.os.Build
 import android.os.SystemClock
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.GrantPermissionRule
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -37,8 +40,15 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
     @get:Rule
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(android.Manifest.permission.ACCESS_FINE_LOCATION)
 
+
     @Before
     fun mockLocation() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getInstrumentation().uiAutomation.
+                executeShellCommand("appops set " + InstrumentationRegistry.getInstrumentation().targetContext.packageName + " android:mock_location allow")
+            Thread.sleep(1000)
+        }
         client = LocationServices.getFusedLocationProviderClient(
             ApplicationProvider.getApplicationContext() as Context
         )
@@ -97,7 +107,7 @@ class MockedLocationFlowableTest:LocationFlowableTest() {
         fusedLocation.longitude = longitude
         fusedLocation.accuracy = 1f
         fusedLocation.time = System.currentTimeMillis()
-        fusedLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos();
+        fusedLocation.elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
         client.setMockLocation(fusedLocation).await()
         client.flushLocations().await()
     }

@@ -24,7 +24,6 @@ kotlin {
     sourceSets {
         commonMain {
             val ext =  (gradle as ExtensionAware).extra
-            var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
                 if (!(ext["exampleAsRoot"] as Boolean)) {
@@ -35,6 +34,7 @@ kotlin {
                     implementation(project(":permissions", ""))
                     implementation(project(":hud", ""))
                     implementation(project(":collection-view", ""))
+                    implementation(project(":architecture", ""))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:location:$libraryVersion")
@@ -44,6 +44,7 @@ kotlin {
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:hud:$libraryVersion")
                     implementation("com.splendo.kaluga:collection-view:$libraryVersion")
+                    implementation("com.splendo.kaluga:architecture:$libraryVersion")
                 }
             }
         }

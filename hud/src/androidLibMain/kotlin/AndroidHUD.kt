@@ -13,13 +13,15 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
-import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 /*
 
@@ -39,13 +41,33 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, private val activity: FragmentActivity) : HUD {
+class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
 
-    class Builder(private val activity: FragmentActivity) : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = AndroidHUD(R.layout.loading_indicator_view, hudConfig, activity)
+    class Builder : HUD.Builder() {
+
+        private val uiContextObserver = UiContextObserver()
+
+        fun subscribe(lifecycleOwner: LifecycleOwner, fragmentManager: FragmentManager) {
+            uiContextObserver.uiContextData = UiContextObserver.UiContextData(
+                lifecycleOwner, fragmentManager
+            )
+        }
+
+        fun unsubscribe() {
+            uiContextObserver.uiContextData = null
+        }
+
+        override fun create(hudConfig: HudConfig) = AndroidHUD(
+            R.layout.loading_indicator_view,
+            hudConfig,
+            uiContextObserver
+        )
     }
 
     internal class LoadingDialog : DialogFragment() {
+
+        var presentCompletionBlock: () -> Unit = {}
+        var dismissCompletionBlock: () -> Unit = {}
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
         private val style get() = HUD.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: HUD.Style.SYSTEM.value)
@@ -76,14 +98,22 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, priva
             private const val STYLE_KEY = "style"
             private const val TITLE_KEY = "title"
 
-            fun newInstance(@IdRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
+            fun newInstance(@LayoutRes viewResId: Int, hudConfig: HudConfig) = LoadingDialog().apply {
                 arguments = Bundle().apply {
                     putInt(RESOURCE_ID_KEY, viewResId)
                     putInt(STYLE_KEY, hudConfig.style.ordinal)
                     putString(TITLE_KEY, hudConfig.title)
                 }
                 isCancelable = false
-                retainInstance = true
+            }
+        }
+
+        override fun onCreate(savedInstanceState: Bundle?) {
+            super.onCreate(savedInstanceState)
+            // Dismiss existing dialog on rotation
+            // We will handle this state via dialogState and show it again if needed
+            if (savedInstanceState != null) {
+                dismiss()
             }
         }
 
@@ -95,31 +125,65 @@ class AndroidHUD private constructor(viewResId: Int, hudConfig: HudConfig, priva
                 findViewById<TextView>(R.id.text_view).visibility = if (title == null) View.GONE else View.VISIBLE
             }
         }
+
+        override fun onStart() {
+            super.onStart()
+            presentCompletionBlock()
+        }
+
+        override fun onStop() {
+            super.onStop()
+            dismissCompletionBlock()
+        }
+    }
+
+    private sealed class DialogState {
+        object Gone : DialogState()
+        object Visible : DialogState()
     }
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
+    private var dialogState = MutableLiveData<DialogState>()
+
+    init {
+        checkNotNull(uiContextObserver.uiContextData) { "Please subscribe builder to existing UI context before building HUD" }
+        subscribeIfNeeded(uiContextObserver.uiContextData)
+        uiContextObserver.onUiContextDataWillChange = { newValue, oldValue ->
+            unsubscribeIfNeeded(oldValue)
+            subscribeIfNeeded(newValue)
+        }
+    }
+
+    private fun unsubscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
+        if (uiContextData != null) {
+            runBlocking(Dispatchers.Main.immediate) {
+                dialogState.removeObservers(uiContextData.lifecycleOwner)
+            }
+        }
+    }
+
+    private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
+        if (uiContextData != null) {
+            runBlocking(Dispatchers.Main.immediate) {
+                dialogState.observe(uiContextData.lifecycleOwner, Observer {
+                    when (it) {
+                        is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
+                        is DialogState.Gone -> loadingDialog.dismiss()
+                    }
+                })
+            }
+        }
+    }
 
     override val isVisible get() = loadingDialog.isVisible
 
     override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        loadingDialog.show(activity.supportFragmentManager, "LoadingIndicator")
-        completion()
+        loadingDialog.presentCompletionBlock = completion
+        dialogState.postValue(DialogState.Visible)
     }
 
     override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismiss()
-        completion()
-    }
-
-    override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
-        MainScope().launch {
-            delay(timeMillis)
-            dismiss(animated)
-        }
-    }
-
-    override fun setTitle(title: String?) {
-        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.text = title
-        loadingDialog.view?.findViewById<TextView>(R.id.text_view)?.visibility = if (title == null) View.GONE else View.VISIBLE
+        loadingDialog.dismissCompletionBlock = completion
+        dialogState.postValue(DialogState.Gone)
     }
 }

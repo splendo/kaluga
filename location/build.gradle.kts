@@ -13,8 +13,9 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 dependencies {
-    implementation("com.google.android.gms:play-services-location:17.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
+    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
+    implementation("com.google.android.gms:play-services-location:$play_services_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.5")
 }
 
 kotlin {

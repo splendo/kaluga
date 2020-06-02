@@ -61,6 +61,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
 
     include(":collection-view")
     project(":collection-view").projectDir = file("../../../collection-view")
+
+    include(":architecture")
+    project(":architecture").projectDir = file("../../../architecture")
 }
 
 include(":android")

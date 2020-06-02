@@ -37,6 +37,7 @@ apply("gradle/ext.gradle")
 rootProject.name = "Kaluga"
 
 include(":base")
+include(":architecture")
 include(":test-utils")
 include(":alerts")
 include(":logging")
@@ -44,3 +45,4 @@ include(":hud")
 include(":permissions")
 include(":location")
 include(":collection-view")
+include(":androidtesthelper")

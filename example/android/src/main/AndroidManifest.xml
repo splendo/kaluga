@@ -18,30 +18,28 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".FeaturesListActivity"
-            android:label="Features list">
+        <activity android:name="com.splendo.kaluga.example.ExampleActivity"
+                  android:label="Features list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".location.LocationActivity"
-            android:label="Location"/>
-        <activity
-            android:name=".permissions.PermissionsDemoListActivity"
-            android:label="Permissions list"/>
-        <activity
-            android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
-            android:label="Bluetooth"/>
-        <activity
-            android:name=".alerts.AlertsActivity"
-            android:label="Alerts"/>
-        <activity
-            android:name=".loading.LoadingActivity"
-            android:label="Loading Indicator"/>
+        <activity android:name=".location.LocationActivity"
+                  android:label="Location"/>
+        <activity android:name=".permissions.PermissionsDemoListActivity"
+                  android:label="Permissions list"/>
+        <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
+                  android:label="Bluetooth"/>
+        <activity android:name=".alerts.AlertsActivity"
+                  android:label="Alerts"/>
+        <activity android:name=".loading.LoadingActivity"
+                  android:label="Loading Indicator"/>
+        <activity android:name=".architecture.ArchitectureInputActivity"
+            android:label="Architecture"/>
+        <activity android:name=".architecture.ArchitectureDetailsActivity"
+            android:label="Architecture"/>
         <activity
             android:name=".CollectionViewActivity"
             android:label="Collection View"/>
