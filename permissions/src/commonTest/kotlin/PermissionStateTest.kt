@@ -17,11 +17,20 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.state.State
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.test.*
 
@@ -31,10 +40,10 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
 
     @BeforeTest
     fun setup() {
-        super.beforeTest()
+        super.setUp()
 
         permissionStateRepo = MockPermissionStateRepo()
-        flowable.complete(permissionStateRepo.flowable.value)
+        flowable.complete(permissionStateRepo.flowable)
     }
 
     @AfterTest
@@ -86,7 +95,9 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
             action {
                 permissionStateRepo.takeAndChangeState { state ->
                     when(state) {
-                        is PermissionState.Allowed -> state.deny(true)
+                        is PermissionState.Allowed -> suspend { state.deny(true) }
+                        //suspend { PermissionState.Denied.Locked(state.leakPermissionManager()) }
+
                         else -> state.remain
                     }
                 }
@@ -98,16 +109,33 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
     }
 
     @Test
+    fun testLaunch() {
+        println("try launching")
+        MultiplatformMainScope().launch {
+            println("async")
+
+        }
+
+        runBlocking {
+            delay(5000)
+        }
+    }
+
+    @Test
     fun testRequestFromFlow() = runBlocking {
+
+
         val hasRequested = CompletableDeferred<Boolean>()
         launch {
             hasRequested.complete(permissionStateRepo.flow().request())
         }
         launch {
             permissionStateRepo.permissionManager.hasRequestedPermission.await()
+            println("done waiting for request")
             permissionStateRepo.permissionManager.grantPermission()
         }
         assertTrue(hasRequested.await())
+        println("done!")
     }
 
     @Test
