@@ -44,7 +44,7 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is PermissionState.Allowed -> state.deny(locked)
+                    is PermissionState.Allowed -> suspend { state.deny(locked) }
                     is PermissionState.Denied.Requestable -> {
                         if (locked) state.lock else state.remain
                     }
