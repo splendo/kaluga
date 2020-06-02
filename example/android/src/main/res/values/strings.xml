@@ -16,4 +16,6 @@
     <string name="permissions_notifications">Notifications Demo</string>
     <string name="permissions_storage">Storage Demo</string>
 
+    <string name="architecture_details">Show Details</string>
+    <string name="architecture_details_inverse">Inverse Input</string>
 </resources>

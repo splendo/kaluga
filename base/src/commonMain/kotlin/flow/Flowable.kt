@@ -37,7 +37,7 @@ interface Flowable<T> {
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T>
 
     /**
-     * Sets the value of the Flowable. All active Flows should be notified
+     * Sets the value of the Flowable. All active [Flow]s should be notified
      *
      * @param value the value to set
      */
@@ -47,4 +47,9 @@ interface Flowable<T> {
      * Applies [set] in a blocking coroutine
      */
     fun setBlocking(value: T)
+
+    /**
+     * Closes the flowable from being observed. Closes all active [Flow]s
+     */
+    fun close()
 }

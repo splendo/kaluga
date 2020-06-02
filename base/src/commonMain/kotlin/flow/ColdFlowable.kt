@@ -17,41 +17,54 @@
 
 package com.splendo.kaluga.base.flow
 
-import co.touchlab.stately.concurrency.AtomicInt
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * A [BaseFlowable] that represents a Cold flow. This flowable will only become active once observed and deinitialises once no observers are present.
+ * Data can only be set when the flowable has had at least one observer and was never closed.
  *
  * @param T the type of the value to flow on
  * @param initialize method for determining the initial value of the flow. Will be called when the flow transitions from zero to one or more observers.
  * @param deinitialize method for deinitializing the flow, passing the last known value. Will be called when the flow transitions from one or more to zero observers.
+ * @param autoClose When set to `true` automatically closes the flow when all observers are removed. Defaults to `true`.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
+class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, private val autoClose: Boolean = true, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
-    private val flowingCounter = AtomicInt(0)
+    private val counterMutex = Mutex()
+    private var flowingCounter = 0
 
     @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
         return super.flow(flowConfig).onStart {
-                if (flowingCounter.incrementAndGet() <= 1) {
-                    set(initialize())
+                counterMutex.withLock {
+                    if (flowingCounter <= 0 ) {
+                        set(initialize())
+                    }
+                    flowingCounter += 1
                 }
             }.onCompletion {
-                if (flowingCounter.decrementAndGet() == 0) {
-                    deinitialize(channel.value.asFlow().first())
+                counterMutex.withLock {
+                    flowingCounter -= 1
+                    if (flowingCounter == 0) {
+                        val finalValue = currentValue()
+                        if (autoClose)
+                            close()
+                        finalValue?.let {
+                            deinitialize(finalValue)
+                        }
+                    }
                 }
             }
     }
 
-    override suspend fun set(value: T) {
-        if (flowingCounter.get() > 0)
-            super.set(value)
-    }
+    private suspend fun currentValue(): T? = channel?.value?.asFlow()?.first()
+
 }

@@ -30,7 +30,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.splendo.kaluga.example.FeaturesListActivity"
+        <activity android:name="com.splendo.kaluga.example.ExampleActivity"
                   android:label="Features list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -62,6 +62,10 @@
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"
                   android:label="Loading Indicator"/>
+        <activity android:name=".architecture.ArchitectureInputActivity"
+            android:label="Architecture"/>
+        <activity android:name=".architecture.ArchitectureDetailsActivity"
+            android:label="Architecture"/>
     </application>
 
 </manifest>

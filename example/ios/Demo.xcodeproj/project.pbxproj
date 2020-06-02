@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
+		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
+		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
+		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
+		20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D42469B25B00C9A63F /* InfoViewController.swift */; };
+		20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */; };
+		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
@@ -62,6 +68,12 @@
 
 /* Begin PBXFileReference section */
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
+		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
+		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
+		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
+		20C7D1D42469B25B00C9A63F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureInputViewController.swift; sourceTree = "<group>"; };
+		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -117,6 +129,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		20C7D1CD24699A5000C9A63F /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		20C7D1D02469A3C100C9A63F /* FeaturesList */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */,
+			);
+			path = FeaturesList;
+			sourceTree = "<group>";
+		};
+		20C7D1D32469B24C00C9A63F /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D42469B25B00C9A63F /* InfoViewController.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		20C7D1D6246A938A00C9A63F /* Architecture */ = {
+			isa = PBXGroup;
+			children = (
+				20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */,
+				20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */,
+			);
+			path = Architecture;
+			sourceTree = "<group>";
+		};
 		4B02E502236B2206003F0B36 /* LoadingIndicator */ = {
 			isa = PBXGroup;
 			children = (
@@ -202,6 +247,10 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				20C7D1D6246A938A00C9A63F /* Architecture */,
+				20C7D1D32469B24C00C9A63F /* Info */,
+				20C7D1D02469A3C100C9A63F /* FeaturesList */,
+				20C7D1CD24699A5000C9A63F /* Helpers */,
 				4B02E502236B2206003F0B36 /* LoadingIndicator */,
 				4B54CB1F2369DA4E00B69B2D /* Alerts */,
 				4B54CB1E2369DA2B00B69B2D /* Location */,
@@ -211,6 +260,7 @@
 				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
 				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				74F483E9C1890D693F808DDA /* Main.storyboard */,
+				20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -448,9 +498,16 @@
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
+				20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */,
+				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
+				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
+				978348A7235DF586005B140B /* BluetoothPermissionViewController.swift in Sources */,
+				20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
+				20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

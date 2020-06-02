@@ -74,30 +74,22 @@ sealed class TrafficLightState : State<TrafficLightState>(),
         finalStateDone.complete()
     }
 
-    class RedLight : TrafficLightState() {
+    class RedLight internal constructor(): TrafficLightState() {
 
-        fun becomeGreen() : suspend () -> GreenLight {
-            return {GreenLight()}
-        }
-    }
-
-    class GreenLight() : TrafficLightState() {
-
-        fun becomeYellow() : suspend () -> YellowLight {
-            return {YellowLight()}
-        }
-
-        fun becomeRed() : suspend () -> RedLight {
-            return {RedLight()}
-        }
+        val becomeGreen = suspend {GreenLight()}
 
     }
 
-    class YellowLight() : TrafficLightState() {
+    class GreenLight internal constructor() : TrafficLightState() {
 
-        fun becomeRed() : suspend () -> RedLight {
-            return {RedLight()}
-        }
+        val becomeYellow = suspend {YellowLight()}
+
+        val becomeRed = suspend {RedLight()}
+    }
+
+    class YellowLight internal constructor() : TrafficLightState() {
+
+        val becomeRed = suspend  {RedLight()}
 
     }
 
@@ -119,7 +111,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         super.setUp()
 
         trafficLight = TrafficLight()
-        flowable.complete(trafficLight.flowable.value)
+        flowable.complete(trafficLight.flowable)
     }
 
     @Test
@@ -160,7 +152,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
 
             trafficLight.takeAndChangeState {
                 when (val state = it) {
-                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    is TrafficLightState.GreenLight -> state.becomeRed
                     else -> state.remain
                 }
             }
@@ -185,13 +177,13 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         action {
             trafficLight.takeAndChangeState {
                 when (val state = it) {
-                    is TrafficLightState.GreenLight -> state.becomeRed()
+                    is TrafficLightState.GreenLight -> state.becomeRed
                     else -> state.remain
                 }
             }
             trafficLight.takeAndChangeState {
                 when (val state = it) {
-                    is TrafficLightState.GreenLight -> state.becomeYellow()
+                    is TrafficLightState.GreenLight -> state.becomeYellow
                     else -> state.remain
                 }
             }
@@ -214,7 +206,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 delay(100)
                 trafficLight.takeAndChangeState {
                     when(val state = it) {
-                        is TrafficLightState.GreenLight -> state.becomeRed()
+                        is TrafficLightState.GreenLight -> state.becomeRed
                         else -> state.remain
                     }
                 }
@@ -223,7 +215,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
                 trafficLight.takeAndChangeState {
                     delay(100)
                     when(val state = it) {
-                        is TrafficLightState.GreenLight -> state.becomeYellow()
+                        is TrafficLightState.GreenLight -> state.becomeYellow
                         else -> state.remain
                     }
                 }
@@ -243,7 +235,7 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
         assertTrue(greenState is TrafficLightState.GreenLight)
         trafficLight.takeAndChangeState {
             when (val state = it) {
-                is TrafficLightState.GreenLight -> state.becomeYellow()
+                is TrafficLightState.GreenLight -> state.becomeYellow
                 else -> state.remain
             }
         }
@@ -258,17 +250,17 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
             async {
                 trafficLight.takeAndChangeState { newState ->
                     when(newState) {
-                        is TrafficLightState.RedLight -> newState.becomeGreen()
-                        is TrafficLightState.YellowLight -> newState.becomeRed()
-                        is TrafficLightState.GreenLight -> newState.becomeYellow()
+                        is TrafficLightState.RedLight -> newState.becomeGreen
+                        is TrafficLightState.YellowLight -> newState.becomeRed
+                        is TrafficLightState.GreenLight -> newState.becomeYellow
                     }
                 }
                 transitionsCompleted.complete()
             }
             when(state) {
-                is TrafficLightState.RedLight -> state.becomeGreen()
-                is TrafficLightState.YellowLight -> state.becomeRed()
-                is TrafficLightState.GreenLight -> state.becomeYellow()
+                is TrafficLightState.RedLight -> state.becomeGreen
+                is TrafficLightState.YellowLight -> state.becomeRed
+                is TrafficLightState.GreenLight -> state.becomeYellow
             }
         }
         transitionsCompleted.await()

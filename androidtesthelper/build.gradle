@@ -47,11 +47,17 @@ android {
 
     packagingOptions {
         exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
         exclude 'META-INF/shared_debug.kotlin_module'
         exclude 'META-INF/hud_debug.kotlin_module'
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
     }
+
+    lintOptions {
+        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
+    }
+
 
 }
 
