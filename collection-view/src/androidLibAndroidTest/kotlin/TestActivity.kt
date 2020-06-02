@@ -17,22 +17,6 @@
 
 package com.splendo.kaluga.collectionView
 
-import TestRepository
-import TestViewModel
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 
-class TestActivity : AppCompatActivity() {
-
-    class TestRepositoryFactory(private val items: List<CollectionViewItem>) : ViewModelProvider.Factory {
-        @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return TestViewModel(TestRepository(items)) as T
-        }
-    }
-
-    lateinit var items: List<CollectionViewItem>
-    val viewModel: TestViewModel by viewModels { TestRepositoryFactory(items) }
-}
+class TestActivity : AppCompatActivity()

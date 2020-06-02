@@ -1,6 +1,3 @@
-import com.splendo.kaluga.collectionView.CollectionItemRepository
-import com.splendo.kaluga.collectionView.CollectionViewItem
-
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -17,7 +14,6 @@ import com.splendo.kaluga.collectionView.CollectionViewItem
     limitations under the License.
 
  */
+package com.splendo.kaluga.collectionView
 
-class TestRepository(private val items: List<CollectionViewItem>) : CollectionItemRepository<CollectionViewItem>() {
-    override suspend fun getItems() = items
-}
+class MockCollectionItemsViewModel(repository: MockCollectionItemRepository) : CollectionItemsViewModel<CollectionViewItem>(repository)

@@ -17,6 +17,28 @@
 
 package com.splendo.kaluga.collectionView
 
-open class CollectionItemRepository<Item : CollectionViewItem> {
-    open suspend fun getItems(): List<Item> = emptyList()
+import com.splendo.kaluga.flow.BaseFlowable
+
+abstract class CollectionItemRepository<Item : CollectionViewItem> {
+
+    sealed class Result<Item: CollectionViewItem> {
+        data class Success<Item : CollectionViewItem>(val items: List<Item>) : Result<Item>()
+        data class Error<Item : CollectionViewItem>(val throwable: Throwable) : Result<Item>()
+    }
+
+    val items = BaseFlowable<List<Item>>().apply { setBlocking(emptyList()) }
+
+    suspend fun loadItems(): Result<Item> {
+        return updateItems().also { result ->
+            when(result) {
+                is Result.Success -> items.set(result.items)
+            }
+        }
+    }
+
+    protected abstract suspend fun updateItems(): Result<Item>
+
+    suspend fun clear() {
+        items.set(emptyList())
+    }
 }

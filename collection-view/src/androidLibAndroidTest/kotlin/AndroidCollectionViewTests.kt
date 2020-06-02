@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.collectionView
 
+import androidx.lifecycle.Observer
 import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlinx.coroutines.Dispatchers
@@ -27,32 +29,14 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
 
-class CollectionViewTests {
+class AndroidCollectionViewTests : AbstractCollectionViewTest() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
-    @Test
-    fun testViewModelEmptyList() = runBlockingTest {
-        activityRule.activity.items = emptyList()
-        MainScope().launch(Dispatchers.Main) {
-            activityRule.activity.viewModel.subscribe {
-                assertTrue(it.isEmpty())
-            }
-        }
-    }
-
-    @Test
-    fun testViewModelNonEmptyList() = runBlockingTest {
-        activityRule.activity.items = listOf(
-            CollectionViewItem("One"),
-            CollectionViewItem("Two"),
-            CollectionViewItem("Tri")
-        )
-        MainScope().launch(Dispatchers.Main) {
-            activityRule.activity.viewModel.subscribe {
-                assertEquals(it.count(), 3)
-            }
+    override fun observe(viewModel: MockCollectionItemsViewModel, deferredItems: List<CompletableDeferred<List<CollectionViewItem>>>) {
+        activityRule.activity.runOnUiThread {
+            viewModel.items.liveData.observe(activityRule.activity, Observer { newValue -> deferredItems.firstOrNull { !it.isCompleted }?.complete(newValue) })
         }
     }
 }

@@ -45,6 +45,7 @@ import platform.UIKit.removeFromParentViewController
 import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
+import platform.darwin.NSInteger
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -124,7 +125,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
         val parent = assertParent() ?: return
         when (val type = nestedSpec.type) {
             is NavigationSpec.Nested.Type.Replace -> {
-                parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag == type.tag }.forEach {
+                parent.childViewControllers.map { it as UIViewController }.filter { it.view.tag.toLong() == type.tag }.forEach {
                     it.willMoveToParentViewController(null)
                     it.view.removeFromSuperview()
                     it.removeFromParentViewController()
@@ -135,7 +136,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
         val child = nestedSpec.nested()
         when (val type = nestedSpec.type) {
             is NavigationSpec.Nested.Type.Replace -> {
-                child.view.tag = type.tag
+                child.view.tag = type.tag as NSInteger
             }
         }
         child.view.translatesAutoresizingMaskIntoConstraints = false

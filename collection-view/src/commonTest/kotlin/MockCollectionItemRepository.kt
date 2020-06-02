@@ -17,18 +17,12 @@
 
 package com.splendo.kaluga.collectionView
 
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+class MockCollectionItemRepository(private val initialItems: List<CollectionViewItem>) : CollectionItemRepository<CollectionViewItem>() {
 
-actual open class CollectionViewModel actual constructor() {
+    var itemsToLoad: List<CollectionViewItem>? = initialItems
 
-    private val job = SupervisorJob()
-
-    actual val coroutineScope = CoroutineScope(MainQueueDispatcher + job)
-
-    protected actual open fun onCleared() {
-        job.cancelChildren()
+    override suspend fun updateItems(): Result<CollectionViewItem> {
+        return itemsToLoad?.let { Result.Success(it) } ?: Result.Error(Exception("Not Set"))
     }
+
 }

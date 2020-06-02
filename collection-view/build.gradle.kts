@@ -30,16 +30,11 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 android {
-    testOptions {
-        unitTests.isReturnDefaultValues = true
+    packagingOptions {
+        exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
     }
 }
 
-dependencies {
-    androidTestImplementation("androidx.appcompat:appcompat:1.1.0")
-    androidTestImplementation("androidx.fragment:fragment-ktx:1.1.0")
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.2.0")
-}
 
 kotlin {
     sourceSets {
@@ -48,9 +43,7 @@ kotlin {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
-                implementation("androidx.appcompat:appcompat:1.1.0")
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0")
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
+                api(project(":architecture", ""))
             }
         }
     }

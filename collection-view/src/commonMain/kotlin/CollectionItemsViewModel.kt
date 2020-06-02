@@ -17,27 +17,26 @@
 
 package com.splendo.kaluga.collectionView
 
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.consumeEach
+import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class CollectionItemsViewModel<Item : CollectionViewItem>(
     private val repository: CollectionItemRepository<Item>
-) : CollectionViewModel() {
+) : BaseViewModel() {
 
-    private val items = ConflatedBroadcastChannel<List<Item>>()
+    val items = repository.items.toObservable(coroutineScope)
 
-    init {
-        coroutineScope.launch {
-            items.offer(repository.getItems())
-        }
+    override fun onResume(scope: CoroutineScope) {
+        super.onResume(scope)
+
+        scope.launch(Dispatchers.Main) {repository.loadItems() }
     }
 
-    fun subscribe(block: (List<Item>) -> Unit) {
-        coroutineScope.launch {
-            items.consumeEach {
-                block(it)
-            }
-        }
+    fun reload() {
+        coroutineScope.launch(Dispatchers.Main) {repository.loadItems() }
     }
+
 }
