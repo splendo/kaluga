@@ -24,15 +24,15 @@ import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
 
 class MockKeyboardTest {
 
     @get:Rule
-    var activityRule = ActivityTestRule<TestActivity>(TestActivity::class.java, false, true)
+    var activityRule = ActivityTestRule(TestActivity::class.java)
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
@@ -40,12 +40,11 @@ class MockKeyboardTest {
     }
 
     @Test
-    fun testShowKeyboard() = runBlockingTest {
-
+    fun testShowKeyboard() = runBlocking {
         val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
         val textInputView = activityRule.activity.textView
 
-        CoroutineScope(Dispatchers.Main).launch {
+        withContext(CoroutineScope(Dispatchers.Main).coroutineContext) {
 
             keyboardManager.show(textInputView)
             validateKeyboard(true)
@@ -53,6 +52,7 @@ class MockKeyboardTest {
             keyboardManager.hide()
             validateKeyboard(false)
         }
+        Unit
     }
 
     private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {
