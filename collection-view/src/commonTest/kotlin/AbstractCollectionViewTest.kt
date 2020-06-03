@@ -46,7 +46,6 @@ abstract class AbstractCollectionViewTest {
         viewModel.reload()
 
         assertEquals(items, deferredItems[2].await())
-        Unit
     }
 
     abstract fun observe(viewModel: MockCollectionItemsViewModel, deferredItems: List<CompletableDeferred<List<CollectionViewItem>>>)

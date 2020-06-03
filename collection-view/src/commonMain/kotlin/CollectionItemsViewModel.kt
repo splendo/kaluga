@@ -31,7 +31,7 @@ open class CollectionItemsViewModel<Item : CollectionViewItem>(
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        scope.launch {repository.loadItems() }
+        scope.launch { repository.loadItems() }
     }
 
     fun reload() {
