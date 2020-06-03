@@ -7,25 +7,62 @@
 //
 
 import UIKit
+import KotlinNativeFramework
 
-class PermissionListViewController: UITableViewController {
+class PermissionListViewController : UITableViewController {
+    
+    private lazy var viewModel: SharedPermissionsListViewModel = KNArchitectureFramework().createPermissionListViewModel(parent: self) { (permission) -> UIViewController in
+        return PermissionViewController.create(permission: permission)
+    }
+    private var lifecycleManager: ArchitectureLifecycleManager!
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let permissionViewController =  segue.destination as? PermissionViewController else {
-            return
-        }
+    private var permissions = [SharedPermissionView]()
+    private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
+    
+    deinit {
+        lifecycleManager.unbind()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
-        switch segue.identifier {
-        case "BluetoothPermissionSegue": permissionViewController.permissionType = PermissionType.Bluetooth
-        case "CalendarPermissionSegue": permissionViewController.permissionType = PermissionType.Calendar
-        case "CameraPermissionSegue": permissionViewController.permissionType = PermissionType.Camera
-        case "ContactsPermissionSegue": permissionViewController.permissionType = PermissionType.Contacts
-        case "LocationPermissionSegue": permissionViewController.permissionType = PermissionType.Location
-        case "MicrophonePermissionSegue": permissionViewController.permissionType = PermissionType.Microphone
-        case "NotificationsPermissionSegue": permissionViewController.permissionType = PermissionType.Notifications(options: [UNAuthorizationOptions.alert, UNAuthorizationOptions.sound])
-        case "StoragePermissionSegue": permissionViewController.permissionType = PermissionType.Storage
-        default: ()
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+            guard let viewModel = self?.viewModel else { return }
+            viewModel.observePermissions(disposeBag: disposeBag) { (permissionViews: [SharedPermissionView], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+                self?.permissions = permissionViews
+                self?.onSelected = onSelected
+                self?.tableView.reloadData()
+            }
         }
     }
+    
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return permissions.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: PermissionsListCell.Const.identifier, for: indexPath) as! PermissionsListCell
+        cell.label.text = NSLocalizedString(permissions[indexPath.row].title, comment: "")
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let _ = onSelected?(KotlinInt.init(int: Int32(indexPath.row)))
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+}
+
+class PermissionsListCell : UITableViewCell {
+    
+    struct Const {
+        static let identifier = "PermissionsListCell"
+    }
+    
+    @IBOutlet weak var label: UILabel!
     
 }

@@ -10,68 +10,57 @@ import UIKit
 import Foundation
 import KotlinNativeFramework
 
-enum PermissionType {
-    case Bluetooth
-    case Calendar
-    case Camera
-    case Contacts
-    case Location
-    case Microphone
-    case Notifications(options: UNAuthorizationOptions)
-    case Storage
-}
-
-class PermissionViewController: UITableViewController {
+class PermissionViewController: UIViewController {
     
-    let knPermissionsFramework = KNPermissionsFramework()
-    
-    var permissionType: PermissionType? = nil
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    private struct Const {
+        static let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        static let permissionVc = "Permission"
         
-        switch (indexPath.row) {
-        case 0:
-            handlePermissionStatusPressed()
-        case 1:
-            handlePermissionRequestPressed()
-        default:
-            break
-        }
+        static let permissions = KNPermissionsFramework().getPermissions()
     }
     
-    private func handlePermissionStatusPressed() {
-        guard let permissionType = permissionType else {
-            return
-        }
-        let alertBuilder = AlertsAlertBuilder(viewController: self)
-        switch(permissionType) {
-        case .Bluetooth: knPermissionsFramework.permissionStatusBluetooth(alertBuilder: alertBuilder)
-        case .Calendar: knPermissionsFramework.permissionStatusCalendar(alertBuilder: alertBuilder)
-        case .Camera: knPermissionsFramework.permissionStatusCamera(alertBuilder: alertBuilder)
-        case .Contacts: knPermissionsFramework.permissionStatusContacts(alertBuilder: alertBuilder)
-        case .Location: knPermissionsFramework.permissionStatusLocation(alertBuilder: alertBuilder)
-        case .Microphone: knPermissionsFramework.permissionStatusMicrophone(alertBuilder: alertBuilder)
-        case .Notifications(let options): knPermissionsFramework.permissionStatusNotifications(alertBuilder: alertBuilder, options: UInt64(options.rawValue))
-        case .Storage: knPermissionsFramework.permissionStatusStorage(alertBuilder: alertBuilder)
-        }
+    static func create(permission: PermissionsPermission) -> PermissionViewController {
+        let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.permissionVc) as! PermissionViewController
+        vc.viewModel = KNArchitectureFramework().createPermissionViewModel(permissions: Const.permissions, permission: permission)
+        return vc
     }
     
-    private func handlePermissionRequestPressed() {
-        guard let permissionType = permissionType else {
-            return
-        }
-        let alertBuilder = AlertsAlertBuilder(viewController: self)
-        switch(permissionType) {
-        case .Bluetooth: knPermissionsFramework.permissionRequestBluetooth(alertBuilder: alertBuilder)
-        case .Calendar: knPermissionsFramework.permissionRequestCalendar(alertBuilder: alertBuilder)
-        case .Camera: knPermissionsFramework.permissionRequestCamera(alertBuilder: alertBuilder)
-        case .Contacts: knPermissionsFramework.permissionRequestContacts(alertBuilder: alertBuilder)
-        case .Location: knPermissionsFramework.permissionRequestLocation(alertBuilder: alertBuilder)
-        case .Microphone: knPermissionsFramework.permissionRequestMicrophone(alertBuilder: alertBuilder)
-        case .Notifications(let options): knPermissionsFramework.permissionRequestNotifications(alertBuilder: alertBuilder, options: UInt64(options.rawValue))
-        case .Storage: knPermissionsFramework.permissionRequestStorage(alertBuilder: alertBuilder)
-        }
+    @IBOutlet weak var permissionStateLabel: UILabel!
+    @IBOutlet weak var requestPermissionButton: UIButton!
+    
+    var viewModel: SharedPermissionViewModel!
+    private var lifecycleManager: ArchitectureLifecycleManager!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        requestPermissionButton.setTitle(NSLocalizedString("permission_request", comment: ""), for: .normal)
+        
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] (disposeBag) in
+            self?.viewModel.permissionStateMessage.observe(onNext: { (message) in
+                self?.permissionStateLabel.text = NSLocalizedString(message as? String ?? "", comment: "")
+                }).addTo(disposeBag: disposeBag)
+            
+            self?.viewModel.requestMessage.observe(onNext: { (optionalMessage) in
+                guard let message = optionalMessage as? String else {
+                    return
+                }
+                
+                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: NSLocalizedString(message, comment: ""), preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                self?.present(alert, animated: true, completion: nil)
+                
+                }).addTo(disposeBag: disposeBag)
+            
+            self?.viewModel.showPermissionButton.observe(onNext: { (show) in
+                self?.requestPermissionButton.isHidden = !(show as? Bool ?? false)
+                }).addTo(disposeBag: disposeBag)
+        })
+    }
+    
+    
+    @IBAction func requestPermission(sender: Any?) {
+        viewModel.requestPermission()
     }
 
 }
