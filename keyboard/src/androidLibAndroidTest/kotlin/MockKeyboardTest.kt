@@ -1,17 +1,3 @@
-package com.splendo.kaluga.keyboard
-
-import android.content.Context
-import android.view.inputmethod.InputMethodManager
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Rule
-import org.junit.Test
-
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
@@ -29,6 +15,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.keyboard
+
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Rule
+import org.junit.Test
+
 class MockKeyboardTest {
 
     @get:Rule
@@ -43,11 +43,11 @@ class MockKeyboardTest {
     fun testShowKeyboard() = runBlockingTest {
 
         val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
-        val keyboardView = activityRule.activity.textView
+        val textInputView = activityRule.activity.textView
 
         CoroutineScope(Dispatchers.Main).launch {
 
-            keyboardManager.show(keyboardView)
+            keyboardManager.show(textInputView)
             validateKeyboard(true)
 
             keyboardManager.hide()

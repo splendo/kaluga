@@ -21,7 +21,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 /**
  * Class that can a keyboard can be shown for
  */
-expect class KeyboardView
+expect class TextInputView
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
@@ -29,11 +29,11 @@ expect class KeyboardView
 interface BaseKeyboardManager {
 
     /**
-     * Shows the keyboard for a given KeyboardView
+     * Shows the keyboard for a given [TextInputView]
      *
-     * @param KeyboardView The view for which the keyboard will be shown
+     * @param textInputView The view for which the keyboard will be shown
      */
-    fun show(keyboardView: KeyboardView)
+    fun show(textInputView: TextInputView)
 
     /**
      * Dismisses the current keyboard

@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual typealias KeyboardView = UIView
+actual typealias TextInputView = UIView
 
 actual class KeyboardManagerBuilder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManagerBuilder() {
     override fun create() = KeyboardManager(application)
@@ -30,9 +30,9 @@ actual class KeyboardManagerBuilder(private val application: UIApplication = UIA
 
 actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
-    override fun show(keyboardView: KeyboardView) {
-        if (keyboardView.canBecomeFirstResponder) {
-            keyboardView.becomeFirstResponder()
+    override fun show(textInputView: TextInputView) {
+        if (textInputView.canBecomeFirstResponder) {
+            textInputView.becomeFirstResponder()
         }
     }
 

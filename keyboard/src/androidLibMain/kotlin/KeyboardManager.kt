@@ -22,7 +22,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual typealias KeyboardView = View
+actual typealias TextInputView = View
 
 actual class KeyboardManagerBuilder(private val activity: Activity) : BaseKeyboardManagerBuilder() {
     override fun create() = KeyboardManager(activity)
@@ -34,9 +34,9 @@ actual class KeyboardManager(
 
     private val inputMethodManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
 
-    override fun show(keyboardView: KeyboardView) {
+    override fun show(textInputView: TextInputView) {
         inputMethodManager?.let {
-            keyboardView.requestFocus()
+            textInputView.requestFocus()
             it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }

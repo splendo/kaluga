@@ -22,7 +22,7 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewMo
 import com.splendo.kaluga.example.shared.viewmodel.info.*
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboard.KeyboardView
+import com.splendo.kaluga.keyboard.TextInputView
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.net.URL
@@ -84,7 +84,7 @@ val viewModelModule = module {
         })
     }
 
-    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, keyboardView: () -> KeyboardView) ->
-        KeyboardViewModel(keyboardManagerBuilder, keyboardView)
+    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, textInputView: () -> TextInputView) ->
+        KeyboardViewModel(keyboardManagerBuilder, textInputView)
     }
 }
