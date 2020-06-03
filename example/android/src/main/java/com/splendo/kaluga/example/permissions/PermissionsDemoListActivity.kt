@@ -1,93 +1,57 @@
 package com.splendo.kaluga.example.permissions
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_permissions_list.*
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.widget.AppCompatButton
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.permissions.bluetooth.BluetoothPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.calendar.CalendarPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.camera.CameraPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.contacts.ContactsPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.location.LocationPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.microphone.MicrophonePermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.notifications.NotificationsPermissionsDemoActivity
-import com.splendo.kaluga.example.permissions.storage.StoragePermissionsDemoActivity
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.utils.stringByKey
+import kotlinx.android.synthetic.main.activity_permissions_list.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PermissionsDemoListActivity : AppCompatActivity(R.layout.activity_permissions_list) {
+class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewModel>(R.layout.activity_permissions_list) {
+
+    override val viewModel: PermissionsListViewModel by viewModel()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_permissions_list_bluetooth.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    BluetoothPermissionsDemoActivity::class.java
-                )
-            )
+        val adapter = PermissionsAdapter(viewModel).apply {
+            permissions_list.adapter = this
+        }
+        viewModel.permissions.observe(this, Observer { adapter.permissions = it })
+    }
+}
+
+class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : RecyclerView.Adapter<PermissionsAdapter.PermissionsViewHolder>() {
+
+    class PermissionsViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
+
+    var permissions: List<PermissionView> = emptyList()
+        set(newValue) {
+            field = newValue
+            notifyDataSetChanged()
         }
 
-        btn_permissions_list_calendar.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    CalendarPermissionsDemoActivity::class.java
-                )
-            )
-        }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PermissionsViewHolder {
+        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
+        return PermissionsViewHolder(button)
+    }
 
-        btn_permissions_list_camera.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    CameraPermissionsDemoActivity::class.java
-                )
-            )
-        }
+    override fun getItemCount(): Int = permissions.size
 
-        btn_permissions_list_contacts.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    ContactsPermissionsDemoActivity::class.java
-                )
-            )
-        }
-
-        btn_permissions_list_location.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    LocationPermissionsDemoActivity::class.java
-                )
-            )
-        }
-
-        btn_permissions_list_microphone.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    MicrophonePermissionsDemoActivity::class.java
-                )
-            )
-        }
-
-        btn_permissions_list_notifications.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    NotificationsPermissionsDemoActivity::class.java
-                )
-            )
-        }
-
-        btn_permissions_list_storage.setOnClickListener {
-            startActivity(
-                Intent(
-                    this,
-                    StoragePermissionsDemoActivity::class.java
-                )
-            )
+    override fun onBindViewHolder(holder: PermissionsViewHolder, position: Int) {
+        permissions.getOrNull(position)?.let { permission ->
+            holder.button.text = holder.itemView.context.stringByKey(permission.title)
+            holder.button.setOnClickListener { viewModel.onPermissionPressed(permission) }
+        } ?: run {
+            holder.button.text = null
+            holder.button.setOnClickListener(null)
         }
     }
 }

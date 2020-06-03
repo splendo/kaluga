@@ -18,52 +18,64 @@
 package com.splendo.kaluga.example.permissions
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import com.splendo.kaluga.architecture.navigation.toNavigationBundle
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.PermissionsPrinter
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpec
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.utils.stringByKey
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlinx.android.synthetic.main.activity_permissions_demo.*
-import kotlinx.coroutines.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
-abstract class PermissionsDemoActivity<P:Permission> : AppCompatActivity(R.layout.activity_permissions_demo),
-    CoroutineScope by MainScope() {
+class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.layout.activity_permissions_demo) {
 
-    private lateinit var permissions: Permissions
-    protected abstract val permission: P
+    override val viewModel: PermissionViewModel by viewModel {
+        val permissionNavSpec = PermissionNavigationBundleSpec()
+        intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
+            val permission = when(bundle.get(PermissionNavigationBundleSpecRow)) {
+                PermissionView.Bluetooth -> Permission.Bluetooth
+                PermissionView.Calendar -> Permission.Calendar(allowWrite = true)
+                PermissionView.Camera -> Permission.Camera
+                PermissionView.Contacts -> Permission.Contacts(allowWrite = true)
+                PermissionView.Location -> Permission.Location(background = true, precise = true)
+                PermissionView.Microphone -> Permission.Microphone
+                PermissionView.Notifications -> Permission.Notifications()
+                PermissionView.Storage -> Permission.Storage(allowWrite = true)
+            }
+            parametersOf(permission)
+        } ?: parametersOf()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        permissions = Permissions(PermissionsBuilder())
-        val printer = PermissionsPrinter(permissions, permission)
 
-        btn_permissions_bluetooth_check_permission.setOnClickListener {
-            GlobalScope.launch {
-                printer.printPermission { text ->
-                    Toast.makeText(
-                        this@PermissionsDemoActivity,
-                        text,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+        val permissionNavSpec = PermissionNavigationBundleSpec()
+        intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
+            supportActionBar?.title = stringByKey(bundle.get(PermissionNavigationBundleSpecRow).title)
         }
 
-        btn_permissions_bluetooth_request_permissions.setOnClickListener {
-            GlobalScope.launch {
-                printer.printRequest { text ->
-                    Toast.makeText(
-                        this@PermissionsDemoActivity,
-                        text,
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+        viewModel.permissionStateMessage.observe(this, Observer {
+            permissions_message.text = stringByKey(it)
+        })
+
+        viewModel.showPermissionButton.observe(this, Observer {
+            btn_permissions_bluetooth_request_permissions.visibility = if (it) View.VISIBLE else View.GONE
+        })
+
+        btn_permissions_bluetooth_request_permissions.setOnClickListener { viewModel.requestPermission() }
+
+        viewModel.requestMessage.observe(this, Observer { message ->
+            message?.let {
+                Toast.makeText(this, stringByKey(it), Toast.LENGTH_SHORT).show()
             }
-        }
+        })
 
     }
-
-
 }

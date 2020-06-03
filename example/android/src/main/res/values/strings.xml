@@ -16,6 +16,14 @@
     <string name="permissions_notifications">Notifications Demo</string>
     <string name="permissions_storage">Storage Demo</string>
 
+    <string name="permission_allowed">The permission has been granted</string>
+    <string name="permission_requestable">The permission can be requested</string>
+    <string name="permission_denied">The permission has been denied</string>
+
+    <string name="permission_request">Request Permission</string>
+    <string name="permission_request_success">Permission requested successfully</string>
+    <string name="permission_request_failed">Permission request failed</string>
+
     <string name="architecture_details">Show Details</string>
     <string name="architecture_details_inverse">Inverse Input</string>
 </resources>

@@ -42,22 +42,7 @@
                   android:label="Location"/>
         <activity android:name=".permissions.PermissionsDemoListActivity"
                   android:label="@string/permissions_list"/>
-        <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
-                  android:label="@string/permissions_bluetooth"/>
-        <activity android:name=".permissions.calendar.CalendarPermissionsDemoActivity"
-            android:label="@string/permissions_calendar"/>
-        <activity android:name=".permissions.camera.CameraPermissionsDemoActivity"
-            android:label="@string/permissions_camera"/>
-        <activity android:name=".permissions.contacts.ContactsPermissionsDemoActivity"
-            android:label="@string/permissions_contacts"/>
-        <activity android:name=".permissions.location.LocationPermissionsDemoActivity"
-            android:label="@string/permissions_location"/>
-        <activity android:name=".permissions.microphone.MicrophonePermissionsDemoActivity"
-        android:label="@string/permissions_microphone"/>
-        <activity android:name=".permissions.notifications.NotificationsPermissionsDemoActivity"
-            android:label="@string/permissions_notifications"/>
-        <activity android:name=".permissions.storage.StoragePermissionsDemoActivity"
-            android:label="@string/permissions_storage"/>
+        <activity android:name=".permissions.PermissionsDemoActivity" android:label="Permissions"/>
         <activity android:name=".alerts.AlertsActivity"
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"

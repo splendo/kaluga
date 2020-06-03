@@ -11,6 +11,7 @@ import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
@@ -19,9 +20,18 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInpu
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.net.URL
+
+val utilitiesModule = module {
+    single { Permissions(PermissionsBuilder()) }
+}
 
 val viewModelModule = module {
     viewModel {
@@ -62,6 +72,16 @@ val viewModelModule = module {
                 }
             })
     }
+
+    viewModel {
+        PermissionsListViewModel(
+            Navigator {
+                NavigationSpec.Activity(PermissionsDemoActivity::class.java)
+            })
+    }
+
+    viewModel { (permission: Permission) -> PermissionViewModel(get(), permission) }
+
     viewModel {
         ArchitectureInputViewModel(
             Navigator {
