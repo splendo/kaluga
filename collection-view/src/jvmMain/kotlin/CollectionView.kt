@@ -15,6 +15,6 @@
 
  */
 
-package com.splendo.kaluga.collectionView
+package com.splendo.kaluga.collectionview
 
 actual class CollectionView

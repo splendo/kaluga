@@ -15,6 +15,6 @@
 
   -->
 
-<manifest package="com.splendo.kaluga.collectionView"
+<manifest package="com.splendo.kaluga.collectionview"
           xmlns:android="http://schemas.android.com/apk/res/android"
 />

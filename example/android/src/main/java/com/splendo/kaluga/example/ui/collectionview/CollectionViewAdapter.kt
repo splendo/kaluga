@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.collectionView.CollectionViewItem
+import com.splendo.kaluga.collectionview.CollectionViewItem
 import com.splendo.kaluga.example.R
 import kotlinx.android.synthetic.main.list_collection_item.view.*
 

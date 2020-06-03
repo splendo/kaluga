@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.example.shared
 
-import com.splendo.kaluga.collectionView.CollectionItemRepository
-import com.splendo.kaluga.collectionView.CollectionViewItem
+import com.splendo.kaluga.collectionview.CollectionItemRepository
+import com.splendo.kaluga.collectionview.CollectionViewItem
 
 class ItemsRepository : CollectionItemRepository<CollectionViewItem>() {
 

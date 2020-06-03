@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.collectionView
+package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.flow.BaseFlowable
 

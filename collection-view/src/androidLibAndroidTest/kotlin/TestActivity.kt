@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.collectionView
+package com.splendo.kaluga.collectionview
 
 import androidx.appcompat.app.AppCompatActivity
 

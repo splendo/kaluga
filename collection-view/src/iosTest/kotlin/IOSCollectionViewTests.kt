@@ -14,7 +14,7 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.collectionView
+package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.base.runBlocking
