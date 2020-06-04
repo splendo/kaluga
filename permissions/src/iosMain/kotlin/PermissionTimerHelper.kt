@@ -33,13 +33,12 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
 
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
-        if (timerJob != null) return
-
-        launchTimerJob(interval)
+        launchTimerJob(interval, false)
     }
 
-    private suspend fun launchTimerJob(interval: Long) {
+    private suspend fun launchTimerJob(interval: Long, isRelaunch: Boolean) {
         timerLock.withLock {
+            if (timerJob != null && !isRelaunch) return@withLock
             timerJob = launch {
                 delay(interval)
                 val status = authorizationStatus()
@@ -47,7 +46,7 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
                     updateLastPermission()
                     IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
                 }
-                launchTimerJob(interval)
+                launchTimerJob(interval, true)
             }
         }
     }
