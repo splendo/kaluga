@@ -22,7 +22,6 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.*
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
-import kotlinx.serialization.Serializable
 import platform.UserNotifications.*
 
 actual data class NotificationOptions(val options: UNAuthorizationOptions)

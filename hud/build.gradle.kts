@@ -22,9 +22,6 @@ dependencies {
 
     val ext = (gradle as ExtensionAware).extra
 
-    val androidx_appcompat_version: String by ext
-
-    implementation("androidx.appcompat:appcompat:$androidx_appcompat_version")
     implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
     androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
 }

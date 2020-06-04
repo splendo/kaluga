@@ -37,7 +37,6 @@ import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
-import kotlinx.serialization.Serializable
 
 sealed class Permission {
     object Bluetooth : Permission()

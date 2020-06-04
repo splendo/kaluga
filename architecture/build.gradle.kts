@@ -24,9 +24,7 @@ dependencies {
     val ext = (gradle as ExtensionAware).extra
     val androidx_lifecycle_version: String by ext
     val serialization_version: String by ext
-    val androidx_appcompat_version: String by ext
 
-    api("androidx.appcompat:appcompat:$androidx_appcompat_version")
     api("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version")
     api("androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version")
     api("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version")

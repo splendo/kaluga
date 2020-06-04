@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import kotlinx.serialization.Serializable
 
 expect class NotificationOptions
 

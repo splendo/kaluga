@@ -17,15 +17,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-
-    val ext = (gradle as ExtensionAware).extra
-
-    val androidx_appcompat_version: String by ext
-
-    implementation("androidx.appcompat:appcompat:$androidx_appcompat_version")
-}
-
 kotlin {
     sourceSets {
         getByName("commonMain") {
