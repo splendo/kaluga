@@ -18,12 +18,25 @@
 package com.splendo.kaluga.permissions.av
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionTimerHelper
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
-import platform.AVFoundation.*
+import platform.AVFoundation.AVAuthorizationStatus
+import platform.AVFoundation.AVAuthorizationStatusAuthorized
+import platform.AVFoundation.AVAuthorizationStatusDenied
+import platform.AVFoundation.AVAuthorizationStatusNotDetermined
+import platform.AVFoundation.AVAuthorizationStatusRestricted
+import platform.AVFoundation.AVCaptureDevice
+import platform.AVFoundation.AVMediaType
+import platform.AVFoundation.AVMediaTypeAudio
+import platform.AVFoundation.AVMediaTypeVideo
+import platform.AVFoundation.authorizationStatusForMediaType
+import platform.AVFoundation.requestAccessForMediaType
 import platform.Foundation.NSBundle
 
 internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, private val type: Type<P>) {

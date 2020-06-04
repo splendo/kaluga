@@ -31,6 +31,10 @@ class PermissionViewController: UIViewController {
     var viewModel: SharedPermissionViewModel!
     private var lifecycleManager: ArchitectureLifecycleManager!
     
+    deinit {
+        lifecycleManager.unbind()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         

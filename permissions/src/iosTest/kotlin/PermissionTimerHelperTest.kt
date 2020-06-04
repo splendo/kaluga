@@ -23,7 +23,11 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
-import kotlin.test.*
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class PermissionTimerHelperTest : BaseTest() {
 
@@ -76,6 +80,7 @@ class PermissionTimerHelperTest : BaseTest() {
         delay(50)
         assertFalse(permissionsManager.didGrantPermission.isCompleted)
         assertFalse(permissionsManager.didRevokePermission.isCompleted)
+        Unit
     }
 
 }

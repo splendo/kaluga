@@ -30,7 +30,15 @@ internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : 
 
     // Dispatch block on given queue
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatchQueue) { block.run() }
+        if (NSThread.currentThread().isMainThread) {
+            println("running direct...")
+            block.run()
+        }
+        else
+            dispatch_async(dispatchQueue) {
+                println("running async...")
+                block.run()
+            }
     }
 
     // Support Delay
