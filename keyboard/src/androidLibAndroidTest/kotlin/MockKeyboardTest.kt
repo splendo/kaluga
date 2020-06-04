@@ -21,6 +21,7 @@ import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.UiDevice
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -33,6 +34,7 @@ class MockKeyboardTest {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
+    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
@@ -42,11 +44,11 @@ class MockKeyboardTest {
     @Test
     fun testShowKeyboard() = runBlocking {
         val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
-        val textInputView = activityRule.activity.textView
+        val keyboardHostingView = activityRule.activity.textView
 
         withContext(CoroutineScope(Dispatchers.Main).coroutineContext) {
 
-            keyboardManager.show(textInputView)
+            keyboardManager.show(keyboardHostingView)
             validateKeyboard(true)
 
             keyboardManager.hide()

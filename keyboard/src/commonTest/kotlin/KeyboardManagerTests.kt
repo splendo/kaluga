@@ -22,7 +22,7 @@ import kotlin.test.Test
 abstract class KeyboardManagerTests {
 
     abstract val builder: KeyboardManagerBuilder
-    abstract val view: TextInputView
+    abstract val view: KeyboardHostingView
 
     @Test
     fun testShow() {

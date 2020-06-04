@@ -3,10 +3,10 @@ package com.splendo.kaluga.example.shared.viewmodel.keyboard
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
-import com.splendo.kaluga.keyboard.TextInputView
+import com.splendo.kaluga.keyboard.KeyboardHostingView
 import kotlinx.coroutines.CoroutineScope
 
-class KeyboardViewModel(private val keyboardManagerBuilder: () -> KeyboardManagerBuilder, private val textInputView: () -> TextInputView) : BaseViewModel() {
+class KeyboardViewModel(private val keyboardManagerBuilder: () -> KeyboardManagerBuilder, private val keyboardHostingView: () -> KeyboardHostingView) : BaseViewModel() {
 
     private var keyboardManager: KeyboardManager? = null
 
@@ -23,7 +23,7 @@ class KeyboardViewModel(private val keyboardManagerBuilder: () -> KeyboardManage
     }
 
     fun onShowPressed() {
-        keyboardManager?.show(textInputView())
+        keyboardManager?.show(keyboardHostingView())
     }
 
     fun onHidePressed() {

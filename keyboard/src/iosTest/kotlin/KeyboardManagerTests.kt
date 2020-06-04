@@ -12,7 +12,7 @@ class IOSKeyboardManagerTests: KeyboardManagerTests() {
 
     override val builder get() = KeyboardManagerBuilder(application)
 
-    override val view: TextInputView
+    override val view: KeyboardHostingView
         get() = textField
 
     override fun verifyShow() {
