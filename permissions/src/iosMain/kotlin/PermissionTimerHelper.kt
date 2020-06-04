@@ -21,12 +21,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
     var isWaiting: Boolean = false
     private var timerJob: Job? = null
+    private var timerLock = Mutex()
 
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
@@ -35,21 +38,25 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
         launchTimerJob(interval)
     }
 
-    private fun launchTimerJob(interval: Long) {
-        timerJob = launch {
-            delay(interval)
-            val status = authorizationStatus()
-            if (!isWaiting && lastPermission != status) {
-                updateLastPermission()
-                IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+    private suspend fun launchTimerJob(interval: Long) {
+        timerLock.withLock {
+            timerJob = launch {
+                delay(interval)
+                val status = authorizationStatus()
+                if (!isWaiting && lastPermission != status) {
+                    updateLastPermission()
+                    IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                }
+                launchTimerJob(interval)
             }
-            launchTimerJob(interval)
         }
     }
 
     suspend fun stopMonitoring() {
-        timerJob?.cancel()
-        timerJob = null
+        timerLock.withLock {
+            timerJob?.cancel()
+            timerJob = null
+        }
     }
 
     private suspend fun updateLastPermission() {
