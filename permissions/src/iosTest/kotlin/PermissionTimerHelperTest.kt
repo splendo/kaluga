@@ -59,16 +59,15 @@ class PermissionTimerHelperTest : BaseTest() {
 
         authorization = IOSPermissionsHelper.AuthorizationStatus.Authorized
         permissionsManager.reset()
-        delay(50)
+        delay(60)
         assertTrue(permissionsManager.didGrantPermission.isCompleted)
 
         timerHelper.isWaiting = true
         authorization = IOSPermissionsHelper.AuthorizationStatus.Denied
         permissionsManager.reset()
-        delay(50)
+        delay(60)
         assertFalse(permissionsManager.didGrantPermission.isCompleted)
         assertFalse(permissionsManager.didRevokePermission.isCompleted)
-
 
         timerHelper.isWaiting = false
         delay(50)
