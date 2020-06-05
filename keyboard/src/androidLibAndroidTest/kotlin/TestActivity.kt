@@ -22,7 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class TestActivity: AppCompatActivity() {
+class TestActivity : AppCompatActivity() {
 
     lateinit var textView: TextView
 

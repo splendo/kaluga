@@ -66,5 +66,4 @@ class MockKeyboardTest {
         }
         return inputMethodManager.isAcceptingText == expected
     }
-
 }

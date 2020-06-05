@@ -8,12 +8,12 @@ import android.view.inputmethod.InputMethodManager
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.keyboard.KeyboardManagerTests
 import org.junit.Before
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-class AndroidKeyboardManagerTests: KeyboardManagerTests() {
+class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
     private lateinit var mockActivity: Activity
     private lateinit var mockView: View

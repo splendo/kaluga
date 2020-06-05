@@ -39,7 +39,6 @@ interface BaseKeyboardManager {
      * Dismisses the current keyboard
      */
     fun hide()
-
 }
 
 expect class KeyboardManager : BaseKeyboardManager

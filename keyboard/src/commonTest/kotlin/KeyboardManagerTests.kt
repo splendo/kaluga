@@ -39,5 +39,4 @@ abstract class KeyboardManagerTests {
     }
 
     abstract fun verifyDismiss()
-
 }

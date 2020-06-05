@@ -1,11 +1,11 @@
 package com.splendo.kaluga.keyboard
 
+import kotlin.test.assertTrue
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIApplication
 import platform.UIKit.UITextField
-import kotlin.test.assertTrue
 
-class IOSKeyboardManagerTests: KeyboardManagerTests() {
+class IOSKeyboardManagerTests : KeyboardManagerTests() {
 
     private val application = UIApplication.sharedApplication
     private val textField = MockTextField()
@@ -32,5 +32,4 @@ private class MockTextField : UITextField(CGRectMake(0.0, 0.0, 0.0, 0.0)) {
         didBecomeFirstResponder = true
         return super.becomeFirstResponder()
     }
-
 }
