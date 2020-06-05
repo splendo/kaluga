@@ -26,35 +26,64 @@ import kotlinx.coroutines.sync.withLock
 
 class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
 
+    sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
+        class TimerNotRunning(coroutineScope: CoroutineScope): TimerJobState(coroutineScope) {
+            fun startTimer(interval: Long, block: suspend () -> Unit) = TimerRunning(interval, block, coroutineScope)
+        }
+
+        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope): TimerJobState(coroutineScope) {
+            private var timerLoop: Job
+
+            init {
+                timerLoop = createTimerLoop()
+            }
+
+            private fun createTimerLoop(): Job = coroutineScope.launch {
+                delay(interval)
+                block()
+                loopTimer()
+            }
+
+
+            private fun loopTimer() {
+                timerLoop = createTimerLoop()
+            }
+
+            fun stopTimer() = TimerNotRunning(coroutineScope).also { timerLoop.cancel() }
+        }
+    }
+
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
     var isWaiting: Boolean = false
-    private var timerJob: Job? = null
+    var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
     private var timerLock = Mutex()
 
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
-        launchTimerJob(interval, false)
+        launchTimerJob(interval)
     }
 
-    private suspend fun launchTimerJob(interval: Long, isRelaunch: Boolean) {
+    private suspend fun launchTimerJob(interval: Long) {
         timerLock.withLock {
-            if (timerJob != null && !isRelaunch) return@withLock
-            timerJob = launch {
-                delay(interval)
-                val status = authorizationStatus()
-                if (!isWaiting && lastPermission != status) {
-                    updateLastPermission()
-                    IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+            val timerJobState = timerState
+            if (timerJobState is TimerJobState.TimerNotRunning) {
+                this.timerState = timerJobState.startTimer(interval) {
+                    val status = authorizationStatus()
+                    if (!isWaiting && lastPermission != status) {
+                        updateLastPermission()
+                        IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                    }
                 }
-                launchTimerJob(interval, true)
             }
         }
     }
 
     suspend fun stopMonitoring() {
         timerLock.withLock {
-            timerJob?.cancel()
-            timerJob = null
+            val timerJobState = timerState
+            if (timerJobState is TimerJobState.TimerRunning) {
+                this.timerState = timerJobState.stopTimer()
+            }
         }
     }
 
