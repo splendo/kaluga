@@ -35,7 +35,6 @@ open class CollectionItemsViewModel<Item : CollectionViewItem>(
     }
 
     fun reload() {
-        coroutineScope.launch {repository.loadItems() }
+        coroutineScope.launch { repository.loadItems() }
     }
-
 }

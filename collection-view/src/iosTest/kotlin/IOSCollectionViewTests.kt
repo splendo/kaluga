@@ -17,12 +17,8 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.CompletableDeferred
 import kotlin.test.AfterTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import kotlinx.coroutines.CompletableDeferred
 
 class IOSCollectionViewTests : AbstractCollectionViewTest() {
 
@@ -38,5 +34,4 @@ class IOSCollectionViewTests : AbstractCollectionViewTest() {
             deferredItems.firstOrNull { !it.isCompleted }?.complete(items)
         }.addTo(disposeBag)
     }
-
 }

@@ -21,7 +21,7 @@ import com.splendo.kaluga.flow.BaseFlowable
 
 abstract class CollectionItemRepository<Item : CollectionViewItem> {
 
-    sealed class Result<Item: CollectionViewItem> {
+    sealed class Result<Item : CollectionViewItem> {
         data class Success<Item : CollectionViewItem>(val items: List<Item>) : Result<Item>()
         data class Error<Item : CollectionViewItem>(val throwable: Throwable) : Result<Item>()
     }
@@ -30,7 +30,7 @@ abstract class CollectionItemRepository<Item : CollectionViewItem> {
 
     suspend fun loadItems(): Result<Item> {
         return updateItems().also { result ->
-            when(result) {
+            when (result) {
                 is Result.Success -> items.set(result.items)
             }
         }

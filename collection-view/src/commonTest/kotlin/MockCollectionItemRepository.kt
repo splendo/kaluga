@@ -24,5 +24,4 @@ class MockCollectionItemRepository(private val initialItems: List<CollectionView
     override suspend fun updateItems(): Result<CollectionViewItem> {
         return itemsToLoad?.let { Result.Success(it) } ?: Result.Error(Exception("Not Set"))
     }
-
 }

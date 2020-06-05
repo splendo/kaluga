@@ -20,14 +20,7 @@ package com.splendo.kaluga.collectionview
 import androidx.lifecycle.Observer
 import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.CompletableDeferred
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
-import org.junit.Test
 
 class AndroidCollectionViewTests : AbstractCollectionViewTest() {
 

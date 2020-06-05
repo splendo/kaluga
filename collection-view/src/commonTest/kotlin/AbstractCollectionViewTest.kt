@@ -18,9 +18,9 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.CompletableDeferred
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlinx.coroutines.CompletableDeferred
 
 abstract class AbstractCollectionViewTest {
 
@@ -49,5 +49,4 @@ abstract class AbstractCollectionViewTest {
     }
 
     abstract fun observe(viewModel: MockCollectionItemsViewModel, deferredItems: List<CompletableDeferred<List<CollectionViewItem>>>)
-
 }

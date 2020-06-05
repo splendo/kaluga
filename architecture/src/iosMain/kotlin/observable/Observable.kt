@@ -19,15 +19,15 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.flow.BaseFlowable
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
 
