@@ -17,4 +17,30 @@
 
 package com.splendo.kaluga.collectionview
 
-expect class CollectionView
+import com.splendo.kaluga.collectionview.datasource.DataSource
+import com.splendo.kaluga.collectionview.datasource.DataSourceBuilder
+import com.splendo.kaluga.collectionview.item.CollectionItem
+import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
+import kotlinx.coroutines.CoroutineScope
+
+expect class CollectionView {
+    var dataSource: DataSource<*, *>?
+}
+
+internal fun CollectionView.bind(dataSource: DataSource<*, *>) {
+    this.dataSource = dataSource
+}
+
+internal fun CollectionView.unbind() {
+    this.dataSource?.unbind()
+    this.dataSource = null
+}
+
+expect class CollectionViewBindingResult(onUnbind: () -> Unit)
+
+fun <Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> CollectionViewModel<Item, ViewModel>.bind(
+    collectionView: CollectionView,
+    dataSourceBuilder: DataSourceBuilder<Item, ViewModel>,
+    coroutineScope: CoroutineScope = this.coroutineScope): CollectionViewBindingResult {
+    val dataSource = dataSourceBuilder.build()
+}

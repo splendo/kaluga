@@ -17,11 +17,13 @@
 
 package com.splendo.kaluga.collectionview
 
-class MockCollectionItemRepository(private val initialItems: List<CollectionViewItem>) : CollectionItemRepository<CollectionViewItem>() {
+import com.splendo.kaluga.collectionview.item.CollectionItem
 
-    var itemsToLoad: List<CollectionViewItem>? = initialItems
+class MockCollectionItemRepository(private val initialItems: List<CollectionItem>) : CollectionItemRepository<CollectionItem>() {
 
-    override suspend fun updateItems(): Result<CollectionViewItem> {
+    var itemsToLoad: List<CollectionItem>? = initialItems
+
+    override suspend fun updateItems(): Result<CollectionItem> {
         return itemsToLoad?.let { Result.Success(it) } ?: Result.Error(Exception("Not Set"))
     }
 }

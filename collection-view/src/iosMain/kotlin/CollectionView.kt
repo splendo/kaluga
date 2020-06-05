@@ -17,4 +17,19 @@
 
 package com.splendo.kaluga.collectionview
 
-actual class CollectionView
+import com.splendo.kaluga.collectionview.datasource.DataSource
+import platform.UIKit.UICollectionView
+
+actual class CollectionView : UICollectionView() {
+
+    private var _dataSource: DataSource<*, *>? = null
+
+    actual fun bind(dataSource: DataSource<*, *>) {
+        this._dataSource = dataSource
+    }
+
+    actual fun unbind() {
+        _dataSource?.unbind()
+    }
+
+}

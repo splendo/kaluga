@@ -15,26 +15,18 @@
 
  */
 
-package com.splendo.kaluga.collectionview
+package com.splendo.kaluga.collectionview.item
 
-import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
-open class CollectionItemsViewModel<Item : CollectionViewItem>(
-    private val repository: CollectionItemRepository<Item>
-) : BaseViewModel() {
+abstract class CollectionItemViewModel<Item: CollectionItem>(protected open val item: Item) : BaseViewModel() {
 
-    val items = repository.items.toObservable(coroutineScope)
+    open fun onSelected() {}
 
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-
-        scope.launch { repository.loadItems() }
+    public override fun onCleared() {
+        super.onCleared()
     }
 
-    fun reload() {
-        coroutineScope.launch { repository.loadItems() }
-    }
 }
+
+class DefaultCollectionItemViewModel<Item: CollectionItem>(public override val item: Item) : CollectionItemViewModel<Item>(item)

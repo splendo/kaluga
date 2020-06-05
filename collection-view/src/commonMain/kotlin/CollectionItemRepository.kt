@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.collectionview
 
+import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.flow.BaseFlowable
 
-abstract class CollectionItemRepository<Item : CollectionViewItem> {
+abstract class CollectionItemRepository<Item : CollectionItem> {
 
-    sealed class Result<Item : CollectionViewItem> {
-        data class Success<Item : CollectionViewItem>(val items: List<Item>) : Result<Item>()
-        data class Error<Item : CollectionViewItem>(val throwable: Throwable) : Result<Item>()
+    sealed class Result<Item : CollectionItem> {
+        data class Success<Item : CollectionItem>(val items: List<Item>) : Result<Item>()
+        data class Error<Item : CollectionItem>(val throwable: Throwable) : Result<Item>()
     }
 
     val items = BaseFlowable<List<Item>>().apply { setBlocking(emptyList()) }

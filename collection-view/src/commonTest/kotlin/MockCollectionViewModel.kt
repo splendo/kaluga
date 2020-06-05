@@ -14,7 +14,8 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.collectionview
 
-open class CollectionViewItem(val title: String)
+import com.splendo.kaluga.collectionview.item.CollectionItem
+
+class MockCollectionViewModel(repository: MockCollectionItemRepository) : CollectionViewModel<CollectionItem>(repository)
