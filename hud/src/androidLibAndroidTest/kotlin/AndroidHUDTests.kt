@@ -13,6 +13,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Ignore
 import org.junit.Rule
 
 /*
@@ -56,11 +57,13 @@ class AndroidHUDTests {
     }
 
     @Test
+    @Ignore
     fun builderInitializer() {
         assertNotNull(builder.build())
     }
 
     @Test
+    @Ignore
     fun indicatorShow() {
         val indicator = builder.build {
             setTitle(LOADING)
@@ -70,6 +73,7 @@ class AndroidHUDTests {
     }
 
     @Test
+    @Ignore
     fun indicatorDismiss() {
         val indicator = builder.build {
             setTitle(LOADING)
@@ -82,6 +86,7 @@ class AndroidHUDTests {
     }
 
     @Test
+    @Ignore
     fun indicatorDismissAfter() {
         val indicator = builder.build {
             setTitle(LOADING)
@@ -94,6 +99,7 @@ class AndroidHUDTests {
     }
 
     @Test
+    @Ignore
     fun testPresentDuring() = runBlockingTest {
         lateinit var indicatorProcessing: HUD
 
@@ -134,6 +140,7 @@ class AndroidHUDTests {
     }
 
     @Test
+    @Ignore
     fun rotateActivity() {
         val indicator = builder.build {
             setTitle(LOADING)
