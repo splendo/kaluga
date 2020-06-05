@@ -46,7 +46,6 @@ open class LocationFlowableTest : FlowableTest<Location>() {
 
 
     @Test
-    @Ignore
     fun testKnownLocation() = runBlockingWithFlow {
         action {
             setLocation(location1)
@@ -58,7 +57,6 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     }
 
     @Test
-    @Ignore
     fun testSingleUnknownLocation() = runBlockingWithFlow {
         action {
             setLocationUnknown()
@@ -71,7 +69,6 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     }
 
     @Test
-    @Ignore
     fun testSingleUnknownLocationWithReason()  = runBlockingWithFlow {
         action {
             setLocationUnknown(reason = UnknownReason.PERMISSION_DENIED)
@@ -83,7 +80,6 @@ open class LocationFlowableTest : FlowableTest<Location>() {
     }
 
     @Test
-    @Ignore
     fun testKnownLocationsFollowedByALocationUnknown()  = runBlockingWithFlow {
         action {
             setLocation(location1)
