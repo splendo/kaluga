@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
+import com.splendo.kaluga.architecture.observable.Observable
+import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -25,31 +27,17 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-abstract class BaseDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> internal constructor(private val itemFlow: Flow<List<ViewModel>>, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+abstract class BaseDataSource<Item> internal constructor(protected val source: Observable<List<Item>>) {
 
-    private val itemsJob: Job
-    protected val items: MutableList<ViewModel> = mutableListOf()
-
-    init {
-        itemsJob = launch {
-            itemFlow.collect { items ->
-                this@BaseDataSource.items.clear()
-                this@BaseDataSource.items.addAll(items)
-                notifyItemsChanged()
-            }
+    var collectionView: CollectionView? = null
+        set(value) {
+            field = value
+            notifyItemsChanged()
         }
-    }
-
-    fun unbind() {
-        itemsJob.cancel()
-    }
 
     abstract fun notifyItemsChanged()
-
 }
 
-expect class DataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> : BaseDataSource<Item, ViewModel>
+expect open class DataSource<Item> : BaseDataSource<Item>
 
-expect class DataSourceBuilder<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> {
-    fun build(itemFlow: Flow<List<ViewModel>>, coroutineScope: CoroutineScope): DataSource<Item, ViewModel>
-}
+expect class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> : DataSource<ViewModel>

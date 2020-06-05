@@ -21,9 +21,9 @@ import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
+import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
