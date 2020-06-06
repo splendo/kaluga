@@ -23,7 +23,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
@@ -156,11 +156,11 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, co
 }
 
 /**
- * [Subject] that synchronizes its value to a [BaseFlowable]
- * @param flowable The [BaseFlowable] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [BaseFlowable]
+ * [Subject] that synchronizes its value to a [HotFlowable]
+ * @param flowable The [HotFlowable] to synchronize to
+ * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
  */
-class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
+class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     override val providerLiveData: LiveData<T> = flowable.flow().distinctUntilChanged().asLiveData(coroutineScope.coroutineContext)
     override val liveDataObserver = Observer<T> { t ->
         coroutineScope.launch {
@@ -179,9 +179,9 @@ actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): 
 
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
 
-actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
+actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
 
-actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
+actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
 actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 
