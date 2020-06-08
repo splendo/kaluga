@@ -12,14 +12,10 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/pocketbyte/hydra/")
-}
-
 dependencies {
-    implementation("com.google.android.gms:play-services-location:17.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.1")
-    implementation("androidx.appcompat:appcompat:1.1.0")
+    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
+    implementation("com.google.android.gms:play-services-location:$play_services_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.5")
 }
 
 kotlin {
@@ -54,14 +50,6 @@ if (!singleSet)  {
 
     kotlin {
 
-        sourceSets {
-            val ext =  (gradle as ExtensionAware).extra
-            getByName("${ext["ios_secondary_arch"]}Main") {
-                dependencies {
-                    implementation(project(":permissions", "${ext["ios_secondary_arch"]}Default"))
-                }
-            }
-        }
         sourceSets {
             val ext =  (gradle as ExtensionAware).extra
             getByName("${ext["ios_secondary_arch"]}Main") {

@@ -1,0 +1,23 @@
+jacoco {
+    toolVersion = "0.8.4"
+    reportsDir = file("$buildDir/reports")
+}
+
+
+// based on https://medium.com/@aldychris/kotlin-multiplatform-for-ios-and-android-mobile-application-96a753e175f7
+project.afterEvaluate {
+    task "commonTestCoverageReport" (type:JacocoReport, dependsOn: "jvmTest") {
+        group = "Reporting"
+        description = "Generate Jacoco coverage reports on the commonMain module build."
+
+        classDirectories.from = fileTree(dir: "${project.buildDir}/classes/kotlin/jvm/")
+        sourceDirectories.from = subprojects.sourceSets.commonMain.allSource.srcDirs
+        additionalSourceDirs.from = subprojects.sourceSets.commonMain.allSource.srcDirs
+        executionData = files("${project.buildDir}/jacoco/jvmTest.exec")
+
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+    }
+}

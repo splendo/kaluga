@@ -1,0 +1,231 @@
+repositories {
+    google()
+    mavenCentral()
+    jcenter()
+}
+
+kotlin {
+
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+            }
+        }
+    }
+
+    targets {
+        configure([]) {
+            tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
+                jvmTarget = "1.8"
+                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+            }
+        }
+    }
+
+
+    android("androidLib") {
+        publishAllLibraryVariants()
+
+    }
+
+    if (gradle.ios_primary_arch == "iosx64")
+        targetFromPreset(presets.iosX64, gradle.ios_primary_arch)
+
+    if (gradle.ios_primary_arch == "iosarm64")
+        targetFromPreset(presets.iosArm64, gradle.ios_primary_arch)
+
+    if (gradle.ios_primary_arch == "iosarm32")
+        targetFromPreset(presets.iosArm32, gradle.ios_primary_arch)
+
+    if (!gradle.ext.ios_one_sourceset) {
+        targetFromPreset(presets.iosArm32, 'iosarm32')
+        targetFromPreset(gradle.ios_secondary_arch == "iosx64" ? presets.iosX64 : presets.iosArm64, gradle.ios_secondary_arch)
+    }
+
+    jvm()
+    js {
+        // Disable JS browser tests for now
+        // See https://github.com/splendo/kaluga/issues/97
+        // browser()
+        configure([compilations.main, compilations.test]) {
+            tasks.getByName(compileKotlinTaskName).kotlinOptions {
+                metaInfo = true
+                sourceMap = true
+                moduleKind = 'umd'
+            }
+        }
+    }
+
+    sourceSets {
+
+        commonMain {
+            dependencies {
+                implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$gradle.kotlinx_coroutines_version"
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation kotlin("stdlib")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_coroutines_version"
+            }
+        }
+        jvmTest {
+            dependsOn commonTest
+            dependencies {
+                implementation kotlin("test")
+                implementation kotlin("test-junit")
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation kotlin('stdlib-js')
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-js:$gradle.kotlinx_coroutines_version"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation kotlin('test-js')
+            }
+        }
+
+        "${gradle.ios_primary_arch}Main" {
+            kotlin.srcDirs("src/iosMain")
+            dependencies {
+                implementation kotlin("stdlib-common")
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
+            }
+        }
+
+        "${gradle.ios_primary_arch}Test" {
+            kotlin.srcDirs("src/iosTest")
+            dependencies {
+                implementation kotlin('test')
+            }
+        }
+
+
+        if (!gradle.ext.ios_one_sourceset) {
+
+            iosarm32Main {
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
+                }
+            }
+            iosarm32Test {
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+            }
+            "${gradle.ios_secondary_arch}Main" {
+                kotlin.srcDirs("src/iosMain")
+                dependencies {
+                    implementation kotlin("stdlib-common")
+                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
+                }
+            }
+            "${gradle.ios_secondary_arch}Test" {
+                kotlin.srcDirs("src/iosTest")
+                dependencies {
+                    implementation kotlin('test')
+                }
+            }
+        }
+
+        sourceSets.all {
+            languageSettings {
+                useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
+                useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
+                enableLanguageFeature("InlineClasses")
+            }
+        }
+
+        // Android dependencies must be declared below outside of the kotlin block
+
+    }
+}
+
+
+
+android {
+
+    kotlinOptions {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
+    lintOptions {
+        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    defaultPublishConfig = "debug"
+
+    compileSdkVersion gradle.android_target_sdk_version
+
+    defaultConfig {
+        minSdkVersion gradle.android_min_sdk_version
+        targetSdkVersion gradle.android_target_sdk_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+            res.srcDir 'src/androidLibMain/resources'
+        }
+        androidTest {
+            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+            java.srcDir 'src/androidLibAndroidTest/kotlin'
+            res.srcDir 'src/androidLibAndroidTest/res'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/kotlinx-coroutines-core.kotlin_module'
+        exclude 'META-INF/shared_debug.kotlin_module'
+        exclude 'META-INF/AL2.0'
+        exclude 'META-INF/LGPL2.1'
+    }
+}
+
+
+task printConfigurations {
+    doLast {
+        configurations.each { println it }
+    }
+}
+
+// if the include is made from the example project shared module we need to go up one more directory
+String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
+
+apply from: "$path_prefix/gradle/android_dependencies.gradle"
+apply from: "$path_prefix/gradle/componentskt.gradle.kts"
