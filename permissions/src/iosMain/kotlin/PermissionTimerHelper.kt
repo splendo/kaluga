@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -32,21 +29,11 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
         }
 
         class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope): TimerJobState(coroutineScope) {
-            private var timerLoop: Job
-
-            init {
-                timerLoop = createTimerLoop()
-            }
-
-            private fun createTimerLoop(): Job = coroutineScope.launch {
-                delay(interval)
-                block()
-                loopTimer()
-            }
-
-
-            private fun loopTimer() {
-                timerLoop = createTimerLoop()
+            private val timerLoop = coroutineScope.launch {
+                while (isActive) {
+                    delay(interval)
+                    block()
+                }
             }
 
             fun stopTimer() = TimerNotRunning(coroutineScope).also { timerLoop.cancel() }
