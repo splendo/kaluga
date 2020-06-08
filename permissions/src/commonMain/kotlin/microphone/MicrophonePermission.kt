@@ -27,10 +27,9 @@ interface BaseMicrophonePermissionManagerBuilder {
     fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager
 }
 
-expect class MicrophonePermissionManagerBuilder :BaseMicrophonePermissionManagerBuilder
+expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder
 
 class MicrophonePermissionStateRepo(builder: MicrophonePermissionManagerBuilder) : PermissionStateRepo<Permission.Microphone>() {
 
     override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this)
-
 }

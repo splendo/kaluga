@@ -1,8 +1,3 @@
-package com.splendo.kaluga.permissions
-
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -21,10 +16,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions
+
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+
 abstract class PermissionManager<P : Permission>internal constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
 
     abstract suspend fun requestPermission()
-    abstract suspend fun initializeState() : PermissionState<P>
+    abstract suspend fun initializeState(): PermissionState<P>
 
     abstract suspend fun startMonitoring(interval: Long)
     abstract suspend fun stopMonitoring()
@@ -55,5 +55,4 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
             }
         }
     }
-
 }

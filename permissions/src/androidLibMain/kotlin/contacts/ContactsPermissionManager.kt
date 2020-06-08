@@ -25,7 +25,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class ContactsPermissionManager(
     context: Context,
     actual val contacts: Permission.Contacts,
@@ -52,8 +51,6 @@ actual class ContactsPermissionManager(
     override suspend fun stopMonitoring() {
         permissionsManager.stopMonitoring()
     }
-
-
 }
 
 actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseContactsPermissionManagerBuilder {
@@ -61,6 +58,4 @@ actual class ContactsPermissionManagerBuilder(private val context: Context = App
     override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
         return ContactsPermissionManager(context, contacts, repo)
     }
-
 }
-

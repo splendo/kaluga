@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions
+
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -26,9 +26,10 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.warn
-import kotlinx.coroutines.*
-import java.util.*
+import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class AndroidPermissionsManager<P : Permission> constructor(private val context: Context = ApplicationHolder.applicationContext, private val permissionManager: PermissionManager<P>, private val permissions: Array<String> = emptyArray(), coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
 
@@ -127,5 +128,4 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
             lastPermission[it] = ContextCompat.checkSelfPermission(context, it)
         }
     }
-
 }

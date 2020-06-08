@@ -18,12 +18,23 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
-import platform.Contacts.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.PermissionState
+import platform.Contacts.CNAuthorizationStatus
+import platform.Contacts.CNAuthorizationStatusAuthorized
+import platform.Contacts.CNAuthorizationStatusDenied
+import platform.Contacts.CNAuthorizationStatusNotDetermined
+import platform.Contacts.CNAuthorizationStatusRestricted
+import platform.Contacts.CNContactStore
+import platform.Contacts.CNEntityType
 import platform.Foundation.NSBundle
+
+const val NSContactsUsageDescription = "NSContactsUsageDescription"
 
 actual class ContactsPermissionManager(
     private val bundle: NSBundle,
@@ -35,10 +46,10 @@ actual class ContactsPermissionManager(
     private val authorizationStatus = suspend {
         CNContactStore.authorizationStatusForEntityType(CNEntityType.CNEntityTypeContacts).toAuthorizationStatus()
     }
-    private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSContactsUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSContactsUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
             contactStore.requestAccessForEntityType(CNEntityType.CNEntityTypeContacts, mainContinuation { success, error ->
                 error?.let {
@@ -65,7 +76,6 @@ actual class ContactsPermissionManager(
     override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
-
 }
 
 actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
@@ -73,11 +83,10 @@ actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSB
     override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
         return ContactsPermissionManager(bundle, contacts, repo)
     }
-
 }
 
 private fun CNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         CNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         CNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         CNAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted

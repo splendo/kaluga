@@ -59,7 +59,6 @@ interface BasePermissionsBuilder {
     val microphonePMBuilder: MicrophonePermissionManagerBuilder
     val notificationsPMBuilder: NotificationsPermissionManagerBuilder
     val storagePMBuilder: StoragePermissionManagerBuilder
-
 }
 
 expect class PermissionsBuilder : BasePermissionsBuilder
@@ -85,10 +84,9 @@ class Permissions(private val builder: PermissionsBuilder) {
             is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
         }
     }
-
 }
 
-suspend fun Flow<PermissionState<*>>.request() : Boolean {
+suspend fun Flow<PermissionState<*>>.request(): Boolean {
     return this.transformLatest { state ->
         when (state) {
             is PermissionState.Allowed -> emit(true)

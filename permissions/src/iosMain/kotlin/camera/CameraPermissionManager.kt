@@ -52,5 +52,4 @@ actual class CameraPermissionManagerBuilder(private val bundle: NSBundle = NSBun
     override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
         return CameraPermissionManager(bundle, repo)
     }
-
 }

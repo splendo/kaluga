@@ -22,17 +22,16 @@ import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
 expect class LocationPermissionManager : PermissionManager<Permission.Location> {
-    val location : Permission.Location
+    val location: Permission.Location
 }
 
 interface BaseLocationPermissionManagerBuilder {
     fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager
 }
 
-expect class LocationPermissionManagerBuilder :BaseLocationPermissionManagerBuilder
+expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBuilder
 
 class LocationPermissionStateRepo(location: Permission.Location, builder: LocationPermissionManagerBuilder) : PermissionStateRepo<Permission.Location>() {
 
     override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this)
-
 }

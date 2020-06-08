@@ -40,7 +40,7 @@ actual class LocationPermissionManager(actual val location: Permission.Location,
     }
 }
 
-actual class LocationPermissionManagerBuilder :BaseLocationPermissionManagerBuilder {
+actual class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBuilder {
 
     override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
         return LocationPermissionManager(location, repo)

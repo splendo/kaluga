@@ -17,22 +17,20 @@
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.state.State
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.test.*
 
 class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>() {
 
@@ -74,7 +72,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
             denied?.request()
             assertTrue(permissionStateRepo.permissionManager.hasRequestedPermission.isCompleted)
             permissionStateRepo.takeAndChangeState { state ->
-                when(state) {
+                when (state) {
                     is PermissionState.Denied -> state.allow
                     else -> state.remain
                 }
@@ -94,10 +92,8 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
             }
             action {
                 permissionStateRepo.takeAndChangeState { state ->
-                    when(state) {
+                    when (state) {
                         is PermissionState.Allowed -> suspend { state.deny(true) }
-                        //suspend { PermissionState.Denied.Locked(state.leakPermissionManager()) }
-
                         else -> state.remain
                     }
                 }
@@ -113,7 +109,6 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         println("try launching")
         MultiplatformMainScope().launch {
             println("async")
-
         }
 
         runBlocking {
@@ -123,7 +118,6 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
 
     @Test
     fun testRequestFromFlow() = runBlocking {
-
 
         val hasRequested = CompletableDeferred<Boolean>()
         launch {
@@ -150,13 +144,11 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         }
         assertFalse(hasRequested.await())
     }
-
 }
 
 private class MockPermissionStateRepo : PermissionStateRepo<Permission.Microphone>() {
 
     override val permissionManager = MockPermissionManager(this)
-
 }
 
 private class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<Permission.Microphone>(mockPermissionRepo) {

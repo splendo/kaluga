@@ -28,6 +28,10 @@ import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
 
+const val NSLocationWhenInUseUsageDescription = "NSLocationWhenInUseUsageDescription"
+const val NSLocationAlwaysAndWhenInUseUsageDescription = "NSLocationAlwaysAndWhenInUseUsageDescription"
+const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
+
 actual class LocationPermissionManager(
     private val bundle: NSBundle,
     actual val location: Permission.Location,
@@ -45,13 +49,12 @@ actual class LocationPermissionManager(
             val locationPermissionManager = this@LocationPermissionManager
             IOSPermissionsHelper.handleAuthorizationStatus(didChangeAuthorizationStatus.toCLAuthorizationStatusKotlin().toAuthorizationStatus(locationPermissionManager.location.background), locationPermissionManager)
         }
-
     }
 
     override suspend fun requestPermission() {
-        val locationDeclarations = mutableListOf("NSLocationWhenInUseUsageDescription")
+        val locationDeclarations = mutableListOf(NSLocationWhenInUseUsageDescription)
         if (location.background) {
-            locationDeclarations.addAll(listOf("NSLocationAlwaysAndWhenInUseUsageDescription", "NSLocationAlwaysUsageDescription"))
+            locationDeclarations.addAll(listOf(NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationAlwaysUsageDescription))
         }
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, *locationDeclarations.toTypedArray()).isEmpty()) {
             if (location.background)
@@ -74,7 +77,6 @@ actual class LocationPermissionManager(
     override suspend fun stopMonitoring() {
         locationManager.delegate = null
     }
-
 }
 
 actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseLocationPermissionManagerBuilder {
@@ -82,9 +84,7 @@ actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSB
     override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
         return LocationPermissionManager(bundle, location, repo)
     }
-
 }
-
 
 @Suppress("EnumEntryName") // we are modeling an iOS construct so we will stick as close to it as possible. Actual CLAuthorizationStatus values not available
 enum class CLAuthorizationStatusKotlin {
@@ -96,7 +96,7 @@ enum class CLAuthorizationStatusKotlin {
     authorizedWhenInUse
 }
 
-fun CLAuthorizationStatus.toCLAuthorizationStatusKotlin() : CLAuthorizationStatusKotlin {
+fun CLAuthorizationStatus.toCLAuthorizationStatusKotlin(): CLAuthorizationStatusKotlin {
     return Enum.byOrdinalOrDefault(
         this,
         CLAuthorizationStatusKotlin.notDetermined
@@ -104,7 +104,7 @@ fun CLAuthorizationStatus.toCLAuthorizationStatusKotlin() : CLAuthorizationStatu
 }
 
 private fun CLAuthorizationStatusKotlin.toAuthorizationStatus(background: Boolean): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         CLAuthorizationStatusKotlin.notDetermined -> IOSPermissionsHelper.AuthorizationStatus.NotDetermined
         CLAuthorizationStatusKotlin.restricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
         CLAuthorizationStatusKotlin.denied -> IOSPermissionsHelper.AuthorizationStatus.Denied

@@ -26,7 +26,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class CameraPermissionManager(
     context: Context,
     stateRepo: CameraPermissionStateRepo
@@ -57,9 +56,6 @@ actual class CameraPermissionManager(
         if (supported)
             permissionsManager.stopMonitoring()
     }
-
-
-
 }
 
 actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCameraPermissionManagerBuilder {
@@ -67,6 +63,4 @@ actual class CameraPermissionManagerBuilder(private val context: Context = Appli
     override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
         return CameraPermissionManager(context, repo)
     }
-
 }
-

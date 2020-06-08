@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions.bluetooth
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,13 +16,34 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions.bluetooth
+
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
-import platform.CoreBluetooth.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
+import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
+import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
+import platform.CoreBluetooth.CBManagerAuthorization
+import platform.CoreBluetooth.CBManagerAuthorizationAllowedAlways
+import platform.CoreBluetooth.CBManagerAuthorizationDenied
+import platform.CoreBluetooth.CBManagerAuthorizationNotDetermined
+import platform.CoreBluetooth.CBManagerAuthorizationRestricted
+import platform.CoreBluetooth.CBPeripheralManager
+import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatus
+import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusAuthorized
+import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusDenied
+import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusNotDetermined
+import platform.CoreBluetooth.CBPeripheralManagerAuthorizationStatusRestricted
 import platform.Foundation.NSBundle
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
+
+const val NSBluetoothAlwaysUsageDescription = "NSBluetoothAlwaysUsageDescription"
+const val NSBluetoothPeripheralUsageDescription = "NSBluetoothPeripheralUsageDescription"
 
 actual class BluetoothPermissionManager(
     private val bundle: NSBundle,
@@ -44,7 +63,7 @@ actual class BluetoothPermissionManager(
     }
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSBluetoothAlwaysUsageDescription", "NSBluetoothPeripheralUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription).isEmpty()) {
             if (!centralManager.isInitialized()) {
                 centralManager.value
             }
@@ -68,24 +87,23 @@ actual class BluetoothPermissionManager(
     private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
         val version = IOSVersion.systemVersion
         return when {
-            version.isOSVersionOrNewer(IOSVersion(13,0,0)) -> CBCentralManager().authorization.toAuthorizationStatus()
+            version.isOSVersionOrNewer(IOSVersion(13, 0, 0)) -> CBCentralManager().authorization.toAuthorizationStatus()
             else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
         }
     }
-
 }
 
 actual class BluetoothPermissionManagerBuilder(
-    private val bundle: NSBundle = NSBundle.mainBundle) : BaseBluetoothPermissionManagerBuilder {
+    private val bundle: NSBundle = NSBundle.mainBundle
+) : BaseBluetoothPermissionManagerBuilder {
 
     override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
         return BluetoothPermissionManager(bundle, repo)
     }
-
 }
 
 private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         CBPeripheralManagerAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         CBPeripheralManagerAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         CBPeripheralManagerAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted
@@ -101,7 +119,7 @@ private fun CBPeripheralManagerAuthorizationStatus.toPeripheralAuthorizationStat
 }
 
 private fun CBManagerAuthorization.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         CBManagerAuthorizationAllowedAlways -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         CBManagerAuthorizationDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         CBManagerAuthorizationRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted

@@ -25,7 +25,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class LocationPermissionManager(
     context: Context,
     actual val location: Permission.Location,
@@ -61,8 +60,6 @@ actual class LocationPermissionManager(
     override suspend fun stopMonitoring() {
         permissionsManager.stopMonitoring()
     }
-
-
 }
 
 actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationPermissionManagerBuilder {
@@ -70,6 +67,4 @@ actual class LocationPermissionManagerBuilder(private val context: Context = App
     override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
         return LocationPermissionManager(context, location, repo)
     }
-
 }
-

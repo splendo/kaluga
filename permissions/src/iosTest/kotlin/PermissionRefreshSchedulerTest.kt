@@ -21,16 +21,15 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.delay
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 
-class PermissionTimerHelperTest : BaseTest() {
-
+class PermissionRefreshSchedulerTest : BaseTest() {
 
     private lateinit var permissionsManager: MockStoragePermissionManager
 
@@ -50,7 +49,7 @@ class PermissionTimerHelperTest : BaseTest() {
     @Test
     fun testStartMonitoring() = runBlocking {
         var authorization: IOSPermissionsHelper.AuthorizationStatus = IOSPermissionsHelper.AuthorizationStatus.NotDetermined
-        val timerHelper = PermissionTimerHelper(permissionsManager, {authorization}, this)
+        val timerHelper = PermissionRefreshScheduler(permissionsManager, { authorization }, this)
 
         timerHelper.startMonitoring(50)
         delay(50)
@@ -81,13 +80,11 @@ class PermissionTimerHelperTest : BaseTest() {
         assertFalse(permissionsManager.didRevokePermission.isCompleted)
         Unit
     }
-
 }
 
 private class MockStoragePermissionStateRepo : PermissionStateRepo<Permission.Storage>() {
 
     override val permissionManager = MockStoragePermissionManager(this)
-
 }
 
 private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<Permission.Storage>(mockPermissionRepo) {

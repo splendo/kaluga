@@ -18,12 +18,23 @@
 package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
-import platform.EventKit.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.PermissionState
+import platform.EventKit.EKAuthorizationStatus
+import platform.EventKit.EKAuthorizationStatusAuthorized
+import platform.EventKit.EKAuthorizationStatusDenied
+import platform.EventKit.EKAuthorizationStatusNotDetermined
+import platform.EventKit.EKAuthorizationStatusRestricted
+import platform.EventKit.EKEntityType
+import platform.EventKit.EKEventStore
 import platform.Foundation.NSBundle
+
+const val NSCalendarsUsageDescription = "NSCalendarsUsageDescription"
 
 actual class CalendarPermissionManager(
     private val bundle: NSBundle,
@@ -35,10 +46,10 @@ actual class CalendarPermissionManager(
     private val authorizationStatus = suspend {
         EKEventStore.authorizationStatusForEntityType(EKEntityType.EKEntityTypeEvent).toAuthorizationStatus()
     }
-    private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSCalendarsUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
             eventStore.requestAccessToEntityType(EKEntityType.EKEntityTypeEvent, mainContinuation { success, error ->
                 timerHelper.isWaiting = false
@@ -65,7 +76,6 @@ actual class CalendarPermissionManager(
     override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
-
 }
 
 actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCalendarPermissionManagerBuilder {
@@ -73,11 +83,10 @@ actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSB
     override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
         return CalendarPermissionManager(bundle, calendar, repo)
     }
-
 }
 
 private fun EKAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         EKAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         EKAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         EKAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted

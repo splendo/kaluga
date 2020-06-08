@@ -1,8 +1,3 @@
-package com.splendo.kaluga.permissions
-
-import com.splendo.kaluga.state.ColdStateRepo
-import com.splendo.kaluga.state.State
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -21,14 +16,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions
+
+import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.state.State
+
 sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
 
     class Allowed<P : Permission>internal constructor(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
-        internal fun deny(locked: Boolean) : Denied<P> {
+        internal fun deny(locked: Boolean): Denied<P> {
             return if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
         }
-
     }
 
     sealed class Denied<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
@@ -42,7 +41,6 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
             internal val unlock: suspend () -> Requestable<P> = {
                 Requestable(permissionManager)
             }
-
         }
 
         class Requestable<P : Permission> internal constructor(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
@@ -54,9 +52,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
                 Locked(permissionManager)
             }
         }
-
     }
-
 }
 
 abstract class PermissionStateRepo<P : Permission> internal constructor(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {

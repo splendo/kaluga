@@ -31,10 +31,9 @@ interface BaseNotificationsPermissionManagerBuilder {
     fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager
 }
 
-expect class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder
+expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder
 
 class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: NotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
 
     override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)
-
 }

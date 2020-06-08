@@ -43,8 +43,6 @@ actual class NotificationsPermissionManager(
 
     override suspend fun stopMonitoring() {
     }
-
-
 }
 
 actual class NotificationsPermissionManagerBuilder() : BaseNotificationsPermissionManagerBuilder {
@@ -52,6 +50,4 @@ actual class NotificationsPermissionManagerBuilder() : BaseNotificationsPermissi
     override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
         return NotificationsPermissionManager(notifications, repo)
     }
-
 }
-

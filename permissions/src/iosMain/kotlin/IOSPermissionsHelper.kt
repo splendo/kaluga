@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
@@ -48,7 +48,6 @@ class IOSPermissionsHelper {
                         debug(TAG, "$declaration was declared")
                         missingDeclarations.remove(declaration)
                     }
-
                 } catch (error: Exception) {
                     error(TAG, error)
                 }
@@ -57,7 +56,7 @@ class IOSPermissionsHelper {
             return missingDeclarations
         }
 
-        fun <P: Permission> getPermissionState(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) : PermissionState<P> {
+        fun <P : Permission> getPermissionState(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>): PermissionState<P> {
             return when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(permissionManager)
                 AuthorizationStatus.Authorized -> PermissionState.Allowed(permissionManager)
@@ -65,13 +64,12 @@ class IOSPermissionsHelper {
             }
         }
 
-        fun <P: Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
+        fun <P : Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
             return when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)
                 AuthorizationStatus.Authorized -> permissionManager.grantPermission()
                 AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> permissionManager.revokePermission(true)
             }
         }
-
     }
 }

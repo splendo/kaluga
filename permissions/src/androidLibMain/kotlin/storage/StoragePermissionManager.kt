@@ -25,7 +25,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class StoragePermissionManager(
     context: Context,
     actual val storage: Permission.Storage,
@@ -52,7 +51,6 @@ actual class StoragePermissionManager(
     override suspend fun stopMonitoring() {
         permissionsManager.stopMonitoring()
     }
-
 }
 
 actual class StoragePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseStoragePermissionManagerBuilder {
@@ -60,6 +58,4 @@ actual class StoragePermissionManagerBuilder(private val context: Context = Appl
     override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
         return StoragePermissionManager(context, storage, repo)
     }
-
 }
-

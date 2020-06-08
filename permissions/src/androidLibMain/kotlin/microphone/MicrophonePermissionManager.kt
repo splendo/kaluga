@@ -26,7 +26,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class MicrophonePermissionManager(
     context: Context,
     stateRepo: MicrophonePermissionStateRepo
@@ -57,8 +56,6 @@ actual class MicrophonePermissionManager(
         if (supported)
             permissionsManager.stopMonitoring()
     }
-
-
 }
 
 actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseMicrophonePermissionManagerBuilder {
@@ -66,6 +63,4 @@ actual class MicrophonePermissionManagerBuilder(private val context: Context = A
     override fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
         return MicrophonePermissionManager(context, repo)
     }
-
 }
-

@@ -22,8 +22,8 @@ import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.PermissionTimerHelper
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
 import platform.AVFoundation.AVAuthorizationStatus
@@ -39,9 +39,12 @@ import platform.AVFoundation.authorizationStatusForMediaType
 import platform.AVFoundation.requestAccessForMediaType
 import platform.Foundation.NSBundle
 
-internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, private val type: Type<P>) {
+const val NSCameraUsageDescription = "NSCameraUsageDescription"
+const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
 
-    sealed class Type<P:Permission> {
+internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private val type: Type<P>) {
+
+    sealed class Type<P : Permission> {
 
         abstract val permissionManager: PermissionManager<P>
         abstract val avMediaType: AVMediaType
@@ -50,22 +53,19 @@ internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, pr
         class Camera(override val permissionManager: CameraPermissionManager) : Type<Permission.Camera>() {
 
             override val avMediaType = AVMediaTypeVideo
-            override val declarationName = "NSCameraUsageDescription"
-
+            override val declarationName = NSCameraUsageDescription
         }
 
         class Microphone(override val permissionManager: MicrophonePermissionManager) : Type<Permission.Microphone>() {
 
             override val avMediaType = AVMediaTypeAudio
-            override val declarationName = "NSMicrophoneUsageDescription"
-
+            override val declarationName = NSMicrophoneUsageDescription
         }
     }
     private val authorizationStatus = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
-    private val timerHelper = PermissionTimerHelper(type.permissionManager, authorizationStatus)
-
+    private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
 
     internal fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
@@ -97,12 +97,10 @@ internal class AVPermissionHelper<P:Permission>(private val bundle: NSBundle, pr
     internal suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
-
 }
 
-
 private fun AVAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         AVAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         AVAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         AVAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted

@@ -18,11 +18,21 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.PermissionState
 import platform.Foundation.NSBundle
-import platform.Photos.*
+import platform.Photos.PHAuthorizationStatus
+import platform.Photos.PHAuthorizationStatusAuthorized
+import platform.Photos.PHAuthorizationStatusDenied
+import platform.Photos.PHAuthorizationStatusNotDetermined
+import platform.Photos.PHAuthorizationStatusRestricted
+import platform.Photos.PHPhotoLibrary
+
+const val NSPhotoLibraryUsageDescription = "NSPhotoLibraryUsageDescription"
 
 actual class StoragePermissionManager(
     private val bundle: NSBundle,
@@ -33,10 +43,10 @@ actual class StoragePermissionManager(
     private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
-    private var timerHelper = PermissionTimerHelper(this, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
 
     override suspend fun requestPermission() {
-        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, "NSPhotoLibraryUsageDescription").isEmpty()) {
+        if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
             PHPhotoLibrary.requestAuthorization(mainContinuation { status ->
                 timerHelper.isWaiting = false
@@ -58,7 +68,6 @@ actual class StoragePermissionManager(
     override suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
-
 }
 
 actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseStoragePermissionManagerBuilder {
@@ -66,11 +75,10 @@ actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBu
     override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
         return StoragePermissionManager(bundle, storage, repo)
     }
-
 }
 
 private fun PHAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         PHAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         PHAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         PHAuthorizationStatusRestricted -> IOSPermissionsHelper.AuthorizationStatus.Restricted

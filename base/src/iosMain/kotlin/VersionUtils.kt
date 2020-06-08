@@ -41,16 +41,16 @@ data class IOSVersion(val major: Int, val minor: Int, val patch: Int) {
      * @return `true` if this version is the same or newer as the given version. `false` otherwise
      */
     fun isOSVersionOrNewer(version: IOSVersion): Boolean {
-        return if (this.major > version.major) {
-            true
-        } else if (this.major == version.major) {
-            if (this.minor > version.minor) {
-                true
-            } else {
-                this.minor == version.minor && this.patch >= version.patch
+        return when {
+            this.major > version.major -> true
+            this.major == version.major -> {
+                when {
+                    this.minor > version.minor -> true
+                    else -> this.minor == version.minor && this.patch >= version.patch
+                }
+
             }
-        } else {
-            false
+            else -> false
         }
     }
 

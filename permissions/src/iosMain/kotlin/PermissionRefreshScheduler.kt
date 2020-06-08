@@ -17,18 +17,21 @@
 
 package com.splendo.kaluga.permissions
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class PermissionTimerHelper<P:Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
+class PermissionRefreshScheduler<P : Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
 
     sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
-        class TimerNotRunning(coroutineScope: CoroutineScope): TimerJobState(coroutineScope) {
+        class TimerNotRunning(coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
             fun startTimer(interval: Long, block: suspend () -> Unit) = TimerRunning(interval, block, coroutineScope)
         }
 
-        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope): TimerJobState(coroutineScope) {
+        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
             private val timerLoop = coroutineScope.launch {
                 while (isActive) {
                     delay(interval)
@@ -77,5 +80,4 @@ class PermissionTimerHelper<P:Permission>(private val permissionManager: Permiss
     private suspend fun updateLastPermission() {
         lastPermission = authorizationStatus()
     }
-
 }

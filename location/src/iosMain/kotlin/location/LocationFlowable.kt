@@ -18,11 +18,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.location.Location.UnknownReason.*
-import com.splendo.kaluga.location.LocationFlowable.CLAuthorizationStatusKotlin.*
 import com.splendo.kaluga.utils.byOrdinalOrDefault
-import kotlinx.coroutines.*
-import platform.CoreLocation.*
+import kotlinx.coroutines.runBlocking
+import platform.CoreLocation.CLAuthorizationStatus
+import platform.CoreLocation.CLLocation
+import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSError
 import platform.darwin.NSObject
 
@@ -45,7 +46,8 @@ actual class LocationFlowable : BaseLocationFlowable() {
     private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
 
         override fun locationManager(
-            manager: CLLocationManager, didUpdateLocations: List<*>
+            manager: CLLocationManager,
+            didUpdateLocations: List<*>
         ) {
             runBlocking {
                 (didUpdateLocations.last() as? CLLocation)?.knownLocation?.also { location ->
@@ -68,11 +70,11 @@ actual class LocationFlowable : BaseLocationFlowable() {
         ) = runBlocking {
             when (Enum.byOrdinalOrDefault(
                 didChangeAuthorizationStatus,
-                notDetermined
+                CLAuthorizationStatusKotlin.notDetermined
             )) {
-                restricted -> setUnknownLocation(NO_PERMISSION_GRANTED)
-                denied -> setUnknownLocation(PERMISSION_DENIED)
-                authorizedAlways, authorizedWhenInUse -> {
+                CLAuthorizationStatusKotlin.restricted -> setUnknownLocation(Location.UnknownReason.NO_PERMISSION_GRANTED)
+                CLAuthorizationStatusKotlin.denied -> setUnknownLocation(Location.UnknownReason.PERMISSION_DENIED)
+                CLAuthorizationStatusKotlin.authorizedAlways, CLAuthorizationStatusKotlin.authorizedWhenInUse -> {
                     manager.startUpdatingLocation()
                 } // do nothing, a location should be published on it's own
                 else -> setUnknownLocation()

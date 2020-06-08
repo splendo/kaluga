@@ -27,10 +27,9 @@ interface BaseCameraPermissionManagerBuilder {
     fun create(repo: CameraPermissionStateRepo): CameraPermissionManager
 }
 
-expect class CameraPermissionManagerBuilder :BaseCameraPermissionManagerBuilder
+expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
 
 class CameraPermissionStateRepo(builder: CameraPermissionManagerBuilder) : PermissionStateRepo<Permission.Camera>() {
 
     override val permissionManager: PermissionManager<Permission.Camera> = builder.create(this)
-
 }

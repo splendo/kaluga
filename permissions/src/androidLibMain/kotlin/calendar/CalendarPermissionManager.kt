@@ -25,7 +25,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-
 actual class CalendarPermissionManager(
     context: Context,
     actual val calendar: Permission.Calendar,
@@ -52,8 +51,6 @@ actual class CalendarPermissionManager(
     override suspend fun stopMonitoring() {
         permissionsManager.stopMonitoring()
     }
-
-
 }
 
 actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCalendarPermissionManagerBuilder {
@@ -61,6 +58,4 @@ actual class CalendarPermissionManagerBuilder(private val context: Context = App
     override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
         return CalendarPermissionManager(context, calendar, repo)
     }
-
 }
-

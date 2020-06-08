@@ -40,7 +40,7 @@ actual class CalendarPermissionManager(actual val calendar: Permission.Calendar,
     }
 }
 
-actual class CalendarPermissionManagerBuilder :BaseCalendarPermissionManagerBuilder {
+actual class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBuilder {
 
     override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
         return CalendarPermissionManager(calendar, repo)

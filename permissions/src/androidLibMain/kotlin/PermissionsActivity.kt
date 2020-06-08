@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions
+
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,8 +32,8 @@ class PermissionsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.hide()//windowActionBar=false
-        supportActionBar?.elevation = 0F//windowContentOverlay=@null
+        supportActionBar?.hide() // windowActionBar=false
+        supportActionBar?.elevation = 0F // windowContentOverlay=@null
 
         val requestedPermissions = getRequestedPermissions(intent)
 
@@ -78,5 +78,4 @@ class PermissionsActivity : AppCompatActivity() {
             return intent.getStringArrayExtra(EXTRA_REQUESTED_PERMISSIONS) ?: emptyArray()
         }
     }
-
 }

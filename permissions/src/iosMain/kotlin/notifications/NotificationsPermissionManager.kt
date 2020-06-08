@@ -19,15 +19,28 @@ package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.*
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.PermissionState
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
-import platform.UserNotifications.*
+import platform.UserNotifications.UNAuthorizationOptionNone
+import platform.UserNotifications.UNAuthorizationOptions
+import platform.UserNotifications.UNAuthorizationStatus
+import platform.UserNotifications.UNAuthorizationStatusAuthorized
+import platform.UserNotifications.UNAuthorizationStatusDenied
+import platform.UserNotifications.UNAuthorizationStatusNotDetermined
+import platform.UserNotifications.UNAuthorizationStatusProvisional
+import platform.UserNotifications.UNUserNotificationCenter
 
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
-actual class NotificationsPermissionManager(actual val notifications: Permission.Notifications,
-                                            stateRepo: NotificationsPermissionStateRepo) : PermissionManager<Permission.Notifications>(stateRepo) {
+actual class NotificationsPermissionManager(
+    actual val notifications: Permission.Notifications,
+    stateRepo: NotificationsPermissionStateRepo
+) : PermissionManager<Permission.Notifications>(stateRepo) {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
@@ -39,7 +52,7 @@ actual class NotificationsPermissionManager(actual val notifications: Permission
         }
         authorizationStatus.await()
     }
-    private val timerHelper = PermissionTimerHelper( this, authorization)
+    private val timerHelper = PermissionRefreshScheduler(this, authorization)
 
     override suspend fun requestPermission() {
         timerHelper.isWaiting = true
@@ -66,7 +79,7 @@ actual class NotificationsPermissionManager(actual val notifications: Permission
     }
 }
 
-actual class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager {
         return NotificationsPermissionManager(notifications, repo)
@@ -74,7 +87,7 @@ actual class NotificationsPermissionManagerBuilder :BaseNotificationsPermissionM
 }
 
 private fun UNAuthorizationStatus.toAuthorizationStatus(): IOSPermissionsHelper.AuthorizationStatus {
-    return when(this) {
+    return when (this) {
         UNAuthorizationStatusAuthorized -> IOSPermissionsHelper.AuthorizationStatus.Authorized
         UNAuthorizationStatusDenied -> IOSPermissionsHelper.AuthorizationStatus.Denied
         UNAuthorizationStatusProvisional -> IOSPermissionsHelper.AuthorizationStatus.Restricted
