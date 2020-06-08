@@ -21,14 +21,37 @@ package com.splendo.kaluga.permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Manager for maintaining the [PermissionState] of a given [Permission]
+ * @param stateRepo The [PermissionStateRepo] managed by this manager.
+ */
 abstract class PermissionManager<P : Permission>internal constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
 
+    /**
+     * Requests the permission
+     */
     abstract suspend fun requestPermission()
+
+    /**
+     * Determines the [PermissionState] at which to start.
+     */
     abstract suspend fun initializeState(): PermissionState<P>
 
+    /**
+     * Starts monitoring for changes to the permission.
+     * @param interval The interval in milliseconds between checking for changes to the permission state
+     */
     abstract suspend fun startMonitoring(interval: Long)
+
+    /**
+     * Stops monitoring for chabges to the permission.
+     */
     abstract suspend fun stopMonitoring()
 
+    /**
+     * Grants the permission
+     * This will bring the [PermissionStateRepo] to [PermissionState.Allowed]
+     */
     open fun grantPermission() {
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->
@@ -40,6 +63,11 @@ abstract class PermissionManager<P : Permission>internal constructor(private val
         }
     }
 
+    /**
+     * Revokes the permission
+     * This will bring the [PermissionStateRepo] to [PermissionState.Denied]
+     * @param locked `true` if the permission can no longer be requested after this. This corresponds to [PermissionState.Denied.Locked] when `true` and [PermissionState.Denied.Requestable] otherwise.
+     */
     open fun revokePermission(locked: Boolean) {
         stateRepo.launch {
             stateRepo.takeAndChangeState { state ->

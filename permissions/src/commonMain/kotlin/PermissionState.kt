@@ -21,8 +21,15 @@ package com.splendo.kaluga.permissions
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
 
+/**
+ * State of a [Permission]
+ * @param permissionManager The [PermissionManager] managing the associated [Permission]
+ */
 sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
 
+    /**
+     * When in this state the [Permission] has been granted
+     */
     class Allowed<P : Permission>internal constructor(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
         internal fun deny(locked: Boolean): Denied<P> {
@@ -30,12 +37,18 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
         }
     }
 
+    /**
+     * When in this state the [Permission] is denied. If can either be requestable of blocked from request.
+     */
     sealed class Denied<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
         internal val allow: suspend () -> Allowed<P> = {
             Allowed(permissionManager)
         }
 
+        /**
+         * When in this state the [Permission] is denied and cannot be requested
+         */
         class Locked<P : Permission>(permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
 
             internal val unlock: suspend () -> Requestable<P> = {
@@ -43,7 +56,11 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
             }
         }
 
+        /**
+         * When in this state the [Permission] is denied but can be requested. Use [request] to request the permission.
+         */
         class Requestable<P : Permission> internal constructor(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+
             suspend fun request() {
                 permissionManager.requestPermission()
             }
@@ -55,6 +72,11 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
     }
 }
 
+/**
+ * State machine for managing a given [Permission].
+ * Since this is a [ColdStateRepo], it will only monitor for changes to permissions while being observed.
+ * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
+ */
 abstract class PermissionStateRepo<P : Permission> internal constructor(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
 
     companion object {

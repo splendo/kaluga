@@ -21,18 +21,38 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
+/**
+ * Options for configuring a [Permission.Notifications]
+ */
 expect class NotificationOptions
 
+/**
+ * A [PermissionManager] for managing [Permission.Notifications]
+ */
 expect class NotificationsPermissionManager : PermissionManager<Permission.Notifications> {
+    /**
+     * The [Permission.Notifications] managed by this manager.
+     */
     val notifications: Permission.Notifications
 }
 
 interface BaseNotificationsPermissionManagerBuilder {
+    /**
+     * Creates a [NotificationsPermissionManager]
+     * @param repo The [NotificationsPermissionStateRepo] associated with the [Permission.Notifications]
+     */
     fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager
 }
 
+/**
+ * A builder for creating a [NotificationsPermissionManager]
+ */
 expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder
 
+/**
+ * A [PermissionStateRepo] for [Permission.Notifications]
+ * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
+ */
 class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: NotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
 
     override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)

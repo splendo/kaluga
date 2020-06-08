@@ -21,14 +21,28 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
+/**
+ * A [PermissionManager] for managing [Permission.Microphone]
+ */
 expect class MicrophonePermissionManager : PermissionManager<Permission.Microphone>
 
 interface BaseMicrophonePermissionManagerBuilder {
+    /**
+     * Creates a [MicrophonePermissionManager]
+     * @param repo The [MicrophonePermissionStateRepo] associated with the [Permission.Microphone]
+     */
     fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager
 }
 
+/**
+ * A builder for creating a [MicrophonePermissionManager]
+ */
 expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder
 
+/**
+ * A [PermissionStateRepo] for [Permission.Microphone]
+ * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
+ */
 class MicrophonePermissionStateRepo(builder: MicrophonePermissionManagerBuilder) : PermissionStateRepo<Permission.Microphone>() {
 
     override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this)

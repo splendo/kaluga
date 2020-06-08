@@ -21,20 +21,43 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
+/**
+ * A [PermissionManager] for managing [Permission.Storage]
+ */
 expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
+    /**
+     * The [Permission.Storage] managed by this manager.
+     */
     val storage: Permission.Storage
 }
 
+/**
+ * Alias for [StoragePermissionManager]
+ */
 typealias PhotosPermissionManager = StoragePermissionManager
 
 interface BaseStoragePermissionManagerBuilder {
+    /**
+     * Creates a [StoragePermissionManager]
+     * @param repo The [StoragePermissionStateRepo] associated with the [Permission.Storage]
+     */
     fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager
 }
 
+/**
+ * A builder for creating a [StoragePermissionManager]
+ */
 expect class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder
 
+/**
+ * Alias for [StoragePermissionManagerBuilder]
+ */
 typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
 
+/**
+ * A [PermissionStateRepo] for [Permission.Storage]
+ * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
+ */
 class StoragePermissionStateRepo(storage: Permission.Storage, builder: StoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
 
     override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)

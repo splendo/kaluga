@@ -21,14 +21,28 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
+/**
+ * A [PermissionManager] for managing [Permission.Camera]
+ */
 expect class CameraPermissionManager : PermissionManager<Permission.Camera>
 
 interface BaseCameraPermissionManagerBuilder {
+    /**
+     * Creates a [CameraPermissionManager]
+     * @param repo The [CameraPermissionStateRepo] associated with the [Permission.Camera]
+     */
     fun create(repo: CameraPermissionStateRepo): CameraPermissionManager
 }
 
+/**
+ * A builder for creating a [CameraPermissionManager]
+ */
 expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
 
+/**
+ * A [PermissionStateRepo] for [Permission.Camera]
+ * @param builder The [CameraPermissionManagerBuilder] for creating the [CameraPermissionManager] associated with the permission
+ */
 class CameraPermissionStateRepo(builder: CameraPermissionManagerBuilder) : PermissionStateRepo<Permission.Camera>() {
 
     override val permissionManager: PermissionManager<Permission.Camera> = builder.create(this)

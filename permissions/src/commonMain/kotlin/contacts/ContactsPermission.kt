@@ -21,16 +21,33 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 
+/**
+ * A [PermissionManager] for managing [Permission.Contacts]
+ */
 expect class ContactsPermissionManager : PermissionManager<Permission.Contacts> {
+    /**
+     * The [Permission.Contacts] managed by this manager
+     */
     val contacts: Permission.Contacts
 }
 
 interface BaseContactsPermissionManagerBuilder {
+    /**
+     * Creates a [ContactsPermissionManager]
+     * @param repo The [ContactsPermissionStateRepo] associated with the [Permission.Contacts]
+     */
     fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager
 }
 
+/**
+ * A builder for creating a [ContactsPermissionManager]
+ */
 expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder
 
+/**
+ * A [PermissionStateRepo] for [Permission.Contacts]
+ * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
+ */
 class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: ContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
 
     override val permissionManager: PermissionManager<Permission.Contacts> = builder.create(contacts, this)

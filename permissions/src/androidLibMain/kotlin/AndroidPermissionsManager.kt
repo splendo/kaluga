@@ -31,7 +31,19 @@ import kotlin.concurrent.fixedRateTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class AndroidPermissionsManager<P : Permission> constructor(private val context: Context = ApplicationHolder.applicationContext, private val permissionManager: PermissionManager<P>, private val permissions: Array<String> = emptyArray(), coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
+/**
+ * Convenience class for requesting a [Permission]
+ * @param context The context for which to request the [Permission]
+ * @param permissionManager The [PermissionManager] managing the requested permission
+ * @param permissions List of permissions to request. Should correspond to  [Manifest.permission].
+ * @param coroutineScope The coroutineScope on which to handle permission requests.
+ */
+class AndroidPermissionsManager<P : Permission> constructor(
+    private val context: Context = ApplicationHolder.applicationContext,
+    private val permissionManager: PermissionManager<P>,
+    private val permissions: Array<String> = emptyArray(),
+    coroutineScope: CoroutineScope = permissionManager
+) : CoroutineScope by coroutineScope {
 
     companion object {
         const val TAG = "Permissions"
@@ -42,6 +54,11 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
 
     private var timer: Timer? = null
 
+    /**
+     * Starts to request the permissions.
+     * Use [startMonitoring] to get notified of the permission change.
+     * Calls [PermissionManager.requestPermission] if the permission cannot be granted.
+     */
     fun requestPermissions() {
         if (missingPermissionsInManifest().isEmpty()) {
             launch {
@@ -88,6 +105,11 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
         return missingPermissions
     }
 
+    /**
+     * Starts monitoring for changes to the permission.
+     * Calls [PermissionManager.grantPermission] if the permission became granted and [PermissionManager.revokePermission] if it became denied.
+     * @param interval The interval in milliseconds between checks in changes to the permission state.
+     */
     suspend fun startMonitoring(interval: Long) {
         updateLastPermissions()
         if (timer != null) return
@@ -108,11 +130,17 @@ class AndroidPermissionsManager<P : Permission> constructor(private val context:
         }
     }
 
+    /**
+     * Stops monitoring for changes to the permission.
+     */
     suspend fun stopMonitoring() {
         timer?.cancel()
         timer = null
     }
 
+    /**
+     * `true` if the permission has been granted.
+     */
     internal val hasPermissions: Boolean get() {
         return permissions.fold(true) { previous, permission ->
             when (ContextCompat.checkSelfPermission(context, permission)) {

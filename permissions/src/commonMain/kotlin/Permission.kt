@@ -38,14 +38,54 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 
+/**
+ * Permissions that can be requested by Kaluga
+ */
 sealed class Permission {
+    /**
+     * Permission to access the Bluetooth scanner
+     */
     object Bluetooth : Permission()
+
+    /**
+     * Permission to access the users Calendar
+     * @param allowWrite If `true` writing to the calendar is permitted
+     */
     data class Calendar(val allowWrite: Boolean = false) : Permission()
+
+    /**
+     * Permission to access the users Camera
+     */
     object Camera : Permission()
+    /**
+     * Permission to access the users Contacts
+     * @param allowWrite If `true` writing to the contacts is permitted
+     */
     data class Contacts(val allowWrite: Boolean = false) : Permission()
+
+    /**
+     * Permission to access the users Location
+     * @param background If `true` scanning for location in the background is permitted
+     * @param precise If `true` precise location scanning is permitted
+     */
     data class Location(val background: Boolean = false, val precise: Boolean = false) : Permission()
+
+    /**
+     * Permission to access the users Microphone
+     */
     object Microphone : Permission()
+
+    /**
+     * Permission to access the users Notifications.
+     * @param options The [NotificationOptions] determining the type of notifications that can be accessed
+     */
     data class Notifications(val options: NotificationOptions? = null) : Permission()
+
+    /**
+     * Permission to access the users device storage.
+     * On iOS this corresponds to the Photos permission
+     * @param allowWrite If `true` writing to the storage is permitted
+     */
     data class Storage(val allowWrite: Boolean = false) : Permission()
 }
 
@@ -60,13 +100,24 @@ interface BasePermissionsBuilder {
     val notificationsPMBuilder: NotificationsPermissionManagerBuilder
     val storagePMBuilder: StoragePermissionManagerBuilder
 }
-
+/**
+ * Builder for providing the proper [PermissionManager] for each [Permission]
+ */
 expect class PermissionsBuilder : BasePermissionsBuilder
 
+/**
+ * Manager to request the [PermissionStateRepo] of a given [Permission]
+ * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ */
 class Permissions(private val builder: PermissionsBuilder) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
+    /**
+     * Gets a [Flow] of [PermissionState] for a given [Permission]
+     * @param permission The [Permission] for which the [PermissionState] flow should be provided
+     * @return A [Flow] of [PermissionState] for the given [Permission]
+     */
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
         val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission).also { permissionStateRepos[permission] = it }
         return permissionStateRepo.flow()
@@ -86,6 +137,10 @@ class Permissions(private val builder: PermissionsBuilder) {
     }
 }
 
+/**
+ * Requests a [Permission] on a [Flow] of [PermissionState]
+ * @return `true` if the permission was granted, `false` otherwise.
+ */
 suspend fun Flow<PermissionState<*>>.request(): Boolean {
     return this.transformLatest { state ->
         when (state) {

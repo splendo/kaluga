@@ -24,9 +24,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class PermissionRefreshScheduler<P : Permission>(private val permissionManager: PermissionManager<P>, private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus, coroutineScope: CoroutineScope = permissionManager) : CoroutineScope by coroutineScope {
+/**
+ * Convenience class for scheduling checks to changes in permission state.
+ * @param permissionManager The [PermissionManager] to monitor changes for.
+ * @param authorizationStatus Method for requesting a the current [IOSPermissionsHelper.AuthorizationStatus] for the permission associated with the [PermissionManager]
+ * @param coroutineScope The [CoroutineScope] on which to run the checks.
+ */
+class PermissionRefreshScheduler<P : Permission>(
+    private val permissionManager: PermissionManager<P>,
+    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus,
+    coroutineScope: CoroutineScope = permissionManager
+) : CoroutineScope by coroutineScope {
 
-    sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
+    private sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
         class TimerNotRunning(coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
             fun startTimer(interval: Long, block: suspend () -> Unit) = TimerRunning(interval, block, coroutineScope)
         }
@@ -45,9 +55,13 @@ class PermissionRefreshScheduler<P : Permission>(private val permissionManager: 
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
     var isWaiting: Boolean = false
-    var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
+    private var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
     private var timerLock = Mutex()
 
+    /**
+     * Starts monitoring for changes to the permission
+     * @param interval The interval in milliseconds between checking for changes to the permission.
+     */
     suspend fun startMonitoring(interval: Long) {
         updateLastPermission()
         launchTimerJob(interval)
@@ -68,6 +82,9 @@ class PermissionRefreshScheduler<P : Permission>(private val permissionManager: 
         }
     }
 
+    /**
+     * Stops monitoring for changes to the permission.
+     */
     suspend fun stopMonitoring() {
         timerLock.withLock {
             val timerJobState = timerState

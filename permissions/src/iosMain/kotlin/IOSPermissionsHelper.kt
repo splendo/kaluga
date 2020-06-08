@@ -22,8 +22,14 @@ import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import platform.Foundation.NSBundle
 
+/**
+ * Convenience class for checking permissions.
+ */
 class IOSPermissionsHelper {
 
+    /**
+     * Type of AuthorizationStatus that can be given by a permission.
+     */
     enum class AuthorizationStatus {
         NotDetermined,
         Restricted,
@@ -34,6 +40,13 @@ class IOSPermissionsHelper {
     companion object {
 
         private const val TAG = "Permissions"
+
+        /**
+         * Checks whether a set of declarations have been provided in the PList of a [NSBundle]
+         * @param bundle The [NSBundle] to check
+         * @param requiredDeclarationName List of declarations that should be present in the PList
+         * @return The list of declarations not present in the PList. If empty all declarations where provided.
+         */
         fun missingDeclarationsInPList(bundle: NSBundle, vararg requiredDeclarationName: String): List<String> {
 
             val missingDeclarations = requiredDeclarationName.toMutableList()
@@ -56,6 +69,11 @@ class IOSPermissionsHelper {
             return missingDeclarations
         }
 
+        /**
+         * Maps an [AuthorizationStatus] to a [PermissionState]
+         * @param authorizationStatus The [AuthorizationStatus] to map
+         * @param permissionManager The [PermissionManager] associated with the [PermissionState]
+         */
         fun <P : Permission> getPermissionState(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>): PermissionState<P> {
             return when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(permissionManager)
@@ -64,6 +82,11 @@ class IOSPermissionsHelper {
             }
         }
 
+        /**
+         * Updates a [PermissionManager] with the [PermissionState] associated with a given [AuthorizationStatus]
+         * @param authorizationStatus The [AuthorizationStatus] to update to
+         * @param permissionManager The [PermissionManager] to update to the proper state.
+         */
         fun <P : Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
             return when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)

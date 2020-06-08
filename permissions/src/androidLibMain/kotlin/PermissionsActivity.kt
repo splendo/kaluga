@@ -27,6 +27,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.logging.info
 
+/**
+ * An [AppCompatActivity] responsible for requesting a [Permission]
+ */
 class PermissionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
