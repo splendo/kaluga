@@ -20,7 +20,36 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * An object that be turned into a multi channel [Flow]
+ *
+ * @param T the type of the values emitted by the flowable.
+ */
 interface Flowable<T> {
+
+    /**
+     * Generates a [Flow] for this Flowable
+     *
+     * @param flowConfig the [FlowConfig] to apply to this Flow
+     * @return A [Flow] of values set to the Flowable
+     */
     @ExperimentalCoroutinesApi
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T>
+
+    /**
+     * Sets the value of the Flowable. All active [Flow]s should be notified
+     *
+     * @param value the value to set
+     */
+    suspend fun set(value: T)
+
+    /**
+     * Applies [set] in a blocking coroutine
+     */
+    fun setBlocking(value: T)
+
+    /**
+     * Closes the flowable from being observed. Closes all active [Flow]s
+     */
+    fun close()
 }

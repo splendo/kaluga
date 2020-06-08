@@ -17,7 +17,6 @@
 
 package architecture
 
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.Subject
 import com.splendo.kaluga.architecture.observable.DisposeBag
@@ -36,7 +35,9 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import platform.Foundation.NSURL
 import platform.UIKit.*
 
@@ -69,6 +70,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.CollectionView -> "showCollectionView"
+                        is FeatureListNavigationAction.Keyboard -> "showKeyboard"
                     })
             })
     }
@@ -119,6 +121,10 @@ class KNArchitectureFramework {
 
     fun createCollectionViewViewModel(): CollectionViewViewModel = CollectionViewViewModel.create()
 
+    fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
+        return KeyboardViewModel({KeyboardManagerBuilder()}, {textField})
+    }
+
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
@@ -140,7 +146,6 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
                 button.setSelected(selectedTab == tab)
             }.addTo(selectedButtonDisposeBag)
             addOnPressed(button) {
-                debug("On Pressed")
                 this.tab.post(tab)
             }
             stackView.addArrangedSubview(button)

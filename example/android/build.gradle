@@ -65,6 +65,7 @@ dependencies {
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:collection-view:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
         implementation project(':shared')
     } else {
         implementation project(':location')
@@ -76,6 +77,7 @@ dependencies {
         implementation project(":hud")
         implementation project(":collection-view")
         implementation project(":architecture")
+        implementation project(":keyboard")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"

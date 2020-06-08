@@ -17,6 +17,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+/**
+ * Applies a given code block if a given condition is met
+ * @param condition The condition that should be met
+ * @param block The code block to execute
+ */
 inline fun <T> T.applyIf(condition: Boolean, block: T.() -> Unit): T = apply {
     if (condition) block(this)
 }

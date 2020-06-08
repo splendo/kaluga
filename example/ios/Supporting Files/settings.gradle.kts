@@ -56,6 +56,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":alerts")
     project(":alerts").projectDir = file("../../../alerts")
 
+    include(":keyboard")
+    project(":keyboard").projectDir = file("../../../keyboard")
+
     include(":hud")
     project(":hud").projectDir = file("../../../hud")
 

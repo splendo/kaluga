@@ -19,10 +19,10 @@ package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
-import com.splendo.kaluga.flow.BaseFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,7 +33,7 @@ open class CollectionViewModel<Item : CollectionItem, ViewModel: CollectionItemV
 ) : BaseViewModel() {
 
     private val currentItems = mutableListOf<ViewModel>()
-    private val _items = BaseFlowable<List<ViewModel>>().apply { setBlocking(emptyList()) }
+    private val _items = HotFlowable<List<ViewModel>>(emptyList())
     val items = _items.toObservable(coroutineScope)
 
     init {
