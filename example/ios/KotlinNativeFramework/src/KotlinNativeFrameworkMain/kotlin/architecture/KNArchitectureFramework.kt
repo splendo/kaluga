@@ -33,11 +33,13 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInpu
 import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -75,6 +77,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Alerts -> "showAlerts"
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
+                        is FeatureListNavigationAction.Keyboard -> "showKeyboard"
                     })
             })
     }
@@ -150,6 +153,10 @@ class KNArchitectureFramework {
                 onDismiss(finalName, finalNumber)
             })
         })
+    }
+
+    fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
+        return KeyboardViewModel({KeyboardManagerBuilder()}, {textField})
     }
 
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {

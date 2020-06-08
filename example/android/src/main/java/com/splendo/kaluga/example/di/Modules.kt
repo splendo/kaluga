@@ -9,6 +9,7 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
@@ -20,8 +21,11 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInpu
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardHostingView
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -44,6 +48,7 @@ val viewModelModule = module {
             }
         )
     }
+
     viewModel {
         FeatureListViewModel(
             Navigator { action ->
@@ -53,9 +58,11 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
+                    is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
                 }
             })
     }
+
     viewModel {
         InfoViewModel(
             Navigator { action ->
@@ -89,9 +96,14 @@ val viewModelModule = module {
             }
         )
     }
+
     viewModel { (name: String, number: Int) ->
         ArchitectureDetailsViewModel(name, number, Navigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
+    }
+
+    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, keyboardHostingView: () -> KeyboardHostingView) ->
+        KeyboardViewModel(keyboardManagerBuilder, keyboardHostingView)
     }
 }
