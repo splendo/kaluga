@@ -53,9 +53,9 @@ actual class ContactsPermissionManager(
     }
 }
 
-actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
+    actual fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
         return ContactsPermissionManager(context, contacts, repo)
     }
 }

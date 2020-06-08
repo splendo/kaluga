@@ -31,18 +31,17 @@ expect class CalendarPermissionManager : PermissionManager<Permission.Calendar> 
     val calendar: Permission.Calendar
 }
 
-interface BaseCalendarPermissionManagerBuilder {
+/**
+ * A builder for creating a [CalendarPermissionManager]
+ */
+expect class CalendarPermissionManagerBuilder {
+
     /**
      * Creates a [CalendarPermissionManager]
      * @param repo The [CalendarPermissionStateRepo] associated with the [Permission.Calendar]
      */
     fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager
 }
-
-/**
- * A builder for creating a [CalendarPermissionManager]
- */
-expect class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Calendar]

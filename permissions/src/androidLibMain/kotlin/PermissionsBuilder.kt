@@ -27,12 +27,12 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManag
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 
 actual data class PermissionsBuilder(
-    override val bluetoothPMBuilder: BluetoothPermissionManagerBuilder = BluetoothPermissionManagerBuilder(),
-    override val calendarPMBuilder: CalendarPermissionManagerBuilder = CalendarPermissionManagerBuilder(),
-    override val cameraPMBuilder: CameraPermissionManagerBuilder = CameraPermissionManagerBuilder(),
-    override val contactsPMBuilder: ContactsPermissionManagerBuilder = ContactsPermissionManagerBuilder(),
-    override val locationPMBuilder: LocationPermissionManagerBuilder = LocationPermissionManagerBuilder(),
-    override val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
-    override val notificationsPMBuilder: NotificationsPermissionManagerBuilder = NotificationsPermissionManagerBuilder(),
-    override val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
-) : BasePermissionsBuilder
+    actual val bluetoothPMBuilder: BluetoothPermissionManagerBuilder = BluetoothPermissionManagerBuilder(),
+    actual val calendarPMBuilder: CalendarPermissionManagerBuilder = CalendarPermissionManagerBuilder(),
+    actual val cameraPMBuilder: CameraPermissionManagerBuilder = CameraPermissionManagerBuilder(),
+    actual val contactsPMBuilder: ContactsPermissionManagerBuilder = ContactsPermissionManagerBuilder(),
+    actual val locationPMBuilder: LocationPermissionManagerBuilder = LocationPermissionManagerBuilder(),
+    actual val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
+    actual val notificationsPMBuilder: NotificationsPermissionManagerBuilder = NotificationsPermissionManagerBuilder(),
+    actual val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
+)

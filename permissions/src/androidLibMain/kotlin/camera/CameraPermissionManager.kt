@@ -58,9 +58,9 @@ actual class CameraPermissionManager(
     }
 }
 
-actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCameraPermissionManagerBuilder {
+actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) {
 
-    override fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
+    actual fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
         return CameraPermissionManager(context, repo)
     }
 }

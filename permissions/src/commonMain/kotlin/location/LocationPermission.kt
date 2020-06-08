@@ -31,18 +31,17 @@ expect class LocationPermissionManager : PermissionManager<Permission.Location> 
     val location: Permission.Location
 }
 
-interface BaseLocationPermissionManagerBuilder {
+/**
+ * A builder for creating a [LocationPermissionManager]
+ */
+expect class LocationPermissionManagerBuilder {
+
     /**
      * Creates a [LocationPermissionManager]
      * @param repo The [LocationPermissionStateRepo] associated with the [Permission.Location]
      */
     fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager
 }
-
-/**
- * A builder for creating a [LocationPermissionManager]
- */
-expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Location]

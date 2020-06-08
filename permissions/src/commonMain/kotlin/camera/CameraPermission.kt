@@ -26,18 +26,17 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
  */
 expect class CameraPermissionManager : PermissionManager<Permission.Camera>
 
-interface BaseCameraPermissionManagerBuilder {
+/**
+ * A builder for creating a [CameraPermissionManager]
+ */
+expect class CameraPermissionManagerBuilder {
+
     /**
      * Creates a [CameraPermissionManager]
      * @param repo The [CameraPermissionStateRepo] associated with the [Permission.Camera]
      */
     fun create(repo: CameraPermissionStateRepo): CameraPermissionManager
 }
-
-/**
- * A builder for creating a [CameraPermissionManager]
- */
-expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Camera]

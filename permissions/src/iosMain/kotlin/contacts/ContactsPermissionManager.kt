@@ -78,9 +78,9 @@ actual class ContactsPermissionManager(
     }
 }
 
-actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
+    actual fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
         return ContactsPermissionManager(bundle, contacts, repo)
     }
 }

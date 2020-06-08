@@ -40,9 +40,9 @@ actual class StoragePermissionManager(actual val storage: Permission.Storage, re
     }
 }
 
-actual class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder {
+actual class StoragePermissionManagerBuilder {
 
-    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
+    actual fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
         return StoragePermissionManager(storage, repo)
     }
 }

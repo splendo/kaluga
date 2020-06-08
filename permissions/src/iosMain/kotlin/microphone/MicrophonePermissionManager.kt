@@ -47,9 +47,9 @@ actual class MicrophonePermissionManager(
     }
 }
 
-actual class MicrophonePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseMicrophonePermissionManagerBuilder {
+actual class MicrophonePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
 
-    override fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
+    actual fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
         return MicrophonePermissionManager(bundle, repo)
     }
 }

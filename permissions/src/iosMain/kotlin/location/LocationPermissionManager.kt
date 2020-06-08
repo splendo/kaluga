@@ -79,9 +79,9 @@ actual class LocationPermissionManager(
     }
 }
 
-actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseLocationPermissionManagerBuilder {
+actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
+    actual fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
         return LocationPermissionManager(bundle, location, repo)
     }
 }

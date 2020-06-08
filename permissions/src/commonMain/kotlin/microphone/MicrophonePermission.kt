@@ -26,18 +26,17 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
  */
 expect class MicrophonePermissionManager : PermissionManager<Permission.Microphone>
 
-interface BaseMicrophonePermissionManagerBuilder {
+/**
+ * A builder for creating a [MicrophonePermissionManager]
+ */
+expect class MicrophonePermissionManagerBuilder {
+
     /**
      * Creates a [MicrophonePermissionManager]
      * @param repo The [MicrophonePermissionStateRepo] associated with the [Permission.Microphone]
      */
     fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager
 }
-
-/**
- * A builder for creating a [MicrophonePermissionManager]
- */
-expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Microphone]

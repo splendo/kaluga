@@ -89,8 +89,10 @@ sealed class Permission {
     data class Storage(val allowWrite: Boolean = false) : Permission()
 }
 
-interface BasePermissionsBuilder {
-
+/**
+ * Builder for providing the proper [PermissionManager] for each [Permission]
+ */
+expect class PermissionsBuilder {
     val bluetoothPMBuilder: BluetoothPermissionManagerBuilder
     val calendarPMBuilder: CalendarPermissionManagerBuilder
     val cameraPMBuilder: CameraPermissionManagerBuilder
@@ -100,10 +102,6 @@ interface BasePermissionsBuilder {
     val notificationsPMBuilder: NotificationsPermissionManagerBuilder
     val storagePMBuilder: StoragePermissionManagerBuilder
 }
-/**
- * Builder for providing the proper [PermissionManager] for each [Permission]
- */
-expect class PermissionsBuilder : BasePermissionsBuilder
 
 /**
  * Manager to request the [PermissionStateRepo] of a given [Permission]

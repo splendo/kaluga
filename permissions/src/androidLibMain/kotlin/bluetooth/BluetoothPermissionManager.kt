@@ -62,9 +62,9 @@ actual class BluetoothPermissionManager(
 actual class BluetoothPermissionManagerBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
     private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-) : BaseBluetoothPermissionManagerBuilder {
+) {
 
-    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
+    actual fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
         return BluetoothPermissionManager(context, bluetoothAdapter, repo)
     }
 }

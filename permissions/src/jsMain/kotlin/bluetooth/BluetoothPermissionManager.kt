@@ -40,9 +40,9 @@ actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : Pe
     }
 }
 
-actual class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder {
+actual class BluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
+    actual fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
         return BluetoothPermissionManager(repo)
     }
 }

@@ -70,9 +70,9 @@ actual class StoragePermissionManager(
     }
 }
 
-actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseStoragePermissionManagerBuilder {
+actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
 
-    override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
+    actual fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager {
         return StoragePermissionManager(bundle, storage, repo)
     }
 }

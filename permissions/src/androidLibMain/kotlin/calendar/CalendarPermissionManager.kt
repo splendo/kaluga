@@ -53,9 +53,9 @@ actual class CalendarPermissionManager(
     }
 }
 
-actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCalendarPermissionManagerBuilder {
+actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) {
 
-    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
+    actual fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
         return CalendarPermissionManager(context, calendar, repo)
     }
 }

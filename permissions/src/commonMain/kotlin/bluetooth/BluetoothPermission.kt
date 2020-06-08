@@ -27,18 +27,16 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
  */
 expect class BluetoothPermissionManager : PermissionManager<Permission.Bluetooth>
 
-interface BaseBluetoothPermissionManagerBuilder {
+/**
+ * A builder for creating a [BluetoothPermissionManager]
+ */
+expect class BluetoothPermissionManagerBuilder {
     /**
      * Creates a [BluetoothPermissionManager]
      * @param repo The [BluetoothPermissionStateRepo] associated with the [Permission.Bluetooth]
      */
     fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager
 }
-
-/**
- * A builder for creating a [BluetoothPermissionManager]
- */
-expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Bluetooth]

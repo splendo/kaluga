@@ -62,9 +62,9 @@ actual class LocationPermissionManager(
     }
 }
 
-actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationPermissionManagerBuilder {
+actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
+    actual fun create(location: Permission.Location, repo: LocationPermissionStateRepo): LocationPermissionManager {
         return LocationPermissionManager(context, location, repo)
     }
 }

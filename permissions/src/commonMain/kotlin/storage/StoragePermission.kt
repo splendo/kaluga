@@ -36,18 +36,16 @@ expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
  */
 typealias PhotosPermissionManager = StoragePermissionManager
 
-interface BaseStoragePermissionManagerBuilder {
+/**
+ * A builder for creating a [StoragePermissionManager]
+ */
+expect class StoragePermissionManagerBuilder {
     /**
      * Creates a [StoragePermissionManager]
      * @param repo The [StoragePermissionStateRepo] associated with the [Permission.Storage]
      */
     fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager
 }
-
-/**
- * A builder for creating a [StoragePermissionManager]
- */
-expect class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder
 
 /**
  * Alias for [StoragePermissionManagerBuilder]

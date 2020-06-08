@@ -95,9 +95,9 @@ actual class BluetoothPermissionManager(
 
 actual class BluetoothPermissionManagerBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle
-) : BaseBluetoothPermissionManagerBuilder {
+) {
 
-    override fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
+    actual fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager {
         return BluetoothPermissionManager(bundle, repo)
     }
 }
