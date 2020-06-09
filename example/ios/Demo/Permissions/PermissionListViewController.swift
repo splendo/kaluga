@@ -14,7 +14,7 @@ class PermissionListViewController : UITableViewController {
     private lazy var viewModel: PermissionsListViewModel = KNArchitectureFramework().createPermissionListViewModel(parent: self) { (permission) -> UIViewController in
         return PermissionViewController.create(permission: permission)
     }
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
 
     private var permissions = [PermissionView]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil

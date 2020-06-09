@@ -19,7 +19,7 @@ class PermissionViewController: UIViewController {
         static let permissions = KNPermissionsFramework().getPermissions()
     }
     
-    static func create(permission: PermissionsPermission) -> PermissionViewController {
+    static func create(permission: Permission) -> PermissionViewController {
         let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.permissionVc) as! PermissionViewController
         vc.viewModel = KNArchitectureFramework().createPermissionViewModel(permissions: Const.permissions, permission: permission)
         return vc
@@ -29,7 +29,7 @@ class PermissionViewController: UIViewController {
     @IBOutlet weak var requestPermissionButton: UIButton!
     
     var viewModel: PermissionViewModel!
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()
