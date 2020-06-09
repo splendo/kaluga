@@ -1,5 +1,3 @@
-package com.splendo.kaluga.example.location
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.example.location
 
 import android.Manifest
 import android.annotation.SuppressLint

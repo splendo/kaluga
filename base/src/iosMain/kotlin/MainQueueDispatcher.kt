@@ -28,9 +28,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
 
+    override fun isDispatchNeeded(context: CoroutineContext) =  !NSThread.currentThread().isMainThread
+
     // Dispatch block on given queue
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatchQueue) { block.run() }
+        dispatch_async(dispatchQueue) {
+            block.run()
+        }
     }
 
     // Support Delay

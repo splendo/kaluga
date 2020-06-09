@@ -1,7 +1,7 @@
 package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.hud.HUD
-import kotlinx.coroutines.*
+import kotlinx.coroutines.delay
 
 /*
 

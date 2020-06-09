@@ -1,5 +1,3 @@
-package com.splendo.kaluga.permissions
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,22 +16,27 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.permissions
+
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.splendo.kaluga.logging.info
 
-
+/**
+ * An [AppCompatActivity] responsible for requesting a [Permission]
+ */
 class PermissionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.hide()//windowActionBar=false
-        supportActionBar?.elevation = 0F//windowContentOverlay=@null
+        supportActionBar?.hide() // windowActionBar=false
+        supportActionBar?.elevation = 0F // windowContentOverlay=@null
 
         val requestedPermissions = getRequestedPermissions(intent)
 
@@ -48,13 +51,10 @@ class PermissionsActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
-            permissions.forEachIndexed { index, permission ->
-                val permissionStatus = when (grantResults[index]) {
-                    PackageManager.PERMISSION_GRANTED -> "GRANTED"
-                    PackageManager.PERMISSION_DENIED -> "DENIED"
-                    else -> "UNKNOWN"
-                }
+            permissions.forEach { permission ->
+                AndroidPermissionsManager.waitingPermissions.remove(permission)
 
+                val permissionStatus = ContextCompat.checkSelfPermission(this, permission)
                 info(TAG, "$permission was $permissionStatus")
             }
         }
@@ -81,5 +81,4 @@ class PermissionsActivity : AppCompatActivity() {
             return intent.getStringArrayExtra(EXTRA_REQUESTED_PERMISSIONS) ?: emptyArray()
         }
     }
-
 }

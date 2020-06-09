@@ -17,8 +17,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+import android.os.Build
 import android.os.Looper
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.tasks.Task
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
@@ -58,7 +63,7 @@ fun android.location.Location.toKnownLocation(): Location.KnownLocation {
         longitude = longitude,
         altitude = altitude,
         horizontalAccuracy = accuracy.toDouble(),
-        verticalAccuracy = verticalAccuracyMeters.toDouble(),
+        verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
         speed = speed.toDouble(),
         time = Location.Time.MeasuredTime(time)
     )

@@ -30,9 +30,9 @@ sealed class Location {
      * [ms] holds the unixtime (ms since 1970) for when the location was detected. Either a time provided by the location framework,
      * or a time guessed upon receival by the implementation.
      */
-    sealed class Time(open val ms:Long) {
-        data class MeasuredTime(override val ms:Long):Time(ms)
-        data class GuessedTime(override val ms:Long):Time(ms)
+    sealed class Time(open val ms: Long) {
+        data class MeasuredTime(override val ms: Long) : Time(ms)
+        data class GuessedTime(override val ms: Long) : Time(ms)
     }
 
     /**
@@ -47,17 +47,17 @@ sealed class Location {
         val speed: Double? = null,
         val course: Double? = null,
         val time: Time
-    ):Location()
+    ) : Location()
 
-    open class UnknownLocation protected constructor(open val reason:UnknownReason):Location()
+    open class UnknownLocation protected constructor(open val reason: UnknownReason) : Location()
 
     /**
      * The current location is unknown, and there is no last known location
      */
-    data class UnknownLocationWithNoLastLocation(override val reason:UnknownReason):UnknownLocation(reason)
+    data class UnknownLocationWithNoLastLocation(override val reason: UnknownReason) : UnknownLocation(reason)
 
     /**
      * The current location is unknown, but there is a last known location
      */
-    data class UnknownLocationWithLastLocation(val lastKnownLocation:KnownLocation, override val reason:UnknownReason):UnknownLocation(reason)
+    data class UnknownLocationWithLastLocation(val lastKnownLocation: KnownLocation, override val reason: UnknownReason) : UnknownLocation(reason)
 }

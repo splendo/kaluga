@@ -46,5 +46,4 @@ open class BaseLocationFlowable : BaseFlowable<Location>() {
     companion object {
         const val TAG = "BaseLocationFlowable"
     }
-
 }
