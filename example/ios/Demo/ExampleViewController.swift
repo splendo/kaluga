@@ -28,7 +28,7 @@ class ExampleViewController : UIViewController {
                                                                                                   featuresList: { self.featuresListController },
                                                                                                   info:  { self.infoViewController })
     
-    var lifecycleManager: ArchitectureLifecycleManager!
+    var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()

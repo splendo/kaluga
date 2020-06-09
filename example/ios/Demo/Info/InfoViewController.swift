@@ -15,7 +15,7 @@ class InfoViewController : UITableViewController {
 
     private var buttons = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()

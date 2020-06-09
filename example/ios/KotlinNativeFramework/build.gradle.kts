@@ -14,6 +14,7 @@ kotlin {
     xcode {
         setupFramework("KotlinNativeFramework") {
             export(project(":shared"))
+            transitiveExport = true
         }
     }
 
@@ -21,7 +22,7 @@ kotlin {
         getByName("KotlinNativeFrameworkMain") {
 
             val ext = (gradle as ExtensionAware).extra
-            var primaryIosArch = ext["ios_primary_arch"]
+            val primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
                 api(project(":shared", "${primaryIosArch}Default"))

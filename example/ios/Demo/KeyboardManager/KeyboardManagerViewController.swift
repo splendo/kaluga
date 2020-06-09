@@ -14,7 +14,7 @@ class KeyboardManagerViewController : UIViewController {
     @IBOutlet private var editField: UITextField!
     
     lazy var viewModel = KNArchitectureFramework().createKeyboardViewModel(textField: self.editField)
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()
