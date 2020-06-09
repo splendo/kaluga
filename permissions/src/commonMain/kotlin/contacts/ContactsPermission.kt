@@ -31,23 +31,25 @@ expect class ContactsPermissionManager : PermissionManager<Permission.Contacts> 
     val contacts: Permission.Contacts
 }
 
-/**
- * A builder for creating a [ContactsPermissionManager]
- */
-expect class ContactsPermissionManagerBuilder {
+interface BaseContactsPermissionManagerBuilder {
 
     /**
      * Creates a [ContactsPermissionManager]
      * @param repo The [ContactsPermissionStateRepo] associated with the [Permission.Contacts]
      */
-    fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager
+    fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts>
 }
+
+/**
+ * A builder for creating a [ContactsPermissionManager]
+ */
+expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Contacts]
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
  */
-class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: ContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
+class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
 
     override val permissionManager: PermissionManager<Permission.Contacts> = builder.create(contacts, this)
 }

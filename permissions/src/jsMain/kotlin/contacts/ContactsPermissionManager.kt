@@ -40,9 +40,9 @@ actual class ContactsPermissionManager(actual val contacts: Permission.Contacts,
     }
 }
 
-actual class ContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder {
 
-    actual fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): ContactsPermissionManager {
+    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
         return ContactsPermissionManager(contacts, repo)
     }
 }

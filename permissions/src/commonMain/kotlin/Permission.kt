@@ -17,22 +17,22 @@
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
+import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
+import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
+import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
+import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
+import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
+import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -89,25 +89,27 @@ sealed class Permission {
     data class Storage(val allowWrite: Boolean = false) : Permission()
 }
 
-/**
- * Builder for providing the proper [PermissionManager] for each [Permission]
- */
-expect class PermissionsBuilder {
-    val bluetoothPMBuilder: BluetoothPermissionManagerBuilder
-    val calendarPMBuilder: CalendarPermissionManagerBuilder
-    val cameraPMBuilder: CameraPermissionManagerBuilder
-    val contactsPMBuilder: ContactsPermissionManagerBuilder
-    val locationPMBuilder: LocationPermissionManagerBuilder
-    val microphonePMBuilder: MicrophonePermissionManagerBuilder
-    val notificationsPMBuilder: NotificationsPermissionManagerBuilder
-    val storagePMBuilder: StoragePermissionManagerBuilder
+interface BasePermissionsBuilder {
+    val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder
+    val calendarPMBuilder: BaseCalendarPermissionManagerBuilder
+    val cameraPMBuilder: BaseCameraPermissionManagerBuilder
+    val contactsPMBuilder: BaseContactsPermissionManagerBuilder
+    val locationPMBuilder: BaseLocationPermissionManagerBuilder
+    val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder
+    val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder
+    val storagePMBuilder: BaseStoragePermissionManagerBuilder
 }
 
 /**
- * Manager to request the [PermissionStateRepo] of a given [Permission]
- * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ * Builder for providing the proper [PermissionManager] for each [Permission]
  */
-class Permissions(private val builder: PermissionsBuilder) {
+expect class PermissionsBuilder : BasePermissionsBuilder
+
+/**
+ * Manager to request the [PermissionStateRepo] of a given [Permission]
+ * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ */
+class Permissions(private val builder: BasePermissionsBuilder) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 

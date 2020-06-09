@@ -27,22 +27,24 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
  */
 expect class BluetoothPermissionManager : PermissionManager<Permission.Bluetooth>
 
-/**
- * A builder for creating a [BluetoothPermissionManager]
- */
-expect class BluetoothPermissionManagerBuilder {
+interface BaseBluetoothPermissionManagerBuilder {
     /**
      * Creates a [BluetoothPermissionManager]
      * @param repo The [BluetoothPermissionStateRepo] associated with the [Permission.Bluetooth]
      */
-    fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager
+    fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth>
 }
+
+/**
+ * A builder for creating a [BluetoothPermissionManager]
+ */
+expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Bluetooth]
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
  */
-class BluetoothPermissionStateRepo(builder: BluetoothPermissionManagerBuilder) : PermissionStateRepo<Permission.Bluetooth>() {
+class BluetoothPermissionStateRepo(builder: BaseBluetoothPermissionManagerBuilder) : PermissionStateRepo<Permission.Bluetooth>() {
 
     override val permissionManager: PermissionManager<Permission.Bluetooth> = builder.create(this)
 }

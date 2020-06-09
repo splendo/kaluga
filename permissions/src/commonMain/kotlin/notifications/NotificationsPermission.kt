@@ -36,22 +36,24 @@ expect class NotificationsPermissionManager : PermissionManager<Permission.Notif
     val notifications: Permission.Notifications
 }
 
-/**
- * A builder for creating a [NotificationsPermissionManager]
- */
-expect class NotificationsPermissionManagerBuilder {
+interface BaseNotificationsPermissionManagerBuilder {
     /**
      * Creates a [NotificationsPermissionManager]
      * @param repo The [NotificationsPermissionStateRepo] associated with the [Permission.Notifications]
      */
-    fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): NotificationsPermissionManager
+    fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications>
 }
+
+/**
+ * A builder for creating a [NotificationsPermissionManager]
+ */
+expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Notifications]
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
  */
-class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: NotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
+class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
 
     override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)
 }

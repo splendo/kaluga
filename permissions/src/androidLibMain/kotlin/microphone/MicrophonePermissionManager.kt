@@ -58,9 +58,9 @@ actual class MicrophonePermissionManager(
     }
 }
 
-actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) {
+actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseMicrophonePermissionManagerBuilder {
 
-    actual fun create(repo: MicrophonePermissionStateRepo): MicrophonePermissionManager {
+    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
         return MicrophonePermissionManager(context, repo)
     }
 }

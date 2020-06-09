@@ -31,23 +31,25 @@ expect class CalendarPermissionManager : PermissionManager<Permission.Calendar> 
     val calendar: Permission.Calendar
 }
 
-/**
- * A builder for creating a [CalendarPermissionManager]
- */
-expect class CalendarPermissionManagerBuilder {
+interface BaseCalendarPermissionManagerBuilder {
 
     /**
      * Creates a [CalendarPermissionManager]
      * @param repo The [CalendarPermissionStateRepo] associated with the [Permission.Calendar]
      */
-    fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager
+    fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar>
 }
+
+/**
+ * A builder for creating a [CalendarPermissionManager]
+ */
+expect class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Calendar]
  * @param builder The [CalendarPermissionManagerBuilder] for creating the [CalendarPermissionManager] associated with the permission
  */
-class CalendarPermissionStateRepo(calendar: Permission.Calendar, builder: CalendarPermissionManagerBuilder) : PermissionStateRepo<Permission.Calendar>() {
+class CalendarPermissionStateRepo(calendar: Permission.Calendar, builder: BaseCalendarPermissionManagerBuilder) : PermissionStateRepo<Permission.Calendar>() {
 
     override val permissionManager: PermissionManager<Permission.Calendar> = builder.create(calendar, this)
 }
