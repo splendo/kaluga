@@ -1,13 +1,3 @@
-package com.splendo.kaluga.example.alerts
-
-import android.annotation.SuppressLint
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.AlertPresenter
-import kotlinx.android.synthetic.main.activity_alerts.*
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -25,6 +15,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.example.alerts
+
+import android.annotation.SuppressLint
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
+import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.AlertPresenter
+import kotlinx.android.synthetic.main.activity_alerts.*
 
 @SuppressLint("SetTextI18n")
 class AlertsActivity : AppCompatActivity(R.layout.activity_alerts) {
