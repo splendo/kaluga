@@ -114,4 +114,7 @@ abstract class BaseLocationManager(
     }
 }
 
+/**
+ * A manager for tracking the user's [Location]
+ */
 expect class LocationManager : BaseLocationManager

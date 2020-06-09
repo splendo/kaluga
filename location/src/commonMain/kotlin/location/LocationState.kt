@@ -27,6 +27,11 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
+/**
+ * State of a [LocationStateRepo]
+ * @param location The [Location] associated with the state.
+ * @param locationManager The [BaseLocationManager] managing the location state
+ */
 sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State<LocationState>() {
 
     @InternalCoroutinesApi
@@ -73,8 +78,14 @@ sealed class LocationState(open val location: Location, private val locationMana
         }
     }
 
+    /**
+     * A [LocationState] that is not actively fetching new [Location]s.
+     */
     sealed class Disabled(location: Location, locationManager: BaseLocationManager) : LocationState(location, locationManager) {
 
+        /**
+         * A [LocationState.Disabled] that was disabled due to missing permissions.
+         */
         data class NotPermitted(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager) {
 
             companion object {
@@ -87,11 +98,18 @@ sealed class LocationState(open val location: Location, private val locationMana
                 }
             }
 
+            /**
+             * Transforms this state into [LocationState] that has sufficient permissions
+             * @param enabled `true` if GPS is turned on, `false` otherwise.
+             */
             fun permit(enabled: Boolean): suspend () -> LocationState = {
                 if (enabled) Enabled(location, locationManager) else NoGPS(NoGPS.generateLocation(location), locationManager)
             }
         }
 
+        /**
+         * A [LocationState.Disabled] that was disabled due to GPS being turned off.
+         */
         data class NoGPS(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager), Permitted {
 
             companion object {
@@ -106,8 +124,14 @@ sealed class LocationState(open val location: Location, private val locationMana
 
             private val permittedHandler = PermittedHandler(location, locationManager)
 
+            /**
+             * Transforms this state into a [LocationState.Disabled.NotPermitted] state.
+             */
             override val revokePermission: suspend () -> NotPermitted = permittedHandler.revokePermission
 
+            /**
+             * Transforms this state into a [LocationState.Enabled] state.
+             */
             val enable: suspend () -> Enabled = {
                 Enabled(location, locationManager)
             }
@@ -138,12 +162,21 @@ sealed class LocationState(open val location: Location, private val locationMana
         }
     }
 
+    /**
+     * A [LocationState] that is actively updating its [Location].
+     */
     data class Enabled(override val location: Location, private val locationManager: BaseLocationManager) : LocationState(location, locationManager), Permitted {
 
         private val permittedHandler = PermittedHandler(location, locationManager)
 
+        /**
+         * Transforms this state into a [LocationState.Disabled.NotPermitted] state.
+         */
         override val revokePermission: suspend () -> Disabled.NotPermitted = permittedHandler.revokePermission
 
+        /**
+         * Transforms this state into a [LocationState.Disabled.NoGPS] state.
+         */
         val disable: suspend () -> Disabled.NoGPS = {
             Disabled.NoGPS(Disabled.NoGPS.generateLocation(location), locationManager)
         }
@@ -179,6 +212,14 @@ sealed class LocationState(open val location: Location, private val locationMana
     }
 }
 
+/**
+ * A [ColdStateRepo] that tracks the [LocationState] of the user.
+ * Since this is a coldStateRepo location changes will only be requested when there is at least one observer.
+ * @param locationPermission The [Permission.Location] to define the type of location state to track.
+ * @param autoRequestPermission If 'true` the user will automatically receive a request to provide permissions when missing. Set this to `false` if manual permission requests are required.
+ * @param autoEnableLocations If `true` the user will automatically receive a request to enable GPS if it is disabled. Set this to `false` if manual gps enabling is required.
+ * @param locationManagerBuilder The [BaseLocationManager.Builder] to create the [LocationManager] managing the location state.
+ */
 class LocationStateRepo(
     locationPermission: Permission.Location,
     permissions: Permissions,
@@ -187,7 +228,18 @@ class LocationStateRepo(
     locationManagerBuilder: BaseLocationManager.Builder
 ) : ColdStateRepo<LocationState>() {
 
+    /**
+     * Builder for creating a [LocationStateRepo]
+     */
     interface Builder {
+
+        /**
+         * Creates a [LocationStateRepo]
+         * @param locationPermission The [Permission.Location] to define the type of location state to track.
+         * @param autoRequestPermission If 'true` the user will automatically receive a request to provide permissions when missing. Set this to `false` if manual permission requests are required. Defaults to `true`.
+         * @param autoEnableLocations If `true` the user will automatically receive a request to enable GPS if it is disabled. Set this to `false` if manual gps enabling is required. Defaults to `true`.
+         * @return The created [LocationStateRepo]
+         */
         fun create(
             locationPermission: Permission.Location,
             autoRequestPermission: Boolean = true,
@@ -216,6 +268,9 @@ class LocationStateRepo(
 
 expect class LocationStateRepoBuilder : LocationStateRepo.Builder
 
+/**
+ * Transforms a [Flow] of [LocationState] into a flow of its associated [Location]
+ */
 fun Flow<LocationState>.location(): Flow<Location> {
     return this.map { it.location }
 }

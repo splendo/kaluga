@@ -45,10 +45,21 @@ sealed class Location {
         val time: Time
     ) : Location() {
 
+        /**
+         * The [DMSCoordinate] associated with the latitude of this location
+         */
         val latitudeDMS: DMSCoordinate = DMSCoordinate.fromLatitude(latitude)
+
+        /**
+         * The [DMSCoordinate] associated with the latitude of this longitude
+         */
         val longitudeDMS: DMSCoordinate = DMSCoordinate.fromLongitude(longitude)
     }
 
+    /**
+     * An unknown location.
+     * @param reason The [Reason] the location is unknown.
+     */
     sealed class UnknownLocation(open val reason: Reason) : Location() {
 
         enum class Reason {
@@ -59,16 +70,26 @@ sealed class Location {
 
         /**
          * The current location is unknown, and there is no last known location
+         * @param reason The [Reason] the location is unknown.
          */
         data class WithoutLastLocation(override val reason: Reason) : UnknownLocation(reason)
 
         /**
          * The current location is unknown, but there is a last known location
+         * @param lastKnownLocation The [KnownLocation] last received before the location became unknown.
+         * @param reason The [Reason] the location is unknown.
          */
         data class WithLastLocation(val lastKnownLocation: KnownLocation, override val reason: Reason) : UnknownLocation(reason)
     }
 }
 
+/**
+ * A Location coordinate defined by degrees, minutes and seconds.
+ * @param degrees The degrees of the coordinate
+ * @param minutes The minutes of the coordinate
+ * @param seconds The seconds of the coordinate
+ * @param windDirection The [WindDirection] of the coordinate
+ */
 data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double, val windDirection: WindDirection) {
 
     enum class WindDirection {
@@ -79,11 +100,18 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 
     companion object {
+
+        /**
+         * Converts a latitude coordinate to its [DMSCoordinate]
+         */
         fun fromLatitude(latitude: Double): DMSCoordinate {
             val windDirection = if (latitude >= 0.0) WindDirection.North else WindDirection.South
             return fromDecimalDegrees(latitude, windDirection)
         }
 
+        /**
+         * Converts a longitude coordinate to its [DMSCoordinate]
+         */
         fun fromLongitude(longitude: Double): DMSCoordinate {
             val windDirection = if (longitude >= 0.0) WindDirection.East else WindDirection.West
             return fromDecimalDegrees(longitude, windDirection)
@@ -98,6 +126,9 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
         }
     }
 
+    /**
+     * Decimal representation of this coordinate
+     */
     val decimalDegrees: Double get() {
         val sign = when (windDirection) {
             WindDirection.North, WindDirection.East -> 1.0
