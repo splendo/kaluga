@@ -40,10 +40,12 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNaviga
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.keyboard.KeyboardHostingView
+import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -53,6 +55,7 @@ import java.net.URL
 
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
+    single { LocationStateRepoBuilder() }
 }
 
 val viewModelModule = module {
@@ -106,6 +109,8 @@ val viewModelModule = module {
     }
 
     viewModel { (permission: Permission) -> PermissionViewModel(get(), permission) }
+
+    viewModel { (permission: Permission.Location) -> LocationViewModel(permission, get()) }
 
     viewModel {
         ArchitectureInputViewModel(

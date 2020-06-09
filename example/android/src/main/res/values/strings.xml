@@ -29,4 +29,9 @@
     <string name="keyboard_manager">Keyboard</string>
     <string name="show_keyboard">Show Keyboard</string>
     <string name="hide_keyboard">Hide Keyboard</string>
+
+    <string name="location_background">Kaluga Background</string>
+    <string name="location_enable_background">Enable Background</string>
+    <string name="location_disable_background">Disable Background</string>
+
 </resources>
