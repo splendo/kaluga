@@ -26,7 +26,7 @@ class ArchitectureInputViewController: UIViewController  {
             self?.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
         }
     }
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()

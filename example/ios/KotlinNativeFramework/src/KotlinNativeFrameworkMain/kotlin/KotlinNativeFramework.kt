@@ -16,38 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertActionHandler
-import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.alerts.AlertInterface
-import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.example.shared.AlertPresenter
-import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import com.splendo.kaluga.logging.debug
-import platform.CoreLocation.CLLocationManager
-import platform.UIKit.UILabel
-import platform.UserNotifications.UNAuthorizationOptions
 import ru.pocketbyte.kydra.log.KydraLog
-import platform.UIKit.UIViewController
-
-class KNAlertFramework {
-    companion object {
-        fun makeAlertPresenter(builder: AlertBuilder) = AlertPresenter(builder)
-    }
-}
-
-class KNHudFramework {
-    companion object {
-        fun makeHudPresenter(builder: IOSHUD.Builder) = HudPresenter(builder)
-    }
-}
 
 class KotlinNativeFramework {
 
@@ -55,8 +24,4 @@ class KotlinNativeFramework {
 
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
-
-//    fun permissions(nsBundle: NSBundle) = Permissions
-//        .Builder(nsBundle)
-//        .build()
 }
