@@ -28,7 +28,7 @@ class PermissionViewController: UIViewController {
     @IBOutlet weak var permissionStateLabel: UILabel!
     @IBOutlet weak var requestPermissionButton: UIButton!
     
-    var viewModel: SharedPermissionViewModel!
+    var viewModel: PermissionViewModel!
     private var lifecycleManager: ArchitectureLifecycleManager!
     
     deinit {

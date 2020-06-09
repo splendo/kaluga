@@ -12,7 +12,9 @@ repositories {
 
 kotlin {
     xcode {
-        setupFramework("KotlinNativeFramework")
+        setupFramework("KotlinNativeFramework") {
+            export(project(":shared"))
+        }
     }
 
     sourceSets {
@@ -22,7 +24,7 @@ kotlin {
             var primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-                implementation(project(":shared", "${primaryIosArch}Default"))
+                api(project(":shared", "${primaryIosArch}Default"))
             }
         }
     }

@@ -11,12 +11,12 @@ import KotlinNativeFramework
 
 class PermissionListViewController : UITableViewController {
     
-    private lazy var viewModel: SharedPermissionsListViewModel = KNArchitectureFramework().createPermissionListViewModel(parent: self) { (permission) -> UIViewController in
+    private lazy var viewModel: PermissionsListViewModel = KNArchitectureFramework().createPermissionListViewModel(parent: self) { (permission) -> UIViewController in
         return PermissionViewController.create(permission: permission)
     }
     private var lifecycleManager: ArchitectureLifecycleManager!
 
-    private var permissions = [SharedPermissionView]()
+    private var permissions = [PermissionView]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
     
     deinit {
@@ -28,7 +28,7 @@ class PermissionListViewController : UITableViewController {
         
         lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
             guard let viewModel = self?.viewModel else { return }
-            viewModel.observePermissions(disposeBag: disposeBag) { (permissionViews: [SharedPermissionView], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+            viewModel.observePermissions(disposeBag: disposeBag) { (permissionViews: [PermissionView], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
                 self?.permissions = permissionViews
                 self?.onSelected = onSelected
                 self?.tableView.reloadData()
