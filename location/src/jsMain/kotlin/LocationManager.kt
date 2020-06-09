@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.location
 
-
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-actual class LocationManager(locationPermission: Permission.Location,
-                             permissions: Permissions,
-                             autoRequestPermission: Boolean,
-                             autoEnableLocations: Boolean,
-                             locationStateRepo: LocationStateRepo) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
+actual class LocationManager(
+    locationPermission: Permission.Location,
+    permissions: Permissions,
+    autoRequestPermission: Boolean,
+    autoEnableLocations: Boolean,
+    locationStateRepo: LocationStateRepo
+) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder : BaseLocationManager.Builder {
-        
         override fun create(
             locationPermission: Permission.Location,
             permissions: Permissions,
@@ -40,29 +40,28 @@ actual class LocationManager(locationPermission: Permission.Location,
             return LocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
-    
     override suspend fun startMonitoringLocationEnabled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun stopMonitoringLocationEnabled() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun isLocationEnabled(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun requestLocationEnable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun startMonitoringLocation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 
     override suspend fun stopMonitoringLocation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented")
     }
 }
 
@@ -71,6 +70,4 @@ actual class LocationStateRepoBuilder(private val permissions: Permissions = Per
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
         return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder())
     }
-    
 }
-

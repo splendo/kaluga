@@ -26,16 +26,17 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BaseLocationManager(protected val locationPermission: Permission.Location,
-                                   private val permissions: Permissions,
-                                   private val autoRequestPermission: Boolean,
-                                   internal val autoEnableLocations: Boolean,
-                                   private val locationStateRepo: LocationStateRepo) : CoroutineScope by locationStateRepo {
+abstract class BaseLocationManager(
+    protected val locationPermission: Permission.Location,
+    private val permissions: Permissions,
+    private val autoRequestPermission: Boolean,
+    internal val autoEnableLocations: Boolean,
+    private val locationStateRepo: LocationStateRepo
+) : CoroutineScope by locationStateRepo {
 
     interface Builder {
         fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
     }
-
 
     private val locationPermissionRepo get() = permissions[locationPermission]
     private var monitoringPermissionsJob: Job? = null
@@ -111,7 +112,6 @@ abstract class BaseLocationManager(protected val locationPermission: Permission.
             }
         }
     }
-
 }
 
 expect class LocationManager : BaseLocationManager

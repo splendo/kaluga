@@ -25,7 +25,7 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
-                implementation(project(":base", ""))
+                api(project(":base", ""))
             }
         }
         getByName("commonTest") {

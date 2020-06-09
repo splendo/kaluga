@@ -87,10 +87,9 @@ sealed class LocationState(open val location: Location, private val locationMana
                 }
             }
 
-            fun permit(enabled: Boolean) : suspend () -> LocationState = {
+            fun permit(enabled: Boolean): suspend () -> LocationState = {
                 if (enabled) Enabled(location, locationManager) else NoGPS(NoGPS.generateLocation(location), locationManager)
             }
-
         }
 
         data class NoGPS(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager), Permitted {
@@ -109,14 +108,14 @@ sealed class LocationState(open val location: Location, private val locationMana
 
             override val revokePermission: suspend () -> NotPermitted = permittedHandler.revokePermission
 
-            val enable : suspend () -> Enabled = {
+            val enable: suspend () -> Enabled = {
                 Enabled(location, locationManager)
             }
 
             override suspend fun beforeOldStateIsRemoved(oldState: LocationState) {
                 permittedHandler.beforeOldStateIsRemoved(oldState)
                 when (oldState) {
-                    !is NoGPS -> if(locationManager.autoEnableLocations) locationManager.requestLocationEnable()
+                    !is NoGPS -> if (locationManager.autoEnableLocations) locationManager.requestLocationEnable()
                     else -> {}
                 }
             }
@@ -137,7 +136,6 @@ sealed class LocationState(open val location: Location, private val locationMana
                 permittedHandler.finalState()
             }
         }
-
     }
 
     data class Enabled(override val location: Location, private val locationManager: BaseLocationManager) : LocationState(location, locationManager), Permitted {
@@ -178,20 +176,23 @@ sealed class LocationState(open val location: Location, private val locationMana
             permittedHandler.finalState()
             locationManager.stopMonitoringLocation()
         }
-
     }
-
 }
 
-class LocationStateRepo(locationPermission: Permission.Location,
-                        permissions: Permissions,
-                        autoRequestPermission: Boolean,
-                        autoEnableLocations: Boolean,
-                        locationManagerBuilder: BaseLocationManager.Builder) : ColdStateRepo<LocationState>() {
+class LocationStateRepo(
+    locationPermission: Permission.Location,
+    permissions: Permissions,
+    autoRequestPermission: Boolean,
+    autoEnableLocations: Boolean,
+    locationManagerBuilder: BaseLocationManager.Builder
+) : ColdStateRepo<LocationState>() {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean = true,
-                   autoEnableLocations: Boolean = true): LocationStateRepo
+        fun create(
+            locationPermission: Permission.Location,
+            autoRequestPermission: Boolean = true,
+            autoEnableLocations: Boolean = true
+        ): LocationStateRepo
     }
 
     private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
@@ -218,4 +219,3 @@ expect class LocationStateRepoBuilder : LocationStateRepo.Builder
 fun Flow<LocationState>.location(): Flow<Location> {
     return this.map { it.location }
 }
-

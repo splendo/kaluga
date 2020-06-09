@@ -1,13 +1,3 @@
-package com.splendo.kaluga.base
-
-import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.*
-import platform.Foundation.NSOperationQueue
-import platform.Foundation.NSThread
-import platform.darwin.*
-import kotlin.coroutines.CoroutineContext
-import kotlin.native.concurrent.*
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -25,6 +15,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.base
+
+import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.*
+import platform.Foundation.NSOperationQueue
+import platform.Foundation.NSThread
+import platform.darwin.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.native.concurrent.*
 
 internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
 

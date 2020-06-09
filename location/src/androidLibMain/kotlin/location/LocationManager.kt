@@ -24,7 +24,13 @@ import android.content.Intent
 import android.os.Looper
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationAvailability
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
@@ -35,12 +41,13 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
-actual class LocationManager(private val context: Context,
-                             locationPermission: Permission.Location,
-                             permissions: Permissions,
-                             autoRequestPermission: Boolean,
-                             autoEnableLocations: Boolean,
-                             locationStateRepo: LocationStateRepo
+actual class LocationManager(
+    private val context: Context,
+    locationPermission: Permission.Location,
+    permissions: Permissions,
+    autoRequestPermission: Boolean,
+    autoEnableLocations: Boolean,
+    locationStateRepo: LocationStateRepo
 ) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationManager.Builder {
@@ -75,7 +82,6 @@ actual class LocationManager(private val context: Context,
 
             handleLocationEnabledChanged()
         }
-
     }
 
     private val locationCallback = object : LocationCallback() {
@@ -87,7 +93,6 @@ actual class LocationManager(private val context: Context,
                 handleLocationChanged(it.toKnownLocations())
             }
         }
-
     }
 
     private val locationEnabledUpdatedPendingIntent = LocationEnabledUpdatesBroadcastReceiver.intent(context, identifier)
@@ -120,12 +125,12 @@ actual class LocationManager(private val context: Context,
         }
     }
 
-    override suspend fun requestLocationEnable(){
+    override suspend fun requestLocationEnable() {
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
         try {
             LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null
         } catch (e: ApiException) {
-            when(e) {
+            when (e) {
                 is ResolvableApiException -> {
                     val enablingHandler = CompletableDeferred<Boolean>()
                     enablingHandlers[identifier] = enablingHandler
@@ -160,7 +165,6 @@ actual class LocationManager(private val context: Context,
             fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         }
     }
-
 }
 
 class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
@@ -172,7 +176,6 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
             val intent = Intent(context, LocationUpdatesBroadcastReceiver::class.java).apply {
                 action = ACTION_NAME
                 addCategory(locationManagerId)
-
             }
             return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -181,7 +184,7 @@ class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
         val locationResult = LocationResult.extractResult(intent) ?: return
-        intent.categories.forEach {category ->
+        intent.categories.forEach { category ->
             LocationManager.updatingLocationInBackgroundManagers[category]?.handleLocationChanged(locationResult.toKnownLocations())
         }
     }
@@ -204,18 +207,18 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null) return
         LocationAvailability.extractLocationAvailability(intent) ?: return
-        intent.categories.forEach {category ->
+        intent.categories.forEach { category ->
             LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged()
         }
     }
 }
 
-actual class LocationStateRepoBuilder(private val context: Context = ApplicationHolder.applicationContext,
-                                      private val permissions: Permissions = Permissions(PermissionsBuilder(context)))
-    : LocationStateRepo.Builder {
+actual class LocationStateRepoBuilder(
+    private val context: Context = ApplicationHolder.applicationContext,
+    private val permissions: Permissions = Permissions(PermissionsBuilder(context))
+) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
         return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
     }
-
 }

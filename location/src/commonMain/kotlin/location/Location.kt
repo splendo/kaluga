@@ -43,14 +43,13 @@ sealed class Location {
         val speed: Double? = null,
         val course: Double? = null,
         val time: Time
-    ) : Location()
+    ) : Location() {
 
         val latitudeDMS: DMSCoordinate = DMSCoordinate.fromLatitude(latitude)
         val longitudeDMS: DMSCoordinate = DMSCoordinate.fromLongitude(longitude)
-
     }
 
-    sealed class UnknownLocation(open val reason:Reason):Location() {
+    sealed class UnknownLocation(open val reason: Reason) : Location() {
 
         enum class Reason {
             PERMISSION_DENIED,
@@ -100,7 +99,7 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 
     val decimalDegrees: Double get() {
-        val sign = when(windDirection) {
+        val sign = when (windDirection) {
             WindDirection.North, WindDirection.East -> 1.0
             WindDirection.South, WindDirection.West -> -1.0
         }
@@ -108,7 +107,6 @@ data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double
     }
 
     override fun toString(): String {
-        return "${degrees}°${minutes}\'${seconds}\" ${windDirection.name}"
+        return "$degrees°${minutes}\'${seconds}\" ${windDirection.name}"
     }
-
 }

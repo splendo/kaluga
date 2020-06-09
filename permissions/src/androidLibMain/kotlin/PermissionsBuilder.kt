@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
+import android.content.Context
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
@@ -35,4 +36,15 @@ actual data class PermissionsBuilder(
     actual val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
     actual val notificationsPMBuilder: NotificationsPermissionManagerBuilder = NotificationsPermissionManagerBuilder(),
     actual val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
-)
+) {
+    constructor(context: Context) : this(
+        BluetoothPermissionManagerBuilder(context),
+        CalendarPermissionManagerBuilder(context),
+        CameraPermissionManagerBuilder(context),
+        ContactsPermissionManagerBuilder(context),
+        LocationPermissionManagerBuilder(context),
+        MicrophonePermissionManagerBuilder(context),
+        NotificationsPermissionManagerBuilder(),
+        StoragePermissionManagerBuilder(context)
+    )
+}

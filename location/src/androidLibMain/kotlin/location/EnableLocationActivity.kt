@@ -26,14 +26,13 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.common.api.ResolvableApiException
 
-
 class EnableLocationActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar?.hide()//windowActionBar=false
-        supportActionBar?.elevation = 0F//windowContentOverlay=@null
+        supportActionBar?.hide() // windowActionBar=false
+        supportActionBar?.elevation = 0F // windowContentOverlay=@null
 
         val resolvableApiException = getResolvableApiException(intent)
 
@@ -50,7 +49,7 @@ class EnableLocationActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
+        when (requestCode) {
             REQUEST_CHECK_SETTINGS -> {
                 complete(resultCode == Activity.RESULT_OK)
             }
@@ -86,5 +85,4 @@ class EnableLocationActivity : AppCompatActivity() {
             return intent.getStringExtra(EXTRA_LOCATION_MANAGER_ID)
         }
     }
-
 }

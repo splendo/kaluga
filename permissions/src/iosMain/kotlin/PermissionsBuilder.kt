@@ -25,6 +25,7 @@ import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
+import platform.Foundation.NSBundle
 
 actual data class PermissionsBuilder(
     actual val bluetoothPMBuilder: BluetoothPermissionManagerBuilder = BluetoothPermissionManagerBuilder(),
@@ -35,4 +36,15 @@ actual data class PermissionsBuilder(
     actual val microphonePMBuilder: MicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
     actual val notificationsPMBuilder: NotificationsPermissionManagerBuilder = NotificationsPermissionManagerBuilder(),
     actual val storagePMBuilder: StoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
-)
+) {
+    constructor(bundle: NSBundle) : this(
+        BluetoothPermissionManagerBuilder(bundle),
+        CalendarPermissionManagerBuilder(bundle),
+        CameraPermissionManagerBuilder(bundle),
+        ContactsPermissionManagerBuilder(bundle),
+        LocationPermissionManagerBuilder(bundle),
+        MicrophonePermissionManagerBuilder(bundle),
+        NotificationsPermissionManagerBuilder(),
+        StoragePermissionManagerBuilder(bundle)
+    )
+}

@@ -27,8 +27,9 @@ import com.splendo.kaluga.test.permissions.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlin.test.*
-
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class LocationStateTest : FlowableTest<LocationState>() {
 
@@ -257,7 +258,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(location2, it.location)
             }
-
         }
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
@@ -286,7 +286,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(location2, it.location)
             }
-
         }
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
@@ -395,7 +394,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationCompleted.await()
         locationManager.stopMonitoringLocationEnabledCompleted.await()
-
     }
 
     @Test
@@ -433,7 +431,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
 
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
-
     }
 
     @Test
@@ -472,9 +469,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationEnabledCompleted.await()
-
     }
-
 
     private fun setupLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean) {
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations)
@@ -483,7 +478,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
         permissions[locationPermission]
         locationManager.reset()
     }
-
 }
 
 class MockLocationStateRepoBuilder(private val permissions: Permissions) : LocationStateRepo.Builder {
@@ -491,8 +485,8 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
     lateinit var locationManager: MockLocationManager
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, object: BaseLocationManager.Builder {
-            
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, object : BaseLocationManager.Builder {
+
             override fun create(
                 locationPermission: Permission.Location,
                 permissions: Permissions,
@@ -503,18 +497,22 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
                 locationManager = MockLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
                 return locationManager
             }
-            
         })
     }
 }
 
-
-class MockLocationManager(locationPermission: Permission.Location,
-                          permissions: Permissions,
-                          autoRequestPermission: Boolean, autoEnableLocations: Boolean,
-                          locationStateRepo: LocationStateRepo
-) : BaseLocationManager(locationPermission, permissions, autoRequestPermission,
-    autoEnableLocations, locationStateRepo
+class MockLocationManager(
+    locationPermission: Permission.Location,
+    permissions: Permissions,
+    autoRequestPermission: Boolean,
+    autoEnableLocations: Boolean,
+    locationStateRepo: LocationStateRepo
+) : BaseLocationManager(
+    locationPermission,
+    permissions,
+    autoRequestPermission,
+    autoEnableLocations,
+    locationStateRepo
 ) {
 
     var locationEnabled: Boolean = false
