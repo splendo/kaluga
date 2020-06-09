@@ -23,9 +23,7 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.example.shared.AlertPresenter
 import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.example.shared.LocationPrinter
 import com.splendo.kaluga.hud.IOSHUD
-import com.splendo.kaluga.location.LocationFlowable
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.MainScope
@@ -57,14 +55,6 @@ class KotlinNativeFramework {
 
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
-
-    fun location(label: UILabel, locationManager: CLLocationManager) {
-        val location = LocationFlowable.Builder(locationManager).create()
-        LocationPrinter(location).printTo {
-            label.text = it
-        }
-        debug("proceed executing after location coroutines")
-    }
 
 //    fun permissions(nsBundle: NSBundle) = Permissions
 //        .Builder(nsBundle)

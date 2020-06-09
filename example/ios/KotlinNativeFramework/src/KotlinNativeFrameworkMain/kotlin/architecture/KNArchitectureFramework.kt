@@ -35,11 +35,13 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNaviga
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -131,6 +133,10 @@ class KNArchitectureFramework {
 
     fun createPermissionViewModel(permissions: Permissions, permission: Permission): PermissionViewModel {
         return PermissionViewModel(permissions, permission)
+    }
+
+    fun createLocationViewModel(permission: Permission.Location, repoBuilder: LocationStateRepoBuilder): LocationViewModel {
+        return LocationViewModel(permission, repoBuilder)
     }
 
     fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
