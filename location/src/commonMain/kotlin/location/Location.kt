@@ -26,9 +26,9 @@ sealed class Location {
      * [ms] holds the unixtime (ms since 1970) for when the location was detected. Either a time provided by the location framework,
      * or a time guessed upon receival by the implementation.
      */
-    sealed class Time(open val ms:Long) {
-        data class MeasuredTime(override val ms:Long):Time(ms)
-        data class GuessedTime(override val ms:Long):Time(ms)
+    sealed class Time(open val ms: Long) {
+        data class MeasuredTime(override val ms: Long) : Time(ms)
+        data class GuessedTime(override val ms: Long) : Time(ms)
     }
 
     /**
@@ -43,7 +43,7 @@ sealed class Location {
         val speed: Double? = null,
         val course: Double? = null,
         val time: Time
-    ):Location() {
+    ) : Location()
 
         val latitudeDMS: DMSCoordinate = DMSCoordinate.fromLatitude(latitude)
         val longitudeDMS: DMSCoordinate = DMSCoordinate.fromLongitude(longitude)

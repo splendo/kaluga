@@ -1,14 +1,3 @@
-package com.splendo.kaluga.example.loading
-
-import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import androidx.activity.viewModels
-import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.hud.HudViewModel
-import kotlinx.android.synthetic.main.activity_loading.*
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -26,6 +15,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.example.loading
+
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.activity.viewModels
+import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.HudPresenter
+import com.splendo.kaluga.hud.HudViewModel
+import kotlinx.android.synthetic.main.activity_loading.*
 
 @SuppressLint("SetTextI18n")
 class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {

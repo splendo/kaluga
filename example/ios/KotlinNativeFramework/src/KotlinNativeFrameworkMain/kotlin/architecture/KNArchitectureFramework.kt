@@ -35,9 +35,19 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNaviga
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.notifications.*
 import platform.Foundation.NSURL
 import platform.UIKit.*
+import platform.UserNotifications.UNAuthorizationOptionAlert
+import platform.UserNotifications.UNAuthorizationOptionSound
 
 class KNArchitectureFramework {
 
@@ -92,6 +102,35 @@ class KNArchitectureFramework {
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
             })
+    }
+
+    fun createPermissionListViewModel(parent: UIViewController, createPermissionViewController: (Permission) -> UIViewController): PermissionsListViewModel {
+        return PermissionsListViewModel(
+            Navigator(parent) { action ->
+                NavigationSpec.Push(push = {
+                    val bundle = action.bundle ?: return@Push UIViewController()
+                    val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
+                        PermissionView.Bluetooth -> Permission.Bluetooth
+                        PermissionView.Calendar -> Permission.Calendar()
+                        PermissionView.Camera -> Permission.Camera
+                        PermissionView.Contacts -> Permission.Contacts()
+                        PermissionView.Location -> Permission.Location(
+                            background = true,
+                            precise = true
+                        )
+                        PermissionView.Microphone -> Permission.Microphone
+                        PermissionView.Notifications -> Permission.Notifications(NotificationOptions(
+                            UNAuthorizationOptionAlert or UNAuthorizationOptionSound))
+                        PermissionView.Storage -> Permission.Storage()
+                    }
+                    createPermissionViewController(permission)
+                })
+            }
+        )
+    }
+
+    fun createPermissionViewModel(permissions: Permissions, permission: Permission): PermissionViewModel {
+        return PermissionViewModel(permissions, permission)
     }
 
     fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
@@ -160,5 +199,11 @@ fun InfoViewModel.observeButtons(disposeBag: DisposeBag, onInfoButtonsChanged: (
     buttons.observe { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
+    }.addTo(disposeBag)
+}
+
+fun PermissionsListViewModel.observePermissions(disposeBag: DisposeBag, onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit) {
+    permissions.observe { permissions ->
+        onPermissionsChanged(permissions) { index -> this.onPermissionPressed(permissions[index]) }
     }.addTo(disposeBag)
 }
