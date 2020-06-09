@@ -15,18 +15,18 @@
 
  */
 
-package com.splendo.kaluga.example.shared
+package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
-import com.splendo.kaluga.collectionview.CollectionItemRepository
-import com.splendo.kaluga.collectionview.CollectionViewItem
+import com.splendo.kaluga.collectionview.item.CollectionItem
+import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 
-class ItemsRepository : CollectionItemRepository<CollectionViewItem>() {
+class ItemsRepository : CollectionItemRepository<CollectionItem>() {
 
-    override suspend fun updateItems(): Result<CollectionViewItem> {
+    override suspend fun updateItems(): Result<CollectionItem> {
         return Result.Success(listOf(
-            CollectionViewItem("One"),
-            CollectionViewItem("Two"),
-            CollectionViewItem("3")))
+            CollectionItem("One"),
+            CollectionItem("Two"),
+            CollectionItem("3")))
     }
 
 }

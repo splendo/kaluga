@@ -22,13 +22,14 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 open class CollectionViewModel<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>>(
-    private val repository: CollectionItemRepository<Item>,
+    protected val repository: CollectionItemRepository<Item>,
     private val viewModelMapper: (Item) -> ViewModel
 ) : BaseViewModel() {
 
@@ -63,5 +64,7 @@ open class CollectionViewModel<Item : CollectionItem, ViewModel: CollectionItemV
         currentItems.forEach { it.onCleared() }
     }
 }
+
+open class DefaultCollectionViewModel<Item : CollectionItem>(repository: CollectionItemRepository<Item>) : CollectionViewModel<Item, DefaultCollectionItemViewModel<Item>>(repository, { item -> DefaultCollectionItemViewModel(item) })
 
 

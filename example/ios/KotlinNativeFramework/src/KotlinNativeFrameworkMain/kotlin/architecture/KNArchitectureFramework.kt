@@ -26,7 +26,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
-import com.splendo.kaluga.collectionview.CollectionViewItem
+import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.collectionview.datasource.DataSource
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
@@ -168,8 +169,7 @@ fun InfoViewModel.observeButtons(disposeBag: DisposeBag, onInfoButtonsChanged: (
     }.addTo(disposeBag)
 }
 
-fun CollectionViewViewModel.observeItems(disposeBag: DisposeBag, onItemsChanged: (List<CollectionViewItem>) -> Unit) {
-    items.observe { items ->
-        onItemsChanged(items)
-    }.addTo(disposeBag)
-}
+//fun <C: UICollectionViewCell> CollectionViewViewModel.observe(disposeBag: DisposeBag, identifier: String, collectionView: CollectionView, (CollectionI)) {
+//    val dataSour
+//    collectionView.bind()
+//}

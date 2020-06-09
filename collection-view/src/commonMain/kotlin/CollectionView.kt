@@ -17,10 +17,12 @@
 
 package com.splendo.kaluga.collectionview
 
-import com.splendo.kaluga.collectionview.datasource.DataSource
+// import com.splendo.kaluga.collectionview.datasource.DataSource
 
-expect class CollectionView
-
-expect fun CollectionView.bind(dataSource: DataSource<*>) : CollectionViewBindingResult
-
-expect class CollectionViewBindingResult
+// expect class CollectionView
+//
+// expect class CollectionCellView
+//
+// expect fun CollectionView.bind(dataSource: DataSource<*>) : CollectionViewBindingResult
+//
+// expect class CollectionViewBindingResult

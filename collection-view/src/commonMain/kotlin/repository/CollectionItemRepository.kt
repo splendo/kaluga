@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.collectionview.repository
 
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.flow.BaseFlowable
 
@@ -27,7 +28,7 @@ abstract class CollectionItemRepository<Item : CollectionItem> {
         data class Error<Item : CollectionItem>(val throwable: Throwable) : Result<Item>()
     }
 
-    val items = BaseFlowable<List<Item>>().apply { setBlocking(emptyList()) }
+    val items = HotFlowable<List<Item>>(emptyList())
 
     suspend fun loadItems(): Result<Item> {
         return updateItems().also { result ->

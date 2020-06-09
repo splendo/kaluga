@@ -2,6 +2,7 @@ package com.splendo.kaluga.base
 
 import kotlinx.cinterop.staticCFunction
 import kotlinx.coroutines.*
+import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSThread
 import platform.darwin.*
 import kotlin.coroutines.CoroutineContext

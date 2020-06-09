@@ -29,4 +29,4 @@ abstract class CollectionItemViewModel<Item: CollectionItem>(protected open val 
 
 }
 
-class DefaultCollectionItemViewModel<Item: CollectionItem>(public override val item: Item) : CollectionItemViewModel<Item>(item)
+open class DefaultCollectionItemViewModel<Item: CollectionItem>(public override val item: Item) : CollectionItemViewModel<Item>(item)

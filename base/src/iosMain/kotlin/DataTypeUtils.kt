@@ -19,6 +19,7 @@ package com.splendo.kaluga.base
 
 import kotlinx.cinterop.*
 import platform.Foundation.*
+import platform.darwin.NSUInteger
 
 /**
  * Converts a [NSData] to its corresponding [ByteArray]
@@ -35,7 +36,7 @@ fun NSData.toByteArray() : ByteArray {
  * @return Th [NSData] corresponding to this [ByteArray]
  */
 fun ByteArray.toNSData() : NSData = memScoped {
-    return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong())
+    return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong() as NSUInteger)
 }
 
 /**

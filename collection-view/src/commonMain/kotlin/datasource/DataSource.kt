@@ -17,27 +17,6 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.collectionview.CollectionView
-import com.splendo.kaluga.collectionview.item.CollectionItem
-import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-
-abstract class BaseDataSource<Item> internal constructor(protected val source: Observable<List<Item>>) {
-
-    var collectionView: CollectionView? = null
-        set(value) {
-            field = value
-            notifyItemsChanged()
-        }
-
-    abstract fun notifyItemsChanged()
-}
-
-expect open class DataSource<Item> : BaseDataSource<Item>
-
-expect class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> : DataSource<ViewModel>
+// expect open class DataSource<Item, Cell : CollectionCellView>
+//
+// expect class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> : DataSource<ViewModel>

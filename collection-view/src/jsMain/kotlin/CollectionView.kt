@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.collectionview
 
-actual class CollectionView
+class CollectionView

@@ -20,12 +20,14 @@ package com.splendo.kaluga.collectionview
 import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.collectionview.datasource.DataSource
 import platform.UIKit.UICollectionView
+import platform.UIKit.UICollectionViewCell
 
-actual typealias CollectionView = UICollectionView
+typealias CollectionView = UICollectionView
 
-actual typealias CollectionViewBindingResult = Disposable
+typealias CollectionCellView = UICollectionViewCell
 
-actual fun CollectionView.bind(dataSource: DataSource<*>) : CollectionViewBindingResult {
-    dataSource.collectionView = this
-    return Disposable {  }
+typealias CollectionViewBindingResult = Disposable
+
+fun CollectionView.bind(dataSource: DataSource<*, *>) : CollectionViewBindingResult {
+    return dataSource.bind(this)
 }
