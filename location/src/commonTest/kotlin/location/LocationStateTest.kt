@@ -22,13 +22,18 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowableTest
-import com.splendo.kaluga.test.permissions.MockPermissionManager
+import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlinx.coroutines.launch
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class LocationStateTest : FlowableTest<LocationState>() {
@@ -60,7 +65,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
     private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
     lateinit var locationStateRepo: LocationStateRepo
 
-    private val permissionManager: MockPermissionManager<Permission.Location> get() {
+    private val permissionManager: MockPermissionManager<Permission.Location>
+        get() {
         return permissionsBuilder.locationPMManager
     }
     private val locationManager: MockLocationManager get() {
@@ -363,7 +369,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         permissionManager.currentState = PermissionState.Allowed(permissionManager)
         locationManager.locationEnabled = true
-        testWithFlow {
+        FlowTest(locationStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
@@ -380,16 +386,14 @@ class LocationStateTest : FlowableTest<LocationState>() {
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationCompleted.await()
         locationManager.stopMonitoringLocationEnabledCompleted.await()
-
         permissionManager.reset()
         locationManager.reset()
-        testWithFlow {
+        FlowTest(locationStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(location1, it.location)
             }
         }
-
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationCompleted.await()
@@ -401,7 +405,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         permissionManager.currentState = PermissionState.Allowed(permissionManager)
         locationManager.locationEnabled = true
-        testWithFlow {
+        FlowTest(locationStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
@@ -422,7 +426,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         permissionManager.reset()
         locationManager.reset()
         permissionManager.currentState = PermissionState.Denied.Locked(permissionManager)
-        testWithFlow {
+        FlowTest(locationStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is LocationState.Disabled.NotPermitted)
                 assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
@@ -438,19 +442,19 @@ class LocationStateTest : FlowableTest<LocationState>() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         permissionManager.currentState = PermissionState.Allowed(permissionManager)
         locationManager.locationEnabled = true
-        testWithFlow {
-            test {
-                assertTrue(it is LocationState.Enabled)
-                assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+            FlowTest(locationStateRepo.flowable).testWithFlow {
+                test {
+                    assertTrue(it is LocationState.Enabled)
+                    assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+                }
+                action {
+                    locationManager.handleLocationChanged(location1)
+                }
+                test {
+                    assertTrue(it is LocationState.Enabled)
+                    assertEquals(location1, it.location)
+                }
             }
-            action {
-                locationManager.handleLocationChanged(location1)
-            }
-            test {
-                assertTrue(it is LocationState.Enabled)
-                assertEquals(location1, it.location)
-            }
-        }
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationCompleted.await()
@@ -459,7 +463,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         permissionManager.reset()
         locationManager.reset()
         locationManager.locationEnabled = false
-        testWithFlow {
+        FlowTest(locationStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is LocationState.Disabled.NoGPS)
                 assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.NO_GPS), it.location)
@@ -473,7 +477,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
 
     private fun setupLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean) {
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations)
-        flowable.complete(locationStateRepo.flowable.value)
+        flowable.complete(locationStateRepo.flowable)
         // Make sure permissionState has been created as it may break the tests otherwise
         permissions[locationPermission]
         locationManager.reset()

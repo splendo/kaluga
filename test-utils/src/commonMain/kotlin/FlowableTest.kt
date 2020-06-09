@@ -28,7 +28,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -45,7 +44,7 @@ abstract class FlowableTest<T>: BaseTest() {
         super.beforeTest()
 
         flowable = CompletableDeferred()
-        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted().flow()) }
+        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted()) }
     }
 
     lateinit var flowable: CompletableDeferred<Flowable<T>>
@@ -61,7 +60,7 @@ abstract class FlowableTest<T>: BaseTest() {
     }
 }
 
-open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: CoroutineScope = MainScope()) {
+open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MainScope()) {
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -105,7 +104,7 @@ open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: Co
         debug("start flow...")
         job = coroutineScope.launch {
             debug("main scope launched, about to flow")
-            flow.filter(filter).collect { value ->
+            flowable.flow().filter(filter).collect { value ->
                 debug("in flow received $value")
                 val test = testChannel.receive()
                 debug("receive test $test")
