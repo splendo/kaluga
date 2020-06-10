@@ -58,6 +58,7 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
 /**
  * A [PermissionStateRepo] for [Permission.Storage]
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Storage>(coroutineContext = coroutineContext) {
 

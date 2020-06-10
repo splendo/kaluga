@@ -38,6 +38,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 
@@ -90,6 +91,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
     fun tearDown() {
         super.afterTest()
         testCoroutine.cancelChildren()
+        locationStateRepo.cancel()
+        permissions.clean()
     }
 
     @Test

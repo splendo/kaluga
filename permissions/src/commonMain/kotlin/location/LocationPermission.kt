@@ -49,6 +49,7 @@ expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBui
 /**
  * A [PermissionStateRepo] for [Permission.Location]
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Location>(coroutineContext = coroutineContext) {
 

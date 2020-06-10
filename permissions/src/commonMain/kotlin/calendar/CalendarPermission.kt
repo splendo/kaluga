@@ -49,6 +49,7 @@ expect class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBui
 /**
  * A [PermissionStateRepo] for [Permission.Calendar]
  * @param builder The [CalendarPermissionManagerBuilder] for creating the [CalendarPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class CalendarPermissionStateRepo(calendar: Permission.Calendar, builder: BaseCalendarPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Calendar>(coroutineContext = coroutineContext) {
 

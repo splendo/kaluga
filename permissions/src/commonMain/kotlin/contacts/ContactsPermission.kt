@@ -49,6 +49,7 @@ expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBui
 /**
  * A [PermissionStateRepo] for [Permission.Contacts]
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Contacts>(coroutineContext = coroutineContext) {
 

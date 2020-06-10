@@ -35,6 +35,7 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -110,8 +111,9 @@ expect class PermissionsBuilder : BasePermissionsBuilder
 /**
  * Manager to request the [PermissionStateRepo] of a given [Permission]
  * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = MainQueueDispatcher) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
@@ -136,6 +138,11 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
             is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder, coroutineContext)
             is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder, coroutineContext)
         }
+    }
+
+    fun clean() {
+        permissionStateRepos.values.forEach { it.cancel() }
+        permissionStateRepos.clear()
     }
 }
 

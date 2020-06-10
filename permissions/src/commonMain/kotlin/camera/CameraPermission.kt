@@ -44,6 +44,7 @@ expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
 /**
  * A [PermissionStateRepo] for [Permission.Camera]
  * @param builder The [CameraPermissionManagerBuilder] for creating the [CameraPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class CameraPermissionStateRepo(builder: BaseCameraPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Camera>(coroutineContext = coroutineContext) {
 

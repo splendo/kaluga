@@ -53,6 +53,7 @@ expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermission
 /**
  * A [PermissionStateRepo] for [Permission.Notifications]
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Notifications>(coroutineContext = coroutineContext) {
 

@@ -44,6 +44,7 @@ expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerB
 /**
  * A [PermissionStateRepo] for [Permission.Bluetooth]
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class BluetoothPermissionStateRepo(builder: BaseBluetoothPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Bluetooth>(coroutineContext = coroutineContext) {
 

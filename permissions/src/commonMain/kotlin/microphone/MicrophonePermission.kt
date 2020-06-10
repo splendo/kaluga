@@ -44,6 +44,7 @@ expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManage
 /**
  * A [PermissionStateRepo] for [Permission.Microphone]
  * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
 class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Microphone>(coroutineContext = coroutineContext) {
 
