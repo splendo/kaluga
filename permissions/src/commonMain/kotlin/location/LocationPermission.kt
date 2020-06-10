@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.location
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Location]
@@ -49,7 +50,7 @@ expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBui
  * A [PermissionStateRepo] for [Permission.Location]
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
  */
-class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder) : PermissionStateRepo<Permission.Location>() {
+class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Location>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this)
 }

@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.contacts
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Contacts]
@@ -49,7 +50,7 @@ expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBui
  * A [PermissionStateRepo] for [Permission.Contacts]
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
  */
-class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder) : PermissionStateRepo<Permission.Contacts>() {
+class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Contacts>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Contacts> = builder.create(contacts, this)
 }

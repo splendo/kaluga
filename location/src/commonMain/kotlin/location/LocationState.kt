@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -225,8 +227,9 @@ class LocationStateRepo(
     permissions: Permissions,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
-    locationManagerBuilder: BaseLocationManager.Builder
-) : ColdStateRepo<LocationState>() {
+    locationManagerBuilder: BaseLocationManager.Builder,
+    coroutineContext: CoroutineContext
+) : ColdStateRepo<LocationState>(coroutineContext = coroutineContext) {
 
     /**
      * Builder for creating a [LocationStateRepo]
@@ -243,7 +246,8 @@ class LocationStateRepo(
         fun create(
             locationPermission: Permission.Location,
             autoRequestPermission: Boolean = true,
-            autoEnableLocations: Boolean = true
+            autoEnableLocations: Boolean = true,
+            coroutineContext: CoroutineContext = MainQueueDispatcher
         ): LocationStateRepo
     }
 

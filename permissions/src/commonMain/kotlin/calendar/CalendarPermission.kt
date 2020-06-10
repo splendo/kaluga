@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.calendar
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Calendar]
@@ -49,7 +50,7 @@ expect class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBui
  * A [PermissionStateRepo] for [Permission.Calendar]
  * @param builder The [CalendarPermissionManagerBuilder] for creating the [CalendarPermissionManager] associated with the permission
  */
-class CalendarPermissionStateRepo(calendar: Permission.Calendar, builder: BaseCalendarPermissionManagerBuilder) : PermissionStateRepo<Permission.Calendar>() {
+class CalendarPermissionStateRepo(calendar: Permission.Calendar, builder: BaseCalendarPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Calendar>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Calendar> = builder.create(calendar, this)
 }

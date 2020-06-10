@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.storage
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Storage]
@@ -58,7 +59,7 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
  * A [PermissionStateRepo] for [Permission.Storage]
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
  */
-class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
+class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Storage>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)
 }

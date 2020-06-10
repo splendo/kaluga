@@ -36,6 +36,7 @@ import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -215,10 +216,10 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 
 actual class LocationStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
-    private val permissions: Permissions = Permissions(PermissionsBuilder(context))
+    private val permissions: Permissions = Permissions(PermissionsBuilder(context), MainQueueDispatcher)
 ) : LocationStateRepo.Builder {
 
-    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context))
+    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
+        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(context), coroutineContext)
     }
 }

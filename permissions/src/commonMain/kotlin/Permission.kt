@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
@@ -34,6 +35,7 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -109,7 +111,7 @@ expect class PermissionsBuilder : BasePermissionsBuilder
  * Manager to request the [PermissionStateRepo] of a given [Permission]
  * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  */
-class Permissions(private val builder: BasePermissionsBuilder) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
@@ -119,20 +121,20 @@ class Permissions(private val builder: BasePermissionsBuilder) {
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
-        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission).also { permissionStateRepos[permission] = it }
+        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
         return permissionStateRepo.flow()
     }
 
-    private fun createPermissionStateRepo(permission: Permission): PermissionStateRepo<*> {
+    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = MainQueueDispatcher): PermissionStateRepo<*> {
         return when (permission) {
-            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
-            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder)
-            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder)
-            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder)
-            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder)
-            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder)
-            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder)
-            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
+            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder, coroutineContext)
+            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder, coroutineContext)
+            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder, coroutineContext)
+            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder, coroutineContext)
+            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder, coroutineContext)
+            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder, coroutineContext)
+            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder, coroutineContext)
+            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder, coroutineContext)
         }
     }
 }

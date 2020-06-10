@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Options for configuring a [Permission.Notifications]
@@ -53,7 +54,7 @@ expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermission
  * A [PermissionStateRepo] for [Permission.Notifications]
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
  */
-class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder) : PermissionStateRepo<Permission.Notifications>() {
+class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Notifications>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)
 }
