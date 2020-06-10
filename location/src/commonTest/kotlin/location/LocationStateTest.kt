@@ -28,7 +28,6 @@ import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.launch
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -445,19 +444,19 @@ class LocationStateTest : FlowableTest<LocationState>() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         permissionManager.currentState = PermissionState.Allowed(permissionManager)
         locationManager.locationEnabled = true
-            FlowTest(locationStateRepo.flowable).testWithFlow {
-                test {
-                    assertTrue(it is LocationState.Enabled)
-                    assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
-                }
-                action {
-                    locationManager.handleLocationChanged(location1)
-                }
-                test {
-                    assertTrue(it is LocationState.Enabled)
-                    assertEquals(location1, it.location)
-                }
+        FlowTest(locationStateRepo.flowable).testWithFlow {
+            test {
+                assertTrue(it is LocationState.Enabled)
+                assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
             }
+            action {
+                locationManager.handleLocationChanged(location1)
+            }
+            test {
+                assertTrue(it is LocationState.Enabled)
+                assertEquals(location1, it.location)
+            }
+        }
         permissionManager.hasStoppedMonitoring.await()
         locationManager.stopMonitoringPermissionsCompleted.await()
         locationManager.stopMonitoringLocationCompleted.await()
