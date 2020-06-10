@@ -42,12 +42,11 @@ class LocationViewModel(permission: Permission.Location, repoBuilder: LocationSt
                 when (location) {
                     is Location.KnownLocation -> "${location.latitudeDMS} ${location.longitudeDMS}"
                     is Location.UnknownLocation -> {
-                        val lastLocation = if (location is Location.UnknownLocation.WithLastLocation) {
-                            " Last Known Location: ${location.lastKnownLocation
-                                .latitudeDMS} ${location.lastKnownLocation.longitudeDMS}"
-                        } else
-                            ""
-                        "Unknown Location. Reason: ${location.reason.name}${lastLocation}"
+                        val lastKnownLocation = (location as? Location.UnknownLocation.WithLastLocation)?.let {
+                            " Last Known Location: ${location.lastKnownLocation.latitudeDMS} ${location.lastKnownLocation.longitudeDMS}"
+                        }
+
+                        "Unknown Location. Reason: ${location.reason.name}${ lastKnownLocation ?: "" }"
                     }
                 }
             }.collect {
