@@ -52,15 +52,8 @@ class MockPermissionManager<P:Permission>(val permissionRepo: PermissionStateRep
     }
 
     private fun changePermission(action: suspend () -> Unit) = runBlocking {
-        val completed = EmptyCompletableDeferred()
-        val job = launch {
-            permissionRepo.flow().collect {
-                action()
-                completed.complete()
-            }
-        }
-        completed.await()
-        job.cancel()
+        permissionRepo.flow().first()
+        action()
         currentState = permissionRepo.flow().first()
     }
 
