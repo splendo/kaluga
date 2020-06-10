@@ -27,7 +27,3 @@ typealias CollectionView = UICollectionView
 typealias CollectionCellView = UICollectionViewCell
 
 typealias CollectionViewBindingResult = Disposable
-
-fun CollectionView.bind(dataSource: DataSource<*, *>) : CollectionViewBindingResult {
-    return dataSource.bind(this)
-}

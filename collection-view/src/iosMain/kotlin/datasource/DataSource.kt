@@ -49,7 +49,7 @@ open class DataSource<Item, Cell : CollectionCellView>(private val source: Obser
         override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = 1
     }
 
-    internal fun bind(collectionView: CollectionView): Disposable {
+    fun bindTo(collectionView: CollectionView): Disposable {
         collectionView.dataSource = collectionViewDelegate
         return source.observe {
             collectionViewDelegate.items = it
