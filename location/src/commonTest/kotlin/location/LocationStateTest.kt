@@ -61,8 +61,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
     }
 
     private val permissionsBuilder = MockPermissionsBuilder()
-    private val permissions = Permissions(permissionsBuilder)
-    private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
+    private lateinit var permissions: Permissions
+    private lateinit var locationStateRepoBuilder: MockLocationStateRepoBuilder
     lateinit var locationStateRepo: LocationStateRepo
 
     private val permissionManager: MockPermissionManager<Permission.Location>
@@ -76,6 +76,9 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @BeforeTest
     fun setup() {
         super.beforeTest()
+
+        permissions = Permissions(permissionsBuilder)
+        locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
     }
 
     @AfterTest
