@@ -35,7 +35,7 @@ class MockPermissionStateRepo<P:Permission> : PermissionStateRepo<P>() {
 
 }
 
-class MockPermissionManager<P:Permission>(val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
+class MockPermissionManager<P:Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
 
     var currentState: PermissionState<P> = PermissionState.Denied.Requestable(this)
 
