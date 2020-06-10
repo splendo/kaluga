@@ -23,12 +23,12 @@ class ExampleViewController : UIViewController {
     lazy var featuresListController = Const.storyboard.instantiateViewController(withIdentifier: Const.featuresList) as! FeaturesListViewController
     lazy var infoViewController = Const.storyboard.instantiateViewController(withIdentifier: Const.infoView) as! InfoViewController
     
-    lazy var viewModel: SharedExampleViewModel = KNArchitectureFramework().createExampleViewModel(parent: self,
+    lazy var viewModel: ExampleViewModel = KNArchitectureFramework().createExampleViewModel(parent: self,
                                                                                                   containerView: containerView,
                                                                                                   featuresList: { self.featuresListController },
                                                                                                   info:  { self.infoViewController })
     
-    var lifecycleManager: ArchitectureLifecycleManager!
+    var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()

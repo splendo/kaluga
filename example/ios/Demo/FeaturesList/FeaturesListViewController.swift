@@ -11,8 +11,8 @@ import KotlinNativeFramework
 
 class FeaturesListViewController : UITableViewController {
     
-    private lazy var viewModel: SharedFeatureListViewModel = KNArchitectureFramework().createFeatureListViewModel(parent: self)
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private lazy var viewModel: FeatureListViewModel = KNArchitectureFramework().createFeatureListViewModel(parent: self)
+    private var lifecycleManager: LifecycleManager!
 
     private var features = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil

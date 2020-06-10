@@ -13,20 +13,20 @@ repositories {
 
 kotlin {
     xcode {
-        setupFramework("KotlinNativeFramework")
+        setupFramework("KotlinNativeFramework") {
+            export(project(":shared"))
+            transitiveExport = true
+        }
     }
 
     sourceSets {
         getByName("KotlinNativeFrameworkMain") {
 
             val ext = (gradle as ExtensionAware).extra
-            var primaryIosArch = ext["ios_primary_arch"]
-            val lifecycleVersion = "2.2.0"
+            val primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-                implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
-                implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
-                implementation(project(":shared", "${primaryIosArch}Default"))
+                api(project(":shared", "${primaryIosArch}Default"))
             }
         }
     }

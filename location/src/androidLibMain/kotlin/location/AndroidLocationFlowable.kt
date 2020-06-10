@@ -17,9 +17,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 data class FusedLocationProviderHandler(
@@ -48,7 +53,6 @@ data class FusedLocationProviderHandler(
                     debug(TAG, "known locations: $it")
                     locationFlowable.set(it)
                 }
-
             })
         this.locationCallback = locationCallback
 
