@@ -35,8 +35,8 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
-import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
