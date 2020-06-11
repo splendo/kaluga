@@ -44,7 +44,7 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
             }
         }
 
-        override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = cellsInSection(numberOfItemsInSection) as NSInteger
+        override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = cellsInSection(numberOfItemsInSection as Long) as NSInteger
 
         override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = numberOfSections as NSInteger
 

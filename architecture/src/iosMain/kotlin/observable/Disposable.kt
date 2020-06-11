@@ -21,18 +21,31 @@ import kotlin.native.internal.GC
 
 typealias DisposeHandler = () -> Unit
 
+interface Disposable {
+
+    /**
+     * Disposes the associated object
+     */
+    fun dispose()
+
+    /**
+     * Adds this disposable to a [DisposeBag]
+     */
+    fun addTo(disposeBag: DisposeBag)
+}
+
 /**
  * Reference to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
-class Disposable(onDispose: DisposeHandler) {
+class DefaultDisposable(onDispose: DisposeHandler) : Disposable {
 
     private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
-    fun dispose() {
+    override fun dispose() {
         disposeHandler?.invoke()
         disposeHandler = null
         GC.collect()
@@ -41,7 +54,7 @@ class Disposable(onDispose: DisposeHandler) {
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    fun addTo(disposeBag: DisposeBag) {
+    override fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }

@@ -48,7 +48,7 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
         if (lastResult is ObservableOptional.Value<T>) {
             onNext.invoke(lastResult.value)
         }
-        return Disposable { observers.remove(onNext) }
+        return DefaultDisposable { observers.remove(onNext) }
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {

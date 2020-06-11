@@ -23,44 +23,72 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionCellView
 import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.logging.debug
 
 actual typealias DataSourceBindingResult = LifecycleObserver
 
-actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val viewType: (Item) -> Int,  private val createCell: (ViewGroup, Int) -> Cell, private val bindCell: (Item, Cell) -> Unit) {
+actual open class DataSource<Item, Cell : CollectionCellView>(
+    private val source: Observable<List<Item>>,
+    private val viewType: (Item) -> Int,
+    private val createCell: (ViewGroup, Int) -> Cell,
+    private val bindCell: (Item, Cell) -> Unit
+) {
 
     protected var items: List<Item> = emptyList()
 
-    private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Cell>>() {
+    private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Item, Cell>>() {
 
-        override fun getItemCount(): Int = itemCount
+        override fun getItemCount(): Int = numberOfItems
+
         override fun getItemViewType(position: Int): Int = itemViewType(position)
         
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Cell> = createViewHolder(parent, viewType)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Item, Cell> = this@DataSource.createViewHolder(parent, viewType)
 
-        override fun onBindViewHolder(holder: ViewHolder<Cell>, position: Int) {
+        override fun onBindViewHolder(holder: ViewHolder<Item, Cell>, position: Int) {
             bindCell(items[position], holder.cell)
         }
 
+        override fun onViewAttachedToWindow(holder: ViewHolder<Item, Cell>) {
+            holder.item?.let { startDisplayingItem(it) }
+        }
+
+        override fun onViewDetachedFromWindow(holder: ViewHolder<Item, Cell>) {
+            holder.item?.let { stopDisplayingItem(it) }
+        }
     }
 
-    protected class ViewHolder<Cell : CollectionCellView>(val cell: Cell) : RecyclerView.ViewHolder(cell)
+    class ViewHolder<Item, Cell : CollectionCellView>(val cell: Cell, var item: Item? = null) : RecyclerView.ViewHolder(cell)
     
-    protected open val itemCount: Int = items.size
+    protected open val numberOfItems: Int get() = items.size
     
     protected open fun itemViewType(position: Int): Int = viewType(items[position])
     
-    protected open fun createViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Cell> = ViewHolder(createCell(parent, viewType))
+    protected open fun createViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Item, Cell> = ViewHolder(createCell(parent, viewType))
+
+    open fun startDisplayingItem(item: Item) {}
+
+    open fun stopDisplayingItem(item: Item) {}
 
     actual fun bindTo(
         collectionView: CollectionView
     ): DataSourceBindingResult {
         collectionView.adapter = collectionViewAdapter
         return LifeCycleObserver(source) {
+            items = it
             collectionViewAdapter.notifyDataSetChanged()
         }
     }
 }
 
+actual class DataSourceBuilder<Item, Cell : CollectionCellView>(
+    private val viewType: (Item) -> Int,
+    private val createCell: (ViewGroup, Int) -> Cell
+) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
+    
+    constructor(createSingleCell: () -> Cell) : this({1}, { _, _ -> createSingleCell()})
+    
+    override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> = DataSource(items, viewType, createCell, bindCell)
+}
 
 private class LifeCycleObserver<Item>(private val source: Observable<List<Item>>, private val onChanged: (List<Item>) -> Unit) : LifecycleObserver {
 
@@ -77,5 +105,4 @@ private class LifeCycleObserver<Item>(private val source: Observable<List<Item>>
     fun stopObserving() {
         source.liveData.removeObserver(observer)
     }
-
 }

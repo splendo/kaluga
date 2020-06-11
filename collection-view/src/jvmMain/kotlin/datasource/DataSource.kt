@@ -21,14 +21,18 @@ import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionCellView
 import com.splendo.kaluga.collectionview.CollectionView
 
-expect interface DataSourceBindingResult
+actual interface DataSourceBindingResult
 
-expect open class DataSource<Item, Cell : CollectionCellView> {
-    fun bindTo(collectionView: CollectionView) : DataSourceBindingResult
+actual open class DataSource<Item, Cell : CollectionCellView> {
+    actual fun bindTo(collectionView: CollectionView) : DataSourceBindingResult {
+        return object : DataSourceBindingResult {
+
+        }
+    }
 }
 
-interface BaseDataSourceBuilder<Item, Cell : CollectionCellView, B : DataSource<Item, Cell>> {
-    fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): B
+actual class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
+    override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> {
+        return DataSource()
+    }
 }
-
-expect class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>>

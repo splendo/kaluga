@@ -21,12 +21,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
+import com.splendo.kaluga.collectionview.datasource.ViewModelDataSource
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import kotlinx.android.synthetic.main.collection_view_fragment.*
+import kotlinx.android.synthetic.main.list_collection_item.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>() {
@@ -36,7 +37,13 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
     }
 
     override val viewModel: CollectionViewViewModel by viewModel()
-    private val itemsAdapter by lazy { CollectionViewAdapter() }
+    val dataSource = lazy {
+        ViewModelDataSource(viewModel.items, { _ -> 0}, { parent, _ ->
+                    LayoutInflater
+            .from(parent.context)
+            .inflate(R.layout.list_collection_item, parent, false)
+        }, { item, cell -> cell.titleLabel.text = item.item.title })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,12 +56,9 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
         super.onActivityCreated(savedInstanceState)
 
         recyclerView.layoutManager = GridLayoutManager(this.context, 1)
-        recyclerView.adapter = itemsAdapter
-
-        this.activity?.let {activity ->
-            viewModel.items.liveData.observe(activity, Observer {
-                itemsAdapter.submitList(it)
-            })
+        
+        this.activity?.let { activity ->
+            activity.lifecycle.addObserver(dataSource.value.bindTo(recyclerView))
         }
     }
 }
