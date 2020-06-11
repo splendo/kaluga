@@ -30,31 +30,63 @@ import platform.UIKit.row
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val identifier: (Item) -> String, private val bindCell: (Cell, Item) -> Unit) {
+actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val identifier: (Item) -> String) {
+
+    private var bindCell: (Item, Cell) -> Unit = { _, _ ->}
+    protected var items: List<Item> = emptyList()
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val collectionViewDelegate = object : NSObject(), UICollectionViewDelegateProtocol, UICollectionViewDataSourceProtocol {
 
-        var items: List<Item> = emptyList()
-
         override fun collectionView(collectionView: UICollectionView, cellForItemAtIndexPath: NSIndexPath): UICollectionViewCell {
             val item = items[cellForItemAtIndexPath.row.toInt()]
             return (collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), cellForItemAtIndexPath) as Cell).apply {
-                bindCell(this, item)
+                bindCell(item, this)
             }
         }
 
-        override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = items.size.toLong() as NSInteger
+        override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = cellsInSection(numberOfItemsInSection) as NSInteger
 
-        override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = 1
+        override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = numberOfSections() as NSInteger
+
+        override fun collectionView(collectionView: UICollectionView, willDisplayCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
+            val item = items[forItemAtIndexPath.row.toInt()]
+            startDisplayingItem(item)
+        }
+
+        override fun collectionView(collectionView: UICollectionView, didEndDisplayingCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
+            val item = items[forItemAtIndexPath.row.toInt()]
+            stopDisplayingItem(item)
+        }
+
     }
 
-    fun bindTo(collectionView: CollectionView): Disposable {
+    actual fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit): DataSourceBindingResult {
+        this.bindCell = bindCell
         collectionView.dataSource = collectionViewDelegate
         return source.observe {
-            collectionViewDelegate.items = it
+            items = it
             collectionView.reloadData()
         }
     }
 
+    open fun numberOfSections(): Long = 1
+
+    open fun cellsInSection(section: Long): Long {
+        return if (section == 0L) {
+            items.size.toLong()
+        } else {
+            0
+        }
+    }
+
+    open fun startDisplayingItem(item: Item) {}
+
+    open fun stopDisplayingItem(item: Item) {}
+}
+
+actual typealias DataSourceBindingResult = Disposable
+
+actual class DataSourceBuilder<Item, Cell : CollectionCellView>(private val identifier: (Item) -> String) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
+    override fun create(items: Observable<List<Item>>): DataSource<Item, Cell> = DataSource(items, identifier)
 }

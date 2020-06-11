@@ -17,4 +17,9 @@
 
 package com.splendo.kaluga.collectionview
 
-class CollectionView
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
+
+actual typealias CollectionView = RecyclerView
+
+actual typealias CollectionCellView = View

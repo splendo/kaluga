@@ -17,6 +17,18 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
-// expect open class DataSource<Item, Cell : CollectionCellView>
-//
-// expect class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>> : DataSource<ViewModel>
+import com.splendo.kaluga.architecture.observable.Observable
+import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.CollectionView
+
+expect class DataSourceBindingResult
+
+expect open class DataSource<Item, Cell : CollectionCellView> {
+    fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit) : DataSourceBindingResult
+}
+
+interface BaseDataSourceBuilder<Item, Cell : CollectionCellView, B : DataSource<Item, Cell>> {
+    fun create(items: Observable<List<Item>>): B
+}
+
+expect class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>>

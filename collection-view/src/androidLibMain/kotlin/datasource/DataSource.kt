@@ -15,8 +15,20 @@
 
  */
 
-package com.splendo.kaluga.collectionview
+package com.splendo.kaluga.collectionview.datasource
 
-expect open class CollectionView
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.observable.Observable
+import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.CollectionView
 
-expect open class CollectionCellView
+actual typealias DataSourceBindingResult = LifecycleObserver
+
+actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>) {
+
+    actual fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit): DataSourceBindingResult {
+
+    }
+
+}

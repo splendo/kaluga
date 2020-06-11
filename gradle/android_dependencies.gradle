@@ -19,6 +19,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
     implementation "androidx.appcompat:appcompat:$gradle.androidx_appcompat_version"
+    implementation "androidx.recyclerview:recyclerview:$gradle.androidx_recyclerview_version"
+
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:3.1.0'

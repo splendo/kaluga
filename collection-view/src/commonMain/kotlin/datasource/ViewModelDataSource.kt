@@ -15,8 +15,12 @@
 
  */
 
-package com.splendo.kaluga.collectionview
+package com.splendo.kaluga.collectionview.datasource
 
-expect open class CollectionView
+import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.item.CollectionItem
+import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 
-expect open class CollectionCellView
+expect class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView> : DataSource<ViewModel, Cell>
+
+expect class ViewModelDataSourceBuilder<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView> : BaseDataSourceBuilder<ViewModel, Cell, ViewModelDataSource<Item, ViewModel, Cell>>

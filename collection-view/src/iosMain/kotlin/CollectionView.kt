@@ -22,8 +22,6 @@ import com.splendo.kaluga.collectionview.datasource.DataSource
 import platform.UIKit.UICollectionView
 import platform.UIKit.UICollectionViewCell
 
-typealias CollectionView = UICollectionView
+actual typealias CollectionView = UICollectionView
 
-typealias CollectionCellView = UICollectionViewCell
-
-typealias CollectionViewBindingResult = Disposable
+actual typealias CollectionCellView = UICollectionViewCell
