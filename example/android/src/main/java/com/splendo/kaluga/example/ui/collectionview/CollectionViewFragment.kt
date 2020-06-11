@@ -23,6 +23,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
+import com.splendo.kaluga.collectionview.datasource.DataSource
 import com.splendo.kaluga.collectionview.datasource.ViewModelDataSource
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
@@ -37,12 +38,16 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
     }
 
     override val viewModel: CollectionViewViewModel by viewModel()
-    val dataSource = lazy {
-        ViewModelDataSource(viewModel.items, { _ -> 0}, { parent, _ ->
-                    LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.list_collection_item, parent, false)
-        }, { item, cell -> cell.titleLabel.text = item.item.title })
+    private val dataSource = lazy {
+        DataSource(
+            viewModel.items,
+            { 0 },
+            { parent, _ ->
+                LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_collection_item, parent, false)
+            },
+            { item, cell -> cell.titleLabel.text = "Blaat" })
     }
 
     override fun onCreateView(

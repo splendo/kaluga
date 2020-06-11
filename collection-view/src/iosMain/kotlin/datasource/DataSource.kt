@@ -57,7 +57,6 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
             val item = items[forItemAtIndexPath.row.toInt()]
             stopDisplayingItem(item)
         }
-
     }
 
     actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {

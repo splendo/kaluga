@@ -18,17 +18,127 @@
 package com.splendo.kaluga.collectionview.datasource
 
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
+import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
+import com.splendo.kaluga.collectionview.item.CollectionSection
 
 expect interface DataSourceBindingResult
 
-expect open class DataSource<Item, Cell : CollectionCellView> {
-    fun bindTo(collectionView: CollectionView) : DataSourceBindingResult
+expect interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
+    fun bindCell(item: ItemType, cell: V)
 }
 
-interface BaseDataSourceBuilder<Item, Cell : CollectionCellView, B : DataSource<Item, Cell>> {
-    fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): B
+expect interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
+    fun bindCell(item: ItemType, cell: V)
 }
 
-expect class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>>
+abstract class BaseDataSource<
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView>(
+    protected val source: Observable<List<Section>>,
+    protected val headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
+    protected val itemBinder: ItemCellBinder<Item, ItemCell>,
+    protected val footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
+) {
+
+    protected var sections: List<Section> = emptyList()
+        set(value) {
+            field = value
+            notifyDataUpdated()
+        }
+
+    sealed class SectionType<Header, Item, Footer> {
+        class HeaderType<Header, Item, Footer>(val header: Header): SectionType<Header, Item, Footer>()
+        class ItemType<Header, Item, Footer>(val item: Item): SectionType<Header, Item, Footer>()
+        class FooterType<Header, Item, Footer>(val footer: Footer): SectionType<Header, Item, Footer>()
+    }
+
+    abstract fun notifyDataUpdated()
+
+    val totalNumberOfElements: Int get() = sections.fold(0, { acc, section -> acc + section.totalNumberOfElements })
+
+    protected fun sectionTypeAtAbsolutePosition(position: Int): SectionType<Header, Item, Footer>? {
+        var offset = 0
+        var result: SectionType<Header, Item, Footer>? = null
+        sections.forEach { section ->
+            val relativePosition = position - offset
+            val totalNumberOfElements = section.totalNumberOfElements
+            if (relativePosition < totalNumberOfElements) {
+                result = if (section.hasHeader && relativePosition == 0) {
+                    section.header?.let {
+                        SectionType.HeaderType(it)
+                    }
+                }
+                else if (section.hasFooter && relativePosition == totalNumberOfElements - 1) {
+                    section.footer?.let {
+                        SectionType.FooterType(it)
+                    }
+                }
+                else {
+                    section.items.getOrNull(relativePosition - if (section.hasHeader) 1 else 0)?.let {
+                        SectionType.ItemType(it)
+                    }
+                }
+                return@forEach
+            }
+            offset += totalNumberOfElements
+        }
+        return result
+    }
+
+    open fun <I> startDisplayingItem(item: I) {
+        if (item is CollectionItemViewModel<*>) {
+            item.didResume()
+        }
+    }
+
+    open fun <I> stopDisplayingItem(item: I) {
+        if (item is CollectionItemViewModel<*>) {
+            item.didPause()
+        }
+    }
+}
+
+expect open class DataSource<
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView> : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell> {
+    fun bindTo(collectionView: CollectionView): DataSourceBindingResult
+}
+
+// interface BaseDataSourceBuilder<
+//     Header,
+//     Item,
+//     Footer,
+//     Section : CollectionSection<Header, Item, Footer>,
+//     HeaderCell : CollectionHeaderFooterCellView,
+//     ItemCell : CollectionItemCellView,
+//     FooterCell : CollectionHeaderFooterCellView> {
+//
+//     fun create(
+//         source: Observable<List<Section>>,
+//         bindHeader: ((Header, HeaderCell) -> Unit)? = null,
+//         bindCell: (Item, ItemCell) -> Unit,
+//         bindFooter: ((Header, HeaderCell) -> Unit)? = null
+//     ): DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>
+// }
+//
+// expect class DataSourceBuilder<
+//     Header,
+//     Item,
+//     Footer,
+//     Section : CollectionSection<Header, Item, Footer>,
+//     HeaderCell : CollectionHeaderFooterCellView,
+//     ItemCell : CollectionItemCellView,
+//     FooterCell : CollectionHeaderFooterCellView> : BaseDataSourceBuilder<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>

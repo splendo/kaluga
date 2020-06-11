@@ -19,7 +19,6 @@ package com.splendo.kaluga.collectionview
 
 import androidx.lifecycle.Observer
 import androidx.test.rule.ActivityTestRule
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import kotlinx.coroutines.CompletableDeferred
 import org.junit.Rule
 

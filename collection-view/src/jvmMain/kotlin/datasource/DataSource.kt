@@ -24,10 +24,8 @@ import com.splendo.kaluga.collectionview.CollectionView
 actual interface DataSourceBindingResult
 
 actual open class DataSource<Item, Cell : CollectionCellView> {
-    actual fun bindTo(collectionView: CollectionView) : DataSourceBindingResult {
-        return object : DataSourceBindingResult {
-
-        }
+    actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
+        return object : DataSourceBindingResult {}
     }
 }
 

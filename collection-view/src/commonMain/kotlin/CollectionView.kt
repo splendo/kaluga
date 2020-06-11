@@ -19,4 +19,6 @@ package com.splendo.kaluga.collectionview
 
 expect open class CollectionView
 
-expect open class CollectionCellView
+expect open class CollectionItemCellView
+
+expect open class CollectionHeaderFooterCellView

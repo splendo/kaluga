@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.collectionview
 
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 
 class MockCollectionItemRepository(private val initialItems: List<CollectionItem>) : CollectionItemRepository<CollectionItem>() {

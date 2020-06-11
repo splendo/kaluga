@@ -18,14 +18,12 @@
 package com.splendo.kaluga.collectionview.repository
 
 import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.collectionview.item.CollectionItem
-import com.splendo.kaluga.flow.BaseFlowable
 
-abstract class CollectionItemRepository<Item : CollectionItem> {
+abstract class CollectionItemRepository<Item> {
 
-    sealed class Result<Item : CollectionItem> {
-        data class Success<Item : CollectionItem>(val items: List<Item>) : Result<Item>()
-        data class Error<Item : CollectionItem>(val throwable: Throwable) : Result<Item>()
+    sealed class Result<Item> {
+        data class Success<Item>(val items: List<Item>) : Result<Item>()
+        data class Error<Item>(val throwable: Throwable) : Result<Item>()
     }
 
     val items = HotFlowable<List<Item>>(emptyList())

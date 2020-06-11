@@ -17,92 +17,182 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
+import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
+import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
-import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual typealias DataSourceBindingResult = LifecycleObserver
 
-actual open class DataSource<Item, Cell : CollectionCellView>(
-    private val source: Observable<List<Item>>,
-    private val viewType: (Item) -> Int,
-    private val createCell: (ViewGroup, Int) -> Cell,
-    private val bindCell: (Item, Cell) -> Unit
-) {
+interface CellBinder<ItemType, V : View> {
+    val supportedViewTypes: Set<Int>
+    fun viewType(item: ItemType): Int
+    fun createView(parent: ViewGroup, viewType: Int): V
+    fun bindCell(item: ItemType, cell: V)
+}
 
-    protected var items: List<Item> = emptyList()
+actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V> {
+    actual override fun bindCell(item: ItemType, cell: V)
+}
+actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
+    actual override fun bindCell(item: ItemType, cell: V)
+}
 
-    private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Item, Cell>>() {
+actual open class DataSource<
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView>(
+    source: Observable<List<Section>>,
+    headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
+    itemBinder: ItemCellBinder<Item, ItemCell>,
+    footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
+) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
 
-        override fun getItemCount(): Int = numberOfItems
+    private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>>() {
+
+        override fun getItemCount(): Int = totalNumberOfElements
 
         override fun getItemViewType(position: Int): Int = itemViewType(position)
-        
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Item, Cell> = this@DataSource.createViewHolder(parent, viewType)
 
-        override fun onBindViewHolder(holder: ViewHolder<Item, Cell>, position: Int) {
-            bindCell(items[position], holder.cell)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell> = this@DataSource.createViewHolder(parent, viewType)
+
+        override fun onBindViewHolder(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>, position: Int) {
+            val sectionType = sectionTypeAtAbsolutePosition(position)
+            when (holder) {
+                is ViewHolder.HeaderViewHolder -> {
+                    (sectionType as? SectionType.HeaderType)?.let { headerType ->
+                        holder.header = headerType.header
+                        headerBinder?.bindCell(headerType.header, holder.cell)
+                    }
+                }
+                is ViewHolder.ItemViewHolder -> {
+                    (sectionType as? SectionType.ItemType)?.let { itemType ->
+                        holder.item = itemType.item
+                        itemBinder.bindCell(itemType.item, holder.cell)
+                    }
+                }
+                is ViewHolder.FooterViewHolder -> {
+                    (sectionType as? SectionType.FooterType)?.let { footerType ->
+                        holder.footer = footerType.footer
+                        footerBinder?.bindCell(footerType.footer, holder.cell)
+                    }
+                }
+            }
         }
 
-        override fun onViewAttachedToWindow(holder: ViewHolder<Item, Cell>) {
+        override fun onViewAttachedToWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
             holder.item?.let { startDisplayingItem(it) }
         }
 
-        override fun onViewDetachedFromWindow(holder: ViewHolder<Item, Cell>) {
+        override fun onViewDetachedFromWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
             holder.item?.let { stopDisplayingItem(it) }
         }
     }
 
-    class ViewHolder<Item, Cell : CollectionCellView>(val cell: Cell, var item: Item? = null) : RecyclerView.ViewHolder(cell)
-    
-    protected open val numberOfItems: Int get() = items.size
-    
-    protected open fun itemViewType(position: Int): Int = viewType(items[position])
-    
-    protected open fun createViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Item, Cell> = ViewHolder(createCell(parent, viewType))
+    protected sealed class ViewHolder<
+        Header,
+        Item,
+        Footer,
+        HeaderCell : CollectionHeaderFooterCellView,
+        ItemCell : CollectionItemCellView,
+        FooterCell : CollectionHeaderFooterCellView>(cell: View) : RecyclerView.ViewHolder(cell) {
 
-    open fun startDisplayingItem(item: Item) {}
+        abstract val item: Any?
 
-    open fun stopDisplayingItem(item: Item) {}
+        class HeaderViewHolder<
+            Header,
+            Item,
+            Footer,
+            HeaderCell : CollectionHeaderFooterCellView,
+            ItemCell : CollectionItemCellView,
+            FooterCell : CollectionHeaderFooterCellView>(var header: Header?, val cell: HeaderCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell) {
+            override val item: Any?
+                get() = header
+        }
+
+        class ItemViewHolder<
+            Header,
+            Item,
+            Footer,
+            HeaderCell : CollectionHeaderFooterCellView,
+            ItemCell : CollectionItemCellView,
+            FooterCell : CollectionHeaderFooterCellView>(override var item: Item?, val cell: ItemCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell)
+
+        class FooterViewHolder<
+            Header,
+            Item,
+            Footer,
+            HeaderCell : CollectionHeaderFooterCellView,
+            ItemCell : CollectionItemCellView,
+            FooterCell : CollectionHeaderFooterCellView>(var footer: Footer?, val cell: FooterCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell) {
+            override val item: Any?
+                get() = footer
+        }
+    }
+
+    protected open fun itemViewType(position: Int): Int {
+        return when (val sectionType = sectionTypeAtAbsolutePosition(position)) {
+            is SectionType.HeaderType -> headerBinder?.viewType(sectionType.header)
+            is SectionType.ItemType -> itemBinder.viewType(sectionType.item)
+            is SectionType.FooterType -> footerBinder?.viewType(sectionType.footer)
+            else -> null
+        } ?: 0
+    }
+
+    protected open fun createViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell> {
+        return when {
+            headerBinder != null && headerBinder.supportedViewTypes.contains(viewType) -> {
+                ViewHolder.HeaderViewHolder(null, headerBinder.createView(parent, viewType))
+            }
+            footerBinder != null && footerBinder.supportedViewTypes.contains(viewType) -> {
+                ViewHolder.FooterViewHolder(null, footerBinder.createView(parent, viewType))
+            }
+            else -> ViewHolder.ItemViewHolder(null, itemBinder.createView(parent, viewType))
+        }
+    }
+
+    override fun notifyDataUpdated() = collectionViewAdapter.notifyDataSetChanged()
 
     actual fun bindTo(
         collectionView: CollectionView
     ): DataSourceBindingResult {
         collectionView.adapter = collectionViewAdapter
-        return LifeCycleObserver(source) {
-            items = it
-            collectionViewAdapter.notifyDataSetChanged()
+        return object : LifecycleObserver {
+            val observer = Observer<List<Section>> {
+                sections = it
+            }
+
+            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+            fun startObserving() {
+                source.liveData.observeForever(observer)
+            }
+
+            @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+            fun stopObserving() {
+                source.liveData.removeObserver(observer)
+            }
         }
     }
 }
 
-actual class DataSourceBuilder<Item, Cell : CollectionCellView>(
-    private val viewType: (Item) -> Int,
-    private val createCell: (ViewGroup, Int) -> Cell
-) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
-    
-    constructor(createSingleCell: () -> Cell) : this({1}, { _, _ -> createSingleCell()})
-    
-    override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> = DataSource(items, viewType, createCell, bindCell)
-}
-
-private class LifeCycleObserver<Item>(private val source: Observable<List<Item>>, private val onChanged: (List<Item>) -> Unit) : LifecycleObserver {
-
-    val observer = Observer<List<Item>> {
-        onChanged(it)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun startObserving() {
-        source.liveData.observeForever(observer)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun stopObserving() {
-        source.liveData.removeObserver(observer)
-    }
-}
+// actual class DataSourceBuilder<Item, Cell : CollectionCellView>(
+//     private val viewType: (Item) -> Int,
+//     private val createCell: (ViewGroup, Int) -> Cell
+// ) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
+//
+//     constructor(createSingleCell: () -> Cell) : this({ 1 }, { _, _ -> createSingleCell() })
+//
+//     override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> = DataSource(items, viewType, createCell, bindCell)
+// }

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.CompletableDeferred

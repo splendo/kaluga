@@ -17,7 +17,6 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import kotlin.test.AfterTest
 import kotlinx.coroutines.CompletableDeferred
 

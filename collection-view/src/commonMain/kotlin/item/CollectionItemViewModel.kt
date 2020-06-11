@@ -19,14 +19,13 @@ package com.splendo.kaluga.collectionview.item
 
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-abstract class CollectionItemViewModel<Item: CollectionItem>(protected open val item: Item) : BaseViewModel() {
+abstract class CollectionItemViewModel<Item>(protected open val item: Item) : BaseViewModel() {
 
     open fun onSelected() {}
 
     public override fun onCleared() {
         super.onCleared()
     }
-
 }
 
-open class DefaultCollectionItemViewModel<Item: CollectionItem>(public override val item: Item) : CollectionItemViewModel<Item>(item)
+open class DefaultCollectionItemViewModel<Item>(public override val item: Item) : CollectionItemViewModel<Item>(item)

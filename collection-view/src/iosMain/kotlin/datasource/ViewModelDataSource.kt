@@ -19,10 +19,9 @@ package com.splendo.kaluga.collectionview.datasource
 
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionCellView
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 
-actual class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView>(source: Observable<List<ViewModel>>, identifier: (ViewModel) -> String, bindCell: (ViewModel, Cell) -> Unit) : DataSource<ViewModel, Cell>(source, identifier, bindCell) {
+actual class ViewModelDataSource<Item, ViewModel : CollectionItemViewModel<Item>, Cell : CollectionCellView>(source: Observable<List<ViewModel>>, identifier: (ViewModel) -> String, bindCell: (ViewModel, Cell) -> Unit) : DataSource<ViewModel, Cell>(source, identifier, bindCell) {
 
     override fun startDisplayingItem(item: ViewModel) {
         item.didResume()
@@ -33,7 +32,7 @@ actual class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionIte
     }
 }
 
-actual class ViewModelDataSourceBuilder<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView>(private val identifier: (ViewModel) -> String) :
+actual class ViewModelDataSourceBuilder<Item, ViewModel : CollectionItemViewModel<Item>, Cell : CollectionCellView>(private val identifier: (ViewModel) -> String) :
     BaseDataSourceBuilder<ViewModel, Cell, ViewModelDataSource<Item, ViewModel, Cell>> {
     override fun create(items: Observable<List<ViewModel>>, bindCell: (ViewModel, Cell) -> Unit): ViewModelDataSource<Item, ViewModel, Cell> = ViewModelDataSource(items, identifier, bindCell)
 }

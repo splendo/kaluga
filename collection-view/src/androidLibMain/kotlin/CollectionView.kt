@@ -22,4 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 
 actual typealias CollectionView = RecyclerView
 
-actual typealias CollectionCellView = View
+actual typealias CollectionItemCellView = View
+
+actual typealias CollectionHeaderFooterCellView = View

@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.collectionview
 
-import com.splendo.kaluga.architecture.observable.Disposable
-import com.splendo.kaluga.collectionview.datasource.DataSource
 import platform.UIKit.UICollectionView
 import platform.UIKit.UICollectionViewCell
 

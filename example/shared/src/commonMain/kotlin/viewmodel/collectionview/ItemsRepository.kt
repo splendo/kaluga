@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
+
+class CollectionItem(val title: String)
 
 class ItemsRepository : CollectionItemRepository<CollectionItem>() {
 

@@ -20,10 +20,9 @@ package com.splendo.kaluga.collectionview.datasource
 import android.view.ViewGroup
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionCellView
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 
-actual class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView>(
+actual class ViewModelDataSource<Item, ViewModel : CollectionItemViewModel<Item>, Cell : CollectionCellView>(
     source: Observable<List<ViewModel>>,
     viewType: (ViewModel) -> Int,
     createCell: (ViewGroup, Int) -> Cell,
@@ -39,12 +38,12 @@ actual class ViewModelDataSource<Item : CollectionItem, ViewModel: CollectionIte
     }
 }
 
-actual class ViewModelDataSourceBuilder<Item : CollectionItem, ViewModel: CollectionItemViewModel<Item>, Cell : CollectionCellView>(
+actual class ViewModelDataSourceBuilder<Item, ViewModel : CollectionItemViewModel<Item>, Cell : CollectionCellView>(
     private val viewType: (ViewModel) -> Int,
     private val createCell: (ViewGroup, Int) -> Cell
 ) : BaseDataSourceBuilder<ViewModel, Cell, ViewModelDataSource<Item, ViewModel, Cell>> {
 
-    constructor(createSingleCell: () -> Cell) : this({1}, { _, _ -> createSingleCell()})
+    constructor(createSingleCell: () -> Cell) : this({ 1 }, { _, _ -> createSingleCell() })
 
     override fun create(items: Observable<List<ViewModel>>, bindCell: (ViewModel, Cell) -> Unit): ViewModelDataSource<Item, ViewModel, Cell> = ViewModelDataSource(items, viewType, createCell, bindCell)
 }

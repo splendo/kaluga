@@ -18,7 +18,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
 import com.splendo.kaluga.collectionview.DefaultCollectionViewModel
-import com.splendo.kaluga.collectionview.item.CollectionItem
 import kotlin.native.concurrent.ThreadLocal
 
 class CollectionViewViewModel(

@@ -15,6 +15,6 @@
 
  */
 
-package com.splendo.kaluga.collectionview.item
+package com.splendo.kaluga.collectionview
 
-open class CollectionItem(val title: String)
+class CollectionItem(val title: String)
