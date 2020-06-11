@@ -17,18 +17,65 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
+import android.view.ViewGroup
+import androidx.lifecycle.*
+import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionCellView
 import com.splendo.kaluga.collectionview.CollectionView
 
 actual typealias DataSourceBindingResult = LifecycleObserver
 
-actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>) {
+actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val viewType: (Item) -> Int,  private val createCell: (ViewGroup, Int) -> Cell, private val bindCell: (Item, Cell) -> Unit) {
 
-    actual fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit): DataSourceBindingResult {
+    protected var items: List<Item> = emptyList()
 
+    private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Cell>>() {
+
+        override fun getItemCount(): Int = itemCount
+        override fun getItemViewType(position: Int): Int = itemViewType(position)
+        
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Cell> = createViewHolder(parent, viewType)
+
+        override fun onBindViewHolder(holder: ViewHolder<Cell>, position: Int) {
+            bindCell(items[position], holder.cell)
+        }
+
+    }
+
+    protected class ViewHolder<Cell : CollectionCellView>(val cell: Cell) : RecyclerView.ViewHolder(cell)
+    
+    protected open val itemCount: Int = items.size
+    
+    protected open fun itemViewType(position: Int): Int = viewType(items[position])
+    
+    protected open fun createViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Cell> = ViewHolder(createCell(parent, viewType))
+
+    actual fun bindTo(
+        collectionView: CollectionView
+    ): DataSourceBindingResult {
+        collectionView.adapter = collectionViewAdapter
+        return LifeCycleObserver(source) {
+            collectionViewAdapter.notifyDataSetChanged()
+        }
+    }
+}
+
+
+private class LifeCycleObserver<Item>(private val source: Observable<List<Item>>, private val onChanged: (List<Item>) -> Unit) : LifecycleObserver {
+
+    val observer = Observer<List<Item>> {
+        onChanged(it)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun startObserving() {
+        source.liveData.observeForever(observer)
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun stopObserving() {
+        source.liveData.removeObserver(observer)
     }
 
 }

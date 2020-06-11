@@ -24,11 +24,11 @@ import com.splendo.kaluga.collectionview.CollectionView
 expect class DataSourceBindingResult
 
 expect open class DataSource<Item, Cell : CollectionCellView> {
-    fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit) : DataSourceBindingResult
+    fun bindTo(collectionView: CollectionView) : DataSourceBindingResult
 }
 
 interface BaseDataSourceBuilder<Item, Cell : CollectionCellView, B : DataSource<Item, Cell>> {
-    fun create(items: Observable<List<Item>>): B
+    fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): B
 }
 
 expect class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>>

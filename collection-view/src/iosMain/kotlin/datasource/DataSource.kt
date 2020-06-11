@@ -30,9 +30,8 @@ import platform.UIKit.row
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val identifier: (Item) -> String) {
+actual open class DataSource<Item, Cell : CollectionCellView>(private val source: Observable<List<Item>>, private val identifier: (Item) -> String, private val bindCell: (Item, Cell) -> Unit) {
 
-    private var bindCell: (Item, Cell) -> Unit = { _, _ ->}
     protected var items: List<Item> = emptyList()
 
     @Suppress("CONFLICTING_OVERLOADS")
@@ -47,7 +46,7 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
 
         override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = cellsInSection(numberOfItemsInSection) as NSInteger
 
-        override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = numberOfSections() as NSInteger
+        override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = numberOfSections as NSInteger
 
         override fun collectionView(collectionView: UICollectionView, willDisplayCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
             val item = items[forItemAtIndexPath.row.toInt()]
@@ -61,8 +60,7 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
 
     }
 
-    actual fun bindTo(collectionView: CollectionView, bindCell: (Item, Cell) -> Unit): DataSourceBindingResult {
-        this.bindCell = bindCell
+    actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
         collectionView.dataSource = collectionViewDelegate
         return source.observe {
             items = it
@@ -70,7 +68,7 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
         }
     }
 
-    open fun numberOfSections(): Long = 1
+    open val numberOfSections: Long = 1
 
     open fun cellsInSection(section: Long): Long {
         return if (section == 0L) {
@@ -88,5 +86,5 @@ actual open class DataSource<Item, Cell : CollectionCellView>(private val source
 actual typealias DataSourceBindingResult = Disposable
 
 actual class DataSourceBuilder<Item, Cell : CollectionCellView>(private val identifier: (Item) -> String) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
-    override fun create(items: Observable<List<Item>>): DataSource<Item, Cell> = DataSource(items, identifier)
+    override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> = DataSource(items, identifier, bindCell)
 }
