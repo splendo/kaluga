@@ -17,12 +17,24 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
-import com.splendo.kaluga.collectionview.SimpleCollectionViewModel
+import com.splendo.kaluga.collectionview.CollectionViewModel
+import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import kotlin.native.concurrent.ThreadLocal
 
 class CollectionViewViewModel(
     repository: ItemsRepository
-) : SimpleCollectionViewModel<CollectionItem>(repository) {
+) : CollectionViewModel<CollectionItem, DefaultCollectionItemViewModel<CollectionItem>, CollectionHeader, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>>(
+    repository,
+    { item -> DefaultCollectionItemViewModel(item) },
+    { items ->
+        val titlesWithNumbers = items.filter { it.item.title.toIntOrNull() != null }
+        val titlesWithoutNumbers = items - titlesWithNumbers
+        listOf(
+            CollectionSection(CollectionHeader("Items With Numbers"), titlesWithNumbers, CollectionFooter(titlesWithNumbers.size)),
+            CollectionSection(CollectionHeader("Items Without Numbers"), titlesWithoutNumbers, CollectionFooter(titlesWithoutNumbers.size))
+        )
+}) {
 
     @ThreadLocal
     companion object {

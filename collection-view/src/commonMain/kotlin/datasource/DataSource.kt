@@ -67,12 +67,11 @@ abstract class BaseDataSource<
 
     protected fun sectionTypeAtAbsolutePosition(position: Int): SectionType<Header, Item, Footer>? {
         var offset = 0
-        var result: SectionType<Header, Item, Footer>? = null
         sections.forEach { section ->
             val relativePosition = position - offset
             val totalNumberOfElements = section.totalNumberOfElements
             if (relativePosition < totalNumberOfElements) {
-                result = if (section.hasHeader && relativePosition == 0) {
+                return if (section.hasHeader && relativePosition == 0) {
                     section.header?.let { header ->
                         SectionType.HeaderType<Header, Item, Footer>(header)
                     }
@@ -85,11 +84,10 @@ abstract class BaseDataSource<
                         SectionType.ItemType<Header, Item, Footer>(item)
                     }
                 }
-                return@forEach
             }
             offset += totalNumberOfElements
         }
-        return result
+        return null
     }
 
     open fun <I> startDisplayingItem(item: I) {

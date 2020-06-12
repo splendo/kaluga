@@ -16,14 +16,17 @@
 
   -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
     android:padding="4dp">
-    <TextView
-        android:id="@+id/titleLabel"
+    <TextView android:id="@+id/headerLabel"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textColor="@color/design_default_color_on_primary"
+        tools:text="Header"/>
 </LinearLayout>

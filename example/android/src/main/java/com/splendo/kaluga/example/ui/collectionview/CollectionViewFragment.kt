@@ -27,9 +27,13 @@ import com.splendo.kaluga.collectionview.datasource.*
 import com.splendo.kaluga.collectionview.item.CollectionSection
 import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionFooter
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionHeader
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionItem
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import kotlinx.android.synthetic.main.collection_view_fragment.*
+import kotlinx.android.synthetic.main.list_collection_footer.view.*
+import kotlinx.android.synthetic.main.list_collection_header.view.*
 import kotlinx.android.synthetic.main.list_collection_item.view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -41,11 +45,11 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
 
     override val viewModel: CollectionViewViewModel by viewModel()
     private val dataSource = lazy {
-        DataSource<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing, CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>, View, View, View>(
+        DataSource<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>, View, View, View>(
             viewModel.items,
-            null,
+            SimpleHeaderFooterCellBinder(setOf(0), {0}, {R.layout.list_collection_header}) { header, cell -> cell.headerLabel.text = header.title },
             SimpleItemCellBinder(setOf(1), {1}, {R.layout.list_collection_item}) { item, cell -> cell.titleLabel.text = item.item.title },
-            null
+            SimpleHeaderFooterCellBinder(setOf(2), {2}, {R.layout.list_collection_footer}) { footer, cell -> cell.footerCount.text = getString(R.string.list_total).format(footer.numberOfElements) }
             )
     }
 

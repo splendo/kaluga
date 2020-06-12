@@ -29,4 +29,6 @@
     <string name="keyboard_manager">Keyboard</string>
     <string name="show_keyboard">Show Keyboard</string>
     <string name="hide_keyboard">Hide Keyboard</string>
+
+    <string name="list_total">Total: %d</string>
 </resources>

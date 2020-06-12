@@ -21,13 +21,19 @@ import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 
 class CollectionItem(val title: String)
 
+class CollectionHeader(val title: String)
+
+class CollectionFooter(val numberOfElements: Int)
+
 class ItemsRepository : CollectionItemRepository<CollectionItem>() {
 
     override suspend fun updateItems(): Result<CollectionItem> {
         return Result.Success(listOf(
             CollectionItem("One"),
             CollectionItem("Two"),
-            CollectionItem("3")))
+            CollectionItem("3"),
+            CollectionItem("4"),
+            CollectionItem("Five")))
     }
 
 }
