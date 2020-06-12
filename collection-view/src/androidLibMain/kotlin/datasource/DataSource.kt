@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -46,6 +47,23 @@ actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCell
 actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
     actual override fun bindCell(item: ItemType, cell: V)
 }
+
+class SimpleItemBinder<ItemType, V : View>(override val supportedViewTypes: Set<Int>, private val identifier: (ItemType) -> Int, private val layout: (Int) -> Int, private val bind: (ItemType, V) -> Unit) : CellBinder<ItemType, V> {
+
+    override fun viewType(item: ItemType): Int = identifier(item)
+
+    override fun createView(parent: ViewGroup, viewType: Int): V = LayoutInflater
+            .from(parent.context)
+            .inflate(layout(viewType), parent, false) as V
+
+    override fun bindCell(item: ItemType, cell: V) = bind(item, cell)
+}
+
+open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : HeaderFooterCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
+
+class EmptyHeaderFooterCellBinder : SimpleHeaderFooterCellBinder<Nothing, View>(emptySet(), {0}, {0}, { _, _ -> })
+
+open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : ItemCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
 actual open class DataSource<
     Header,

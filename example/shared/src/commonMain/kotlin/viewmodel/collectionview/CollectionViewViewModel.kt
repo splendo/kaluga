@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.collectionview
 
-import com.splendo.kaluga.collectionview.DefaultCollectionViewModel
+import com.splendo.kaluga.collectionview.SimpleCollectionViewModel
 import kotlin.native.concurrent.ThreadLocal
 
 class CollectionViewViewModel(
     repository: ItemsRepository
-) : DefaultCollectionViewModel<CollectionItem>(repository) {
+) : SimpleCollectionViewModel<CollectionItem>(repository) {
 
     @ThreadLocal
     companion object {

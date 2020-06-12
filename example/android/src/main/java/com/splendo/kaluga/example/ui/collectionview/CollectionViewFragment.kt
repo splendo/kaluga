@@ -23,9 +23,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
-import com.splendo.kaluga.collectionview.datasource.DataSource
-import com.splendo.kaluga.collectionview.datasource.ViewModelDataSource
+import com.splendo.kaluga.collectionview.datasource.*
+import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionItem
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import kotlinx.android.synthetic.main.collection_view_fragment.*
 import kotlinx.android.synthetic.main.list_collection_item.view.*
@@ -39,15 +41,12 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
 
     override val viewModel: CollectionViewViewModel by viewModel()
     private val dataSource = lazy {
-        DataSource(
+        DataSource<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing, CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>, View, View, View>(
             viewModel.items,
-            { 0 },
-            { parent, _ ->
-                LayoutInflater
-                    .from(parent.context)
-                    .inflate(R.layout.list_collection_item, parent, false)
-            },
-            { item, cell -> cell.titleLabel.text = "Blaat" })
+            EmptyHeaderFooterCellBinder(),
+            SimpleItemCellBinder(setOf(1), {1}, {R.layout.list_collection_item}) { item, cell -> cell.titleLabel.text = item.item.title },
+            EmptyHeaderFooterCellBinder()
+            )
     }
 
     override fun onCreateView(
