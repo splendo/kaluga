@@ -18,6 +18,8 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlinx.coroutines.CompletableDeferred
@@ -36,7 +38,7 @@ abstract class AbstractCollectionViewTest {
     fun testUpdateList() = runBlocking {
         val repository = MockCollectionItemRepository(emptyList())
         val viewModel = MockCollectionViewModel(repository)
-        val deferredItems = MutableList(3) { CompletableDeferred<List<CollectionItem>>() }
+        val deferredItems = MutableList(3) { CompletableDeferred<List<CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>>>() }
         observe(viewModel, deferredItems)
         assertEquals(emptyList(), deferredItems[0].await())
         viewModel.didResume()
@@ -45,8 +47,11 @@ abstract class AbstractCollectionViewTest {
         repository.itemsToLoad = items
         viewModel.reload()
 
-        assertEquals(items, deferredItems[2].await())
+        val receivedItems = deferredItems[2].await()[0].items
+        assertEquals(items.size, receivedItems.size)
+        items.forEachIndexed { index, item ->
+            assertEquals(item, receivedItems[index].item) }
     }
 
-    abstract fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionItem>>>)
+    abstract fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>>>>)
 }

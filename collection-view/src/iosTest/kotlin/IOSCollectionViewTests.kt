@@ -17,6 +17,8 @@
 package com.splendo.kaluga.collectionview
 
 import com.splendo.kaluga.architecture.observable.DisposeBag
+import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import kotlin.test.AfterTest
 import kotlinx.coroutines.CompletableDeferred
 
@@ -29,7 +31,7 @@ class IOSCollectionViewTests : AbstractCollectionViewTest() {
         disposeBag.dispose()
     }
 
-    override fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionItem>>>) {
+    override fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>>>>) {
         viewModel.items.observe { items ->
             deferredItems.firstOrNull { !it.isCompleted }?.complete(items)
         }.addTo(disposeBag)

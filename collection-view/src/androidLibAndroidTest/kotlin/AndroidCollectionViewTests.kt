@@ -19,6 +19,8 @@ package com.splendo.kaluga.collectionview
 
 import androidx.lifecycle.Observer
 import androidx.test.rule.ActivityTestRule
+import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
 import kotlinx.coroutines.CompletableDeferred
 import org.junit.Rule
 
@@ -27,7 +29,7 @@ class AndroidCollectionViewTests : AbstractCollectionViewTest() {
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
-    override fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionItem>>>) {
+    override fun observe(viewModel: MockCollectionViewModel, deferredItems: List<CompletableDeferred<List<CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>>>>) {
         activityRule.activity.runOnUiThread {
             viewModel.items.liveData.observe(activityRule.activity, Observer { newValue -> deferredItems.firstOrNull { !it.isCompleted }?.complete(newValue) })
         }

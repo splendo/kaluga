@@ -16,4 +16,4 @@
  */
 package com.splendo.kaluga.collectionview
 
-class MockCollectionViewModel(repository: MockCollectionItemRepository) : CollectionViewModel<CollectionItem>(repository)
+class MockCollectionViewModel(repository: MockCollectionItemRepository) : SimpleCollectionViewModel<CollectionItem>(repository)

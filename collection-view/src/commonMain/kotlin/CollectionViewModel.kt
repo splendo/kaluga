@@ -92,5 +92,5 @@ open class SimpleCollectionViewModel<Item>(repository: CollectionItemRepository<
     CollectionSection<Nothing, DefaultCollectionItemViewModel<Item>, Nothing>>(
     repository,
     { item -> DefaultCollectionItemViewModel(item) },
-    { items -> listOf(ItemsOnlyCollectionSection(items)) }
+    { items -> if (items.isEmpty()) emptyList() else listOf(ItemsOnlyCollectionSection(items)) }
 )
