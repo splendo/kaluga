@@ -19,4 +19,6 @@ package com.splendo.kaluga.collectionview
 
 actual open class CollectionView
 
-actual open class CollectionCellView
+actual open class CollectionItemCellView
+
+actual open class CollectionHeaderFooterCellView

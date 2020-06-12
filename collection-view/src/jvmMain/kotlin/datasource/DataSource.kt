@@ -18,19 +18,37 @@
 package com.splendo.kaluga.collectionview.datasource
 
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.collectionview.CollectionCellView
+import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
+import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual interface DataSourceBindingResult
 
-actual open class DataSource<Item, Cell : CollectionCellView> {
+actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
+    actual fun bindCell(item: ItemType, cell: V)
+}
+
+actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
+    actual fun bindCell(item: ItemType, cell: V)
+}
+
+actual open class DataSource<
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView>actual constructor(
+        source: Observable<List<Section>>,
+        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: ItemCellBinder<Item, ItemCell>,
+        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
+    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
     actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
         return object : DataSourceBindingResult {}
     }
-}
 
-actual class DataSourceBuilder<Item, Cell : CollectionCellView> : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
-    override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> {
-        return DataSource()
-    }
+    override fun notifyDataUpdated() {}
 }

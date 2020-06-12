@@ -50,6 +50,8 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
         liveData.observe(owner, observer)
     }
 
+    actual fun <R> map(mapper: (T) -> R): Observable<R> = MappedObservable(this, mapper)
+
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
         return liveData.value?.let { ObservableOptional.Value(it) } ?: ObservableOptional.Nothing()
     }
@@ -61,6 +63,12 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
  */
 class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     override val liveData = MutableLiveData(initialValue)
+}
+
+class MappedObservable<T, R>(root: Observable<T>, mapper: (T) -> R) : Observable<R>() {
+    override val liveData: LiveData<R> = MediatorLiveData<R>().apply {
+        addSource(root.liveData) { changed -> value = mapper(changed) }
+    }
 }
 
 /**

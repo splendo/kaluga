@@ -52,7 +52,9 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 /**
  * Property that can be observed
  */
-expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>>
+expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
+    fun <R> map(mapper: (T) -> R): Observable<R>
+}
 
 /**
  * [Observable] that can change its data

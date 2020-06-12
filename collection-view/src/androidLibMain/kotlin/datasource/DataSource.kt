@@ -55,11 +55,11 @@ actual open class DataSource<
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
-    source: Observable<List<Section>>,
-    headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
-    itemBinder: ItemCellBinder<Item, ItemCell>,
-    footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
-) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
+        source: Observable<List<Section>>,
+        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: ItemCellBinder<Item, ItemCell>,
+        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
+    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
 
     private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>>() {
 
@@ -109,7 +109,6 @@ actual open class DataSource<
                 rootView.setOnClickListener { item.onSelected() }
             }
         }
-
     }
 
     protected sealed class ViewHolder<

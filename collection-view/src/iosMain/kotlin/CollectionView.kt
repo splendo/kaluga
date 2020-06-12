@@ -17,9 +17,12 @@
 
 package com.splendo.kaluga.collectionview
 
+import platform.UIKit.UICollectionReusableView
 import platform.UIKit.UICollectionView
 import platform.UIKit.UICollectionViewCell
 
 actual typealias CollectionView = UICollectionView
 
-actual typealias CollectionCellView = UICollectionViewCell
+actual typealias CollectionItemCellView = UICollectionViewCell
+
+actual typealias CollectionHeaderFooterCellView = UICollectionReusableView

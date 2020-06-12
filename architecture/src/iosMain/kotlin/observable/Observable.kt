@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 
 actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
 
-    private val observers = mutableListOf<(T) -> Unit>()
+    protected val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableOptional<T> by Delegates.observable(ObservableOptional.Nothing()) { _, _, new ->
         val result = new as? ObservableOptional.Value<T> ?: return@observable
         observers.forEach { it.invoke(result.value) }
@@ -43,12 +43,22 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
      * @return [Disposable] that removes the observing function when disposed
      */
     fun observe(onNext: (T) -> Unit): Disposable {
-        observers.add(onNext)
+        addObserver(onNext)
         val lastResult = value
         if (lastResult is ObservableOptional.Value<T>) {
             onNext.invoke(lastResult.value)
         }
-        return DefaultDisposable { observers.remove(onNext) }
+        return DefaultDisposable { removeObserver(onNext) }
+    }
+
+    actual fun <R> map(mapper: (T) -> R): Observable<R> = MappedObservable(this, mapper)
+
+    protected open fun addObserver(onNext: (T) -> Unit) {
+        observers.add(onNext)
+    }
+
+    protected open fun removeObserver(onNext: (T) -> Unit) {
+        observers.remove(onNext)
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
@@ -60,9 +70,43 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
  * Simple [Observable] that takes an initial value
  * @param initialValue The initial value of the Observable
  */
-class DefaultObservable<T>(initialValue: T) : Observable<T>() {
+private class DefaultObservable<T>(initialValue: T) : Observable<T>() {
     init {
         value = ObservableOptional.Value(initialValue)
+    }
+}
+
+/**
+ * Observable that maps the contents of another [Observable]
+ * @param root The [Observable] to map from
+ * @param mapper The function for mapping data
+ */
+private class MappedObservable<T, R>(val root: Observable<T>, val mapper: (T) -> R) : Observable<R>() {
+
+    init {
+        val rootValue: ObservableOptional<T> by root
+        this.value = (rootValue as? ObservableOptional.Value<T>)?.let { value ->
+            ObservableOptional.Value(mapper(value.value))
+        } ?: ObservableOptional.Nothing()
+    }
+
+    var mapperDisposable: Disposable? = null
+
+    override fun addObserver(onNext: (R) -> Unit) {
+        if (observers.size == 0) {
+            mapperDisposable = root.observe { next ->
+                this.value = ObservableOptional.Value(mapper(next))
+            }
+        }
+        super.addObserver(onNext)
+    }
+
+    override fun removeObserver(onNext: (R) -> Unit) {
+        super.removeObserver(onNext)
+        if (observers.size == 0) {
+            mapperDisposable?.dispose()
+            mapperDisposable = null
+        }
     }
 }
 
@@ -70,7 +114,7 @@ class DefaultObservable<T>(initialValue: T) : Observable<T>() {
  * [Observable] whose initial value matches a given [ReadOnlyProperty]
  * @param readOnlyProperty The [ReadOnlyProperty] to match with the initial value
  */
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
+private class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
     private val initialValue by readOnlyProperty
     init {
         value = ObservableOptional.Value(initialValue)
@@ -82,7 +126,7 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
  * @param flow The [Flow] whose value to match
  * @param coroutineScope The [CoroutineScope] on which the observe the [Flow]
  */
-class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
+private class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
 
     init {
         coroutineScope.launch(MainQueueDispatcher) {
@@ -110,7 +154,7 @@ actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, Obse
  * Simple [Subject] that takes an initial value
  * @param initialValue The initial value of the subject
  */
-class DefaultSubject<T>(initialValue: T) : Subject<T>() {
+private class DefaultSubject<T>(initialValue: T) : Subject<T>() {
 
     init {
         value = ObservableOptional.Value(initialValue)
@@ -126,7 +170,7 @@ class DefaultSubject<T>(initialValue: T) : Subject<T>() {
  * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
  * Use [FlowSubject] if synchronized values are required
  */
-class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : Subject<T>() {
+private class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : Subject<T>() {
 
     private var remoteValue by observableProperty
 
@@ -145,7 +189,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
  * @param flowable The [HotFlowable] to synchronize to
  * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
  */
-class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+private class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
         coroutineScope.launch(MainQueueDispatcher) {

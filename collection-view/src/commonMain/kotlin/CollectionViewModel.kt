@@ -68,13 +68,13 @@ open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, 
 
     private fun clearCurrentItems() {
         currentItems.forEach { section ->
-            section.header?.let {header ->
+            section.header?.let { header ->
                 if (header is CollectionItemViewModel<*>) {
                     header.onCleared()
                 }
             }
             section.items.forEach { it.onCleared() }
-            section.footer?.let {footer ->
+            section.footer?.let { footer ->
                 if (footer is CollectionItemViewModel<*>) {
                     footer.onCleared()
                 }
