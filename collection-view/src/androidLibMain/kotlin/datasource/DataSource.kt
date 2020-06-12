@@ -28,6 +28,7 @@ import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
 import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual typealias DataSourceBindingResult = LifecycleObserver
@@ -53,11 +54,11 @@ actual open class DataSource<
     Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView>(
+    FooterCell : CollectionHeaderFooterCellView>actual constructor(
     source: Observable<List<Section>>,
-    headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
+    headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
     itemBinder: ItemCellBinder<Item, ItemCell>,
-    footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
+    footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
 ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
 
     private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>>() {
@@ -75,18 +76,21 @@ actual open class DataSource<
                     (sectionType as? SectionType.HeaderType)?.let { headerType ->
                         holder.header = headerType.header
                         headerBinder?.bindCell(headerType.header, holder.cell)
+                        addOnClick(headerType.header, holder.cell)
                     }
                 }
                 is ViewHolder.ItemViewHolder -> {
                     (sectionType as? SectionType.ItemType)?.let { itemType ->
                         holder.item = itemType.item
                         itemBinder.bindCell(itemType.item, holder.cell)
+                        addOnClick(itemType.item, holder.cell)
                     }
                 }
                 is ViewHolder.FooterViewHolder -> {
                     (sectionType as? SectionType.FooterType)?.let { footerType ->
                         holder.footer = footerType.footer
                         footerBinder?.bindCell(footerType.footer, holder.cell)
+                        addOnClick(footerType.footer, holder.cell)
                     }
                 }
             }
@@ -99,6 +103,13 @@ actual open class DataSource<
         override fun onViewDetachedFromWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
             holder.item?.let { stopDisplayingItem(it) }
         }
+
+        private fun <T> addOnClick(item: T, rootView: View) {
+            if (item is CollectionItemViewModel<*>) {
+                rootView.setOnClickListener { item.onSelected() }
+            }
+        }
+
     }
 
     protected sealed class ViewHolder<
@@ -186,13 +197,3 @@ actual open class DataSource<
         }
     }
 }
-
-// actual class DataSourceBuilder<Item, Cell : CollectionCellView>(
-//     private val viewType: (Item) -> Int,
-//     private val createCell: (ViewGroup, Int) -> Cell
-// ) : BaseDataSourceBuilder<Item, Cell, DataSource<Item, Cell>> {
-//
-//     constructor(createSingleCell: () -> Cell) : this({ 1 }, { _, _ -> createSingleCell() })
-//
-//     override fun create(items: Observable<List<Item>>, bindCell: (Item, Cell) -> Unit): DataSource<Item, Cell> = DataSource(items, viewType, createCell, bindCell)
-// }

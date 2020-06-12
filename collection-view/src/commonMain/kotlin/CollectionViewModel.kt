@@ -23,12 +23,13 @@ import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
 import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
+import com.splendo.kaluga.collectionview.item.ItemsOnlyCollectionSection
 import com.splendo.kaluga.collectionview.repository.CollectionItemRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, Header, Footer, Section : CollectionSection<CollectionItemViewModel<Header>, ViewModel, CollectionItemViewModel<Footer>>>(
+open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, Header, Footer, Section : CollectionSection<Header, ViewModel, Footer>>(
     private val repository: CollectionItemRepository<Item>,
     private val viewModelMapper: (Item) -> ViewModel,
     private val sorter: (List<ViewModel>) -> List<Section>
@@ -67,21 +68,29 @@ open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, 
 
     private fun clearCurrentItems() {
         currentItems.forEach { section ->
-            section.header?.onCleared()
+            section.header?.let {header ->
+                if (header is CollectionItemViewModel<*>) {
+                    header.onCleared()
+                }
+            }
             section.items.forEach { it.onCleared() }
-            section.footer?.onCleared()
+            section.footer?.let {footer ->
+                if (footer is CollectionItemViewModel<*>) {
+                    footer.onCleared()
+                }
+            }
         }
         currentItems.clear()
     }
 }
 
-open class DefaultCollectionViewModel<Item>(repository: CollectionItemRepository<Item>) : CollectionViewModel<
+open class SimpleCollectionViewModel<Item>(repository: CollectionItemRepository<Item>) : CollectionViewModel<
     Item,
     DefaultCollectionItemViewModel<Item>,
     Nothing,
     Nothing,
-    CollectionSection<CollectionItemViewModel<Nothing>, DefaultCollectionItemViewModel<Item>, CollectionItemViewModel<Nothing>>>(
+    CollectionSection<Nothing, DefaultCollectionItemViewModel<Item>, Nothing>>(
     repository,
     { item -> DefaultCollectionItemViewModel(item) },
-    { items -> listOf(CollectionSection(null as CollectionItemViewModel<Nothing>?, items, null as CollectionItemViewModel<Nothing>?)) }
+    { items -> listOf(ItemsOnlyCollectionSection(items)) }
 )

@@ -113,32 +113,11 @@ expect open class DataSource<
     Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView> : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell> {
+    FooterCell : CollectionHeaderFooterCellView>(
+    source: Observable<List<Section>>,
+    headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
+    itemBinder: ItemCellBinder<Item, ItemCell>,
+    footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
+) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell> {
     fun bindTo(collectionView: CollectionView): DataSourceBindingResult
 }
-
-// interface BaseDataSourceBuilder<
-//     Header,
-//     Item,
-//     Footer,
-//     Section : CollectionSection<Header, Item, Footer>,
-//     HeaderCell : CollectionHeaderFooterCellView,
-//     ItemCell : CollectionItemCellView,
-//     FooterCell : CollectionHeaderFooterCellView> {
-//
-//     fun create(
-//         source: Observable<List<Section>>,
-//         bindHeader: ((Header, HeaderCell) -> Unit)? = null,
-//         bindCell: (Item, ItemCell) -> Unit,
-//         bindFooter: ((Header, HeaderCell) -> Unit)? = null
-//     ): DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>
-// }
-//
-// expect class DataSourceBuilder<
-//     Header,
-//     Item,
-//     Footer,
-//     Section : CollectionSection<Header, Item, Footer>,
-//     HeaderCell : CollectionHeaderFooterCellView,
-//     ItemCell : CollectionItemCellView,
-//     FooterCell : CollectionHeaderFooterCellView> : BaseDataSourceBuilder<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>
