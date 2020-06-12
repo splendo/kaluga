@@ -92,7 +92,6 @@ actual open class DataSource<
                     (sectionType as? SectionType.HeaderType)?.let { headerType ->
                         holder.header = headerType.header
                         headerBinder?.bindCell(headerType.header, holder.cell)
-                        addOnClick(headerType.header, holder.cell)
                     }
                 }
                 is ViewHolder.ItemViewHolder -> {
@@ -106,7 +105,6 @@ actual open class DataSource<
                     (sectionType as? SectionType.FooterType)?.let { footerType ->
                         holder.footer = footerType.footer
                         footerBinder?.bindCell(footerType.footer, holder.cell)
-                        addOnClick(footerType.footer, holder.cell)
                     }
                 }
             }
@@ -118,12 +116,6 @@ actual open class DataSource<
 
         override fun onViewDetachedFromWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
             holder.item?.let { stopDisplayingItem(it) }
-        }
-
-        private fun <T> addOnClick(item: T, rootView: View) {
-            if (item is CollectionItemViewModel<*>) {
-                rootView.setOnClickListener { item.onSelected() }
-            }
         }
     }
 
@@ -190,6 +182,12 @@ actual open class DataSource<
     }
 
     override fun notifyDataUpdated() = collectionViewAdapter.notifyDataSetChanged()
+
+    open fun addOnClick(item: Item, rootView: ItemCell) {
+        if (item is CollectionItemViewModel<*>) {
+            rootView.setOnClickListener { item.onSelected() }
+        }
+    }
 
     actual fun bindTo(
         collectionView: CollectionView

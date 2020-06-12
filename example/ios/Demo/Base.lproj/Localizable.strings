@@ -25,3 +25,5 @@
 
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+
+"list_total" = "Total: %d";

@@ -27,17 +27,42 @@ class CollectionViewController: UICollectionViewController {
             forCellWithReuseIdentifier: CollectionViewCell.reuseIdentifier
         )
         
-        let dataSource = DataSource(source: viewModel.items, headerBinder: nil, itemBinder: SimpleItemCellBinder(identifier: { (_) -> String in
-            return CollectionViewCell.reuseIdentifier
-        }, bind: { (item, cell) in
-        guard let cell = cell as? CollectionViewCell,
-         let itemViewModel = item as? DefaultCollectionItemViewModel,
-            let item = itemViewModel.item as? CollectionItem else {
-            return
+        collectionView.register(UINib.init(nibName: CollectionViewHeaderCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeaderCell.reuseIdentifier)
+        collectionView.register(UINib.init(nibName: CollectionViewFooterCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooterCell.reuseIdentifier)
+        
+        let headerBinder = SimpleHeaderFooterCellBinder(identifier: { (_) in CollectionViewHeaderCell.reuseIdentifier }) { (header, cell) in
+            guard let header = header as? CollectionHeader,
+                let cell = cell as? CollectionViewHeaderCell else {
+                    return
+            }
+            
+            cell.setTitle(header.title)
         }
         
+        let itemBinder = SimpleItemCellBinder(identifier: { (_) in return CollectionViewCell.reuseIdentifier}) { (item, cell) in
+            guard let cell = cell as? CollectionViewCell,
+                let itemViewModel = item as? DefaultCollectionItemViewModel,
+                let item = itemViewModel.item as? CollectionItem else {
+                    return
+            }
+        
             cell.setTitle(item.title)
-        }), footerBinder: nil)
+        }
+        
+        let footerBinder = SimpleHeaderFooterCellBinder(identifier: { (_) in CollectionViewFooterCell.reuseIdentifier }) { (footer, cell) in
+            guard let footer = footer as? CollectionFooter,
+                let cell = cell as? CollectionViewFooterCell else {
+                    return
+            }
+            
+            cell.setCount(Int(footer.numberOfElements))
+        }
+        
+        let dataSource = DataSource(
+            source: viewModel.items,
+            headerBinder: headerBinder,
+            itemBinder: itemBinder,
+            footerBinder: footerBinder)
         
         lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] disposeBag in
             guard let uwSelf = self else {

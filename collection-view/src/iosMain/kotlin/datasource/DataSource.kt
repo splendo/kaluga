@@ -23,11 +23,15 @@ import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
 import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
+import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
 import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
+import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSize
+import platform.CoreGraphics.CGSizeMake
 import platform.CoreGraphics.CGSizeZero
 import platform.Foundation.NSIndexPath
 import platform.UIKit.UICollectionElementKindSectionFooter
@@ -37,22 +41,33 @@ import platform.UIKit.UICollectionView
 import platform.UIKit.UICollectionViewCell
 import platform.UIKit.UICollectionViewDataSourceProtocol
 import platform.UIKit.UICollectionViewDelegateFlowLayoutProtocol
-import platform.UIKit.UICollectionViewFlowLayoutAutomaticSize
 import platform.UIKit.UICollectionViewLayout
+import platform.UIKit.UILayoutPriorityDefaultLow
+import platform.UIKit.UILayoutPriorityRequired
+import platform.UIKit.indexPathForRow
+import platform.UIKit.layoutIfNeeded
 import platform.UIKit.row
 import platform.UIKit.section
+import platform.UIKit.setNeedsLayout
+import platform.UIKit.systemLayoutSizeFittingSize
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
 actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
-    fun sizeForItem(item: ItemType): CGSize
+    fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize>
     fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V
     actual fun bindCell(item: ItemType, cell: V)
 }
 
 open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : HeaderFooterCellBinder<ItemType, V> {
 
-    override fun sizeForItem(item: ItemType): CGSize = UICollectionViewFlowLayoutAutomaticSize
+    override fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize> {
+        val cell = dequeueCell(collectionView, supplementaryKind, item, at)
+        bindCell(item, cell)
+        cell.setNeedsLayout()
+        cell.layoutIfNeeded()
+        return cell.systemLayoutSizeFittingSize(CGSizeMake(collectionView.bounds.useContents { size.width }, (Double.MAX_VALUE / 2.0) as CGFloat), UILayoutPriorityRequired, UILayoutPriorityDefaultLow)
+    }
 
     override fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V {
         return collectionView.dequeueReusableSupplementaryViewOfKind(supplementaryKind, identifier(item), at) as V
@@ -103,11 +118,15 @@ actual open class DataSource<
         override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = sections.size.toLong() as NSInteger
 
         override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, referenceSizeForHeaderInSection: NSInteger): CValue<CGSize> {
-            return (sections.getOrNull(referenceSizeForHeaderInSection.toInt())?.header?.let { headerBinder?.sizeForItem(it) } ?: CGSizeZero).readValue()
+            val headerBinder = headerBinder ?: return CGSizeZero.readValue()
+            val header = sections.getOrNull(referenceSizeForHeaderInSection.toInt())?.header ?: return CGSizeZero.readValue()
+            return headerBinder.sizeForItem(collectionView, UICollectionElementKindSectionHeader, header, NSIndexPath.indexPathForRow(0, referenceSizeForHeaderInSection))
         }
 
         override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, referenceSizeForFooterInSection: NSInteger): CValue<CGSize> {
-            return (sections.getOrNull(referenceSizeForFooterInSection.toInt())?.footer?.let { footerBinder?.sizeForItem(it) } ?: CGSizeZero).readValue()
+            val footerBinder = footerBinder ?: return CGSizeZero.readValue()
+            val footer = sections.getOrNull(referenceSizeForFooterInSection.toInt())?.footer ?: return CGSizeZero.readValue()
+            return footerBinder.sizeForItem(collectionView, UICollectionElementKindSectionFooter, footer, NSIndexPath.indexPathForRow(0, referenceSizeForFooterInSection))
         }
 
         override fun collectionView(collectionView: UICollectionView, cellForItemAtIndexPath: NSIndexPath): UICollectionViewCell {
@@ -163,6 +182,10 @@ actual open class DataSource<
             val item = itemAt(forItemAtIndexPath)
             stopDisplayingItem(item)
         }
+
+        override fun collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath: NSIndexPath) {
+            onClick(itemAt(didSelectItemAtIndexPath), collectionView, didSelectItemAtIndexPath)
+        }
     }
 
     fun sectionAt(indexPath: NSIndexPath): Section = sections[indexPath.section.toInt()]
@@ -171,6 +194,13 @@ actual open class DataSource<
 
     override fun notifyDataUpdated() {
         boundCollectionViews.forEach { it.get()?.reloadData() }
+    }
+
+    open fun onClick(item: Item, collectionView: CollectionView, indexPath: NSIndexPath) {
+        if (item is CollectionItemViewModel<*>) {
+            item.onSelected()
+        }
+        collectionView.deselectItemAtIndexPath(indexPath, true)
     }
 
     actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
