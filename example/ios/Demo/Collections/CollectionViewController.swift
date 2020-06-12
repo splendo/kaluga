@@ -27,24 +27,24 @@ class CollectionViewController: UICollectionViewController {
             forCellWithReuseIdentifier: CollectionViewCell.reuseIdentifier
         )
         
-        let dataSource = DataSource(source: viewModel.items, identifier: { _ in return CollectionViewCell.reuseIdentifier} ) { (cell, item) in
-            guard let cell = cell as? CollectionViewCell,
-             let item = item as? DefaultCollectionItemViewModel else {
-                return
-            }
-            
-            cell.setTitle(item.item.title)
+        let dataSource = DataSource(source: viewModel.items, headerBinder: nil, itemBinder: SimpleItemCellBinder(identifier: { (_) -> String in
+            return CollectionViewCell.reuseIdentifier
+        }, bind: { (item, cell) in
+        guard let cell = cell as? CollectionViewCell,
+         let itemViewModel = item as? DefaultCollectionItemViewModel,
+            let item = itemViewModel.item as? CollectionItem else {
+            return
         }
-
+        
+            cell.setTitle(item.title)
+        }), footerBinder: nil)
+        
         lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] disposeBag in
             guard let uwSelf = self else {
                 return
             }
             
             dataSource.bindTo(collectionView: uwSelf.collectionView).addTo(disposeBag: disposeBag)
-            
         })
-
     }
-
 }

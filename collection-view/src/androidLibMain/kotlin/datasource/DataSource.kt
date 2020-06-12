@@ -61,8 +61,6 @@ class SimpleItemBinder<ItemType, V : View>(override val supportedViewTypes: Set<
 
 open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : HeaderFooterCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
-class EmptyHeaderFooterCellBinder : SimpleHeaderFooterCellBinder<Nothing, View>(emptySet(), {0}, {0}, { _, _ -> })
-
 open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : ItemCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
 actual open class DataSource<

@@ -64,14 +64,11 @@ open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCell
 }
 
 actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
-    fun sizeForItem(item: ItemType): CGSize
     fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V
     actual fun bindCell(item: ItemType, cell: V)
 }
 
 open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : ItemCellBinder<ItemType, V> {
-
-    override fun sizeForItem(item: ItemType): CGSize = UICollectionViewFlowLayoutAutomaticSize
 
     override fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V {
         return collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), at) as V
@@ -104,11 +101,6 @@ actual open class DataSource<
         override fun collectionView(collectionView: UICollectionView, numberOfItemsInSection: NSInteger): NSInteger = (sections.getOrNull(numberOfItemsInSection.toInt())?.items?.size ?: 0).toLong() as NSInteger
 
         override fun numberOfSectionsInCollectionView(collectionView: UICollectionView): NSInteger = sections.size.toLong() as NSInteger
-
-        override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, sizeForItemAtIndexPath: NSIndexPath): CValue<CGSize> {
-            val item = itemAt(sizeForItemAtIndexPath)
-            return itemBinder.sizeForItem(item).readValue()
-        }
 
         override fun collectionView(collectionView: UICollectionView, layout: UICollectionViewLayout, referenceSizeForHeaderInSection: NSInteger): CValue<CGSize> {
             return (sections.getOrNull(referenceSizeForHeaderInSection.toInt())?.header?.let { headerBinder?.sizeForItem(it) } ?: CGSizeZero).readValue()

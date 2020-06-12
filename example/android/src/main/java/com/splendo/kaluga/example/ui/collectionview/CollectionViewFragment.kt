@@ -43,9 +43,9 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
     private val dataSource = lazy {
         DataSource<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing, CollectionSection<Nothing, DefaultCollectionItemViewModel<CollectionItem>, Nothing>, View, View, View>(
             viewModel.items,
-            EmptyHeaderFooterCellBinder(),
+            null,
             SimpleItemCellBinder(setOf(1), {1}, {R.layout.list_collection_item}) { item, cell -> cell.titleLabel.text = item.item.title },
-            EmptyHeaderFooterCellBinder()
+            null
             )
     }
 
