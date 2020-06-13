@@ -41,10 +41,10 @@ interface CellBinder<ItemType, V : View> {
     fun bindCell(item: ItemType, cell: V)
 }
 
-actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V> {
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V> {
     actual override fun bindCell(item: ItemType, cell: V)
 }
-actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
     actual override fun bindCell(item: ItemType, cell: V)
 }
 
@@ -59,11 +59,11 @@ class SimpleItemBinder<ItemType, V : View>(override val supportedViewTypes: Set<
     override fun bindCell(item: ItemType, cell: V) = bind(item, cell)
 }
 
-open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : HeaderFooterCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
+open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
-open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : ItemCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
+open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
-actual open class DataSource<
+actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
@@ -72,10 +72,10 @@ actual open class DataSource<
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
-        itemBinder: ItemCellBinder<Item, ItemCell>,
-        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
-    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
+        protected val headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
+        protected val itemBinder: CollectionItemCellBinder<Item, ItemCell>,
+        protected val footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section>(source) {
 
     private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>>() {
 
@@ -83,7 +83,7 @@ actual open class DataSource<
 
         override fun getItemViewType(position: Int): Int = itemViewType(position)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell> = this@DataSource.createViewHolder(parent, viewType)
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell> = this@CollectionDataSource.createViewHolder(parent, viewType)
 
         override fun onBindViewHolder(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>, position: Int) {
             val sectionType = sectionTypeAtAbsolutePosition(position)
@@ -189,7 +189,7 @@ actual open class DataSource<
         }
     }
 
-    actual fun bindTo(
+    internal fun bindTo(
         collectionView: CollectionView
     ): DataSourceBindingResult {
         collectionView.adapter = collectionViewAdapter
@@ -209,4 +209,15 @@ actual open class DataSource<
             }
         }
     }
+}
+
+actual fun <
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    return bindTo(collectionView)
 }

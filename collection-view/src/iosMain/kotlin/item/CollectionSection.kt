@@ -15,16 +15,14 @@
 
  */
 
-package com.splendo.kaluga.collectionview
+package com.splendo.kaluga.collectionview.item
 
-expect open class CollectionView
+import platform.Foundation.NSIndexPath
+import platform.UIKit.row
+import platform.UIKit.section
 
-expect open class CollectionItemCellView
+fun <Header, Item, Footer> List<CollectionSection<Header, Item, Footer>>.sectionAt(indexPath: NSIndexPath) = this[indexPath.section.toInt()]
 
-expect open class CollectionHeaderFooterCellView
+fun <Header, Item, Footer> List<CollectionSection<Header, Item, Footer>>.itemAt(indexPath: NSIndexPath) = this[indexPath.section.toInt()].itemAt(indexPath)
 
-expect open class TableView
-
-expect open class TableItemCellView
-
-expect open class TableHeaderFooterCellView
+fun <Header, Item, Footer> CollectionSection<Header, Item, Footer>.itemAt(indexPath: NSIndexPath): Item = items[indexPath.row.toInt()]

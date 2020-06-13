@@ -25,3 +25,9 @@ actual typealias CollectionView = RecyclerView
 actual typealias CollectionItemCellView = View
 
 actual typealias CollectionHeaderFooterCellView = View
+
+actual typealias TableView = RecyclerView
+
+actual typealias TableItemCellView = View
+
+actual typealias TableHeaderFooterCellView = View

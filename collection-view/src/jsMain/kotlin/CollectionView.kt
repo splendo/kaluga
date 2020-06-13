@@ -22,3 +22,9 @@ actual open class CollectionView
 actual open class CollectionItemCellView
 
 actual open class CollectionHeaderFooterCellView
+
+actual typealias TableView = CollectionView
+
+actual typealias TableItemCellView = CollectionItemCellView
+
+actual typealias TableHeaderFooterCellView = CollectionHeaderFooterCellView

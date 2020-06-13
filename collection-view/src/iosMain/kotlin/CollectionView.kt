@@ -20,9 +20,18 @@ package com.splendo.kaluga.collectionview
 import platform.UIKit.UICollectionReusableView
 import platform.UIKit.UICollectionView
 import platform.UIKit.UICollectionViewCell
+import platform.UIKit.UITableView
+import platform.UIKit.UITableViewCell
+import platform.UIKit.UITableViewHeaderFooterView
 
 actual typealias CollectionView = UICollectionView
 
 actual typealias CollectionItemCellView = UICollectionViewCell
 
 actual typealias CollectionHeaderFooterCellView = UICollectionReusableView
+
+actual typealias TableView = UITableView
+
+actual typealias TableItemCellView = UITableViewCell
+
+actual typealias TableHeaderFooterCellView = UITableViewHeaderFooterView

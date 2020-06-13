@@ -23,17 +23,15 @@ import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionSection
 
-actual interface DataSourceBindingResult
-
-actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
     actual fun bindCell(item: ItemType, cell: V)
 }
 
-actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> {
     actual fun bindCell(item: ItemType, cell: V)
 }
 
-actual open class DataSource<
+actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
@@ -42,13 +40,21 @@ actual open class DataSource<
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
-        itemBinder: ItemCellBinder<Item, ItemCell>,
-        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
-    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
-    actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
-        return object : DataSourceBindingResult {}
-    }
+        headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: CollectionItemCellBinder<Item, ItemCell>,
+        footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section>(source) {
 
     override fun notifyDataUpdated() {}
+}
+
+actual fun <
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    return object : DataSourceBindingResult {}
 }

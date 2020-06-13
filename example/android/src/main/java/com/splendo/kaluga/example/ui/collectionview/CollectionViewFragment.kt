@@ -45,7 +45,7 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
 
     override val viewModel: CollectionViewViewModel by viewModel()
     private val dataSource = lazy {
-        DataSource<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>, View, View, View>(
+        CollectionDataSource<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>, View, View, View>(
             viewModel.items,
             SimpleHeaderFooterCellBinder(setOf(0), {0}, {R.layout.list_collection_header}) { header, cell -> cell.headerLabel.text = header.title },
             SimpleItemCellBinder(setOf(1), {1}, {R.layout.list_collection_item}) { item, cell -> cell.titleLabel.text = item.item.title },
@@ -66,7 +66,7 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
         recyclerView.layoutManager = GridLayoutManager(this.context, 1)
         
         this.activity?.let { activity ->
-            activity.lifecycle.addObserver(dataSource.value.bindTo(recyclerView))
+            activity.lifecycle.addObserver(dataSource.value.bindCollectionView(recyclerView))
         }
     }
 }

@@ -18,35 +18,17 @@
 package com.splendo.kaluga.collectionview.datasource
 
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
-import com.splendo.kaluga.collectionview.CollectionItemCellView
-import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
-import com.splendo.kaluga.collectionview.item.ItemsOnlyCollectionSection
 
 expect interface DataSourceBindingResult
 
-expect interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
-    fun bindCell(item: ItemType, cell: V)
-}
-
-expect interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
-    fun bindCell(item: ItemType, cell: V)
-}
-
-abstract class BaseDataSource<
+abstract class DataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
-    HeaderCell : CollectionHeaderFooterCellView,
-    ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView>(
-        protected val source: Observable<List<Section>>,
-        protected val headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
-        protected val itemBinder: ItemCellBinder<Item, ItemCell>,
-        protected val footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
+    Section : CollectionSection<Header, Item, Footer>>(
+        protected val source: Observable<List<Section>>
     ) {
 
     protected var sections: List<Section> = emptyList()
@@ -102,24 +84,3 @@ abstract class BaseDataSource<
         }
     }
 }
-
-expect open class DataSource<
-    Header,
-    Item,
-    Footer,
-    Section : CollectionSection<Header, Item, Footer>,
-    HeaderCell : CollectionHeaderFooterCellView,
-    ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView>(
-        source: Observable<List<Section>>,
-        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>? = null,
-        itemBinder: ItemCellBinder<Item, ItemCell>,
-        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>? = null
-    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell> {
-    fun bindTo(collectionView: CollectionView): DataSourceBindingResult
-}
-
-class SimpleDataSource<Item, ItemCell : CollectionItemCellView>(
-    source: Observable<List<Item>>,
-    itemBinder: ItemCellBinder<Item, ItemCell>
-) : DataSource<Nothing, Item, Nothing, ItemsOnlyCollectionSection<Item>, Nothing, ItemCell, Nothing>(source.map { items -> listOf(ItemsOnlyCollectionSection(items)) }, null, itemBinder, null)

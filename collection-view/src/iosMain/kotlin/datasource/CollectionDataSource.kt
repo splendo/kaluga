@@ -18,13 +18,14 @@
 package com.splendo.kaluga.collectionview.datasource
 
 import com.splendo.kaluga.architecture.observable.DefaultDisposable
-import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.collectionview.CollectionHeaderFooterCellView
 import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
+import com.splendo.kaluga.collectionview.item.itemAt
+import com.splendo.kaluga.collectionview.item.sectionAt
 import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.readValue
@@ -46,20 +47,18 @@ import platform.UIKit.UILayoutPriorityDefaultLow
 import platform.UIKit.UILayoutPriorityRequired
 import platform.UIKit.indexPathForRow
 import platform.UIKit.layoutIfNeeded
-import platform.UIKit.row
-import platform.UIKit.section
 import platform.UIKit.setNeedsLayout
 import platform.UIKit.systemLayoutSizeFittingSize
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-actual interface HeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
     fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize>
     fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V
     actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : HeaderFooterCellBinder<ItemType, V> {
+open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V> {
 
     override fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize> {
         val cell = dequeueCell(collectionView, supplementaryKind, item, at)
@@ -78,12 +77,12 @@ open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCell
     }
 }
 
-actual interface ItemCellBinder<ItemType, V : CollectionItemCellView> {
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> {
     fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V
     actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : ItemCellBinder<ItemType, V> {
+open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V> {
 
     override fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V {
         return collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), at) as V
@@ -94,7 +93,7 @@ open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(private va
     }
 }
 
-actual open class DataSource<
+actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
@@ -103,10 +102,10 @@ actual open class DataSource<
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        headerBinder: HeaderFooterCellBinder<Header, HeaderCell>?,
-        itemBinder: ItemCellBinder<Item, ItemCell>,
-        footerBinder: HeaderFooterCellBinder<Footer, FooterCell>?
-    ) : BaseDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>(source, headerBinder, itemBinder, footerBinder) {
+        protected val headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
+        protected val itemBinder: CollectionItemCellBinder<Item, ItemCell>,
+        protected val footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section>(source) {
 
     private val boundCollectionViews: MutableSet<WeakReference<CollectionView>> = mutableSetOf()
 
@@ -130,14 +129,14 @@ actual open class DataSource<
         }
 
         override fun collectionView(collectionView: UICollectionView, cellForItemAtIndexPath: NSIndexPath): UICollectionViewCell {
-            val item = itemAt(cellForItemAtIndexPath)
+            val item = sections.itemAt(cellForItemAtIndexPath)
             return itemBinder.dequeueCell(collectionView, item, cellForItemAtIndexPath).apply {
                 itemBinder.bindCell(item, this)
             }
         }
 
         override fun collectionView(collectionView: UICollectionView, viewForSupplementaryElementOfKind: String, atIndexPath: NSIndexPath): UICollectionReusableView {
-            val section = sectionAt(atIndexPath)
+            val section = sections.sectionAt(atIndexPath)
             return when (viewForSupplementaryElementOfKind) {
                 UICollectionElementKindSectionHeader -> {
                     val header = section.header ?: throw Exception("Missing Header")
@@ -156,7 +155,7 @@ actual open class DataSource<
         }
 
         override fun collectionView(collectionView: UICollectionView, willDisplaySupplementaryView: UICollectionReusableView, forElementKind: String, atIndexPath: NSIndexPath) {
-            val section = sectionAt(atIndexPath)
+            val section = sections.sectionAt(atIndexPath)
             when (forElementKind) {
                 UICollectionElementKindSectionHeader -> section.header
                 UICollectionElementKindSectionFooter -> section.footer
@@ -165,7 +164,7 @@ actual open class DataSource<
         }
 
         override fun collectionView(collectionView: UICollectionView, didEndDisplayingSupplementaryView: UICollectionReusableView, forElementOfKind: String, atIndexPath: NSIndexPath) {
-            val section = sectionAt(atIndexPath)
+            val section = sections.sectionAt(atIndexPath)
             when (forElementOfKind) {
                 UICollectionElementKindSectionHeader -> section.header
                 UICollectionElementKindSectionFooter -> section.footer
@@ -174,23 +173,19 @@ actual open class DataSource<
         }
 
         override fun collectionView(collectionView: UICollectionView, willDisplayCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
-            val item = itemAt(forItemAtIndexPath)
+            val item = sections.itemAt(forItemAtIndexPath)
             startDisplayingItem(item)
         }
 
         override fun collectionView(collectionView: UICollectionView, didEndDisplayingCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
-            val item = itemAt(forItemAtIndexPath)
+            val item = sections.itemAt(forItemAtIndexPath)
             stopDisplayingItem(item)
         }
 
         override fun collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath: NSIndexPath) {
-            onClick(itemAt(didSelectItemAtIndexPath), collectionView, didSelectItemAtIndexPath)
+            onClick(sections.itemAt(didSelectItemAtIndexPath), collectionView, didSelectItemAtIndexPath)
         }
     }
-
-    fun sectionAt(indexPath: NSIndexPath): Section = sections[indexPath.section.toInt()]
-
-    fun itemAt(indexPath: NSIndexPath): Item = sections[indexPath.section.toInt()].items[indexPath.row.toInt()]
 
     override fun notifyDataUpdated() {
         boundCollectionViews.forEach { it.get()?.reloadData() }
@@ -203,7 +198,7 @@ actual open class DataSource<
         collectionView.deselectItemAtIndexPath(indexPath, true)
     }
 
-    actual fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
+    internal fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
         collectionView.delegate = collectionViewDelegate
         collectionView.dataSource = collectionViewDelegate
         val reference = WeakReference(collectionView)
@@ -222,4 +217,13 @@ actual open class DataSource<
     }
 }
 
-actual typealias DataSourceBindingResult = Disposable
+actual fun <
+    Header,
+    Item,
+    Footer,
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell : CollectionHeaderFooterCellView,
+    ItemCell : CollectionItemCellView,
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    return bindTo(collectionView)
+}

@@ -15,16 +15,6 @@
 
  */
 
-package com.splendo.kaluga.collectionview
+package com.splendo.kaluga.collectionview.datasource
 
-expect open class CollectionView
-
-expect open class CollectionItemCellView
-
-expect open class CollectionHeaderFooterCellView
-
-expect open class TableView
-
-expect open class TableItemCellView
-
-expect open class TableHeaderFooterCellView
+actual interface DataSourceBindingResult

@@ -30,7 +30,7 @@ class CollectionViewController: UICollectionViewController {
         collectionView.register(UINib.init(nibName: CollectionViewHeaderCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeaderCell.reuseIdentifier)
         collectionView.register(UINib.init(nibName: CollectionViewFooterCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooterCell.reuseIdentifier)
         
-        let headerBinder = SimpleHeaderFooterCellBinder(identifier: { (_) in CollectionViewHeaderCell.reuseIdentifier }) { (header, cell) in
+        let headerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewHeaderCell.reuseIdentifier }) { (header, cell) in
             guard let header = header as? CollectionHeader,
                 let cell = cell as? CollectionViewHeaderCell else {
                     return
@@ -39,7 +39,7 @@ class CollectionViewController: UICollectionViewController {
             cell.setTitle(header.title)
         }
         
-        let itemBinder = SimpleItemCellBinder(identifier: { (_) in return CollectionViewCell.reuseIdentifier}) { (item, cell) in
+        let itemBinder = SimpleCollectionItemCellBinder(identifier: { (_) in return CollectionViewCell.reuseIdentifier}) { (item, cell) in
             guard let cell = cell as? CollectionViewCell,
                 let itemViewModel = item as? DefaultCollectionItemViewModel,
                 let item = itemViewModel.item as? CollectionItem else {
@@ -49,7 +49,7 @@ class CollectionViewController: UICollectionViewController {
             cell.setTitle(item.title)
         }
         
-        let footerBinder = SimpleHeaderFooterCellBinder(identifier: { (_) in CollectionViewFooterCell.reuseIdentifier }) { (footer, cell) in
+        let footerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewFooterCell.reuseIdentifier }) { (footer, cell) in
             guard let footer = footer as? CollectionFooter,
                 let cell = cell as? CollectionViewFooterCell else {
                     return
@@ -58,7 +58,7 @@ class CollectionViewController: UICollectionViewController {
             cell.setCount(Int(footer.numberOfElements))
         }
         
-        let dataSource = DataSource(
+        let dataSource = CollectionDataSource(
             source: viewModel.items,
             headerBinder: headerBinder,
             itemBinder: itemBinder,
@@ -69,7 +69,7 @@ class CollectionViewController: UICollectionViewController {
                 return
             }
             
-            dataSource.bindTo(collectionView: uwSelf.collectionView).addTo(disposeBag: disposeBag)
+            dataSource.bindCollectionView(collectionView: uwSelf.collectionView).addTo(disposeBag: disposeBag)
         })
     }
 }
