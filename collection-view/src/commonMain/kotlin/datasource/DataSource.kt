@@ -23,12 +23,27 @@ import com.splendo.kaluga.collectionview.item.CollectionSection
 
 expect interface DataSourceBindingResult
 
+interface CellBinder<ItemType, V> {
+    fun bindCell(item: ItemType, cell: V)
+    fun notifyAppeared(cell: V)
+    fun notifyDisappeared(cell: V)
+}
+
 abstract class DataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>>(
-        protected val source: Observable<List<Section>>
+    Section : CollectionSection<Header, Item, Footer>,
+    HeaderCell,
+    ItemCell,
+    FooterCell,
+    HeaderBinder : CellBinder<Header, HeaderCell>,
+    ItemBinder : CellBinder<Item, ItemCell>,
+    FooterBinder : CellBinder<Footer, FooterCell>>(
+        protected val source: Observable<List<Section>>,
+        protected val headerBinder: HeaderBinder? = null,
+        protected val itemBinder: ItemBinder,
+        protected val footerBinder: FooterBinder? = null
     ) {
 
     protected var sections: List<Section> = emptyList()
@@ -70,6 +85,36 @@ abstract class DataSource<
             offset += totalNumberOfElements
         }
         return null
+    }
+
+    protected fun startDisplayingHeader(header: Header, cell: HeaderCell) {
+        headerBinder?.notifyAppeared(cell)
+        startDisplayingItem(header)
+    }
+
+    protected fun startDisplayingItem(item: Item, cell: ItemCell) {
+        itemBinder.notifyAppeared(cell)
+        startDisplayingItem(item)
+    }
+
+    protected fun startDisplayingFooter(footer: Footer, cell: FooterCell) {
+        footerBinder?.notifyAppeared(cell)
+        startDisplayingItem(footer)
+    }
+
+    protected fun stopDisplayingHeader(header: Header, cell: HeaderCell) {
+        headerBinder?.notifyDisappeared(cell)
+        stopDisplayingItem(header)
+    }
+
+    protected fun stopDisplayingItem(item: Item, cell: ItemCell) {
+        itemBinder.notifyDisappeared(cell)
+        stopDisplayingItem(item)
+    }
+
+    protected fun stopDisplayingFooter(footer: Footer, cell: FooterCell) {
+        footerBinder?.notifyDisappeared(cell)
+        stopDisplayingItem(footer)
     }
 
     open fun <I> startDisplayingItem(item: I) {

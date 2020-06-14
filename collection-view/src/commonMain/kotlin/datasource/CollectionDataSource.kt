@@ -24,13 +24,9 @@ import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionSection
 import com.splendo.kaluga.collectionview.item.ItemsOnlyCollectionSection
 
-expect interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
-    fun bindCell(item: ItemType, cell: V)
-}
+expect interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V>
 
-expect interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> {
-    fun bindCell(item: ItemType, cell: V)
-}
+expect interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V>
 
 expect open class CollectionDataSource<
     Header,
@@ -44,7 +40,7 @@ expect open class CollectionDataSource<
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>? = null,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>? = null
-    ) : DataSource<Header, Item, Footer, Section>
+    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>
 
 expect fun <
     Header,

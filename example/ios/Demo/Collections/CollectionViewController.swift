@@ -30,16 +30,16 @@ class CollectionViewController: UICollectionViewController {
         collectionView.register(UINib.init(nibName: CollectionViewHeaderCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: CollectionViewHeaderCell.reuseIdentifier)
         collectionView.register(UINib.init(nibName: CollectionViewFooterCell.reuseIdentifier, bundle: nil), forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: CollectionViewFooterCell.reuseIdentifier)
         
-        let headerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewHeaderCell.reuseIdentifier }) { (header, cell) in
-            guard let header = header as? CollectionHeader,
-                let cell = cell as? CollectionViewHeaderCell else {
-                    return
+        let headerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewHeaderCell.reuseIdentifier }, bind: { (header, cell) in
+        guard let header = header as? CollectionHeader,
+            let cell = cell as? CollectionViewHeaderCell else {
+                return
             }
             
             cell.setTitle(header.title)
-        }
+        }, onAppear: nil, onDisappear: nil)
         
-        let itemBinder = SimpleCollectionItemCellBinder(identifier: { (_) in return CollectionViewCell.reuseIdentifier}) { (item, cell) in
+        let itemBinder = SimpleCollectionItemCellBinder(identifier: { (_) in return CollectionViewCell.reuseIdentifier}, bind: { (item, cell) in
             guard let cell = cell as? CollectionViewCell,
                 let itemViewModel = item as? DefaultCollectionItemViewModel,
                 let item = itemViewModel.item as? CollectionItem else {
@@ -47,17 +47,16 @@ class CollectionViewController: UICollectionViewController {
             }
         
             cell.setTitle(item.title)
-        }
+        }, onAppear: nil, onDisappear: nil)
         
-        let footerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewFooterCell.reuseIdentifier }) { (footer, cell) in
+        let footerBinder = SimpleCollectionHeaderFooterCellBinder(identifier: { (_) in CollectionViewFooterCell.reuseIdentifier }, bind: { (footer, cell) in
             guard let footer = footer as? CollectionFooter,
                 let cell = cell as? CollectionViewFooterCell else {
                     return
             }
             
             cell.setCount(Int(footer.numberOfElements))
-        }
-        
+        }, onAppear: nil, onDisappear: nil)
         let dataSource = CollectionDataSource(
             source: viewModel.items,
             headerBinder: headerBinder,

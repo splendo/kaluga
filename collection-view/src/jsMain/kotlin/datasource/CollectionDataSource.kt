@@ -23,13 +23,9 @@ import com.splendo.kaluga.collectionview.CollectionItemCellView
 import com.splendo.kaluga.collectionview.CollectionView
 import com.splendo.kaluga.collectionview.item.CollectionSection
 
-actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
-    actual fun bindCell(item: ItemType, cell: V)
-}
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V>
 
-actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> {
-    actual fun bindCell(item: ItemType, cell: V)
-}
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V>
 
 actual open class CollectionDataSource<
     Header,
@@ -43,7 +39,7 @@ actual open class CollectionDataSource<
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section>(source) {
+    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     override fun notifyDataUpdated() {}
 }

@@ -44,13 +44,17 @@ import platform.UIKit.systemLayoutSizeFittingSize
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-actual interface TableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView> {
+actual interface TableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView> : CellBinder<ItemType, V> {
     fun sizeForItem(tableView: TableView, item: ItemType): CGFloat
     fun dequeueCell(tableView: TableView, item: ItemType): V
-    actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleTableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : TableHeaderFooterCellBinder<ItemType, V> {
+open class SimpleTableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView>(
+    private val identifier: (ItemType) -> String,
+    private val bind: (ItemType, V) -> Unit,
+    private val onAppear: ((V) -> Unit)? = null,
+    private val onDisappear: ((V) -> Unit)? = null
+) : TableHeaderFooterCellBinder<ItemType, V> {
 
     override fun sizeForItem(tableView: TableView, item: ItemType): CGFloat {
         val cell = dequeueCell(tableView, item)
@@ -67,15 +71,27 @@ open class SimpleTableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCell
     override fun bindCell(item: ItemType, cell: V) {
         bind(item, cell)
     }
+
+    override fun notifyAppeared(cell: V) {
+        onAppear?.invoke(cell)
+    }
+
+    override fun notifyDisappeared(cell: V) {
+        onDisappear?.invoke(cell)
+    }
 }
 
-actual interface TableItemCellBinder<ItemType, V : TableItemCellView> {
+actual interface TableItemCellBinder<ItemType, V : TableItemCellView> : CellBinder<ItemType, V> {
     fun sizeForItem(tableView: TableView, item: ItemType, at: NSIndexPath): CGFloat
     fun dequeueCell(tableView: TableView, item: ItemType, at: NSIndexPath): V
-    actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleTableItemCellBinder<ItemType, V : TableItemCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : TableItemCellBinder<ItemType, V> {
+open class SimpleTableItemCellBinder<ItemType, V : TableItemCellView>(
+    private val identifier: (ItemType) -> String,
+    private val bind: (ItemType, V) -> Unit,
+    private val onAppear: ((V) -> Unit)? = null,
+    private val onDisappear: ((V) -> Unit)? = null
+) : TableItemCellBinder<ItemType, V> {
 
     override fun sizeForItem(tableView: TableView, item: ItemType, at: NSIndexPath): CGFloat {
         val cell = dequeueCell(tableView, item, at)
@@ -92,6 +108,14 @@ open class SimpleTableItemCellBinder<ItemType, V : TableItemCellView>(private va
     override fun bindCell(item: ItemType, cell: V) {
         bind(item, cell)
     }
+
+    override fun notifyAppeared(cell: V) {
+        onAppear?.invoke(cell)
+    }
+
+    override fun notifyDisappeared(cell: V) {
+        onDisappear?.invoke(cell)
+    }
 }
 
 actual open class TableDataSource<
@@ -103,10 +127,10 @@ actual open class TableDataSource<
     ItemCell : TableItemCellView,
     FooterCell : TableHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        protected val headerBinder: TableHeaderFooterCellBinder<Header, HeaderCell>?,
-        protected val itemBinder: TableItemCellBinder<Item, ItemCell>,
-        protected val footerBinder: TableHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section>(source) {
+        headerBinder: TableHeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: TableItemCellBinder<Item, ItemCell>,
+        footerBinder: TableHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, TableHeaderFooterCellBinder<Header, HeaderCell>, TableItemCellBinder<Item, ItemCell>, TableHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     private val boundTableViews: MutableSet<WeakReference<TableView>> = mutableSetOf()
 
@@ -159,32 +183,32 @@ actual open class TableDataSource<
 
         override fun tableView(tableView: UITableView, willDisplayCell: UITableViewCell, forRowAtIndexPath: NSIndexPath) {
             val item = sections.itemAt(forRowAtIndexPath)
-            startDisplayingItem(item)
+            startDisplayingItem(item, willDisplayCell as ItemCell)
         }
 
         override fun tableView(tableView: UITableView, didEndDisplayingCell: UITableViewCell, forRowAtIndexPath: NSIndexPath) {
             val item = sections.itemAt(forRowAtIndexPath)
-            stopDisplayingItem(item)
+            stopDisplayingItem(item, didEndDisplayingCell as ItemCell)
         }
 
         override fun tableView(tableView: UITableView, willDisplayHeaderView: UIView, forSection: NSInteger) {
             val header = sections[forSection.toInt()].header ?: return
-            startDisplayingItem(header)
+            startDisplayingHeader(header, willDisplayHeaderView as HeaderCell)
         }
 
         override fun tableView(tableView: UITableView, willDisplayFooterView: UIView, forSection: NSInteger) {
             val footer = sections[forSection.toInt()].footer ?: return
-            startDisplayingItem(footer)
+            startDisplayingFooter(footer, willDisplayFooterView as FooterCell)
         }
 
         override fun tableView(tableView: UITableView, didEndDisplayingHeaderView: UIView, forSection: NSInteger) {
             val header = sections[forSection.toInt()].header ?: return
-            stopDisplayingItem(header)
+            stopDisplayingHeader(header, didEndDisplayingHeaderView as HeaderCell)
         }
 
         override fun tableView(tableView: UITableView, didEndDisplayingFooterView: UIView, forSection: NSInteger) {
             val footer = sections[forSection.toInt()].footer ?: return
-            stopDisplayingItem(footer)
+            stopDisplayingFooter(footer, didEndDisplayingFooterView as FooterCell)
         }
 
         override fun tableView(tableView: UITableView, didSelectRowAtIndexPath: NSIndexPath) {

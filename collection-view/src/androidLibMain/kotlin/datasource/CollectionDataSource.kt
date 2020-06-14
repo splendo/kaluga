@@ -34,21 +34,26 @@ import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual typealias DataSourceBindingResult = LifecycleObserver
 
-interface CellBinder<ItemType, V : View> {
+interface AndroidCellBinder<ItemType, V : View> {
     val supportedViewTypes: Set<Int>
     fun viewType(item: ItemType): Int
     fun createView(parent: ViewGroup, viewType: Int): V
     fun bindCell(item: ItemType, cell: V)
+    fun notifyAppeared(cell: V)
+    fun notifyDisappeared(cell: V)
 }
 
-actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V> {
-    actual override fun bindCell(item: ItemType, cell: V)
-}
-actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
-    actual override fun bindCell(item: ItemType, cell: V)
-}
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V>, AndroidCellBinder<ItemType, V>
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V>, AndroidCellBinder<ItemType, V>
 
-class SimpleItemBinder<ItemType, V : View>(override val supportedViewTypes: Set<Int>, private val identifier: (ItemType) -> Int, private val layout: (Int) -> Int, private val bind: (ItemType, V) -> Unit) : CellBinder<ItemType, V> {
+class SimpleItemBinder<ItemType, V : View>(
+    override val supportedViewTypes: Set<Int>,
+    private val identifier: (ItemType) -> Int,
+    private val layout: (Int) -> Int,
+    private val bind: (ItemType, V) -> Unit,
+    private val onAppeared: ((V) -> Unit)? = null,
+    private val onDisappeared: ((V) -> Unit)? = null
+) : AndroidCellBinder<ItemType, V> {
 
     override fun viewType(item: ItemType): Int = identifier(item)
 
@@ -57,11 +62,19 @@ class SimpleItemBinder<ItemType, V : View>(override val supportedViewTypes: Set<
             .inflate(layout(viewType), parent, false) as V
 
     override fun bindCell(item: ItemType, cell: V) = bind(item, cell)
+
+    override fun notifyAppeared(cell: V) {
+        onAppeared?.invoke(cell)
+    }
+
+    override fun notifyDisappeared(cell: V) {
+        onDisappeared?.invoke(cell)
+    }
 }
 
-open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
+open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V>, AndroidCellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
-open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V>, CellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
+open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V>, AndroidCellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
 
 actual open class CollectionDataSource<
     Header,
@@ -72,10 +85,12 @@ actual open class CollectionDataSource<
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        protected val headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
-        protected val itemBinder: CollectionItemCellBinder<Item, ItemCell>,
-        protected val footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section>(source) {
+        headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: CollectionItemCellBinder<Item, ItemCell>,
+        footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
+
+    private var currentCollectionView: CollectionView? = null
 
     private val collectionViewAdapter = object : RecyclerView.Adapter<ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>>() {
 
@@ -111,11 +126,31 @@ actual open class CollectionDataSource<
         }
 
         override fun onViewAttachedToWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
-            holder.item?.let { startDisplayingItem(it) }
+            when (holder) {
+                is ViewHolder.HeaderViewHolder -> {
+                    holder.header?.let { startDisplayingHeader(it, holder.cell) }
+                }
+                is ViewHolder.ItemViewHolder -> {
+                    holder.item?.let { startDisplayingItem(it, holder.cell) }
+                }
+                is ViewHolder.FooterViewHolder -> {
+                    holder.footer?.let { startDisplayingFooter(it, holder.cell) }
+                }
+            }
         }
 
         override fun onViewDetachedFromWindow(holder: ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>) {
-            holder.item?.let { stopDisplayingItem(it) }
+            when (holder) {
+                is ViewHolder.HeaderViewHolder -> {
+                    holder.header?.let { stopDisplayingHeader(it, holder.cell) }
+                }
+                is ViewHolder.ItemViewHolder -> {
+                    holder.item?.let { stopDisplayingItem(it, holder.cell) }
+                }
+                is ViewHolder.FooterViewHolder -> {
+                    holder.footer?.let { stopDisplayingFooter(it, holder.cell) }
+                }
+            }
         }
     }
 
@@ -127,18 +162,13 @@ actual open class CollectionDataSource<
         ItemCell : CollectionItemCellView,
         FooterCell : CollectionHeaderFooterCellView>(cell: View) : RecyclerView.ViewHolder(cell) {
 
-        abstract val item: Any?
-
         class HeaderViewHolder<
             Header,
             Item,
             Footer,
             HeaderCell : CollectionHeaderFooterCellView,
             ItemCell : CollectionItemCellView,
-            FooterCell : CollectionHeaderFooterCellView>(var header: Header?, val cell: HeaderCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell) {
-            override val item: Any?
-                get() = header
-        }
+            FooterCell : CollectionHeaderFooterCellView>(var header: Header?, val cell: HeaderCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell)
 
         class ItemViewHolder<
             Header,
@@ -146,7 +176,7 @@ actual open class CollectionDataSource<
             Footer,
             HeaderCell : CollectionHeaderFooterCellView,
             ItemCell : CollectionItemCellView,
-            FooterCell : CollectionHeaderFooterCellView>(override var item: Item?, val cell: ItemCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell)
+            FooterCell : CollectionHeaderFooterCellView>(var item: Item?, val cell: ItemCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell)
 
         class FooterViewHolder<
             Header,
@@ -154,10 +184,7 @@ actual open class CollectionDataSource<
             Footer,
             HeaderCell : CollectionHeaderFooterCellView,
             ItemCell : CollectionItemCellView,
-            FooterCell : CollectionHeaderFooterCellView>(var footer: Footer?, val cell: FooterCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell) {
-            override val item: Any?
-                get() = footer
-        }
+            FooterCell : CollectionHeaderFooterCellView>(var footer: Footer?, val cell: FooterCell) : ViewHolder<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>(cell)
     }
 
     protected open fun itemViewType(position: Int): Int {
@@ -192,7 +219,8 @@ actual open class CollectionDataSource<
     internal fun bindTo(
         collectionView: CollectionView
     ): DataSourceBindingResult {
-        collectionView.adapter = collectionViewAdapter
+        currentCollectionView?.adapter = null
+        currentCollectionView = collectionView
         return object : LifecycleObserver {
             val observer = Observer<List<Section>> {
                 sections = it
@@ -200,11 +228,13 @@ actual open class CollectionDataSource<
 
             @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
             fun startObserving() {
+                currentCollectionView?.adapter = collectionViewAdapter
                 source.liveData.observeForever(observer)
             }
 
             @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
             fun stopObserving() {
+                currentCollectionView?.adapter = null
                 source.liveData.removeObserver(observer)
             }
         }

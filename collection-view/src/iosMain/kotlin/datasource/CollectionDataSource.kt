@@ -52,13 +52,17 @@ import platform.UIKit.systemLayoutSizeFittingSize
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
 
-actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> {
+actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V> {
     fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize>
     fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V
-    actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V> {
+open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(
+    private val identifier: (ItemType) -> String,
+    private val bind: (ItemType, V) -> Unit,
+    private val onAppear: ((V) -> Unit)? = null,
+    private val onDisappear: ((V) -> Unit)? = null
+) : CollectionHeaderFooterCellBinder<ItemType, V> {
 
     override fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize> {
         val cell = dequeueCell(collectionView, supplementaryKind, item, at)
@@ -75,14 +79,26 @@ open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeader
     override fun bindCell(item: ItemType, cell: V) {
         bind(item, cell)
     }
+
+    override fun notifyAppeared(cell: V) {
+        onAppear?.invoke(cell)
+    }
+
+    override fun notifyDisappeared(cell: V) {
+        onDisappear?.invoke(cell)
+    }
 }
 
-actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> {
+actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V> {
     fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V
-    actual fun bindCell(item: ItemType, cell: V)
 }
 
-open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(private val identifier: (ItemType) -> String, private val bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V> {
+open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(
+    private val identifier: (ItemType) -> String,
+    private val bind: (ItemType, V) -> Unit,
+    private val onAppear: ((V) -> Unit)? = null,
+    private val onDisappear: ((V) -> Unit)? = null
+) : CollectionItemCellBinder<ItemType, V> {
 
     override fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V {
         return collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), at) as V
@@ -90,6 +106,14 @@ open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(
 
     override fun bindCell(item: ItemType, cell: V) {
         bind(item, cell)
+    }
+
+    override fun notifyAppeared(cell: V) {
+        onAppear?.invoke(cell)
+    }
+
+    override fun notifyDisappeared(cell: V) {
+        onDisappear?.invoke(cell)
     }
 }
 
@@ -102,12 +126,12 @@ actual open class CollectionDataSource<
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
         source: Observable<List<Section>>,
-        protected val headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
-        protected val itemBinder: CollectionItemCellBinder<Item, ItemCell>,
-        protected val footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section>(source) {
+        headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
+        itemBinder: CollectionItemCellBinder<Item, ItemCell>,
+        footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
+    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
-    private val boundCollectionViews: MutableSet<WeakReference<CollectionView>> = mutableSetOf()
+    private var boundCollectionView: WeakReference<CollectionView>? = null
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val collectionViewDelegate = object : NSObject(), UICollectionViewDelegateFlowLayoutProtocol, UICollectionViewDataSourceProtocol {
@@ -157,29 +181,43 @@ actual open class CollectionDataSource<
         override fun collectionView(collectionView: UICollectionView, willDisplaySupplementaryView: UICollectionReusableView, forElementKind: String, atIndexPath: NSIndexPath) {
             val section = sections.sectionAt(atIndexPath)
             when (forElementKind) {
-                UICollectionElementKindSectionHeader -> section.header
-                UICollectionElementKindSectionFooter -> section.footer
-                else -> null
-            }?.let { startDisplayingItem(it) }
+                UICollectionElementKindSectionHeader -> {
+                    section.header?.let {
+                        startDisplayingHeader(it, willDisplaySupplementaryView as HeaderCell)
+                    }
+                }
+                UICollectionElementKindSectionFooter -> {
+                    section.footer?.let {
+                        startDisplayingFooter(it, willDisplaySupplementaryView as FooterCell)
+                    }
+                }
+            }
         }
 
         override fun collectionView(collectionView: UICollectionView, didEndDisplayingSupplementaryView: UICollectionReusableView, forElementOfKind: String, atIndexPath: NSIndexPath) {
             val section = sections.sectionAt(atIndexPath)
             when (forElementOfKind) {
-                UICollectionElementKindSectionHeader -> section.header
-                UICollectionElementKindSectionFooter -> section.footer
-                else -> null
-            }?.let { stopDisplayingItem(it) }
+                UICollectionElementKindSectionHeader -> {
+                    section.header?.let {
+                        stopDisplayingHeader(it, didEndDisplayingSupplementaryView as HeaderCell)
+                    }
+                }
+                UICollectionElementKindSectionFooter -> {
+                    section.footer?.let {
+                        stopDisplayingFooter(it, didEndDisplayingSupplementaryView as FooterCell)
+                    }
+                }
+            }
         }
 
         override fun collectionView(collectionView: UICollectionView, willDisplayCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
             val item = sections.itemAt(forItemAtIndexPath)
-            startDisplayingItem(item)
+            startDisplayingItem(item, willDisplayCell as ItemCell)
         }
 
         override fun collectionView(collectionView: UICollectionView, didEndDisplayingCell: UICollectionViewCell, forItemAtIndexPath: NSIndexPath) {
             val item = sections.itemAt(forItemAtIndexPath)
-            stopDisplayingItem(item)
+            stopDisplayingItem(item, didEndDisplayingCell as ItemCell)
         }
 
         override fun collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath: NSIndexPath) {
@@ -188,7 +226,7 @@ actual open class CollectionDataSource<
     }
 
     override fun notifyDataUpdated() {
-        boundCollectionViews.forEach { it.get()?.reloadData() }
+        boundCollectionView?.get()?.reloadData()
     }
 
     open fun onClick(item: Item, collectionView: CollectionView, indexPath: NSIndexPath) {
@@ -199,20 +237,23 @@ actual open class CollectionDataSource<
     }
 
     internal fun bindTo(collectionView: CollectionView): DataSourceBindingResult {
+        boundCollectionView?.get()?.let {
+            it.delegate = null
+            it.dataSource = null
+        }
         collectionView.delegate = collectionViewDelegate
         collectionView.dataSource = collectionViewDelegate
-        val reference = WeakReference(collectionView)
-        boundCollectionViews.add(reference)
+        boundCollectionView = WeakReference(collectionView)
         val disposable = source.observe {
             sections = it
         }
         return DefaultDisposable {
             disposable.dispose()
-            reference.get()?.let {
+            boundCollectionView?.get()?.let {
                 it.delegate = null
                 it.dataSource = null
             }
-            boundCollectionViews.remove(reference)
+            boundCollectionView = null
         }
     }
 }
