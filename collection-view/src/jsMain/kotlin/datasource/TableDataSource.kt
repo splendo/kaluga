@@ -30,18 +30,16 @@ actual typealias TableDataSource<
     Header,
     Item,
     Footer,
-    Section,
     HeaderCell,
     ItemCell,
-    FooterCell> = CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>
+    FooterCell> = CollectionDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>
 
 actual fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : TableHeaderFooterCellView,
     ItemCell : TableItemCellView,
-    FooterCell : TableHeaderFooterCellView> TableDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindTableView(tableView: TableView): DataSourceBindingResult {
+    FooterCell : TableHeaderFooterCellView> TableDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindTableView(tableView: TableView): DataSourceBindingResult {
     return object : DataSourceBindingResult {}
 }

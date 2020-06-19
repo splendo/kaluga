@@ -32,26 +32,24 @@ expect open class CollectionDataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>(
-        source: Observable<List<Section>>,
+        source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>? = null,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>? = null
-    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>
+    ) : DataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>
 
 expect fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult
 
 class SimpleCollectionDataSource<Item, ItemCell : CollectionItemCellView>(
     source: Observable<List<Item>>,
     itemBinder: CollectionItemCellBinder<Item, ItemCell>
-) : CollectionDataSource<Nothing, Item, Nothing, ItemsOnlyCollectionSection<Item>, Nothing, ItemCell, Nothing>(source.map { items -> listOf(ItemsOnlyCollectionSection(items)) }, null, itemBinder, null)
+) : CollectionDataSource<Nothing, Item, Nothing, Nothing, ItemCell, Nothing>(source.map { items -> listOf(ItemsOnlyCollectionSection(items)) }, null, itemBinder, null)

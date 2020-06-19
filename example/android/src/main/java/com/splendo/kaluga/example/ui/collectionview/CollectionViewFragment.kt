@@ -23,13 +23,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
-import com.splendo.kaluga.collectionview.datasource.*
-import com.splendo.kaluga.collectionview.item.CollectionSection
-import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
+import com.splendo.kaluga.collectionview.datasource.SimpleHeaderFooterCellBinder
+import com.splendo.kaluga.collectionview.datasource.SimpleItemCellBinder
+import com.splendo.kaluga.collectionview.datasource.bindCollectionView
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionFooter
-import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionHeader
-import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionItem
 import com.splendo.kaluga.example.shared.viewmodel.collectionview.CollectionViewViewModel
 import kotlinx.android.synthetic.main.collection_view_fragment.*
 import kotlinx.android.synthetic.main.list_collection_footer.view.*
@@ -45,11 +42,10 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
 
     override val viewModel: CollectionViewViewModel by viewModel()
     private val dataSource = lazy {
-        CollectionDataSource<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>, View, View, View>(
-            viewModel.items,
-            SimpleHeaderFooterCellBinder(setOf(0), {0}, {R.layout.list_collection_header}) { header, cell -> cell.headerLabel.text = header.title },
-            SimpleItemCellBinder(setOf(1), {1}, {R.layout.list_collection_item}) { item, cell -> cell.titleLabel.text = item.item.title },
-            SimpleHeaderFooterCellBinder(setOf(2), {2}, {R.layout.list_collection_footer}) { footer, cell -> cell.footerCount.text = getString(R.string.list_total).format(footer.numberOfElements) }
+        viewModel.toCollectionDataSource(
+            SimpleHeaderFooterCellBinder(true, R.layout.list_collection_header, bind = { header, cell -> cell.headerLabel.text = header.title }),
+            SimpleItemCellBinder(R.layout.list_collection_item, bind = { item, cell -> cell.titleLabel.text = item.item.title }),
+            SimpleHeaderFooterCellBinder(false, R.layout.list_collection_footer, bind = { footer, cell -> cell.footerCount.text = getString(R.string.list_total).format(footer.numberOfElements) })
             )
     }
 

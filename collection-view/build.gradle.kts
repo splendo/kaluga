@@ -33,6 +33,10 @@ android {
     packagingOptions {
         exclude("META-INF/kotlinx-serialization-runtime.kotlin_module")
     }
+
+    dataBinding {
+        isEnabled = true
+    }
 }
 
 kotlin {

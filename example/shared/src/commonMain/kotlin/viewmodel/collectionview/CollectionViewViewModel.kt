@@ -24,7 +24,7 @@ import kotlin.native.concurrent.ThreadLocal
 
 class CollectionViewViewModel(
     repository: ItemsRepository
-) : CollectionViewModel<CollectionItem, DefaultCollectionItemViewModel<CollectionItem>, CollectionHeader, CollectionFooter, CollectionSection<CollectionHeader, DefaultCollectionItemViewModel<CollectionItem>, CollectionFooter>>(
+) : CollectionViewModel<CollectionItem, DefaultCollectionItemViewModel<CollectionItem>, CollectionHeader, CollectionFooter>(
     repository,
     { item -> DefaultCollectionItemViewModel(item) },
     { items ->

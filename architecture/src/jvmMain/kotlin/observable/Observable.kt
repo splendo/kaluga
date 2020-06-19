@@ -79,7 +79,7 @@ private class MappedObservable<T, R>(val root: Observable<T>, val mapper: (T) ->
     var mapperDisposable: Disposable? = null
 
     override fun addObserver(onNext: (R) -> Unit) {
-        if (observers.size == 0) {
+        if (observers.isEmpty()) {
             mapperDisposable = root.observe { next ->
                 this.value = ObservableOptional.Value(mapper(next))
             }
@@ -89,7 +89,7 @@ private class MappedObservable<T, R>(val root: Observable<T>, val mapper: (T) ->
 
     override fun removeObserver(onNext: (R) -> Unit) {
         super.removeObserver(onNext)
-        if (observers.size == 0) {
+        if (observers.isEmpty()) {
             mapperDisposable?.dispose()
             mapperDisposable = null
         }

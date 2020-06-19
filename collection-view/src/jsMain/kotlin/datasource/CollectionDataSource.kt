@@ -31,15 +31,14 @@ actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
-        source: Observable<List<Section>>,
+        source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
+    ) : DataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     override fun notifyDataUpdated() {}
 }
@@ -48,9 +47,8 @@ actual fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
     return object : DataSourceBindingResult {}
 }

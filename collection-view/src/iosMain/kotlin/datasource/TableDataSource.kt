@@ -122,15 +122,14 @@ actual open class TableDataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : TableHeaderFooterCellView,
     ItemCell : TableItemCellView,
     FooterCell : TableHeaderFooterCellView>actual constructor(
-        source: Observable<List<Section>>,
+        source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         headerBinder: TableHeaderFooterCellBinder<Header, HeaderCell>?,
         itemBinder: TableItemCellBinder<Item, ItemCell>,
         footerBinder: TableHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, TableHeaderFooterCellBinder<Header, HeaderCell>, TableItemCellBinder<Item, ItemCell>, TableHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
+    ) : DataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell, TableHeaderFooterCellBinder<Header, HeaderCell>, TableItemCellBinder<Item, ItemCell>, TableHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     private val boundTableViews: MutableSet<WeakReference<TableView>> = mutableSetOf()
 
@@ -250,9 +249,8 @@ actual fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : TableHeaderFooterCellView,
     ItemCell : TableItemCellView,
-    FooterCell : TableHeaderFooterCellView> TableDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindTableView(tableView: TableView): DataSourceBindingResult {
+    FooterCell : TableHeaderFooterCellView> TableDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindTableView(tableView: TableView): DataSourceBindingResult {
     return bindTo(tableView)
 }

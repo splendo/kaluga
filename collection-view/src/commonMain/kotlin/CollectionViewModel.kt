@@ -20,6 +20,12 @@ package com.splendo.kaluga.collectionview
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.flow.HotFlowable
+import com.splendo.kaluga.collectionview.datasource.CollectionDataSource
+import com.splendo.kaluga.collectionview.datasource.CollectionHeaderFooterCellBinder
+import com.splendo.kaluga.collectionview.datasource.CollectionItemCellBinder
+import com.splendo.kaluga.collectionview.datasource.TableDataSource
+import com.splendo.kaluga.collectionview.datasource.TableHeaderFooterCellBinder
+import com.splendo.kaluga.collectionview.datasource.TableItemCellBinder
 import com.splendo.kaluga.collectionview.item.CollectionItemViewModel
 import com.splendo.kaluga.collectionview.item.CollectionSection
 import com.splendo.kaluga.collectionview.item.DefaultCollectionItemViewModel
@@ -29,14 +35,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, Header, Footer, Section : CollectionSection<Header, ViewModel, Footer>>(
+open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, Header, Footer>(
     private val repository: CollectionItemRepository<Item>,
     private val viewModelMapper: (Item) -> ViewModel,
-    private val sorter: (List<ViewModel>) -> List<Section>
+    private val sorter: (List<ViewModel>) -> List<CollectionSection<Header, ViewModel, Footer>>
 ) : BaseViewModel() {
 
-    private val currentItems = mutableListOf<Section>()
-    private val _items = HotFlowable<List<Section>>(emptyList())
+    private val currentItems = mutableListOf<CollectionSection<Header, ViewModel, Footer>>()
+    private val _items = HotFlowable<List<CollectionSection<Header, ViewModel, Footer>>>(emptyList())
     val items = _items.toObservable(coroutineScope)
 
     init {
@@ -59,6 +65,26 @@ open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, 
 
     fun reload() {
         coroutineScope.launch { repository.loadItems() }
+    }
+
+    fun <HeaderCell : CollectionHeaderFooterCellView,
+        ItemCell : CollectionItemCellView,
+        FooterCell : CollectionHeaderFooterCellView> toCollectionDataSource(
+            headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>,
+            itemBinder: CollectionItemCellBinder<ViewModel, ItemCell>,
+            footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>
+        ): CollectionDataSource<Header, ViewModel, Footer, HeaderCell, ItemCell, FooterCell> {
+        return CollectionDataSource(items, headerBinder, itemBinder, footerBinder)
+    }
+
+    fun <HeaderCell : TableHeaderFooterCellView,
+        ItemCell : TableItemCellView,
+        FooterCell : TableHeaderFooterCellView> toTableDataSource(
+            headerBinder: TableHeaderFooterCellBinder<Header, HeaderCell>,
+            itemBinder: TableItemCellBinder<ViewModel, ItemCell>,
+            footerBinder: TableHeaderFooterCellBinder<Footer, FooterCell>
+        ): TableDataSource<Header, ViewModel, Footer, HeaderCell, ItemCell, FooterCell> {
+        return TableDataSource(items, headerBinder, itemBinder, footerBinder)
     }
 
     override fun onCleared() {
@@ -84,13 +110,35 @@ open class CollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>, 
     }
 }
 
-open class SimpleCollectionViewModel<Item>(repository: CollectionItemRepository<Item>) : CollectionViewModel<
+open class SimpleCollectionViewModel<Item, ViewModel : CollectionItemViewModel<Item>>(
+    repository: CollectionItemRepository<Item>,
+    viewModelMapper: (Item) -> ViewModel
+) : CollectionViewModel<
     Item,
-    DefaultCollectionItemViewModel<Item>,
+    ViewModel,
     Nothing,
-    Nothing,
-    CollectionSection<Nothing, DefaultCollectionItemViewModel<Item>, Nothing>>(
+    Nothing>(
     repository,
-    { item -> DefaultCollectionItemViewModel(item) },
+    viewModelMapper,
     { items -> if (items.isEmpty()) emptyList() else listOf(ItemsOnlyCollectionSection(items)) }
-)
+) {
+    fun <HeaderCell : CollectionHeaderFooterCellView,
+        ItemCell : CollectionItemCellView,
+        FooterCell : CollectionHeaderFooterCellView> toCollectionDataSource(
+            itemBinder: CollectionItemCellBinder<ViewModel, ItemCell>
+        ): CollectionDataSource<Nothing, ViewModel, Nothing, HeaderCell, ItemCell, FooterCell> {
+        return CollectionDataSource(items, null, itemBinder, null)
+    }
+
+    fun <HeaderCell : TableHeaderFooterCellView,
+        ItemCell : TableItemCellView,
+        FooterCell : TableHeaderFooterCellView> toTableDataSource(
+            itemBinder: TableItemCellBinder<ViewModel, ItemCell>
+        ): TableDataSource<Nothing, ViewModel, Nothing, HeaderCell, ItemCell, FooterCell> {
+        return TableDataSource(items, null, itemBinder, null)
+    }
+}
+
+open class DefaultSimpleCollectionViewModel<Item>(
+    repository: CollectionItemRepository<Item>
+) : SimpleCollectionViewModel<Item, DefaultCollectionItemViewModel<Item>>(repository, { DefaultCollectionItemViewModel(it) })

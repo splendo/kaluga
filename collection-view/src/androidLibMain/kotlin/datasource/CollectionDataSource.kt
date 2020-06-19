@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.collectionview.datasource
 
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Lifecycle
@@ -34,61 +33,18 @@ import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual typealias DataSourceBindingResult = LifecycleObserver
 
-interface AndroidCellBinder<ItemType, V : View> {
-    val supportedViewTypes: Set<Int>
-    fun viewType(item: ItemType): Int
-    fun createView(parent: ViewGroup, viewType: Int): V
-    fun bindCell(item: ItemType, cell: V)
-    fun notifyAppeared(cell: V)
-    fun notifyDisappeared(cell: V)
-}
-
-actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> : CellBinder<ItemType, V>, AndroidCellBinder<ItemType, V>
-actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> : CellBinder<ItemType, V>, AndroidCellBinder<ItemType, V>
-
-class SimpleItemBinder<ItemType, V : View>(
-    override val supportedViewTypes: Set<Int>,
-    private val identifier: (ItemType) -> Int,
-    private val layout: (Int) -> Int,
-    private val bind: (ItemType, V) -> Unit,
-    private val onAppeared: ((V) -> Unit)? = null,
-    private val onDisappeared: ((V) -> Unit)? = null
-) : AndroidCellBinder<ItemType, V> {
-
-    override fun viewType(item: ItemType): Int = identifier(item)
-
-    override fun createView(parent: ViewGroup, viewType: Int): V = LayoutInflater
-            .from(parent.context)
-            .inflate(layout(viewType), parent, false) as V
-
-    override fun bindCell(item: ItemType, cell: V) = bind(item, cell)
-
-    override fun notifyAppeared(cell: V) {
-        onAppeared?.invoke(cell)
-    }
-
-    override fun notifyDisappeared(cell: V) {
-        onDisappeared?.invoke(cell)
-    }
-}
-
-open class SimpleHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionHeaderFooterCellBinder<ItemType, V>, AndroidCellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
-
-open class SimpleItemCellBinder<ItemType, V : CollectionItemCellView>(supportedViewTypes: Set<Int>, identifier: (ItemType) -> Int, layout: (Int) -> Int, bind: (ItemType, V) -> Unit) : CollectionItemCellBinder<ItemType, V>, AndroidCellBinder<ItemType, V> by SimpleItemBinder(supportedViewTypes, identifier, layout, bind)
-
 actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
-        source: Observable<List<Section>>,
+        source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
+    ) : DataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     private var currentCollectionView: CollectionView? = null
 
@@ -222,7 +178,7 @@ actual open class CollectionDataSource<
         currentCollectionView?.adapter = null
         currentCollectionView = collectionView
         return object : LifecycleObserver {
-            val observer = Observer<List<Section>> {
+            val observer = Observer<List<CollectionSection<Header, Item, Footer>>> {
                 sections = it
             }
 
@@ -245,9 +201,8 @@ actual fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
     return bindTo(collectionView)
 }

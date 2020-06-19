@@ -58,7 +58,7 @@ actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeader
 }
 
 open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(
-    private val identifier: (ItemType) -> String,
+    private val identifier: String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
@@ -73,7 +73,7 @@ open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeader
     }
 
     override fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V {
-        return collectionView.dequeueReusableSupplementaryViewOfKind(supplementaryKind, identifier(item), at) as V
+        return collectionView.dequeueReusableSupplementaryViewOfKind(supplementaryKind, identifier, at) as V
     }
 
     override fun bindCell(item: ItemType, cell: V) {
@@ -94,14 +94,14 @@ actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> 
 }
 
 open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(
-    private val identifier: (ItemType) -> String,
+    private val identifier: String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
 ) : CollectionItemCellBinder<ItemType, V> {
 
     override fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V {
-        return collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), at) as V
+        return collectionView.dequeueReusableCellWithReuseIdentifier(identifier, at) as V
     }
 
     override fun bindCell(item: ItemType, cell: V) {
@@ -121,15 +121,14 @@ actual open class CollectionDataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
     FooterCell : CollectionHeaderFooterCellView>actual constructor(
-        source: Observable<List<Section>>,
+        source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         headerBinder: CollectionHeaderFooterCellBinder<Header, HeaderCell>?,
         itemBinder: CollectionItemCellBinder<Item, ItemCell>,
         footerBinder: CollectionHeaderFooterCellBinder<Footer, FooterCell>?
-    ) : DataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
+    ) : DataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell, CollectionHeaderFooterCellBinder<Header, HeaderCell>, CollectionItemCellBinder<Item, ItemCell>, CollectionHeaderFooterCellBinder<Footer, FooterCell>>(source, headerBinder, itemBinder, footerBinder) {
 
     private var boundCollectionView: WeakReference<CollectionView>? = null
 
@@ -262,9 +261,8 @@ actual fun <
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell : CollectionHeaderFooterCellView,
     ItemCell : CollectionItemCellView,
-    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, Section, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
+    FooterCell : CollectionHeaderFooterCellView> CollectionDataSource<Header, Item, Footer, HeaderCell, ItemCell, FooterCell>.bindCollectionView(collectionView: CollectionView): DataSourceBindingResult {
     return bindTo(collectionView)
 }

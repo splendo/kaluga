@@ -33,20 +33,19 @@ abstract class DataSource<
     Header,
     Item,
     Footer,
-    Section : CollectionSection<Header, Item, Footer>,
     HeaderCell,
     ItemCell,
     FooterCell,
     HeaderBinder : CellBinder<Header, HeaderCell>,
     ItemBinder : CellBinder<Item, ItemCell>,
     FooterBinder : CellBinder<Footer, FooterCell>>(
-        protected val source: Observable<List<Section>>,
+        protected val source: Observable<List<CollectionSection<Header, Item, Footer>>>,
         protected val headerBinder: HeaderBinder? = null,
         protected val itemBinder: ItemBinder,
         protected val footerBinder: FooterBinder? = null
     ) {
 
-    protected var sections: List<Section> = emptyList()
+    protected var sections: List<CollectionSection<Header, Item, Footer>> = emptyList()
         set(value) {
             field = value
             notifyDataUpdated()
