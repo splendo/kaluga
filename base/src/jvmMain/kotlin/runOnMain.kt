@@ -17,8 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import javax.swing.SwingUtilities
+import javafx.application.Platform
 
 actual fun runOnMain(block: () -> Unit) {
-    SwingUtilities.invokeLater(block)
+    Platform.runLater(block)
 }

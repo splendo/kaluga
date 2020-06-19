@@ -78,7 +78,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation kotlin("stdlib")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$gradle.kotlinx_coroutines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-javafx:$gradle.kotlinx_coroutines_version"
             }
         }
         jvmTest {
