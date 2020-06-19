@@ -27,7 +27,6 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
@@ -197,27 +196,25 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
     suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
         stateMutex.withLock {
             val result = CompletableDeferred<S>()
-            coroutineScope {
-                launch {
-                    try {
-                        val beforeState = state()
-                        val transition = action(beforeState)
-                        // No Need to Transition if remain is used
-                        if (transition == beforeState.remain) {
-                            result.complete(beforeState)
-                            return@launch
-                        }
-                        (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
-                        val newState = transition()
-                        (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
-                        (newState as? HandleBeforeOldStateIsRemoved<S>)?.beforeOldStateIsRemoved(beforeState)
-                        setChangedState(newState)
-                        (beforeState as? HandleAfterNewStateIsSet<S>)?.afterNewStateIsSet(newState)
-                        (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
-                        result.complete(newState)
-                    } catch (e: Throwable) {
-                        result.completeExceptionally(e)
+            launch {
+                try {
+                    val beforeState = state()
+                    val transition = action(beforeState)
+                    // No Need to Transition if remain is used
+                    if (transition == beforeState.remain) {
+                        result.complete(beforeState)
+                        return@launch
                     }
+                    (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
+                    val newState = transition()
+                    (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
+                    (newState as? HandleBeforeOldStateIsRemoved<S>)?.beforeOldStateIsRemoved(beforeState)
+                    setChangedState(newState)
+                    (beforeState as? HandleAfterNewStateIsSet<S>)?.afterNewStateIsSet(newState)
+                    (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
+                    result.complete(newState)
+                } catch (e: Throwable) {
+                    result.completeExceptionally(e)
                 }
             }
             return result.await()

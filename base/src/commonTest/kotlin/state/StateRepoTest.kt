@@ -24,6 +24,7 @@ import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
@@ -213,15 +214,15 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
             }
             val slowTransition = scope.async {
                 trafficLight.takeAndChangeState {
-                    delay(100)
+                    //delay(100) TODO: delay on the main thread in iOS tests is broken
                     when(val state = it) {
                         is TrafficLightState.GreenLight -> state.becomeYellow
                         else -> state.remain
                     }
+
                 }
             }
-            delayedTransition.await()
-            slowTransition.await()
+            awaitAll(delayedTransition, slowTransition)
         }
         test {
             assertTrue(it is TrafficLightState.YellowLight)
