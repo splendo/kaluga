@@ -57,12 +57,32 @@ actual interface CollectionHeaderFooterCellBinder<ItemType, V : CollectionHeader
     fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V
 }
 
-open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView>(
-    private val identifier: String,
+open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeaderFooterCellView> private constructor(
+    private val identifier: (ItemType) -> String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
 ) : CollectionHeaderFooterCellBinder<ItemType, V> {
+
+    companion object {
+        fun <ItemType, V : CollectionHeaderFooterCellView> create(
+            identifiers: (ItemType) -> String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleCollectionHeaderFooterCellBinder<ItemType, V> {
+            return SimpleCollectionHeaderFooterCellBinder(identifiers, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, V : CollectionHeaderFooterCellView> create(
+            identifier: String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleCollectionHeaderFooterCellBinder<ItemType, V> {
+            return SimpleCollectionHeaderFooterCellBinder({ identifier }, bind, onAppeared, onDisappeared)
+        }
+    }
 
     override fun sizeForItem(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): CValue<CGSize> {
         val cell = dequeueCell(collectionView, supplementaryKind, item, at)
@@ -73,7 +93,7 @@ open class SimpleCollectionHeaderFooterCellBinder<ItemType, V : CollectionHeader
     }
 
     override fun dequeueCell(collectionView: CollectionView, supplementaryKind: String, item: ItemType, at: NSIndexPath): V {
-        return collectionView.dequeueReusableSupplementaryViewOfKind(supplementaryKind, identifier, at) as V
+        return collectionView.dequeueReusableSupplementaryViewOfKind(supplementaryKind, identifier(item), at) as V
     }
 
     override fun bindCell(item: ItemType, cell: V) {
@@ -93,15 +113,35 @@ actual interface CollectionItemCellBinder<ItemType, V : CollectionItemCellView> 
     fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V
 }
 
-open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView>(
-    private val identifier: String,
+open class SimpleCollectionItemCellBinder<ItemType, V : CollectionItemCellView> private constructor(
+    private val identifier: (ItemType) -> String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
 ) : CollectionItemCellBinder<ItemType, V> {
 
+    companion object {
+        fun <ItemType, V : CollectionItemCellView> create(
+            identifiers: (ItemType) -> String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleCollectionItemCellBinder<ItemType, V> {
+            return SimpleCollectionItemCellBinder(identifiers, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, V : CollectionItemCellView> create(
+            identifier: String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleCollectionItemCellBinder<ItemType, V> {
+            return SimpleCollectionItemCellBinder({ identifier }, bind, onAppeared, onDisappeared)
+        }
+    }
+
     override fun dequeueCell(collectionView: CollectionView, item: ItemType, at: NSIndexPath): V {
-        return collectionView.dequeueReusableCellWithReuseIdentifier(identifier, at) as V
+        return collectionView.dequeueReusableCellWithReuseIdentifier(identifier(item), at) as V
     }
 
     override fun bindCell(item: ItemType, cell: V) {

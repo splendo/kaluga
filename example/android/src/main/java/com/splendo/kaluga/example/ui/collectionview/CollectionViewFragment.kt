@@ -43,9 +43,9 @@ class CollectionViewFragment : KalugaViewModelFragment<CollectionViewViewModel>(
     override val viewModel: CollectionViewViewModel by viewModel()
     private val dataSource = lazy {
         viewModel.toCollectionDataSource(
-            SimpleHeaderFooterCellBinder(true, R.layout.list_collection_header, bind = { header, cell -> cell.headerLabel.text = header.title }),
-            SimpleItemCellBinder(R.layout.list_collection_item, bind = { item, cell -> cell.titleLabel.text = item.item.title }),
-            SimpleHeaderFooterCellBinder(false, R.layout.list_collection_footer, bind = { footer, cell -> cell.footerCount.text = getString(R.string.list_total).format(footer.numberOfElements) })
+            SimpleHeaderFooterCellBinder.create(true, R.layout.list_collection_header, bind = { header, cell -> cell.headerLabel.text = header.title }),
+            SimpleItemCellBinder.create(R.layout.list_collection_item, bind = { item, cell -> cell.titleLabel.text = item.item.title }),
+            SimpleHeaderFooterCellBinder.create(false, R.layout.list_collection_footer, bind = { footer, cell -> cell.footerCount.text = getString(R.string.list_total).format(footer.numberOfElements) })
             )
     }
 

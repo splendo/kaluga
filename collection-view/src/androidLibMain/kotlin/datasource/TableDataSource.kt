@@ -20,7 +20,6 @@ package com.splendo.kaluga.collectionview.datasource
 import com.splendo.kaluga.collectionview.TableHeaderFooterCellView
 import com.splendo.kaluga.collectionview.TableItemCellView
 import com.splendo.kaluga.collectionview.TableView
-import com.splendo.kaluga.collectionview.item.CollectionSection
 
 actual typealias TableHeaderFooterCellBinder<ItemType, V> = CollectionHeaderFooterCellBinder<ItemType, V>
 

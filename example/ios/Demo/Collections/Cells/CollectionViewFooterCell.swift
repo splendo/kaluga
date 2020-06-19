@@ -15,6 +15,6 @@ class CollectionViewFooterCell: UICollectionReusableView {
     @IBOutlet fileprivate weak var countLabel: UILabel!
     
     func setCount(_ count: Int) {
-        countLabel.text = String.init(format: NSLocalizedString("list_total", comment: ""), count)
+        countLabel.text = String(format: NSLocalizedString("list_total", comment: ""), count)
     }
 }

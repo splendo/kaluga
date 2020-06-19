@@ -24,20 +24,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 
 class DataBindingCellBinder<ItemType, Binding : ViewDataBinding>(
-    private val viewType: Int,
-    private val bindingLayout: Int,
+    override val supportedViewTypes: Set<Int>,
+    private val viewTypeByItem: (ItemType) -> Int,
+    private val bindingLayout: (Int) -> Int,
     private val bind: (ItemType, Binding) -> Unit,
     private val onAppeared: ((Binding) -> Unit)? = null,
     private val onDisappeared: ((Binding) -> Unit)? = null
 ) : AndroidCellBinder<ItemType, View> {
 
-    override val supportedViewTypes: Set<Int> = setOf(viewType)
-
-    override fun viewType(item: ItemType): Int = viewType
+    override fun viewType(item: ItemType): Int = viewTypeByItem(item)
 
     override fun createView(parent: ViewGroup, viewType: Int): View {
         val layoutInflater = LayoutInflater.from(parent.context)
-        return DataBindingUtil.inflate<Binding>(layoutInflater, bindingLayout, parent, false).root
+        return DataBindingUtil.inflate<Binding>(layoutInflater, bindingLayout(viewType), parent, false).root
     }
 
     override fun bindCell(item: ItemType, cell: View) {
@@ -59,17 +58,68 @@ class DataBindingCellBinder<ItemType, Binding : ViewDataBinding>(
     }
 }
 
-open class DataBindingHeaderFooterCellBinder<ItemType, Binding : ViewDataBinding>(
-    isHeader: Boolean,
-    bindingLayout: Int,
+open class DataBindingHeaderFooterCellBinder<ItemType, Binding : ViewDataBinding> private constructor(
+    supportedViewTypes: Set<Int>,
+    viewTypeByItem: (ItemType) -> Int,
+    bindingLayout: (Int) -> Int,
     bind: (ItemType, Binding) -> Unit,
     onAppeared: ((Binding) -> Unit)? = null,
     onDisappeared: ((Binding) -> Unit)? = null
-) : CollectionHeaderFooterCellBinder<ItemType, View>, AndroidCellBinder<ItemType, View> by DataBindingCellBinder(if (isHeader) AndroidCellBinder.defaultHeaderViewType else AndroidCellBinder.defaultFooterViewType, bindingLayout, bind, onAppeared, onDisappeared)
+) : CollectionHeaderFooterCellBinder<ItemType, View>, AndroidCellBinder<ItemType, View> by DataBindingCellBinder(supportedViewTypes, viewTypeByItem, bindingLayout, bind, onAppeared, onDisappeared) {
+
+    companion object {
+        fun <ItemType, Binding : ViewDataBinding> create(
+            supportedViewTypes: Set<Int>,
+            viewTypeByItem: (ItemType) -> Int,
+            layout: (Int) -> Int,
+            bind: (ItemType, Binding) -> Unit,
+            onAppeared: ((Binding) -> Unit)? = null,
+            onDisappeared: ((Binding) -> Unit)? = null
+        ): DataBindingHeaderFooterCellBinder<ItemType, Binding> {
+            return DataBindingHeaderFooterCellBinder(supportedViewTypes, viewTypeByItem, layout, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, Binding : ViewDataBinding> create(
+            isHeader: Boolean,
+            layout: Int,
+            bind: (ItemType, Binding) -> Unit,
+            onAppeared: ((Binding) -> Unit)? = null,
+            onDisappeared: ((Binding) -> Unit)? = null
+        ): DataBindingHeaderFooterCellBinder<ItemType, Binding> {
+            val viewType = if (isHeader) AndroidCellBinder.defaultHeaderViewType else AndroidCellBinder.defaultFooterViewType
+            return DataBindingHeaderFooterCellBinder(setOf(viewType), { viewType }, { layout }, bind, onAppeared, onDisappeared)
+        }
+    }
+}
 
 open class DataBindingItemCellBinder<ItemType, Binding : ViewDataBinding>(
-    bindingLayout: Int,
+    supportedViewTypes: Set<Int>,
+    viewTypeByItem: (ItemType) -> Int,
+    bindingLayout: (Int) -> Int,
     bind: (ItemType, Binding) -> Unit,
     onAppeared: ((Binding) -> Unit)? = null,
     onDisappeared: ((Binding) -> Unit)? = null
-) : CollectionItemCellBinder<ItemType, View>, AndroidCellBinder<ItemType, View> by DataBindingCellBinder(AndroidCellBinder.defaultItemViewType, bindingLayout, bind, onAppeared, onDisappeared)
+) : CollectionItemCellBinder<ItemType, View>, AndroidCellBinder<ItemType, View> by DataBindingCellBinder(supportedViewTypes, viewTypeByItem, bindingLayout, bind, onAppeared, onDisappeared) {
+
+    companion object {
+        fun <ItemType, Binding : ViewDataBinding> create(
+            supportedViewTypes: Set<Int>,
+            viewTypeByItem: (ItemType) -> Int,
+            layout: (Int) -> Int,
+            bind: (ItemType, Binding) -> Unit,
+            onAppeared: ((Binding) -> Unit)? = null,
+            onDisappeared: ((Binding) -> Unit)? = null
+        ): DataBindingItemCellBinder<ItemType, Binding> {
+            return DataBindingItemCellBinder(supportedViewTypes, viewTypeByItem, layout, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, Binding : ViewDataBinding> create(
+            layout: Int,
+            bind: (ItemType, Binding) -> Unit,
+            onAppeared: ((Binding) -> Unit)? = null,
+            onDisappeared: ((Binding) -> Unit)? = null
+        ): DataBindingItemCellBinder<ItemType, Binding> {
+            return DataBindingItemCellBinder(setOf(AndroidCellBinder.defaultItemViewType), { AndroidCellBinder.defaultItemViewType }, { layout }, bind, onAppeared, onDisappeared)
+        }
+    }
+}

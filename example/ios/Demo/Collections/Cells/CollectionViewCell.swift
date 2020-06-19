@@ -14,7 +14,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     @IBOutlet fileprivate weak var titleLabel: UILabel!
     
-    func setTitle(_ title: String) {
-        titleLabel.text = title
+    var title: String? {
+       get { titleLabel.text }
+       set { titleLabel.text = newValue }
     }
 }

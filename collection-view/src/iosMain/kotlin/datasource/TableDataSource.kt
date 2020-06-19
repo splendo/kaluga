@@ -49,12 +49,32 @@ actual interface TableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCell
     fun dequeueCell(tableView: TableView, item: ItemType): V
 }
 
-open class SimpleTableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView>(
+open class SimpleTableHeaderFooterCellBinder<ItemType, V : TableHeaderFooterCellView> private constructor(
     private val identifier: (ItemType) -> String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
 ) : TableHeaderFooterCellBinder<ItemType, V> {
+
+    companion object {
+        fun <ItemType, V : TableHeaderFooterCellView> create(
+            identifiers: (ItemType) -> String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleTableHeaderFooterCellBinder<ItemType, V> {
+            return SimpleTableHeaderFooterCellBinder(identifiers, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, V : TableHeaderFooterCellView> create(
+            identifier: String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleTableHeaderFooterCellBinder<ItemType, V> {
+            return SimpleTableHeaderFooterCellBinder({ identifier }, bind, onAppeared, onDisappeared)
+        }
+    }
 
     override fun sizeForItem(tableView: TableView, item: ItemType): CGFloat {
         val cell = dequeueCell(tableView, item)
@@ -86,12 +106,32 @@ actual interface TableItemCellBinder<ItemType, V : TableItemCellView> : CellBind
     fun dequeueCell(tableView: TableView, item: ItemType, at: NSIndexPath): V
 }
 
-open class SimpleTableItemCellBinder<ItemType, V : TableItemCellView>(
+open class SimpleTableItemCellBinder<ItemType, V : TableItemCellView> private constructor(
     private val identifier: (ItemType) -> String,
     private val bind: (ItemType, V) -> Unit,
     private val onAppear: ((V) -> Unit)? = null,
     private val onDisappear: ((V) -> Unit)? = null
 ) : TableItemCellBinder<ItemType, V> {
+
+    companion object {
+        fun <ItemType, V : TableItemCellView> create(
+            identifiers: (ItemType) -> String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleTableItemCellBinder<ItemType, V> {
+            return SimpleTableItemCellBinder(identifiers, bind, onAppeared, onDisappeared)
+        }
+
+        fun <ItemType, V : TableItemCellView> create(
+            identifier: String,
+            bind: (ItemType, V) -> Unit,
+            onAppeared: ((V) -> Unit)? = null,
+            onDisappeared: ((V) -> Unit)? = null
+        ): SimpleTableItemCellBinder<ItemType, V> {
+            return SimpleTableItemCellBinder({ identifier }, bind, onAppeared, onDisappeared)
+        }
+    }
 
     override fun sizeForItem(tableView: TableView, item: ItemType, at: NSIndexPath): CGFloat {
         val cell = dequeueCell(tableView, item, at)
