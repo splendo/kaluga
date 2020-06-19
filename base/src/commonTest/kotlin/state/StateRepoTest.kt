@@ -108,8 +108,8 @@ class StateRepoTest: FlowableTest<TrafficLightState>() {
 
     private lateinit var trafficLight: TrafficLight
 
-    override fun setUp() {
-        super.setUp()
+    override fun beforeTest() {
+        super.beforeTest()
 
         trafficLight = TrafficLight()
         flowable.complete(trafficLight.flowable)

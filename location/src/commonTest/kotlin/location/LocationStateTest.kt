@@ -88,7 +88,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     }
 
     @AfterTest
-    fun tearDown() {
+    override fun afterTest() {
         super.afterTest()
         testCoroutine.cancelChildren()
         locationStateRepo.cancel()

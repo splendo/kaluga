@@ -34,8 +34,8 @@ import kotlin.test.*
 class BaseFlowableTest : FlowableTest<String>() {
 
     @BeforeTest
-    override fun setUp() {
-        super.setUp()
+    override fun beforeTest() {
+        super.beforeTest()
 
         flowable.complete(HotFlowable(""))
     }

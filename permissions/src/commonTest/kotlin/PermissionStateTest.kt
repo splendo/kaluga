@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,16 +36,11 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
     private lateinit var permissionStateRepo: MockPermissionStateRepo
 
     @BeforeTest
-    fun setup() {
-        super.setUp()
+    override fun beforeTest() {
+        super.beforeTest()
 
         permissionStateRepo = MockPermissionStateRepo()
         flowable.complete(permissionStateRepo.flowable)
-    }
-
-    @AfterTest
-    fun tearDown() {
-        super.afterTest()
     }
 
     @Test

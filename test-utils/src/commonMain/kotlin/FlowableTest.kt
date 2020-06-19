@@ -40,7 +40,7 @@ typealias ActionBlock = suspend()->Unit
 abstract class FlowableTest<T>: BaseTest() {
 
     @BeforeTest
-    open fun setUp() {
+    override fun beforeTest() {
         super.beforeTest()
 
         flowable = CompletableDeferred()
@@ -107,9 +107,10 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
             flowable.flow().filter(filter).collect { value ->
                 debug("in flow received $value")
                 val test = testChannel.receive()
-                debug("receive test $test")
+                debug("received test block $test")
                 try {
                     test.first(value)
+                    debug("ran test block $test")
                     test.second.complete(Unit)
                 } catch (e: Throwable) {
                     debug("Exception when testing...")
