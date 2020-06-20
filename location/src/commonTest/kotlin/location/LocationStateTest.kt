@@ -399,7 +399,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     }
 
     @Test
-    fun testResumeFlow() = runBlocking<Unit> {
+    fun testResumeFlow() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         permissionManager.currentState = PermissionState.Allowed(permissionManager)
         locationManager.locationEnabled = true
@@ -417,12 +417,14 @@ class LocationStateTest : FlowableTest<LocationState>() {
             }
         }
 
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted
-        )
+        runBlocking {
+            awaitAll(
+                permissionManager.hasStoppedMonitoring,
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
 
         permissionManager.reset()
         locationManager.reset()
@@ -432,11 +434,14 @@ class LocationStateTest : FlowableTest<LocationState>() {
                 assertEquals(location1, it.location)
             }
         }
-        awaitAll(
-            permissionManager.hasStoppedMonitoring,
-            locationManager.stopMonitoringPermissionsCompleted,
-            locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted)
+        runBlocking {
+            awaitAll(
+                permissionManager.hasStoppedMonitoring,
+                locationManager.stopMonitoringPermissionsCompleted,
+                locationManager.stopMonitoringLocationCompleted,
+                locationManager.stopMonitoringLocationEnabledCompleted
+            )
+        }
     }
 
     @Test
