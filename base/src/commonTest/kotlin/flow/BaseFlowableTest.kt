@@ -71,9 +71,6 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
         flowable.await().set("foo")
-        action {
-            // no action
-        }
         test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }

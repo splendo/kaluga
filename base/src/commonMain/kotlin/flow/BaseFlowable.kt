@@ -25,7 +25,6 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.first
 
 /**
  * Base definition of [Flowable]. Abstract class, use [ColdFlowable] or [HotFlowable] instead.

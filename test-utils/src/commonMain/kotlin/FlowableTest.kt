@@ -95,17 +95,17 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
 
     fun testWithFlow(block:suspend FlowTest<T>.()->Unit) = runBlocking {
         testChannel = Channel(Channel.UNLIMITED)
-        startFlow()
+        // startFlow is only called when the first test block is offered
         block(this@FlowTest)
         endFlow()
     }
 
-    private suspend fun startFlow() {
+        private fun startFlow() {
         debug("start flow...")
         job = coroutineScope.launch {
             debug("main scope launched, about to flow")
             flowable.flow().filter(filter).collect { value ->
-                debug("in flow received $value")
+                debug("in flow received [$value]")
                 val test = testChannel.receive()
                 debug("received test block $test")
                 try {
@@ -128,7 +128,12 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
         debug("did action")
     }
 
+    var firstTestBlock = true
     fun test(skip:Int=0, test:TestBlock<T>) {
+        if (firstTestBlock) {
+            firstTestBlock = false
+            startFlow()
+        }
         repeat(skip) {
             test {}
         }
