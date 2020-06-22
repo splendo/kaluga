@@ -22,6 +22,7 @@ import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.initLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.test.resetMain
@@ -64,7 +65,10 @@ actual class GlobalTestListener {
     }
 
     actual fun afterTest() {
-        Dispatchers.resetMain()
-        mainDispatcher.close()
+        // we want to avoid triggering Swing or FX
+        //Dispatchers.resetMain()
+        //mainDispatcher.close()
+
+        mainDispatcher.cancelChildren()
     }
 }
