@@ -165,22 +165,22 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action].
      * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
-     * @param action the function for determining which [State] to transition to.
+     * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself (however a different state might be current at that point).
+     *
+     * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
-    suspend fun useState(action:suspend (S) -> Unit) {
+    suspend fun useState(action:suspend (S) -> Unit) = coroutineScope {
         stateMutex.withLock {
             val result = EmptyCompletableDeferred()
-            coroutineScope {
-                launch {
-                    try {
-                        action(state())
-                        result.complete()
-                    } catch(e: Throwable) {
-                        result.completeExceptionally(e)
-                    }
+            launch {
+                try {
+                    action(state())
+                    result.complete()
+                } catch (e: Throwable) {
+                    result.completeExceptionally(e)
                 }
             }
-            return result.await()
+            return@coroutineScope result.await()
         }
     }
 
@@ -191,9 +191,11 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * If the [action] returns [State.remain] no state transition will occur.
      * Since this operation is atomic, the [action] should not directly call [takeAndChangeState] itself. If required to do this, handle the additional transition in a separate coroutine.
      *
+     * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself.
+     *
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
      */
-    suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
+    suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
         stateMutex.withLock {
             val result = CompletableDeferred<S>()
             launch {
@@ -217,7 +219,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
                     result.completeExceptionally(e)
                 }
             }
-            return result.await()
+            return@coroutineScope result.await()
         }
     }
 
