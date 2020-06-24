@@ -1,5 +1,6 @@
 package com.splendo.kaluga.base.test.flow
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
@@ -12,6 +13,7 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.count
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,7 +42,11 @@ class ColdFlowableTest : BaseTest() {
                 0
             }, {
                     value -> deinitialized.complete(value)
-            }) {broadcastChannel}
+            }) {
+                if (broadcastChannel.isClosedForSend)
+                    broadcastChannel = ConflatedBroadcastChannel()
+                broadcastChannel
+        }
     }
 
     @Test
@@ -48,8 +54,9 @@ class ColdFlowableTest : BaseTest() {
         assertFalse { initialized.isCompleted }
         val initialBroadcastValue = CompletableDeferred<Int>()
         val broadcastValue = CompletableDeferred<Int>()
+        
         val channelJob = launch {
-            broadcastChannel.asFlow().take(2).collect{ value ->
+            broadcastChannel.asFlow().take(2).collect { value ->
                 if (initialBroadcastValue.isCompleted)
                     broadcastValue.complete(value)
                 else
@@ -57,12 +64,12 @@ class ColdFlowableTest : BaseTest() {
             }
         }
         assertFalse { initialBroadcastValue.isCompleted }
-        flowable.set(1)
+        flowable.set(1) // this will be ignored since there is no flow
         assertFalse { initialBroadcastValue.isCompleted }
         val initialFlowableValue = CompletableDeferred<Int>()
         val flowableValue = CompletableDeferred<Int>()
         val flowableJob = launch {
-            flowable.flow().take(2).collect{ value ->
+            flowable.flow().take(2).collect { value ->
                 if (initialFlowableValue.isCompleted)
                     flowableValue.complete(value)
                 else
@@ -139,8 +146,8 @@ class ColdFlowableTest : BaseTest() {
     }
 
     @Test
-    fun testClosingFlow() = runBlocking {
-        val scope = MainScope()
+    fun testStoppingFlow() = runBlocking {
+        val scope = MultiplatformMainScope()
         val job = scope.launch {
             flowable.flow().collect {}
         }
@@ -151,16 +158,7 @@ class ColdFlowableTest : BaseTest() {
         job.cancel()
         deinitialized.await()
         assertTrue(broadcastChannel.isClosedForSend)
-        val newFlowable = flowable.flow()
-        assertEquals(0, newFlowable.count())
-        val newFlowableJob = scope.launch {
-            newFlowable.collect {}
-        }
-        withContext(scope.coroutineContext) {
-            flowable.set(2)
-        }
-        assertEquals(0, newFlowable.count())
-        newFlowableJob.cancel()
-    }
 
+
+    }
 }

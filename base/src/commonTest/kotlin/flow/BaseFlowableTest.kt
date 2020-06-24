@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.test.flow
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
@@ -96,13 +97,14 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testCloseFlow() = runBlocking {
+    fun testStopFlow() = runBlocking {
         val flowable = flowable.await()
-        val scope = MainScope()
+        val scope = MultiplatformMainScope()
         val collectionJob = scope.async {
             flowable.flow().collect {  }
         }
-        flowable.close()
+        delay(100)// TODO instead listen to flow subscriber count
+        flowable.cancelFlows()
         collectionJob.await()
     }
 

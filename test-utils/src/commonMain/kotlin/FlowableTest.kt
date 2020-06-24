@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
@@ -60,7 +61,7 @@ abstract class FlowableTest<T>: BaseTest() {
     }
 }
 
-open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MainScope()) {
+open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) {
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -100,10 +101,10 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
         endFlow()
     }
 
-        private fun startFlow() {
+    private fun startFlow() {
         debug("start flow...")
         job = coroutineScope.launch {
-            debug("main scope launched, about to flow")
+            debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
             flowable.flow().filter(filter).collect { value ->
                 debug("in flow received [$value]")
                 val test = testChannel.receive()
@@ -118,7 +119,7 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
                 }
                 debug("flow completed")
             }
-            debug("flow start scope launched")
+            debug("flow start scope was launched")
         }
     }
 

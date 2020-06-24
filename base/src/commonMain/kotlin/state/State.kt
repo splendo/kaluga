@@ -113,7 +113,6 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
 
     abstract val flowable: BaseFlowable<S>
 
-    @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     internal lateinit var changedState:S
     private suspend fun setChangedState(value: S) {
         changedState = value
@@ -242,19 +241,13 @@ abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = Mai
  */
 abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
-    private var coldFlowable: ColdFlowable<S>? = null
-    override val flowable: ColdFlowable<S> get() {
-        return coldFlowable ?: kotlin.run {
-            ColdFlowable({
-                initialize()
-            }, {
-                    state ->
-                state.finalState()
-                this.deinitialize(state)
-                this.coldFlowable = null
-            }).also { this.coldFlowable = it }
-        }
-    }
+    override val flowable: ColdFlowable<S> = ColdFlowable({
+        initialize()
+    }, {
+            state ->
+        state.finalState()
+        deinitialize(state)
+    })
 
     abstract suspend fun deinitialize(state: S)
 

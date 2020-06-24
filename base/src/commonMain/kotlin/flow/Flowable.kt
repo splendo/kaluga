@@ -17,7 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -33,7 +32,6 @@ interface Flowable<T> {
      * @param flowConfig the [FlowConfig] to apply to this Flow
      * @return A [Flow] of values set to the Flowable
      */
-    @ExperimentalCoroutinesApi
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T>
 
     /**
@@ -49,7 +47,8 @@ interface Flowable<T> {
     fun setBlocking(value: T)
 
     /**
-     * Closes the flowable from being observed. Closes all active [Flow]s
+     * Stops the flowable from being observed. Cancels all active [Flow]s.
+     * Starting a new Flow is possible however.
      */
-    fun close()
+    fun cancelFlows()
 }
