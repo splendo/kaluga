@@ -30,11 +30,6 @@ import com.splendo.kaluga.test.awaitAllBlocking
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelChildren
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -42,6 +37,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelChildren
 
 class LocationStateTest : FlowableTest<LocationState>() {
 
@@ -121,7 +121,6 @@ class LocationStateTest : FlowableTest<LocationState>() {
                 locationManager.stopMonitoringLocationCompleted,
                 locationManager.stopMonitoringLocationEnabledCompleted
         )
-
     }
 
     @Test
