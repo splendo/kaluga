@@ -25,7 +25,6 @@ import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.resetMain
 
 /*
 
@@ -68,7 +67,6 @@ actual class GlobalTestListener {
         // we want to avoid triggering Swing or FX
         //Dispatchers.resetMain()
         //mainDispatcher.close()
-
-        mainDispatcher.cancelChildren()
+        //mainDispatcher.cancelChildren()
     }
 }
