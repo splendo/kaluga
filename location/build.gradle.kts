@@ -21,13 +21,12 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":logging", ""))
+                implementation(project(":permissions", ""))
             }
         }
-        getByName("commonTest") {
+        commonTest {
             dependencies {
                 implementation(project(":test-utils", ""))
             }

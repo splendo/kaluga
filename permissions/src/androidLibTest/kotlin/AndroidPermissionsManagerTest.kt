@@ -59,7 +59,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     private lateinit var androidPermissionsManager: AndroidPermissionsManager<Permission.Storage>
 
     @BeforeTest
-    fun setUp() {
+    override fun beforeTest() {
         super.beforeTest()
         MockitoAnnotations.initMocks(this)
 
@@ -69,7 +69,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
     }
 
     @AfterTest
-    fun tearDown() {
+    override fun afterTest() {
         super.afterTest()
     }
 

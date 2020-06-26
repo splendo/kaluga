@@ -89,4 +89,5 @@ dependencies {
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-fragment:$koin_version"
+    implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
 }

@@ -17,23 +17,26 @@
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
+import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
+import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
+import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
+import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
+import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
+import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
@@ -89,25 +92,28 @@ sealed class Permission {
     data class Storage(val allowWrite: Boolean = false) : Permission()
 }
 
-/**
- * Builder for providing the proper [PermissionManager] for each [Permission]
- */
-expect class PermissionsBuilder {
-    val bluetoothPMBuilder: BluetoothPermissionManagerBuilder
-    val calendarPMBuilder: CalendarPermissionManagerBuilder
-    val cameraPMBuilder: CameraPermissionManagerBuilder
-    val contactsPMBuilder: ContactsPermissionManagerBuilder
-    val locationPMBuilder: LocationPermissionManagerBuilder
-    val microphonePMBuilder: MicrophonePermissionManagerBuilder
-    val notificationsPMBuilder: NotificationsPermissionManagerBuilder
-    val storagePMBuilder: StoragePermissionManagerBuilder
+interface BasePermissionsBuilder {
+    val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder
+    val calendarPMBuilder: BaseCalendarPermissionManagerBuilder
+    val cameraPMBuilder: BaseCameraPermissionManagerBuilder
+    val contactsPMBuilder: BaseContactsPermissionManagerBuilder
+    val locationPMBuilder: BaseLocationPermissionManagerBuilder
+    val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder
+    val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder
+    val storagePMBuilder: BaseStoragePermissionManagerBuilder
 }
 
 /**
- * Manager to request the [PermissionStateRepo] of a given [Permission]
- * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ * Builder for providing the proper [PermissionManager] for each [Permission]
  */
-class Permissions(private val builder: PermissionsBuilder) {
+expect class PermissionsBuilder : BasePermissionsBuilder
+
+/**
+ * Manager to request the [PermissionStateRepo] of a given [Permission]
+ * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
+ * @param coroutineContext The [CoroutineContext] to run permission checks from
+ */
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = MainQueueDispatcher) {
 
     private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
 
@@ -117,21 +123,26 @@ class Permissions(private val builder: PermissionsBuilder) {
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
     operator fun get(permission: Permission): Flow<PermissionState<*>> {
-        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission).also { permissionStateRepos[permission] = it }
+        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
         return permissionStateRepo.flow()
     }
 
-    private fun createPermissionStateRepo(permission: Permission): PermissionStateRepo<*> {
+    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = MainQueueDispatcher): PermissionStateRepo<*> {
         return when (permission) {
-            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder)
-            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder)
-            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder)
-            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder)
-            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder)
-            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder)
-            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder)
-            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder)
+            is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder, coroutineContext)
+            is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder, coroutineContext)
+            is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder, coroutineContext)
+            is Permission.Contacts -> ContactsPermissionStateRepo(permission, builder.contactsPMBuilder, coroutineContext)
+            is Permission.Location -> LocationPermissionStateRepo(permission, builder.locationPMBuilder, coroutineContext)
+            is Permission.Microphone -> MicrophonePermissionStateRepo(builder.microphonePMBuilder, coroutineContext)
+            is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder, coroutineContext)
+            is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder, coroutineContext)
         }
+    }
+
+    fun clean() {
+        permissionStateRepos.values.forEach { it.cancel() }
+        permissionStateRepos.clear()
     }
 }
 

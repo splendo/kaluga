@@ -47,9 +47,9 @@ actual class CameraPermissionManager(
     }
 }
 
-actual class CameraPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
+actual class CameraPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCameraPermissionManagerBuilder {
 
-    actual fun create(repo: CameraPermissionStateRepo): CameraPermissionManager {
+    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
         return CameraPermissionManager(bundle, repo)
     }
 }

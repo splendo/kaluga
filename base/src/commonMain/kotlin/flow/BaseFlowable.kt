@@ -19,12 +19,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.flow
 
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 
 /**
@@ -35,26 +34,25 @@ import kotlinx.coroutines.flow.first
  */
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    protected var channel: Lazy<BroadcastChannel<T>>? = lazy {channelFactory() }
+    private var channel: BroadcastChannel<T>? = null
+    protected fun ensureChannel():BroadcastChannel<T> {
+        return channel ?: channelFactory().also { channel = it }
+    }
 
-    @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return channel?.value?.asFlow()?.let { flowConfig.apply(it) } ?: emptyFlow()
+        val channel = ensureChannel()
+        if (channel.isClosedForSend)
+            error("channelFactory returned a channel closed for sending")
+        return channel.asFlow().let { flowConfig.apply(it) }
     }
 
     override suspend fun set(value: T) {
-        channel?.let {
-            if (it.isInitialized()) {
-                it.value.send(value)
-            }
-        }
+        channel?.send(value) ?:
+            warn("'$value' offered to Flowable but there is no channel active")
     }
 
-    /**
-     * Closes the flowable from being observed
-     */
-    override fun close() {
-        channel?.value?.close()
+    override fun cancelFlows() {
+        channel?.close()
         channel = null
     }
 
@@ -64,4 +62,6 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
             set(value)
         }
     }
+
+    protected suspend fun currentValue(): T? = channel?.asFlow()?.first()
 }

@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
@@ -28,7 +29,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -41,11 +41,11 @@ typealias ActionBlock = suspend()->Unit
 abstract class FlowableTest<T>: BaseTest() {
 
     @BeforeTest
-    open fun setUp() {
+    override fun beforeTest() {
         super.beforeTest()
 
         flowable = CompletableDeferred()
-        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted().flow()) }
+        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted()) }
     }
 
     lateinit var flowable: CompletableDeferred<Flowable<T>>
@@ -61,7 +61,7 @@ abstract class FlowableTest<T>: BaseTest() {
     }
 }
 
-open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: CoroutineScope = MainScope()) {
+open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) {
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -96,21 +96,22 @@ open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: Co
 
     fun testWithFlow(block:suspend FlowTest<T>.()->Unit) = runBlocking {
         testChannel = Channel(Channel.UNLIMITED)
-        startFlow()
+        // startFlow is only called when the first test block is offered
         block(this@FlowTest)
         endFlow()
     }
 
-    private suspend fun startFlow() {
+    private fun startFlow() {
         debug("start flow...")
         job = coroutineScope.launch {
-            debug("main scope launched, about to flow")
-            flow.filter(filter).collect { value ->
-                debug("in flow received $value")
+            debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
+            flowable.flow().filter(filter).collect { value ->
+                debug("in flow received [$value]")
                 val test = testChannel.receive()
-                debug("receive test $test")
+                debug("received test block $test")
                 try {
                     test.first(value)
+                    debug("ran test block $test")
                     test.second.complete(Unit)
                 } catch (e: Throwable) {
                     debug("Exception when testing...")
@@ -118,7 +119,7 @@ open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: Co
                 }
                 debug("flow completed")
             }
-            debug("flow start scope launched")
+            debug("flow start scope was launched")
         }
     }
 
@@ -128,7 +129,12 @@ open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: Co
         debug("did action")
     }
 
+    var firstTestBlock = true
     fun test(skip:Int=0, test:TestBlock<T>) {
+        if (firstTestBlock) {
+            firstTestBlock = false
+            startFlow()
+        }
         repeat(skip) {
             test {}
         }

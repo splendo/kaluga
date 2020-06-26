@@ -1,4 +1,3 @@
-package com.splendo.kaluga.location
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,14 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-sealed class Location {
+package com.splendo.kaluga.location
 
-    enum class UnknownReason {
-        NO_PERMISSION_GRANTED,
-        PERMISSION_DENIED,
-        NO_GPS,
-        NOT_CLEAR
-    }
+import kotlin.math.absoluteValue
+
+sealed class Location {
 
     /**
      * [ms] holds the unixtime (ms since 1970) for when the location was detected. Either a time provided by the location framework,
@@ -47,17 +43,101 @@ sealed class Location {
         val speed: Double? = null,
         val course: Double? = null,
         val time: Time
-    ) : Location()
+    ) : Location() {
 
-    open class UnknownLocation protected constructor(open val reason: UnknownReason) : Location()
+        /**
+         * The [DMSCoordinate] associated with the latitude of this location
+         */
+        val latitudeDMS: DMSCoordinate = DMSCoordinate.fromLatitude(latitude)
+
+        /**
+         * The [DMSCoordinate] associated with the latitude of this longitude
+         */
+        val longitudeDMS: DMSCoordinate = DMSCoordinate.fromLongitude(longitude)
+    }
 
     /**
-     * The current location is unknown, and there is no last known location
+     * An unknown location.
+     * @param reason The [Reason] the location is unknown.
      */
-    data class UnknownLocationWithNoLastLocation(override val reason: UnknownReason) : UnknownLocation(reason)
+    sealed class UnknownLocation(open val reason: Reason) : Location() {
+
+        enum class Reason {
+            PERMISSION_DENIED,
+            NO_GPS,
+            NOT_CLEAR
+        }
+
+        /**
+         * The current location is unknown, and there is no last known location
+         * @param reason The [Reason] the location is unknown.
+         */
+        data class WithoutLastLocation(override val reason: Reason) : UnknownLocation(reason)
+
+        /**
+         * The current location is unknown, but there is a last known location
+         * @param lastKnownLocation The [KnownLocation] last received before the location became unknown.
+         * @param reason The [Reason] the location is unknown.
+         */
+        data class WithLastLocation(val lastKnownLocation: KnownLocation, override val reason: Reason) : UnknownLocation(reason)
+    }
+}
+
+/**
+ * A Location coordinate defined by degrees, minutes and seconds.
+ * @param degrees The degrees of the coordinate
+ * @param minutes The minutes of the coordinate
+ * @param seconds The seconds of the coordinate
+ * @param windDirection The [WindDirection] of the coordinate
+ */
+data class DMSCoordinate(val degrees: Int, val minutes: Int, val seconds: Double, val windDirection: WindDirection) {
+
+    enum class WindDirection {
+        North,
+        West,
+        South,
+        East
+    }
+
+    companion object {
+
+        /**
+         * Converts a latitude coordinate to its [DMSCoordinate]
+         */
+        fun fromLatitude(latitude: Double): DMSCoordinate {
+            val windDirection = if (latitude >= 0.0) WindDirection.North else WindDirection.South
+            return fromDecimalDegrees(latitude, windDirection)
+        }
+
+        /**
+         * Converts a longitude coordinate to its [DMSCoordinate]
+         */
+        fun fromLongitude(longitude: Double): DMSCoordinate {
+            val windDirection = if (longitude >= 0.0) WindDirection.East else WindDirection.West
+            return fromDecimalDegrees(longitude, windDirection)
+        }
+
+        private fun fromDecimalDegrees(decimalDegrees: Double, windDirection: WindDirection): DMSCoordinate {
+            val degrees = decimalDegrees.absoluteValue.toInt()
+            val minutesWithRemainder = (decimalDegrees - degrees) * 60
+            val minutes = minutesWithRemainder.toInt()
+            val seconds = ((minutesWithRemainder - minutes) * 60)
+            return DMSCoordinate(degrees, minutes, seconds, windDirection)
+        }
+    }
 
     /**
-     * The current location is unknown, but there is a last known location
+     * Decimal representation of this coordinate
      */
-    data class UnknownLocationWithLastLocation(val lastKnownLocation: KnownLocation, override val reason: UnknownReason) : UnknownLocation(reason)
+    val decimalDegrees: Double get() {
+        val sign = when (windDirection) {
+            WindDirection.North, WindDirection.East -> 1.0
+            WindDirection.South, WindDirection.West -> -1.0
+        }
+        return sign * degrees.toDouble() * (minutes.toDouble() / 60.0) * (seconds / 3600.0)
+    }
+
+    override fun toString(): String {
+        return "$degrees°${minutes}\'${seconds}\" ${windDirection.name}"
+    }
 }

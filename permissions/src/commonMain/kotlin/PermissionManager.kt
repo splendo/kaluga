@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
  * Manager for maintaining the [PermissionState] of a given [Permission]
  * @param stateRepo The [PermissionStateRepo] managed by this manager.
  */
-abstract class PermissionManager<P : Permission>internal constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
+abstract class PermissionManager<P : Permission> constructor(private val stateRepo: PermissionStateRepo<P>) : CoroutineScope by stateRepo {
 
     /**
      * Requests the permission

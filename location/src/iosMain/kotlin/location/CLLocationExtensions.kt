@@ -1,5 +1,3 @@
-package com.splendo.kaluga.location
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.location
 
 import kotlinx.cinterop.useContents
 import platform.CoreLocation.CLLocation

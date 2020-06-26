@@ -33,12 +33,12 @@ open class BaseTest {
     private val testListener = GlobalTestListener()
 
     @BeforeTest
-    fun beforeTest() {
+    open fun beforeTest() {
         testListener.beforeTest()
     }
 
     @AfterTest
-    fun afterTest() {
+    open fun afterTest() {
         testListener.afterTest()
     }
 

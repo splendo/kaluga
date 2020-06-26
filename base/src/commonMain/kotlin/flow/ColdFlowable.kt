@@ -33,10 +33,9 @@ import kotlinx.coroutines.sync.withLock
  * @param T the type of the value to flow on
  * @param initialize method for determining the initial value of the flow. Will be called when the flow transitions from zero to one or more observers.
  * @param deinitialize method for deinitializing the flow, passing the last known value. Will be called when the flow transitions from one or more to zero observers.
- * @param autoClose When set to `true` automatically closes the flow when all observers are removed. Defaults to `true`.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, private val autoClose: Boolean = true, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
+class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
     private val counterMutex = Mutex()
     private var flowingCounter = 0
@@ -45,18 +44,18 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
     override fun flow(flowConfig: FlowConfig): Flow<T> {
         return super.flow(flowConfig).onStart {
                 counterMutex.withLock {
-                    if (flowingCounter <= 0 ) {
+                    flowingCounter += 1
+                    if (flowingCounter == 1 ) {
                         set(initialize())
                     }
-                    flowingCounter += 1
+
                 }
             }.onCompletion {
                 counterMutex.withLock {
                     flowingCounter -= 1
                     if (flowingCounter == 0) {
                         val finalValue = currentValue()
-                        if (autoClose)
-                            close()
+                        cancelFlows()
                         finalValue?.let {
                             deinitialize(finalValue)
                         }
@@ -64,7 +63,5 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                 }
             }
     }
-
-    private suspend fun currentValue(): T? = channel?.value?.asFlow()?.first()
 
 }

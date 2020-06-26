@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.test.flow
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
@@ -34,8 +35,8 @@ import kotlin.test.*
 class BaseFlowableTest : FlowableTest<String>() {
 
     @BeforeTest
-    override fun setUp() {
-        super.setUp()
+    override fun beforeTest() {
+        super.beforeTest()
 
         flowable.complete(HotFlowable(""))
     }
@@ -71,9 +72,6 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
         flowable.await().set("foo")
-        action {
-            // no action
-        }
         test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
@@ -99,13 +97,14 @@ class BaseFlowableTest : FlowableTest<String>() {
     }
 
     @Test
-    fun testCloseFlow() = runBlocking {
+    fun testStopFlow() = runBlocking {
         val flowable = flowable.await()
-        val scope = MainScope()
+        val scope = MultiplatformMainScope()
         val collectionJob = scope.async {
             flowable.flow().collect {  }
         }
-        flowable.close()
+        delay(100)// TODO instead listen to flow subscriber count
+        flowable.cancelFlows()
         collectionJob.await()
     }
 

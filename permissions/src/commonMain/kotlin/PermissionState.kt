@@ -18,8 +18,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
+import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [Permission]
@@ -30,7 +32,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission>internal constructor(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
+    class Allowed<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
 
         internal fun deny(locked: Boolean): Denied<P> {
             return if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
@@ -59,7 +61,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
         /**
          * When in this state the [Permission] is denied but can be requested. Use [request] to request the permission.
          */
-        class Requestable<P : Permission> internal constructor(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+        class Requestable<P : Permission>(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
 
             suspend fun request() {
                 permissionManager.requestPermission()
@@ -77,7 +79,10 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
  * Since this is a [ColdStateRepo], it will only monitor for changes to permissions while being observed.
  * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
  */
-abstract class PermissionStateRepo<P : Permission> internal constructor(private val monitoringInterval: Long = defaultMonitoringInterval) : ColdStateRepo<PermissionState<P>>() {
+abstract class PermissionStateRepo<P : Permission>(
+    private val monitoringInterval: Long = defaultMonitoringInterval,
+    coroutineContext: CoroutineContext = MainQueueDispatcher
+) : ColdStateRepo<PermissionState<P>>(coroutineContext) {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000

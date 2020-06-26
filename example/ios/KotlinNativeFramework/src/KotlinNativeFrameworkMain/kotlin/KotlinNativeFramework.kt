@@ -16,11 +16,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.example.shared.LocationPrinter
-import com.splendo.kaluga.location.LocationFlowable
-import com.splendo.kaluga.logging.debug
-import platform.CoreLocation.CLLocationManager
-import platform.UIKit.UILabel
 import ru.pocketbyte.kydra.log.KydraLog
 
 class KotlinNativeFramework {
@@ -29,13 +24,4 @@ class KotlinNativeFramework {
 
     // expose a dependency to Swift as an example
     fun logger(): ru.pocketbyte.kydra.log.Logger = KydraLog.logger
-
-    fun location(label: UILabel, locationManager: CLLocationManager) {
-        val location = LocationFlowable.Builder(locationManager).create()
-        LocationPrinter(location).printTo {
-            label.text = it
-        }
-        debug("proceed executing after location coroutines")
-    }
-
 }

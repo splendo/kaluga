@@ -27,7 +27,6 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
@@ -114,7 +113,6 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
 
     abstract val flowable: BaseFlowable<S>
 
-    @Suppress("LeakingThis") // we are using this method so we can hold an initial state that holds this repo as a reference.
     internal lateinit var changedState:S
     private suspend fun setChangedState(value: S) {
         changedState = value
@@ -166,22 +164,22 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * Makes the current [State] available in [action]. The state is guaranteed not to change during the execution of [action].
      * This operation ensures atomic state observations, so the state will not change while the [action] is being executed.
      *
-     * @param action the function for determining which [State] to transition to.
+     * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself (however a different state might be current at that point).
+     *
+     * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
-    suspend fun useState(action:suspend (S) -> Unit) {
+    suspend fun useState(action:suspend (S) -> Unit) = coroutineScope {
         stateMutex.withLock {
             val result = EmptyCompletableDeferred()
-            coroutineScope {
-                launch {
-                    try {
-                        action(state())
-                        result.complete()
-                    } catch(e: Throwable) {
-                        result.completeExceptionally(e)
-                    }
+            launch {
+                try {
+                    action(state())
+                    result.complete()
+                } catch (e: Throwable) {
+                    result.completeExceptionally(e)
                 }
             }
-            return result.await()
+            return@coroutineScope result.await()
         }
     }
 
@@ -192,35 +190,35 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * If the [action] returns [State.remain] no state transition will occur.
      * Since this operation is atomic, the [action] should not directly call [takeAndChangeState] itself. If required to do this, handle the additional transition in a separate coroutine.
      *
+     * This method uses a separate coroutineScope, meaning it will suspend until all child Jobs are completed, including those that asynchronously call this method itself.
+     *
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
      */
-    suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S {
+    suspend fun takeAndChangeState(action: suspend (S) -> suspend () -> S): S = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
         stateMutex.withLock {
             val result = CompletableDeferred<S>()
-            coroutineScope {
-                launch {
-                    try {
-                        val beforeState = state()
-                        val transition = action(beforeState)
-                        // No Need to Transition if remain is used
-                        if (transition == beforeState.remain) {
-                            result.complete(beforeState)
-                            return@launch
-                        }
-                        (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
-                        val newState = transition()
-                        (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
-                        (newState as? HandleBeforeOldStateIsRemoved<S>)?.beforeOldStateIsRemoved(beforeState)
-                        setChangedState(newState)
-                        (beforeState as? HandleAfterNewStateIsSet<S>)?.afterNewStateIsSet(newState)
-                        (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
-                        result.complete(newState)
-                    } catch (e: Throwable) {
-                        result.completeExceptionally(e)
+            launch {
+                try {
+                    val beforeState = state()
+                    val transition = action(beforeState)
+                    // No Need to Transition if remain is used
+                    if (transition == beforeState.remain) {
+                        result.complete(beforeState)
+                        return@launch
                     }
+                    (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
+                    val newState = transition()
+                    (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
+                    (newState as? HandleBeforeOldStateIsRemoved<S>)?.beforeOldStateIsRemoved(beforeState)
+                    setChangedState(newState)
+                    (beforeState as? HandleAfterNewStateIsSet<S>)?.afterNewStateIsSet(newState)
+                    (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
+                    result.complete(newState)
+                } catch (e: Throwable) {
+                    result.completeExceptionally(e)
                 }
             }
-            return result.await()
+            return@coroutineScope result.await()
         }
     }
 
@@ -243,19 +241,13 @@ abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = Mai
  */
 abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
-    private var coldFlowable: ColdFlowable<S>? = null
-    override val flowable: ColdFlowable<S> get() {
-        return coldFlowable ?: kotlin.run {
-            ColdFlowable({
-                initialize()
-            }, {
-                    state ->
-                state.finalState()
-                this.deinitialize(state)
-                this.coldFlowable = null
-            }).also { this.coldFlowable = it }
-        }
-    }
+    override val flowable: ColdFlowable<S> = ColdFlowable({
+        initialize()
+    }, {
+            state ->
+        state.finalState()
+        deinitialize(state)
+    })
 
     abstract suspend fun deinitialize(state: S)
 

@@ -78,9 +78,9 @@ actual class CalendarPermissionManager(
     }
 }
 
-actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) {
+actual class CalendarPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCalendarPermissionManagerBuilder {
 
-    actual fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): CalendarPermissionManager {
+    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
         return CalendarPermissionManager(bundle, calendar, repo)
     }
 }

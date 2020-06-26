@@ -21,28 +21,32 @@ package com.splendo.kaluga.permissions.bluetooth
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Bluetooth]
  */
 expect class BluetoothPermissionManager : PermissionManager<Permission.Bluetooth>
 
-/**
- * A builder for creating a [BluetoothPermissionManager]
- */
-expect class BluetoothPermissionManagerBuilder {
+interface BaseBluetoothPermissionManagerBuilder {
     /**
      * Creates a [BluetoothPermissionManager]
      * @param repo The [BluetoothPermissionStateRepo] associated with the [Permission.Bluetooth]
      */
-    fun create(repo: BluetoothPermissionStateRepo): BluetoothPermissionManager
+    fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth>
 }
+
+/**
+ * A builder for creating a [BluetoothPermissionManager]
+ */
+expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [Permission.Bluetooth]
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class BluetoothPermissionStateRepo(builder: BluetoothPermissionManagerBuilder) : PermissionStateRepo<Permission.Bluetooth>() {
+class BluetoothPermissionStateRepo(builder: BaseBluetoothPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Bluetooth>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Bluetooth> = builder.create(this)
 }

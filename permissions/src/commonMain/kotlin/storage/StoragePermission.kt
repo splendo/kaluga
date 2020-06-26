@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.storage
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Storage]
@@ -36,16 +37,18 @@ expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
  */
 typealias PhotosPermissionManager = StoragePermissionManager
 
-/**
- * A builder for creating a [StoragePermissionManager]
- */
-expect class StoragePermissionManagerBuilder {
+interface BaseStoragePermissionManagerBuilder {
     /**
      * Creates a [StoragePermissionManager]
      * @param repo The [StoragePermissionStateRepo] associated with the [Permission.Storage]
      */
-    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): StoragePermissionManager
+    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage>
 }
+
+/**
+ * A builder for creating a [StoragePermissionManager]
+ */
+expect class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder
 
 /**
  * Alias for [StoragePermissionManagerBuilder]
@@ -55,8 +58,9 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
 /**
  * A [PermissionStateRepo] for [Permission.Storage]
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
+ * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class StoragePermissionStateRepo(storage: Permission.Storage, builder: StoragePermissionManagerBuilder) : PermissionStateRepo<Permission.Storage>() {
+class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Storage>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)
 }
