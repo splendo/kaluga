@@ -1,0 +1,15 @@
+{
+  "images" : [
+    {
+      "filename" : "error-black-18dp.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "template-rendering-intent" : "template"
+  }
+}

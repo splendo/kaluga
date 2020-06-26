@@ -1,0 +1,27 @@
+"app_name" = "Kaluga Example";
+"show_alert" = "Show Alert";
+"dismissible_alert" = "Dismissible Alert";
+"alert_list" = "Show Alert List";
+"show_loading_indicator_system" = "Show Loading Indicator (System)";
+"show_loading_indicator_custom" = "Show Loading Indicator (Custom)";
+
+"permissions_list" = "Permissions List";
+"permissions_bluetooth" = "Bluetooth Demo";
+"permissions_calendar" = "Calendar Demo";
+"permissions_camera" = "Camera Demo";
+"permissions_contacts" = "Contacts Demo";
+"permissions_location" = "Location Demo";
+"permissions_microphone" = "Microphone Demo";
+"permissions_notifications" = "Notifications Demo";
+"permissions_storage" = "Storage Demo";
+
+"permission_allowed" = "The permission has been granted";
+"permission_requestable" = "The permission can be requested";
+"permission_denied" = "The permission has been denied";
+
+"permission_request" = "Request Permission";
+"permission_request_success" = "Permission requested successfully";
+"permission_request_failed" = "Permission request failed";
+
+"architecture_details" = "Show Details";
+"architecture_details_inverse" = "Inverse Input";

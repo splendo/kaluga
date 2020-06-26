@@ -23,7 +23,6 @@ plugins {
 }
 
 allprojects {
-
     repositories {
         google()
         jcenter()
@@ -32,6 +31,13 @@ allprojects {
 // uncomment for early access / dev releases
 //        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
 //        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+    }
+
+    tasks.withType(Test) {
+        testLogging {
+            events "standardOut", "started", "passed", "skipped", "failed"
+        }
+        testLogging.exceptionFormat = 'full'
     }
 }
 
