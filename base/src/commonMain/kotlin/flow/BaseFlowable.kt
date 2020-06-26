@@ -32,7 +32,7 @@ import kotlinx.coroutines.flow.first
  * @param T the value type to flow on.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-abstract class BaseFlowable<T>(protected val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
+abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
     private var channel: BroadcastChannel<T>? = null
     protected fun ensureChannel():BroadcastChannel<T> {
