@@ -12,7 +12,7 @@ steps:
 
   - name: 'gcr.io/$PROJECT_ID/android:29'
     id: check
-    args: ["./gradlew", "--info", "check"]
+    args: ["./gradlew", "check"]
     env:
       - 'TERM=dumb'
       # can only use one gradle home concurrently
