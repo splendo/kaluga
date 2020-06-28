@@ -14,7 +14,9 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 dependencies {
-    implementation("no.nordicsemi.android.support.v18:scanner:1.4.2")
+    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
+    implementation("com.google.android.gms:play-services-location:$play_services_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.5")
 }
 
 kotlin {
@@ -22,7 +24,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":permissions", ""))
-                implementation(project(":logging", ""))
             }
         }
         commonTest {

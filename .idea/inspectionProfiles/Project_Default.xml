@@ -1,0 +1,7 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="OptionalExpectation" enabled="false" level="INFORMATION" enabled_by_default="false" />
+    <inspection_tool class="PackageDirectoryMismatch" enabled="true" level="INFORMATION" enabled_by_default="true" />
+  </profile>
+</component>

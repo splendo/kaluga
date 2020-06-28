@@ -143,9 +143,9 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
 
             suspend fun discoverDevice(identifier: Identifier, rssi: Int, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device) : suspend () -> ScanningState {
                 return discoveredDevices.firstOrNull { it.identifier == identifier }?.let { knownDevice ->
-                    if (!knownDevice.flowable.isInitialized()) {
-                        knownDevice.flowable.value
-                    }
+                    // if (!knownDevice.flowable.isInitialized()) {
+                    //     knownDevice.flowable.value
+                    // }
                     knownDevice.takeAndChangeState { state ->
                         state.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
                     }
