@@ -18,14 +18,12 @@
 package com.splendo.kaluga.example.shared.viewmodel
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toSubject
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,7 +45,7 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
 
     val tabs = observableOf(listOf(Tab.FeatureList, Tab.Info))
 
-    private val _tab  = BaseFlowable<Tab>().apply { runBlocking{set(Tab.FeatureList)} }
+    private val _tab  = HotFlowable<Tab>(Tab.FeatureList)
     val tab = _tab.toSubject(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {

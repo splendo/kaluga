@@ -22,21 +22,28 @@ import KotlinNativeFramework
 
 class LocationViewController: UIViewController {
 
+    struct Const {
+        static let permission = Permission.Location(background: false, precise: true)
+    }
+    
     //MARK: Properties
-
+    
     @IBOutlet weak var label: UILabel!
+    
+    lazy var viewModel = KNArchitectureFramework().createLocationViewModel(permission: Const.permission, repoBuilder: KNLocationFramework().getPermissionRepoBuilder())
+    private var lifecycleManager: LifecycleManager!
+    
+    deinit {
+        lifecycleManager.unbind()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        label.text = KotlinNativeFramework().hello()
-
-        // show how dependencies are also exposed if we declare them in a method
-        KotlinNativeFramework().logger().log(level: Kydra_logLogLevel.debug, tag: "hidra", message: "hi")
-
-        let lm = CLLocationManager()
-        lm.requestWhenInUseAuthorization()
-
-        KotlinNativeFramework().location(label: label, locationManager: lm)
+        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] (disposeBag) in
+            self?.viewModel.location.observe(onNext: { (location) in
+                self?.label.text = location as? String
+                }).addTo(disposeBag: disposeBag)
+        })
     }
 }

@@ -2,11 +2,26 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.splendo.kaluga.example">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <!-- If your app targets Android 9 or lower,  -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
+
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".ExampleApplication"
@@ -28,17 +43,21 @@
         <activity android:name=".location.LocationActivity"
                   android:label="Location"/>
         <activity android:name=".permissions.PermissionsDemoListActivity"
-                  android:label="Permissions list"/>
-        <activity android:name=".permissions.bluetooth.BluetoothPermissionsDemoActivity"
-                  android:label="Bluetooth"/>
+                  android:label="@string/permissions_list"/>
+        <activity android:name=".permissions.PermissionsDemoActivity" android:label="Permissions"/>
         <activity android:name=".alerts.AlertsActivity"
                   android:label="Alerts"/>
         <activity android:name=".loading.LoadingActivity"
                   android:label="Loading Indicator"/>
+        <activity android:name=".keyboard.KeyboardManagerActivity"
+            android:label="@string/keyboard_manager"/>
         <activity android:name=".architecture.ArchitectureInputActivity"
             android:label="Architecture"/>
         <activity android:name=".architecture.ArchitectureDetailsActivity"
             android:label="Architecture"/>
+
+        <service android:name=".location.LocationBackgroundService"/>
+
     </application>
 
 </manifest>

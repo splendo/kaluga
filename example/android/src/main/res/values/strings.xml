@@ -6,6 +6,32 @@
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
 
+    <string name="permissions_list">Permissions List</string>
+    <string name="permissions_bluetooth">Bluetooth Demo</string>
+    <string name="permissions_calendar">Calendar Demo</string>
+    <string name="permissions_camera">Camera Demo</string>
+    <string name="permissions_contacts">Contacts Demo</string>
+    <string name="permissions_location">Location Demo</string>
+    <string name="permissions_microphone">Microphone Demo</string>
+    <string name="permissions_notifications">Notifications Demo</string>
+    <string name="permissions_storage">Storage Demo</string>
+
+    <string name="permission_allowed">The permission has been granted</string>
+    <string name="permission_requestable">The permission can be requested</string>
+    <string name="permission_denied">The permission has been denied</string>
+
+    <string name="permission_request">Request Permission</string>
+    <string name="permission_request_success">Permission requested successfully</string>
+    <string name="permission_request_failed">Permission request failed</string>
+
     <string name="architecture_details">Show Details</string>
     <string name="architecture_details_inverse">Inverse Input</string>
+    <string name="keyboard_manager">Keyboard</string>
+    <string name="show_keyboard">Show Keyboard</string>
+    <string name="hide_keyboard">Hide Keyboard</string>
+
+    <string name="location_background">Kaluga Background</string>
+    <string name="location_enable_background">Enable Background</string>
+    <string name="location_disable_background">Disable Background</string>
+
 </resources>

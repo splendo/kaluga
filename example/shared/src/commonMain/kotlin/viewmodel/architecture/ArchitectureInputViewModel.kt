@@ -26,8 +26,7 @@ import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.observable.toSubject
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
@@ -41,10 +40,10 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")
 
-    private val _nameInput  = BaseFlowable<String>().apply { runBlocking{set("")} }
+    private val _nameInput  = HotFlowable("")
     val nameInput = _nameInput.toSubject(coroutineScope)
 
-    private val _numberInput  = BaseFlowable<String>().apply { runBlocking{set("")} }
+    private val _numberInput  = HotFlowable<String>("")
     val numberInput = _numberInput.toSubject(coroutineScope)
 
     private val _isNameValid: Flow<Boolean> get() {return _nameInput.flow().map {

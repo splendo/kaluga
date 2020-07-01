@@ -1,3 +1,21 @@
+/*
+
+Copyright 2019 Splendo Consulting B.V. The Netherlands
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+*/
+
 package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
@@ -9,8 +27,10 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
@@ -19,9 +39,24 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInpu
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardHostingView
+import com.splendo.kaluga.location.LocationStateRepoBuilder
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.net.URL
+
+val utilitiesModule = module {
+    single { Permissions(PermissionsBuilder()) }
+    single { LocationStateRepoBuilder() }
+}
 
 val viewModelModule = module {
     viewModel {
@@ -34,6 +69,7 @@ val viewModelModule = module {
             }
         )
     }
+
     viewModel {
         FeatureListViewModel(
             Navigator { action ->
@@ -43,9 +79,11 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
+                    is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
                 }
             })
     }
+
     viewModel {
         InfoViewModel(
             Navigator { action ->
@@ -62,6 +100,18 @@ val viewModelModule = module {
                 }
             })
     }
+
+    viewModel {
+        PermissionsListViewModel(
+            Navigator {
+                NavigationSpec.Activity(PermissionsDemoActivity::class.java)
+            })
+    }
+
+    viewModel { (permission: Permission) -> PermissionViewModel(get(), permission) }
+
+    viewModel { (permission: Permission.Location) -> LocationViewModel(permission, get()) }
+
     viewModel {
         ArchitectureInputViewModel(
             Navigator {
@@ -69,9 +119,14 @@ val viewModelModule = module {
             }
         )
     }
+
     viewModel { (name: String, number: Int) ->
         ArchitectureDetailsViewModel(name, number, Navigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
+    }
+
+    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, keyboardHostingView: () -> KeyboardHostingView) ->
+        KeyboardViewModel(keyboardManagerBuilder, keyboardHostingView)
     }
 }

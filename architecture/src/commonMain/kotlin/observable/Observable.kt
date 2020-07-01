@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
@@ -65,9 +65,9 @@ expect fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): 
 
 expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
-expect fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+expect fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
-expect fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
+expect fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 
 /**
  * Converts a value to an [Observable]

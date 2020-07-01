@@ -1,4 +1,3 @@
-package com.splendo.kaluga.flow
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,26 +16,52 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.flow
+
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.first
 
-open class BaseFlowable<T>(private val channel: BroadcastChannel<T> = ConflatedBroadcastChannel()) : Flowable<T> {
+/**
+ * Base definition of [Flowable]. Abstract class, use [ColdFlowable] or [HotFlowable] instead.
+ *
+ * @param T the value type to flow on.
+ * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
+ */
+abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    final override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return flowConfig.apply(channel.asFlow())
+    private var channel: BroadcastChannel<T>? = null
+    protected fun ensureChannel():BroadcastChannel<T> {
+        return channel ?: channelFactory().also { channel = it }
     }
 
-    suspend fun set(value: T) {
-        channel.send(value)
+    override fun flow(flowConfig: FlowConfig): Flow<T> {
+        val channel = ensureChannel()
+        if (channel.isClosedForSend)
+            error("channelFactory returned a channel closed for sending")
+        return channel.asFlow().let { flowConfig.apply(it) }
     }
 
-    fun setBlocking(value:T) {
+    override suspend fun set(value: T) {
+        channel?.send(value) ?:
+            warn("'$value' offered to Flowable but there is no channel active")
+    }
+
+    override fun cancelFlows() {
+        channel?.close()
+        channel = null
+    }
+
+    override fun setBlocking(value:T) {
         // if a conflated broadcast channel is used it always accepts input non-blocking (provided the channel is not closed)
         runBlocking {
-            channel.send(value)
+            set(value)
         }
     }
+
+    protected suspend fun currentValue(): T? = channel?.asFlow()?.first()
 }

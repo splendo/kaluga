@@ -27,8 +27,8 @@ class ArchitectureDetailsViewController: UIViewController {
         return vc
     }
     
-    var viewModel: SharedArchitectureDetailsViewModel!
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    var viewModel: ArchitectureDetailsViewModel!
+    private var lifecycleManager: LifecycleManager!
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var numberLabel: UILabel!

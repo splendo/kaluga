@@ -21,7 +21,7 @@ import KotlinNativeFramework
 
 class AlertsViewController: UITableViewController {
 
-    private lazy var alertPresenter = SharedAlertPresenter(builder: AlertsAlertBuilder(viewController: self))
+    private lazy var alertPresenter = AlertPresenter(builder: AlertBuilder(viewController: self))
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

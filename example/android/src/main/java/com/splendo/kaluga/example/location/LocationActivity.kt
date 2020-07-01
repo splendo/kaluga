@@ -1,5 +1,3 @@
-package com.splendo.kaluga.example.location
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,79 +16,46 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+package com.splendo.kaluga.example.location
+
+import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.coroutineScope
-import com.google.android.gms.location.LocationServices
+import androidx.lifecycle.Observer
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.location.Location
-import com.splendo.kaluga.location.LocationFlowable
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.android.synthetic.main.activity_main.info
+import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.permissions.Permission
+import kotlinx.android.synthetic.main.activity_location.*
+import org.koin.core.parameter.parametersOf
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@SuppressLint("SetTextI18n")
-class LocationActivity : AppCompatActivity(R.layout.activity_main) {
+class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.activity_location) {
 
-    private lateinit var location: LocationFlowable
-    
+    companion object {
+        private val permission = Permission.Location(background = false, precise = true)
+    }
+
+    override val viewModel: LocationViewModel by viewModel {
+        parametersOf(permission)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-            flowLocation()
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
+        enable_background.setOnClickListener {
+            startService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
-    }
 
-    companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 1
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (permissions.size == 1 &&
-                permissions[0] === Manifest.permission.ACCESS_FINE_LOCATION &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-                flowLocation()
-            } else {
-                info.text = "You must grant the location permission for this example to work"
-            }
+        disable_background.setOnClickListener {
+            stopService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
+
+        viewModel.location.observe(this, Observer {
+            info.text = it
+            info.animate().withEndAction {
+                info.animate().setDuration(10000).alpha(0.12f).start()
+            }.alpha(1f).setDuration(100).start()
+        })
     }
 
-    private fun flowLocation() {
-        lifecycle.coroutineScope.launch {
-            val client = LocationServices.getFusedLocationProviderClient(
-                this@LocationActivity
-            )
-
-            location = LocationFlowable.Builder(client).create().apply {
-                set(Location.UnknownLocationWithNoLastLocation(Location.UnknownReason.NOT_CLEAR))
-            }
-            location.flow().collect { value ->
-                info.text = "location: $value"
-                info.animate().withEndAction {
-                    info.animate().setDuration(10000).alpha(0.12f).start()
-                }.alpha(1f).setDuration(100).start()
-            }
-        }
-    }
 }

@@ -1,4 +1,3 @@
-package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,38 +16,67 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
+package com.splendo.kaluga.test
+
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
-import kotlinx.coroutines.*
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlin.test.BeforeTest
 
 typealias TestBlock<T> = suspend(T)->Unit
 typealias ActionBlock = suspend()->Unit
 
 abstract class FlowableTest<T>: BaseTest() {
 
-    open val filter:suspend(T)->Boolean = { true }
+    @BeforeTest
+    override fun beforeTest() {
+        super.beforeTest()
 
-    abstract val flowable: Flowable<T>
+        flowable = CompletableDeferred()
+        flowable.invokeOnCompletion { flowTest = FlowTest(flowable.getCompleted()) }
+    }
+
+    lateinit var flowable: CompletableDeferred<Flowable<T>>
+    lateinit var flowTest: FlowTest<T>
+
+    var filter:suspend(T)->Boolean
+        get() = flowTest.filter
+        set(newValue) {flowTest.filter = newValue }
+
+
+    fun testWithFlow(block: suspend FlowTest<T>.() -> Unit) {
+        flowTest.testWithFlow(block)
+    }
+}
+
+open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) {
+
+    open var filter:suspend(T)->Boolean = { true }
 
     private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
 
     lateinit var job: Job
 
-    private val mainScope = MainScope()
-
-    private val testChannel = Channel<Pair<TestBlock<T>, CompletableDeferred<Unit>>>(Channel.UNLIMITED)
+    private lateinit var testChannel: Channel<Pair<TestBlock<T>, EmptyCompletableDeferred>>
 
     private suspend fun endFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
-        debug("Ending flow")
-        testChannel.close()
         debug("test channel closed")
         job.cancel()
+        debug("Ending flow")
+        testChannel.close()
         tests.clear()
     }
 
@@ -66,24 +94,24 @@ abstract class FlowableTest<T>: BaseTest() {
         }
     }
 
-    fun runBlockingWithFlow(block:suspend()->Unit) {
-        runBlocking {
-            startFlow()
-            block()
-            endFlow()
-        }
+    fun testWithFlow(block:suspend FlowTest<T>.()->Unit) = runBlocking {
+        testChannel = Channel(Channel.UNLIMITED)
+        // startFlow is only called when the first test block is offered
+        block(this@FlowTest)
+        endFlow()
     }
 
-    private suspend fun startFlow() {
+    private fun startFlow() {
         debug("start flow...")
-        job = mainScope.launch {
-            debug("main scope launched, about to flow")
+        job = coroutineScope.launch {
+            debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
             flowable.flow().filter(filter).collect { value ->
-                debug("in flow received $value")
+                debug("in flow received [$value]")
                 val test = testChannel.receive()
-                debug("receive test $test")
+                debug("received test block $test")
                 try {
                     test.first(value)
+                    debug("ran test block $test")
                     test.second.complete(Unit)
                 } catch (e: Throwable) {
                     debug("Exception when testing...")
@@ -91,7 +119,7 @@ abstract class FlowableTest<T>: BaseTest() {
                 }
                 debug("flow completed")
             }
-            debug("flow start scope launched")
+            debug("flow start scope was launched")
         }
     }
 
@@ -101,7 +129,12 @@ abstract class FlowableTest<T>: BaseTest() {
         debug("did action")
     }
 
+    var firstTestBlock = true
     fun test(skip:Int=0, test:TestBlock<T>) {
+        if (firstTestBlock) {
+            firstTestBlock = false
+            startFlow()
+        }
         repeat(skip) {
             test {}
         }

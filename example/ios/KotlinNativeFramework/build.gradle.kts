@@ -12,17 +12,20 @@ repositories {
 
 kotlin {
     xcode {
-        setupFramework("KotlinNativeFramework")
+        setupFramework("KotlinNativeFramework") {
+            export(project(":shared"))
+            transitiveExport = true
+        }
     }
 
     sourceSets {
         getByName("KotlinNativeFrameworkMain") {
 
             val ext = (gradle as ExtensionAware).extra
-            var primaryIosArch = ext["ios_primary_arch"]
+            val primaryIosArch = ext["ios_primary_arch"]
 
             dependencies {
-                implementation(project(":shared", "${primaryIosArch}Default"))
+                api(project(":shared", "${primaryIosArch}Default"))
             }
         }
     }

@@ -1,9 +1,3 @@
-package com.splendo.kaluga.base
-
-import kotlinx.coroutines.*
-import platform.darwin.*
-import kotlin.coroutines.CoroutineContext
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,11 +16,25 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.base
+
+import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.*
+import platform.Foundation.NSOperationQueue
+import platform.Foundation.NSThread
+import platform.darwin.*
+import kotlin.coroutines.CoroutineContext
+import kotlin.native.concurrent.*
+
 internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
+
+    override fun isDispatchNeeded(context: CoroutineContext) =  !NSThread.currentThread().isMainThread
 
     // Dispatch block on given queue
     override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatchQueue) { block.run() }
+        dispatch_async(dispatchQueue) {
+            block.run()
+        }
     }
 
     // Support Delay
@@ -40,3 +48,45 @@ internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : 
 }
 
 actual val MainQueueDispatcher: CoroutineDispatcher = NsQueueDispatcher(dispatch_get_main_queue())
+
+inline fun <reified T> executeAsync(queue: NSOperationQueue, crossinline producerConsumer: () -> Pair<T, (T) -> Unit>) {
+    dispatch_async_f(queue.underlyingQueue, DetachedObjectGraph {
+        producerConsumer()
+    }.asCPointer(), staticCFunction { it ->
+        val result = DetachedObjectGraph<Pair<T, (T) -> Unit>>(it).attach()
+        result.second(result.first)
+    })
+}
+
+inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Unit) = Continuation0(
+    block, staticCFunction { invokerArg ->
+        if (NSThread.isMainThread()) {
+            invokerArg!!.callContinuation0()
+        } else {
+            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
+                args!!.callContinuation0()
+            })
+        }
+    }, singleShot)
+
+inline fun <T1> mainContinuation(singleShot: Boolean = true, noinline block: (T1) -> Unit) = Continuation1(
+    block, staticCFunction { invokerArg ->
+        if (NSThread.isMainThread()) {
+            invokerArg!!.callContinuation1<T1>()
+        } else {
+            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
+                args!!.callContinuation1<T1>()
+            })
+        }
+    }, singleShot)
+
+inline fun <T1, T2> mainContinuation(singleShot: Boolean = true, noinline block: (T1, T2) -> Unit) = Continuation2(
+    block, staticCFunction { invokerArg ->
+        if (NSThread.isMainThread()) {
+            invokerArg!!.callContinuation2<T1, T2>()
+        } else {
+            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
+                args!!.callContinuation2<T1, T2>()
+            })
+        }
+    }, singleShot)

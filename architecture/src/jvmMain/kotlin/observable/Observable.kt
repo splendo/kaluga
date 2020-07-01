@@ -18,7 +18,7 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.flow.BaseFlowable
+import com.splendo.kaluga.base.flow.HotFlowable
 import kotlin.properties.Delegates
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
@@ -109,7 +109,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
     }
 }
 
-class FlowSubject<T>(private val flowable: BaseFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
         coroutineScope.launch(MainQueueDispatcher) {
@@ -132,9 +132,9 @@ actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): 
 
 actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
 
-actual fun <T> BaseFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
+actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
 
-actual fun <T> BaseFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
+actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
 
 actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 

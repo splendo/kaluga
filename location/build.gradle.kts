@@ -3,9 +3,10 @@ plugins {
     id("jacoco")
     id("maven-publish")
     id("com.android.library")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 apply(from = "../gradle/publishable_component.gradle")
 
@@ -20,54 +21,14 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":logging", ""))
+                implementation(project(":permissions", ""))
             }
         }
-        getByName("commonTest") {
+        commonTest {
             dependencies {
                 implementation(project(":test-utils", ""))
-            }
-        }
-    }
-}
-
-val singleSet =ext["ios_one_sourceset"] as Boolean
-
-kotlin {
-    sourceSets {
-        val ext =  (gradle as ExtensionAware).extra
-        getByName("${ext["ios_primary_arch"]}Main") {
-            dependencies {
-                implementation(project(":base", "${ext["ios_primary_arch"]}Default"))
-                implementation(project(":logging", "${ext["ios_primary_arch"]}Default"))
-            }
-        }
-    }
-}
-
-if (!singleSet)  {
-
-    kotlin {
-
-        sourceSets {
-            val ext =  (gradle as ExtensionAware).extra
-            getByName("${ext["ios_secondary_arch"]}Main") {
-                dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
-                }
-            }
-        }
-        sourceSets {
-            val ext =  (gradle as ExtensionAware).extra
-            getByName("${ext["ios_secondary_arch"]}Main") {
-                dependencies {
-                    implementation(project(":base", "${ext["ios_secondary_arch"]}Default"))
-                    implementation(project(":logging", "${ext["ios_secondary_arch"]}Default"))
-                }
             }
         }
     }

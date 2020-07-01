@@ -11,11 +11,11 @@ import KotlinNativeFramework
 
 class InfoViewController : UITableViewController {
     
-    private lazy var viewModel: SharedInfoViewModel = KNArchitectureFramework().createInfoViewModel(parent: self)
+    private lazy var viewModel: InfoViewModel = KNArchitectureFramework().createInfoViewModel(parent: self)
 
     private var buttons = [String]()
     private var onSelected: ((KotlinInt) -> KotlinUnit)? = nil
-    private var lifecycleManager: ArchitectureLifecycleManager!
+    private var lifecycleManager: LifecycleManager!
     
     deinit {
         lifecycleManager.unbind()
