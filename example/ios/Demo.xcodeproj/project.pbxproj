@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
 		2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2017B1C42400175C00F9072A /* PermissionListViewController.swift */; };
+		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
 		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
@@ -69,8 +69,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		2017B1C42400175C00F9072A /* PermissionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionListViewController.swift; sourceTree = "<group>"; };
+		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
@@ -433,6 +433,7 @@
 				ORGANIZATIONNAME = Splendo;
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
+						DevelopmentTeam = 2732HQPVJP;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -699,7 +700,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -818,7 +819,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

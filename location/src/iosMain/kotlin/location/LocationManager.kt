@@ -22,6 +22,7 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import kotlin.coroutines.CoroutineContext
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -85,10 +86,7 @@ actual class LocationManager(
         }
     }
 
-    private val authorizationStatus: CLAuthorizationStatusKotlin get() {
-        val status = CLLocationManager.authorizationStatus()
-        return CLAuthorizationStatusKotlin.values().firstOrNull { it.ordinal == status } ?: CLAuthorizationStatusKotlin.notDetermined
-    }
+    private val authorizationStatus: CLAuthorizationStatusKotlin get() = CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin()
 
     var isMonitoringLocationEnable = false
     var isMonitoringLocationUpdate = false
