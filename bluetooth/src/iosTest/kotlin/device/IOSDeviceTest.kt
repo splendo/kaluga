@@ -19,15 +19,12 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
-import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.mock.MockCharacteristic
 import com.splendo.kaluga.bluetooth.mock.MockDescriptor
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
-import platform.CoreBluetooth.CBCharacteristic
-import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBUUID
 
 class IOSDeviceTest : DeviceTest() {
@@ -49,17 +46,16 @@ class IOSDeviceTest : DeviceTest() {
         return characteristic
     }
 
-    override fun createDescriptor(stateRepo: StateRepo<DeviceState>) : Descriptor {
+    override fun createDescriptor(stateRepo: StateRepo<DeviceState>): Descriptor {
         descriptor = MockDescriptor(characteristic.characteristic.descriptors!!.first(), stateRepo)
         return descriptor
     }
 
-    override fun validateCharacteristicUpdated() : Boolean {
+    override fun validateCharacteristicUpdated(): Boolean {
         return characteristic.didUpdate.isCompleted
     }
 
-    override fun validateDescriptorUpdated() : Boolean {
+    override fun validateDescriptorUpdated(): Boolean {
         return descriptor.didUpdate.isCompleted
     }
-
 }

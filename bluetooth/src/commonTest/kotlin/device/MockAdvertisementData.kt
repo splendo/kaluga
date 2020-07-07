@@ -26,5 +26,5 @@ data class MockAdvertisementData(
     override var serviceUUIDs: List<UUID> = emptyList(),
     override var serviceData: Map<UUID, ByteArray?> = emptyMap(),
     override var txPowerLevel: Int = Int.MIN_VALUE,
-    override var isConnectible: Boolean = true) : BaseAdvertisementData
-
+    override var isConnectible: Boolean = true
+) : BaseAdvertisementData

@@ -34,19 +34,20 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.FlowableTest
+import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.first
 
-abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
+abstract class ScanningStateRepoTest : FlowableTest<ScanningState>() {
 
     private lateinit var permissionsBuilder: MockPermissionsBuilder
     private lateinit var permissions: Permissions
-    private val permissionManager: com.splendo.kaluga.test.permissions.MockPermissionManager<Permission.Bluetooth>
+    private val permissionManager: MockPermissionManager<Permission.Bluetooth>
         get() {
             return permissionsBuilder.bluetoothPMManager
         }
@@ -54,8 +55,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
     lateinit var mockBaseScanner: MockBaseScanner
     lateinit var scanningStateRepo: ScanningStateRepo
 
-    abstract fun createFilter() : Set<UUID>
-    abstract fun createDeviceHolder() : DeviceHolder
+    abstract fun createFilter(): Set<UUID>
+    abstract fun createDeviceHolder(): DeviceHolder
 
     @Test
     fun testStartWithBluetoothEnabled() = runBlocking {
@@ -179,8 +180,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 assertEquals(emptyList(), it.discoveredDevices)
             }
             action {
-                scanningStateRepo.takeAndChangeState {scanningState ->
-                    when(scanningState) {
+                scanningStateRepo.takeAndChangeState { scanningState ->
+                    when (scanningState) {
                         is ScanningState.Enabled.Idle -> scanningState.startScanning(filter)
                         else -> scanningState.remain
                     }
@@ -194,9 +195,9 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
             }
             action {
-                scanningStateRepo.takeAndChangeState {scanningState ->
-                    when(scanningState) {
-                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, 0, advertisementData) {device}
+                scanningStateRepo.takeAndChangeState { scanningState ->
+                    when (scanningState) {
+                        is ScanningState.Enabled.Scanning -> scanningState.discoverDevice(deviceHolder.identifier, 0, advertisementData) { device }
                         else -> scanningState.remain
                     }
                 }
@@ -209,8 +210,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
             }
             action {
-                scanningStateRepo.takeAndChangeState {scanningState ->
-                    when(scanningState) {
+                scanningStateRepo.takeAndChangeState { scanningState ->
+                    when (scanningState) {
                         is ScanningState.Enabled.Scanning -> scanningState.stopScanning
                         else -> scanningState.remain
                     }
@@ -362,8 +363,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
             action {
-                scanningStateRepo.takeAndChangeState {scanningState ->
-                    when(scanningState) {
+                scanningStateRepo.takeAndChangeState { scanningState ->
+                    when (scanningState) {
                         is ScanningState.Enabled.Idle -> scanningState.startScanning(createFilter())
                         else -> scanningState.remain
                     }
@@ -396,8 +397,8 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
             }
             action {
-                scanningStateRepo.takeAndChangeState {scanningState ->
-                    when(scanningState) {
+                scanningStateRepo.takeAndChangeState { scanningState ->
+                    when (scanningState) {
                         is ScanningState.Enabled.Idle -> scanningState.startScanning(createFilter())
                         else -> scanningState.remain
                     }
@@ -423,12 +424,12 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
 
     private fun setupPermissions(coroutineScope: CoroutineScope) {
         permissionsBuilder = MockPermissionsBuilder()
-        permissions = Permissions(permissionsBuilder, coroutineScope)
+        permissions = Permissions(permissionsBuilder, coroutineScope.coroutineContext)
         permissions[Permission.Bluetooth]
     }
 
     private fun setupScanningState(autoRequestPermission: Boolean = true, autoEnableBluetooth: Boolean = true, isEnabled: Boolean = true, permissionState: PermissionState<Permission.Bluetooth> = PermissionState.Allowed(permissionManager), coroutineScope: CoroutineScope) {
-        scanningStateRepo = ScanningStateRepo(permissions, ConnectionSettings(), autoRequestPermission, autoEnableBluetooth, object: BaseScanner.Builder {
+        scanningStateRepo = ScanningStateRepo(permissions, ConnectionSettings(), autoRequestPermission, autoEnableBluetooth, object : BaseScanner.Builder {
 
             override fun create(
                 permissions: Permissions,
@@ -442,7 +443,7 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
                 return mockBaseScanner
             }
         }, coroutineScope)
-        flowable.complete(scanningStateRepo.flowable.value)
+        flowable.complete(scanningStateRepo.flowable)
         mockBaseScanner.isEnabled = isEnabled
         permissionManager.currentState = permissionState
     }
@@ -455,6 +456,4 @@ abstract class ScanningStateRepoTest  : FlowableTest<ScanningState>() {
             }
         }, coroutineScope)
     }
-
-
 }

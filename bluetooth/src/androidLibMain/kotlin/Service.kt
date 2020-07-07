@@ -38,9 +38,8 @@ interface GattServiceWrapper {
     val includedServices: List<GattServiceWrapper>
 
     fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper?
-    fun addCharacteristic(characteristic: BluetoothGattCharacteristic) : Boolean
-    fun addService(service: BluetoothGattService) : Boolean
-
+    fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean
+    fun addService(service: BluetoothGattService): Boolean
 }
 
 class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : GattServiceWrapper {

@@ -44,7 +44,6 @@ actual open class Characteristic(val characteristic: CharacteristicWrapper, stat
     override fun getUpdatedValue(): ByteArray? {
         return characteristic.value
     }
-
 }
 
 interface CharacteristicWrapper {
@@ -64,7 +63,6 @@ interface CharacteristicWrapper {
 
     fun floatValue(formatType: Int, offset: Int): Float
     fun intValue(formatType: Int, offset: Int): Int
-
 }
 
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
@@ -81,14 +79,14 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
     override val service: GattServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
     override val descriptors: List<DescriptorWrapper>
-        get() { return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) }}
+        get() { return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) } }
     override val permissions: Int
         get() { return gattCharacteristic.permissions }
     override val properties: Int
         get() { return gattCharacteristic.properties }
     override var writeType: Int
         get() { return gattCharacteristic.writeType }
-        set(value) {gattCharacteristic.writeType = value}
+        set(value) { gattCharacteristic.writeType = value }
 
     override fun setValue(newValue: String): Boolean {
         return gattCharacteristic.setValue(newValue)

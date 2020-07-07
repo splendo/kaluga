@@ -33,7 +33,6 @@ interface DeviceInfo {
     val rssi: Int
     val advertisementData: BaseAdvertisementData
     fun distance(environmentalFactor: Double = 2.0): Double
-
 }
 
 data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val rssi: Int, override val advertisementData: BaseAdvertisementData) : DeviceInfo {
@@ -49,7 +48,6 @@ data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val 
             return Double.NaN
         val difference = advertisementData.txPowerLevel.toDouble() - rssi.toDouble()
         val factor = 10.0 * environmentalFactor
-        return 10.0.pow(difference/factor)
+        return 10.0.pow(difference / factor)
     }
-
 }

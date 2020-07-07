@@ -63,9 +63,9 @@ interface DescriptorWrapper {
 
 class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
 
-    override val UUID: CBUUID get() {return descriptor.UUID }
+    override val UUID: CBUUID get() { return descriptor.UUID }
     override val value: NSData? get() {
-        return when(descriptor.UUID.uuidString) {
+        return when (descriptor.UUID.uuidString) {
             CBUUIDCharacteristicFormatString -> {
                 descriptor.value as? NSData
             }
@@ -89,7 +89,6 @@ class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : Descripto
             }
             else -> descriptor.value as? NSData
         }
-
     }
 
     override fun readValue(peripheral: CBPeripheral) {
@@ -99,5 +98,4 @@ class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : Descripto
     override fun writeValue(value: NSData, peripheral: CBPeripheral) {
         peripheral.writeValue(value, descriptor)
     }
-
 }

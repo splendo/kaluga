@@ -17,23 +17,28 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.Characteristic
+import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 
-internal abstract class BaseDeviceConnectionManager(internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
-                                                    internal val deviceHolder: DeviceHolder,
-                                                    internal val stateRepo: StateRepo<DeviceState>,
-                                                    coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+internal abstract class BaseDeviceConnectionManager(
+    internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
+    internal val deviceHolder: DeviceHolder,
+    internal val stateRepo: StateRepo<DeviceState>,
+    coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager
     }
 
-
     protected var currentAction: DeviceAction? = null
     protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
-    
+
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
     abstract suspend fun disconnect()
@@ -170,7 +175,6 @@ internal abstract class BaseDeviceConnectionManager(internal val connectionSetti
             handleCurrentActionCompleted()
         }
     }
-
 }
 
 internal expect class DeviceConnectionManager : BaseDeviceConnectionManager

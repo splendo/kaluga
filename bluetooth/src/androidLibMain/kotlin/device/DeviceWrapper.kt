@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
 import android.os.Build
@@ -40,7 +39,6 @@ class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper 
         get() = device.address
     override val bondState: Int
         get() = device.bondState
-
 
     override fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper {
         val gatt = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

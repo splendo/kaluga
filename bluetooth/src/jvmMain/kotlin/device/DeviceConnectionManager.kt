@@ -22,30 +22,20 @@ import kotlinx.coroutines.CoroutineScope
 
 internal actual class DeviceConnectionManager(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope) {
 
-    class Builder() : BaseDeviceConnectionManager.Builder {
+    class Builder : BaseDeviceConnectionManager.Builder {
 
         override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): DeviceConnectionManager {
             return DeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope)
         }
     }
 
-    override suspend fun connect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun connect() {}
 
-    override suspend fun discoverServices() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun discoverServices() {}
 
-    override suspend fun disconnect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun disconnect() {}
 
-    override suspend fun readRssi() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun readRssi() {}
 
-    override suspend fun performAction(action: DeviceAction) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun performAction(action: DeviceAction) {}
 }

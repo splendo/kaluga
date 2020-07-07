@@ -24,7 +24,7 @@ import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
 import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.CBUUID
 
-class IOSScanningStateRepoTest : BluetoothTest() {
+class IOSBluetoothTest : BluetoothTest() {
 
     override fun createFilter(): Set<UUID> {
         return setOf(CBUUID())
@@ -38,4 +38,3 @@ class IOSScanningStateRepoTest : BluetoothTest() {
         return Service(MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID())))), stateRepo)
     }
 }
-

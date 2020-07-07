@@ -32,4 +32,3 @@ class AndroidScanningStateRepoTest : ScanningStateRepoTest() {
         return DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState))
     }
 }
-

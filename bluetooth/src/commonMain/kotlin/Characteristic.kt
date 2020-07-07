@@ -39,8 +39,6 @@ abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepo: St
     }
 
     internal abstract fun createNotificationAction(enabled: Boolean): DeviceAction.Notification
-
 }
 
 expect open class Characteristic : BaseCharacteristic
-

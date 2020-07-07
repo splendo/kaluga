@@ -27,17 +27,25 @@ import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import platform.CoreBluetooth.*
+import platform.CoreBluetooth.CBCentralManager
+import platform.CoreBluetooth.CBCharacteristic
+import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.CBPeripheralDelegateProtocol
+import platform.CoreBluetooth.CBService
+import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 
-internal actual class DeviceConnectionManager(private val cbCentralManager: CBCentralManager,
+internal actual class DeviceConnectionManager(
+    private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
     connectionSettings: ConnectionSettings,
     deviceHolder: DeviceHolder,
     stateRepo: StateRepo<DeviceState>,
-    coroutineScope: CoroutineScope) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope {
+    coroutineScope: CoroutineScope
+) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
@@ -109,7 +117,6 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
                 handleNewRssi(didReadRSSI.intValue)
             }
         }
-
     }
 
     init {
@@ -141,7 +148,7 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
     override suspend fun performAction(action: DeviceAction) {
         info(TAG, "Perform Action for Peripheral ${peripheral.identifier.UUIDString}")
         currentAction = action
-        when(action) {
+        when (action) {
             is DeviceAction.Read.Characteristic -> action.characteristic.characteristic.readValue(peripheral)
             is DeviceAction.Read.Descriptor -> action.descriptor.descriptor.readValue(peripheral)
             is DeviceAction.Write.Characteristic -> {
@@ -207,6 +214,4 @@ internal actual class DeviceConnectionManager(private val cbCentralManager: CBCe
             }
         }
     }
-
 }
-

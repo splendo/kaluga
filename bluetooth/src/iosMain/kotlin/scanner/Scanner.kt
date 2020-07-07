@@ -34,6 +34,7 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
+import kotlin.device.DefaultCBPeripheralWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -46,17 +47,17 @@ import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
-import kotlin.device.DefaultCBPeripheralWrapper
 
-actual class Scanner internal constructor(permissions: Permissions,
-                                          private val connectionSettings: ConnectionSettings,
-                                          autoRequestPermission: Boolean,
-                                          autoEnableBluetooth: Boolean,
-                                          stateRepo: StateRepo<ScanningState>,
-                                          private val coroutineScope: CoroutineScope)
-    : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo, coroutineScope)  {
+actual class Scanner internal constructor(
+    permissions: Permissions,
+    private val connectionSettings: ConnectionSettings,
+    autoRequestPermission: Boolean,
+    autoEnableBluetooth: Boolean,
+    stateRepo: StateRepo<ScanningState>,
+    private val coroutineScope: CoroutineScope
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo, coroutineScope) {
 
-    class Builder() : BaseScanner.Builder {
+    class Builder : BaseScanner.Builder {
 
         override fun create(
             permissions: Permissions,
@@ -68,7 +69,6 @@ actual class Scanner internal constructor(permissions: Permissions,
         ): BaseScanner {
             return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo, coroutineScope)
         }
-
     }
 
     companion object {
@@ -86,7 +86,6 @@ actual class Scanner internal constructor(permissions: Permissions,
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
             isCheckEnabledCompleted.complete(isEnabled)
-            
         }.invoke()
     }
 
@@ -98,7 +97,6 @@ actual class Scanner internal constructor(permissions: Permissions,
             if (central.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
-
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
@@ -129,7 +127,6 @@ actual class Scanner internal constructor(permissions: Permissions,
                 connectionManager.handleDisconnect()
             }
         }.invoke()
-        
     }
 
     private lateinit var mainCentralManager: CBCentralManager
@@ -155,7 +152,7 @@ actual class Scanner internal constructor(permissions: Permissions,
             val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
             val awaitPoweredOn = EmptyCompletableDeferred()
-            val delegate = PoweredOnCBCentralManagerDelegate( this, awaitPoweredOn)
+            val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
             discoveringDelegates.add(delegate)
             centralManager.delegate = delegate
             awaitPoweredOn.await()
@@ -166,7 +163,7 @@ actual class Scanner internal constructor(permissions: Permissions,
             val centralManager = CBCentralManager(null, dispatch_get_main_queue())
             centralManagers.add(centralManager)
             val awaitPoweredOn = EmptyCompletableDeferred()
-            val delegate = PoweredOnCBCentralManagerDelegate( this, awaitPoweredOn)
+            val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
             discoveringDelegates.add(delegate)
             centralManager.delegate = delegate
             awaitPoweredOn.await()
@@ -176,7 +173,7 @@ actual class Scanner internal constructor(permissions: Permissions,
 
     override suspend fun stopScanning() {
         info(TAG, "Stop Scanning")
-        centralManagers.forEach {centralManager ->
+        centralManagers.forEach { centralManager ->
             if (centralManager.state == CBCentralManagerStatePoweredOn) {
                 centralManager.stopScan()
             }
@@ -233,6 +230,4 @@ actual class Scanner internal constructor(permissions: Permissions,
             }
         }
     }
-
-
 }

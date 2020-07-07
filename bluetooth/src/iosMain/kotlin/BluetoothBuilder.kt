@@ -5,8 +5,11 @@ import com.splendo.kaluga.bluetooth.scanner.Scanner
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlinx.coroutines.CoroutineScope
+import platform.Foundation.NSBundle
 
-actual class BluetoothBuilder(private val permissions: Permissions = Permissions(PermissionsBuilder())
+actual class BluetoothBuilder(
+    private val bundle: NSBundle = NSBundle.mainBundle,
+    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle))
 ) : Bluetooth.Builder {
 
     override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, coroutineScope: CoroutineScope): Bluetooth {

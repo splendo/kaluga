@@ -29,23 +29,13 @@ internal actual class DeviceConnectionManager(connectionSettings: ConnectionSett
         }
     }
 
-    override suspend fun connect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun connect() {}
 
-    override suspend fun discoverServices() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun discoverServices() {}
 
-    override suspend fun disconnect() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun disconnect() {}
 
-    override suspend fun readRssi() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun readRssi() {}
 
-    override suspend fun performAction(action: DeviceAction) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun performAction(action: DeviceAction) {}
 }

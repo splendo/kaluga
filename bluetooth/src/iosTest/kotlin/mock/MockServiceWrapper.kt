@@ -24,6 +24,4 @@ import platform.CoreBluetooth.CBUUID
 class MockServiceWrapper(override val UUID: CBUUID = CBUUID(), characteristicUuids: List<Pair<CBUUID, List<CBUUID>>> = emptyList()) : ServiceWrapper {
 
     override val characteristics: List<CharacteristicWrapper> = characteristicUuids.map { MockCharacteristicWrapper(it.first, it.second) }
-
 }
-

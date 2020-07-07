@@ -26,5 +26,4 @@ actual open class DeviceHolder(internal val device: DeviceWrapper) {
 
     actual val identifier: Identifier
         get() = device.address
-
 }

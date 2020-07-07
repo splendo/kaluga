@@ -26,31 +26,31 @@ import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 
 abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     companion object {
-        val reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(2)
+        private val reconnectionSettings = ConnectionSettings.ReconnectionSettings.Limited(2)
         val connectionSettings = ConnectionSettings(reconnectionSettings)
-        val initialRssi = -10
+        const val initialRssi = -10
     }
 
     private lateinit var deviceStateRepo: Device
     private lateinit var connectionManager: MockDeviceConnectionManager
 
     abstract val deviceHolder: DeviceHolder
-    val advertisementData = MockAdvertisementData()
+    private val advertisementData = MockAdvertisementData()
     abstract fun createServices(stateRepo: StateRepo<DeviceState>): List<Service>
-    abstract fun createCharacteristic(stateRepo: StateRepo<DeviceState>) : Characteristic
-    abstract fun createDescriptor(stateRepo: StateRepo<DeviceState>) : Descriptor
-    abstract fun validateCharacteristicUpdated() : Boolean
-    abstract fun validateDescriptorUpdated() : Boolean
+    abstract fun createCharacteristic(stateRepo: StateRepo<DeviceState>): Characteristic
+    abstract fun createDescriptor(stateRepo: StateRepo<DeviceState>): Descriptor
+    abstract fun validateCharacteristicUpdated(): Boolean
+    abstract fun validateDescriptorUpdated(): Boolean
 
     @Test
     fun testInitialState() = runBlocking {
@@ -99,7 +99,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         testWithFlow {
             getDisconnectedState(this)
             flowTest.action {
-                deviceStateRepo.takeAndChangeState {deviceState ->
+                deviceStateRepo.takeAndChangeState { deviceState ->
                     when (deviceState) {
                         is DeviceState.Disconnected -> {
                             val newState = deviceState.connect(deviceState)
@@ -212,7 +212,6 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
                 assertFalse(connectionManager.connectCompleted.isCompleted)
                 assertTrue(it is DeviceState.Disconnected)
             }
-
         }
     }
 
@@ -372,7 +371,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
                 return connectionManager
             }
         }, coroutineScope)
-        flowable.complete(deviceStateRepo.flowable.value)
+        flowable.complete(deviceStateRepo.flowable)
     }
 
     private fun getDisconnectedState(flowTest: FlowTest<DeviceState>) {
@@ -390,7 +389,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     private suspend fun connecting(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            deviceStateRepo.takeAndChangeState {deviceState ->
+            deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Disconnected -> deviceState.connect(deviceState)
                     else -> deviceState.remain
@@ -405,7 +404,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     private suspend fun connect(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            deviceStateRepo.takeAndChangeState {deviceState ->
+            deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Connecting -> deviceState.didConnect
                     else -> deviceState.remain
@@ -419,7 +418,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     private suspend fun disconnecting(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            deviceStateRepo.takeAndChangeState {deviceState ->
+            deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Connected -> deviceState.disconnecting
                     else -> deviceState.remain
@@ -431,7 +430,7 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
 
     private suspend fun disconnect(flowTest: FlowTest<DeviceState>) {
         flowTest.action {
-            deviceStateRepo.takeAndChangeState {deviceState ->
+            deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Disconnecting -> deviceState.didDisconnect
                     else -> deviceState.remain
@@ -440,10 +439,10 @@ abstract class DeviceTest : FlowableTest<DeviceState>() {
         }
         getDisconnectedState(flowTest)
     }
-
 }
 
-internal class MockDeviceConnectionManager(connectionSettings: ConnectionSettings,
+internal class MockDeviceConnectionManager(
+    connectionSettings: ConnectionSettings,
     deviceHolder: DeviceHolder,
     stateRepo: StateRepo<DeviceState>,
     coroutineScope: CoroutineScope

@@ -32,7 +32,6 @@ import kotlinx.coroutines.launch
 class MockPermissionStateRepo<P:Permission> : PermissionStateRepo<P>() {
 
     override val permissionManager = MockPermissionManager(this)
-
 }
 
 class MockPermissionManager<P:Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {

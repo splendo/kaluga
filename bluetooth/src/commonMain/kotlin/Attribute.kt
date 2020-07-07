@@ -63,5 +63,4 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
             }
         }
     }
-
 }

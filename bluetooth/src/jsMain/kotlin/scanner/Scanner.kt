@@ -23,15 +23,16 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 
-actual class Scanner(permissions: Permissions,
-                     connectionSettings: ConnectionSettings,
-                     autoRequestPermission: Boolean,
-                     autoEnableBluetooth: Boolean,
-                     stateRepo: StateRepo<ScanningState>,
-                     coroutineScope: CoroutineScope
+actual class Scanner(
+    permissions: Permissions,
+    connectionSettings: ConnectionSettings,
+    autoRequestPermission: Boolean,
+    autoEnableBluetooth: Boolean,
+    stateRepo: StateRepo<ScanningState>,
+    coroutineScope: CoroutineScope
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo, coroutineScope) {
 
-    class Builder() : BaseScanner.Builder {
+    class Builder : BaseScanner.Builder {
 
         override fun create(
             permissions: Permissions,
@@ -45,27 +46,15 @@ actual class Scanner(permissions: Permissions,
         }
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun scanForDevices(filter: Set<UUID>) {}
 
-    override suspend fun stopScanning() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun stopScanning() {}
 
-    override fun startMonitoringBluetooth() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun startMonitoringBluetooth() {}
 
-    override fun stopMonitoringBluetooth() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun stopMonitoringBluetooth() {}
 
-    override suspend fun isBluetoothEnabled(): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun isBluetoothEnabled(): Boolean = false
 
-    override suspend fun requestBluetoothEnable() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override suspend fun requestBluetoothEnable() {}
 }

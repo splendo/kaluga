@@ -91,4 +91,3 @@ class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSe
         requestEnableCompleted.complete()
     }
 }
-

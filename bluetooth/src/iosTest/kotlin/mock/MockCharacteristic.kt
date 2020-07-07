@@ -36,7 +36,6 @@ class MockCharacteristic(characteristic: CharacteristicWrapper, stateRepo: State
     override suspend fun updateValue() {
         didUpdate.complete()
     }
-
 }
 
 class MockCharacteristicWrapper(override val UUID: CBUUID = CBUUID(), private val descriptorUuids: List<CBUUID> = emptyList()) : CharacteristicWrapper {
@@ -60,6 +59,5 @@ class MockCharacteristicWrapper(override val UUID: CBUUID = CBUUID(), private va
     override fun writeValue(value: NSData, peripheral: CBPeripheral) {
         this.value = value
         isWriteCompleted.complete(value)
-
     }
 }

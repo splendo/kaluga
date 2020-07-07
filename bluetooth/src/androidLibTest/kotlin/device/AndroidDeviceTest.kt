@@ -69,6 +69,4 @@ class AndroidDeviceTest : DeviceTest() {
     override fun validateDescriptorUpdated(): Boolean {
         return descriptor.didUpdate.isCompleted
     }
-
 }
-

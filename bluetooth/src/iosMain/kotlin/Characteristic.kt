@@ -22,14 +22,21 @@ import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
-import platform.CoreBluetooth.*
+import platform.CoreBluetooth.CBCharacteristic
+import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
+import platform.CoreBluetooth.CBDescriptor
+import platform.CoreBluetooth.CBPeripheral
+import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
+actual open class Characteristic(
+    val characteristic: CharacteristicWrapper,
+    stateRepo: StateRepo<DeviceState>
+) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
 
     override val uuid = characteristic.UUID
 
-    override val descriptors = characteristic.descriptors?.map { Descriptor( it, stateRepo) } ?: emptyList()
+    override val descriptors = characteristic.descriptors?.map { Descriptor(it, stateRepo) } ?: emptyList()
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)
@@ -60,9 +67,9 @@ interface CharacteristicWrapper {
 
 class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : CharacteristicWrapper {
 
-    override val UUID: CBUUID get() {return characteristic.UUID }
+    override val UUID: CBUUID get() { return characteristic.UUID }
     override val descriptors: List<DescriptorWrapper>? = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) }
-    override val value: NSData? get() {return characteristic.value }
+    override val value: NSData? get() { return characteristic.value }
 
     override fun readValue(peripheral: CBPeripheral) {
         peripheral.readValueForCharacteristic(characteristic)
@@ -75,6 +82,4 @@ class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic)
     override fun setNotificationValue(enabled: Boolean, peripheral: CBPeripheral) {
         peripheral.setNotifyValue(enabled, characteristic)
     }
-
 }
-

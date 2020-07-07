@@ -24,12 +24,10 @@ interface CBPeripheralWrapper {
 
     val name: String?
     val identifier: NSUUID
-
 }
 
 class DefaultCBPeripheralWrapper(private val peripheral: CBPeripheral) : CBPeripheralWrapper {
 
     override val name: String? get() { return peripheral.name }
-    override val identifier: NSUUID get() {return peripheral.identifier }
-
+    override val identifier: NSUUID get() { return peripheral.identifier }
 }

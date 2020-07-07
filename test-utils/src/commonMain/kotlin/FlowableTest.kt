@@ -26,9 +26,9 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -61,7 +61,9 @@ abstract class FlowableTest<T>: BaseTest() {
     }
 }
 
-open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) {
+open class FlowTest<T>(private val flow: Flow<T>, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) {
+
+    constructor(flowable: Flowable<T>, coroutineScope: CoroutineScope = MultiplatformMainScope()) : this(flowable.flow(), coroutineScope)
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -105,7 +107,7 @@ open class FlowTest<T>(private val flowable: Flowable<T>, private val coroutineS
         debug("start flow...")
         job = coroutineScope.launch {
             debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-            flowable.flow().filter(filter).collect { value ->
+            flow.filter(filter).collect { value ->
                 debug("in flow received [$value]")
                 val test = testChannel.receive()
                 debug("received test block $test")

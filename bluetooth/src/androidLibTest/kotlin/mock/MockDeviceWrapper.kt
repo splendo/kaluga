@@ -40,4 +40,3 @@ class MockDeviceWrapper(override val name: String?, override val address: Identi
         removeBondCompleted.complete()
     }
 }
-

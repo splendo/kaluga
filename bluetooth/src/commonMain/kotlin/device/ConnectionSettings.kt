@@ -24,5 +24,4 @@ data class ConnectionSettings(val reconnectionSettings: ReconnectionSettings = R
         object Never : ReconnectionSettings()
         data class Limited(val attempts: Int) : ReconnectionSettings()
     }
-
 }

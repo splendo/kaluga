@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 actual class Descriptor(override val uuid: UUID, initialValue: ByteArray?, stateRepo: StateRepo<DeviceState>) : BaseDescriptor(initialValue, stateRepo) {
 
-    val value = AtomicReference(initialValue)
+    private val value = AtomicReference(initialValue)
 
     override fun createReadAction(): DeviceAction.Read.Descriptor {
         return DeviceAction.Read.Descriptor(this)

@@ -33,21 +33,24 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BaseScanner internal constructor(internal val permissions: Permissions,
-                                                private val connectionSettings: ConnectionSettings,
-                                                private val autoRequestPermission: Boolean,
-                                                internal val autoEnableBluetooth: Boolean,
-                                                internal val stateRepo: StateRepo<ScanningState>,
-                                                coroutineScope: CoroutineScope)
-    : CoroutineScope by coroutineScope {
+abstract class BaseScanner internal constructor(
+    internal val permissions: Permissions,
+    private val connectionSettings: ConnectionSettings,
+    private val autoRequestPermission: Boolean,
+    internal val autoEnableBluetooth: Boolean,
+    internal val stateRepo: StateRepo<ScanningState>,
+    coroutineScope: CoroutineScope
+) : CoroutineScope by coroutineScope {
 
     interface Builder {
-        fun create(permissions: Permissions,
-                   connectionSettings: ConnectionSettings,
-                   autoRequestPermission: Boolean,
-                   autoEnableBluetooth: Boolean,
-                   scanningStateRepo: StateRepo<ScanningState>,
-                   coroutineScope: CoroutineScope): BaseScanner
+        fun create(
+            permissions: Permissions,
+            connectionSettings: ConnectionSettings,
+            autoRequestPermission: Boolean,
+            autoEnableBluetooth: Boolean,
+            scanningStateRepo: StateRepo<ScanningState>,
+            coroutineScope: CoroutineScope
+        ): BaseScanner
     }
 
     private val bluetoothPermissionRepo get() = permissions[Permission.Bluetooth]
@@ -125,7 +128,6 @@ abstract class BaseScanner internal constructor(internal val permissions: Permis
             }
         }
     }
-
 }
 
 expect class Scanner : BaseScanner

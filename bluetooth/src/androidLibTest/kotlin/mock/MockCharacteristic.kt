@@ -25,7 +25,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import java.util.*
+import java.util.UUID
 
 class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : Characteristic(characteristicWrapper, stateRepo) {
 
@@ -34,7 +34,6 @@ class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, state
     override suspend fun updateValue() {
         didUpdate.complete()
     }
-
 }
 
 class MockCharacteristicWrapper(override val uuid: UUID = UUID.randomUUID(), private val descriptorUuids: List<UUID> = emptyList(), override val service: GattServiceWrapper) : CharacteristicWrapper {
@@ -75,4 +74,3 @@ class MockCharacteristicWrapper(override val uuid: UUID = UUID.randomUUID(), pri
         return 0
     }
 }
-

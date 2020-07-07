@@ -23,7 +23,7 @@ import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.GattServiceWrapper
-import java.util.*
+import java.util.UUID
 
 class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), characteristicUuids: List<Pair<UUID, List<UUID>>> = emptyList()) : GattServiceWrapper {
 
@@ -50,4 +50,3 @@ class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), characteri
         return true
     }
 }
-

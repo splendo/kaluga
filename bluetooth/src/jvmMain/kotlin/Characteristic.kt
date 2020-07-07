@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference
 
 actual open class Characteristic(override val uuid: UUID, override val descriptors: List<Descriptor>, initialValue: ByteArray?, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(initialValue, stateRepo) {
 
-    var value = AtomicReference(initialValue)
+    private var value = AtomicReference(initialValue)
 
     override fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
         return DeviceAction.Notification(this, enabled)

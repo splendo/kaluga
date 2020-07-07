@@ -17,7 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import android.bluetooth.*
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
+import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
@@ -29,13 +34,13 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
-internal actual class DeviceConnectionManager(private val context: Context,
-                                              connectionSettings: ConnectionSettings,
-                                              deviceHolder: DeviceHolder,
-                                              stateRepo: StateRepo<DeviceState>,
-                                              coroutineScope: CoroutineScope)
-    : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope  {
+internal actual class DeviceConnectionManager(
+    private val context: Context,
+    connectionSettings: ConnectionSettings,
+    deviceHolder: DeviceHolder,
+    stateRepo: StateRepo<DeviceState>,
+    coroutineScope: CoroutineScope
+) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
         override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, repoAccessor: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
@@ -158,7 +163,7 @@ internal actual class DeviceConnectionManager(private val context: Context,
 
     override suspend fun performAction(action: DeviceAction) {
         currentAction = action
-        val shouldWait = when(action) {
+        val shouldWait = when (action) {
             is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.characteristic)
             is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.descriptor)
             is DeviceAction.Write.Characteristic -> {

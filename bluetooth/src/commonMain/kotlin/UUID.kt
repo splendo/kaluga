@@ -19,5 +19,4 @@ package com.splendo.kaluga.bluetooth
 
 expect class UUID
 
-expect val UUID.uuidString : String
-
+expect val UUID.uuidString: String
