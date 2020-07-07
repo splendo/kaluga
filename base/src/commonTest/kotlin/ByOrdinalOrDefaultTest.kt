@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,14 +16,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.base.test
+
 import com.splendo.kaluga.utils.byOrdinalOrDefault
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ByOrdinalOrDefaultTest {
-     enum class Numbers {
-         one, two
-     }
+    enum class Numbers {
+        one, two
+    }
 
     @Test
     fun test() {
@@ -33,5 +34,4 @@ class ByOrdinalOrDefaultTest {
         assertEquals(Numbers.two, Enum.byOrdinalOrDefault(-1, Numbers.two))
         assertEquals(Numbers.one, Enum.byOrdinalOrDefault(2, Numbers.one))
     }
-
 }

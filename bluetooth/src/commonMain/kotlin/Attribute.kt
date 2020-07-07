@@ -17,17 +17,13 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.state.StateRepo
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: StateRepo<DeviceState>) : BaseFlowable<ByteArray?>() {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: StateRepo<DeviceState>) : HotFlowable<ByteArray?>(initialValue) {
     abstract val uuid: UUID
-
-    init {
-        setBlocking(initialValue)
-    }
 
     suspend fun readValue() {
         addAction(createReadAction())

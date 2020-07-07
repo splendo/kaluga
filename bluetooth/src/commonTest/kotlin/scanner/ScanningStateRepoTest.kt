@@ -33,6 +33,7 @@ import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
@@ -173,7 +174,7 @@ abstract class ScanningStateRepoTest : FlowableTest<ScanningState>() {
         val deviceHolder = createDeviceHolder()
         val advertisementData = MockAdvertisementData()
         val device = createDevice(deviceHolder, advertisementData, this)
-        testWithFlow {
+        FlowTest(scanningStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(emptySet(), it.oldFilter)
@@ -231,7 +232,7 @@ abstract class ScanningStateRepoTest : FlowableTest<ScanningState>() {
 
         mockBaseScanner.reset()
 
-        testWithFlow {
+        FlowTest(scanningStateRepo.flowable).testWithFlow {
             test {
                 assertTrue(it is ScanningState.Enabled.Idle)
                 assertEquals(filter, it.oldFilter)

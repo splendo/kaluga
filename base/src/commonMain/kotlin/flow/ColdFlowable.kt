@@ -22,7 +22,9 @@ import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -35,7 +37,7 @@ import kotlinx.coroutines.sync.withLock
  * @param deinitialize method for deinitializing the flow, passing the last known value. Will be called when the flow transitions from one or more to zero observers.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
+open class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
     private val counterMutex = Mutex()
     private var flowingCounter = 0
@@ -45,10 +47,9 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
         return super.flow(flowConfig).onStart {
                 counterMutex.withLock {
                     flowingCounter += 1
-                    if (flowingCounter == 1 ) {
+                    if (flowingCounter == 1) {
                         set(initialize())
                     }
-
                 }
             }.onCompletion {
                 counterMutex.withLock {
@@ -63,5 +64,4 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                 }
             }
     }
-
 }

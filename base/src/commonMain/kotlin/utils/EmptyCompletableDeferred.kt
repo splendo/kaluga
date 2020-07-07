@@ -1,4 +1,3 @@
-package com.splendo.kaluga.utils
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.utils
+
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 
@@ -33,5 +34,3 @@ typealias EmptyCompletableDeferred = CompletableDeferred<Unit>
  * It is optionally a child of a [parent] job.
  */
 fun EmptyCompletableDeferred(parent: Job? = null): EmptyCompletableDeferred = CompletableDeferred(parent)
-
-

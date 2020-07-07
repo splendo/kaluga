@@ -48,11 +48,8 @@ data class IOSVersion(val major: Int, val minor: Int, val patch: Int) {
                     this.minor > version.minor -> true
                     else -> this.minor == version.minor && this.patch >= version.patch
                 }
-
             }
             else -> false
         }
     }
-
 }
-
