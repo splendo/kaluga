@@ -20,50 +20,35 @@ package com.splendo.kaluga.example.bluetooth
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.forEach
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import kotlinx.android.synthetic.main.activity_bluetooth.*
+import com.splendo.kaluga.example.databinding.ActivityBluetoothBinding
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
+class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
 
-    companion object {
-        val bluetooth: Bluetooth = BluetoothBuilder().create()
-    }
-    private val bluetoothAdapter = BluetoothAdapter(bluetooth, lifecycle)
-
-    private lateinit var isScanning: LiveData<Boolean>
+    override val viewModel: BluetoothListViewModel by viewModel()
 
     @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val binding = ActivityBluetoothBinding.inflate(layoutInflater, null, false)
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+        binding.devicesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
+        binding.devicesList.adapter = BluetoothAdapter(this)
 
-        devices_list.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
-        devices_list.adapter = bluetoothAdapter
-
-        lifecycle.coroutineScope.launchWhenResumed {
-            isScanning = bluetooth.isScanning().asLiveData()
-            isScanning.observe(this@BluetoothActivity, Observer { invalidateOptionsMenu() })
-        }
-
-        lifecycle.coroutineScope.launchWhenResumed {
-            bluetooth.devices().collect{ devices ->
-                bluetoothAdapter.bluetoothDevices = devices
-            }
-        }
+        viewModel.isScanning.observe(this, Observer {
+            invalidateOptionsMenu()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,7 +57,7 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean = runBlocking {
-        val scanning = isScanning.value ?: false
+        val scanning = viewModel.isScanning.liveData.value ?: false
         menu?.forEach { item ->
             when(item.itemId) {
                 R.id.start_scanning -> item.isVisible = !scanning
@@ -84,16 +69,9 @@ class BluetoothActivity : AppCompatActivity(R.layout.activity_bluetooth) {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.start_scanning -> {
-                lifecycle.coroutineScope.launch {
-                    bluetooth.startScanning()
-                }
-                true
-            }
+            R.id.start_scanning,
             R.id.stop_scanning -> {
-                lifecycle.coroutineScope.launch {
-                    bluetooth.stopScanning()
-                }
+                viewModel.onScanPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)

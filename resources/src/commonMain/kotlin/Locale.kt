@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.resources
 
-import platform.Foundation.NSBundle
-import platform.Foundation.NSString
-import platform.Foundation.stringWithFormat
+expect class Locale
 
-actual fun String.localized(): String {
-    return NSBundle.mainBundle.localizedStringForKey(this, null, null)
-}
+expect fun createLocale(language: String): Locale
+expect fun createLocale(language: String, country: String): Locale
+expect fun createLocale(language: String, country: String, variant: String): Locale
 
-actual fun String.formatted(vararg args: Any?): String = this
+expect val defaultLocale: Locale

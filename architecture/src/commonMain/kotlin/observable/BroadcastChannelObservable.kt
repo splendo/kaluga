@@ -15,14 +15,10 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.architecture.observable
 
-import platform.Foundation.NSBundle
-import platform.Foundation.NSString
-import platform.Foundation.stringWithFormat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 
-actual fun String.localized(): String {
-    return NSBundle.mainBundle.localizedStringForKey(this, null, null)
-}
-
-actual fun String.formatted(vararg args: Any?): String = this
+fun <T> BroadcastChannel<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> { return asFlow().toObservable(coroutineScope) }

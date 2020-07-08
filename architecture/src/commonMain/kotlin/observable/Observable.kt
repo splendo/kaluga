@@ -67,8 +67,6 @@ expect fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): 
 
 expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
-fun <T> BroadcastChannel<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = asFlow().toObservable(coroutineScope)
-
 expect fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 
 expect fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>

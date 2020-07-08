@@ -33,7 +33,9 @@ import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class BluetoothListDeviceViewModel(private val identifier: Identifier, private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
@@ -73,9 +75,16 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, private v
     val manufacturerId = deviceStateObservable { "bluetooth_manufacturer_id".localized().formatted(it.advertisementData.manufacturerId ?: -1) }
     val manufacturerData = deviceStateObservable { "bluetooth_manufacturer_data".localized().formatted(it.advertisementData.manufacturerData?.toHexString() ?: "") }
 
-    val isFoldedOut = subjectOf(false, coroutineScope)
+    val _isFoldedOut = ConflatedBroadcastChannel(false)
+    val isFoldedOut = _isFoldedOut.toObservable(coroutineScope)
 
     private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): Observable<T> = device.state().map { mapper(it) }.toObservable(coroutineScope)
+
+    fun toggleFoldOut() {
+        coroutineScope.launch {
+            _isFoldedOut.send(!_isFoldedOut.value)
+        }
+    }
 
     fun onMorePressed() {
         navigator.navigate(BluetoothListNavigation(DeviceDetailsSpec().toBundle { specRow ->
