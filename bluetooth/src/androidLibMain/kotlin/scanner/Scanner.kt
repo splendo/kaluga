@@ -33,6 +33,8 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.location.LocationEnabledMonitor
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
@@ -130,8 +132,10 @@ actual class Scanner internal constructor(
         }
     }
 
-    private val broadcastReceiver = AvailabilityReceiver(this)
+    private val bluetoothAvailabilityBroadcastReceiver = AvailabilityReceiver(this)
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(context)
+    private val locationEnabledMonitor = LocationEnabledMonitor(context, Permission.Location(precise = true, background = false)) { checkBluetoothEnabledChanged() }
+    private var shouldEnableLocation: Boolean = false
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
         bluetoothScanner.startScan(filter.map { ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build() }, scanSettings, callback)
@@ -142,17 +146,37 @@ actual class Scanner internal constructor(
     }
 
     override fun startMonitoringBluetooth() {
-        context.registerReceiver(broadcastReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        context.registerReceiver(bluetoothAvailabilityBroadcastReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
     }
 
     override fun stopMonitoringBluetooth() {
-        context.unregisterReceiver(broadcastReceiver)
+        context.unregisterReceiver(bluetoothAvailabilityBroadcastReceiver)
     }
 
-    override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled ?: false
+    override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled == true && locationEnabledMonitor.isLocationEnabled()
 
     override suspend fun requestBluetoothEnable() {
-        bluetoothAdapter?.enable()
+        shouldEnableLocation = !locationEnabledMonitor.isLocationEnabled()
+        if (bluetoothAdapter?.isEnabled != true) {
+            bluetoothAdapter?.enable()
+        }
+        else if (shouldEnableLocation) {
+            shouldEnableLocation = false
+            locationEnabledMonitor.requestLocationEnable()
+        }
+    }
+
+    internal fun checkBluetoothEnabledChanged() {
+        launch(MainQueueDispatcher) {
+            when {
+                isBluetoothEnabled() -> bluetoothEnabled()
+                shouldEnableLocation -> {
+                    shouldEnableLocation = false
+                    locationEnabledMonitor.requestLocationEnable()
+                }
+                else -> bluetoothDisabled()
+            }
+        }
     }
 }
 
@@ -162,8 +186,8 @@ private class AvailabilityReceiver(private val bluetoothScanner: Scanner) : Broa
         intent?.let {
             if (intent.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
                 when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
-                        BluetoothAdapter.STATE_ON -> bluetoothScanner.bluetoothEnabled()
-                        BluetoothAdapter.STATE_OFF -> bluetoothScanner.bluetoothDisabled()
+                        BluetoothAdapter.STATE_ON -> bluetoothScanner.checkBluetoothEnabledChanged()
+                        BluetoothAdapter.STATE_OFF -> bluetoothScanner.checkBluetoothEnabledChanged()
                     }
             }
         }

@@ -25,43 +25,46 @@ import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 
 sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
 
+    object Alerts : FeatureListNavigationAction()
+    object Architecture:  FeatureListNavigationAction()
+    object Bluetooth:  FeatureListNavigationAction()
+    object Keyboard : FeatureListNavigationAction()
+    object LoadingIndicator : FeatureListNavigationAction()
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()
-    object Alerts : FeatureListNavigationAction()
-    object LoadingIndicator : FeatureListNavigationAction()
-    object Architecture:  FeatureListNavigationAction()
-    object Keyboard : FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
+    object Alerts : Feature("Alerts")
+    object Architecture : Feature("Architecture")
+    object Bluetooth : Feature("Bluetooth")
+    object Keyboard : Feature("Keyboard")
+    object LoadingIndicator : Feature("Loading Indicator")
     object Location : Feature("Location")
     object Permissions : Feature("Permissions")
-    object Alerts : Feature("Alerts")
-    object LoadingIndicator : Feature("Loading Indicator")
-    object Architecture : Feature("Architecture")
-    object Keyboard : Feature("Keyboard")
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
     val feature = observableOf(listOf(
-        Feature.Location,
-        Feature.Permissions,
         Feature.Alerts,
-        Feature.LoadingIndicator,
         Feature.Architecture,
-        Feature.Keyboard
+        Feature.Bluetooth,
+        Feature.Keyboard,
+        Feature.LoadingIndicator,
+        Feature.Location,
+        Feature.Permissions
     ))
 
     fun onFeaturePressed(feature: Feature) {
         navigator.navigate(when(feature) {
+            is Feature.Alerts -> FeatureListNavigationAction.Alerts
+            is Feature.Architecture -> FeatureListNavigationAction.Architecture
+            is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
+            is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
+            is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
             is Feature.Location -> FeatureListNavigationAction.Location
             is Feature.Permissions -> FeatureListNavigationAction.Permissions
-            is Feature.Alerts -> FeatureListNavigationAction.Alerts
-            is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
-            is Feature.Architecture -> FeatureListNavigationAction.Architecture
-            is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
         })
     }
-
 }

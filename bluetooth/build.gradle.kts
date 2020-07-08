@@ -15,6 +15,7 @@ version = ext["library_version"]!!
 
 dependencies {
     implementation("no.nordicsemi.android.support.v18:scanner:1.4.2")
+    implementation(project(":location", ""))
 }
 
 kotlin {
