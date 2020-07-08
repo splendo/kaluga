@@ -132,7 +132,19 @@ actual class Scanner internal constructor(
         }
     }
 
-    private val bluetoothAvailabilityBroadcastReceiver = AvailabilityReceiver(this)
+    private val bluetoothAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                if (intent.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
+                    when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
+                        BluetoothAdapter.STATE_ON -> checkBluetoothEnabledChanged()
+                        BluetoothAdapter.STATE_OFF -> checkBluetoothEnabledChanged()
+                    }
+                }
+            }
+        }
+    }
+
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(context)
     private val locationEnabledMonitor = LocationEnabledMonitor(context, Permission.Location(precise = true, background = false)) { checkBluetoothEnabledChanged() }
     private var shouldEnableLocation: Boolean = false
@@ -166,29 +178,14 @@ actual class Scanner internal constructor(
         }
     }
 
-    internal fun checkBluetoothEnabledChanged() {
+    private fun checkBluetoothEnabledChanged() {
         launch(MainQueueDispatcher) {
+            val willEnableLocation = shouldEnableLocation
+            shouldEnableLocation = false
             when {
                 isBluetoothEnabled() -> bluetoothEnabled()
-                shouldEnableLocation -> {
-                    shouldEnableLocation = false
-                    locationEnabledMonitor.requestLocationEnable()
-                }
+                willEnableLocation -> locationEnabledMonitor.requestLocationEnable()
                 else -> bluetoothDisabled()
-            }
-        }
-    }
-}
-
-private class AvailabilityReceiver(private val bluetoothScanner: Scanner) : BroadcastReceiver() {
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        intent?.let {
-            if (intent.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
-                when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR)) {
-                        BluetoothAdapter.STATE_ON -> bluetoothScanner.checkBluetoothEnabledChanged()
-                        BluetoothAdapter.STATE_OFF -> bluetoothScanner.checkBluetoothEnabledChanged()
-                    }
             }
         }
     }
