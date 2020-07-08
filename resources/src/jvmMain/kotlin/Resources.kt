@@ -19,4 +19,4 @@ package com.splendo.kaluga.resources
 
 actual fun String.localized(): String = this
 
-actual fun String.formatted(vararg args: Any?): String = this.format(args)
+actual inline fun String.formatted(vararg args: Any?): String = this.format(*args)

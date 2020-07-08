@@ -19,4 +19,4 @@ package com.splendo.kaluga.resources
 
 expect fun String.localized() : String
 
-expect fun String.formatted(vararg args: Any?) : String
+expect inline fun String.formatted(vararg args: Any?) : String

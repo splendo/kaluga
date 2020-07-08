@@ -18,11 +18,9 @@
 package com.splendo.kaluga.resources
 
 import platform.Foundation.NSBundle
-import platform.Foundation.NSString
-import platform.Foundation.stringWithFormat
 
 actual fun String.localized(): String {
     return NSBundle.mainBundle.localizedStringForKey(this, null, null)
 }
 
-actual fun String.formatted(vararg args: Any?): String = this
+actual inline fun String.formatted(vararg args: Any?): String = this

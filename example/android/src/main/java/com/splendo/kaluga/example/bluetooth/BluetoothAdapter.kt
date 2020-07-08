@@ -30,11 +30,10 @@ object DevicesBinding {
     @BindingAdapter("devices")
     @JvmStatic
     fun bindDevices(view: RecyclerView, devices: List<BluetoothListDeviceViewModel>?) {
-        val bluetoohAdapter = view.adapter as? BluetoothAdapter
+        val bluetoothAdapter = view.adapter as? BluetoothAdapter
             ?: return
-        bluetoohAdapter.bluetoothDevices = devices ?: emptyList()
+        bluetoothAdapter.bluetoothDevices = devices ?: emptyList()
     }
-
 }
 
 class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothAdapter.BluetoothItemViewHolder>() {
@@ -53,7 +52,9 @@ class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerVie
         return BluetoothItemViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = bluetoothDevices.size
+    override fun getItemCount(): Int {
+        return bluetoothDevices.size
+    }
 
     override fun onBindViewHolder(holder: BluetoothItemViewHolder, position: Int) {
         val viewModel = bluetoothDevices[position]

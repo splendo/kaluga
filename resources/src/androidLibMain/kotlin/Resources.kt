@@ -24,4 +24,4 @@ actual fun String.localized(): String {
     return applicationContext.getString(id)
 }
 
-actual fun String.formatted(vararg args: Any?): String = format(args)
+actual inline fun String.formatted(vararg args: Any?): String = format(*args)

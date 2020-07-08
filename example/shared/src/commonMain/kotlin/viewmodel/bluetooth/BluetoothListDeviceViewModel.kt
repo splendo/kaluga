@@ -24,13 +24,10 @@ import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
-import com.splendo.kaluga.bluetooth.get
-import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -83,6 +80,18 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, private v
     fun toggleFoldOut() {
         coroutineScope.launch {
             _isFoldedOut.send(!_isFoldedOut.value)
+        }
+    }
+
+    fun onConnectPressed() {
+        coroutineScope.launch {
+            device.connect()
+        }
+    }
+
+    fun onDisconnectPressed() {
+        coroutineScope.launch {
+            device.disconnect()
         }
     }
 
