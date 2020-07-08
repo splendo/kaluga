@@ -20,6 +20,7 @@ package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
@@ -57,6 +58,7 @@ import java.net.URL
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
     single { LocationStateRepoBuilder() }
+    single { BluetoothBuilder().create() }
 }
 
 val viewModelModule = module {

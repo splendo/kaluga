@@ -22,6 +22,9 @@ import platform.Foundation.NSUUID
 
 actual typealias Identifier = NSUUID
 
+actual val Identifier.stringValue: String
+    get() = UUIDString
+
 actual class DeviceHolder(internal val peripheral: CBPeripheralWrapper) {
 
     actual val name: String?

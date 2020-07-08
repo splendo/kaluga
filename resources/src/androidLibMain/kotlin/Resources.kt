@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.device
+package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 
-actual typealias Identifier = UUID
+actual fun String.localized(): String {
+    val id = applicationContext.resources.getIdentifier(this, "string", applicationContext.packageName)
+    return applicationContext.getString(id)
+}
 
-actual val Identifier.stringValue: String
-    get() = uuidString
-
-actual class DeviceHolder(actual val name: String? = null, actual val identifier: Identifier = UUID(""))
+actual fun String.formatted(vararg args: Any?): String = format(args)

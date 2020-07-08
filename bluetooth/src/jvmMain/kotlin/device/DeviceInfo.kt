@@ -21,4 +21,7 @@ import com.splendo.kaluga.bluetooth.UUID
 
 actual typealias Identifier = UUID
 
+actual val Identifier.stringValue: String
+    get() = uuidString
+
 actual class DeviceHolder(actual val name: String? = null, actual val identifier: Identifier = UUID(""))

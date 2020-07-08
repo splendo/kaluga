@@ -18,12 +18,14 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.flow.HotFlowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Result type for an [Observable]. Used to allow for the distinction between `null` and optional values
@@ -64,6 +66,8 @@ expect fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T>
 expect fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T>
 
 expect fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
+
+fun <T> BroadcastChannel<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = asFlow().toObservable(coroutineScope)
 
 expect fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T>
 

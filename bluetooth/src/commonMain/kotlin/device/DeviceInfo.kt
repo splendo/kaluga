@@ -21,6 +21,8 @@ import kotlin.math.pow
 
 expect class Identifier
 
+expect val Identifier.stringValue: String
+
 expect class DeviceHolder {
     val name: String?
     val identifier: Identifier

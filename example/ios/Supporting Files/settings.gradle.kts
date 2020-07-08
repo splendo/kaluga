@@ -66,6 +66,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":permissions")
     project(":permissions").projectDir = file("../../../permissions")
 
+    include(":resources")
+    project(":resources").projectDir = file("../../../resources")
+
     include(":test-utils")
     project(":test-utils").projectDir = file("../../../test-utils")
 }

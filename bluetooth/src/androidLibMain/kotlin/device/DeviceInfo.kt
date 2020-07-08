@@ -19,6 +19,9 @@ package com.splendo.kaluga.bluetooth.device
 
 actual typealias Identifier = String
 
+actual val Identifier.stringValue: String
+    get() = this
+
 actual open class DeviceHolder(internal val device: DeviceWrapper) {
 
     actual val name: String?
