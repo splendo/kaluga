@@ -18,69 +18,42 @@
 package com.splendo.kaluga.example.bluetooth
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.coroutineScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.databinding.BindingAdapter
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.characteristics
-import com.splendo.kaluga.bluetooth.get
-import com.splendo.kaluga.example.R
-import kotlinx.android.synthetic.main.bluetooth_service_item.view.*
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import com.splendo.kaluga.example.databinding.BluetoothServiceItemBinding
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothServiceViewModel
 
-@InternalCoroutinesApi
-class BluetoothServiceAdapter(private val servicesFlow: Flow<List<Service>>, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothServiceAdapter.BluetoothServiceItemViewHolder>() {
+object ServicesBinding {
 
-    class BluetoothServiceItemViewHolder(itemView: View, private val servicesFlow: Flow<List<Service>>, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
-
-        private val serviceUUID = itemView.service_uuid
-        private val characterisicList = itemView.characteristics_list
-
-        private var characteristicsAdapter: BluetoothCharacteristicAdapter? = null
-            set(value) {
-                characterisicList.adapter = value
-                field = value
-            }
-
-        fun bindData(service: Service) {
-            characterisicList.addItemDecoration(DividerItemDecoration(itemView.context, LinearLayoutManager.VERTICAL))
-            serviceUUID.text = service.uuid.toString()
-            characteristicsAdapter = BluetoothCharacteristicAdapter(servicesFlow[service.uuid].characteristics(), lifecycle)
-        }
-
-        fun startUpdating() {
-            characteristicsAdapter?.startMonitoring()
-        }
-
-        fun stopUpdating() {
-            characteristicsAdapter?.stopMonitoring()
-        }
-
+    @BindingAdapter("services")
+    @JvmStatic
+    fun bindServices(view: RecyclerView, services: List<BluetoothServiceViewModel>?) {
+        val serviceAdapter = view.adapter as? BluetoothServiceAdapter
+            ?: return
+        serviceAdapter.services = services ?: emptyList()
     }
+}
 
-    private var services: List<Service> = emptyList()
+class BluetoothServiceAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothServiceAdapter.BluetoothServiceItemViewHolder>() {
 
-    init {
-        lifecycle.coroutineScope.launchWhenResumed {
-            servicesFlow.collect{ newServices ->
-                services = newServices
-                notifyDataSetChanged()
-            }
+    class BluetoothServiceItemViewHolder(val serviceItem: BluetoothServiceItemBinding) : RecyclerView.ViewHolder(serviceItem.root)
+
+    internal var services: List<BluetoothServiceViewModel> = emptyList()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BluetoothServiceItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.bluetooth_service_item, parent, false)
-        return BluetoothServiceItemViewHolder(view, servicesFlow, lifecycle)
+        val binding = BluetoothServiceItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.lifecycleOwner = lifecycleOwner
+        binding.characteristicsList.adapter = BluetoothCharacteristicAdapter(lifecycleOwner)
+        return BluetoothServiceItemViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -88,19 +61,19 @@ class BluetoothServiceAdapter(private val servicesFlow: Flow<List<Service>>, pri
     }
 
     override fun onBindViewHolder(holder: BluetoothServiceItemViewHolder, position: Int) {
-        holder.bindData(services[position])
+        holder.serviceItem.viewModel = services[position]
     }
 
     @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothServiceItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 
-        holder.startUpdating()
+        holder.serviceItem.viewModel?.didResume()
     }
 
     override fun onViewDetachedFromWindow(holder: BluetoothServiceItemViewHolder) {
         super.onViewDetachedFromWindow(holder)
 
-        holder.stopUpdating()
+        holder.serviceItem.viewModel?.didPause()
     }
 }

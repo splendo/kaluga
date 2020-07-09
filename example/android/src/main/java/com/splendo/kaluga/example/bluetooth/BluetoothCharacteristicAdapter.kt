@@ -20,7 +20,9 @@ package com.splendo.kaluga.example.bluetooth
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.BindingAdapter
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,6 +34,9 @@ import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.value
 import com.splendo.kaluga.example.R
+import com.splendo.kaluga.example.databinding.BluetoothCharacteristicItemBinding
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothCharacteristicViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDescriptorViewModel
 import kotlinx.android.synthetic.main.bluetooth_characteristic_item.view.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -39,73 +44,35 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class BluetoothCharacteristicAdapter(private val characteristicsFlow: Flow<List<Characteristic>>, private val lifecycle: Lifecycle) : RecyclerView.Adapter<BluetoothCharacteristicAdapter.BluetoothCharacteristicItemViewHolder>() {
+object CharacteristicsBinding {
 
-    class BluetoothCharacteristicItemViewHolder(itemView: View, private val characteristicsFlow: Flow<List<Characteristic>>, private val lifecycle: Lifecycle) : RecyclerView.ViewHolder(itemView) {
-
-        private val uuid = itemView.characteristic_uuid
-        private val valueField = itemView.characteristic_value
-        private val descriptors = itemView.descriptors
-        private var descriptorsAdapter: BluetoothDescriptorAdapter? = null
-            set(value) {
-                descriptors.adapter = value
-                field = value
-            }
-
-        private var characteristic: Characteristic? = null
-        private var valueJob: Job? = null
-
-        fun bindData(characteristic: Characteristic) {
-            descriptors.addItemDecoration(DividerItemDecoration(itemView.context, LinearLayoutManager.VERTICAL))
-            this.characteristic = characteristic
-            uuid.text = characteristic.uuid.toString()
-            descriptorsAdapter = BluetoothDescriptorAdapter(characteristicsFlow[characteristic.uuid].descriptors(), lifecycle)
-
-        }
-
-        @ExperimentalStdlibApi
-        internal fun startUpdating() {
-            valueJob?.cancel()
-            valueJob = lifecycle.coroutineScope.launch {
-                val characteristicUUID = characteristic?.uuid ?: return@launch
-                characteristicsFlow[characteristicUUID].first()?.readValue()
-                characteristicsFlow[characteristicUUID].value().asLiveData().observe({lifecycle}) {
-                    valueField.text = it?.toHexString()
-                }
-            }
-            descriptorsAdapter?.startMonitoring()
-        }
-
-        internal fun stopUpdating() {
-            valueJob?.cancel()
-            descriptorsAdapter?.stopMonitoring()
-        }
-
+    @BindingAdapter("characteristics")
+    @JvmStatic
+    fun bindCharacteristics(view: RecyclerView, characteristics: List<BluetoothCharacteristicViewModel>?) {
+        val characteristicAdapter = view.adapter as? BluetoothCharacteristicAdapter
+            ?: return
+        characteristicAdapter.characteristics = characteristics ?: emptyList()
     }
+}
 
-    private var characteristics = emptyList<Characteristic>()
-    private var characteristicsJob: Job? = null
+class BluetoothCharacteristicAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothCharacteristicAdapter.BluetoothCharacteristicItemViewHolder>() {
 
-    fun startMonitoring() {
-        characteristicsJob?.cancel()
-        characteristicsJob = lifecycle.coroutineScope.launch {
-            characteristicsFlow.collect{ newCharacteristics ->
-                characteristics = newCharacteristics
-                notifyDataSetChanged()
-            }
+    class BluetoothCharacteristicItemViewHolder(val characteristicItem: BluetoothCharacteristicItemBinding) : RecyclerView.ViewHolder(characteristicItem.root)
+
+    internal var characteristics = emptyList<BluetoothCharacteristicViewModel>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
-    }
-
-    fun stopMonitoring() {
-        characteristicsJob?.cancel()
-    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): BluetoothCharacteristicItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.bluetooth_characteristic_item, parent, false)
-        return BluetoothCharacteristicItemViewHolder(view, characteristicsFlow, lifecycle)
+        val binding = BluetoothCharacteristicItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        binding.lifecycleOwner = lifecycleOwner
+        binding.descriptors.adapter = BluetoothDescriptorAdapter(lifecycleOwner)
+        return BluetoothCharacteristicItemViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -113,19 +80,19 @@ class BluetoothCharacteristicAdapter(private val characteristicsFlow: Flow<List<
     }
 
     override fun onBindViewHolder(holder: BluetoothCharacteristicItemViewHolder, position: Int) {
-        holder.bindData(characteristics[position])
+        holder.characteristicItem.viewModel = characteristics[position]
     }
 
     @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothCharacteristicItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 
-        holder.startUpdating()
+        holder.characteristicItem.viewModel?.didResume()
     }
 
     override fun onViewDetachedFromWindow(holder: BluetoothCharacteristicItemViewHolder) {
         super.onViewDetachedFromWindow(holder)
 
-        holder.stopUpdating()
+        holder.characteristicItem.viewModel?.didPause()
     }
 }

@@ -49,6 +49,7 @@ class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerVie
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BluetoothItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = BluetoothItemBinding.inflate(inflater, parent, false)
+        binding.lifecycleOwner = lifecycleOwner
         return BluetoothItemViewHolder(binding)
     }
 
@@ -59,7 +60,6 @@ class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerVie
     override fun onBindViewHolder(holder: BluetoothItemViewHolder, position: Int) {
         val viewModel = bluetoothDevices[position]
         holder.binding.viewModel = viewModel
-        holder.binding.lifecycleOwner = lifecycleOwner
     }
 
     @ExperimentalStdlibApi

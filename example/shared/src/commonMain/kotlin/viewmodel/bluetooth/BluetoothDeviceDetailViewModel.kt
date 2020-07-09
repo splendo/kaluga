@@ -25,6 +25,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +50,7 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
     private val device = bluetooth.devices()[identifier]
 
     val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toObservable(coroutineScope)
+    val identifierString = identifier.stringValue
     val rssi = device.rssi().map { "rssi".localized().formatted(it) }.toObservable(coroutineScope)
     val distance = device.distance().map { "distance".localized().formatted(it) }.toObservable(coroutineScope)
     val state = device.state().map { deviceState ->
