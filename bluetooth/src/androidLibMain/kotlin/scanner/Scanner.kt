@@ -171,8 +171,7 @@ actual class Scanner internal constructor(
         shouldEnableLocation = !locationEnabledMonitor.isLocationEnabled()
         if (bluetoothAdapter?.isEnabled != true) {
             bluetoothAdapter?.enable()
-        }
-        else if (shouldEnableLocation) {
+        } else if (shouldEnableLocation) {
             shouldEnableLocation = false
             locationEnabledMonitor.requestLocationEnable()
         }

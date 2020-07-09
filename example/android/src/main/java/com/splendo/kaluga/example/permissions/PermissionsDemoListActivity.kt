@@ -27,7 +27,6 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.example.utils.stringByKey
 import kotlinx.android.synthetic.main.activity_permissions_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -64,7 +63,7 @@ class PermissionsAdapter(private val viewModel: PermissionsListViewModel) : Recy
 
     override fun onBindViewHolder(holder: PermissionsViewHolder, position: Int) {
         permissions.getOrNull(position)?.let { permission ->
-            holder.button.text = holder.itemView.context.stringByKey(permission.title)
+            holder.button.text = permission.title
             holder.button.setOnClickListener { viewModel.onPermissionPressed(permission) }
         } ?: run {
             holder.button.text = null

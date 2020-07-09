@@ -53,5 +53,4 @@ class ArchitectureDetailsActivity : KalugaViewModelActivity<ArchitectureDetailsV
     override fun onBackPressed() {
         viewModel.onClosePressed()
     }
-
 }

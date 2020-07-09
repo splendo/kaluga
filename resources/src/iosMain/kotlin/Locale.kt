@@ -23,7 +23,7 @@ import platform.Foundation.currentLocale
 actual typealias Locale = NSLocale
 
 actual fun createLocale(language: String): Locale = NSLocale(language)
-actual fun createLocale(language: String, country: String): Locale = NSLocale("{${language}_${country}}")
-actual fun createLocale(language: String, country: String, variant: String): Locale = NSLocale("{${language}_${country}.${variant}}")
+actual fun createLocale(language: String, country: String): Locale = NSLocale("{${language}_$country}")
+actual fun createLocale(language: String, country: String, variant: String): Locale = NSLocale("{${language}_$country.$variant}")
 
 actual val defaultLocale: Locale get() = NSLocale.currentLocale

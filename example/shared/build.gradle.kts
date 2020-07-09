@@ -19,7 +19,7 @@ apply(from = "../../gradle/component.gradle")
 kotlin {
     sourceSets {
         commonMain {
-            val ext =  (gradle as ExtensionAware).extra
+            val ext = (gradle as ExtensionAware).extra
 
             dependencies {
 

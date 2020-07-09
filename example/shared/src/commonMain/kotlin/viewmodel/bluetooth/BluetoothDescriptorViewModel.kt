@@ -20,10 +20,23 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.Descriptor
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.characteristics
+import com.splendo.kaluga.bluetooth.descriptors
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.services
+import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class BluetoothDescriptorViewModel(private val bluetooth: Bluetooth, private val deviceIdentifier: Identifier, private val serviceUUID: UUID, private val characteristicUUID: UUID, private val descriptorUUID: UUID) : BaseViewModel() {

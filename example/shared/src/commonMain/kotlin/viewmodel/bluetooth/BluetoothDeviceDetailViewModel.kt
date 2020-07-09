@@ -22,10 +22,17 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.distance
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.info
+import com.splendo.kaluga.bluetooth.rssi
+import com.splendo.kaluga.bluetooth.services
+import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.bluetooth.updateRssi
 import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
@@ -54,7 +61,7 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
     val rssi = device.rssi().map { "rssi".localized().formatted(it) }.toObservable(coroutineScope)
     val distance = device.distance().map { "distance".localized().formatted(it) }.toObservable(coroutineScope)
     val state = device.state().map { deviceState ->
-        when(deviceState) {
+        when (deviceState) {
             is DeviceState.Disconnecting -> "bluetooth_disconneting"
             is DeviceState.Disconnected -> "bluetooth_disconnected"
             is DeviceState.Connected.Discovering -> "bluetooth_discovering"

@@ -20,21 +20,25 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.device.stringValue
+import com.splendo.kaluga.bluetooth.disconnect
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothListDeviceViewModel(private val identifier: Identifier, private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
+class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
     enum class ConnectButtonState {
         Connect,
@@ -59,7 +63,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, private v
     val isMoreButtonVisible = deviceStateObservable { it is DeviceState.Connected }
 
     val status = deviceStateObservable {
-        when(it) {
+        when (it) {
             is DeviceState.Disconnecting -> "bluetooth_disconneting"
             is DeviceState.Disconnected -> "bluetooth_disconnected"
             is DeviceState.Connected -> "bluetooth_connected"
@@ -124,6 +128,5 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, private v
         return "bluetooth_service_data".localized().formatted(dataString)
     }
 
-    override public fun onCleared() { super.onCleared() }
-
+    public override fun onCleared() { super.onCleared() }
 }

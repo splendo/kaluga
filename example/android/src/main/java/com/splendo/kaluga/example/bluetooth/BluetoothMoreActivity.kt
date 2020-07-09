@@ -20,10 +20,7 @@ package com.splendo.kaluga.example.bluetooth
 import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
-import com.splendo.kaluga.example.databinding.ActivityBluetoothBinding
 import com.splendo.kaluga.example.databinding.ActivityBluetoothMoreBinding
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpec
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpec
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow

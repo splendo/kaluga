@@ -18,31 +18,12 @@
 package com.splendo.kaluga.example.bluetooth
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.BindingAdapter
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.coroutineScope
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.Characteristic
-import com.splendo.kaluga.bluetooth.descriptors
-import com.splendo.kaluga.bluetooth.get
-import com.splendo.kaluga.bluetooth.value
-import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.BluetoothCharacteristicItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothCharacteristicViewModel
-import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDescriptorViewModel
-import kotlinx.android.synthetic.main.bluetooth_characteristic_item.view.*
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 object CharacteristicsBinding {
 

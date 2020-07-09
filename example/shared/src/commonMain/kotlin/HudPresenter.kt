@@ -1,8 +1,3 @@
-package com.splendo.kaluga.example.shared
-
-import com.splendo.kaluga.hud.HUD
-import kotlinx.coroutines.delay
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,6 +15,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.example.shared
+
+import com.splendo.kaluga.hud.HUD
+import kotlinx.coroutines.delay
 
 class HudPresenter(private val builder: HUD.Builder) {
 

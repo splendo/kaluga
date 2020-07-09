@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>): NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
+class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>) : NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
 
 class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 

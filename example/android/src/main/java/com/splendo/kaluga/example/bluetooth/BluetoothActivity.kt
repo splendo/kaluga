@@ -53,7 +53,6 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         viewModel.isScanning.observe(this, Observer {
             invalidateOptionsMenu()
         })
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,7 +63,7 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean = runBlocking {
         val scanning = viewModel.isScanning.liveData.value ?: false
         menu?.forEach { item ->
-            when(item.itemId) {
+            when (item.itemId) {
                 R.id.start_scanning -> item.isVisible = !scanning
                 R.id.stop_scanning -> item.isVisible = scanning
             }

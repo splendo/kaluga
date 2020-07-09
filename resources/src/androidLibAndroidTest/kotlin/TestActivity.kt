@@ -18,8 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.resources
 
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 
-class TestActivity : AppCompatActivity() {
-}
+class TestActivity : AppCompatActivity()

@@ -88,5 +88,4 @@ class InfoDialog(val title: String, val message: String) : DialogFragment() {
 
         return v
     }
-
 }

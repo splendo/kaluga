@@ -1,4 +1,3 @@
-package com.splendo.kaluga.example.shared
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-fun helloAndroid():String {
+package com.splendo.kaluga.example.shared
+
+fun helloAndroid(): String {
     return "Hello from the shared module, android source"
 }
