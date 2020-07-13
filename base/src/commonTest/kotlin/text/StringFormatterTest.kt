@@ -174,4 +174,19 @@ class StringFormatterTest {
     fun testNegativeHexadecimalUpperIntFormat() {
         assertEquals("Test -7B success", "Test %X success".format(-123))
     }
+
+    @Test
+    fun testFloatFormat() {
+        assertEquals("0.004600", "%f".format(0.0046))
+    }
+    
+    @Test
+    fun testFloatFormatWithPrecision() {
+        assertEquals("0.005", "%.3f".format(0.0046))
+    }
+
+    @Test
+    fun testFloatFormatScientific() {
+        assertEquals("4.600e-3", "%.3e".format(0.0046))
+    }
 }

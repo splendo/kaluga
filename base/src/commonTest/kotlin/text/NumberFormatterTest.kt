@@ -110,8 +110,8 @@ class NumberFormatterTest {
     @Test
     fun testFormatScientific() {
         val formatters = createFormatters(NumberFormatStyle.Scientific(numberOfDigits = 5))
-        assertEquals("2E0", formatters.usFormatter.format(2))
-        assertEquals("2E0", formatters.nlFormatter.format(2))
+        assertEquals("2.0000E0", formatters.usFormatter.format(2))
+        assertEquals("2,0000E0", formatters.nlFormatter.format(2))
 
         assertEquals("1.2346E8", formatters.usFormatter.format(123456789))
         assertEquals("1,2346E8", formatters.nlFormatter.format(123456789))

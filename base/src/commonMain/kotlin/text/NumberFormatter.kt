@@ -51,10 +51,10 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
     data class Scientific(
-        val numberOfDigits: Int = 10,
+        val numberOfDigits: Int? = 10,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode) {
-        val pattern: String = "0.${"#".repeat(numberOfDigits - 1)}E0"
+        val pattern: String = numberOfDigits?.let { "0.${"0".repeat(numberOfDigits - 1)}E0" } ?: "0.#E0"
     }
     data class Currency(
         val minInteger: Int = 0,

@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.text.FormatSpecifier.Companion.formatSpecifier
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.defaultLocale
@@ -93,7 +92,7 @@ class StringFormatter(private val out: StringBuilder = StringBuilder(), private 
                     checkText(s, index, matchResult.range.first)
                     result.add(FixedString(out, s, index, matchResult.range.first))
                 }
-                result.add(FormatSpecifier(out, s, matchResult))
+                result.add(FormatSpecifier(out, matchResult))
                 index = matchResult.range.last + 1
             } ?: run {
                 checkText(s, index, s.length)

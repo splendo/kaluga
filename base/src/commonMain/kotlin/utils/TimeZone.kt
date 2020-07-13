@@ -17,13 +17,24 @@
 
 package com.splendo.kaluga.base.utils
 
-import platform.Foundation.NSLocale
-import platform.Foundation.currentLocale
+import com.splendo.kaluga.base.utils.Date.Companion.now
 
-actual typealias Locale = NSLocale
+enum class TimeZoneNameStyle {
+    Short,
+    Long
+}
 
-actual fun createLocale(language: String): Locale = NSLocale(language)
-actual fun createLocale(language: String, country: String): Locale = NSLocale("${language}_$country")
-actual fun createLocale(language: String, country: String, variant: String): Locale = NSLocale("${language}_${country}_$variant")
+expect class TimeZone {
+    companion object {
+        fun get(identifier: String): TimeZone?
+        fun current(): TimeZone
+    }
 
-actual val defaultLocale: Locale get() = NSLocale.currentLocale
+    val identifier: String
+    fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale = defaultLocale): String
+    val offsetFromGMTInMilliseconds: Long
+    val daylightSavingsOffsetfromGMT: Long
+    fun offsetFromGMTAtDateInMilliseconds(date: Date = now()): Long
+    fun usesDaylightSavingsTime(date: Date = now()): Boolean
+    fun copy(): TimeZone
+}

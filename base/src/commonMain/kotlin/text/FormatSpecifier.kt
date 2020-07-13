@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.text.Conversion.BOOLEAN
 import com.splendo.kaluga.base.text.Conversion.CHARACTER
 import com.splendo.kaluga.base.text.Conversion.CHARACTER_UPPER
@@ -28,7 +26,6 @@ import com.splendo.kaluga.base.text.Conversion.GENERAL
 import com.splendo.kaluga.base.text.Conversion.HASHCODE
 import com.splendo.kaluga.base.text.Conversion.HEXADECIMAL_FLOAT
 import com.splendo.kaluga.base.text.Conversion.HEXADECIMAL_INTEGER
-import com.splendo.kaluga.base.text.Conversion.HEXADECIMAL_INTEGER_UPPER
 import com.splendo.kaluga.base.text.Conversion.LINE_SEPARATOR
 import com.splendo.kaluga.base.text.Conversion.OCTAL_INTEGER
 import com.splendo.kaluga.base.text.Conversion.PERCENT_SIGN
@@ -42,12 +39,19 @@ import com.splendo.kaluga.base.text.Flags.Companion.LEFT_JUSTIFY
 import com.splendo.kaluga.base.text.Flags.Companion.NONE
 import com.splendo.kaluga.base.text.Flags.Companion.PARENTHESES
 import com.splendo.kaluga.base.text.Flags.Companion.PLUS
+import com.splendo.kaluga.base.text.Flags.Companion.PREVIOUS
+import com.splendo.kaluga.base.text.Flags.Companion.UPPERCASE
 import com.splendo.kaluga.base.text.Flags.Companion.ZERO_PAD
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
+import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.TimeZoneNameStyle
+import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
 
 @ExperimentalStdlibApi
-internal class FormatSpecifier(private val out: StringBuilder, private val string: String, private val matchResult: MatchResult) : FormatString {
+internal class FormatSpecifier(private val out: StringBuilder, matchResult: MatchResult) : FormatString {
 
     companion object {
         val formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z@%])".toRegex()
@@ -70,7 +74,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
         if (timeStart.isNotEmpty()) {
             dt = true
             if (timeStart[0] == 'T')
-                flags.add(Flags.UPPERCASE)
+                flags.add(UPPERCASE)
         }
 
         conversion(matchResult.groupValues[6][0])
@@ -118,12 +122,22 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
     }
 
     private fun printDateTime(arg: Any?, locale: Locale) {
-        if (arg == null)
-            print("null", locale)
-        else {
-            // TODO Support Date Time
-            throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
+        val date = when (arg) {
+            null -> {
+                print("null", locale)
+                return
+            }
+            is Long,
+            is Int,
+            is Short -> {
+                Date.epoch((arg as Number).toLong(), TimeZone.current(), locale)
+            }
+            is Date -> {
+                arg.copy()
+            }
+            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
         }
+        print(date, currentChar, locale)
     }
 
     private fun printInteger(arg: Any?, locale: Locale) {
@@ -182,7 +196,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
     private fun print(s: String, locale: Locale) {
         var s = s
         if (precision != -1 && precision < s.length) s = s.substring(0, precision)
-        if (flags.contains(Flags.UPPERCASE)) s = s.upperCased(locale)
+        if (flags.contains(UPPERCASE)) s = s.upperCased(locale)
         appendJustified(out, s)
     }
 
@@ -209,7 +223,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
             }
             HEXADECIMAL_INTEGER -> {
                 val hexValue = value.toString(16)
-                if (flags.contains(Flags.UPPERCASE)) {
+                if (flags.contains(UPPERCASE)) {
                     hexValue.upperCased(locale)
                 } else
                     hexValue
@@ -246,17 +260,17 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
 
             // the value
             if (v.isFinite())
-                print(sb, v, locale, currentChar, precision)
+                print(sb, v, locale, currentChar, precision, neg)
             else {
                 val infinitySymbol = numberFormatter.infinitySymbol
-                sb.append(if (flags.contains(Flags.UPPERCASE)) infinitySymbol.upperCased(locale) else infinitySymbol)
+                sb.append(if (flags.contains(UPPERCASE)) infinitySymbol.upperCased(locale) else infinitySymbol)
             }
 
             // trailing sign indicator
             trailingSign(sb, neg)
         } else {
             val nanSymbol = numberFormatter.notANumberSymbol
-            sb.append(if (flags.contains(Flags.UPPERCASE)) nanSymbol.upperCased(locale) else nanSymbol)
+            sb.append(if (flags.contains(UPPERCASE)) nanSymbol.upperCased(locale) else nanSymbol)
         }
 
         // justify based on width
@@ -269,23 +283,315 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
         value: Double,
         locale: Locale,
         c: Char,
-        precision: Int
+        precision: Int,
+        neg: Boolean
     ) {
-        val prec = if (precision == -1) 6 else precision
         when (c) {
             SCIENTIFIC -> {
+                val prec = if (precision == -1) 6 else precision
+                val number = StringBuilder()
                 val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(prec + 1))
-                sb.append(formatter.format(value).upperCased(locale))
+                val expSymbol = formatter.exponentSymbol
+                val scientific = formatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
+                val mantissa = scientific[0]
+                val exponent = if (value == 0.0) "+${formatter.zeroSymbol}${formatter.zeroSymbol}" else scientific[1]
+                number.append(mantissa)
+                addZeros(number, prec)
+
+                if (flags.contains(ALTERNATE) && prec == 0)
+                    number.append(formatter.decimalSeparator)
+
+                var newW = width
+                if (width != -1) {
+                    newW = adjustWidth(width - exponent.length - 1, flags, neg)
+                }
+                localizedMagnitude(sb, mantissa, 0, flags, newW, locale)
+
+
+                sb.append(if (flags.contains(UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
+                sb.append(exponent)
             }
-            DECIMAL_FLOAT,
+            DECIMAL_FLOAT -> {
+                val prec = if (precision == -1) 6 else precision
+                val number = StringBuilder()
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec, maxFraction = prec)).apply {
+                    usesGroupingSeparator = false
+                }
+                if (value >= 0.0 && value < 1.0)
+                    number.append(formatter.zeroSymbol)
+                number.append(formatter.format(value))
+                addZeros(number, prec)
+
+                if (flags.contains(ALTERNATE) && prec == 0)
+                    number.append(formatter.decimalSeparator)
+                var newW = width
+                if (width != -1) newW = adjustWidth(width, flags, neg)
+
+                localizedMagnitude(sb, number, 0, flags, newW, locale)
+            }
             GENERAL -> {
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec, maxFraction = prec))
-                sb.append(formatter.format(value))
+                var prec = when (precision) {
+                    -1 -> 6
+                    0 -> 1
+                    else -> precision
+                }
+                val scientificFormatter = NumberFormatter(locale, NumberFormatStyle.Scientific(prec + 1))
+                val number = StringBuilder()
+                val exps = if (value == 0.0) {
+                    number.append(getZero(locale))
+                    Pair(null, 0)
+                } else {
+                    val expSymbol = scientificFormatter.exponentSymbol
+                    val scientific = scientificFormatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
+                    val exponent = scientific[1]
+                    val expValue = exponent.toInt(10)
+                    if (expValue - 1 < -4 || expValue -1 >= prec) {
+                        number.append(scientific[0])
+                        Pair(exponent, expValue)
+                    } else {
+                        val decimalFormatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec, maxFraction = prec)).apply {
+                            usesGroupingSeparator = false
+                        }
+                        if (value >= 0.0 && value < 1.0)
+                            number.append(decimalFormatter.zeroSymbol)
+                        number.append(decimalFormatter.format(value))
+                        Pair(null, 0)
+                    }
+                }
+
+                val exp = exps.first
+                val expRounded = exps.second
+                prec -= if (exp != null) 1 else expRounded + 1
+                addZeros(number, prec)
+                if (flags.contains(ALTERNATE) && prec == 0)
+                    number.append(scientificFormatter.decimalSeparator)
+
+                var newW = width
+                if (width != -1) {
+                    newW = if (exp != null) adjustWidth(width - exp.length - 1, flags, neg) else adjustWidth(width, flags, neg)
+                }
+                localizedMagnitude(sb, number, 0, flags, newW, locale)
+
+                exp?.let {
+                    sb.append(if (flags.contains(UPPERCASE)) scientificFormatter.exponentSymbol.upperCased(locale) else scientificFormatter.exponentSymbol.lowerCased(locale))
+                    sb.append(it)
+                }
             }
             HEXADECIMAL_FLOAT -> {
-                // TODO Add Hex Float Support
+                // TODO Support Hexadecimal floats
             }
         }
+    }
+
+    private fun print(time: Date, currentChar: Char, locale: Locale) {
+        val sb = StringBuilder()
+        print(sb, time, currentChar, locale)
+
+        // justify based on width
+        if (flags.contains(UPPERCASE)) {
+            appendJustified(out, sb.toString().upperCased(locale))
+        } else {
+            appendJustified(out, sb)
+        }
+    }
+
+    private fun print(sb: StringBuilder, time: Date, currentChar: Char, locale: Locale): StringBuilder {
+        when (currentChar) {
+            DateTime.HOUR_OF_DAY_0, DateTime.HOUR_0, DateTime.HOUR_OF_DAY, DateTime.HOUR -> {
+                // 'l' (1 - 12) -- like I
+                var i: Int = time.hour
+                if (currentChar == DateTime.HOUR_0 || currentChar == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
+                val flags = if (currentChar == DateTime.HOUR_OF_DAY_0
+                    || currentChar == DateTime.HOUR_0
+                ) ZERO_PAD else NONE
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
+            }
+            DateTime.MINUTE -> {
+                // 'M' (00 - 59)
+                val i: Int = time.minute
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
+            }
+            DateTime.NANOSECOND -> {
+                // 'N' (000000000 - 999999999)
+                val i: Int = time.millisecond * 1000000
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 9, locale = locale))
+            }
+            DateTime.MILLISECOND -> {
+                // 'L' (000 - 999)
+                val i: Int = time.millisecond
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
+            }
+            DateTime.MILLISECOND_SINCE_EPOCH -> {
+                // 'Q' (0 - 99...?)
+                val i: Long = time.millisecondSinceEpoch
+                val flags = NONE
+                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = flags, width = width, locale = locale))
+            }
+            DateTime.AM_PM -> {
+                // 'p' (am or pm)
+                val isAm = time.hour < 12
+                val dateFormat = DateFormatter.patternFormat("aa", locale)
+                sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
+            }
+            DateTime.SECONDS_SINCE_EPOCH -> {
+                // 's' (0 - 99...?)
+                val i: Long = time.millisecondSinceEpoch / 1000
+                val flags = NONE
+                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = flags, width = width, locale = locale))
+            }
+            DateTime.SECOND -> {
+                // 'S' (00 - 60 - leap second)
+                val i: Int = time.second
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
+            }
+            DateTime.ZONE_NUMERIC -> {
+                // 'z' ({-|+}####) - ls minus?
+                var i: Long = time.timeZone.offsetFromGMTAtDateInMilliseconds(time)
+                val neg = i < 0
+                sb.append(if (neg) '-' else '+')
+                if (neg) i = -i
+                val min = i / 60000
+
+                // combine minute and hour into a single integer
+                val offset = min / 60 * 100 + min % 60
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = offset.toString(10), offset = 0, flags = flags, width = 4, locale = locale))
+            }
+            DateTime.ZONE -> {
+                // 'Z' (symbol)
+                sb.append(time.timeZone.displayName(TimeZoneNameStyle.Short, time.timeZone.usesDaylightSavingsTime(time), locale))
+            }
+            DateTime.NAME_OF_DAY_ABBREV, DateTime.NAME_OF_DAY -> {
+                // 'A'
+                val i: Int = time.weekDay - 1
+                val dateFormat = DateFormatter.patternFormat("EEEE")
+                val weekdays = if (currentChar == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
+                sb.append(weekdays[i])
+            }
+            DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
+                // 'B'
+                val i: Int = time.month - 1
+                val dateFormat = DateFormatter.patternFormat("MMMM")
+                val months = if (currentChar == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
+                sb.append(months[i])
+            }
+            DateTime.CENTURY, DateTime.YEAR_2, DateTime.YEAR_4 -> {
+                // 'Y' (0000 - 9999)
+                var i: Int = time.year
+                var size = 2
+                when (currentChar) {
+                    DateTime.CENTURY -> i /= 100
+                    DateTime.YEAR_2 -> i %= 100
+                    DateTime.YEAR_4 -> size = 4
+                }
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = size, locale = locale))
+            }
+            DateTime.DAY_OF_MONTH_0, DateTime.DAY_OF_MONTH -> {
+                // 'e' (1 - 31) -- like d
+                val i: Int = time.day
+                val flags = if (currentChar == DateTime.DAY_OF_MONTH_0) ZERO_PAD else NONE
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
+            }
+            DateTime.DAY_OF_YEAR -> {
+                // 'j' (001 - 366)
+                val i: Int = time.dayOfYear
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
+            }
+            DateTime.MONTH -> {
+                // 'm' (01 - 12)
+                val i: Int = time.month
+                val flags = ZERO_PAD
+                sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
+            }
+            DateTime.TIME, DateTime.TIME_24_HOUR -> {
+                // 'R' (hh:mm same as %H:%M)
+                val sep = ':'
+                print(sb, time, DateTime.HOUR_OF_DAY_0, locale).append(sep)
+                print(sb, time, DateTime.MINUTE, locale)
+                if (currentChar == DateTime.TIME) {
+                    sb.append(sep)
+                    print(sb, time, DateTime.SECOND, locale)
+                }
+            }
+            DateTime.TIME_12_HOUR -> {
+                // 'r' (hh:mm:ss [AP]M)
+                val sep = ':'
+                print(sb, time, DateTime.HOUR_0, locale).append(sep)
+                print(sb, time, DateTime.MINUTE, locale).append(sep)
+                print(sb, time, DateTime.SECOND, locale).append(' ')
+
+                // this may be in wrong place for some locales
+                val tsb = StringBuilder()
+                print(tsb, time, DateTime.AM_PM, locale)
+                sb.append(tsb.toString().upperCased(locale))
+            }
+            DateTime.DATE_TIME -> {
+                // 'c' (Sat Nov 04 12:02:33 EST 1999)
+                val sep = ' '
+                print(sb, time, DateTime.NAME_OF_DAY_ABBREV, locale).append(sep)
+                print(sb, time, DateTime.NAME_OF_MONTH_ABBREV, locale).append(sep)
+                print(sb, time, DateTime.DAY_OF_MONTH_0, locale).append(sep)
+                print(sb, time, DateTime.TIME, locale).append(sep)
+                print(sb, time, DateTime.ZONE, locale).append(sep)
+                print(sb, time, DateTime.YEAR_4, locale)
+            }
+            DateTime.DATE -> {
+                // 'D' (mm/dd/yy)
+                val sep = '/'
+                print(sb, time, DateTime.MONTH, locale).append(sep)
+                print(sb, time, DateTime.DAY_OF_MONTH_0, locale).append(sep)
+                print(sb, time, DateTime.YEAR_2, locale)
+            }
+            DateTime.ISO_STANDARD_DATE -> {
+                // 'F' (%Y-%m-%d)
+                val sep = '-'
+                print(sb, time, DateTime.YEAR_4, locale).append(sep)
+                print(sb, time, DateTime.MONTH, locale).append(sep)
+                print(sb, time, DateTime.DAY_OF_MONTH_0, locale)
+            }
+            else -> throw StringFormatterException.MalformedValue(currentChar)
+        }
+        return sb
+    }
+
+    private fun addZeros(sb: StringBuilder, prec: Int) {
+
+        // Look for the dot.  If we don't find one, the we'll need to add
+
+        // it before we add the zeros.
+        val len: Int = sb.length
+        var i: Int
+        i = 0
+        while (i < len) {
+            if (sb.get(i) == '.') {
+                break
+            }
+            i++
+        }
+        var needDot = false
+        if (i == len) {
+            needDot = true
+        }
+
+        // Determine existing precision.
+        val outPrec = len - i - if (needDot) 0 else 1
+        if (outPrec == prec) {
+            return
+        }
+
+        // Add dot if previously determined to be necessary.
+        if (needDot) {
+            sb.append('.')
+        }
+
+        // Add zeros.
+        trailingZeros(sb, prec - outPrec)
     }
 
     private fun appendJustified(out: StringBuilder, cs: CharSequence): StringBuilder {
@@ -327,7 +633,17 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
     }
 
     private fun localizedMagnitude(
-        sb: StringBuilder,
+        sb: StringBuilder = StringBuilder(),
+        value: Int,
+        flags: Flags,
+        width: Int,
+        locale: Locale
+    ): StringBuilder {
+        return localizedMagnitude(sb, value.toString(10), 0, flags, width, locale)
+    }
+
+    private fun localizedMagnitude(
+        sb: StringBuilder = StringBuilder(),
         value: CharSequence,
         offset: Int,
         flags: Flags,
@@ -353,7 +669,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
         if (dot < len) {
             decSep = numberFormatter.decimalSeparator
         }
-        if (flags.contains(Flags.GROUP)) {
+        if (flags.contains(GROUP)) {
             grpSep = numberFormatter.groupingSeparator
             grpSize = numberFormatter.groupingSize
 
@@ -384,7 +700,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
         }
 
         // apply zero padding
-        if (width != -1 && flags.contains(Flags.ZERO_PAD)) {
+        if (width != -1 && flags.contains(ZERO_PAD)) {
             for (k in sb.length until width) {
                 sb.insert(begin, zero)
             }
@@ -423,7 +739,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
 
     private fun flags(stringToMatch: String): Flags {
         flags = Flags.parse(stringToMatch)
-        if (flags.contains(Flags.PREVIOUS)) index = -1
+        if (flags.contains(PREVIOUS)) index = -1
         return flags
     }
 
@@ -467,7 +783,7 @@ internal class FormatSpecifier(private val out: StringBuilder, private val strin
                 throw StringFormatterException.UnknownFormatConversionException(currentChar.toString())
             }
             if (currentChar.toUpperCase() == currentChar && currentChar.toLowerCase() != currentChar) {
-                flags.add(Flags.UPPERCASE)
+                flags.add(UPPERCASE)
                 currentChar = currentChar.toLowerCase()
             }
             if (Conversion.isText(currentChar)) {
