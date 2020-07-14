@@ -42,17 +42,10 @@ internal object DateTime {
     const val DAY_OF_MONTH_0 = 'd' // (01 - 31)
     const val DAY_OF_MONTH = 'e' // (1 - 31) -- like d
 
-    // *    static final char ISO_WEEK_OF_YEAR_2    = 'g'; // cross %y %V
-    // *    static final char ISO_WEEK_OF_YEAR_4    = 'G'; // cross %Y %V
     const val NAME_OF_MONTH_ABBREV_X = 'h' // -- same b
     const val DAY_OF_YEAR = 'j' // (001 - 366)
     const val MONTH = 'm' // (01 - 12)
 
-    // *    static final char DAY_OF_WEEK_1         = 'u'; // (1 - 7) Monday
-    // *    static final char WEEK_OF_YEAR_SUNDAY   = 'U'; // (0 - 53) Sunday+
-    // *    static final char WEEK_OF_YEAR_MONDAY_01 = 'V'; // (01 - 53) Monday+
-    // *    static final char DAY_OF_WEEK_0         = 'w'; // (0 - 6) Sunday
-    // *    static final char WEEK_OF_YEAR_MONDAY   = 'W'; // (00 - 53) Monday
     const val YEAR_2 = 'y' // (00 - 99)
     const val YEAR_4 = 'Y' // (0000 - 9999)
 
@@ -60,19 +53,45 @@ internal object DateTime {
     const val TIME_12_HOUR = 'r' // (hh:mm:ss [AP]M)
     const val TIME_24_HOUR = 'R' // (hh:mm same as %H:%M)
 
-    // *    static final char LOCALE_TIME   = 'X'; // (%H:%M:%S) - parse format?
     const val DATE_TIME = 'c'
 
     // (Sat Nov 04 12:02:33 EST 1999)
     const val DATE = 'D' // (mm/dd/yy)
     const val ISO_STANDARD_DATE = 'F' // (%Y-%m-%d)
 
-    // *    static final char LOCALE_DATE           = 'x'; // (mm/dd/yy)
     fun isValid(c: Char): Boolean {
         return when (c) {
-            HOUR_OF_DAY_0, HOUR_0, HOUR_OF_DAY, HOUR, MINUTE, NANOSECOND, MILLISECOND, MILLISECOND_SINCE_EPOCH, AM_PM, SECONDS_SINCE_EPOCH, SECOND, TIME, ZONE_NUMERIC, ZONE, NAME_OF_DAY_ABBREV, NAME_OF_DAY, NAME_OF_MONTH_ABBREV, NAME_OF_MONTH, CENTURY, DAY_OF_MONTH_0, DAY_OF_MONTH, NAME_OF_MONTH_ABBREV_X, DAY_OF_YEAR, MONTH, YEAR_2, YEAR_4, TIME_12_HOUR, TIME_24_HOUR, DATE_TIME, DATE, ISO_STANDARD_DATE ->
-                // *        case LOCALE_DATE:
-                true
+            HOUR_OF_DAY_0,
+            HOUR_0,
+            HOUR_OF_DAY,
+            HOUR,
+            MINUTE,
+            NANOSECOND,
+            MILLISECOND,
+            MILLISECOND_SINCE_EPOCH,
+            AM_PM,
+            SECONDS_SINCE_EPOCH,
+            SECOND,
+            TIME,
+            ZONE_NUMERIC,
+            ZONE,
+            NAME_OF_DAY_ABBREV,
+            NAME_OF_DAY,
+            NAME_OF_MONTH_ABBREV,
+            NAME_OF_MONTH,
+            CENTURY,
+            DAY_OF_MONTH_0,
+            DAY_OF_MONTH,
+            NAME_OF_MONTH_ABBREV_X,
+            DAY_OF_YEAR,
+            MONTH,
+            YEAR_2,
+            YEAR_4,
+            TIME_12_HOUR,
+            TIME_24_HOUR,
+            DATE_TIME,
+            DATE,
+            ISO_STANDARD_DATE -> true
             else -> false
         }
     }

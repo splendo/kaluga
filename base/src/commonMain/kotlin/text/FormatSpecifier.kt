@@ -32,6 +32,7 @@ import com.splendo.kaluga.base.text.Conversion.PERCENT_SIGN
 import com.splendo.kaluga.base.text.Conversion.SCIENTIFIC
 import com.splendo.kaluga.base.text.Conversion.STRING
 import com.splendo.kaluga.base.text.Conversion.STRING_IOS
+import com.splendo.kaluga.base.text.DateTime.isValid
 import com.splendo.kaluga.base.text.Flags.Companion.ALTERNATE
 import com.splendo.kaluga.base.text.Flags.Companion.GROUP
 import com.splendo.kaluga.base.text.Flags.Companion.LEADING_SPACE
@@ -793,10 +794,6 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return currentChar
     }
 
-    private fun checkDateTime() {
-        throw StringFormatterException.UnsupportedFormat("Date Time")
-    }
-
     private fun checkGeneral() {
         if ((currentChar == BOOLEAN || currentChar == HASHCODE) && flags.contains(ALTERNATE))
             throw StringFormatterException.FormatFlagsConversionMismatchException(ALTERNATE.toString(), currentChar)
@@ -807,6 +804,18 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             PLUS, LEADING_SPACE, ZERO_PAD,
             GROUP, PARENTHESES
         )
+    }
+
+    private fun checkDateTime() {
+        if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
+        if (!isValid(currentChar)) throw StringFormatterException.UnknownFormatConversionException("t$currentChar")
+        checkBadFlags(
+            ALTERNATE, PLUS, LEADING_SPACE,
+            ZERO_PAD, GROUP, PARENTHESES
+        )
+
+        // '-' requires a width
+        if (width == -1 && flags.contains(LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
     }
 
     private fun checkCharacter() {
