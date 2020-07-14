@@ -17,9 +17,70 @@
 
 package com.splendo.kaluga.resources
 
+import android.content.Context
+import android.content.res.Resources
+import android.graphics.Typeface
+import android.os.Handler
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
+import kotlinx.coroutines.CompletableDeferred
 
-actual fun String.localized(): String {
-    val id = applicationContext.resources.getIdentifier(this, "string", applicationContext.packageName)
-    return applicationContext.getString(id)
+actual class StringLoader(private val context: Context) {
+    actual constructor() : this(applicationContext)
+    actual fun loadString(identifier: String): String {
+        val id = context.resources.getIdentifier(identifier, "string", context.packageName)
+        return try {
+            context.getString(id)
+        } catch (e: Resources.NotFoundException) {
+            identifier
+        }
+    }
+}
+
+actual class ColorLoader(private val context: Context) {
+    actual constructor() : this(applicationContext)
+    actual fun loadColor(identifier: String): Color? {
+        val id = context.resources.getIdentifier(identifier, "color", context.packageName)
+        return try {
+            ContextCompat.getColor(context, id)
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
+    }
+}
+
+actual class ImageLoader(private val context: Context) {
+    actual constructor() : this(applicationContext)
+    actual fun loadImage(identifier: String): Image? {
+        val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
+        return try {
+            ContextCompat.getDrawable(context, id)?.let { Image(it) }
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
+    }
+}
+
+actual class FontLoader(private val context: Context, private val handler: Handler?) {
+    actual constructor() : this(applicationContext, null)
+    actual suspend fun loadFont(identifier: String): Font? {
+        val id = context.resources.getIdentifier(identifier, "font", context.packageName)
+        return try {
+            val deferredFont = CompletableDeferred<Typeface?>()
+            val callback = object : ResourcesCompat.FontCallback() {
+                override fun onFontRetrievalFailed(reason: Int) {
+                    deferredFont.complete(null)
+                }
+
+                override fun onFontRetrieved(typeface: Typeface) {
+                    deferredFont.complete(typeface)
+                }
+            }
+            ResourcesCompat.getFont(context, id, callback, handler)
+            deferredFont.await()
+        } catch (e: Resources.NotFoundException) {
+            null
+        }
+    }
 }

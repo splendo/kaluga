@@ -18,7 +18,28 @@
 package com.splendo.kaluga.resources
 
 import platform.Foundation.NSBundle
+import platform.UIKit.UIColor
+import platform.UIKit.UIFont
+import platform.UIKit.UIImage
+import platform.UIKit.UITraitCollection
+import platform.UIKit.colorNamed
+import platform.UIKit.labelFontSize
 
-actual fun String.localized(): String {
-    return NSBundle.mainBundle.localizedStringForKey(this, null, null)
+actual class StringLoader(private val bundle: NSBundle, private val table: String?) {
+    actual constructor() : this(NSBundle.mainBundle, null)
+    actual fun loadString(identifier: String): String = bundle.localizedStringForKey(identifier, null, table)
+}
+
+actual class ColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
+    actual constructor() : this(NSBundle.mainBundle, null)
+    actual fun loadColor(identifier: String): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) }
+}
+
+actual class ImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
+    actual constructor() : this(NSBundle.mainBundle, null)
+    actual fun loadImage(identifier: String): Image? = UIImage.imageNamed(identifier, bundle, traitCollection)
+}
+
+actual class FontLoader actual constructor() {
+    actual suspend fun loadFont(identifier: String): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize)
 }

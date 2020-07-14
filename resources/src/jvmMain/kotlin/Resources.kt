@@ -17,4 +17,22 @@
 
 package com.splendo.kaluga.resources
 
-actual fun String.localized(): String = this
+actual class StringLoader(private val transformer: (String) -> String) {
+    actual constructor() : this({ it })
+    actual fun loadString(identifier: String): String = transformer(identifier)
+}
+
+actual class ColorLoader(private val transformer: (String) -> Color?) {
+    actual constructor() : this({ null })
+    actual fun loadColor(identifier: String): Color? = transformer(identifier)
+}
+
+actual class ImageLoader(private val transformer: (String) -> Image?) {
+    actual constructor() : this({ null })
+    actual fun loadImage(identifier: String): Image? = transformer(identifier)
+}
+
+actual class FontLoader(private val transformer: suspend (String) -> Font?) {
+    actual constructor() : this({ null })
+    actual suspend fun loadFont(identifier: String): Font? = transformer(identifier)
+}

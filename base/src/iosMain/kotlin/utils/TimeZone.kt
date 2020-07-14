@@ -51,9 +51,9 @@ actual class TimeZone(val timeZone: NSTimeZone) {
         }
         return timeZone.localizedName(nameStyle, locale) ?: ""
     }
-    actual val offsetFromGMTInMilliseconds: Long = timeZone.secondsFromGMT * 1000
+    actual val offsetFromGMTInMilliseconds: Long = timeZone.secondsFromGMT * 1000L
     actual val daylightSavingsOffsetfromGMT: Long = (timeZone.daylightSavingTimeOffset * 1000.0).toLong()
-    actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = (timeZone.secondsFromGMTForDate(date.date) * 1000)
+    actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = (timeZone.secondsFromGMTForDate(date.date) * 1000L)
     actual fun usesDaylightSavingsTime(date: Date): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
     actual fun copy(): TimeZone = TimeZone(timeZone.copy() as NSTimeZone)
     override fun equals(other: Any?): Boolean {

@@ -17,4 +17,51 @@
 
 package com.splendo.kaluga.resources
 
-expect fun String.localized(): String
+expect class StringLoader {
+    constructor()
+    fun loadString(identifier: String): String
+}
+
+expect class ColorLoader {
+    constructor()
+    fun loadColor(identifier: String): Color?
+}
+
+expect class ImageLoader {
+    constructor()
+    fun loadImage(identifier: String): Image?
+}
+
+expect class FontLoader {
+    constructor()
+    suspend fun loadFont(identifier: String): Font?
+}
+
+fun String.localized(stringLoader: StringLoader = StringLoader()) = stringLoader.loadString(this)
+fun String.asColor(colorLoader: ColorLoader = ColorLoader()): Color? = colorLoader.loadColor(this)
+fun String.asImage(imageLoader: ImageLoader = ImageLoader()): Image? = imageLoader.loadImage(this)
+suspend fun String.asFont(fontLoader: FontLoader = FontLoader()): Font? = fontLoader.loadFont(this)
+
+fun colorFrom(hexString: String): Color? {
+    return if (hexString.startsWith('#')) {
+        val hexColor = hexString.substring(1).toLong(16)
+        when (hexString.length) {
+            9 -> {
+                val alpha = hexColor ushr 24
+                val red = (hexColor shr 16) and 0xFF
+                val green = (hexColor shr 8) and 0xFF
+                val blue = hexColor and 0xFF
+                colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
+            }
+            7 -> {
+                val red = hexColor ushr 16
+                val green = (hexColor shr 8) and 0xFF
+                val blue = hexColor and 0xFF
+                colorFrom(red.toInt(), green.toInt(), blue.toInt())
+            }
+            else -> null
+        }
+    } else {
+        null
+    }
+}
