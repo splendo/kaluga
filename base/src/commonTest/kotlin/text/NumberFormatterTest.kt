@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.test.text
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 import com.splendo.kaluga.base.utils.createLocale
+import com.splendo.kaluga.logging.debug
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -97,7 +98,9 @@ class NumberFormatterTest {
     @Test
     fun testFormatPercentage() {
         val formatters = createFormatters(NumberFormatStyle.Percentage(minFraction = 0, maxFraction = 2))
+        debug(formatters.usFormatter.format(2))
         assertEquals("200%", formatters.usFormatter.format(2))
+        debug(formatters.nlFormatter.format(2))
         assertEquals("200%", formatters.nlFormatter.format(2))
 
         assertEquals("80%", formatters.usFormatter.format(0.8))

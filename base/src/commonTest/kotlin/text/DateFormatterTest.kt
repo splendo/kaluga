@@ -34,7 +34,7 @@ class DateFormatterTest {
     @Test
     fun testFormatDate() {
         val formatter = DateFormatter.dateFormat(DateFormatStyle.Short, UnitedStates)
-        val date = Date.epoch().apply {
+        val date = Date.now().apply {
             year = 2020
             month = 1
             day = 8

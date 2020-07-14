@@ -49,10 +49,11 @@ class DateTest {
     @Test
     fun testUpdateDate() {
         val epoch = Date.epoch()
-        assertEquals(1970, epoch.year)
-        assertEquals(1, epoch.month)
+        val isEarlierThanGMT = epoch.timeZone.offsetFromGMTInMilliseconds < 0
+        assertEquals(if (isEarlierThanGMT) 1969 else 1970, epoch.year)
+        assertEquals(if (isEarlierThanGMT) 12 else 1, epoch.month)
         epoch.month += 22
         assertEquals(1971, epoch.year)
-        assertEquals(11, epoch.month)
+        assertEquals(if (isEarlierThanGMT) 10 else 11, epoch.month)
     }
 }
