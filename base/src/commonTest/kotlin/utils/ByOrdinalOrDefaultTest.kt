@@ -22,9 +22,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ByOrdinalOrDefaultTest {
-     enum class Numbers {
-         one, two
-     }
+    enum class Numbers {
+        one, two
+    }
 
     @Test
     fun test() {
@@ -45,5 +45,4 @@ class ByOrdinalOrDefaultTest {
                 Numbers.one
             ))
     }
-
 }

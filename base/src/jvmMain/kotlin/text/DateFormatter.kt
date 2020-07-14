@@ -67,7 +67,7 @@ actual class DateFormatter(private val format: SimpleDateFormat) {
 
     actual fun format(date: Date): String = format.format(date.calendar.time)
     actual fun parse(string: String): Date? {
-        return format.parse(string)?.let {date ->
+        return format.parse(string)?.let { date ->
             val calendar = format.calendar.clone() as Calendar
             Date(calendar.apply { time = date })
         }
@@ -80,7 +80,7 @@ actual class DateFormatter(private val format: SimpleDateFormat) {
     }
 }
 
-private fun DateFormatStyle.javaStyle(): Int = when(this) {
+private fun DateFormatStyle.javaStyle(): Int = when (this) {
     DateFormatStyle.Short -> DateFormat.SHORT
     DateFormatStyle.Medium -> DateFormat.MEDIUM
     DateFormatStyle.Long -> DateFormat.LONG

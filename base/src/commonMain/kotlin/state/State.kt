@@ -1,4 +1,3 @@
-package com.splendo.kaluga.state
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -16,6 +15,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.ColdFlowable
@@ -25,16 +25,20 @@ import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
-import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.coroutines.CoroutineContext
 
 /**
  * State to be represented in a state machine
  */
-open class State<S:State<S>> {
+open class State<S : State<S>> {
 
     val remain = suspend {
         this as S
@@ -45,12 +49,10 @@ open class State<S:State<S>> {
      */
     open suspend fun initialState() {}
 
-
     /**
      * Called when this state is the final state of the state machine
      */
     open suspend fun finalState() {}
-
 }
 
 interface HandleBeforeCreating {
@@ -60,17 +62,16 @@ interface HandleBeforeCreating {
     suspend fun beforeCreatingNewState()
 }
 
-interface HandleAfterCreating<S:State<S>> {
+interface HandleAfterCreating<S : State<S>> {
     /**
      * Called while transitioning to a new state after the new state is created
      *
      * @param newState the newly created state
      */
     suspend fun afterCreatingNewState(newState: S)
-
 }
 
-interface HandleAfterNewStateIsSet<S:State<S>> {
+interface HandleAfterNewStateIsSet<S : State<S>> {
 
     /**
      * Called while transitioning to a new state after the new state is set.
@@ -80,7 +81,7 @@ interface HandleAfterNewStateIsSet<S:State<S>> {
     suspend fun afterNewStateIsSet(newState: S)
 }
 
-interface HandleBeforeOldStateIsRemoved<S:State<S>> {
+interface HandleBeforeOldStateIsRemoved<S : State<S>> {
 
     /**
      * Called while transitioning from an old state before it is removed.
@@ -90,7 +91,7 @@ interface HandleBeforeOldStateIsRemoved<S:State<S>> {
     suspend fun beforeOldStateIsRemoved(oldState: S)
 }
 
-interface HandleAfterOldStateIsRemoved<S:State<S>> {
+interface HandleAfterOldStateIsRemoved<S : State<S>> {
 
     /**
      * Called while transitioning from an old state after it is removed
@@ -106,14 +107,13 @@ interface HandleAfterOldStateIsRemoved<S:State<S>> {
  * @param T the [State] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
-
+abstract class StateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     private val stateMutex = Mutex()
 
     abstract val flowable: BaseFlowable<S>
 
-    internal lateinit var changedState:S
+    internal lateinit var changedState: S
     private suspend fun setChangedState(value: S) {
         changedState = value
         flowable.set(value)
@@ -129,7 +129,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
         return flowable.flow(flowConfig)
     }
 
-    internal suspend fun initialize() : S {
+    internal suspend fun initialize(): S {
         stateMutex.withLock {
             val value = initialValue()
             changedState = value
@@ -142,9 +142,9 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      * Gets the initial value of the repo
      * @return the initial value of the repo
      */
-    abstract suspend fun initialValue() : S
+    abstract suspend fun initialValue(): S
 
-    internal fun state():S {
+    internal fun state(): S {
         return changedState
     }
 
@@ -168,7 +168,7 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
      *
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
-    suspend fun useState(action:suspend (S) -> Unit) = coroutineScope {
+    suspend fun useState(action: suspend (S) -> Unit) = coroutineScope {
         stateMutex.withLock {
             val result = EmptyCompletableDeferred()
             launch {
@@ -221,25 +221,23 @@ abstract class StateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQu
             return@coroutineScope result.await()
         }
     }
-
 }
 
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
-abstract class HotStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
+abstract class HotStateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
     private val hotFlowable = lazy {
-        HotFlowable(runBlocking{initialize()})
+        HotFlowable(runBlocking { initialize() })
     }
     override val flowable: BaseFlowable<S> get() = hotFlowable.value
-
 }
 
 /**
  * A [StateRepo] that represents its [State] as a Cold flow. Data will only be set when the State repo is observed
  */
-abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
+abstract class ColdStateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
     override val flowable: ColdFlowable<S> = ColdFlowable({
         initialize()
@@ -250,5 +248,4 @@ abstract class ColdStateRepo<S:State<S>>(coroutineContext: CoroutineContext = Ma
     })
 
     abstract suspend fun deinitialize(state: S)
-
 }

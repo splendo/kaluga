@@ -21,7 +21,7 @@ actual class TimeZone(internal val timeZone: java.util.TimeZone) {
 
     actual companion object {
         actual fun get(identifier: String): TimeZone? {
-            return java.util.TimeZone.getTimeZone(identifier)?.let { 
+            return java.util.TimeZone.getTimeZone(identifier)?.let {
                 TimeZone(it)
             }
         }
@@ -29,7 +29,7 @@ actual class TimeZone(internal val timeZone: java.util.TimeZone) {
             return TimeZone(java.util.TimeZone.getDefault())
         }
     }
-    
+
     actual val identifier: String = timeZone.id
     actual fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String {
         val styleJava = when (style) {

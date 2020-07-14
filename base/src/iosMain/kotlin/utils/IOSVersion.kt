@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -48,11 +48,8 @@ data class IOSVersion(val major: Int, val minor: Int, val patch: Int) {
                     this.minor > version.minor -> true
                     else -> this.minor == version.minor && this.patch >= version.patch
                 }
-
             }
             else -> false
         }
     }
-
 }
-

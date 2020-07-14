@@ -25,7 +25,7 @@ class IOSVersionTest {
 
     @Test
     fun testMajorVersionDifference() {
-        val newerVersion = IOSVersion(2, 3,4)
+        val newerVersion = IOSVersion(2, 3, 4)
         val olderVersion = IOSVersion(1, 9, 9)
         assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
         assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
@@ -33,7 +33,7 @@ class IOSVersionTest {
 
     @Test
     fun testMinorVersionDifference() {
-        val newerVersion = IOSVersion(1, 3,4)
+        val newerVersion = IOSVersion(1, 3, 4)
         val olderVersion = IOSVersion(1, 2, 9)
         assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
         assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
@@ -41,7 +41,7 @@ class IOSVersionTest {
 
     @Test
     fun testPatchVersionDifference() {
-        val newerVersion = IOSVersion(1, 2,4)
+        val newerVersion = IOSVersion(1, 2, 4)
         val olderVersion = IOSVersion(1, 2, 1)
         assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
         assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
@@ -49,10 +49,9 @@ class IOSVersionTest {
 
     @Test
     fun testEqualVersionDifference() {
-        val version1 = IOSVersion(1, 2,3)
+        val version1 = IOSVersion(1, 2, 3)
         val version2 = IOSVersion(1, 2, 3)
         assertTrue(version1.isOSVersionOrNewer(version2))
         assertTrue(version2.isOSVersionOrNewer(version1))
     }
-
 }

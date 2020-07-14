@@ -44,7 +44,7 @@ class StringFormatterTest {
     fun testStringFormatNotEnoughArguments() {
         assertFails("Successfully parsed") { "Test %s %s".format("success") }
     }
-    
+
     @Test
     fun testStringFormatMinWidth() {
         assertEquals("Test    success", "Test %10s".format("success"))
@@ -179,7 +179,7 @@ class StringFormatterTest {
     fun testFloatFormat() {
         assertEquals("0.004600", "%f".format(0.0046))
     }
-    
+
     @Test
     fun testFloatFormatWithPrecision() {
         assertEquals("0.005", "%.3f".format(0.0046))

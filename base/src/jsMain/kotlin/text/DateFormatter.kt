@@ -46,7 +46,7 @@ actual class DateFormatter(private val formatter: (kotlin.js.Date) -> String) {
     actual fun parse(string: String): Date? = null
 }
 
-private fun DateFormatStyle.stringValue(): String = when(this) {
+private fun DateFormatStyle.stringValue(): String = when (this) {
     DateFormatStyle.Short -> "short"
     DateFormatStyle.Medium -> "medium"
     DateFormatStyle.Long -> "long"

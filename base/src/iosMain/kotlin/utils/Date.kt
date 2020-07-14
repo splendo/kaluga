@@ -60,7 +60,7 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
             return Date(calendar, date)
         }
     }
-    
+
     internal var date: NSDate = initialDate
 
     actual var timeZone: TimeZone

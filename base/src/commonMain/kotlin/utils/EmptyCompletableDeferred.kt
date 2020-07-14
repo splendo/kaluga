@@ -33,5 +33,3 @@ typealias EmptyCompletableDeferred = CompletableDeferred<Unit>
  * It is optionally a child of a [parent] job.
  */
 fun EmptyCompletableDeferred(parent: Job? = null): EmptyCompletableDeferred = CompletableDeferred(parent)
-
-

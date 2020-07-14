@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-actual class Date(internal val date: kotlin.js.Date): Comparable<Date> {
+actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
@@ -33,7 +33,7 @@ actual class Date(internal val date: kotlin.js.Date): Comparable<Date> {
         set(value) { }
     actual var year: Int
         get() = date.getFullYear()
-        set(value) {  }
+        set(value) { }
     actual var month: Int
         get() = date.getMonth()
         set(value) { }

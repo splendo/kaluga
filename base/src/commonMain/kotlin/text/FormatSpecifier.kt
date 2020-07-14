@@ -308,7 +308,6 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 }
                 localizedMagnitude(sb, mantissa, 0, flags, newW, locale)
 
-
                 sb.append(if (flags.contains(UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
                 sb.append(exponent)
             }
@@ -346,7 +345,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     val scientific = scientificFormatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
                     val exponent = scientific[1]
                     val expValue = exponent.toInt(10)
-                    if (expValue - 1 < -4 || expValue -1 >= prec) {
+                    if (expValue - 1 < -4 || expValue - 1 >= prec) {
                         number.append(scientific[0])
                         Pair(exponent, expValue)
                     } else {
@@ -402,9 +401,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 // 'l' (1 - 12) -- like I
                 var i: Int = time.hour
                 if (currentChar == DateTime.HOUR_0 || currentChar == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
-                val flags = if (currentChar == DateTime.HOUR_OF_DAY_0
-                    || currentChar == DateTime.HOUR_0
-                ) ZERO_PAD else NONE
+                val flags = if (currentChar == DateTime.HOUR_OF_DAY_0 || currentChar == DateTime.HOUR_0)
+                    ZERO_PAD
+                else
+                    NONE
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.MINUTE -> {

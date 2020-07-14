@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,8 +16,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import kotlinx.coroutines.CoroutineScope
+package com.splendo.kaluga.base
+
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineScope
 
 expect fun <T> runBlocking(context: CoroutineContext = EmptyCoroutineContext, block: suspend CoroutineScope.() -> T): T

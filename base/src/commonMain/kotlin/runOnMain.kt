@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,4 +16,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-expect fun runOnMain(block:()->Unit)
+package com.splendo.kaluga.base
+
+expect fun runOnMain(block: () -> Unit)

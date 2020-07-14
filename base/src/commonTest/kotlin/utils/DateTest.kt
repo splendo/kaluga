@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DateTest {
-    
+
     @Test
     fun testCreateEpochDate() {
         val someDay = Date.epoch().apply {
@@ -34,7 +34,7 @@ class DateTest {
             minute = 45
         }
         val epoch = Date.epoch()
-        
+
         assertTrue(epoch < someDay)
     }
 
@@ -45,7 +45,7 @@ class DateTest {
 
         assertTrue(now > epoch)
     }
-    
+
     @Test
     fun testUpdateDate() {
         val epoch = Date.epoch()

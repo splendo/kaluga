@@ -92,7 +92,7 @@ actual class DateFormatter(private val format: NSDateFormatter) {
     }
 }
 
-private fun DateFormatStyle.nsDateFormatterStyle(): NSDateFormatterStyle = when(this) {
+private fun DateFormatStyle.nsDateFormatterStyle(): NSDateFormatterStyle = when (this) {
     DateFormatStyle.Short -> NSDateFormatterShortStyle
     DateFormatStyle.Medium -> NSDateFormatterMediumStyle
     DateFormatStyle.Long -> NSDateFormatterLongStyle

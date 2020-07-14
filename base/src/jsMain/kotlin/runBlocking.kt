@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,8 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import kotlinx.coroutines.*
+package com.splendo.kaluga.base
+
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 actual fun <T> runBlocking(
     context: CoroutineContext,

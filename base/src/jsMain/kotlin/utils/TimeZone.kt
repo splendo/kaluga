@@ -23,7 +23,7 @@ actual class TimeZone {
         actual fun get(identifier: String): TimeZone? = TimeZone()
         actual fun current(): TimeZone = TimeZone()
     }
-    
+
     actual val identifier: String = ""
     actual fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String = ""
     actual val offsetFromGMTInMilliseconds: Long = 0L
