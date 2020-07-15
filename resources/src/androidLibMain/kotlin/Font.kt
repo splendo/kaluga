@@ -15,11 +15,8 @@
   
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.resources
 
-/**
- * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
- * @param separator The separator to use between elements
- * @return The String representing the [ByteArray]s hexadecimal value
- */
-fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray().joinToString(separator) { it.toString(16).padStart(2, '0') }
+import android.graphics.Typeface
+
+actual typealias Font = Typeface

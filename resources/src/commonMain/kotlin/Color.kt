@@ -15,11 +15,18 @@
   
  */
 
-package com.splendo.kaluga.base.utils
+package com.splendo.kaluga.resources
 
-/**
- * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
- * @param separator The separator to use between elements
- * @return The String representing the [ByteArray]s hexadecimal value
- */
-fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray().joinToString(separator) { it.toString(16).padStart(2, '0') }
+expect class Color
+
+expect val Color.red: Double
+expect val Color.redInt: Int
+expect val Color.green: Double
+expect val Color.greenInt: Int
+expect val Color.blue: Double
+expect val Color.blueInt: Int
+expect val Color.alpha: Double
+expect val Color.alphaInt: Int
+
+expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1.0): Color
+expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): Color

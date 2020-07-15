@@ -1,25 +1,26 @@
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
- 
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.base.utils
 
-/**
- * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
- * @param separator The separator to use between elements
- * @return The String representing the [ByteArray]s hexadecimal value
- */
-fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray().joinToString(separator) { it.toString(16).padStart(2, '0') }
+actual typealias Locale = java.util.Locale
+
+actual fun createLocale(language: String): Locale = Locale(language)
+actual fun createLocale(language: String, country: String): Locale = Locale(language, country)
+actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(language, country, variant)
+
+actual val defaultLocale: Locale get() = Locale.getDefault()

@@ -105,7 +105,7 @@ class BaseFlowableTest : FlowableTest<String>() {
         val flowable = flowable.await()
         val scope = MultiplatformMainScope()
         val collectionJob = scope.async {
-            flowable.flow().collect {}
+            flowable.flow().collect { }
         }
         delay(100) // TODO instead listen to flow subscriber count
         flowable.cancelFlows()
