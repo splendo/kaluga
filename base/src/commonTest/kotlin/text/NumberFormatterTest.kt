@@ -99,11 +99,11 @@ class NumberFormatterTest : BaseTest() {
     @Test
     fun testFormatPercentage() {
         val formatters = createFormatters(NumberFormatStyle.Percentage(minFraction = 0U, maxFraction = 2U))
-        assertEquals("80%", formatters.nlFormatter.format(0.8))
-        assertEquals("80%", formatters.usFormatter.format(0.8))
-        assertEquals("200%", formatters.nlFormatter.format(2.0))
         assertEquals("200%", formatters.usFormatter.format(2.0))
+        assertEquals("200%", formatters.nlFormatter.format(2.0))
 
+        assertEquals("80%", formatters.usFormatter.format(0.8))
+        assertEquals("80%", formatters.nlFormatter.format(0.8))
 
         assertEquals("80.12%", formatters.usFormatter.format(0.801234))
         assertEquals("80,12%", formatters.nlFormatter.format(0.801234))
