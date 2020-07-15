@@ -445,7 +445,7 @@ class StringFormatterTest {
 
     @Test
     fun testFormatDate() {
-        val date = Date.now(timeZone = TimeZone.get("PST")!!, locale = locale).apply {
+        val date = Date.now(timeZone = TimeZone.get("America/Los_Angeles")!!, locale = locale).apply {
             year = 2020
             month = 7
             day = 23

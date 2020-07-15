@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base
 
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -51,7 +52,7 @@ class IOSVersionTest {
     fun testEqualVersionDifference() {
         val version1 = IOSVersion(1, 2, 3)
         val version2 = IOSVersion(1, 2, 3)
-        assertTrue(version1 > version2)
-        assertTrue(version2 > version1)
+        assertEquals(version1, version2)
+        assertEquals(version2, version1)
     }
 }
