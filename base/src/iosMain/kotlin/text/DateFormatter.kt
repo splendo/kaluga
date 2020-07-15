@@ -46,12 +46,13 @@ actual class DateFormatter(private val format: NSDateFormatter) {
             this.timeZone = timeZone.timeZone
             dateFormat = pattern
         })
-        
+
         fun createDateFormatter(
             dateStyle: DateFormatStyle?,
             timeStyle: DateFormatStyle?,
             timeZone: TimeZone,
-            locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
+            locale: Locale
+        ): DateFormatter = DateFormatter(NSDateFormatter().apply {
             this.locale = locale
             this.timeZone = timeZone.timeZone
             this.dateStyle = dateStyle.nsDateFormatterStyle()
