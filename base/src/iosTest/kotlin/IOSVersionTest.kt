@@ -27,31 +27,31 @@ class IOSVersionTest {
     fun testMajorVersionDifference() {
         val newerVersion = IOSVersion(2, 3, 4)
         val olderVersion = IOSVersion(1, 9, 9)
-        assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
-        assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
+        assertTrue(newerVersion > olderVersion)
+        assertFalse(olderVersion > newerVersion)
     }
 
     @Test
     fun testMinorVersionDifference() {
         val newerVersion = IOSVersion(1, 3, 4)
         val olderVersion = IOSVersion(1, 2, 9)
-        assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
-        assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
+        assertTrue(newerVersion > olderVersion)
+        assertFalse(olderVersion > newerVersion)
     }
 
     @Test
     fun testPatchVersionDifference() {
         val newerVersion = IOSVersion(1, 2, 4)
         val olderVersion = IOSVersion(1, 2, 1)
-        assertTrue(newerVersion.isOSVersionOrNewer(olderVersion))
-        assertFalse(olderVersion.isOSVersionOrNewer(newerVersion))
+        assertTrue(newerVersion > olderVersion)
+        assertFalse(olderVersion > newerVersion)
     }
 
     @Test
     fun testEqualVersionDifference() {
         val version1 = IOSVersion(1, 2, 3)
         val version2 = IOSVersion(1, 2, 3)
-        assertTrue(version1.isOSVersionOrNewer(version2))
-        assertTrue(version2.isOSVersionOrNewer(version1))
+        assertTrue(version1 > version2)
+        assertTrue(version2 > version1)
     }
 }
