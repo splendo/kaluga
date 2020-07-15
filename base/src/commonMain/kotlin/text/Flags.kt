@@ -27,7 +27,7 @@ internal class Flags(private var flags: Int) {
         return flags and f.valueOf() == f.valueOf()
     }
 
-    fun dup(): Flags {
+    fun copy(): Flags {
         return Flags(flags)
     }
 

@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.utils
 
 /**
  * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
+ * @param separator The separator to use between elements
  * @return The String representing the [ByteArray]s hexadecimal value
  */
-fun ByteArray.toHexString() = asUByteArray().joinToString(" ") { it.toString(16).padStart(2, '0') }
+fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray().joinToString(separator) { it.toString(16).padStart(2, '0') }

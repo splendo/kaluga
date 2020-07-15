@@ -27,7 +27,7 @@ import kotlin.test.assertFails
 
 @ExperimentalStdlibApi
 class StringFormatterTest {
-    
+
     companion object {
         val locale = createLocale("en", "US")
     }
@@ -161,40 +161,40 @@ class StringFormatterTest {
     fun testIntFormatLeadingSpaceNegative() {
         assertEquals("Test -1 success", "Test % d success".format(-1, locale = locale))
     }
-    
+
     @Test
     fun testIntFormatWithGrouping() {
-        assertEquals("2,000","%,d".format(2000, locale = locale))
+        assertEquals("2,000", "%,d".format(2000, locale = locale))
     }
 
     @Test
     fun testIntFormatWithGroupingMinWidth() {
-        assertEquals("   2,000","%,8d".format(2000, locale = locale))
+        assertEquals("   2,000", "%,8d".format(2000, locale = locale))
     }
 
     @Test
     fun testIntFormatWithGroupingMinWidthLeftAlign() {
-        assertEquals("2,000   ","%,-8d".format(2000, locale = locale))
+        assertEquals("2,000   ", "%,-8d".format(2000, locale = locale))
     }
 
     @Test
     fun testIntFormatWithParenthesis() {
-        assertEquals("(50)","%(d".format(-50, locale = locale))
+        assertEquals("(50)", "%(d".format(-50, locale = locale))
     }
 
     @Test
     fun testIntFormatWithParenthesisPositive() {
-        assertEquals("50","%(d".format(50, locale = locale))
+        assertEquals("50", "%(d".format(50, locale = locale))
     }
 
     @Test
     fun testIntFormatWithParenthesisMinWidth() {
-        assertEquals("    (50)","%(8d".format(-50, locale = locale))
+        assertEquals("    (50)", "%(8d".format(-50, locale = locale))
     }
 
     @Test
     fun testIntFormatWithParenthesisMinWidthLeftAlign() {
-        assertEquals("(50)    ","%(-8d".format(-50, locale = locale))
+        assertEquals("(50)    ", "%(-8d".format(-50, locale = locale))
     }
 
     @Test
@@ -309,22 +309,22 @@ class StringFormatterTest {
 
     @Test
     fun testFloatFormatWithParenthesis() {
-        assertEquals("(50.50)","%(.2f".format(-50.5, locale = locale))
+        assertEquals("(50.50)", "%(.2f".format(-50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatWithParenthesisPositive() {
-        assertEquals("50.50","%(.2f".format(50.5, locale = locale))
+        assertEquals("50.50", "%(.2f".format(50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatWithParenthesisMinWidth() {
-        assertEquals("   (50.50)","%(10.2f".format(-50.5, locale = locale))
+        assertEquals("   (50.50)", "%(10.2f".format(-50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatWithParenthesisMinWidthLeftAlign() {
-        assertEquals("(50.50)   ","%(-10.2f".format(-50.5, locale = locale))
+        assertEquals("(50.50)   ", "%(-10.2f".format(-50.5, locale = locale))
     }
 
     @Test
@@ -389,22 +389,22 @@ class StringFormatterTest {
 
     @Test
     fun testFloatFormatScientificWithParenthesis() {
-        assertEquals("(5.05e+01)","%(.2e".format(-50.5, locale = locale))
+        assertEquals("(5.05e+01)", "%(.2e".format(-50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatScientificWithParenthesisPositive() {
-        assertEquals("5.05e+01","%(.2e".format(50.5, locale = locale))
+        assertEquals("5.05e+01", "%(.2e".format(50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatScientificWithParenthesisMinWidth() {
-        assertEquals("     (5.05e+01)","%(15.2e".format(-50.5, locale = locale))
+        assertEquals("     (5.05e+01)", "%(15.2e".format(-50.5, locale = locale))
     }
 
     @Test
     fun testFloatFormatScientificWithParenthesisMinWidthLeftAlign() {
-        assertEquals("(5.05e+01)     ","%(-15.2e".format(-50.5, locale = locale))
+        assertEquals("(5.05e+01)     ", "%(-15.2e".format(-50.5, locale = locale))
     }
 
     @Test
@@ -432,7 +432,7 @@ class StringFormatterTest {
     fun testFormatCharCapitalized() {
         assertEquals("A", "%C".format('a', locale = locale))
     }
-    
+
     @Test
     fun testFormatPercentageEscaped() {
         assertEquals("%", "%%".format(locale = locale))

@@ -61,7 +61,7 @@ internal object Conversion {
         return (isGeneral(c) || isInteger(c) || isFloat(c) || isText(c) || c == 't' || isCharacter(c))
     }
 
-    // Returns true iff the Conversion is applicable to all objects.
+    // Returns true if and only if the Conversion is applicable to all objects.
     fun isGeneral(c: Char): Boolean {
         return when (c) {
             BOOLEAN, BOOLEAN_UPPER, STRING, STRING_UPPER, STRING_IOS, HASHCODE, HASHCODE_UPPER -> true
@@ -69,7 +69,7 @@ internal object Conversion {
         }
     }
 
-    // Returns true iff the Conversion is applicable to character.
+    // Returns true if and only if the Conversion is applicable to character.
     fun isCharacter(c: Char): Boolean {
         return when (c) {
             CHARACTER, CHARACTER_UPPER -> true
@@ -77,7 +77,7 @@ internal object Conversion {
         }
     }
 
-    // Returns true iff the Conversion is an integer type.
+    // Returns true if and only if the Conversion is an integer type.
     fun isInteger(c: Char): Boolean {
         return when (c) {
             DECIMAL_INTEGER, OCTAL_INTEGER, HEXADECIMAL_INTEGER, HEXADECIMAL_INTEGER_UPPER -> true
@@ -85,7 +85,7 @@ internal object Conversion {
         }
     }
 
-    // Returns true iff the Conversion is a floating-point type.
+    // Returns true if and only if the Conversion is a floating-point type.
     fun isFloat(c: Char): Boolean {
         return when (c) {
             SCIENTIFIC, SCIENTIFIC_UPPER, GENERAL, GENERAL_UPPER, DECIMAL_FLOAT, HEXADECIMAL_FLOAT, HEXADECIMAL_FLOAT_UPPER -> true
@@ -93,7 +93,7 @@ internal object Conversion {
         }
     }
 
-    // Returns true iff the Conversion does not require an argument
+    // Returns true if and only if the Conversion does not require an argument
     fun isText(c: Char): Boolean {
         return when (c) {
             LINE_SEPARATOR, PERCENT_SIGN -> true
