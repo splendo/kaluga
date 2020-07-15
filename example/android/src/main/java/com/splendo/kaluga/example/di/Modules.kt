@@ -69,6 +69,7 @@ val utilitiesModule = module {
     single { BluetoothBuilder().create() }
 }
 
+@ExperimentalStdlibApi
 val viewModelModule = module {
     viewModel {
         ExampleViewModel(

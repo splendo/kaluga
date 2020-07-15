@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 
 class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>) : NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
 
+@ExperimentalStdlibApi
 class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
     private val _isScanning = ConflatedBroadcastChannel<Boolean>()

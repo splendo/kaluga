@@ -32,6 +32,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalStdlibApi
 class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
 
     override val viewModel: BluetoothListViewModel by viewModel()

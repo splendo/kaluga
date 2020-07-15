@@ -22,6 +22,7 @@ import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.UUID
@@ -32,12 +33,12 @@ import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.state
-import com.splendo.kaluga.resources.formatted
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
+@ExperimentalStdlibApi
 class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
     enum class ConnectButtonState {
@@ -49,9 +50,9 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
 
     val name = deviceStateObservable { it.advertisementData.name ?: "bluetooth_no_name".localized() }
     val identifierString = identifier.stringValue
-    val rssi = deviceStateObservable { "rssi".localized().formatted(it.rssi) }
+    val rssi = deviceStateObservable { "rssi".localized().format(it.rssi) }
     val isTxPowerVisible = deviceStateObservable { it.advertisementData.txPowerLevel != Int.MIN_VALUE }
-    val txPower = deviceStateObservable { if (it.advertisementData.txPowerLevel != Int.MIN_VALUE) "txPower".localized().formatted(it.advertisementData.txPowerLevel) else "" }
+    val txPower = deviceStateObservable { if (it.advertisementData.txPowerLevel != Int.MIN_VALUE) "txPower".localized().format(it.advertisementData.txPowerLevel) else "" }
 
     val isConnectButtonVisible = deviceStateObservable { it.deviceInfo.advertisementData.isConnectible }
     val connectButtonState = deviceStateObservable {
@@ -73,8 +74,8 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     }
     val serviceUUIDs = deviceStateObservable { parseServiceUUIDs(it.advertisementData.serviceUUIDs) }
     val serviceData = deviceStateObservable { parseServiceData(it.advertisementData.serviceData) }
-    val manufacturerId = deviceStateObservable { "bluetooth_manufacturer_id".localized().formatted(it.advertisementData.manufacturerId ?: -1) }
-    val manufacturerData = deviceStateObservable { "bluetooth_manufacturer_data".localized().formatted(it.advertisementData.manufacturerData?.toHexString() ?: "") }
+    val manufacturerId = deviceStateObservable { "bluetooth_manufacturer_id".localized().format(it.advertisementData.manufacturerId ?: -1) }
+    val manufacturerData = deviceStateObservable { "bluetooth_manufacturer_data".localized().format(it.advertisementData.manufacturerData?.toHexString() ?: "") }
 
     val _isFoldedOut = ConflatedBroadcastChannel(false)
     val isFoldedOut = _isFoldedOut.toObservable(coroutineScope)
@@ -114,7 +115,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             else
                 "$result, $next"
         }
-        return "bluetooth_service_uuids".localized().formatted(uuidString)
+        return "bluetooth_service_uuids".localized().format(uuidString)
     }
 
     private fun parseServiceData(data: Map<UUID, ByteArray?>): String {
@@ -125,7 +126,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
             else
                 "$result\n$nextString"
         }
-        return "bluetooth_service_data".localized().formatted(dataString)
+        return "bluetooth_service_data".localized().format(dataString)
     }
 
     public override fun onCleared() { super.onCleared() }
