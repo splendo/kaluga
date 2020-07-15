@@ -18,6 +18,7 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.Locale
+import com.splendo.kaluga.logging.debug
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterCurrencyStyle
@@ -72,6 +73,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
             }
         }
+        usesSignificantDigits = false
         roundingMode = when (style.roundingMode) {
             RoundingMode.Ceiling -> NSNumberFormatterRoundCeiling
             RoundingMode.Floor -> NSNumberFormatterRoundFloor
@@ -155,7 +157,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         }
 
     actual fun format(number: Number): String {
-        return formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: ""
+        return (formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: "").also { debug(it) }
     }
 
     actual fun parse(string: String): Number? {
