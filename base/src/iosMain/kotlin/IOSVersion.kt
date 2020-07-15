@@ -22,7 +22,7 @@ import platform.UIKit.UIDevice
 /**
  * Wrapper for the iOS OS Version
  */
-data class IOSVersion(val major: Int, val minor: Int, val patch: Int) {
+data class IOSVersion(val major: Int, val minor: Int = 0, val patch: Int = 0) : Comparable<IOSVersion> {
 
     companion object {
         /**
@@ -35,21 +35,17 @@ data class IOSVersion(val major: Int, val minor: Int, val patch: Int) {
             }
     }
 
-    /**
-     * Compares this to another [IOSVersion]
-     * @param version The [IOSVersion] to compare to
-     * @return `true` if this version is the same or newer as the given version. `false` otherwise
-     */
-    fun isOSVersionOrNewer(version: IOSVersion): Boolean {
+    override fun compareTo(other: IOSVersion): Int {
         return when {
-            this.major > version.major -> true
-            this.major == version.major -> {
+            this.major > other.major -> 1
+            this.major == other.major -> {
                 when {
-                    this.minor > version.minor -> true
-                    else -> this.minor == version.minor && this.patch >= version.patch
+                    this.minor > other.minor -> 1
+                    this.minor == other.minor -> this.patch.compareTo(other.patch)
+                    else -> -1
                 }
             }
-            else -> false
+            else -> -1
         }
     }
 }
