@@ -155,7 +155,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         }
 
     actual fun format(number: Number): String {
-        return formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: ""
+        return  formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: ""
     }
 
     actual fun parse(string: String): Number? {

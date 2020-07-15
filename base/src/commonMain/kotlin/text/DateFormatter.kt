@@ -32,10 +32,15 @@ enum class DateFormatStyle {
 expect class DateFormatter {
 
     companion object {
-        fun dateFormat(style: DateFormatStyle, locale: Locale = defaultLocale): DateFormatter
-        fun timeFormat(style: DateFormatStyle, locale: Locale = defaultLocale): DateFormatter
-        fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, locale: Locale = defaultLocale): DateFormatter
-        fun patternFormat(pattern: String, locale: Locale = defaultLocale): DateFormatter
+        fun dateFormat(style: DateFormatStyle, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
+        fun timeFormat(style: DateFormatStyle, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
+        fun dateTimeFormat(
+            dateStyle: DateFormatStyle,
+            timeStyle: DateFormatStyle,
+            timeZone: TimeZone = TimeZone.current(),
+            locale: Locale = defaultLocale
+        ): DateFormatter
+        fun patternFormat(pattern: String, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
     }
 
     var timeZone: TimeZone

@@ -434,7 +434,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
                 val isAm = time.hour < 12
-                val dateFormat = DateFormatter.patternFormat("aa", locale)
+                val dateFormat = DateFormatter.patternFormat("aa", TimeZone.current(), locale)
                 sb.append((if (isAm) dateFormat.amString else dateFormat.pmString).lowerCased(locale))
             }
             DateTime.SECONDS_SINCE_EPOCH -> {

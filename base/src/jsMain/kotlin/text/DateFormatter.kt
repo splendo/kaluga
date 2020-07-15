@@ -21,16 +21,21 @@ import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 
-actual class DateFormatter(private val formatter: (kotlin.js.Date) -> String) {
+actual class DateFormatter(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) {
 
     actual companion object {
-        actual fun dateFormat(style: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter { date -> date.toLocaleDateString(arrayOf("${locale.language}-${locale.country}")) }
-        actual fun timeFormat(style: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter { date -> date.toLocaleTimeString(arrayOf("${locale.language}-${locale.country}")) }
-        actual fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
-        actual fun patternFormat(pattern: String, locale: Locale): DateFormatter = DateFormatter { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
+        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.language}-${locale.country}")) }
+        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.language}-${locale.country}")) }
+        actual fun dateTimeFormat(
+            dateStyle: DateFormatStyle,
+            timeStyle: DateFormatStyle,
+            timeZone: TimeZone,
+            locale: Locale
+        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
     }
 
-    actual var timeZone: TimeZone = TimeZone()
+    actual var timeZone: TimeZone = initialTimeZone
     actual var eras: List<String> = emptyList()
 
     actual var months: List<String> = emptyList()

@@ -33,24 +33,29 @@ import platform.Foundation.NSDateFormatterStyle
 actual class DateFormatter(private val format: NSDateFormatter) {
 
     actual companion object {
-        actual fun dateFormat(style: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
+        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(style, null, timeZone, locale)
+        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(null, style, timeZone, locale)
+        actual fun dateTimeFormat(
+            dateStyle: DateFormatStyle,
+            timeStyle: DateFormatStyle,
+            timeZone: TimeZone,
+            locale: Locale
+        ): DateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
             this.locale = locale
-            dateStyle = style.nsDateFormatterStyle()
-            timeStyle = NSDateFormatterNoStyle
+            this.timeZone = timeZone.timeZone
+            dateFormat = pattern
         })
-        actual fun timeFormat(style: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
+        
+        fun createDateFormatter(
+            dateStyle: DateFormatStyle?,
+            timeStyle: DateFormatStyle?,
+            timeZone: TimeZone,
+            locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
             this.locale = locale
-            dateStyle = NSDateFormatterNoStyle
-            timeStyle = style.nsDateFormatterStyle()
-        })
-        actual fun dateTimeFormat(dateStyle: DateFormatStyle, timeStyle: DateFormatStyle, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
-            this.locale = locale
+            this.timeZone = timeZone.timeZone
             this.dateStyle = dateStyle.nsDateFormatterStyle()
             this.timeStyle = timeStyle.nsDateFormatterStyle()
-        })
-        actual fun patternFormat(pattern: String, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
-            this.locale = locale
-            dateFormat = pattern
         })
     }
 
@@ -92,9 +97,10 @@ actual class DateFormatter(private val format: NSDateFormatter) {
     }
 }
 
-private fun DateFormatStyle.nsDateFormatterStyle(): NSDateFormatterStyle = when (this) {
+private fun DateFormatStyle?.nsDateFormatterStyle(): NSDateFormatterStyle = when (this) {
     DateFormatStyle.Short -> NSDateFormatterShortStyle
     DateFormatStyle.Medium -> NSDateFormatterMediumStyle
     DateFormatStyle.Long -> NSDateFormatterLongStyle
     DateFormatStyle.Full -> NSDateFormatterFullStyle
+    null -> NSDateFormatterNoStyle
 }
