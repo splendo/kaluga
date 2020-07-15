@@ -30,37 +30,43 @@ enum class RoundingMode {
     HalfUp
 }
 
+@ExperimentalUnsignedTypes
 sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
     data class Integer(
-        val minInteger: Int = 0,
-        val maxInteger: Int = Int.MAX_VALUE,
+        val minInteger: UInt = 0U,
+        val maxInteger: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
     data class Decimal(
-        val minInteger: Int = 0,
-        val maxInteger: Int = Int.MAX_VALUE,
-        val minFraction: Int = 0,
-        val maxFraction: Int = Int.MAX_VALUE,
+        val minInteger: UInt = 0U,
+        val maxInteger: UInt = Int.MAX_VALUE.toUInt(),
+        val minFraction: UInt = 0U,
+        val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
     data class Percentage(
-        val minInteger: Int = 0,
-        val maxInteger: Int = Int.MAX_VALUE,
-        val minFraction: Int = 0,
-        val maxFraction: Int = Int.MAX_VALUE,
+        val minInteger: UInt = 0U,
+        val maxInteger: UInt = Int.MAX_VALUE.toUInt(),
+        val minFraction: UInt = 0U,
+        val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
     data class Scientific(
-        val numberOfDigits: Int? = 10,
+        val numberOfDigits: UInt = 10U,
+        val minExponent: UInt = 1U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode) {
-        val pattern: String = numberOfDigits?.let { "0.${"0".repeat(numberOfDigits - 1)}E0" } ?: "0.#E0"
+        val pattern: String get() {
+            val mantissa = if (numberOfDigits > 1U) "0.${"0".repeat(numberOfDigits.toInt() - 1)}" else "0"
+            val exponent = "E${"0".repeat(if (minExponent > 0U) minExponent.toInt() else 0)}"
+            return "$mantissa$exponent"
+        }
     }
     data class Currency(
-        val minInteger: Int = 0,
-        val maxInteger: Int = Int.MAX_VALUE,
-        val minFraction: Int = 0,
-        val maxFraction: Int = Int.MAX_VALUE,
+        val minInteger: UInt = 0U,
+        val maxInteger: UInt = Int.MAX_VALUE.toUInt(),
+        val minFraction: UInt = 0U,
+        val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 }

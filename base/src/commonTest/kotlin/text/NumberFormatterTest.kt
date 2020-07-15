@@ -85,7 +85,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatDecimal() {
-        val formatters = createFormatters(NumberFormatStyle.Decimal(minFraction = 2, maxFraction = 4))
+        val formatters = createFormatters(NumberFormatStyle.Decimal(minFraction = 2U, maxFraction = 4U))
         assertEquals("1.00", formatters.usFormatter.format(1))
         assertEquals("1,00", formatters.nlFormatter.format(1))
 
@@ -98,7 +98,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatPercentage() {
-        val formatters = createFormatters(NumberFormatStyle.Percentage(minFraction = 0, maxFraction = 2))
+        val formatters = createFormatters(NumberFormatStyle.Percentage(minFraction = 0U, maxFraction = 2U))
         assertEquals("200%", formatters.usFormatter.format(2.0))
         assertEquals("200%", formatters.nlFormatter.format(2.0))
 
@@ -111,21 +111,21 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatScientific() {
-        val formatters = createFormatters(NumberFormatStyle.Scientific(numberOfDigits = 5))
-        assertEquals("2.0000E0", formatters.usFormatter.format(2))
-        assertEquals("2,0000E0", formatters.nlFormatter.format(2))
+        val formatters = createFormatters(NumberFormatStyle.Scientific(numberOfDigits = 5U, minExponent = 2U))
+        assertEquals("2.0000E00", formatters.usFormatter.format(2))
+        assertEquals("2,0000E00", formatters.nlFormatter.format(2))
 
-        assertEquals("1.2346E8", formatters.usFormatter.format(123456789))
-        assertEquals("1,2346E8", formatters.nlFormatter.format(123456789))
+        assertEquals("1.2346E08", formatters.usFormatter.format(123456789))
+        assertEquals("1,2346E08", formatters.nlFormatter.format(123456789))
 
-        assertEquals("1.2345E-6", formatters.usFormatter.format(0.0000012345))
-        assertEquals("1,2345E-6", formatters.nlFormatter.format(0.0000012345))
+        assertEquals("1.2345E-06", formatters.usFormatter.format(0.0000012345))
+        assertEquals("1,2345E-06", formatters.nlFormatter.format(0.0000012345))
     }
 
     @ExperimentalStdlibApi
     @Test
     fun testFormatCurrency() {
-        val formatters = createFormatters(NumberFormatStyle.Currency(minFraction = 2, maxFraction = 2)) { it.usesGroupingSeparator = true }
+        val formatters = createFormatters(NumberFormatStyle.Currency(minFraction = 2U, maxFraction = 2U)) { it.usesGroupingSeparator = true }
         assertEquals("$1.00", formatters.usFormatter.format(1).replace("\u00A0", " "))
         assertEquals("€ 1,00", formatters.nlFormatter.format(1).replace("\u00A0", " "))
 

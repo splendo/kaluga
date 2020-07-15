@@ -22,26 +22,27 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Currency
 
+@ExperimentalUnsignedTypes
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
 
     private val format: DecimalFormat = when (style) {
         is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale).apply {
-            minimumIntegerDigits = style.minInteger
-            maximumIntegerDigits = style.maxInteger
+            minimumIntegerDigits = style.minInteger.toInt()
+            maximumIntegerDigits = style.maxInteger.toInt()
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
         is NumberFormatStyle.Decimal -> DecimalFormat.getInstance(locale).apply {
-            minimumIntegerDigits = style.minInteger
-            maximumIntegerDigits = style.maxInteger
-            minimumFractionDigits = style.minFraction
-            maximumFractionDigits = style.maxFraction
+            minimumIntegerDigits = style.minInteger.toInt()
+            maximumIntegerDigits = style.maxInteger.toInt()
+            minimumFractionDigits = style.minFraction.toInt()
+            maximumFractionDigits = style.maxFraction.toInt()
         }
         is NumberFormatStyle.Percentage -> DecimalFormat.getPercentInstance(locale).apply {
-            minimumIntegerDigits = style.minInteger
-            maximumIntegerDigits = style.maxInteger
-            minimumFractionDigits = style.minFraction
-            maximumFractionDigits = style.maxFraction
+            minimumIntegerDigits = style.minInteger.toInt()
+            maximumIntegerDigits = style.maxInteger.toInt()
+            minimumFractionDigits = style.minFraction.toInt()
+            maximumFractionDigits = style.maxFraction.toInt()
         }
         is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale))
         is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale)

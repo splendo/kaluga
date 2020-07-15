@@ -94,7 +94,7 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
 
     actual var hour: Int
         get() = calendar.component(NSCalendarUnitHour, fromDate = date).toInt()
-        set(value) { updateDateForComponent(NSCalendarUnitMonth, value) }
+        set(value) { updateDateForComponent(NSCalendarUnitHour, value) }
     actual var minute: Int
         get() = calendar.component(NSCalendarUnitMinute, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitMinute, value) }

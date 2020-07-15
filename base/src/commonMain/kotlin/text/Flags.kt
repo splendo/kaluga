@@ -58,7 +58,6 @@ internal class Flags(private var flags: Int) {
     companion object {
         val NONE = Flags(0) // ''
 
-        // duplicate declarations from Formattable.java
         val LEFT_JUSTIFY = Flags(1 shl 0) // '-'
         val UPPERCASE = Flags(1 shl 1) // '^'
         val ALTERNATE = Flags(1 shl 2) // '#'

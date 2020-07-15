@@ -50,7 +50,9 @@ import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.TimeZoneNameStyle
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
+import kotlin.math.absoluteValue
 
+@ExperimentalUnsignedTypes
 @ExperimentalStdlibApi
 internal class FormatSpecifier(private val out: StringBuilder, matchResult: MatchResult) : FormatString {
 
@@ -215,31 +217,47 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
     private fun print(value: Long, locale: Locale) {
         val sb = StringBuilder()
-        val valueStr = when (currentChar) {
+        when (currentChar) {
             DECIMAL_INTEGER -> {
-                value.toString(10)
+                val valueStr = value.toString(10)
+                val neg = value < 0
+                // leading sign indicator
+                leadingSign(sb, neg)
+
+                // the value
+                localizedMagnitude(sb, valueStr, if (neg) 1 else 0, flags, adjustWidth(width, flags, neg), locale)
+
+                // trailing sign indicator
+                trailingSign(sb, neg)
             }
             OCTAL_INTEGER -> {
-                value.toString(8)
+                checkBadFlags(PARENTHESES, LEADING_SPACE, PLUS)
+                val valueString = value.toString(8)
+
+                val alternate = flags.contains(ALTERNATE)
+                val length = valueString.length + if (alternate) 1 else 0
+                if (alternate)
+                    sb.append(getZero(locale))
+                if (flags.contains(ZERO_PAD))
+                    trailingZeros(sb, width - length)
+                sb.append(valueString)
             }
             HEXADECIMAL_INTEGER -> {
+                checkBadFlags(PARENTHESES, LEADING_SPACE, PLUS)
                 val hexValue = value.toString(16)
-                if (flags.contains(UPPERCASE)) {
-                    hexValue.upperCased(locale)
-                } else
-                    hexValue
+                val alternate = flags.contains(ALTERNATE)
+                val uppercase = flags.contains(UPPERCASE)
+                val length = hexValue.length + if (alternate) 2 else 0
+                if (alternate) {
+                    val prefix = "${getZero(locale)}x"
+                    sb.append(if (uppercase) prefix.upperCased(locale) else prefix)
+                }
+                if (flags.contains(ZERO_PAD))
+                    trailingZeros(sb, width - length)
+                sb.append(if (uppercase) hexValue.upperCased(locale) else hexValue)
             }
             else -> throw StringFormatterException.UnexpectedChar(currentChar)
         }
-        val neg = value < 0
-        // leading sign indicator
-        leadingSign(sb, neg)
-
-        // the value
-        localizedMagnitude(sb, valueStr, if (neg) 1 else 0, flags, adjustWidth(width, flags, neg), locale)
-
-        // trailing sign indicator
-        trailingSign(sb, neg)
 
         // justify based on width
         appendJustified(out, sb)
@@ -291,11 +309,15 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             SCIENTIFIC -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(prec + 1))
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific((prec + 1).toUInt(), 2U))
                 val expSymbol = formatter.exponentSymbol
                 val scientific = formatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
                 val mantissa = scientific[0]
-                val exponent = if (value == 0.0) "+${formatter.zeroSymbol}${formatter.zeroSymbol}" else scientific[1]
+                val exponent = when {
+                    value == 0.0 -> "+${formatter.zeroSymbol}${formatter.zeroSymbol}"
+                    value.absoluteValue >= 1.0 -> "+${scientific[1]}"
+                    else -> scientific[1]
+                }
                 number.append(mantissa)
                 addZeros(number, prec)
 
@@ -306,7 +328,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 if (width != -1) {
                     newW = adjustWidth(width - exponent.length - 1, flags, neg)
                 }
-                localizedMagnitude(sb, mantissa, 0, flags, newW, locale)
+                localizedMagnitude(sb, number, 0, flags, newW, locale)
 
                 sb.append(if (flags.contains(UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
                 sb.append(exponent)
@@ -314,7 +336,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DECIMAL_FLOAT -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec, maxFraction = prec)).apply {
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec.toUInt(), maxFraction = prec.toUInt())).apply {
                     usesGroupingSeparator = false
                 }
                 if (value >= 0.0 && value < 1.0)
@@ -330,52 +352,16 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 localizedMagnitude(sb, number, 0, flags, newW, locale)
             }
             GENERAL -> {
-                var prec = when (precision) {
-                    -1 -> 6
-                    0 -> 1
-                    else -> precision
-                }
-                val scientificFormatter = NumberFormatter(locale, NumberFormatStyle.Scientific(prec + 1))
-                val number = StringBuilder()
-                val exps = if (value == 0.0) {
-                    number.append(getZero(locale))
-                    Pair(null, 0)
-                } else {
-                    val expSymbol = scientificFormatter.exponentSymbol
-                    val scientific = scientificFormatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
-                    val exponent = scientific[1]
-                    val expValue = exponent.toInt(10)
-                    if (expValue - 1 < -4 || expValue - 1 >= prec) {
-                        number.append(scientific[0])
-                        Pair(exponent, expValue)
-                    } else {
-                        val decimalFormatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec, maxFraction = prec)).apply {
-                            usesGroupingSeparator = false
-                        }
-                        if (value >= 0.0 && value < 1.0)
-                            number.append(decimalFormatter.zeroSymbol)
-                        number.append(decimalFormatter.format(value))
-                        Pair(null, 0)
-                    }
-                }
-
-                val exp = exps.first
-                val expRounded = exps.second
-                prec -= if (exp != null) 1 else expRounded + 1
-                addZeros(number, prec)
-                if (flags.contains(ALTERNATE) && prec == 0)
-                    number.append(scientificFormatter.decimalSeparator)
-
-                var newW = width
-                if (width != -1) {
-                    newW = if (exp != null) adjustWidth(width - exp.length - 1, flags, neg) else adjustWidth(width, flags, neg)
-                }
-                localizedMagnitude(sb, number, 0, flags, newW, locale)
-
-                exp?.let {
-                    sb.append(if (flags.contains(UPPERCASE)) scientificFormatter.exponentSymbol.upperCased(locale) else scientificFormatter.exponentSymbol.lowerCased(locale))
-                    sb.append(it)
-                }
+                val scientificBuilder = StringBuilder()
+                print(scientificBuilder, value, locale, SCIENTIFIC, precision, neg)
+                val decimalBuilder = StringBuilder()
+                print(decimalBuilder, value, locale, DECIMAL_FLOAT, precision, neg)
+                val scientific = scientificBuilder.toString()
+                val decimal = decimalBuilder.toString()
+                if (decimal.length <= scientific.length)
+                    sb.append(decimal)
+                else
+                    sb.append(scientific)
             }
             HEXADECIMAL_FLOAT -> {
                 // TODO Support Hexadecimal floats
