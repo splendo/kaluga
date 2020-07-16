@@ -17,7 +17,6 @@ class BluetoothViewController : UICollectionViewController {
     
     private var devices: [BluetoothListDeviceViewModel] = []
     private var lifecycleManager: LifecycleManager!
-    private var isInvalidating: Bool = false
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -70,7 +69,6 @@ class BluetoothViewController : UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let bluetoothCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCell.Companion.identifier, for: indexPath) as! BluetoothCell
         bluetoothCell.device = devices[indexPath.row]
-        bluetoothCell.bluetoothViewController = self
         return bluetoothCell
     }
     
@@ -78,9 +76,8 @@ class BluetoothViewController : UICollectionViewController {
         guard let btCell = cell as? BluetoothCell else {
             return
         }
-        if (!isInvalidating) {
-            btCell.startMonitoring()
-        }
+        
+        btCell.startMonitoring()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -88,9 +85,7 @@ class BluetoothViewController : UICollectionViewController {
             return
         }
         
-        if (!isInvalidating) {
-            btCell.stopMonitoring()
-        }
+        btCell.stopMonitoring()
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -99,14 +94,6 @@ class BluetoothViewController : UICollectionViewController {
         context.invalidateItems(at: [indexPath])
         collectionView.collectionViewLayout.invalidateLayout()
     }
-    
-    fileprivate func resizeCollectionView() {
-        isInvalidating = true
-        collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.layoutIfNeeded()
-        isInvalidating = false
-    }
-    
 }
 
 class BluetoothCell: UICollectionViewCell {
@@ -115,7 +102,6 @@ class BluetoothCell: UICollectionViewCell {
         static let identifier = "BluetoothCell"
     }
     
-    weak fileprivate var bluetoothViewController: BluetoothViewController? = nil
     private let disposeBag = DisposeBag()
     
     @IBOutlet var deviceName: UILabel!
@@ -228,5 +214,4 @@ class BluetoothCell: UICollectionViewCell {
         layoutAttributes.frame.size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         return layoutAttributes
     }
-    
 }
