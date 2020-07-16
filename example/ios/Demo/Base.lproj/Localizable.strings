@@ -1,4 +1,13 @@
 "app_name" = "Kaluga Example";
+
+"feature_location" = "Location";
+"feature_permissions" = "Permissions";
+"feature_alerts" = "Alerts";
+"feature_hud" = "Loading Indicator";
+"feature_bluetooth" = "Bluetooth";
+"feature_keyboard" = "Keyboard";
+"feature_architecture" = "Architecture";
+
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
 "alert_list" = "Show Alert List";
@@ -25,3 +34,44 @@
 
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+"keyboard_manager" = "Keyboard";
+"show_keyboard" = "Show Keyboard";
+"hide_keyboard" = "Hide Keyboard";
+
+"location_background" = "Kaluga Background";
+"location_enable_background" = "Enable Background";
+"location_disable_background" = "Disable Background";
+
+"bluetooth_start_scanning" = "Start Scanning";
+"bluetooth_stop_scanning" = "Stop Scanning";
+"bluetooth_no_name" = "Unnamed Bluetooth Device";
+
+"rssi" = "%d dBm";
+"txPower" = "%s dBm";
+"distance" = "%.2f m";
+
+"bluetooth_connect" = "Connect";
+"bluetooth_disconnect" = "Disconnect";
+
+"bluetooth_connected" = "Connected";
+"bluetooth_connecting" = "Connecting";
+"bluetooth_disconnected" = "Disconnected";
+"bluetooth_disconneting" = "Disconnecting";
+"bluetooth_reconnecting" = "Reconnecting";
+"bluetooth_discovering" = "Discovering";
+
+"bluetooth_service_uuids" = "Service UUIDs: %s";
+"bluetooth_service_data" = "Service Data: %s";
+"bluetooth_manufacturer_id" = "Manufacturer Id: %d";
+"bluetooth_manufacturer_data" = "Manufacturer Data: %s";
+
+"bluetooth_more" = "More";
+
+"bluetooth_services_header" = "Services";
+"bluetooth_service" = "Service";
+"bluetooth_characteristics" = "Characteristics";
+"bluetooth_descriptors" = "Descriptors";
+"bluetooth_permissions_read" = "Read";
+"bluetooth_permissions_write" = "Write";
+"bluetooth_permissions_read_encrypted" = "Read Encrypted";
+"bluetooth_permissions_write_encrypted" = "Write Encrypted";

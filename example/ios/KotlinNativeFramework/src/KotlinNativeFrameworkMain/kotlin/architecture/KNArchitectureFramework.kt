@@ -74,12 +74,13 @@ class KNArchitectureFramework {
             Navigator(parent) { action ->
                 NavigationSpec.Segue(
                     when (action) {
+                        is FeatureListNavigationAction.Alerts -> "showAlerts"
+                        is FeatureListNavigationAction.Architecture -> "showArchitecture"
+                        is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
+                        is FeatureListNavigationAction.Keyboard -> "showKeyboard"
+                        is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Location -> "showLocation"
                         is FeatureListNavigationAction.Permissions -> "showPermissions"
-                        is FeatureListNavigationAction.Alerts -> "showAlerts"
-                        is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
-                        is FeatureListNavigationAction.Architecture -> "showArchitecture"
-                        is FeatureListNavigationAction.Keyboard -> "showKeyboard"
                     })
             })
     }
