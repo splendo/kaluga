@@ -32,6 +32,7 @@ import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
 import platform.Foundation.numberWithDouble
+import platform.Foundation.numberWithFloat
 import platform.darwin.NSUInteger
 
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
@@ -157,7 +158,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         }
 
     actual fun format(number: Number): String {
-        return (formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: "").also { debug(it) }
+        return (formatter.stringFromNumber(NSNumber.numberWithFloat(number.toFloat())) ?: "").also { debug(it) }
     }
 
     actual fun parse(string: String): Number? {
