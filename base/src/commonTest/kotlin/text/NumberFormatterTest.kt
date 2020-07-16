@@ -148,7 +148,7 @@ class NumberFormatterTest : BaseTest() {
         assertEquals("$12,345.67", formatters.usFormatter.format(12345.67).replace("\u00A0", " "))
         assertEquals("€ 12.345,67", formatters.nlFormatter.format(12345.67).replace("\u00A0", " "))
     }
-    
+
     @Test
     fun testCustomFormat() {
         val formatters = createFormatters(NumberFormatStyle.Pattern("Positive #.00'#'", "Negative #.00'#'"))

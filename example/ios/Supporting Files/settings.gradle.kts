@@ -38,14 +38,24 @@ apply("../../../gradle/ext.gradle")
 val ext =  (gradle as ExtensionAware).extra
 
 if (!(ext["exampleAsRoot"] as Boolean)) {
-    include(":test-utils")
-    project(":test-utils").projectDir = file("../../../test-utils")
 
-    include(":location")
-    project(":location").projectDir = file("../../../location")
+    include(":alerts")
+    project(":alerts").projectDir = file("../../../alerts")
+
+    include(":architecture")
+    project(":architecture").projectDir = file("../../../architecture")
 
     include(":base")
     project(":base").projectDir = file("../../../base")
+
+    include(":hud")
+    project(":hud").projectDir = file("../../../hud")
+
+    include(":keyboard")
+    project(":keyboard").projectDir = file("../../../keyboard")
+
+    include(":location")
+    project(":location").projectDir = file("../../../location")
 
     include(":logging")
     project(":logging").projectDir = file("../../../logging")
@@ -53,17 +63,11 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":permissions")
     project(":permissions").projectDir = file("../../../permissions")
 
-    include(":alerts")
-    project(":alerts").projectDir = file("../../../alerts")
+    include(":resources")
+    project(":resources").projectDir = file("../../../resources")
 
-    include(":keyboard")
-    project(":keyboard").projectDir = file("../../../keyboard")
-
-    include(":hud")
-    project(":hud").projectDir = file("../../../hud")
-
-    include(":architecture")
-    project(":architecture").projectDir = file("../../../architecture")
+    include(":test-utils")
+    project(":test-utils").projectDir = file("../../../test-utils")
 }
 
 include(":android")

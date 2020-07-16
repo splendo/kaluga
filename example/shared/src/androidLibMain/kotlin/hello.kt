@@ -17,6 +17,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-fun helloAndroid():String {
+fun helloAndroid(): String {
     return "Hello from the shared module, android source"
 }
