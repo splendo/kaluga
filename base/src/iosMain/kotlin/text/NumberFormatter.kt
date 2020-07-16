@@ -31,7 +31,6 @@ import platform.Foundation.NSNumberFormatterRoundHalfDown
 import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
-import platform.Foundation.numberWithDouble
 import platform.Foundation.numberWithFloat
 import platform.Foundation.numberWithInt
 import platform.darwin.NSUInteger

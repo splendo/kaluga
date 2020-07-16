@@ -43,13 +43,17 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
     private val _nameInput = HotFlowable("")
     val nameInput = _nameInput.toSubject(coroutineScope)
 
-    private val _numberInput = HotFlowable<String>("")
+    private val _numberInput = HotFlowable("")
     val numberInput = _numberInput.toSubject(coroutineScope)
 
-    private val _isNameValid: Flow<Boolean> get() { return _nameInput.flow().map { it.isNotEmpty() } }
+    private val _isNameValid: Flow<Boolean> get() { return _nameInput.flow().map {
+        it.isNotEmpty()
+    } }
     val isNameValid = _isNameValid.toObservable(coroutineScope)
 
-    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.flow().map { it.toIntOrNull() != null } }
+    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.flow().map {
+        it.toIntOrNull() != null
+    } }
     val isNumberValid = _isNumberValid.toObservable(coroutineScope)
 
     private val isValid = combine(_isNameValid, _isNumberValid) {

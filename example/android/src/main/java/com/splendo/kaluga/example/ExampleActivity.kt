@@ -51,7 +51,7 @@ class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activ
                 viewModel.tab.postValue(exampleTab)
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
         })
     }
 }

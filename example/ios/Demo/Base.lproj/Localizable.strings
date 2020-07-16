@@ -1,12 +1,12 @@
 "app_name" = "Kaluga Example";
 
+"feature_alerts" = "Alerts";
+"feature_architecture" = "Architecture";
+"feature_bluetooth" = "Bluetooth";
+"feature_hud" = "Loading Indicator";
+"feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
 "feature_permissions" = "Permissions";
-"feature_alerts" = "Alerts";
-"feature_hud" = "Loading Indicator";
-"feature_bluetooth" = "Bluetooth";
-"feature_keyboard" = "Keyboard";
-"feature_architecture" = "Architecture";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
