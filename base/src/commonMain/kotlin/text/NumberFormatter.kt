@@ -51,6 +51,13 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
+    data class Permillage(
+        val minInteger: UInt = 0U,
+        val maxInteger: UInt = Int.MAX_VALUE.toUInt(),
+        val minFraction: UInt = 0U,
+        val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
+        override val roundingMode: RoundingMode = RoundingMode.HalfEven
+    ) : NumberFormatStyle(roundingMode)
     data class Scientific(
         val numberOfDigits: UInt = 10U,
         val minExponent: UInt = 1U,
@@ -69,6 +76,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val maxFraction: UInt = Int.MAX_VALUE.toUInt(),
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
+    data class Pattern(val positivePattern: String, val negativePattern: String = "-$positivePattern", override val roundingMode: RoundingMode = RoundingMode.HalfEven) : NumberFormatStyle(roundingMode)
 }
 
 expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: NumberFormatStyle = NumberFormatStyle.Decimal()) {

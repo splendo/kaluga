@@ -44,8 +44,18 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             minimumFractionDigits = style.minFraction.toInt()
             maximumFractionDigits = style.maxFraction.toInt()
         }
+        is NumberFormatStyle.Permillage -> {
+            val pattern = (DecimalFormat.getPercentInstance(locale) as DecimalFormat).toPattern().replace("%", "\u2030")
+            DecimalFormat(pattern, DecimalFormatSymbols(locale)).apply {
+                minimumIntegerDigits = style.minInteger.toInt()
+                maximumIntegerDigits = style.maxInteger.toInt()
+                minimumFractionDigits = style.minFraction.toInt()
+                maximumFractionDigits = style.maxFraction.toInt()
+            }
+        }
         is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale))
         is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale)
+        is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale))
     } as DecimalFormat
     private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols
     init {

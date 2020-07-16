@@ -110,6 +110,19 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
+    fun testFormatPermillage() {
+        val formatters = createFormatters(NumberFormatStyle.Permillage(minFraction = 0U, maxFraction = 2U)) { it.usesGroupingSeparator = false }
+        assertEquals("2000‰", formatters.usFormatter.format(2.0))
+        assertEquals("2000‰", formatters.nlFormatter.format(2.0))
+
+        assertEquals("800‰", formatters.usFormatter.format(0.8))
+        assertEquals("800‰", formatters.nlFormatter.format(0.8))
+
+        assertEquals("801.23‰", formatters.usFormatter.format(0.801234))
+        assertEquals("801,23‰", formatters.nlFormatter.format(0.801234))
+    }
+
+    @Test
     fun testFormatScientific() {
         val formatters = createFormatters(NumberFormatStyle.Scientific(numberOfDigits = 5U, minExponent = 2U))
         assertEquals("2.0000E00", formatters.usFormatter.format(2))
@@ -134,6 +147,16 @@ class NumberFormatterTest : BaseTest() {
 
         assertEquals("$12,345.67", formatters.usFormatter.format(12345.67).replace("\u00A0", " "))
         assertEquals("€ 12.345,67", formatters.nlFormatter.format(12345.67).replace("\u00A0", " "))
+    }
+    
+    @Test
+    fun testCustomFormat() {
+        val formatters = createFormatters(NumberFormatStyle.Pattern("Positive #.00'#'", "Negative #.00'#'"))
+        assertEquals("Positive 1000.00#", formatters.usFormatter.format(1000))
+        assertEquals("Positive 1000,00#", formatters.nlFormatter.format(1000))
+
+        assertEquals("Negative 1000.00#", formatters.usFormatter.format(-1000))
+        assertEquals("Negative 1000,00#", formatters.nlFormatter.format(-1000))
     }
 
     private fun createFormatters(style: NumberFormatStyle, apply: ((NumberFormatter) -> Unit)? = null): Formatters {

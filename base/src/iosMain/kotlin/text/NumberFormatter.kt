@@ -63,9 +63,19 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 minimumFractionDigits = style.minFraction.toULong() as NSUInteger
                 maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
             }
+            is NumberFormatStyle.Permillage -> {
+                numberStyle = NSNumberFormatterPercentStyle
+                positiveFormat = positiveFormat.replace('%', '‰')
+                negativeFormat = negativeFormat.replace('%', '‰')
+                minimumIntegerDigits = style.minInteger.toULong() as NSUInteger
+                maximumIntegerDigits = style.maxInteger.toULong() as NSUInteger
+                minimumFractionDigits = style.minFraction.toULong() as NSUInteger
+                maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
+            }
             is NumberFormatStyle.Scientific -> {
                 numberStyle = NSNumberFormatterScientificStyle
                 positiveFormat = style.pattern
+                negativeFormat = "-${style.pattern}"
             }
             is NumberFormatStyle.Currency -> {
                 numberStyle = NSNumberFormatterCurrencyStyle
@@ -73,6 +83,11 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 maximumIntegerDigits = style.maxInteger.toULong() as NSUInteger
                 minimumFractionDigits = style.minFraction.toULong() as NSUInteger
                 maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
+            }
+            is NumberFormatStyle.Pattern -> {
+                numberStyle = NSNumberFormatterDecimalStyle
+                positiveFormat = style.positivePattern
+                negativeFormat = style.negativePattern
             }
         }
         usesSignificantDigits = false
