@@ -22,6 +22,7 @@ actual class TimeZone {
     actual companion object {
         actual fun get(identifier: String): TimeZone? = TimeZone()
         actual fun current(): TimeZone = TimeZone()
+        actual val availableIdentifiers: List<String> = emptyList()
     }
 
     actual val identifier: String = ""

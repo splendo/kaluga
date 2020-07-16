@@ -32,6 +32,8 @@ import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
 import platform.Foundation.numberWithDouble
+import platform.Foundation.numberWithFloat
+import platform.Foundation.numberWithInt
 import platform.darwin.NSUInteger
 
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
@@ -61,9 +63,19 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 minimumFractionDigits = style.minFraction.toULong() as NSUInteger
                 maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
             }
+            is NumberFormatStyle.Permillage -> {
+                numberStyle = NSNumberFormatterPercentStyle
+                positiveFormat = positiveFormat.replace('%', '‰')
+                negativeFormat = negativeFormat.replace('%', '‰')
+                minimumIntegerDigits = style.minInteger.toULong() as NSUInteger
+                maximumIntegerDigits = style.maxInteger.toULong() as NSUInteger
+                minimumFractionDigits = style.minFraction.toULong() as NSUInteger
+                maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
+            }
             is NumberFormatStyle.Scientific -> {
                 numberStyle = NSNumberFormatterScientificStyle
                 positiveFormat = style.pattern
+                negativeFormat = "-${style.pattern}"
             }
             is NumberFormatStyle.Currency -> {
                 numberStyle = NSNumberFormatterCurrencyStyle
@@ -71,6 +83,11 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
                 maximumIntegerDigits = style.maxInteger.toULong() as NSUInteger
                 minimumFractionDigits = style.minFraction.toULong() as NSUInteger
                 maximumFractionDigits = style.maxFraction.toULong() as NSUInteger
+            }
+            is NumberFormatStyle.Pattern -> {
+                numberStyle = NSNumberFormatterDecimalStyle
+                positiveFormat = style.positivePattern
+                negativeFormat = style.negativePattern
             }
         }
         usesSignificantDigits = false
@@ -155,9 +172,12 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             formatter.groupingSize = value.toULong() as NSUInteger
             formatter.secondaryGroupingSize = value.toULong() as NSUInteger
         }
+    actual var multiplier: Int
+        get() = formatter.multiplier?.intValue ?: 1
+        set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
 
     actual fun format(number: Number): String {
-        return (formatter.stringFromNumber(NSNumber.numberWithDouble(number.toDouble())) ?: "").also { debug(it) }
+        return (formatter.stringFromNumber(NSNumber.numberWithFloat(number.toFloat())) ?: "").also { debug(it) }
     }
 
     actual fun parse(string: String): Number? {
