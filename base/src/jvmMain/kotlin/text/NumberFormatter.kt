@@ -129,6 +129,9 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var groupingSize: Int
         get() = format.groupingSize
         set(value) { format.groupingSize = value }
+    actual var multiplier: Int
+        get() = format.multiplier
+        set(value) { format.multiplier = value }
 
     actual fun format(number: Number): String = format.format(number.toDouble())
     actual fun parse(string: String): Number? = format.parse(string)

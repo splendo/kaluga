@@ -97,6 +97,7 @@ expect class NumberFormatter constructor(locale: Locale = defaultLocale, style: 
     var alwaysShowsDecimalSeparator: Boolean
     var currencyDecimalSeparator: Char
     var groupingSize: Int
+    var multiplier: Int
 
     fun format(number: Number): String
     fun parse(string: String): Number?

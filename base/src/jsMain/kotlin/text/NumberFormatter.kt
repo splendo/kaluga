@@ -40,6 +40,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var alwaysShowsDecimalSeparator: Boolean = false
     actual var currencyDecimalSeparator: Char = Char.MIN_VALUE
     actual var groupingSize: Int = 0
+    actual var multiplier: Int = 1
 
     actual fun format(number: Number): String = ""
     actual fun parse(string: String): Number? = null

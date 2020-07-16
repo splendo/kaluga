@@ -33,6 +33,7 @@ import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
 import platform.Foundation.numberWithDouble
 import platform.Foundation.numberWithFloat
+import platform.Foundation.numberWithInt
 import platform.darwin.NSUInteger
 
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
@@ -156,6 +157,9 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             formatter.groupingSize = value.toULong() as NSUInteger
             formatter.secondaryGroupingSize = value.toULong() as NSUInteger
         }
+    actual var multiplier: Int
+        get() = formatter.multiplier?.intValue ?: 1
+        set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
 
     actual fun format(number: Number): String {
         return (formatter.stringFromNumber(NSNumber.numberWithFloat(number.toFloat())) ?: "").also { debug(it) }
