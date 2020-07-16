@@ -28,6 +28,7 @@ actual class TimeZone(internal val timeZone: java.util.TimeZone) {
         actual fun current(): TimeZone {
             return TimeZone(java.util.TimeZone.getDefault())
         }
+        actual val availableIdentifiers get() = java.util.TimeZone.getAvailableIDs().asList()
     }
 
     actual val identifier: String = timeZone.id

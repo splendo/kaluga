@@ -28,6 +28,7 @@ expect class TimeZone {
     companion object {
         fun get(identifier: String): TimeZone?
         fun current(): TimeZone
+        val availableIdentifiers: List<String>
     }
 
     val identifier: String

@@ -17,12 +17,14 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.typedMap
 import platform.Foundation.NSTimeZone
 import platform.Foundation.NSTimeZoneNameStyle
 import platform.Foundation.abbreviationDictionary
 import platform.Foundation.daylightSavingTimeOffset
 import platform.Foundation.defaultTimeZone
+import platform.Foundation.knownTimeZoneNames
 import platform.Foundation.localizedName
 import platform.Foundation.secondsFromGMT
 import platform.Foundation.timeZoneWithAbbreviation
@@ -41,6 +43,7 @@ actual class TimeZone(val timeZone: NSTimeZone) {
             }
         }
         actual fun current(): TimeZone = TimeZone(NSTimeZone.defaultTimeZone)
+        actual val availableIdentifiers: List<String> = NSTimeZone.knownTimeZoneNames.typedList()
     }
 
     actual val identifier: String = timeZone.name
