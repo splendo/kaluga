@@ -197,10 +197,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     private fun print(s: String, locale: Locale) {
-        var s = s
-        if (precision != -1 && precision < s.length) s = s.substring(0, precision)
-        if (flags.contains(UPPERCASE)) s = s.upperCased(locale)
-        appendJustified(out, s)
+        val string = if (precision != -1 && precision < s.length) s.substring(0, precision) else s
+        appendJustified(out, if (flags.contains(UPPERCASE)) string.upperCased(locale) else string)
     }
 
     private fun print(value: Byte, locale: Locale) {
@@ -818,7 +816,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     private fun checkInteger() {
         checkNumeric()
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        if (currentChar == DECIMAL_INTEGER) checkBadFlags(ALTERNATE) else if (currentChar === OCTAL_INTEGER) checkBadFlags(GROUP) else checkBadFlags(GROUP)
+        if (currentChar == DECIMAL_INTEGER) checkBadFlags(ALTERNATE) else if (currentChar == OCTAL_INTEGER) checkBadFlags(GROUP) else checkBadFlags(GROUP)
     }
 
     private fun checkFloat() {
