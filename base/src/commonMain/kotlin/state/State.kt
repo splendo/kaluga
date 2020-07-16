@@ -229,10 +229,16 @@ abstract class StateRepo<S : State<S>>(coroutineContext: CoroutineContext = Main
  */
 abstract class HotStateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
 
-    private val hotFlowable = lazy {
-        HotFlowable(runBlocking { initialize() })
+    private lateinit var hotFlowable: HotFlowable<S>
+    override val flowable: BaseFlowable<S> get() {
+        ensureFlowable()
+        return hotFlowable
     }
-    override val flowable: BaseFlowable<S> get() = hotFlowable.value
+
+    private fun ensureFlowable() {
+        if (!this::hotFlowable.isInitialized)
+            hotFlowable = HotFlowable(runBlocking { initialize() })
+    }
 }
 
 /**

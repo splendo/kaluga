@@ -26,15 +26,25 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
+import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.example.ios.bluetooth.KNBluetoothFramework
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
+import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
+import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
-import com.splendo.kaluga.example.shared.viewmodel.info.*
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
@@ -45,12 +55,28 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import platform.Foundation.NSURL
-import platform.UIKit.*
+import platform.Foundation.NSUUID
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIButton
+import platform.UIKit.UIColor
+import platform.UIKit.UIControlStateHighlighted
+import platform.UIKit.UIControlStateNormal
+import platform.UIKit.UIControlStateSelected
+import platform.UIKit.UIStackView
+import platform.UIKit.UITextField
+import platform.UIKit.UIView
+import platform.UIKit.UIViewController
+import platform.UIKit.removeFromSuperview
+import platform.UIKit.systemBlueColor
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionSound
 
+@kotlin.ExperimentalStdlibApi
 class KNArchitectureFramework {
 
     fun createExampleViewModel(
@@ -105,6 +131,20 @@ class KNArchitectureFramework {
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
             })
+    }
+
+    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
+        return BluetoothListViewModel(bluetooth, Navigator(parent) { action ->
+            NavigationSpec.Push(push = {
+                val bundle = action.bundle ?: return@Push UIViewController()
+                val identifier = NSUUID(uUIDString = bundle.get(DeviceDetailsSpecRow.UUIDRow))
+                createDeviceDetailsViewController(identifier, bluetooth)
+            })
+        })
+    }
+
+    fun createBluetoothDeviceDetailsViewModel(identifier: Identifier, bluetooth: Bluetooth): BluetoothDeviceDetailViewModel {
+        return BluetoothDeviceDetailViewModel(bluetooth, identifier)
     }
 
     fun createPermissionListViewModel(parent: UIViewController, createPermissionViewController: (Permission) -> UIViewController): PermissionsListViewModel {
