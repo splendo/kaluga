@@ -24,15 +24,15 @@ import com.splendo.kaluga.base.utils.TimeZone
 actual class DateFormatter(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) {
 
     actual companion object {
-        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.language}-${locale.country}")) }
-        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.language}-${locale.country}")) }
+        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleDateString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleTimeString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.language}-${locale.country}")) }
+        ): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(timeZone) { date -> date.toLocaleString(arrayOf("${locale.languageCode}-${locale.countryCode}")) }
     }
 
     actual var timeZone: TimeZone = initialTimeZone

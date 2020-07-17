@@ -37,10 +37,10 @@ actual class TimeZone(internal val timeZone: java.util.TimeZone) {
             TimeZoneNameStyle.Short -> java.util.TimeZone.SHORT
             TimeZoneNameStyle.Long -> java.util.TimeZone.LONG
         }
-        return timeZone.getDisplayName(withDaylightSavings, styleJava, locale)
+        return timeZone.getDisplayName(withDaylightSavings, styleJava, locale.locale)
     }
     actual val offsetFromGMTInMilliseconds = timeZone.rawOffset.toLong()
-    actual val daylightSavingsOffsetfromGMT: Long = timeZone.dstSavings.toLong()
+    actual val daylightSavingsOffsetInMilliseconds: Long = timeZone.dstSavings.toLong()
     actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = timeZone.getOffset(date.millisecondSinceEpoch).toLong()
     actual fun usesDaylightSavingsTime(date: Date): Boolean = timeZone.inDaylightTime(date.calendar.time)
     actual fun copy(): TimeZone = TimeZone(timeZone.clone() as java.util.TimeZone)

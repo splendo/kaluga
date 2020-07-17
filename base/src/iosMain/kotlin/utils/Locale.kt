@@ -17,13 +17,53 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.typedList
 import platform.Foundation.NSLocale
+import platform.Foundation.alternateQuotationBeginDelimiter
+import platform.Foundation.alternateQuotationEndDelimiter
+import platform.Foundation.availableLocaleIdentifiers
+import platform.Foundation.countryCode
 import platform.Foundation.currentLocale
+import platform.Foundation.languageCode
+import platform.Foundation.localeIdentifier
+import platform.Foundation.localizedStringForCountryCode
+import platform.Foundation.localizedStringForLanguageCode
+import platform.Foundation.localizedStringForLocaleIdentifier
+import platform.Foundation.localizedStringForScriptCode
+import platform.Foundation.localizedStringForVariantCode
+import platform.Foundation.quotationBeginDelimiter
+import platform.Foundation.quotationEndDelimiter
+import platform.Foundation.scriptCode
+import platform.Foundation.variantCode
 
-actual typealias Locale = NSLocale
+actual data class Locale(val nsLocale: NSLocale) {
 
-actual fun createLocale(language: String): Locale = NSLocale(language)
-actual fun createLocale(language: String, country: String): Locale = NSLocale("${language}_$country")
-actual fun createLocale(language: String, country: String, variant: String): Locale = NSLocale("${language}_${country}_$variant")
+    actual companion object {
+        actual fun createLocale(language: String): Locale = Locale(NSLocale(language))
+        actual fun createLocale(language: String, country: String): Locale = Locale(NSLocale("${language}_$country"))
+        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(NSLocale("${language}_${country}_$variant"))
 
-actual val defaultLocale: Locale get() = NSLocale.currentLocale
+        actual val defaultLocale: Locale get() = Locale(NSLocale.currentLocale)
+        actual val availableLocales: List<Locale> = NSLocale.availableLocaleIdentifiers.typedList<String>().map { Locale(NSLocale(it)) }
+    }
+
+    actual val countryCode: String
+        get() = nsLocale.countryCode ?: ""
+    actual val languageCode: String
+        get() = nsLocale.languageCode
+    actual val scriptCode: String
+        get() = nsLocale.scriptCode ?: ""
+    actual val variantCode: String
+        get() = nsLocale.variantCode ?: ""
+
+    actual fun name(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
+    actual fun countryName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""
+    actual fun languageName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLanguageCode(languageCode) ?: ""
+    actual fun variantName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForVariantCode(variantCode) ?: ""
+    actual fun scriptName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForScriptCode(scriptCode) ?: ""
+
+    actual val quotationStart: String = nsLocale.quotationBeginDelimiter
+    actual val quotationEnd: String = nsLocale.quotationEndDelimiter
+    actual val alternateQuotationStart: String = nsLocale.alternateQuotationBeginDelimiter
+    actual val alternateQuotationEnd: String = nsLocale.alternateQuotationEndDelimiter
+}

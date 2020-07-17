@@ -17,30 +17,128 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
+
+/**
+ * Class describing a point in time
+ * Dates are localized according to a [Locale] and relative to a given [TimeZone]
+ */
 expect class Date : Comparable<Date> {
     companion object {
+        /**
+         * Creates a [Date] relative to the current time
+         * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [Date] relative to the current time
+         */
         fun now(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): Date
+
+        /**
+         * Creates a [Date] relative to January 1st 1970 00:00:00 GMT
+         * @param offsetInMilliseconds The offset in milliseconds from the epoch time. Defaults to 0
+         * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+         * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+         * @return A [Date] relative to the current time
+         */
         fun epoch(offsetInMilliseconds: Long = 0L, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): Date
     }
 
+    /**
+     * The [TimeZone] in which the Date is set
+     */
     var timeZone: TimeZone
 
+    /**
+     * The number of the era, e.g., AD or BC in the Julian calendar
+     */
     var era: Int
+
+    /**
+     * The year
+     */
     var year: Int
+
+    /**
+     * The month of the year. Starts at 1
+     */
     var month: Int
+
+    /**
+     * The week number within the current year.
+     */
     var weekOfYear: Int
+
+    /**
+     * The week number within the current month
+     */
     var weekOfMonth: Int
+
+    /**
+     * The day of the current month
+     */
     var day: Int
+
+    /**
+     * The day of the current year
+     */
     var dayOfYear: Int
+
+    /**
+     * The day of the week. Starts at 1
+     */
     var weekDay: Int
 
+    /**
+     * The hour of the current day
+     */
     var hour: Int
+
+    /**
+     * The minute of the current hour
+     */
     var minute: Int
+
+    /**
+     * The second of the current minute
+     */
     var second: Int
+
+    /**
+     * The millisecond of the current second
+     */
     var millisecond: Int
+
+    /**
+     * The number of milliseconds passed since epoch time (January 1st 1970 00:00:00:00 GMT)
+     */
     var millisecondSinceEpoch: Long
 
-    fun minus(date: Date): Date
-    fun plus(date: Date): Date
+    /**
+     * Creates a copy of a [Date]
+     * @return A copy of this [Date]
+     */
     fun copy(): Date
+}
+
+/**
+ * Creates a [Date] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
+ * @param date The [Date] of which the millisecondSinceEpoch to subtract should be retrieved
+ * @return A new [Date] with the same [Locale] and [TimeZone] as the left date, but earlier by the right date millisecondSinceEpoch
+ */
+operator fun Date.minus(date: Date): Date {
+    return copy().apply {
+        millisecondSinceEpoch -= date.millisecondSinceEpoch
+    }
+}
+
+/**
+ * Creates a [Date] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
+ * @param date The [Date] of which the millisecondSinceEpoch to add should be retrieved
+ * @return A new [Date] with the same [Locale] and [TimeZone] as the left date, but later by the right date millisecondSinceEpoch
+ */
+operator fun Date.plus(date: Date): Date {
+    return copy().apply {
+        millisecondSinceEpoch += date.millisecondSinceEpoch
+    }
 }

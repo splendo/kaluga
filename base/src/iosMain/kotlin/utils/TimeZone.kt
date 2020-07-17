@@ -24,8 +24,10 @@ import platform.Foundation.NSTimeZoneNameStyle
 import platform.Foundation.abbreviationDictionary
 import platform.Foundation.daylightSavingTimeOffset
 import platform.Foundation.defaultTimeZone
+import platform.Foundation.isDaylightSavingTime
 import platform.Foundation.knownTimeZoneNames
 import platform.Foundation.localizedName
+import platform.Foundation.nextDaylightSavingTimeTransition
 import platform.Foundation.secondsFromGMT
 import platform.Foundation.timeZoneWithAbbreviation
 import platform.Foundation.timeZoneWithName
@@ -52,10 +54,27 @@ actual class TimeZone(val timeZone: NSTimeZone) {
             TimeZoneNameStyle.Short -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleShortDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleShortStandard
             TimeZoneNameStyle.Long -> if (withDaylightSavings) NSTimeZoneNameStyle.NSTimeZoneNameStyleDaylightSaving else NSTimeZoneNameStyle.NSTimeZoneNameStyleStandard
         }
-        return timeZone.localizedName(nameStyle, locale) ?: ""
+        return timeZone.localizedName(nameStyle, locale.nsLocale) ?: ""
     }
-    actual val offsetFromGMTInMilliseconds: Long = timeZone.secondsFromGMT * 1000L
-    actual val daylightSavingsOffsetfromGMT: Long = (timeZone.daylightSavingTimeOffset * 1000.0).toLong()
+    actual val offsetFromGMTInMilliseconds: Long get() {
+        val rawOffset = if (timeZone.isDaylightSavingTime())
+            timeZone.secondsFromGMT.toDouble() - timeZone.daylightSavingTimeOffset
+        else
+            timeZone.secondsFromGMT.toDouble()
+
+        return rawOffset.toLong() * 1000L
+    }
+
+    actual val daylightSavingsOffsetInMilliseconds: Long get() {
+        val rawOffset = if (timeZone.isDaylightSavingTime()) {
+            timeZone.daylightSavingTimeOffset.toLong()
+        } else {
+            timeZone.nextDaylightSavingTimeTransition?.let {
+                timeZone.daylightSavingTimeOffsetForDate(it).toLong()
+            } ?: 0L
+        }
+        return rawOffset * 1000L
+    }
     actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = (timeZone.secondsFromGMTForDate(date.date) * 1000L)
     actual fun usesDaylightSavingsTime(date: Date): Boolean = timeZone.isDaylightSavingTimeForDate(date.date)
     actual fun copy(): TimeZone = TimeZone(timeZone.copy() as NSTimeZone)

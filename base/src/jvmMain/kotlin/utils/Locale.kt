@@ -17,10 +17,33 @@
 
 package com.splendo.kaluga.base.utils
 
-actual typealias Locale = java.util.Locale
+actual data class Locale(val locale: java.util.Locale) {
+    actual companion object {
+        actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
+        actual fun createLocale(language: String, country: String): Locale = Locale(java.util.Locale(language, country))
+        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(java.util.Locale(language, country, variant))
 
-actual fun createLocale(language: String): Locale = Locale(language)
-actual fun createLocale(language: String, country: String): Locale = Locale(language, country)
-actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(language, country, variant)
+        actual val defaultLocale: Locale get() = Locale(java.util.Locale.getDefault())
+        actual val availableLocales: List<Locale> = java.util.Locale.getAvailableLocales().asList().map { Locale(it) }
+    }
 
-actual val defaultLocale: Locale get() = Locale.getDefault()
+    actual val countryCode: String
+        get() = locale.country
+    actual val languageCode: String
+        get() = locale.language
+    actual val scriptCode: String
+        get() = locale.script
+    actual val variantCode: String
+        get() = locale.variant
+
+    actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
+    actual fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)
+    actual fun languageName(forLocale: Locale): String = locale.getDisplayLanguage(forLocale.locale)
+    actual fun variantName(forLocale: Locale): String = locale.getDisplayVariant(forLocale.locale)
+    actual fun scriptName(forLocale: Locale): String = locale.getDisplayScript(forLocale.locale)
+
+    actual val quotationStart: String = "\""
+    actual val quotationEnd: String = "\""
+    actual val alternateQuotationStart: String = "\""
+    actual val alternateQuotationEnd: String = "\""
+}

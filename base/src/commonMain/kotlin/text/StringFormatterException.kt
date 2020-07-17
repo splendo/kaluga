@@ -29,7 +29,6 @@ sealed class StringFormatterException(message: String?) : Exception(message) {
     data class IllegalFormatPrecisionException(val precision: Int) : StringFormatterException("$precision")
     data class IllegalFormatConversionException(val currentChar: Char, val any: Any) : StringFormatterException("$currentChar != $any")
     data class IllegalFormatFlagsException(val flags: String) : StringFormatterException("An illegal set of flags, $flags, was supplied.")
-    data class UnsupportedFormat(val format: String) : StringFormatterException("$format not Supported")
     data class MalformedValue(val value: Any) : StringFormatterException("Malformed Value: $value")
     data class FormatFlagsConversionMismatchException(val flags: String, val currentChar: Char) : StringFormatterException("Conversion = $currentChar, Flags = $flags")
 }

@@ -17,10 +17,25 @@
 
 package com.splendo.kaluga.base.utils
 
-actual data class Locale(val language: String, val country: String? = null, val variant: String? = null)
+actual data class Locale(actual val languageCode: String, actual val countryCode: String = "", actual val variantCode: String = "", actual val scriptCode: String = "") {
 
-actual fun createLocale(language: String): Locale = Locale(language)
-actual fun createLocale(language: String, country: String): Locale = Locale(language, country)
-actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(language, country, variant)
+    actual companion object {
+        actual fun createLocale(language: String): Locale = Locale(language)
+        actual fun createLocale(language: String, country: String): Locale = Locale(language, country)
+        actual fun createLocale(language: String, country: String, variant: String): Locale = Locale(language, country, variant)
 
-actual val defaultLocale: Locale get() = Locale("en")
+        actual val defaultLocale: Locale get() = Locale("en")
+        actual val availableLocales: List<Locale> = emptyList()
+    }
+
+    actual fun name(forLocale: Locale): String = "${languageCode}_${countryCode}_${variantCode}"
+    actual fun countryName(forLocale: Locale): String = countryCode
+    actual fun languageName(forLocale: Locale): String = languageCode
+    actual fun variantName(forLocale: Locale): String = variantCode
+    actual fun scriptName(forLocale: Locale): String = scriptCode
+
+    actual val quotationStart: String = "\""
+    actual val quotationEnd: String = "\""
+    actual val alternateQuotationStart: String = "\""
+    actual val alternateQuotationEnd: String = "\""
+}

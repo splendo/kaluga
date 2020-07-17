@@ -45,7 +45,7 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
 
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date {
             val calendar = NSCalendar.currentCalendar.apply {
-                this.locale = locale
+                this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
             val date = NSDate.dateWithTimeIntervalSinceNow(offsetInMilliseconds.toDouble() / 1000.0)
@@ -53,7 +53,7 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
         }
         actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date {
             val calendar = NSCalendar.currentCalendar.apply {
-                this.locale = locale
+                this.locale = locale.nsLocale
                 this.timeZone = timeZone.timeZone
             }
             val date = NSDate.dateWithTimeIntervalSince1970(offsetInMilliseconds.toDouble() / 1000.0)
@@ -107,17 +107,6 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
     actual var millisecondSinceEpoch: Long
         get() = (date.timeIntervalSince1970 * 1000.0).toLong()
         set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble() / 1000.0) }
-
-    actual fun minus(date: Date): Date {
-        return copy().apply {
-            millisecond -= date.millisecond
-        }
-    }
-    actual fun plus(date: Date): Date {
-        return copy().apply {
-            millisecond += date.millisecond
-        }
-    }
 
     actual fun copy(): Date = Date(calendar.copy() as NSCalendar, date.copy() as NSDate)
 

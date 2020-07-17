@@ -28,15 +28,15 @@ import java.util.Calendar
 actual class DateFormatter(private val format: SimpleDateFormat) {
 
     actual companion object {
-        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale) as SimpleDateFormat, timeZone)
-        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale) as SimpleDateFormat, timeZone)
+        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(DateFormat.getDateInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
+        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(DateFormat.getTimeInstance(style.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale) as SimpleDateFormat, timeZone)
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale), timeZone)
+        ): DateFormatter = createDateFormatter(DateFormat.getDateTimeInstance(dateStyle.javaStyle(), timeStyle.javaStyle(), locale.locale) as SimpleDateFormat, timeZone)
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(SimpleDateFormat(pattern, locale.locale), timeZone)
 
         fun createDateFormatter(simpleDateFormat: SimpleDateFormat, timeZone: TimeZone): DateFormatter {
             return DateFormatter(simpleDateFormat).apply {

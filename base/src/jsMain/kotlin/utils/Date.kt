@@ -69,17 +69,6 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
         get() = date.getTime().toLong()
         set(value) { }
 
-    actual fun minus(date: Date): Date {
-        return copy().apply {
-            millisecond -= date.millisecond
-        }
-    }
-    actual fun plus(date: Date): Date {
-        return copy().apply {
-            millisecond += date.millisecond
-        }
-    }
-
     actual fun copy(): Date = Date(kotlin.js.Date(date.getMilliseconds()))
 
     override fun equals(other: Any?): Boolean {

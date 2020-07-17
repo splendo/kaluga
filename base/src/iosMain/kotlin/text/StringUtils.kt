@@ -24,6 +24,6 @@ import platform.Foundation.uppercaseStringWithLocale
 
 actual val lineSeparator = "\n"
 
-actual fun String.lowerCased(locale: Locale): String = (this as NSString).lowercaseStringWithLocale(locale)
+actual fun String.lowerCased(locale: Locale): String = (this as NSString).lowercaseStringWithLocale(locale.nsLocale)
 
-actual fun String.upperCased(locale: Locale): String = (this as NSString).uppercaseStringWithLocale(locale)
+actual fun String.upperCased(locale: Locale): String = (this as NSString).uppercaseStringWithLocale(locale.nsLocale)

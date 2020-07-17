@@ -19,7 +19,7 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.text.FormatSpecifier.Companion.formatSpecifier
 import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.base.utils.defaultLocale
+import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 
 @ExperimentalStdlibApi
 fun String.format(vararg args: Any?, locale: Locale = defaultLocale) = StringFormatter(fmtLocale = locale).format(this, *args).toString()

@@ -39,7 +39,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
 
     @ExperimentalUnsignedTypes
     private val formatter = NSNumberFormatter().apply {
-        locale = this@NumberFormatter.locale
+        locale = this@NumberFormatter.locale.nsLocale
         when (style) {
             is NumberFormatStyle.Integer -> {
                 numberStyle = NSNumberFormatterDecimalStyle

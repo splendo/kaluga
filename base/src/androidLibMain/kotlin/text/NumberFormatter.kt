@@ -26,36 +26,36 @@ import java.util.Currency
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
 
     private val format: DecimalFormat = when (style) {
-        is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale).apply {
+        is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale.locale).apply {
             minimumIntegerDigits = style.minInteger.toInt()
             maximumIntegerDigits = style.maxInteger.toInt()
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
-        is NumberFormatStyle.Decimal -> DecimalFormat.getInstance(locale).apply {
+        is NumberFormatStyle.Decimal -> DecimalFormat.getInstance(locale.locale).apply {
             minimumIntegerDigits = style.minInteger.toInt()
             maximumIntegerDigits = style.maxInteger.toInt()
             minimumFractionDigits = style.minFraction.toInt()
             maximumFractionDigits = style.maxFraction.toInt()
         }
-        is NumberFormatStyle.Percentage -> DecimalFormat.getPercentInstance(locale).apply {
+        is NumberFormatStyle.Percentage -> DecimalFormat.getPercentInstance(locale.locale).apply {
             minimumIntegerDigits = style.minInteger.toInt()
             maximumIntegerDigits = style.maxInteger.toInt()
             minimumFractionDigits = style.minFraction.toInt()
             maximumFractionDigits = style.maxFraction.toInt()
         }
         is NumberFormatStyle.Permillage -> {
-            val pattern = (DecimalFormat.getPercentInstance(locale) as DecimalFormat).toPattern().replace("%", "\u2030")
-            DecimalFormat(pattern, DecimalFormatSymbols(locale)).apply {
+            val pattern = (DecimalFormat.getPercentInstance(locale.locale) as DecimalFormat).toPattern().replace("%", "\u2030")
+            DecimalFormat(pattern, DecimalFormatSymbols(locale.locale)).apply {
                 minimumIntegerDigits = style.minInteger.toInt()
                 maximumIntegerDigits = style.maxInteger.toInt()
                 minimumFractionDigits = style.minFraction.toInt()
                 maximumFractionDigits = style.maxFraction.toInt()
             }
         }
-        is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale))
-        is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale)
-        is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale))
+        is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale.locale))
+        is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale.locale)
+        is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale.locale))
     } as DecimalFormat
     private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols
     init {
