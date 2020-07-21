@@ -29,7 +29,6 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var infinitySymbol: String = ""
     actual var currencySymbol: String = ""
     actual var currencyCode: String = ""
-    actual var internationalCurrencySymbol: String = ""
     actual var positivePrefix: String = ""
     actual var positiveSuffix: String = ""
     actual var negativePrefix: String = ""

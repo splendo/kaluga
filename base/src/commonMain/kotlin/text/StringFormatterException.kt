@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.base.text
 
+/**
+ * List of exceptions that may be thrown by a [StringFormatter].
+ */
 sealed class StringFormatterException(message: String?) : Exception(message) {
     data class MissingFormatArgumentException(val formatSpecified: String) : StringFormatterException("Format specifier '$formatSpecified'")
     data class MissingFormatWidthException(val specification: String) : StringFormatterException("The specification, $specification, misses a required width.")

@@ -124,7 +124,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatScientific() {
-        val formatters = createFormatters(NumberFormatStyle.Scientific(numberOfDigits = 5U, minExponent = 2U))
+        val formatters = createFormatters(NumberFormatStyle.Scientific(minFraction = 4U, minExponent = 2U))
         assertEquals("2.0000E00", formatters.usFormatter.format(2))
         assertEquals("2,0000E00", formatters.nlFormatter.format(2))
 

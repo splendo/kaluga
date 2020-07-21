@@ -33,16 +33,6 @@ import com.splendo.kaluga.base.text.Conversion.SCIENTIFIC
 import com.splendo.kaluga.base.text.Conversion.STRING
 import com.splendo.kaluga.base.text.Conversion.STRING_IOS
 import com.splendo.kaluga.base.text.DateTime.isValid
-import com.splendo.kaluga.base.text.Flags.Companion.ALTERNATE
-import com.splendo.kaluga.base.text.Flags.Companion.GROUP
-import com.splendo.kaluga.base.text.Flags.Companion.LEADING_SPACE
-import com.splendo.kaluga.base.text.Flags.Companion.LEFT_JUSTIFY
-import com.splendo.kaluga.base.text.Flags.Companion.NONE
-import com.splendo.kaluga.base.text.Flags.Companion.PARENTHESES
-import com.splendo.kaluga.base.text.Flags.Companion.PLUS
-import com.splendo.kaluga.base.text.Flags.Companion.PREVIOUS
-import com.splendo.kaluga.base.text.Flags.Companion.UPPERCASE
-import com.splendo.kaluga.base.text.Flags.Companion.ZERO_PAD
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
@@ -61,7 +51,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
     override var index: Int = -1
         private set
-    private var flags: Flags = NONE
+    private var flags: MutableSet<Flag> = mutableSetOf()
     private var width: Int = 0
     private var precision: Int = 0
     private var currentChar: Char = Char.MIN_VALUE
@@ -77,7 +67,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (timeStart.isNotEmpty()) {
             dt = true
             if (timeStart[0] == 'T')
-                flags.add(UPPERCASE)
+                flags.add(Flag.UPPERCASE)
         }
 
         conversion(matchResult.groupValues[6][0])
@@ -177,10 +167,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
     private fun printString(arg: Any?, locale: Locale) {
         (arg as? Formattable)?.let {
-            it.formatTo(StringFormatter(out, locale), flags.valueOf(), width, precision)
+            out.append(it.formatFor(locale, flags, width, precision))
         } ?: run {
-            if (flags.contains(ALTERNATE))
-                throw StringFormatterException.FormatFlagsConversionMismatchException(ALTERNATE.toString(), 's')
+            if (flags.contains(Flag.ALTERNATE))
+                throw StringFormatterException.FormatFlagsConversionMismatchException(Flag.ALTERNATE.toString(), 's')
 
             print(arg?.toString() ?: "null", locale)
         }
@@ -198,7 +188,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
     private fun print(s: String, locale: Locale) {
         val string = if (precision != -1 && precision < s.length) s.substring(0, precision) else s
-        appendJustified(out, if (flags.contains(UPPERCASE)) string.upperCased(locale) else string)
+        appendJustified(out, if (flags.contains(Flag.UPPERCASE)) string.upperCased(locale) else string)
     }
 
     private fun print(value: Byte, locale: Locale) {
@@ -229,28 +219,28 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 trailingSign(sb, neg)
             }
             OCTAL_INTEGER -> {
-                checkBadFlags(PARENTHESES, LEADING_SPACE, PLUS)
+                checkBadFlags(Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val valueString = value.toString(8)
 
-                val alternate = flags.contains(ALTERNATE)
+                val alternate = flags.contains(Flag.ALTERNATE)
                 val length = valueString.length + if (alternate) 1 else 0
                 if (alternate)
                     sb.append(getZero(locale))
-                if (flags.contains(ZERO_PAD))
+                if (flags.contains(Flag.ZERO_PAD))
                     trailingZeros(sb, width - length)
                 sb.append(valueString)
             }
             HEXADECIMAL_INTEGER -> {
-                checkBadFlags(PARENTHESES, LEADING_SPACE, PLUS)
+                checkBadFlags(Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val hexValue = value.toString(16)
-                val alternate = flags.contains(ALTERNATE)
-                val uppercase = flags.contains(UPPERCASE)
+                val alternate = flags.contains(Flag.ALTERNATE)
+                val uppercase = flags.contains(Flag.UPPERCASE)
                 val length = hexValue.length + if (alternate) 2 else 0
                 if (alternate) {
                     val prefix = "${getZero(locale)}x"
                     sb.append(if (uppercase) prefix.upperCased(locale) else prefix)
                 }
-                if (flags.contains(ZERO_PAD))
+                if (flags.contains(Flag.ZERO_PAD))
                     trailingZeros(sb, width - length)
                 sb.append(if (uppercase) hexValue.upperCased(locale) else hexValue)
             }
@@ -280,14 +270,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 print(sb, v, locale, currentChar, precision, neg)
             else {
                 val infinitySymbol = numberFormatter.infinitySymbol
-                sb.append(if (flags.contains(UPPERCASE)) infinitySymbol.upperCased(locale) else infinitySymbol)
+                sb.append(if (flags.contains(Flag.UPPERCASE)) infinitySymbol.upperCased(locale) else infinitySymbol)
             }
 
             // trailing sign indicator
             trailingSign(sb, neg)
         } else {
             val nanSymbol = numberFormatter.notANumberSymbol
-            sb.append(if (flags.contains(UPPERCASE)) nanSymbol.upperCased(locale) else nanSymbol)
+            sb.append(if (flags.contains(Flag.UPPERCASE)) nanSymbol.upperCased(locale) else nanSymbol)
         }
 
         // justify based on width
@@ -307,7 +297,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             SCIENTIFIC -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific((prec + 1).toUInt(), 2U))
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(minFraction = prec.toUInt(), minExponent = 2U))
                 val expSymbol = formatter.exponentSymbol
                 val scientific = formatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
                 val mantissa = scientific[0]
@@ -319,7 +309,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 number.append(mantissa)
                 addZeros(number, prec)
 
-                if (flags.contains(ALTERNATE) && prec == 0)
+                if (flags.contains(Flag.ALTERNATE) && prec == 0)
                     number.append(formatter.decimalSeparator)
 
                 var newW = width
@@ -328,7 +318,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 }
                 localizedMagnitude(sb, number, 0, flags, newW, locale)
 
-                sb.append(if (flags.contains(UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
+                sb.append(if (flags.contains(Flag.UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
                 sb.append(exponent)
             }
             DECIMAL_FLOAT -> {
@@ -342,7 +332,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 number.append(formatter.format(value))
                 addZeros(number, prec)
 
-                if (flags.contains(ALTERNATE) && prec == 0)
+                if (flags.contains(Flag.ALTERNATE) && prec == 0)
                     number.append(formatter.decimalSeparator)
                 var newW = width
                 if (width != -1) newW = adjustWidth(width, flags, neg)
@@ -372,7 +362,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         print(sb, time, currentChar, locale)
 
         // justify based on width
-        if (flags.contains(UPPERCASE)) {
+        if (flags.contains(Flag.UPPERCASE)) {
             appendJustified(out, sb.toString().upperCased(locale))
         } else {
             appendJustified(out, sb)
@@ -386,34 +376,33 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 var i: Int = time.hour
                 if (currentChar == DateTime.HOUR_0 || currentChar == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
                 val flags = if (currentChar == DateTime.HOUR_OF_DAY_0 || currentChar == DateTime.HOUR_0)
-                    ZERO_PAD
+                    setOf(Flag.ZERO_PAD)
                 else
-                    NONE
+                    emptySet()
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.MINUTE -> {
                 // 'M' (00 - 59)
                 val i: Int = time.minute
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.NANOSECOND -> {
                 // 'N' (000000000 - 999999999)
                 val i: Int = time.millisecond * 1000000
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 9, locale = locale))
             }
             DateTime.MILLISECOND -> {
                 // 'L' (000 - 999)
                 val i: Int = time.millisecond
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
             }
             DateTime.MILLISECOND_SINCE_EPOCH -> {
                 // 'Q' (0 - 99...?)
                 val i: Long = time.millisecondSinceEpoch
-                val flags = NONE
-                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = flags, width = width, locale = locale))
+                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
             DateTime.AM_PM -> {
                 // 'p' (am or pm)
@@ -424,13 +413,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.SECONDS_SINCE_EPOCH -> {
                 // 's' (0 - 99...?)
                 val i: Long = time.millisecondSinceEpoch / 1000
-                val flags = NONE
-                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = flags, width = width, locale = locale))
+                sb.append(localizedMagnitude(value = i.toString(10), offset = 0, flags = emptySet(), width = width, locale = locale))
             }
             DateTime.SECOND -> {
                 // 'S' (00 - 60 - leap second)
                 val i: Int = time.second
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.ZONE_NUMERIC -> {
@@ -443,7 +431,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
                 // combine minute and hour into a single integer
                 val offset = min / 60 * 100 + min % 60
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = offset.toString(10), offset = 0, flags = flags, width = 4, locale = locale))
             }
             DateTime.ZONE -> {
@@ -473,25 +461,25 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     DateTime.YEAR_2 -> i %= 100
                     DateTime.YEAR_4 -> size = 4
                 }
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = size, locale = locale))
             }
             DateTime.DAY_OF_MONTH_0, DateTime.DAY_OF_MONTH -> {
                 // 'e' (1 - 31) -- like d
                 val i: Int = time.day
-                val flags = if (currentChar == DateTime.DAY_OF_MONTH_0) ZERO_PAD else NONE
+                val flags = if (currentChar == DateTime.DAY_OF_MONTH_0) setOf(Flag.ZERO_PAD) else emptySet()
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.DAY_OF_YEAR -> {
                 // 'j' (001 - 366)
                 val i: Int = time.dayOfYear
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 3, locale = locale))
             }
             DateTime.MONTH -> {
                 // 'm' (01 - 12)
                 val i: Int = time.month
-                val flags = ZERO_PAD
+                val flags = setOf(Flag.ZERO_PAD)
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.TIME, DateTime.TIME_24_HOUR -> {
@@ -551,10 +539,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
         // it before we add the zeros.
         val len: Int = sb.length
-        var i: Int
-        i = 0
+        var i = 0
         while (i < len) {
-            if (sb.get(i) == '.') {
+            if (sb[i] == '.') {
                 break
             }
             i++
@@ -583,7 +570,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (width == -1) {
             return out.append(cs)
         }
-        val padRight: Boolean = flags.contains(LEFT_JUSTIFY)
+        val padRight: Boolean = flags.contains(Flag.LEFT_JUSTIFY)
         val sp = width - cs.length
         if (padRight) {
             out.append(cs)
@@ -600,27 +587,27 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     // neg := val < 0
     private fun leadingSign(sb: StringBuilder, neg: Boolean): StringBuilder {
         if (!neg) {
-            if (flags.contains(PLUS)) {
+            if (flags.contains(Flag.PLUS)) {
                 sb.append('+')
-            } else if (flags.contains(LEADING_SPACE)) {
+            } else if (flags.contains(Flag.LEADING_SPACE)) {
                 sb.append(' ')
             }
         } else {
-            if (flags.contains(PARENTHESES)) sb.append('(') else sb.append('-')
+            if (flags.contains(Flag.PARENTHESES)) sb.append('(') else sb.append('-')
         }
         return sb
     }
 
     // neg := val < 0
     private fun trailingSign(sb: StringBuilder, neg: Boolean): StringBuilder {
-        if (neg && flags.contains(PARENTHESES)) sb.append(')')
+        if (neg && flags.contains(Flag.PARENTHESES)) sb.append(')')
         return sb
     }
 
     private fun localizedMagnitude(
         sb: StringBuilder = StringBuilder(),
         value: Int,
-        flags: Flags,
+        flags: Set<Flag>,
         width: Int,
         locale: Locale
     ): StringBuilder {
@@ -631,7 +618,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         sb: StringBuilder = StringBuilder(),
         value: CharSequence,
         offset: Int,
-        flags: Flags,
+        flags: Set<Flag>,
         width: Int,
         locale: Locale
     ): StringBuilder {
@@ -654,7 +641,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (dot < len) {
             decSep = numberFormatter.decimalSeparator
         }
-        if (flags.contains(GROUP)) {
+        if (flags.contains(Flag.GROUP)) {
             grpSep = numberFormatter.groupingSeparator
             grpSize = numberFormatter.groupingSize
 
@@ -685,7 +672,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
 
         // apply zero padding
-        if (width != -1 && flags.contains(ZERO_PAD)) {
+        if (width != -1 && flags.contains(Flag.ZERO_PAD)) {
             for (k in sb.length until width) {
                 sb.insert(begin, zero)
             }
@@ -693,9 +680,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return sb
     }
 
-    private fun adjustWidth(width: Int, flags: Flags, neg: Boolean): Int {
+    private fun adjustWidth(width: Int, flags: Set<Flag>, neg: Boolean): Int {
         var newW = width
-        if (newW != -1 && neg && flags.contains(PARENTHESES)) newW--
+        if (newW != -1 && neg && flags.contains(Flag.PARENTHESES)) newW--
         return newW
     }
 
@@ -722,13 +709,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return index
     }
 
-    private fun flags(stringToMatch: String): Flags {
-        flags = Flags.parse(stringToMatch)
-        if (flags.contains(PREVIOUS)) index = -1
+    private fun flags(stringToMatch: String): Set<Flag> {
+        flags = Flag.parse(stringToMatch).toMutableSet()
+        if (flags.contains(Flag.PREVIOUS)) index = -1
         return flags
     }
 
-    private fun checkBadFlags(vararg badFlags: Flags) {
+    private fun checkBadFlags(vararg badFlags: Flag) {
         for (badFlag in badFlags)
             if (flags.contains(badFlag))
                 throw StringFormatterException.FormatFlagsConversionMismatchException(badFlag.toString(), currentChar)
@@ -768,7 +755,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 throw StringFormatterException.UnknownFormatConversionException(currentChar.toString())
             }
             if (currentChar.toUpperCase() == currentChar && currentChar.toLowerCase() != currentChar) {
-                flags.add(UPPERCASE)
+                flags.add(Flag.UPPERCASE)
                 currentChar = currentChar.toLowerCase()
             }
             if (Conversion.isText(currentChar)) {
@@ -779,14 +766,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     private fun checkGeneral() {
-        if ((currentChar == BOOLEAN || currentChar == HASHCODE) && flags.contains(ALTERNATE))
-            throw StringFormatterException.FormatFlagsConversionMismatchException(ALTERNATE.toString(), currentChar)
+        if ((currentChar == BOOLEAN || currentChar == HASHCODE) && flags.contains(Flag.ALTERNATE))
+            throw StringFormatterException.FormatFlagsConversionMismatchException(Flag.ALTERNATE.toString(), currentChar)
 
         // '-' requires a width
-        if (width == -1 && flags.contains(LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
+        if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
         checkBadFlags(
-            PLUS, LEADING_SPACE, ZERO_PAD,
-            GROUP, PARENTHESES
+            Flag.PLUS, Flag.LEADING_SPACE, Flag.ZERO_PAD,
+            Flag.GROUP, Flag.PARENTHESES
         )
     }
 
@@ -794,29 +781,29 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         if (!isValid(currentChar)) throw StringFormatterException.UnknownFormatConversionException("t$currentChar")
         checkBadFlags(
-            ALTERNATE, PLUS, LEADING_SPACE,
-            ZERO_PAD, GROUP, PARENTHESES
+            Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
+            Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
         )
 
         // '-' requires a width
-        if (width == -1 && flags.contains(LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
+        if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
     }
 
     private fun checkCharacter() {
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         checkBadFlags(
-            ALTERNATE, PLUS, LEADING_SPACE,
-            ZERO_PAD, GROUP, PARENTHESES
+            Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
+            Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
         )
 
         // '-' requires a width
-        if (width == -1 && flags.contains(LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
+        if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
     }
 
     private fun checkInteger() {
         checkNumeric()
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        if (currentChar == DECIMAL_INTEGER) checkBadFlags(ALTERNATE) else if (currentChar == OCTAL_INTEGER) checkBadFlags(GROUP) else checkBadFlags(GROUP)
+        if (currentChar == DECIMAL_INTEGER) checkBadFlags(Flag.ALTERNATE) else if (currentChar == OCTAL_INTEGER) checkBadFlags(Flag.GROUP) else checkBadFlags(Flag.GROUP)
     }
 
     private fun checkFloat() {
@@ -824,13 +811,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         when (currentChar) {
             DECIMAL_FLOAT -> {}
             HEXADECIMAL_FLOAT -> {
-                checkBadFlags(PARENTHESES, GROUP)
+                checkBadFlags(Flag.PARENTHESES, Flag.GROUP)
             }
             SCIENTIFIC -> {
-                checkBadFlags(GROUP)
+                checkBadFlags(Flag.GROUP)
             }
             GENERAL -> {
-                checkBadFlags(ALTERNATE)
+                checkBadFlags(Flag.ALTERNATE)
             }
         }
     }
@@ -840,11 +827,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (precision != -1 && precision < 0) throw StringFormatterException.IllegalFormatPrecisionException(precision)
 
         // '-' and '0' require a width
-        if (width == -1 && (flags.contains(LEFT_JUSTIFY) || flags.contains(ZERO_PAD)))
+        if (width == -1 && (flags.contains(Flag.LEFT_JUSTIFY) || flags.contains(Flag.ZERO_PAD)))
             throw StringFormatterException.MissingFormatWidthException(toString())
 
         // bad combination
-        if (flags.contains(PLUS) && flags.contains(LEADING_SPACE) || flags.contains(LEFT_JUSTIFY) && flags.contains(ZERO_PAD))
+        if (flags.contains(Flag.PLUS) && flags.contains(Flag.LEADING_SPACE) || flags.contains(Flag.LEFT_JUSTIFY) && flags.contains(Flag.ZERO_PAD))
             throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
     }
 
@@ -852,15 +839,20 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         when (currentChar) {
             PERCENT_SIGN -> {
-                if (flags.valueOf() !== LEFT_JUSTIFY.valueOf() && flags.valueOf() !== NONE.valueOf())
-                    throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
-
-                // '-' requires a width
-                if (width == -1 && flags.contains(LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
+                when (flags.size) {
+                    0 -> {}
+                    1 -> {
+                        if (!flags.contains(Flag.LEFT_JUSTIFY)) {
+                            throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
+                        } else if (width == -1)
+                            throw StringFormatterException.MissingFormatWidthException(toString())
+                    }
+                    else -> throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
+                }
             }
             LINE_SEPARATOR -> {
                 if (width != -1) throw StringFormatterException.IllegalFormatWidthException(width)
-                if (flags.valueOf() !== NONE.valueOf()) throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
+                if (flags.isNotEmpty()) throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
             }
             else -> throw StringFormatterException.UnexpectedChar(currentChar)
         }

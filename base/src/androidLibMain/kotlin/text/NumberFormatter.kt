@@ -98,9 +98,6 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var currencyCode: String
         get() = symbols.currency.currencyCode
         set(value) { applySymbols { it.currency = Currency.getInstance(value) } }
-    actual var internationalCurrencySymbol: String
-        get() = symbols.internationalCurrencySymbol
-        set(value) { applySymbols { it.internationalCurrencySymbol = value } }
 
     actual var positivePrefix: String
         get() = format.positivePrefix

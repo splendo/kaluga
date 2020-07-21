@@ -17,62 +17,24 @@
 
 package com.splendo.kaluga.base.text
 
-internal class Flags(private var flags: Int) {
+enum class Flag(val char: Char) {
+    LEFT_JUSTIFY('-'),
+    UPPERCASE('^'),
+    ALTERNATE('#'),
 
-    fun valueOf(): Int {
-        return flags
-    }
+    // numerics
+    PLUS('+'),
+    LEADING_SPACE(' '),
+    ZERO_PAD('0'),
+    GROUP(','),
+    PARENTHESES('('),
 
-    operator fun contains(f: Flags): Boolean {
-        return flags and f.valueOf() == f.valueOf()
-    }
-
-    fun copy(): Flags {
-        return Flags(flags)
-    }
-
-    internal fun add(f: Flags): Flags {
-        flags = flags or f.valueOf()
-        return this
-    }
-
-    fun remove(f: Flags): Flags {
-        flags = flags and f.valueOf().inv()
-        return this
-    }
-
-    override fun toString(): String {
-        val sb = StringBuilder()
-        if (contains(LEFT_JUSTIFY)) sb.append('-')
-        if (contains(UPPERCASE)) sb.append('^')
-        if (contains(ALTERNATE)) sb.append('#')
-        if (contains(PLUS)) sb.append('+')
-        if (contains(LEADING_SPACE)) sb.append(' ')
-        if (contains(ZERO_PAD)) sb.append('0')
-        if (contains(GROUP)) sb.append(',')
-        if (contains(PARENTHESES)) sb.append('(')
-        if (contains(PREVIOUS)) sb.append('<')
-        return sb.toString()
-    }
+    // indexing
+    PREVIOUS('<');
 
     companion object {
-        val NONE = Flags(0) // ''
-
-        val LEFT_JUSTIFY = Flags(1 shl 0) // '-'
-        val UPPERCASE = Flags(1 shl 1) // '^'
-        val ALTERNATE = Flags(1 shl 2) // '#'
-
-        // numerics
-        val PLUS = Flags(1 shl 3) // '+'
-        val LEADING_SPACE = Flags(1 shl 4) // ' '
-        val ZERO_PAD = Flags(1 shl 5) // '0'
-        val GROUP = Flags(1 shl 6) // ','
-        val PARENTHESES = Flags(1 shl 7) // '('
-
-        // indexing
-        val PREVIOUS = Flags(1 shl 8) // '<'
-        fun parse(stringToMatch: String): Flags {
-            val f = Flags(0)
+        fun parse(stringToMatch: String): Set<Flag> {
+            val f = mutableSetOf<Flag>()
             for (c in stringToMatch) {
                 val v = parse(c)
                 if (f.contains(v)) throw StringFormatterException.DuplicateFormatFlagsException(v.toString())
@@ -82,23 +44,16 @@ internal class Flags(private var flags: Int) {
         }
 
         // parse those flags which may be provided by users
-        private fun parse(c: Char): Flags {
-            return when (c) {
-                '-' -> LEFT_JUSTIFY
-                '#' -> ALTERNATE
-                '+' -> PLUS
-                ' ' -> LEADING_SPACE
-                '0' -> ZERO_PAD
-                ',' -> GROUP
-                '(' -> PARENTHESES
-                '<' -> PREVIOUS
-                else -> throw StringFormatterException.UnknownFormatFlagsException(c.toString())
-            }
-        }
-
-        // Returns a string representation of the current {@code Flags}.
-        fun toString(f: Flags): String {
-            return f.toString()
+        private fun parse(c: Char): Flag {
+            return values().find { it.char == c } ?: throw StringFormatterException.UnknownFormatFlagsException(c.toString())
         }
     }
+}
+
+fun Set<Flag>.toString(): String {
+    val sb = StringBuilder()
+    this.forEach {
+        sb.append(it.char)
+    }
+    return sb.toString()
 }

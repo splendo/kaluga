@@ -28,7 +28,7 @@ actual class TimeZone {
     actual val identifier: String = ""
     actual fun displayName(style: TimeZoneNameStyle, withDaylightSavings: Boolean, locale: Locale): String = ""
     actual val offsetFromGMTInMilliseconds = 0L
-    actual val daylightSavingsOffset: Long = 0L
+    actual val daylightSavingsOffsetInMilliseconds: Long = 0L
     actual fun offsetFromGMTAtDateInMilliseconds(date: Date): Long = 0L
     actual fun usesDaylightSavingsTime(date: Date): Boolean = false
     actual fun copy(): TimeZone = TimeZone()
