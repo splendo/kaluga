@@ -17,85 +17,86 @@
 
 package com.splendo.kaluga.base.text
 
-internal object Conversion {
-    // Byte, Short, Integer, Long (and associated primitives due to autoboxing)
-    const val DECIMAL_INTEGER = 'd'
-    const val OCTAL_INTEGER = 'o'
-    const val HEXADECIMAL_INTEGER = 'x'
-    const val HEXADECIMAL_INTEGER_UPPER = 'X'
+internal enum class RegularFormatCharacter(val char: Char) {
+    // Byte, Short, Integer, Long
+    DECIMAL_INTEGER('d'),
+    OCTAL_INTEGER('o'),
+    HEXADECIMAL_INTEGER('x'),
+    HEXADECIMAL_INTEGER_UPPER('X'),
 
-    // Float, Double (and associated primitives due to autoboxing)
-    const val SCIENTIFIC = 'e'
-    const val SCIENTIFIC_UPPER = 'E'
-    const val GENERAL = 'g'
-    const val GENERAL_UPPER = 'G'
-    const val DECIMAL_FLOAT = 'f'
-    const val HEXADECIMAL_FLOAT = 'a'
-    const val HEXADECIMAL_FLOAT_UPPER = 'A'
+    // Float, Double
+    SCIENTIFIC('e'),
+    SCIENTIFIC_UPPER('E'),
+    GENERAL('g'),
+    GENERAL_UPPER('G'),
+    DECIMAL_FLOAT('f'),
+    HEXADECIMAL_FLOAT('a'),
+    HEXADECIMAL_FLOAT_UPPER('A'),
 
-    // Character, Byte, Short, Integer (and associated primitives due to autoboxing)
-    const val CHARACTER = 'c'
-    const val CHARACTER_UPPER = 'C'
+    // Character, Byte, Short, Integer
+    CHARACTER('c'),
+    CHARACTER_UPPER('C'),
 
     // Calendar, long
-    const val DATE_TIME = 't'
-    const val DATE_TIME_UPPER = 'T'
+    DATE_TIME('t'),
+    DATE_TIME_UPPER('T'),
 
     // if (arg.TYPE != boolean) return boolean
     // if (arg != null) return true; else return false;
-    const val BOOLEAN = 'b'
-    const val BOOLEAN_UPPER = 'B'
+    BOOLEAN('b'),
+    BOOLEAN_UPPER('B'),
 
-    // if (arg instanceof Formattable) arg.formatTo()
-    // else arg.toString();
-    const val STRING = 's'
-    const val STRING_IOS = '@'
-    const val STRING_UPPER = 'S'
+    STRING('s'),
+    STRING_IOS('@'),
+    STRING_UPPER('S'),
 
     // arg.hashCode()
-    const val HASHCODE = 'h'
-    const val HASHCODE_UPPER = 'H'
-    const val LINE_SEPARATOR = 'n'
-    const val PERCENT_SIGN = '%'
-    fun isValid(c: Char): Boolean {
-        return (isGeneral(c) || isInteger(c) || isFloat(c) || isText(c) || c == 't' || isCharacter(c))
+    HASHCODE('h'),
+    HASHCODE_UPPER('H'),
+    LINE_SEPARATOR('n'),
+    PERCENT_SIGN('%');
+
+    companion object {
+        internal fun parse(c: Char): RegularFormatCharacter {
+            return RegularFormatCharacter.values().find { it.char == c } ?: throw throw StringFormatterException.UnknownFormatConversionException(c.toString())
+        }
     }
 
     // Returns true if and only if the Conversion is applicable to all objects.
-    fun isGeneral(c: Char): Boolean {
-        return when (c) {
+    fun isGeneral(): Boolean {
+        return when (this) {
             BOOLEAN, BOOLEAN_UPPER, STRING, STRING_UPPER, STRING_IOS, HASHCODE, HASHCODE_UPPER -> true
             else -> false
         }
     }
 
     // Returns true if and only if the Conversion is applicable to character.
-    fun isCharacter(c: Char): Boolean {
-        return when (c) {
+    fun isCharacter(): Boolean {
+        return when (this) {
             CHARACTER, CHARACTER_UPPER -> true
             else -> false
         }
     }
 
     // Returns true if and only if the Conversion is an integer type.
-    fun isInteger(c: Char): Boolean {
-        return when (c) {
+    fun isInteger(): Boolean {
+        return when (this) {
             DECIMAL_INTEGER, OCTAL_INTEGER, HEXADECIMAL_INTEGER, HEXADECIMAL_INTEGER_UPPER -> true
             else -> false
         }
     }
 
     // Returns true if and only if the Conversion is a floating-point type.
-    fun isFloat(c: Char): Boolean {
-        return when (c) {
+    fun isFloat(): Boolean {
+        return when (this) {
             SCIENTIFIC, SCIENTIFIC_UPPER, GENERAL, GENERAL_UPPER, DECIMAL_FLOAT, HEXADECIMAL_FLOAT, HEXADECIMAL_FLOAT_UPPER -> true
             else -> false
         }
     }
 
     // Returns true if and only if the Conversion does not require an argument
-    fun isText(c: Char): Boolean {
-        return when (c) {
+    fun isText(): Boolean {
+        return when (this) {
             LINE_SEPARATOR, PERCENT_SIGN -> true
             else -> false
         }

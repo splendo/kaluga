@@ -17,22 +17,6 @@
 
 package com.splendo.kaluga.base.text
 
-import com.splendo.kaluga.base.text.Conversion.BOOLEAN
-import com.splendo.kaluga.base.text.Conversion.CHARACTER
-import com.splendo.kaluga.base.text.Conversion.CHARACTER_UPPER
-import com.splendo.kaluga.base.text.Conversion.DECIMAL_FLOAT
-import com.splendo.kaluga.base.text.Conversion.DECIMAL_INTEGER
-import com.splendo.kaluga.base.text.Conversion.GENERAL
-import com.splendo.kaluga.base.text.Conversion.HASHCODE
-import com.splendo.kaluga.base.text.Conversion.HEXADECIMAL_FLOAT
-import com.splendo.kaluga.base.text.Conversion.HEXADECIMAL_INTEGER
-import com.splendo.kaluga.base.text.Conversion.LINE_SEPARATOR
-import com.splendo.kaluga.base.text.Conversion.OCTAL_INTEGER
-import com.splendo.kaluga.base.text.Conversion.PERCENT_SIGN
-import com.splendo.kaluga.base.text.Conversion.SCIENTIFIC
-import com.splendo.kaluga.base.text.Conversion.STRING
-import com.splendo.kaluga.base.text.Conversion.STRING_IOS
-import com.splendo.kaluga.base.text.DateTime.isValid
 import com.splendo.kaluga.base.text.StringFormatter.Companion.getZero
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
@@ -41,6 +25,12 @@ import com.splendo.kaluga.base.utils.TimeZoneNameStyle
 import com.splendo.kaluga.base.utils.toHexString
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+
+internal sealed class ParsingCharacter(val char: Char) {
+    data class RegularCharacter(val regular: RegularFormatCharacter) : ParsingCharacter(regular.char)
+    data class DateTime(val dateTime: com.splendo.kaluga.base.text.DateTime) : ParsingCharacter(dateTime.char)
+    object None : ParsingCharacter(Char.MIN_VALUE)
+}
 
 @ExperimentalUnsignedTypes
 @ExperimentalStdlibApi
@@ -54,8 +44,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     private var flags: MutableSet<Flag> = mutableSetOf()
     private var width: Int = 0
     private var precision: Int = 0
-    private var currentChar: Char = Char.MIN_VALUE
-    private var dt = false
+    private var currentChar: ParsingCharacter = ParsingCharacter.None
 
     init {
         index(matchResult.groupValues[1])
@@ -64,57 +53,54 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         precision(matchResult.groupValues[4])
 
         val timeStart = matchResult.groupValues[5]
+        val parsingCharacter = matchResult.groupValues[6][0]
         if (timeStart.isNotEmpty()) {
-            dt = true
             if (timeStart[0] == 'T')
                 flags.add(Flag.UPPERCASE)
+            val dateTime = ParsingCharacter.DateTime(DateTime.parse(parsingCharacter))
+            checkDateTime(dateTime)
+            currentChar = dateTime
+        } else {
+            val regularCharacter = regularConversion(parsingCharacter)
+            when {
+                regularCharacter.regular.isGeneral() -> checkGeneral(regularCharacter)
+                regularCharacter.regular.isCharacter() -> checkCharacter(regularCharacter)
+                regularCharacter.regular.isInteger() -> checkInteger(regularCharacter)
+                regularCharacter.regular.isFloat() -> checkFloat(regularCharacter)
+                regularCharacter.regular.isText() -> checkText(regularCharacter)
+                else -> throw StringFormatterException.UnknownFormatConversionException(regularCharacter.char.toString())
+            }
         }
-
-        conversion(matchResult.groupValues[6][0])
-
-        if (dt)
-            checkDateTime()
-        else if (Conversion.isGeneral(currentChar))
-            checkGeneral()
-        else if (Conversion.isCharacter(currentChar))
-            checkCharacter()
-        else if (Conversion.isInteger(currentChar))
-            checkInteger()
-        else if (Conversion.isFloat(currentChar))
-            checkFloat()
-        else if (Conversion.isText(currentChar))
-            checkText()
-        else
-            throw StringFormatterException.UnknownFormatConversionException(currentChar.toString())
     }
 
     override fun print(arg: Any?, locale: Locale) {
-        if (dt) {
-            printDateTime(arg, locale)
-            return
-        }
-
-        when (currentChar) {
-            DECIMAL_INTEGER,
-            OCTAL_INTEGER,
-            HEXADECIMAL_INTEGER -> printInteger(arg, locale)
-            SCIENTIFIC,
-            GENERAL,
-            DECIMAL_FLOAT,
-            HEXADECIMAL_FLOAT -> printFloat(arg, locale)
-            CHARACTER,
-            CHARACTER_UPPER -> printCharacter(arg, locale)
-            BOOLEAN -> printBoolean(arg, locale)
-            STRING,
-            STRING_IOS -> printString(arg, locale)
-            HASHCODE -> printHashCode(arg, locale)
-            LINE_SEPARATOR -> out.append(lineSeparator)
-            PERCENT_SIGN -> print("%", locale)
-            else -> throw StringFormatterException.UnknownFormatConversionException(currentChar.toString())
+        when (val currentChar = currentChar) {
+            is ParsingCharacter.DateTime -> printDateTime(arg, currentChar, locale)
+            is ParsingCharacter.RegularCharacter -> {
+                when (currentChar.regular) {
+                    RegularFormatCharacter.DECIMAL_INTEGER,
+                    RegularFormatCharacter.OCTAL_INTEGER,
+                    RegularFormatCharacter.HEXADECIMAL_INTEGER -> printInteger(arg, currentChar, locale)
+                    RegularFormatCharacter.SCIENTIFIC,
+                    RegularFormatCharacter.GENERAL,
+                    RegularFormatCharacter.DECIMAL_FLOAT,
+                    RegularFormatCharacter.HEXADECIMAL_FLOAT -> printFloat(arg, currentChar, locale)
+                    RegularFormatCharacter.CHARACTER,
+                    RegularFormatCharacter.CHARACTER_UPPER -> printCharacter(arg, currentChar, locale)
+                    RegularFormatCharacter.BOOLEAN -> printBoolean(arg, locale)
+                    RegularFormatCharacter.STRING,
+                    RegularFormatCharacter.STRING_IOS -> printString(arg, locale)
+                    RegularFormatCharacter.HASHCODE -> printHashCode(arg, locale)
+                    RegularFormatCharacter.LINE_SEPARATOR -> out.append(lineSeparator)
+                    RegularFormatCharacter.PERCENT_SIGN -> print("%", locale)
+                    else -> throw StringFormatterException.UnknownFormatConversionException(currentChar.char.toString())
+                }
+            }
+            else -> throw StringFormatterException.UnknownFormatConversionException(currentChar.char.toString())
         }
     }
 
-    private fun printDateTime(arg: Any?, locale: Locale) {
+    private fun printDateTime(arg: Any?, currentChar: ParsingCharacter.DateTime, locale: Locale) {
         val date = when (arg) {
             null -> {
                 print("null", locale)
@@ -128,39 +114,39 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             is Date -> {
                 arg.copy()
             }
-            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
+            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
         print(date, currentChar, locale)
     }
 
-    private fun printInteger(arg: Any?, locale: Locale) {
+    private fun printInteger(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
         when (arg) {
             null -> print("null", locale)
-            is Int -> print(arg, locale)
-            is Short -> print(arg, locale)
-            is Byte -> print(arg, locale)
-            is Long -> print(arg, locale)
-            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
+            is Int -> print(arg, currentChar, locale)
+            is Short -> print(arg, currentChar, locale)
+            is Byte -> print(arg, currentChar, locale)
+            is Long -> print(arg, currentChar, locale)
+            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
     }
 
-    private fun printFloat(arg: Any?, locale: Locale) {
+    private fun printFloat(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
         when (arg) {
             null -> print("null", locale)
-            is Float -> print(arg, locale)
-            is Double -> print(arg, locale)
-            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
+            is Float -> print(arg, currentChar, locale)
+            is Double -> print(arg, currentChar, locale)
+            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
     }
 
-    private fun printCharacter(arg: Any?, locale: Locale) {
+    private fun printCharacter(arg: Any?, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
         val stringToPrint = when (arg) {
             null -> "null"
             is Char -> arg.toString()
             is Byte -> arg.toChar().toString()
             is Short -> arg.toChar().toString()
             is Int -> arg.toChar().toString()
-            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar, arg)
+            else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
         print(stringToPrint, locale)
     }
@@ -191,22 +177,22 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         appendJustified(out, if (flags.contains(Flag.UPPERCASE)) string.upperCased(locale) else string)
     }
 
-    private fun print(value: Byte, locale: Locale) {
-        print(value.toLong(), locale)
+    private fun print(value: Byte, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+        print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Short, locale: Locale) {
-        print(value.toLong(), locale)
+    private fun print(value: Short, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+        print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Int, locale: Locale) {
-        print(value.toLong(), locale)
+    private fun print(value: Int, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+        print(value.toLong(), currentChar, locale)
     }
 
-    private fun print(value: Long, locale: Locale) {
+    private fun print(value: Long, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
         val sb = StringBuilder()
-        when (currentChar) {
-            DECIMAL_INTEGER -> {
+        when (currentChar.regular) {
+            RegularFormatCharacter.DECIMAL_INTEGER -> {
                 val valueStr = value.toString(10)
                 val neg = value < 0
                 // leading sign indicator
@@ -218,8 +204,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 // trailing sign indicator
                 trailingSign(sb, neg)
             }
-            OCTAL_INTEGER -> {
-                checkBadFlags(Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
+            RegularFormatCharacter.OCTAL_INTEGER -> {
+                checkBadFlags(currentChar, Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val valueString = value.toString(8)
 
                 val alternate = flags.contains(Flag.ALTERNATE)
@@ -230,8 +216,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     trailingZeros(sb, width - length)
                 sb.append(valueString)
             }
-            HEXADECIMAL_INTEGER -> {
-                checkBadFlags(Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
+            RegularFormatCharacter.HEXADECIMAL_INTEGER -> {
+                checkBadFlags(currentChar, Flag.PARENTHESES, Flag.LEADING_SPACE, Flag.PLUS)
                 val hexValue = value.toString(16)
                 val alternate = flags.contains(Flag.ALTERNATE)
                 val uppercase = flags.contains(Flag.UPPERCASE)
@@ -244,18 +230,18 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     trailingZeros(sb, width - length)
                 sb.append(if (uppercase) hexValue.upperCased(locale) else hexValue)
             }
-            else -> throw StringFormatterException.UnexpectedChar(currentChar)
+            else -> throw StringFormatterException.UnexpectedChar(currentChar.char)
         }
 
         // justify based on width
         appendJustified(out, sb)
     }
 
-    private fun print(value: Float, locale: Locale) {
-        print(value.toDouble(), locale)
+    private fun print(value: Float, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
+        print(value.toDouble(), currentChar, locale)
     }
 
-    private fun print(value: Double, locale: Locale) {
+    private fun print(value: Double, currentChar: ParsingCharacter.RegularCharacter, locale: Locale) {
         val sb = StringBuilder()
         val neg = value < 0.0
         val numberFormatter = NumberFormatter(locale)
@@ -289,12 +275,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         sb: StringBuilder,
         value: Double,
         locale: Locale,
-        c: Char,
+        c: ParsingCharacter.RegularCharacter,
         precision: Int,
         neg: Boolean
     ) {
-        when (c) {
-            SCIENTIFIC -> {
+        when (c.regular) {
+            RegularFormatCharacter.SCIENTIFIC -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
                 val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(minFraction = prec.toUInt(), minExponent = 2U))
@@ -321,7 +307,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 sb.append(if (flags.contains(Flag.UPPERCASE)) formatter.exponentSymbol.upperCased(locale) else formatter.exponentSymbol.lowerCased(locale))
                 sb.append(exponent)
             }
-            DECIMAL_FLOAT -> {
+            RegularFormatCharacter.DECIMAL_FLOAT -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
                 val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec.toUInt(), maxFraction = prec.toUInt())).apply {
@@ -339,11 +325,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
                 localizedMagnitude(sb, number, 0, flags, newW, locale)
             }
-            GENERAL -> {
+            RegularFormatCharacter.GENERAL -> {
                 val scientificBuilder = StringBuilder()
-                print(scientificBuilder, value, locale, SCIENTIFIC, precision, neg)
+                print(scientificBuilder, value, locale, ParsingCharacter.RegularCharacter(RegularFormatCharacter.SCIENTIFIC), precision, neg)
                 val decimalBuilder = StringBuilder()
-                print(decimalBuilder, value, locale, DECIMAL_FLOAT, precision, neg)
+                print(decimalBuilder, value, locale, ParsingCharacter.RegularCharacter(RegularFormatCharacter.DECIMAL_FLOAT), precision, neg)
                 val scientific = scientificBuilder.toString()
                 val decimal = decimalBuilder.toString()
                 if (decimal.length <= scientific.length)
@@ -351,13 +337,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 else
                     sb.append(scientific)
             }
-            HEXADECIMAL_FLOAT -> {
+            RegularFormatCharacter.HEXADECIMAL_FLOAT -> {
                 // TODO Support Hexadecimal floats
             }
         }
     }
 
-    private fun print(time: Date, currentChar: Char, locale: Locale) {
+    private fun print(time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale) {
         val sb = StringBuilder()
         print(sb, time, currentChar, locale)
 
@@ -369,13 +355,13 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         }
     }
 
-    private fun print(sb: StringBuilder, time: Date, currentChar: Char, locale: Locale): StringBuilder {
-        when (currentChar) {
+    private fun print(sb: StringBuilder, time: Date, currentChar: ParsingCharacter.DateTime, locale: Locale): StringBuilder {
+        when (currentChar.dateTime) {
             DateTime.HOUR_OF_DAY_0, DateTime.HOUR_0, DateTime.HOUR_OF_DAY, DateTime.HOUR -> {
                 // 'l' (1 - 12) -- like I
                 var i: Int = time.hour
-                if (currentChar == DateTime.HOUR_0 || currentChar == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
-                val flags = if (currentChar == DateTime.HOUR_OF_DAY_0 || currentChar == DateTime.HOUR_0)
+                if (currentChar.dateTime == DateTime.HOUR_0 || currentChar.dateTime == DateTime.HOUR) i = if (i == 0 || i == 12) 12 else i % 12
+                val flags = if (currentChar.dateTime == DateTime.HOUR_OF_DAY_0 || currentChar.dateTime == DateTime.HOUR_0)
                     setOf(Flag.ZERO_PAD)
                 else
                     emptySet()
@@ -442,21 +428,21 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 // 'A'
                 val i: Int = time.weekDay - 1
                 val dateFormat = DateFormatter.patternFormat("EEEE")
-                val weekdays = if (currentChar == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
+                val weekdays = if (currentChar.dateTime == DateTime.NAME_OF_DAY) dateFormat.weekdays else dateFormat.shortWeekdays
                 sb.append(weekdays[i])
             }
             DateTime.NAME_OF_MONTH_ABBREV, DateTime.NAME_OF_MONTH_ABBREV_X, DateTime.NAME_OF_MONTH -> {
                 // 'B'
                 val i: Int = time.month - 1
                 val dateFormat = DateFormatter.patternFormat("MMMM")
-                val months = if (currentChar == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
+                val months = if (currentChar.dateTime == DateTime.NAME_OF_MONTH) dateFormat.months else dateFormat.shortMonths
                 sb.append(months[i])
             }
             DateTime.CENTURY, DateTime.YEAR_2, DateTime.YEAR_4 -> {
                 // 'Y' (0000 - 9999)
                 var i: Int = time.year
                 var size = 2
-                when (currentChar) {
+                when (currentChar.dateTime) {
                     DateTime.CENTURY -> i /= 100
                     DateTime.YEAR_2 -> i %= 100
                     DateTime.YEAR_4 -> size = 4
@@ -467,7 +453,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.DAY_OF_MONTH_0, DateTime.DAY_OF_MONTH -> {
                 // 'e' (1 - 31) -- like d
                 val i: Int = time.day
-                val flags = if (currentChar == DateTime.DAY_OF_MONTH_0) setOf(Flag.ZERO_PAD) else emptySet()
+                val flags = if (currentChar.dateTime == DateTime.DAY_OF_MONTH_0) setOf(Flag.ZERO_PAD) else emptySet()
                 sb.append(localizedMagnitude(value = i, flags = flags, width = 2, locale = locale))
             }
             DateTime.DAY_OF_YEAR -> {
@@ -485,50 +471,49 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             DateTime.TIME, DateTime.TIME_24_HOUR -> {
                 // 'R' (hh:mm same as %H:%M)
                 val sep = ':'
-                print(sb, time, DateTime.HOUR_OF_DAY_0, locale).append(sep)
-                print(sb, time, DateTime.MINUTE, locale)
-                if (currentChar == DateTime.TIME) {
+                print(sb, time, ParsingCharacter.DateTime(DateTime.HOUR_OF_DAY_0), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.MINUTE), locale)
+                if (currentChar.dateTime == DateTime.TIME) {
                     sb.append(sep)
-                    print(sb, time, DateTime.SECOND, locale)
+                    print(sb, time, ParsingCharacter.DateTime(DateTime.SECOND), locale)
                 }
             }
             DateTime.TIME_12_HOUR -> {
                 // 'r' (hh:mm:ss [AP]M)
                 val sep = ':'
-                print(sb, time, DateTime.HOUR_0, locale).append(sep)
-                print(sb, time, DateTime.MINUTE, locale).append(sep)
-                print(sb, time, DateTime.SECOND, locale).append(' ')
+                print(sb, time, ParsingCharacter.DateTime(DateTime.HOUR_0), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.MINUTE), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.SECOND), locale).append(' ')
 
                 // this may be in wrong place for some locales
                 val tsb = StringBuilder()
-                print(tsb, time, DateTime.AM_PM, locale)
+                print(tsb, time, ParsingCharacter.DateTime(DateTime.AM_PM), locale)
                 sb.append(tsb.toString().upperCased(locale))
             }
             DateTime.DATE_TIME -> {
                 // 'c' (Sat Nov 04 12:02:33 EST 1999)
                 val sep = ' '
-                print(sb, time, DateTime.NAME_OF_DAY_ABBREV, locale).append(sep)
-                print(sb, time, DateTime.NAME_OF_MONTH_ABBREV, locale).append(sep)
-                print(sb, time, DateTime.DAY_OF_MONTH_0, locale).append(sep)
-                print(sb, time, DateTime.TIME, locale).append(sep)
-                print(sb, time, DateTime.ZONE, locale).append(sep)
-                print(sb, time, DateTime.YEAR_4, locale)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.NAME_OF_DAY_ABBREV), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.NAME_OF_MONTH_ABBREV), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.DAY_OF_MONTH_0), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.TIME), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.ZONE), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.YEAR_4), locale)
             }
             DateTime.DATE -> {
                 // 'D' (mm/dd/yy)
                 val sep = '/'
-                print(sb, time, DateTime.MONTH, locale).append(sep)
-                print(sb, time, DateTime.DAY_OF_MONTH_0, locale).append(sep)
-                print(sb, time, DateTime.YEAR_2, locale)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.MONTH), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.DAY_OF_MONTH_0), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.YEAR_2), locale)
             }
             DateTime.ISO_STANDARD_DATE -> {
                 // 'F' (%Y-%m-%d)
                 val sep = '-'
-                print(sb, time, DateTime.YEAR_4, locale).append(sep)
-                print(sb, time, DateTime.MONTH, locale).append(sep)
-                print(sb, time, DateTime.DAY_OF_MONTH_0, locale)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.YEAR_4), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.MONTH), locale).append(sep)
+                print(sb, time, ParsingCharacter.DateTime(DateTime.DAY_OF_MONTH_0), locale)
             }
-            else -> throw StringFormatterException.MalformedValue(currentChar)
         }
         return sb
     }
@@ -715,10 +700,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return flags
     }
 
-    private fun checkBadFlags(vararg badFlags: Flag) {
+    private fun checkBadFlags(currentChar: ParsingCharacter, vararg badFlags: Flag) {
         for (badFlag in badFlags)
             if (flags.contains(badFlag))
-                throw StringFormatterException.FormatFlagsConversionMismatchException(badFlag.toString(), currentChar)
+                throw StringFormatterException.FormatFlagsConversionMismatchException(badFlag.toString(), currentChar.char)
     }
 
     private fun width(stringToMatch: String): Int {
@@ -748,39 +733,37 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         return precision
     }
 
-    private fun conversion(conv: Char): Char {
-        currentChar = conv
-        if (!dt) {
-            if (!Conversion.isValid(currentChar)) {
-                throw StringFormatterException.UnknownFormatConversionException(currentChar.toString())
-            }
-            if (currentChar.toUpperCase() == currentChar && currentChar.toLowerCase() != currentChar) {
-                flags.add(Flag.UPPERCASE)
-                currentChar = currentChar.toLowerCase()
-            }
-            if (Conversion.isText(currentChar)) {
-                index = -2
-            }
+    private fun regularConversion(conv: Char): ParsingCharacter.RegularCharacter {
+        var currentRegularChar = RegularFormatCharacter.parse(conv)
+        if (conv.toUpperCase() == conv && conv.toLowerCase() != conv) {
+            flags.add(Flag.UPPERCASE)
+            currentRegularChar = RegularFormatCharacter.parse(conv.toLowerCase())
         }
-        return currentChar
+        if (currentRegularChar.isText()) {
+            index = -2
+        }
+        return ParsingCharacter.RegularCharacter(currentRegularChar).also {
+            currentChar = it
+        }
     }
 
-    private fun checkGeneral() {
-        if ((currentChar == BOOLEAN || currentChar == HASHCODE) && flags.contains(Flag.ALTERNATE))
-            throw StringFormatterException.FormatFlagsConversionMismatchException(Flag.ALTERNATE.toString(), currentChar)
+    private fun checkGeneral(currentChar: ParsingCharacter.RegularCharacter) {
+        if ((currentChar.regular == RegularFormatCharacter.BOOLEAN || currentChar.regular == RegularFormatCharacter.HASHCODE) && flags.contains(Flag.ALTERNATE))
+            throw StringFormatterException.FormatFlagsConversionMismatchException(Flag.ALTERNATE.toString(), currentChar.char)
 
         // '-' requires a width
         if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
         checkBadFlags(
+            currentChar,
             Flag.PLUS, Flag.LEADING_SPACE, Flag.ZERO_PAD,
             Flag.GROUP, Flag.PARENTHESES
         )
     }
 
-    private fun checkDateTime() {
+    private fun checkDateTime(currentChar: ParsingCharacter.DateTime) {
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        if (!isValid(currentChar)) throw StringFormatterException.UnknownFormatConversionException("t$currentChar")
         checkBadFlags(
+            currentChar,
             Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
             Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
         )
@@ -789,9 +772,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
     }
 
-    private fun checkCharacter() {
+    private fun checkCharacter(currentChar: ParsingCharacter.RegularCharacter) {
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         checkBadFlags(
+            currentChar,
             Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
             Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
         )
@@ -800,24 +784,24 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
     }
 
-    private fun checkInteger() {
+    private fun checkInteger(currentChar: ParsingCharacter.RegularCharacter) {
         checkNumeric()
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        if (currentChar == DECIMAL_INTEGER) checkBadFlags(Flag.ALTERNATE) else if (currentChar == OCTAL_INTEGER) checkBadFlags(Flag.GROUP) else checkBadFlags(Flag.GROUP)
+        if (currentChar.regular == RegularFormatCharacter.DECIMAL_INTEGER) checkBadFlags(currentChar, Flag.ALTERNATE) else if (currentChar.regular == RegularFormatCharacter.OCTAL_INTEGER) checkBadFlags(currentChar, Flag.GROUP) else checkBadFlags(currentChar, Flag.GROUP)
     }
 
-    private fun checkFloat() {
+    private fun checkFloat(currentChar: ParsingCharacter.RegularCharacter) {
         checkNumeric()
-        when (currentChar) {
-            DECIMAL_FLOAT -> {}
-            HEXADECIMAL_FLOAT -> {
-                checkBadFlags(Flag.PARENTHESES, Flag.GROUP)
+        when (currentChar.regular) {
+            RegularFormatCharacter.DECIMAL_FLOAT -> {}
+            RegularFormatCharacter.HEXADECIMAL_FLOAT -> {
+                checkBadFlags(currentChar, Flag.PARENTHESES, Flag.GROUP)
             }
-            SCIENTIFIC -> {
-                checkBadFlags(Flag.GROUP)
+            RegularFormatCharacter.SCIENTIFIC -> {
+                checkBadFlags(currentChar, Flag.GROUP)
             }
-            GENERAL -> {
-                checkBadFlags(Flag.ALTERNATE)
+            RegularFormatCharacter.GENERAL -> {
+                checkBadFlags(currentChar, Flag.ALTERNATE)
             }
         }
     }
@@ -835,10 +819,10 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
     }
 
-    private fun checkText() {
+    private fun checkText(currentChar: ParsingCharacter.RegularCharacter) {
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
-        when (currentChar) {
-            PERCENT_SIGN -> {
+        when (currentChar.regular) {
+            RegularFormatCharacter.PERCENT_SIGN -> {
                 when (flags.size) {
                     0 -> {}
                     1 -> {
@@ -850,11 +834,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                     else -> throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
                 }
             }
-            LINE_SEPARATOR -> {
+            RegularFormatCharacter.LINE_SEPARATOR -> {
                 if (width != -1) throw StringFormatterException.IllegalFormatWidthException(width)
                 if (flags.isNotEmpty()) throw StringFormatterException.IllegalFormatFlagsException(flags.toString())
             }
-            else -> throw StringFormatterException.UnexpectedChar(currentChar)
+            else -> throw StringFormatterException.UnexpectedChar(currentChar.char)
         }
     }
 }

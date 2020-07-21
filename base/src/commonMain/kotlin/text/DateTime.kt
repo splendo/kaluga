@@ -17,82 +17,51 @@
 
 package com.splendo.kaluga.base.text
 
-internal object DateTime {
-    const val HOUR_OF_DAY_0 = 'H' // (00 - 23)
-    const val HOUR_0 = 'I' // (01 - 12)
-    const val HOUR_OF_DAY = 'k' // (0 - 23) -- like H
-    const val HOUR = 'l' // (1 - 12) -- like I
-    const val MINUTE = 'M' // (00 - 59)
-    const val NANOSECOND = 'N' // (000000000 - 999999999)
-    const val MILLISECOND = 'L' // jdk, not in gnu (000 - 999)
-    const val MILLISECOND_SINCE_EPOCH = 'Q' // (0 - 99...?)
-    const val AM_PM = 'p' // (am or pm)
-    const val SECONDS_SINCE_EPOCH = 's' // (0 - 99...?)
-    const val SECOND = 'S' // (00 - 60 - leap second)
-    const val TIME = 'T' // (24 hour hh:mm:ss)
-    const val ZONE_NUMERIC = 'z' // (-1200 - +1200) - ls minus?
-    const val ZONE = 'Z' // (symbol)
+internal enum class DateTime(val char: Char) {
+    HOUR_OF_DAY_0('H'), // (00 - 23)
+    HOUR_0('I'), // (01 - 12)
+    HOUR_OF_DAY('k'), // (0 - 23) -- like H
+    HOUR('l'), // (1 - 12) -- like I
+    MINUTE('M'), // (00 - 59)
+    NANOSECOND('N'), // (000000000 - 999999999)
+    MILLISECOND('L'), // jdk, not in gnu (000 - 999)
+    MILLISECOND_SINCE_EPOCH('Q'), // (0 - 99...?)
+    AM_PM('p'), // (am or pm)
+    SECONDS_SINCE_EPOCH('s'), // (0 - 99...?)
+    SECOND('S'), // (00 - 60 - leap second)
+    TIME('T'), // (24 hour hh:mm:ss)
+    ZONE_NUMERIC('z'), // (-1200 - +1200) - ls minus?
+    ZONE('Z'), // (symbol)
 
     // Date
-    const val NAME_OF_DAY_ABBREV = 'a' // 'a'
-    const val NAME_OF_DAY = 'A' // 'A'
-    const val NAME_OF_MONTH_ABBREV = 'b' // 'b'
-    const val NAME_OF_MONTH = 'B' // 'B'
-    const val CENTURY = 'C' // (00 - 99)
-    const val DAY_OF_MONTH_0 = 'd' // (01 - 31)
-    const val DAY_OF_MONTH = 'e' // (1 - 31) -- like d
+    NAME_OF_DAY_ABBREV('a'), // 'a'
+    NAME_OF_DAY('A'), // 'A'
+    NAME_OF_MONTH_ABBREV('b'), // 'b'
+    NAME_OF_MONTH('B'), // 'B'
+    CENTURY('C'), // (00 - 99)
+    DAY_OF_MONTH_0('d'), // (01 - 31)
+    DAY_OF_MONTH('e'), // (1 - 31) -- like d
 
-    const val NAME_OF_MONTH_ABBREV_X = 'h' // -- same b
-    const val DAY_OF_YEAR = 'j' // (001 - 366)
-    const val MONTH = 'm' // (01 - 12)
+    NAME_OF_MONTH_ABBREV_X('h'), // -- same b
+    DAY_OF_YEAR('j'), // (001 - 366)
+    MONTH('m'), // (01 - 12)
 
-    const val YEAR_2 = 'y' // (00 - 99)
-    const val YEAR_4 = 'Y' // (0000 - 9999)
+    YEAR_2('y'), // (00 - 99)
+    YEAR_4('Y'), // (0000 - 9999)
 
     // Composites
-    const val TIME_12_HOUR = 'r' // (hh:mm:ss [AP]M)
-    const val TIME_24_HOUR = 'R' // (hh:mm same as %H:%M)
+    TIME_12_HOUR('r'), // (hh:mm:ss [AP]M)
+    TIME_24_HOUR('R'), // (hh:mm same as %H:%M)
 
-    const val DATE_TIME = 'c'
+    DATE_TIME('c'),
 
     // (Sat Nov 04 12:02:33 EST 1999)
-    const val DATE = 'D' // (mm/dd/yy)
-    const val ISO_STANDARD_DATE = 'F' // (%Y-%m-%d)
+    DATE('D'), // (mm/dd/yy)
+    ISO_STANDARD_DATE('F'); // (%Y-%m-%d)
 
-    fun isValid(c: Char): Boolean {
-        return when (c) {
-            HOUR_OF_DAY_0,
-            HOUR_0,
-            HOUR_OF_DAY,
-            HOUR,
-            MINUTE,
-            NANOSECOND,
-            MILLISECOND,
-            MILLISECOND_SINCE_EPOCH,
-            AM_PM,
-            SECONDS_SINCE_EPOCH,
-            SECOND,
-            TIME,
-            ZONE_NUMERIC,
-            ZONE,
-            NAME_OF_DAY_ABBREV,
-            NAME_OF_DAY,
-            NAME_OF_MONTH_ABBREV,
-            NAME_OF_MONTH,
-            CENTURY,
-            DAY_OF_MONTH_0,
-            DAY_OF_MONTH,
-            NAME_OF_MONTH_ABBREV_X,
-            DAY_OF_YEAR,
-            MONTH,
-            YEAR_2,
-            YEAR_4,
-            TIME_12_HOUR,
-            TIME_24_HOUR,
-            DATE_TIME,
-            DATE,
-            ISO_STANDARD_DATE -> true
-            else -> false
+    companion object {
+        internal fun parse(c: Char): DateTime {
+            return DateTime.values().find { it.char == c } ?: throw StringFormatterException.UnknownFormatConversionException("t$c")
         }
     }
 }

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+// TODO Implement with proper date solution for Java Script
 actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual companion object {

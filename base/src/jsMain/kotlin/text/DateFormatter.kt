@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 
+// TODO Implement with proper dateformatter solution for Java Script
 actual class DateFormatter(initialTimeZone: TimeZone, private val formatter: (kotlin.js.Date) -> String) {
 
     actual companion object {

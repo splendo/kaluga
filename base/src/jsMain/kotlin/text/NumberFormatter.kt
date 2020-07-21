@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.Locale
 
+// TODO Implement with proper number formatter solution for Java Script
 actual class NumberFormatter actual constructor(actual val locale: Locale, style: NumberFormatStyle) {
     actual var percentSymbol: Char = Char.MIN_VALUE
     actual var perMillSymbol: Char = Char.MIN_VALUE

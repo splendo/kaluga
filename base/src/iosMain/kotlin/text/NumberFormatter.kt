@@ -18,7 +18,6 @@
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.Locale
-import com.splendo.kaluga.logging.debug
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
 import platform.Foundation.NSNumberFormatterCurrencyStyle
@@ -173,7 +172,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         set(value) { formatter.multiplier = NSNumber.numberWithInt(value) }
 
     actual fun format(number: Number): String {
-        return (formatter.stringFromNumber(NSNumber.numberWithFloat(number.toFloat())) ?: "").also { debug(it) }
+        return (formatter.stringFromNumber(NSNumber.numberWithFloat(number.toFloat())) ?: "")
     }
 
     actual fun parse(string: String): Number? {
