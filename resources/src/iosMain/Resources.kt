@@ -27,19 +27,19 @@ import platform.UIKit.labelFontSize
 
 actual class StringLoader(private val bundle: NSBundle, private val table: String?) {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadString(identifier: String): String = bundle.localizedStringForKey(identifier, null, table)
+    actual fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
 }
 
 actual class ColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadColor(identifier: String): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) }
+    actual fun loadColor(identifier: String, defaultValue: Color?): Color? = UIColor.colorNamed(identifier, bundle, traitCollection)?.let { Color(it) } ?: defaultValue
 }
 
 actual class ImageLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {
     actual constructor() : this(NSBundle.mainBundle, null)
-    actual fun loadImage(identifier: String): Image? = UIImage.imageNamed(identifier, bundle, traitCollection)
+    actual fun loadImage(identifier: String, defaultValue: Image?): Image? = UIImage.imageNamed(identifier, bundle, traitCollection) ?: defaultValue
 }
 
 actual class FontLoader actual constructor() {
-    actual suspend fun loadFont(identifier: String): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize)
+    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
 }

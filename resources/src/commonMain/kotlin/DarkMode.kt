@@ -17,4 +17,7 @@
 
 package com.splendo.kaluga.resources
 
+/**
+ * When `true` the application is in Dark Mode.
+ */
 expect val isInDarkMode: Boolean

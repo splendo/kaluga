@@ -150,7 +150,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode) {
         val pattern: String get() {
-            val mantissaInteger ="${"#".repeat(max(maxInteger.toInt() - minInteger.toInt(), 0))}${"0".repeat(max(minInteger.toInt(), 1))}"
+            val mantissaInteger = "${"#".repeat(max(maxInteger.toInt() - minInteger.toInt(), 0))}${"0".repeat(max(minInteger.toInt(), 1))}"
             val mantissaDecimal = "${"0".repeat(minFraction.toInt())}${"#".repeat(max(maxFraction.toInt() - minFraction.toInt(), 0))}"
             val mantissa = if (mantissaDecimal.isNotEmpty()) "$mantissaInteger.$mantissaDecimal" else mantissaInteger
             val exponent = "E${"0".repeat(if (minExponent > 0U) minExponent.toInt() else 0)}"

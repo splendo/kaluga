@@ -28,49 +28,49 @@ import kotlinx.coroutines.CompletableDeferred
 
 actual class StringLoader(private val context: Context) {
     actual constructor() : this(applicationContext)
-    actual fun loadString(identifier: String): String {
+    actual fun loadString(identifier: String, defaultValue: String): String {
         val id = context.resources.getIdentifier(identifier, "string", context.packageName)
         return try {
             context.getString(id)
         } catch (e: Resources.NotFoundException) {
-            identifier
+            defaultValue
         }
     }
 }
 
 actual class ColorLoader(private val context: Context) {
     actual constructor() : this(applicationContext)
-    actual fun loadColor(identifier: String): Color? {
+    actual fun loadColor(identifier: String, defaultValue: Color?): Color? {
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)
         return try {
             ContextCompat.getColor(context, id)
         } catch (e: Resources.NotFoundException) {
-            null
+            defaultValue
         }
     }
 }
 
 actual class ImageLoader(private val context: Context) {
     actual constructor() : this(applicationContext)
-    actual fun loadImage(identifier: String): Image? {
+    actual fun loadImage(identifier: String, defaultValue: Image?): Image? {
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
         return try {
             ContextCompat.getDrawable(context, id)?.let { Image(it) }
         } catch (e: Resources.NotFoundException) {
-            null
+            defaultValue
         }
     }
 }
 
 actual class FontLoader(private val context: Context, private val handler: Handler?) {
     actual constructor() : this(applicationContext, null)
-    actual suspend fun loadFont(identifier: String): Font? {
+    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
         val id = context.resources.getIdentifier(identifier, "font", context.packageName)
         return try {
             val deferredFont = CompletableDeferred<Typeface?>()
             val callback = object : ResourcesCompat.FontCallback() {
                 override fun onFontRetrievalFailed(reason: Int) {
-                    deferredFont.complete(null)
+                    deferredFont.complete(defaultValue)
                 }
 
                 override fun onFontRetrieved(typeface: Typeface) {
@@ -80,7 +80,7 @@ actual class FontLoader(private val context: Context, private val handler: Handl
             ResourcesCompat.getFont(context, id, callback, handler)
             deferredFont.await()
         } catch (e: Resources.NotFoundException) {
-            null
+            defaultValue
         }
     }
 }

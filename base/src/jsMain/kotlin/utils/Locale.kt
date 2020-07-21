@@ -28,7 +28,7 @@ actual data class Locale(actual val languageCode: String, actual val countryCode
         actual val availableLocales: List<Locale> = emptyList()
     }
 
-    actual fun name(forLocale: Locale): String = "${languageCode}_${countryCode}_${variantCode}"
+    actual fun name(forLocale: Locale): String = "${languageCode}_${countryCode}_$variantCode"
     actual fun countryName(forLocale: Locale): String = countryCode
     actual fun languageName(forLocale: Locale): String = languageCode
     actual fun variantName(forLocale: Locale): String = variantCode

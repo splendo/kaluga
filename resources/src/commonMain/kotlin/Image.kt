@@ -17,6 +17,14 @@
 
 package com.splendo.kaluga.resources
 
+/**
+ * Class describing an image.
+ */
 expect class Image
 
+/**
+ * Attempts to create a new [Image] that is tinted in a given [Color]
+ * @param color The [Color] to use for tinting.
+ * @return The tinted [Image] or `null` if tinting could not be applied.
+ */
 expect fun Image.tinted(color: Color): Image?

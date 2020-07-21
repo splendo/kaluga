@@ -17,31 +17,96 @@
 
 package com.splendo.kaluga.resources
 
-expect class StringLoader {
-    constructor()
-    fun loadString(identifier: String): String
+/**
+ * Loads a [String] based on a provided identifier.
+ */
+expect class StringLoader() {
+    /**
+     * Attempts to load the string resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [String] resource for.
+     * @param defaultValue The [String] to return if no match was found for the identifier.
+     * @return The associated [String] resources or [defaultValue] if no such resource was found.
+     */
+    fun loadString(identifier: String, defaultValue: String): String
 }
 
-expect class ColorLoader {
-    constructor()
-    fun loadColor(identifier: String): Color?
+/**
+ * Loads a [Color] based on a provided identifier.
+ */
+expect class ColorLoader() {
+    /**
+     * Attempts to load the [Color] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [Color] resource for.
+     * @param defaultValue The [Color] to return if no match was found for the identifier.
+     * @return The associated [Color] resources or [defaultValue] if no such resource was found.
+     */
+    fun loadColor(identifier: String, defaultValue: Color?): Color?
 }
 
-expect class ImageLoader {
-    constructor()
-    fun loadImage(identifier: String): Image?
+/**
+ * Loads an [Image] based on a provided identifier.
+ */
+expect class ImageLoader() {
+    /**
+     * Attempts to load the [Image] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [Image] resource for.
+     * @param defaultValue The [Image] to return if no match was found for the identifier.
+     * @return The associated [Image] resources or [defaultValue] if no such resource was found.
+     */
+    fun loadImage(identifier: String, defaultValue: Image?): Image?
 }
 
-expect class FontLoader {
-    constructor()
-    suspend fun loadFont(identifier: String): Font?
+/**
+ * Loads a [Font] based on a provided identifier.
+ */
+expect class FontLoader() {
+    /**
+     * Attempts to load the [Font] resource associated with a given identifier. If no match is found, the [defaultValue] will be returned.
+     * @param identifier The identifier to find the [Font] resource for.
+     * @param defaultValue The [Font] to return if no match was found for the identifier.
+     * @return The associated [Font] resources or [defaultValue] if no such resource was found.
+     */
+    suspend fun loadFont(identifier: String, defaultValue: Font?): Font?
 }
 
-fun String.localized(stringLoader: StringLoader = StringLoader()) = stringLoader.loadString(this)
-fun String.asColor(colorLoader: ColorLoader = ColorLoader()): Color? = colorLoader.loadColor(this)
-fun String.asImage(imageLoader: ImageLoader = ImageLoader()): Image? = imageLoader.loadImage(this)
-suspend fun String.asFont(fontLoader: FontLoader = FontLoader()): Font? = fontLoader.loadFont(this)
+/**
+ * Treats this string as a resource identifier for a [String] and grabs the associated [String]
+ * @param stringLoader The [StringLoader] used for loading the associated [String] resource.
+ * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
+ * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
+ */
+fun String.localized(stringLoader: StringLoader = StringLoader(), defaultValue: String = this) = stringLoader.loadString(this, defaultValue)
 
+/**
+ * Treats this string as a resource identifier for a [Color] and grabs the associated [Color]
+ * @param colorLoader The [ColorLoader] used for loading the associated [Color] resource.
+ * @param defaultValue The [Color] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [Color] associated with the identifier represented by this String, or [defaultValue] if no such [Color] could be found.
+ */
+fun String.asColor(colorLoader: ColorLoader = ColorLoader(), defaultValue: Color? = null): Color? = colorLoader.loadColor(this, defaultValue)
+
+/**
+ * Treats this string as a resource identifier for a [Color] and grabs the associated [Image]
+ * @param colorLoader The [ImageLoader] used for loading the associated [Image] resource.
+ * @param defaultValue The [Image] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [Image] associated with the identifier represented by this String, or [defaultValue] if no such [Image] could be found.
+ */
+fun String.asImage(imageLoader: ImageLoader = ImageLoader(), defaultValue: Image? = null): Image? = imageLoader.loadImage(this, defaultValue)
+
+/**
+ * Treats this string as a resource identifier for a [Font] and grabs the associated [Font]
+ * @param fontLoader The [FontLoader] used for loading the associated [Font] resource.
+ * @param defaultValue The [Font] to return if no match was found for the identifier. Defaults to `null`.
+ * @return The [Font] associated with the identifier represented by this String, or [defaultValue] if no such [Font] could be found.
+ */
+suspend fun String.asFont(fontLoader: FontLoader = FontLoader(), defaultValue: Font? = null): Font? = fontLoader.loadFont(this, defaultValue)
+
+/**
+ * Attempts to parse a given [String] into a [Color].
+ * The string should be formatted as either `#AARRGGBB` or `#RRGGBB` for the parsing to succeed.
+ * @param hexString The [String] to parse as a [Color]
+ * @return The [Color] associated with [hexString] or `null` if improperly formatted.
+ */
 fun colorFrom(hexString: String): Color? {
     return if (hexString.startsWith('#')) {
         val hexColor = hexString.substring(1).toLong(16)
