@@ -2,10 +2,10 @@ publishing {
     publications {
         kotlinMultiplatform {
             artifactId = module.name
+            groupId = "com.splendo.kaluga"
         }
     }
 }
-
 
 def pomConfig = {
     licenses {
@@ -22,28 +22,30 @@ def pomConfig = {
         }
     }
     scm {
-        url "https://github.com/splendo/kotlin-components"
+        url "https://github.com/splendo/kaluga"
     }
 }
 
-//bintray {
+// See: https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/publications-example/build.gradle
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-// template from the multiplatform-settings project, here for reference (thanks!)
-//    def keyProps = new Properties()
-//    def keyFile = file("../keys.properties")
-//    if (keyFile.exists()) keyFile.withInputStream { keyProps.load(it) }
-//
-//    user = keyProps.getProperty("bintrayUser")
-//    key = keyProps.getProperty("bintrayKey")
-//
-//    pkg {
-//        userOrg = ''
-//        repo = 'multiplatform-settings'
-//        name = "multiplatform-settings"
-//        licenses = ['Apache-2.0']
-//        vcsUrl = 'https://github.com/russhwolf/multiplatform-settings'
-//    }
-//}
+    dryRun = project.hasProperty('bintrayDryRun') ? project.property('bintrayDryRun') : true
+    publish = false
+
+    pkg {
+        repo = 'com.splendo.kaluga'
+        name = module.name
+        userOrg = 'kaluga'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/splendo/kaluga'
+    }
+}
+
+bintrayUpload.doFirst {
+    publications = publishing.publications
+}
 
 afterEvaluate {
     project.publishing.publications.forEach { publication ->
@@ -56,7 +58,3 @@ afterEvaluate {
         }
     }
 }
-
-//bintrayUpload.doFirst {
-//    publications = project.publishing.publications
-//}

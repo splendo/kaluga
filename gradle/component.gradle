@@ -4,6 +4,8 @@ repositories {
     jcenter()
 }
 
+apply plugin: "com.jfrog.bintray"
+
 kotlin {
 
     targets {
