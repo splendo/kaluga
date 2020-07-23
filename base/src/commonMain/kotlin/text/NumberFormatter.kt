@@ -70,28 +70,28 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
     /**
      * Formats a number to an integer representation
      * @param minDigits The minimum number of digits to show. Defaults to `0U`.
-     * @param maxDigits The maximum number of digits to show. Defaults to `308U`.
+     * @param maxDigits The maximum number of digits to show. Defaults to `309U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Integer(
         val minDigits: UInt = 0U,
-        val maxDigits: UInt = 308U,
+        val maxDigits: UInt = 309U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
     /**
      * Formats a number to a decimal representation
      * @param minIntegerDigits The minimum number of integer digits to show. Defaults to `0U`.
-     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `308U`.
+     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `309U`.
      * @param minFractionDigits The minimum number of decimal digits to show. Defaults to `0U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `307U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `325U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Decimal(
         val minIntegerDigits: UInt = 0U,
-        val maxIntegerDigits: UInt = 308U,
+        val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
-        val maxFractionDigits: UInt = 307U,
+        val maxFractionDigits: UInt = 325U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
@@ -99,16 +99,16 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * Formats a number to a percentage value.
      * 100% is represented by 1.0, so 0.8 will be formatted as 80%.
      * @param minIntegerDigits The minimum number of integer digits to show. Defaults to `0U`.
-     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `308U`.
+     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `309U`.
      * @param minFractionDigits The minimum number of decimal digits to show. Defaults to `0U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `307U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `325U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Percentage(
         val minIntegerDigits: UInt = 0U,
-        val maxIntegerDigits: UInt = 308U,
+        val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
-        val maxFractionDigits: UInt = 307U,
+        val maxFractionDigits: UInt = 325U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
@@ -116,16 +116,16 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * Formats a number to a permillage value.
      * 1000‰ is represented by 1.0, so 0.8 will be formatted as 800‰.
      * @param minIntegerDigits The minimum number of integer digits to show. Defaults to `0U`.
-     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `308U`.
+     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `309U`.
      * @param minFractionDigits The minimum number of decimal digits to show. Defaults to `0U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to  `307U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to  `325U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Permillage(
         val minIntegerDigits: UInt = 0U,
-        val maxIntegerDigits: UInt = 308U,
+        val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
-        val maxFractionDigits: UInt = 307U,
+        val maxFractionDigits: UInt = 325U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
@@ -137,7 +137,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * Otherwise the minimum number of integer digits is achieved by adjusting the exponent.
      * Defaults to [minIntegerDigits]
      * @param minFractionDigits The minimum number of decimal digits to show in the mantissa. Defaults to `1U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show in the mantissa. Defaults to `6U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show in the mantissa. Defaults to `16U`.
      * @param minExponent The minimum number of digits to show in the exponent. Defaults to `1U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
@@ -145,7 +145,7 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
         val minIntegerDigits: UInt = 1U,
         val maxIntegerDigits: UInt = minIntegerDigits,
         val minFractionDigits: UInt = 1U,
-        val maxFractionDigits: UInt = 6U,
+        val maxFractionDigits: UInt = 16U,
         val minExponent: UInt = 1U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode) {
@@ -164,16 +164,16 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
      * For instance, iOS often uses a non-breaking space, whereas Android uses a common space.
      * This inconsistency is not corrected by this library and should thus be manually corrected if required.
      * @param minIntegerDigits The minimum number of integer digits to show. Defaults to `0U`.
-     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `308U`.
+     * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `309U`.
      * @param minFractionDigits The minimum number of decimal digits to show. Defaults to `0U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `307U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `325U`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Currency(
         val minIntegerDigits: UInt = 0U,
-        val maxIntegerDigits: UInt = 308U,
+        val maxIntegerDigits: UInt = 309U,
         val minFractionDigits: UInt = 0U,
-        val maxFractionDigits: UInt = 307U,
+        val maxFractionDigits: UInt = 325U,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
