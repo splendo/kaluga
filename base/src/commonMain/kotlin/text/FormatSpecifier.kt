@@ -283,7 +283,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.SCIENTIFIC -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(minFraction = prec.toUInt(), minExponent = 2U))
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Scientific(minFractionDigits = prec.toUInt(), maxFractionDigits = prec.toUInt(), minExponent = 2U))
                 val expSymbol = formatter.exponentSymbol
                 val scientific = formatter.format(value).split(expSymbol, ignoreCase = true, limit = 2)
                 val mantissa = scientific[0]
@@ -310,7 +310,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
             RegularFormatCharacter.DECIMAL_FLOAT -> {
                 val prec = if (precision == -1) 6 else precision
                 val number = StringBuilder()
-                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFraction = prec.toUInt(), maxFraction = prec.toUInt())).apply {
+                val formatter = NumberFormatter(locale, NumberFormatStyle.Decimal(minFractionDigits = prec.toUInt(), maxFractionDigits = prec.toUInt())).apply {
                     usesGroupingSeparator = false
                 }
                 if (value >= 0.0 && value < 1.0)

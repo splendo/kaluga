@@ -27,30 +27,30 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
 
     private val format: DecimalFormat = when (style) {
         is NumberFormatStyle.Integer -> DecimalFormat.getInstance(locale.locale).apply {
-            minimumIntegerDigits = style.minInteger.toInt()
-            maximumIntegerDigits = style.maxInteger.toInt()
+            minimumIntegerDigits = style.minDigits.toInt()
+            maximumIntegerDigits = style.maxDigits.toInt()
             minimumFractionDigits = 0
             maximumFractionDigits = 0
         }
         is NumberFormatStyle.Decimal -> DecimalFormat.getInstance(locale.locale).apply {
-            minimumIntegerDigits = style.minInteger.toInt()
-            maximumIntegerDigits = style.maxInteger.toInt()
-            minimumFractionDigits = style.minFraction.toInt()
-            maximumFractionDigits = style.maxFraction.toInt()
+            minimumIntegerDigits = style.minIntegerDigits.toInt()
+            maximumIntegerDigits = style.maxIntegerDigits.toInt()
+            minimumFractionDigits = style.minFractionDigits.toInt()
+            maximumFractionDigits = style.maxFractionDigits.toInt()
         }
         is NumberFormatStyle.Percentage -> DecimalFormat.getPercentInstance(locale.locale).apply {
-            minimumIntegerDigits = style.minInteger.toInt()
-            maximumIntegerDigits = style.maxInteger.toInt()
-            minimumFractionDigits = style.minFraction.toInt()
-            maximumFractionDigits = style.maxFraction.toInt()
+            minimumIntegerDigits = style.minIntegerDigits.toInt()
+            maximumIntegerDigits = style.maxIntegerDigits.toInt()
+            minimumFractionDigits = style.minFractionDigits.toInt()
+            maximumFractionDigits = style.maxFractionDigits.toInt()
         }
         is NumberFormatStyle.Permillage -> {
             val pattern = (DecimalFormat.getPercentInstance(locale.locale) as DecimalFormat).toPattern().replace("%", "\u2030")
             DecimalFormat(pattern, DecimalFormatSymbols(locale.locale)).apply {
-                minimumIntegerDigits = style.minInteger.toInt()
-                maximumIntegerDigits = style.maxInteger.toInt()
-                minimumFractionDigits = style.minFraction.toInt()
-                maximumFractionDigits = style.maxFraction.toInt()
+                minimumIntegerDigits = style.minIntegerDigits.toInt()
+                maximumIntegerDigits = style.maxIntegerDigits.toInt()
+                minimumFractionDigits = style.minFractionDigits.toInt()
+                maximumFractionDigits = style.maxFractionDigits.toInt()
             }
         }
         is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale.locale))

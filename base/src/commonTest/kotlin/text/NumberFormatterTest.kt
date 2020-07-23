@@ -85,7 +85,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatDecimal() {
-        val formatters = createFormatters(NumberFormatStyle.Decimal(minFraction = 2U, maxFraction = 4U))
+        val formatters = createFormatters(NumberFormatStyle.Decimal(minFractionDigits = 2U, maxFractionDigits = 4U))
         assertEquals("1.00", formatters.usFormatter.format(1))
         assertEquals("1,00", formatters.nlFormatter.format(1))
 
@@ -98,7 +98,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatPercentage() {
-        val formatters = createFormatters(NumberFormatStyle.Percentage(minFraction = 0U, maxFraction = 2U))
+        val formatters = createFormatters(NumberFormatStyle.Percentage(minFractionDigits = 0U, maxFractionDigits = 2U))
         assertEquals("200%", formatters.usFormatter.format(2.0))
         assertEquals("200%", formatters.nlFormatter.format(2.0))
 
@@ -111,7 +111,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatPermillage() {
-        val formatters = createFormatters(NumberFormatStyle.Permillage(minFraction = 0U, maxFraction = 2U)) { it.usesGroupingSeparator = false }
+        val formatters = createFormatters(NumberFormatStyle.Permillage(minFractionDigits = 0U, maxFractionDigits = 2U)) { it.usesGroupingSeparator = false }
         assertEquals("2000‰", formatters.usFormatter.format(2.0))
         assertEquals("2000‰", formatters.nlFormatter.format(2.0))
 
@@ -124,7 +124,7 @@ class NumberFormatterTest : BaseTest() {
 
     @Test
     fun testFormatScientific() {
-        val formatters = createFormatters(NumberFormatStyle.Scientific(minFraction = 4U, minExponent = 2U))
+        val formatters = createFormatters(NumberFormatStyle.Scientific(minFractionDigits = 4U, maxFractionDigits = 4U, minExponent = 2U))
         assertEquals("2.0000E00", formatters.usFormatter.format(2))
         assertEquals("2,0000E00", formatters.nlFormatter.format(2))
 
@@ -138,7 +138,7 @@ class NumberFormatterTest : BaseTest() {
     @ExperimentalStdlibApi
     @Test
     fun testFormatCurrency() {
-        val formatters = createFormatters(NumberFormatStyle.Currency(minFraction = 2U, maxFraction = 2U)) { it.usesGroupingSeparator = true }
+        val formatters = createFormatters(NumberFormatStyle.Currency(minFractionDigits = 2U, maxFractionDigits = 2U)) { it.usesGroupingSeparator = true }
         assertEquals("$1.00", formatters.usFormatter.format(1).replace("\u00A0", " "))
         assertEquals("€ 1,00", formatters.nlFormatter.format(1).replace("\u00A0", " "))
 
