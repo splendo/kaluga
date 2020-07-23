@@ -56,12 +56,12 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun builderInitializer() {
+    fun `builder_should_build_HUD`() {
         assertNotNull(builder.build())
     }
 
     @Test
-    fun indicatorShow() {
+    fun `present_should_show_indicator_with_appropriate_text`() {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -70,7 +70,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismiss() {
+    fun `dismiss_dismisses_indicator`() {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -82,7 +82,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismissAfter() {
+    fun `dismissAfter_dismisses_indicator`() {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -94,7 +94,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun testPresentDuring() = runBlockingTest {
+    fun `presentDuring_shows_indicator_while_closure_is_executing`() = runBlockingTest {
         lateinit var indicatorProcessing: HUD
 
         val loading1 = EmptyCompletableDeferred()
@@ -134,7 +134,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun rotateActivity() {
+    fun `hud_should_stay_on_screen_if_it_rotates`() {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
