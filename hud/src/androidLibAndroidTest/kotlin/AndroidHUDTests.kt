@@ -55,6 +55,19 @@ class AndroidHUDTests {
         const val PROCESSING = "Processing..."
     }
 
+    private fun buildAndPresentLoadingHUD(): HUD {
+        val indicator = builder.build {
+            setTitle(LOADING)
+        }.present()
+        device.assertTextAppears(LOADING)
+        assertTrue(indicator.isVisible)
+        return indicator
+    }
+
+    private fun rotateScreen() {
+        device.setOrientationLeft()
+    }
+
     @Test
     fun `builder_should_build_HUD`() {
         assertNotNull(builder.build())
@@ -71,11 +84,7 @@ class AndroidHUDTests {
 
     @Test
     fun `dismiss_dismisses_indicator`() {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+        val indicator = buildAndPresentLoadingHUD()
         indicator.dismiss()
         device.assertTextDisappears(LOADING)
         assertFalse(indicator.isVisible)
@@ -83,11 +92,7 @@ class AndroidHUDTests {
 
     @Test
     fun `dismissAfter_dismisses_indicator`() {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+        val indicator = buildAndPresentLoadingHUD()
         indicator.dismissAfter(500)
         device.assertTextDisappears(LOADING)
         assertFalse(indicator.isVisible)
@@ -135,14 +140,10 @@ class AndroidHUDTests {
 
     @Test
     fun `hud_should_stay_on_screen_if_it_rotates`() {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+        val indicator = buildAndPresentLoadingHUD()
 
-        // Rotate screen
-        device.setOrientationLeft()
+        rotateScreen()
+
         // HUD should be on screen
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
