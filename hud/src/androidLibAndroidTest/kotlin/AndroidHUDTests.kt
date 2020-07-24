@@ -1,9 +1,13 @@
 package com.splendo.kaluga.hud
 
+import android.content.Context
+import androidx.test.InstrumentationRegistry.getTargetContext
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiSelector
 import androidx.test.uiautomator.Until
 import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
@@ -149,6 +153,34 @@ class AndroidHUDTests {
         assertTrue(indicator.isVisible)
 
         device.setOrientationNatural()
+        indicator.dismiss()
+        // Finally should be gone
+        device.assertTextDisappears(LOADING)
+        assertFalse(indicator.isVisible)
+    }
+
+    @Test
+    fun `hud_should_keep_showing_if_app_gos_to_background_and_returns_back`() {
+        val indicator = buildAndPresentLoadingHUD()
+
+        // val appLabel = getApplicationInfo().loadLabel(getPackageManager()).toString();
+        // .applicationInfo.labelRes
+        //getTargetContext().getString(getTargetContext().getApplicationInfo().labelRes))
+
+        val activity = activityRule.activity
+        // println("activity.applicationInfo.labelRes : ${ activity.applicationInfo.labelRes }")
+        // val appLabel = activity.getString(activity.applicationInfo.labelRes)
+        val appLabel = "com.splendo.kaluga.hud.TestActivity"
+
+        device.pressHome()
+        device.pressRecentApps()
+        device.findObject(UiSelector().text(appLabel)).click()
+
+        // HUD should be on screen
+        device.assertTextAppears(LOADING)
+        assertTrue(indicator.isVisible)
+
+
         indicator.dismiss()
         // Finally should be gone
         device.assertTextDisappears(LOADING)
