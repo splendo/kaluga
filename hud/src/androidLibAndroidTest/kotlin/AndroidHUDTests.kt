@@ -163,15 +163,7 @@ class AndroidHUDTests {
     fun `hud_should_keep_showing_if_app_gos_to_background_and_returns_back`() {
         val indicator = buildAndPresentLoadingHUD()
 
-        // val appLabel = getApplicationInfo().loadLabel(getPackageManager()).toString();
-        // .applicationInfo.labelRes
-        //getTargetContext().getString(getTargetContext().getApplicationInfo().labelRes))
-
-        val activity = activityRule.activity
-        // println("activity.applicationInfo.labelRes : ${ activity.applicationInfo.labelRes }")
-        // val appLabel = activity.getString(activity.applicationInfo.labelRes)
-        val appLabel = "com.splendo.kaluga.hud.TestActivity"
-
+        val appLabel = activityRule.activity.localClassName
         device.pressHome()
         device.pressRecentApps()
         device.findObject(UiSelector().text(appLabel)).click()
