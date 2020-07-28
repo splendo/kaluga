@@ -27,17 +27,23 @@ def pomConfig = {
     }
 }
 
+def bintray_user = project.hasProperty('bintray_user') ? project.property('bintray_user') : System.getenv('BINTRAY_USER')
+def bintray_key = project.hasProperty('bintray_key') ? project.property('bintray_key') : System.getenv('BINTRAY_API_KEY')
+def bintray_dryRun = project.hasProperty('bintray_dry_run') ? project.property('bintray_dry_run').toBoolean() : true
+def bintray_publish = project.hasProperty('bintray_publish') ? project.property('bintray_publish').toBoolean() : false
+
 //
 // See:
 // https://github.com/bintray/gradle-bintray-plugin
 // https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/publications-example/build.gradle
 //
 bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
 
-    dryRun = project.hasProperty('bintrayDryRun') ? project.property('bintrayDryRun').toBoolean() : true
-    publish = project.hasProperty('bintrayPublish') ? project.property('bintrayPublish').toBoolean() : false
+    user = bintray_user
+    key = bintray_key
+    dryRun = bintray_dryRun
+    publish = bintray_publish
+    override = true
 
     pkg {
         repo = 'com.splendo.kaluga'

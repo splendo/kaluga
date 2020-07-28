@@ -7,6 +7,7 @@ buildscript {
         google()
         jcenter()
         gradlePluginPortal()
+        maven(url = "https://dl.bintray.com/kaluga/com.splendo.kaluga")
     }
 
     dependencies {
