@@ -13,7 +13,7 @@ project.afterEvaluate {
         classDirectories.from = fileTree(dir: "${project.buildDir}/classes/kotlin/jvm/")
         sourceDirectories.from = subprojects.sourceSets.commonMain.allSource.srcDirs
         additionalSourceDirs.from = subprojects.sourceSets.commonMain.allSource.srcDirs
-        executionData = files("${project.buildDir}/jacoco/jvmTest.exec")
+        // executionData = files("${project.buildDir}/jacoco/jvmTest.exec")
 
         reports {
             xml.enabled = true

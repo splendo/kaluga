@@ -40,9 +40,7 @@ android {
         exclude 'META-INF/kotlinx-serialization-runtime.kotlin_module'
     }
 
-    dataBinding {
-        enabled = true
-    }
+    buildFeatures.dataBinding = true
 
     lintOptions {
         disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
