@@ -89,17 +89,15 @@ interface HUD {
      * Presents as indicator
      *
      * @param animated Pass `true` to animate the presentation
-     * @param completion The block to execute after the presentation finishes
      */
-    fun present(animated: Boolean = true, completion: () -> Unit = {}): HUD
+    suspend fun present(animated: Boolean = true): HUD
 
     /**
      * Dismisses the indicator
      *
      * @param animated Pass `true` to animate the transition
-     * @param completion The block to execute after the presentation finishes
      */
-    fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
+    suspend fun dismiss(animated: Boolean = true)
 
     /**
      * Dismisses the indicator after [timeMillis] milliseconds
@@ -117,12 +115,11 @@ interface HUD {
      * hides view after block finished.
      * @param block The block to execute with hud visible
      */
-    fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
-        present(animated) {
-            GlobalScope.launch(MainQueueDispatcher) {
-                block()
-                dismiss(animated)
-            }
+    suspend fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
+        present(animated)
+        GlobalScope.launch(MainQueueDispatcher) {
+            block()
+            dismiss(animated)
         }
     }
 }

@@ -61,7 +61,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorShow() {
+    fun indicatorShow() = runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -70,7 +70,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismiss() {
+    fun indicatorDismiss() = runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -82,7 +82,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismissAfter() {
+    fun indicatorDismissAfter() = runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -134,7 +134,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun rotateActivity() {
+    fun rotateActivity() = runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()

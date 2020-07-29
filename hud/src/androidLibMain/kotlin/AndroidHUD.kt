@@ -22,6 +22,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /*
 
@@ -177,13 +179,17 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     override val isVisible get() = loadingDialog.isVisible
 
-    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        loadingDialog.presentCompletionBlock = completion
+    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+        loadingDialog.presentCompletionBlock = {
+            continuation.resume(this)
+        }
         dialogState.postValue(DialogState.Visible)
     }
 
-    override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismissCompletionBlock = completion
+    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
+        loadingDialog.dismissCompletionBlock = {
+            continuation.resume(Unit)
+        }
         dialogState.postValue(DialogState.Gone)
     }
 }

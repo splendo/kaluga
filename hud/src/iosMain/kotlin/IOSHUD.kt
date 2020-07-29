@@ -38,6 +38,8 @@ import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.widthAnchor
 import platform.UIKit.window
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 /*
 
@@ -162,19 +164,23 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
 
     override val isVisible get() = hudViewController.presentingViewController != null
 
-    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
+    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         if (!isVisible) {
-            topViewController.presentViewController(hudViewController, animated, completion)
+            topViewController.presentViewController(hudViewController, animated) {
+                continuation.resume(this)
+            }
         } else {
-            completion()
+            continuation.resume(this)
         }
     }
 
-    override fun dismiss(animated: Boolean, completion: () -> Unit) {
+    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
         if (isVisible) {
-            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated, completion)
+            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated) {
+                continuation.resume(Unit)
+            }
         } else {
-            completion()
+            continuation.resume(Unit)
         }
     }
 }

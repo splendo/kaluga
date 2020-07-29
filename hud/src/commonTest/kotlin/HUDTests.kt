@@ -29,12 +29,12 @@ class HUDTests {
         lateinit var onDismissCalled: () -> Unit
 
         override val isVisible: Boolean = false
-        override fun present(animated: Boolean, completion: () -> Unit): HUD {
+        override suspend fun present(animated: Boolean): HUD {
             onPresentCalled()
             return this
         }
 
-        override fun dismiss(animated: Boolean, completion: () -> Unit) {
+        override suspend fun dismiss(animated: Boolean) {
             onDismissCalled()
         }
 
