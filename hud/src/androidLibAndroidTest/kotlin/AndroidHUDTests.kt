@@ -1,8 +1,5 @@
 package com.splendo.kaluga.hud
 
-import android.content.Context
-import androidx.test.InstrumentationRegistry.getTargetContext
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
@@ -171,7 +168,6 @@ class AndroidHUDTests {
         // HUD should be on screen
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
-
 
         indicator.dismiss()
         // Finally should be gone
