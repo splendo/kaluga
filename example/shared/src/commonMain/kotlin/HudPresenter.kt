@@ -1,7 +1,7 @@
 package com.splendo.kaluga.example.shared
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.hud.HUD
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -29,13 +29,13 @@ class HudPresenter(private val builder: HUD.Builder) {
         // SYSTEM style by default
         // No title by default
 
-        MainScope().launch {
+        MultiplatformMainScope().launch {
             builder.build().present().dismissAfter(3_000)
         }
     }
 
     fun showCustom() {
-        MainScope().launch {
+        MultiplatformMainScope().launch {
             builder.build {
                 setStyle(HUD.Style.CUSTOM)
                 setTitle("This is a custom title")
