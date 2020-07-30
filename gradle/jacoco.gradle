@@ -1,23 +1,72 @@
+apply plugin: 'jacoco'
+
 jacoco {
-    toolVersion = "0.8.4"
     reportsDir = file("$buildDir/reports")
+    toolVersion = "0.8.5"
 }
 
-
-// based on https://medium.com/@aldychris/kotlin-multiplatform-for-ios-and-android-mobile-application-96a753e175f7
 project.afterEvaluate {
-    task "commonTestCoverageReport" (type:JacocoReport, dependsOn: "jvmTest") {
-        group = "Reporting"
-        description = "Generate Jacoco coverage reports on the commonMain module build."
+    // Grab all build types and product flavors
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
 
-        classDirectories.from = fileTree(dir: "${project.buildDir}/classes/kotlin/jvm/")
-        sourceDirectories.from = subprojects.sourceSets.commonMain.allSource.srcDirs
-        additionalSourceDirs.from = subprojects.sourceSets.commonMain.allSource.srcDirs
-        executionData = files("${project.buildDir}/jacoco/jvmTest.exec")
+    // When no product flavors defined, use empty
+    if (!productFlavors) productFlavors.add('')
 
-        reports {
-            xml.enabled = true
-            html.enabled = true
+    productFlavors.each { productFlavorName ->
+        buildTypes.each { buildTypeName ->
+            def sourceName, sourcePath
+            if (!productFlavorName) {
+                sourceName = sourcePath = "${buildTypeName}"
+            } else {
+                sourceName = "${productFlavorName}${buildTypeName.capitalize()}"
+                sourcePath = "${productFlavorName}/${buildTypeName}"
+            }
+            def testTaskName = "test${sourceName.capitalize()}UnitTest"
+
+            // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
+            task "${testTaskName}Coverage" (type:JacocoReport, dependsOn: "$testTaskName") {
+                group = "Reporting"
+                description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
+
+                def excludes = [
+                        '**/R.class',
+                        '**/R$*.class',
+                        '**/Manifest*.*',
+                        'android/**/*.*',
+                        '**/BuildConfig.*',
+                        '**/*$ViewBinder*.*',
+                        '**/*$ViewInjector*.*',
+                        '**/Lambda$*.class',
+                        '**/Lambda.class',
+                        '**/*Lambda.class',
+                        '**/*Lambda*.class'
+                ]
+
+                classDirectories.setFrom(fileTree(
+                        dir: "${project.buildDir}/intermediates/classes/${sourcePath}",
+                        excludes: excludes
+                ) + fileTree(
+                        dir: "${project.buildDir}/tmp/kotlin-classes/${sourceName}",
+                        excludes: excludes
+                ))
+
+                def coverageSourceDirs = [
+                        "src/main/java",
+                        "src/$productFlavorName/java",
+                        "src/$buildTypeName/java",
+                        "src/commonMain/kotlin",
+                        "src/androidLibMain/lotlin"
+                ]
+                additionalSourceDirs.setFrom(files(coverageSourceDirs))
+                sourceDirectories.setFrom(files(coverageSourceDirs))
+                executionData.setFrom(files("${project.buildDir}/jacoco/${testTaskName}.exec"))
+
+                reports {
+                    xml.enabled = true
+                    html.enabled = true
+                }
+            }
         }
     }
 }

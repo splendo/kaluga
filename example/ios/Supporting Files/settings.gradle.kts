@@ -1,6 +1,3 @@
-val android_gradle_plugin_version:String by settings
-val kotlin_version:String by settings
-
 pluginManagement {
 
     repositories {
@@ -11,6 +8,9 @@ pluginManagement {
 
     resolutionStrategy {
         eachPlugin {
+
+            val android_gradle_plugin_version:String by settings
+            val kotlin_version:String by settings
 
             if (requested.id.id == "kotlin-multiplatform") {
                 // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
