@@ -60,7 +60,7 @@ dependencies {
 
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
-        implementation "com.splendo.kaluga:location-androidlib:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:location:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
