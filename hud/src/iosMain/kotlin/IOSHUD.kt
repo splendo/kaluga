@@ -2,6 +2,8 @@
 
 package com.splendo.kaluga.hud
 
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.cinterop.CValue
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
@@ -38,8 +40,6 @@ import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.widthAnchor
 import platform.UIKit.window
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 /*
 
