@@ -17,11 +17,30 @@
 
 package com.splendo.kaluga.beacons
 
+typealias Power = Int
+
 class Eddystone {
 
     class UID(val namespace: String, val instance: String)
 
     companion object {
         const val ServiceUUID = "FEAA"
+        private const val ValidFrameSize = 18
+        private const val UIDFrameType = 0x00
+
+        fun unpackUIDFrame(data: ByteArray): Pair<UID, Power>? {
+            if (data.size == ValidFrameSize && data[0] == UIDFrameType.toByte()) {
+                val txPower = data[1]
+                val namespace = data.slice(2..11)
+                require(namespace.size == 10)
+                val instance = data.slice(12..17)
+                require(instance.size == 6)
+                return Pair(
+                    UID(namespace.toString(), instance.toString()),
+                    txPower.toInt()
+                )
+            }
+            return null
+        }
     }
 }

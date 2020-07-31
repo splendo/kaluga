@@ -24,8 +24,10 @@ actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Int) {
     actual companion object {
         actual fun init(identifier: Identifier, serviceData: ServiceData): Beacon? {
             val data = serviceData[UUID.UUIDWithString(Eddystone.ServiceUUID)]
-            if (data != null && data.size == 18) {
-                return Beacon(Eddystone.UID("ns", "123"), -12)
+            if (data != null) {
+                Eddystone.unpackUIDFrame(data)?.let {
+                   return Beacon(it.first, it.second)
+                }
             }
             return null
         }
