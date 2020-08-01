@@ -23,5 +23,6 @@ internal actual fun transformTag(tag: String?): String? {
 }
 
 internal actual fun transformMessage(message: String): String {
-    return message
+    // Since on iOS Kydra uses NSLog, the messages is formatted. % signs should therefore be escaped
+    return message.replace("%", "%%")
 }

@@ -50,7 +50,7 @@ class PermissionViewController: UIViewController {
                     return
                 }
                 
-                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: NSLocalizedString(message, comment: ""), preferredStyle: .alert)
+                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
                 
