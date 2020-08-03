@@ -51,6 +51,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":bluetooth")
     project(":bluetooth").projectDir = file("../../../bluetooth")
 
+    include(":beacons")
+    project(":beacons").projectDir = file("../../../beacons")
+
     include(":hud")
     project(":hud").projectDir = file("../../../hud")
 

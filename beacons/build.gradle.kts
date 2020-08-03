@@ -13,17 +13,21 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
+dependencies {
+    implementation(project(":base"))
+}
+
 kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":base", ""))
-                implementation(project(":bluetooth", ""))
+                implementation(project(":base"))
+                implementation(project(":bluetooth"))
             }
         }
         commonTest {
             dependencies {
-                implementation(project(":test-utils", ""))
+                implementation(project(":test-utils"))
             }
         }
     }

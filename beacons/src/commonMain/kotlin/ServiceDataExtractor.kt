@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.beacons
 
-import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.UUID
 
-actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Power) {
-    actual companion object {
-        actual fun init(identifier: Identifier, serviceData: ServiceData): Beacon? {
-            TODO("Not yet implemented")
-        }
-    }
+typealias ServiceData = Map<UUID, ByteArray?>
+
+expect class ServiceDataExtractor {
+    fun extract(serviceKey: String, data: ServiceData): ByteArray?
 }

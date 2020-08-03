@@ -20,6 +20,8 @@ package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.beacons.Beacons
+import com.splendo.kaluga.beacons.ServiceDataExtractor
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -70,6 +72,7 @@ val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
+    single { Beacons.create(get(), ServiceDataExtractor()) }
 }
 
 @ExperimentalStdlibApi

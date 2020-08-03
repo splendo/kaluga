@@ -17,20 +17,10 @@
 
 package com.splendo.kaluga.beacons
 
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.Identifier
+import java.util.UUID
 
-actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Power) {
-    actual companion object {
-        @ExperimentalUnsignedTypes
-        actual fun init(identifier: Identifier, serviceData: ServiceData): Beacon? {
-            val data = serviceData[UUID.UUIDWithString(Eddystone.ServiceUUID)]
-            if (data != null) {
-                Eddystone.unpackUIDFrame(data)?.let {
-                    return Beacon(it.first, it.second)
-                }
-            }
-            return null
-        }
+actual class ServiceDataExtractor {
+    actual fun extract(serviceKey: String, data: ServiceData): ByteArray? {
+        return data[UUID.fromString(Eddystone.ServiceUUID)]
     }
 }

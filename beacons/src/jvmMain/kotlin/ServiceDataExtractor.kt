@@ -17,19 +17,8 @@
 
 package com.splendo.kaluga.beacons
 
-import com.splendo.kaluga.state.HotStateRepo
-import kotlinx.coroutines.CoroutineScope
-
-typealias BeaconID = Eddystone.UID
-typealias Power = Int
-
-class Beacon(
-    var beaconID: BeaconID,
-    var txPower: Power,
-    coroutineScope: CoroutineScope
-) : HotStateRepo<BeaconState>(coroutineContext = coroutineScope.coroutineContext) {
-
-    override suspend fun initialValue(): BeaconState {
-        return BeaconState.Found(beaconID)
+actual class ServiceDataExtractor {
+    actual fun extract(serviceKey: String, data: ServiceData): ByteArray? {
+        TODO("Not implemented")
     }
 }

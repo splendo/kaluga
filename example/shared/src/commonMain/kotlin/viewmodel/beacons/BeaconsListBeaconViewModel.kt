@@ -24,7 +24,8 @@ import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.base.utils.toHexString
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.beacons.Beacon
+import com.splendo.kaluga.beacons.BeaconState
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.connect
 import com.splendo.kaluga.bluetooth.device.DeviceState
@@ -33,54 +34,48 @@ import com.splendo.kaluga.bluetooth.device.stringValue
 import com.splendo.kaluga.bluetooth.disconnect
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.state
+import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @ExperimentalStdlibApi
-class BeaconsListBeaconViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
+class BeaconsListBeaconViewModel(private val beacon: Beacon, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
 
     enum class ConnectButtonState {
         Connect,
         Disconnect
     }
 
-    private val device = bluetooth.devices()[identifier]
+    val name = deviceStateObservable { "fix me" }
+    val identifierString = beacon.beaconID.stringValue
+    val rssi = deviceStateObservable { "fix me" }
+    val isTxPowerVisible = deviceStateObservable { false }
+    val txPower = deviceStateObservable { "fix me" }
 
-    val name = deviceStateObservable { it.advertisementData.name ?: "bluetooth_no_name".localized() }
-    val identifierString = identifier.stringValue
-    val rssi = deviceStateObservable { "rssi".localized().format(it.rssi) }
-    val isTxPowerVisible = deviceStateObservable { it.advertisementData.txPowerLevel != Int.MIN_VALUE }
-    val txPower = deviceStateObservable { if (it.advertisementData.txPowerLevel != Int.MIN_VALUE) "txPower".localized().format(it.advertisementData.txPowerLevel) else "" }
-
-    val isConnectButtonVisible = deviceStateObservable { it.deviceInfo.advertisementData.isConnectible }
+    val isConnectButtonVisible = deviceStateObservable { "fix me" }
     val connectButtonState = deviceStateObservable {
-        when (it) {
-            is DeviceState.Disconnected, is DeviceState.Disconnecting -> ConnectButtonState.Connect
-            else -> ConnectButtonState.Disconnect
-        }
+         ConnectButtonState.Connect
     }
     val isMoreButtonVisible = deviceStateObservable { it is DeviceState.Connected }
 
     val status = deviceStateObservable {
         when (it) {
-            is DeviceState.Disconnecting -> "bluetooth_disconnecting"
-            is DeviceState.Disconnected -> "bluetooth_disconnected"
-            is DeviceState.Connected -> "bluetooth_connected"
-            is DeviceState.Connecting -> "bluetooth_connecting"
-            is DeviceState.Reconnecting -> "bluetooth_reconnecting"
+            BeaconState.Found() -> "beacon_found"
+            BeaconState.Lost() -> "beacon_lost"
         }.localized()
     }
-    val serviceUUIDs = deviceStateObservable { parseServiceUUIDs(it.advertisementData.serviceUUIDs) }
-    val serviceData = deviceStateObservable { parseServiceData(it.advertisementData.serviceData) }
-    val manufacturerId = deviceStateObservable { "bluetooth_manufacturer_id".localized().format(it.advertisementData.manufacturerId ?: -1) }
-    val manufacturerData = deviceStateObservable { "bluetooth_manufacturer_data".localized().format(it.advertisementData.manufacturerData?.toHexString() ?: "") }
+    val serviceUUIDs = deviceStateObservable { "fix me" }
+    val serviceData = deviceStateObservable { "fix me" }
+    val manufacturerId = deviceStateObservable { "fix me" }
+    val manufacturerData = deviceStateObservable { "fix me" }
 
     val _isFoldedOut = ConflatedBroadcastChannel(false)
     val isFoldedOut = _isFoldedOut.toObservable(coroutineScope)
 
-    private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): Observable<T> = device.state().map { mapper(it) }.toObservable(coroutineScope)
+    private fun <T> deviceStateObservable(mapper: (BeaconState) -> T): Observable<T> =
+        beacon.state().map { mapper(it) }.toObservable(coroutineScope)
 
     fun toggleFoldOut() {
         coroutineScope.launch {
@@ -89,21 +84,15 @@ class BeaconsListBeaconViewModel(private val identifier: Identifier, bluetooth: 
     }
 
     fun onConnectPressed() {
-        coroutineScope.launch {
-            device.connect()
-        }
     }
 
     fun onDisconnectPressed() {
-        coroutineScope.launch {
-            device.disconnect()
-        }
     }
 
     fun onMorePressed() {
         navigator.navigate(BeaconsListNavigation(BeaconDetailsSpec().toBundle { specRow ->
             when (specRow) {
-                is BeaconDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
+                is BeaconDetailsSpecRow.UUIDRow -> specRow.convertValue(beacon.beaconID.stringValue)
             }
         }))
     }

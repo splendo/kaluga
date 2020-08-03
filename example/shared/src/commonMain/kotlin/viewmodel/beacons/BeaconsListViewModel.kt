@@ -22,7 +22,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.beacons.Beacons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.collect
@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 class BeaconsListNavigation(bundle: NavigationBundle<BeaconDetailsSpecRow<*>>) : NavigationAction<BeaconDetailsSpecRow<*>>(bundle)
 
 @ExperimentalStdlibApi
-class BeaconsListViewModel(private val bluetooth: Bluetooth, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
+class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
 
     private val _isScanning = ConflatedBroadcastChannel<Boolean>()
     val isScanning = _isScanning.toObservable(coroutineScope)
@@ -43,18 +43,29 @@ class BeaconsListViewModel(private val bluetooth: Bluetooth, navigator: Navigato
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        scope.launch { bluetooth.isScanning().collect { _isScanning.send(it) } }
-//        scope.launch { bluetooth.devices().map { devices -> devices.map { BeaconsListBeaconViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
-//            cleanDevices()
-//            _devices.send(devices)
-//        } }
+        println("Well, collect beacons")
+//        scope.launch {
+//            beaconz.isScanning()
+//                .collect { _isScanning.send(it) }
+//        }
+//        scope.launch { beaconz.beacons()
+//            .map { beacons ->
+//                beacons.map { beacon ->
+//                    BeaconsListBeaconViewModel(beacon, navigator)
+//                }
+//            }
+//            .collect { devices ->
+//                 cleanDevices(cleanDevices)
+//                _beacons.send(beacons)
+//            }
+//        }
     }
 
     fun onScanPressed() {
         if (_isScanning.valueOrNull == true) {
-            bluetooth.stopScanning()
+            beaconz.stopScanning()
         } else {
-            bluetooth.startScanning()
+            beaconz.startScanning()
         }
     }
 
