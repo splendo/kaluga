@@ -29,6 +29,8 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.beacons.BeaconMoreActivity
+import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
 import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
@@ -40,6 +42,7 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
@@ -89,6 +92,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
+                    is FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
@@ -149,6 +153,12 @@ val viewModelModule = module {
     viewModel {
         BluetoothListViewModel(get(), Navigator {
             NavigationSpec.Activity(BluetoothMoreActivity::class.java)
+        })
+    }
+
+    viewModel {
+        BeaconsListViewModel(get(), Navigator {
+            NavigationSpec.Activity(BeaconMoreActivity::class.java)
         })
     }
 

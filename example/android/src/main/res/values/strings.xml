@@ -4,6 +4,7 @@
     <string name="feature_alerts">Alerts</string>
     <string name="feature_architecture">Architecture</string>
     <string name="feature_bluetooth">Bluetooth</string>
+    <string name="feature_beacons">Beacons</string>
     <string name="feature_hud">Loading Indicator</string>
     <string name="feature_keyboard">Keyboard</string>
     <string name="feature_location">Location</string>
@@ -57,7 +58,7 @@
     <string name="bluetooth_connected">Connected</string>
     <string name="bluetooth_connecting">Connecting</string>
     <string name="bluetooth_disconnected">Disconnected</string>
-    <string name="bluetooth_disconneting">Disconnecting</string>
+    <string name="bluetooth_disconnecting">Disconnecting</string>
     <string name="bluetooth_reconnecting">Reconnecting</string>
     <string name="bluetooth_discovering">Discovering</string>
 

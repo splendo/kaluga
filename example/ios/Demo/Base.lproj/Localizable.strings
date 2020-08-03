@@ -3,6 +3,7 @@
 "feature_alerts" = "Alerts";
 "feature_architecture" = "Architecture";
 "feature_bluetooth" = "Bluetooth";
+"feature_beacons" = "Beacons";
 "feature_hud" = "Loading Indicator";
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";

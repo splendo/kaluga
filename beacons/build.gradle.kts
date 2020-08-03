@@ -25,7 +25,6 @@ kotlin {
             dependencies {
                 implementation(project(":test-utils", ""))
             }
-            // kotlin.srcDirs("${project(":bluetooth").projectDir}/src/commonTest/kotlin/shared")
         }
     }
 }

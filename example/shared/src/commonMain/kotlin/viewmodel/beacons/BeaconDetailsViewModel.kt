@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.bluetooth
+package com.splendo.kaluga.example.shared.viewmodel.beacons
 
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.rssi
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.bluetooth.updateRssi
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothServiceViewModel
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -42,14 +43,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class DeviceDetailsSpec : NavigationBundleSpec<DeviceDetailsSpecRow<*>>(setOf(DeviceDetailsSpecRow.UUIDRow))
+class BeaconDetailsSpec : NavigationBundleSpec<BeaconDetailsSpecRow<*>>(setOf(BeaconDetailsSpecRow.UUIDRow))
 
-sealed class DeviceDetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
-    object UUIDRow : DeviceDetailsSpecRow<String>(NavigationBundleSpecType.StringType)
+sealed class BeaconDetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
+    object UUIDRow : BeaconDetailsSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
 @ExperimentalStdlibApi
-class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private val identifier: Identifier) : BaseViewModel() {
+class BeaconDetailsViewModel(private val bluetooth: Bluetooth, private val identifier: Identifier) : BaseViewModel() {
 
     companion object {
         private const val rssi_frequency = 1000L

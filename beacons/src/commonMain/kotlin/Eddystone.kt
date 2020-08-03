@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.beacons
 
-@ExperimentalUnsignedTypes
 private fun List<Byte>.toHexString(initial: String = "") = fold(initial) { acc, byte -> acc + byte.toUByte().toString(16) }
 
 class Eddystone {
@@ -29,7 +28,6 @@ class Eddystone {
         private const val ValidFrameSize = 18
         private const val UIDFrameType = 0x00
 
-        @ExperimentalUnsignedTypes
         fun unpackUIDFrame(data: ByteArray): Pair<UID, Power>? {
             if (data.size == ValidFrameSize && data[0] == UIDFrameType.toByte()) {
                 val txPower = data[1]

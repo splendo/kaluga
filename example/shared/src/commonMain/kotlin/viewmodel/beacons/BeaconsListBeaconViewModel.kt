@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.example.shared.viewmodel.bluetooth
+package com.splendo.kaluga.example.shared.viewmodel.beacons
 
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
@@ -39,7 +39,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @ExperimentalStdlibApi
-class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
+class BeaconsListBeaconViewModel(private val identifier: Identifier, bluetooth: Bluetooth, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
 
     enum class ConnectButtonState {
         Connect,
@@ -101,9 +101,9 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     }
 
     fun onMorePressed() {
-        navigator.navigate(BluetoothListNavigation(DeviceDetailsSpec().toBundle { specRow ->
+        navigator.navigate(BeaconsListNavigation(BeaconDetailsSpec().toBundle { specRow ->
             when (specRow) {
-                is DeviceDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
+                is BeaconDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
             }
         }))
     }

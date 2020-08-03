@@ -19,8 +19,10 @@ package com.splendo.kaluga.example.shared.viewmodel.featureList
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.resources.localized
 
 sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
@@ -28,6 +30,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Alerts : FeatureListNavigationAction()
     object Architecture : FeatureListNavigationAction()
     object Bluetooth : FeatureListNavigationAction()
+    object Beacons : FeatureListNavigationAction()
     object Keyboard : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
     object Location : FeatureListNavigationAction()
@@ -38,6 +41,7 @@ sealed class Feature(val title: String) {
     object Alerts : Feature("feature_alerts".localized())
     object Architecture : Feature("feature_architecture".localized())
     object Bluetooth : Feature("feature_bluetooth".localized())
+    object Beacons: Feature("feature_beacons".localized())
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
     object Location : Feature("feature_location".localized())
@@ -46,10 +50,11 @@ sealed class Feature(val title: String) {
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
-    val feature = observableOf(listOf(
+    val feature: Observable<List<Feature>> = observableOf(listOf(
         Feature.Alerts,
         Feature.Architecture,
         Feature.Bluetooth,
+        Feature.Beacons,
         Feature.Keyboard,
         Feature.LoadingIndicator,
         Feature.Location,
@@ -61,6 +66,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             is Feature.Alerts -> FeatureListNavigationAction.Alerts
             is Feature.Architecture -> FeatureListNavigationAction.Architecture
             is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
+            is Feature.Beacons -> FeatureListNavigationAction.Beacons
             is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
             is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
             is Feature.Location -> FeatureListNavigationAction.Location

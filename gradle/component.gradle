@@ -10,7 +10,10 @@ kotlin {
         configure([]) {
             tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+                freeCompilerArgs += [
+                        '-Xopt-in=kotlin.ExperimentalUnsignedTypes',
+                        '-XXLanguage:+InlineClasses'
+                ]
             }
         }
     }
@@ -19,7 +22,10 @@ kotlin {
         configure([]) {
             tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+                freeCompilerArgs += [
+                        '-Xopt-in=kotlin.ExperimentalUnsignedTypes',
+                        '-XXLanguage:+InlineClasses'
+                ]
             }
         }
     }

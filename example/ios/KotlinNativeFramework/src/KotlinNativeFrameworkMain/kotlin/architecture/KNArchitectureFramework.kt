@@ -103,6 +103,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Alerts -> "showAlerts"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
+                        is FeatureListNavigationAction.Beacons -> "showBeacons"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Location -> "showLocation"
