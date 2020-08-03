@@ -20,8 +20,9 @@ package com.splendo.kaluga.beacons
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Identifier
 
-actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Int) {
+actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Power) {
     actual companion object {
+        @ExperimentalUnsignedTypes
         actual fun init(identifier: Identifier, serviceData: ServiceData): Beacon? {
             val data = serviceData[UUID.UUIDWithString(Eddystone.ServiceUUID)]
             if (data != null) {

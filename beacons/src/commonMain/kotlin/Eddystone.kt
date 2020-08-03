@@ -17,7 +17,10 @@
 
 package com.splendo.kaluga.beacons
 
-typealias Power = Int
+
+
+@ExperimentalUnsignedTypes
+private fun List<Byte>.toHexString(initial: String = "") =  fold(initial) { acc, byte -> acc + byte.toUByte().toString(16) }
 
 class Eddystone {
 
@@ -28,6 +31,7 @@ class Eddystone {
         private const val ValidFrameSize = 18
         private const val UIDFrameType = 0x00
 
+        @ExperimentalUnsignedTypes
         fun unpackUIDFrame(data: ByteArray): Pair<UID, Power>? {
             if (data.size == ValidFrameSize && data[0] == UIDFrameType.toByte()) {
                 val txPower = data[1]
@@ -36,7 +40,7 @@ class Eddystone {
                 val instance = data.slice(12..17)
                 require(instance.size == 6)
                 return Pair(
-                    UID(namespace.toString(), instance.toString()),
+                    UID(namespace.toHexString(), instance.toHexString()),
                     txPower.toInt()
                 )
             }

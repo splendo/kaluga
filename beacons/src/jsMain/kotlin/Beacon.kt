@@ -19,7 +19,7 @@ package com.splendo.kaluga.beacons
 
 import com.splendo.kaluga.bluetooth.device.Identifier
 
-actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Int)  {
+actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Power)  {
     actual companion object {
         actual fun init(identifier: Identifier, serviceData: ServiceData): Beacon? {
             TODO("Not yet implemented")

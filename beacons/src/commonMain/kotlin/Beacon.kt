@@ -22,11 +22,12 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 
 typealias ServiceData = Map<UUID, ByteArray?>
 typealias BeaconID = Eddystone.UID
+typealias Power = Int
 
 expect class Beacon {
 
     var beaconID: BeaconID
-    var txPower: Int
+    var txPower: Power
 
     companion object {
         fun init(identifier: Identifier, serviceData: ServiceData): Beacon?
