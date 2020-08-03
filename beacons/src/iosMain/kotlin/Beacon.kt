@@ -27,7 +27,7 @@ actual class Beacon(actual var beaconID: BeaconID, actual var txPower: Power) {
             val data = serviceData[UUID.UUIDWithString(Eddystone.ServiceUUID)]
             if (data != null) {
                 Eddystone.unpackUIDFrame(data)?.let {
-                   return Beacon(it.first, it.second)
+                    return Beacon(it.first, it.second)
                 }
             }
             return null

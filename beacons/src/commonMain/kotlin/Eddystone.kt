@@ -17,10 +17,8 @@
 
 package com.splendo.kaluga.beacons
 
-
-
 @ExperimentalUnsignedTypes
-private fun List<Byte>.toHexString(initial: String = "") =  fold(initial) { acc, byte -> acc + byte.toUByte().toString(16) }
+private fun List<Byte>.toHexString(initial: String = "") = fold(initial) { acc, byte -> acc + byte.toUByte().toString(16) }
 
 class Eddystone {
 
