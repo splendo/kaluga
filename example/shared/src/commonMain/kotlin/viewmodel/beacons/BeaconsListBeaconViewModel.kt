@@ -48,34 +48,8 @@ class BeaconsListBeaconViewModel(private val beacon: Beacon, navigator: Navigato
         Disconnect
     }
 
-    val name = deviceStateObservable { "fix me" }
-    val identifierString = beacon.beaconID.stringValue
-    val rssi = deviceStateObservable { "fix me" }
-    val isTxPowerVisible = deviceStateObservable { false }
-    val txPower = deviceStateObservable { "fix me" }
-
-    val isConnectButtonVisible = deviceStateObservable { "fix me" }
-    val connectButtonState = deviceStateObservable {
-         ConnectButtonState.Connect
-    }
-    val isMoreButtonVisible = deviceStateObservable { it is DeviceState.Connected }
-
-    val status = deviceStateObservable {
-        when (it) {
-            BeaconState.Found() -> "beacon_found"
-            BeaconState.Lost() -> "beacon_lost"
-        }.localized()
-    }
-    val serviceUUIDs = deviceStateObservable { "fix me" }
-    val serviceData = deviceStateObservable { "fix me" }
-    val manufacturerId = deviceStateObservable { "fix me" }
-    val manufacturerData = deviceStateObservable { "fix me" }
-
     val _isFoldedOut = ConflatedBroadcastChannel(false)
     val isFoldedOut = _isFoldedOut.toObservable(coroutineScope)
-
-    private fun <T> deviceStateObservable(mapper: (BeaconState) -> T): Observable<T> =
-        beacon.state().map { mapper(it) }.toObservable(coroutineScope)
 
     fun toggleFoldOut() {
         coroutineScope.launch {
@@ -92,7 +66,7 @@ class BeaconsListBeaconViewModel(private val beacon: Beacon, navigator: Navigato
     fun onMorePressed() {
         navigator.navigate(BeaconsListNavigation(BeaconDetailsSpec().toBundle { specRow ->
             when (specRow) {
-                is BeaconDetailsSpecRow.UUIDRow -> specRow.convertValue(beacon.beaconID.stringValue)
+                is BeaconDetailsSpecRow.UUIDRow -> specRow.convertValue("fix me")
             }
         }))
     }

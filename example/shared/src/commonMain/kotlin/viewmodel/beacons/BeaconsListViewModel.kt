@@ -63,9 +63,9 @@ class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<Be
 
     fun onScanPressed() {
         if (_isScanning.valueOrNull == true) {
-            beaconz.stopScanning()
+            beaconz.stopMonitoring()
         } else {
-            beaconz.startScanning()
+            beaconz.startMonitoring()
         }
     }
 
