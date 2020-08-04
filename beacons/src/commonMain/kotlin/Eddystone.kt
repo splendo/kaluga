@@ -28,7 +28,8 @@ class Eddystone {
     class UID(val namespace: String, val instance: String)
 
     companion object {
-        const val ServiceUUID = "FEAA"
+        const val ServiceUUIDShort = "FEAA"
+        const val ServiceUUIDLong = "0000FEAA-0000-1000-8000-00805F9B34FB"
         private const val ValidFrameSize = 18
         private const val UIDFrameType = 0x00
 

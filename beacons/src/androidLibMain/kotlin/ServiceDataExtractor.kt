@@ -20,7 +20,7 @@ package com.splendo.kaluga.beacons
 import java.util.UUID
 
 actual class ServiceDataExtractor {
-    actual fun extract(serviceKey: String, data: ServiceData): ByteArray? {
-        return data[UUID.fromString(Eddystone.ServiceUUID)]
+    actual fun extract(data: ServiceData): ByteArray? {
+        return data[UUID.fromString(Eddystone.ServiceUUIDLong)]
     }
 }

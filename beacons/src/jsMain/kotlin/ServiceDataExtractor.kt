@@ -18,7 +18,7 @@
 package com.splendo.kaluga.beacons
 
 actual class ServiceDataExtractor {
-    actual fun extract(serviceKey: String, data: ServiceData): ByteArray? {
+    actual fun extract(data: ServiceData): ByteArray? {
         TODO("Not implemented")
     }
 }

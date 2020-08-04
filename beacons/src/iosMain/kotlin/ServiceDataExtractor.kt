@@ -20,7 +20,7 @@ package com.splendo.kaluga.beacons
 import com.splendo.kaluga.bluetooth.UUID
 
 actual class ServiceDataExtractor {
-    actual fun extract(serviceKey: String, data: ServiceData): ByteArray? {
-        return data[UUID.UUIDWithString(Eddystone.ServiceUUID)]
+    actual fun extract(data: ServiceData): ByteArray? {
+        return data[UUID.UUIDWithString(Eddystone.ServiceUUIDShort)]
     }
 }

@@ -22,5 +22,5 @@ import com.splendo.kaluga.bluetooth.UUID
 typealias ServiceData = Map<UUID, ByteArray?>
 
 expect class ServiceDataExtractor {
-    fun extract(serviceKey: String, data: ServiceData): ByteArray?
+    fun extract(data: ServiceData): ByteArray?
 }

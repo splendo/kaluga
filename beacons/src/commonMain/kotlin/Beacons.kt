@@ -18,11 +18,14 @@
 package com.splendo.kaluga.beacons
 
 import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.get
+import com.splendo.kaluga.bluetooth.state
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class Beacons internal constructor(
@@ -44,8 +47,8 @@ class Beacons internal constructor(
     }
 
     @ExperimentalCoroutinesApi
-    fun beacons(): Flow<List<Beacon>> = bluetooth.devices().map { list ->
-        list.mapNotNull { createBeaconFrom(it) }
+    fun beacons(): Flow<List<Beacon>> = bluetooth.devices().map { devices ->
+        devices.mapNotNull { createBeaconWith(it.identifier) }
     }
 
     fun startMonitoring() = bluetooth.startScanning()
@@ -54,8 +57,10 @@ class Beacons internal constructor(
 
     fun isMonitoring(): Flow<Boolean> = bluetooth.isScanning()
 
-    private fun createBeaconFrom(device: Device): Beacon? {
-        val data = extractor.extract(Eddystone.ServiceUUID, device.peekState().advertisementData.serviceData)
+    private suspend fun createBeaconWith(identifier: Identifier): Beacon? {
+        val device = bluetooth.devices()[identifier]
+        val serviceData = device.state().map { it.advertisementData.serviceData }.first()
+        val data = extractor.extract(serviceData)
         if (data != null) {
             return Eddystone.unpackUIDFrame(data, coroutineScope)
         }

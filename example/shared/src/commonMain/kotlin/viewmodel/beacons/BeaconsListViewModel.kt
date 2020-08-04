@@ -43,22 +43,23 @@ class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<Be
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        println("Well, collect beacons")
-//        scope.launch {
-//            beaconz.isScanning()
-//                .collect { _isScanning.send(it) }
-//        }
-//        scope.launch { beaconz.beacons()
-//            .map { beacons ->
-//                beacons.map { beacon ->
-//                    BeaconsListBeaconViewModel(beacon, navigator)
-//                }
-//            }
-//            .collect { devices ->
-//                 cleanDevices(cleanDevices)
-//                _beacons.send(beacons)
-//            }
-//        }
+        scope.launch {
+            beaconz
+                .isMonitoring()
+                .collect { _isScanning.send(it) }
+        }
+
+        scope.launch { beaconz.beacons()
+            .map { beacons ->
+                beacons.map { beacon ->
+                    BeaconsListBeaconViewModel(beacon, navigator)
+                }
+            }
+            .collect { beacons ->
+                 cleanDevices()
+                _beacons.send(beacons)
+            }
+        }
     }
 
     fun onScanPressed() {
