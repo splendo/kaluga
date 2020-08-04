@@ -1,7 +1,6 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    reportsDir = file("$buildDir/reports")
     toolVersion = "0.8.5"
 }
 
@@ -22,10 +21,10 @@ project.afterEvaluate {
                 sourceName = "${productFlavorName}${buildTypeName.capitalize()}"
                 sourcePath = "${productFlavorName}/${buildTypeName}"
             }
-            def testTaskName = "test${sourceName.capitalize()}UnitTest"
+            def testTaskName = "test${sourceName.capitalize()}"
 
             // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
-            task "${testTaskName}Coverage" (type:JacocoReport, dependsOn: "$testTaskName") {
+            task "${testTaskName}Coverage" (type:JacocoReport) {
                 group = "Reporting"
                 description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
 
@@ -56,11 +55,40 @@ project.afterEvaluate {
                         "src/$productFlavorName/java",
                         "src/$buildTypeName/java",
                         "src/commonMain/kotlin",
-                        "src/androidLibMain/lotlin"
+                        "src/androidLibMain/kotlin"
                 ]
                 additionalSourceDirs.setFrom(files(coverageSourceDirs))
                 sourceDirectories.setFrom(files(coverageSourceDirs))
-                executionData.setFrom(files("${project.buildDir}/jacoco/${testTaskName}.exec"))
+
+
+
+                List<String> coverageFilePaths = []
+
+                String bitRiseCoveragePath = "/$System.env.VDTESTING_DOWNLOADED_FILES_DIR/coverage.ec"
+                String unitTestCoveragePath = "${project.buildDir}/jacoco/${testTaskName}UnitTest.exec"
+                String connectedTestCoverageDirectoryPath = "${project.buildDir}/outputs/code_coverage/${buildTypeName}AndroidTest/connected"
+
+                def bitRiseCoverageFile = file(bitRiseCoveragePath)
+                def unitTestCoverageFile = file(unitTestCoveragePath)
+                def connectedTestCoverageDirectoryFile = file(connectedTestCoverageDirectoryPath)
+
+                logger.lifecycle(
+                        "Code coverage files found: connectedTests[$connectedTestCoverageDirectoryPath](could be false if empty): ${connectedTestCoverageDirectoryFile.exists() && connectedTestCoverageDirectoryFile.list().length > 0}, " +
+                        "bitRise[$bitRiseCoveragePath](may contain null if env variable not set): ${bitRiseCoverageFile.exists()}, " +
+                        "unitTest[$unitTestCoveragePath]: ${unitTestCoverageFile.exists()}"
+                )
+
+                if (bitRiseCoverageFile.exists())
+                    coverageFilePaths.add(bitRiseCoveragePath)
+                if (unitTestCoverageFile.exists())
+                    coverageFilePaths.add(unitTestCoveragePath)
+                if (connectedTestCoverageDirectoryFile.exists())
+                    connectedTestCoverageDirectoryFile.list().each {
+                        coverageFilePaths.add("$connectedTestCoverageDirectoryPath/$it")
+                    }
+
+                if (!coverageFilePaths.isEmpty())
+                    executionData.setFrom(files(coverageFilePaths))
 
                 reports {
                     xml.enabled = true
