@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.beacons
 
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.beacons.Beacons
+import com.splendo.kaluga.beacons.BeaconService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.collect
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 @ExperimentalStdlibApi
-class BeaconsListViewModel(private val beaconz: Beacons) : BaseViewModel() {
+class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel() {
 
     private val _isScanning = ConflatedBroadcastChannel<Boolean>()
     val isScanning = _isScanning.toObservable(coroutineScope)
@@ -39,15 +39,15 @@ class BeaconsListViewModel(private val beaconz: Beacons) : BaseViewModel() {
         super.onResume(scope)
 
         scope.launch {
-            beaconz
+            service
                 .isMonitoring()
                 .collect { _isScanning.send(it) }
         }
 
-        scope.launch { beaconz.beacons()
+        scope.launch { service.beacons()
             .map { beacons ->
                 beacons.map { beacon ->
-                    BeaconsListBeaconViewModel(beacon.identifier, beaconz)
+                    BeaconsListBeaconViewModel(beacon.identifier, service)
                 }
             }
             .collect { beacons ->
@@ -59,9 +59,9 @@ class BeaconsListViewModel(private val beaconz: Beacons) : BaseViewModel() {
 
     fun onScanPressed() {
         if (_isScanning.valueOrNull == true) {
-            beaconz.stopMonitoring()
+            service.stopMonitoring()
         } else {
-            beaconz.startMonitoring()
+            service.startMonitoring()
         }
     }
 

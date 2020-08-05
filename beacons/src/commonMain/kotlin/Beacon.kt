@@ -20,9 +20,6 @@ package com.splendo.kaluga.beacons
 import com.splendo.kaluga.state.HotStateRepo
 import kotlinx.coroutines.CoroutineScope
 
-typealias BeaconID = Eddystone.UID
-typealias Power = Int
-
 class Beacon(
     private val beaconInfo: BeaconInfo,
     coroutineScope: CoroutineScope

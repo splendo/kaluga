@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
-class Beacons internal constructor(
+class BeaconService internal constructor(
     private val bluetooth: Bluetooth,
     private val extractor: ServiceDataExtractor,
     private val coroutineScope: CoroutineScope
@@ -43,8 +43,8 @@ class Beacons internal constructor(
             bluetooth: Bluetooth,
             extractor: ServiceDataExtractor,
             coroutineScope: CoroutineScope = MainScope()
-        ): Beacons {
-            return Beacons(bluetooth, extractor, coroutineScope)
+        ): BeaconService {
+            return BeaconService(bluetooth, extractor, coroutineScope)
         }
     }
 

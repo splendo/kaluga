@@ -22,7 +22,7 @@ import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.beacons.BeaconState
-import com.splendo.kaluga.beacons.Beacons
+import com.splendo.kaluga.beacons.BeaconService
 import com.splendo.kaluga.beacons.get
 import com.splendo.kaluga.beacons.state
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -30,9 +30,9 @@ import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.flow.map
 
 @ExperimentalStdlibApi
-class BeaconsListBeaconViewModel(identifier: Identifier, beacons: Beacons) : BaseViewModel() {
+class BeaconsListBeaconViewModel(identifier: Identifier, service: BeaconService) : BaseViewModel() {
 
-    private val beacon = beacons.beacons()[identifier]
+    private val beacon = service.beacons()[identifier]
 
     private fun <T> beaconStateObservable(mapper: (BeaconState) -> T): Observable<T> =
         beacon.state().map { mapper(it) }.toObservable(coroutineScope)

@@ -17,12 +17,16 @@
 
 package com.splendo.kaluga.example.ios.beacons
 
-import com.splendo.kaluga.beacons.Beacons
+import com.splendo.kaluga.beacons.BeaconService
 import com.splendo.kaluga.beacons.ServiceDataExtractor
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
 import kotlinx.coroutines.MainScope
 
 class KNBeaconsFramework {
     val mainScope = MainScope()
-    val beacons = Beacons.create(BluetoothBuilder().create(coroutineScope = mainScope), ServiceDataExtractor(), mainScope)
+    val service = BeaconService
+        .create(
+            BluetoothBuilder().create(coroutineScope = mainScope),
+            ServiceDataExtractor(), mainScope
+        )
 }

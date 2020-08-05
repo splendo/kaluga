@@ -21,7 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-class BeaconsTest {
+class BeaconServiceTest {
 
     companion object {
 

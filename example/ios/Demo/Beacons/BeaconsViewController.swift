@@ -11,7 +11,7 @@ import KotlinNativeFramework
 
 class BeaconsViewController: UICollectionViewController {
 
-    lazy var viewModel = KNArchitectureFramework().createBeaconsListViewModel(parent: self, beacons: KNBeaconsFramework().beacons)
+    lazy var viewModel = KNArchitectureFramework().createBeaconsListViewModel(parent: self, service: KNBeaconsFramework().service)
 
     private var beacons: [BeaconsListBeaconViewModel] = []
     private var lifecycleManager: LifecycleManager!

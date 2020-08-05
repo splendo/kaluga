@@ -24,7 +24,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
-import com.splendo.kaluga.beacons.Beacons
+import com.splendo.kaluga.beacons.BeaconService
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -142,8 +142,8 @@ class KNArchitectureFramework {
         })
     }
 
-    fun createBeaconsListViewModel(parent: UIViewController, beacons: Beacons): BeaconsListViewModel {
-        return BeaconsListViewModel(beacons)
+    fun createBeaconsListViewModel(parent: UIViewController, service: BeaconService): BeaconsListViewModel {
+        return BeaconsListViewModel(service)
     }
 
     fun createBluetoothDeviceDetailsViewModel(identifier: Identifier, bluetooth: Bluetooth): BluetoothDeviceDetailViewModel {
