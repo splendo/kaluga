@@ -11,7 +11,11 @@ import KotlinNativeFramework
 
 class BeaconsViewController: UICollectionViewController {
 
-    lazy var viewModel = KNArchitectureFramework().createBeaconsListViewModel(parent: self, service: KNBeaconsFramework().service)
+    lazy var viewModel = KNArchitectureFramework()
+        .createBeaconsListViewModel(
+            parent: self,
+            service: KNBeaconsFramework().service
+    )
 
     private var beacons: [BeaconsListBeaconViewModel] = []
     private var lifecycleManager: LifecycleManager!
@@ -65,25 +69,25 @@ class BeaconsViewController: UICollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let bluetoothCell = collectionView.dequeueReusableCell(withReuseIdentifier: BluetoothCell.Companion.identifier, for: indexPath) as! BluetoothCell
-        // bluetoothCell.device = devices[indexPath.row]
-        return bluetoothCell
+        let beaconCell = collectionView.dequeueReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) as! BeaconsViewCell
+        beaconCell.viewModel = beacons[indexPath.row]
+        return beaconCell
     }
 
     override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let btCell = cell as? BluetoothCell else {
+        guard let cell = cell as? BeaconsViewCell else {
             return
         }
 
-        btCell.startMonitoring()
+        cell.startMonitoring()
     }
 
     override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let btCell = cell as? BluetoothCell else {
+        guard let cell = cell as? BeaconsViewCell else {
             return
         }
 
-        btCell.stopMonitoring()
+        cell.stopMonitoring()
     }
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
