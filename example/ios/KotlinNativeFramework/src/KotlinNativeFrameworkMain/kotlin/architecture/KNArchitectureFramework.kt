@@ -17,8 +17,6 @@
 
 package architecture
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.Subject
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
@@ -26,14 +24,15 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
+import com.splendo.kaluga.beacons.Beacons
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.example.ios.bluetooth.KNBluetoothFramework
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow
@@ -54,7 +53,6 @@ import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import platform.Foundation.NSURL
 import platform.Foundation.NSUUID
@@ -142,6 +140,10 @@ class KNArchitectureFramework {
                 createDeviceDetailsViewController(identifier, bluetooth)
             })
         })
+    }
+
+    fun createBeaconsListViewModel(parent: UIViewController, beacons: Beacons): BeaconsListViewModel {
+        return BeaconsListViewModel(beacons)
     }
 
     fun createBluetoothDeviceDetailsViewModel(identifier: Identifier, bluetooth: Bluetooth): BluetoothDeviceDetailViewModel {

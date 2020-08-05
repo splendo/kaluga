@@ -21,6 +21,7 @@
 		20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D42469B25B00C9A63F /* InfoViewController.swift */; };
 		20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */; };
 		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
+		4B02605224DAC85E0022815B /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02605124DAC85E0022815B /* BeaconsViewController.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
@@ -88,6 +89,7 @@
 		20C7D1D42469B25B00C9A63F /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		20C7D1D7246A93A600C9A63F /* ArchitectureInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureInputViewController.swift; sourceTree = "<group>"; };
 		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
+		4B02605124DAC85E0022815B /* BeaconsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -203,6 +205,14 @@
 			path = Architecture;
 			sourceTree = "<group>";
 		};
+		4B02605024DAC8420022815B /* Beacons */ = {
+			isa = PBXGroup;
+			children = (
+				4B02605124DAC85E0022815B /* BeaconsViewController.swift */,
+			);
+			path = Beacons;
+			sourceTree = "<group>";
+		};
 		4B02E502236B2206003F0B36 /* LoadingIndicator */ = {
 			isa = PBXGroup;
 			children = (
@@ -293,6 +303,7 @@
 				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				20C7D1D6246A938A00C9A63F /* Architecture */,
 				74C9C443CC304CB387AB324D /* Assets.xcassets */,
+				4B02605024DAC8420022815B /* Beacons */,
 				209471E224C07E61001426CD /* Bluetooth */,
 				20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */,
 				20C7D1D02469A3C100C9A63F /* FeaturesList */,
@@ -464,7 +475,7 @@
 				ORGANIZATIONNAME = Splendo;
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
-						DevelopmentTeam = 2732HQPVJP;
+						DevelopmentTeam = Q4HEW2JVA9;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -546,6 +557,7 @@
 			files = (
 				205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
+				4B02605224DAC85E0022815B /* BeaconsViewController.swift in Sources */,
 				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
@@ -736,7 +748,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = Q4HEW2JVA9;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -855,7 +867,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = Q4HEW2JVA9;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

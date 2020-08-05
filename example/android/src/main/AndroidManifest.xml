@@ -61,8 +61,6 @@
             android:label="@string/feature_bluetooth"/>
         <activity android:name=".beacons.BeaconsActivity"
                   android:label="@string/feature_beacons"/>
-        <activity android:name=".beacons.BeaconMoreActivity"
-                  android:label="@string/feature_beacons"/>
 
         <service android:name=".location.LocationBackgroundService"/>
 

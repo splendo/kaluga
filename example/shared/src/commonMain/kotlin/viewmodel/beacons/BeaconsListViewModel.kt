@@ -17,11 +17,8 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.beacons
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toObservable
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.beacons.Beacons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -29,10 +26,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class BeaconsListNavigation(bundle: NavigationBundle<BeaconDetailsSpecRow<*>>) : NavigationAction<BeaconDetailsSpecRow<*>>(bundle)
-
 @ExperimentalStdlibApi
-class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
+class BeaconsListViewModel(private val beaconz: Beacons) : BaseViewModel() {
 
     private val _isScanning = ConflatedBroadcastChannel<Boolean>()
     val isScanning = _isScanning.toObservable(coroutineScope)
@@ -52,7 +47,7 @@ class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<Be
         scope.launch { beaconz.beacons()
             .map { beacons ->
                 beacons.map { beacon ->
-                    BeaconsListBeaconViewModel(beacon.identifier, beaconz, navigator)
+                    BeaconsListBeaconViewModel(beacon.identifier, beaconz)
                 }
             }
             .collect { beacons ->

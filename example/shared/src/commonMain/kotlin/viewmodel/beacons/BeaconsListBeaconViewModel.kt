@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.beacons
 
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.toObservable
-import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.beacons.BeaconState
 import com.splendo.kaluga.beacons.Beacons
@@ -31,7 +30,7 @@ import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.flow.map
 
 @ExperimentalStdlibApi
-class BeaconsListBeaconViewModel(identifier: Identifier, beacons: Beacons, navigator: Navigator<BeaconsListNavigation>) : NavigatingViewModel<BeaconsListNavigation>(navigator) {
+class BeaconsListBeaconViewModel(identifier: Identifier, beacons: Beacons) : BaseViewModel() {
 
     private val beacon = beacons.beacons()[identifier]
 

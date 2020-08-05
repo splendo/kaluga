@@ -31,7 +31,6 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
-import com.splendo.kaluga.example.beacons.BeaconMoreActivity
 import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
@@ -160,9 +159,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        BeaconsListViewModel(get(), Navigator {
-            NavigationSpec.Activity(BeaconMoreActivity::class.java)
-        })
+        BeaconsListViewModel(get())
     }
 
     viewModel { (identifier: Identifier) ->
