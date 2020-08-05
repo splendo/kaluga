@@ -61,11 +61,9 @@ project.afterEvaluate {
                 additionalSourceDirs.setFrom(files(coverageSourceDirs))
                 sourceDirectories.setFrom(files(coverageSourceDirs))
 
-
-
                 List<String> coverageFilePaths = []
 
-                String bitRiseCoveragePath = "/$System.env.VDTESTING_DOWNLOADED_FILES_DIR/coverage.ec"
+                String bitRiseCoveragePath = "$System.env.VDTESTING_DOWNLOADED_FILES_DIR/NexusLowRes-29-en-portrait_artifacts_coverage.ec"
                 String unitTestCoveragePath = "${project.buildDir}/jacoco/${testTaskName}UnitTest.exec"
                 String rootCoveragePath = "${project.buildDir}/../jacoco.exec"
                 String connectedTestCoverageDirectoryPath = "${project.buildDir}/outputs/code_coverage/${buildTypeName}AndroidTest/connected"
