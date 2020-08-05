@@ -28,7 +28,6 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
-import com.splendo.kaluga.example.utils.stringByKey
 import com.splendo.kaluga.permissions.Permission
 import kotlinx.android.synthetic.main.activity_permissions_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,7 +38,7 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
     override val viewModel: PermissionViewModel by viewModel {
         val permissionNavSpec = PermissionNavigationBundleSpec()
         intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
-            val permission = when(bundle.get(PermissionNavigationBundleSpecRow)) {
+            val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
                 PermissionView.Bluetooth -> Permission.Bluetooth
                 PermissionView.Calendar -> Permission.Calendar(allowWrite = true)
                 PermissionView.Camera -> Permission.Camera
@@ -58,11 +57,11 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
 
         val permissionNavSpec = PermissionNavigationBundleSpec()
         intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
-            supportActionBar?.title = stringByKey(bundle.get(PermissionNavigationBundleSpecRow).title)
+            supportActionBar?.title = bundle.get(PermissionNavigationBundleSpecRow).title
         }
 
         viewModel.permissionStateMessage.observe(this, Observer {
-            permissions_message.text = stringByKey(it)
+            permissions_message.text = it
         })
 
         viewModel.showPermissionButton.observe(this, Observer {
@@ -73,9 +72,8 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
 
         viewModel.requestMessage.observe(this, Observer { message ->
             message?.let {
-                Toast.makeText(this, stringByKey(it), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
             }
         })
-
     }
 }

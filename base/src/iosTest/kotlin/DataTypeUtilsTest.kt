@@ -20,8 +20,6 @@ package com.splendo.kaluga.base
 import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 class DataTypeUtilsTest : BaseTest() {
 
@@ -64,6 +62,4 @@ class DataTypeUtilsTest : BaseTest() {
         assertEquals(1, typedMap.size)
         assertEquals(2, typedMap["two"])
     }
-
 }
-

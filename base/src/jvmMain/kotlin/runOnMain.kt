@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -16,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.base
 
 import javax.swing.SwingUtilities
 

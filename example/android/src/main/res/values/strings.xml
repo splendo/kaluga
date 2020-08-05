@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Kaluga Example</string>
+
+    <string name="feature_alerts">Alerts</string>
+    <string name="feature_architecture">Architecture</string>
+    <string name="feature_hud">Loading Indicator</string>
+    <string name="feature_keyboard">Keyboard</string>
+    <string name="feature_location">Location</string>
+    <string name="feature_permissions">Permissions</string>
+
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
     <string name="alert_list">Show Alert List</string>

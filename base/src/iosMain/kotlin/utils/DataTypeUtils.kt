@@ -17,15 +17,21 @@
 
 package com.splendo.kaluga.base
 
-import kotlinx.cinterop.*
-import platform.Foundation.*
+import kotlinx.cinterop.ByteVar
+import kotlinx.cinterop.CPointer
+import kotlinx.cinterop.allocArrayOf
+import kotlinx.cinterop.get
+import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.reinterpret
+import platform.Foundation.NSData
+import platform.Foundation.create
 import platform.darwin.NSUInteger
 
 /**
  * Converts a [NSData] to its corresponding [ByteArray]
  * @return The [ByteArray] equivalent to this [NSData]
  */
-fun NSData.toByteArray() : ByteArray {
+fun NSData.toByteArray(): ByteArray {
     val bytes = bytes?.let { it } ?: return byteArrayOf()
     val ktBytes: CPointer<ByteVar> = bytes.reinterpret()
     return ByteArray(length.toInt()) { index -> ktBytes[index] }
@@ -35,7 +41,7 @@ fun NSData.toByteArray() : ByteArray {
  * Converts a [ByteArray] to its corresponding [NSData]
  * @return Th [NSData] corresponding to this [ByteArray]
  */
-fun ByteArray.toNSData() : NSData = memScoped {
+fun ByteArray.toNSData(): NSData = memScoped {
     return NSData.create(bytes = allocArrayOf(this@toNSData), length = this@toNSData.size.toULong() as NSUInteger)
 }
 
@@ -44,7 +50,7 @@ fun ByteArray.toNSData() : NSData = memScoped {
  * This proves useful since generics are lost when converting ObjC/Swift to Kotlin
  * @return The list of all the elements in the given list that match the desired typing
  */
-inline fun <reified T:Any> List<*>.typedList() : List<T> {
+inline fun <reified T : Any> List<*>.typedList(): List<T> {
     return mapNotNull { when (it) {
         is T -> it
         else -> null
@@ -56,9 +62,9 @@ inline fun <reified T:Any> List<*>.typedList() : List<T> {
  * This proves useful since generics are lost when converting ObjC/Swift to Kotlin
  * @return The map of all the elements in the given map that match the desired typing
  */
-inline fun <reified K:Any, reified V:Any> Map<*, *>.typedMap() : Map<K, V> {
+inline fun <reified K : Any, reified V : Any> Map<*, *>.typedMap(): Map<K, V> {
     return this.mapNotNull { entry ->
-        when(val key = entry.key) {
+        when (val key = entry.key) {
             is K -> {
                 when (val value = entry.value) {
                     is V -> Pair(key, value)

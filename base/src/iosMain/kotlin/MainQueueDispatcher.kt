@@ -18,17 +18,34 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.base
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.native.concurrent.Continuation0
+import kotlin.native.concurrent.Continuation1
+import kotlin.native.concurrent.Continuation2
+import kotlin.native.concurrent.DetachedObjectGraph
+import kotlin.native.concurrent.attach
+import kotlin.native.concurrent.callContinuation0
+import kotlin.native.concurrent.callContinuation1
+import kotlin.native.concurrent.callContinuation2
 import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CancellableContinuation
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.Runnable
 import platform.Foundation.NSOperationQueue
 import platform.Foundation.NSThread
-import platform.darwin.*
-import kotlin.coroutines.CoroutineContext
-import kotlin.native.concurrent.*
+import platform.darwin.DISPATCH_TIME_NOW
+import platform.darwin.dispatch_after
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_async_f
+import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_queue_t
+import platform.darwin.dispatch_sync_f
+import platform.darwin.dispatch_time
 
 internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
 
-    override fun isDispatchNeeded(context: CoroutineContext) =  !NSThread.currentThread().isMainThread
+    override fun isDispatchNeeded(context: CoroutineContext) = !NSThread.currentThread().isMainThread
 
     // Dispatch block on given queue
     override fun dispatch(context: CoroutineContext, block: Runnable) {

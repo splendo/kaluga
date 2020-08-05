@@ -18,10 +18,10 @@
 package com.splendo.kaluga.example.shared.viewmodel.featureList
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.resources.localized
 
 sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
 
@@ -29,39 +29,38 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
-    object Architecture:  FeatureListNavigationAction()
+    object Architecture : FeatureListNavigationAction()
     object Keyboard : FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
-    object Location : Feature("Location")
-    object Permissions : Feature("Permissions")
-    object Alerts : Feature("Alerts")
-    object LoadingIndicator : Feature("Loading Indicator")
-    object Architecture : Feature("Architecture")
-    object Keyboard : Feature("Keyboard")
+    object Alerts : Feature("feature_alerts".localized())
+    object Architecture : Feature("feature_architecture".localized())
+    object Keyboard : Feature("feature_keyboard".localized())
+    object LoadingIndicator : Feature("feature_hud".localized())
+    object Location : Feature("feature_location".localized())
+    object Permissions : Feature("feature_permissions".localized())
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
     val feature = observableOf(listOf(
-        Feature.Location,
-        Feature.Permissions,
         Feature.Alerts,
-        Feature.LoadingIndicator,
         Feature.Architecture,
-        Feature.Keyboard
+        Feature.Keyboard,
+        Feature.LoadingIndicator,
+        Feature.Location,
+        Feature.Permissions
     ))
 
     fun onFeaturePressed(feature: Feature) {
-        navigator.navigate(when(feature) {
-            is Feature.Location -> FeatureListNavigationAction.Location
-            is Feature.Permissions -> FeatureListNavigationAction.Permissions
+        navigator.navigate(when (feature) {
             is Feature.Alerts -> FeatureListNavigationAction.Alerts
-            is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
             is Feature.Architecture -> FeatureListNavigationAction.Architecture
             is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
+            is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
+            is Feature.Location -> FeatureListNavigationAction.Location
+            is Feature.Permissions -> FeatureListNavigationAction.Permissions
         })
     }
-
 }

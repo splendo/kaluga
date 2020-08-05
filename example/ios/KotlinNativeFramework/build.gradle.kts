@@ -11,10 +11,12 @@ repositories {
 }
 
 kotlin {
+
     xcode {
         setupFramework("KotlinNativeFramework") {
             export(project(":shared"))
             transitiveExport = true
+            freeCompilerArgs += "-Xobjc-generics"
         }
     }
 

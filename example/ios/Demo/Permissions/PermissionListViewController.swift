@@ -46,7 +46,7 @@ class PermissionListViewController : UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: PermissionsListCell.Const.identifier, for: indexPath) as! PermissionsListCell
-        cell.label.text = NSLocalizedString(permissions[indexPath.row].title, comment: "")
+        cell.label.text = permissions[indexPath.row].title
         return cell
     }
     

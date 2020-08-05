@@ -42,15 +42,15 @@ class PermissionViewController: UIViewController {
         
         lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] (disposeBag) in
             self?.viewModel.permissionStateMessage.observe(onNext: { (message) in
-                self?.permissionStateLabel.text = NSLocalizedString(message as? String ?? "", comment: "")
+                self?.permissionStateLabel.text = NSLocalizedString(message as String? ?? "", comment: "")
                 }).addTo(disposeBag: disposeBag)
             
             self?.viewModel.requestMessage.observe(onNext: { (optionalMessage) in
-                guard let message = optionalMessage as? String else {
+                guard let message = optionalMessage as String? else {
                     return
                 }
                 
-                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: NSLocalizedString(message, comment: ""), preferredStyle: .alert)
+                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: message, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
                 

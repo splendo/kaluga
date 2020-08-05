@@ -40,7 +40,7 @@ class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activ
             }
         })
 
-        tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 val exampleTab = tab?.tag as? ExampleViewModel.Tab ?: return
                 viewModel.tab.postValue(exampleTab)
@@ -51,10 +51,7 @@ class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activ
                 viewModel.tab.postValue(exampleTab)
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-
-            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
         })
     }
-
 }

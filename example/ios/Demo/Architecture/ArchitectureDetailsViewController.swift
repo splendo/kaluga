@@ -44,11 +44,11 @@ class ArchitectureDetailsViewController: UIViewController {
         
         lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
             self?.viewModel.name.observe { name in
-                self?.nameLabel.text = name as? String
+                self?.nameLabel.text = name as String?
             }.addTo(disposeBag: disposeBag)
             
             self?.viewModel.number.observe { number in
-                self?.numberLabel.text = number as? String
+                self?.numberLabel.text = number as String?
             }.addTo(disposeBag: disposeBag)
         }
     }

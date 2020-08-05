@@ -1,11 +1,3 @@
-package com.splendo.kaluga.example.shared
-
-import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertBuilder
-import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.*
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -23,6 +15,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.example.shared
+
+import com.splendo.kaluga.alerts.Alert
+import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class AlertPresenter(private val builder: AlertBuilder) {
 

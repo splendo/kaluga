@@ -22,7 +22,9 @@ import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -45,10 +47,9 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
         return super.flow(flowConfig).onStart {
                 counterMutex.withLock {
                     flowingCounter += 1
-                    if (flowingCounter == 1 ) {
+                    if (flowingCounter == 1) {
                         set(initialize())
                     }
-
                 }
             }.onCompletion {
                 counterMutex.withLock {
@@ -63,5 +64,4 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                 }
             }
     }
-
 }

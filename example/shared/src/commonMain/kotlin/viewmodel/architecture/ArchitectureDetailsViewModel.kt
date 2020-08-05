@@ -17,7 +17,13 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.architecture
 
-import com.splendo.kaluga.architecture.navigation.*
+import com.splendo.kaluga.architecture.navigation.NavigationAction
+import com.splendo.kaluga.architecture.navigation.NavigationBundle
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.subjectOf
@@ -27,16 +33,16 @@ class DetailsSpec : NavigationBundleSpec<DetailsSpecRow<*>>(setOf(DetailsSpecRow
 
 sealed class DetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : NavigationBundleSpecRow<V>(associatedType) {
     object NameRow : DetailsSpecRow<String>(NavigationBundleSpecType.StringType)
-    object NumberRow : DetailsSpecRow<Int>( NavigationBundleSpecType.IntegerType)
+    object NumberRow : DetailsSpecRow<Int>(NavigationBundleSpecType.IntegerType)
 }
 
-class CloseDetailsNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>): NavigationAction<DetailsSpecRow<*>>(bundle)
+class CloseDetailsNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>) : NavigationAction<DetailsSpecRow<*>>(bundle)
 
 class ArchitectureDetailsViewModel(initialName: String, initialNumber: Int, navigator: Navigator<CloseDetailsNavigation>) : NavigatingViewModel<CloseDetailsNavigation>(navigator) {
 
-    private val _name  = subjectOf(initialName, coroutineScope)
+    private val _name = subjectOf(initialName, coroutineScope)
     val name: Observable<String> = _name
-    private val _number  = subjectOf(initialNumber.toString(), coroutineScope)
+    private val _number = subjectOf(initialNumber.toString(), coroutineScope)
     val number: Observable<String> = _number
 
     private var nameResult: ObservableOptional<String> by _name
@@ -57,12 +63,11 @@ class ArchitectureDetailsViewModel(initialName: String, initialNumber: Int, navi
     fun onClosePressed() {
         val name: String? by nameResult
         val number: String? by numberResult
-        navigator.navigate(CloseDetailsNavigation(DetailsSpec().toBundle {row ->
+        navigator.navigate(CloseDetailsNavigation(DetailsSpec().toBundle { row ->
             when (row) {
                 is DetailsSpecRow.NameRow -> row.convertValue(name ?: "")
                 is DetailsSpecRow.NumberRow -> row.convertValue(number?.toIntOrNull() ?: 0)
             }
         }))
     }
-
 }

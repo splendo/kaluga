@@ -22,6 +22,11 @@ import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
+import kotlin.test.BeforeTest
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -30,7 +35,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlin.test.*
 
 class BaseFlowableTest : FlowableTest<String>() {
 
@@ -101,11 +105,10 @@ class BaseFlowableTest : FlowableTest<String>() {
         val flowable = flowable.await()
         val scope = MultiplatformMainScope()
         val collectionJob = scope.async {
-            flowable.flow().collect {  }
+            flowable.flow().collect { }
         }
-        delay(100)// TODO instead listen to flow subscriber count
+        delay(100) // TODO instead listen to flow subscriber count
         flowable.cancelFlows()
         collectionJob.await()
     }
-
 }

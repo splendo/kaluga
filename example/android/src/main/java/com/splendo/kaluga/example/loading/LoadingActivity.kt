@@ -19,9 +19,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.loading
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.hud.HudViewModel
@@ -51,7 +51,7 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
     }
 }
 
-class ViewModel: HudViewModel() {
+class ViewModel : HudViewModel() {
     fun showSystem() = HudPresenter(builder).showSystem()
     fun showCustom() = HudPresenter(builder).showCustom()
 }

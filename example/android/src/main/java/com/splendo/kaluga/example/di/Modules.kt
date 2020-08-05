@@ -38,20 +38,24 @@ import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDeta
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.InfoNavigation
+import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
+import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.keyboard.KeyboardHostingView
+import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import java.net.URL
 
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
@@ -62,9 +66,9 @@ val viewModelModule = module {
     viewModel {
         ExampleViewModel(
             Navigator { action ->
-                when(action) {
-                    is ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = {FeaturesListFragment()})
-                    is ExampleTabNavigation.Info -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = {InfoFragment()})
+                when (action) {
+                    is ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { FeaturesListFragment() })
+                    is ExampleTabNavigation.Info -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { InfoFragment() })
                 }
             }
         )
@@ -96,7 +100,10 @@ val viewModelModule = module {
                         })
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(URL(action.bundle!!.get(LinkSpecRow.LinkRow)))
-                    is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
+                    is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(
+                        to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
+                        subject = action.bundle?.get(MailSpecRow.SubjectRow)
+                    ))
                 }
             })
     }

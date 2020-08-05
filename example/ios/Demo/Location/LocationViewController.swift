@@ -42,7 +42,7 @@ class LocationViewController: UIViewController {
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] (disposeBag) in
             self?.viewModel.location.observe(onNext: { (location) in
-                self?.label.text = location as? String
+                self?.label.text = location as String?
                 }).addTo(disposeBag: disposeBag)
         })
     }

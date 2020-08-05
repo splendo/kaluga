@@ -58,5 +58,4 @@ class LocationViewModel(permission: Permission.Location, repoBuilder: LocationSt
     public override fun onCleared() {
         super.onCleared()
     }
-
 }

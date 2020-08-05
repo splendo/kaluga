@@ -1,4 +1,12 @@
 "app_name" = "Kaluga Example";
+
+"feature_alerts" = "Alerts";
+"feature_architecture" = "Architecture";
+"feature_hud" = "Loading Indicator";
+"feature_keyboard" = "Keyboard";
+"feature_location" = "Location";
+"feature_permissions" = "Permissions";
+
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
 "alert_list" = "Show Alert List";

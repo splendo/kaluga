@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,7 +16,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import platform.darwin.*
+package com.splendo.kaluga.base
+
+import platform.darwin.dispatch_async
+import platform.darwin.dispatch_get_main_queue
 
 actual fun runOnMain(block: () -> Unit) {
     dispatch_async(dispatch_get_main_queue(), block)

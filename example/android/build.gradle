@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 repositories {
     mavenLocal()
@@ -40,13 +41,7 @@ android {
         exclude 'META-INF/kotlinx-serialization-runtime.kotlin_module'
     }
 
-    dataBinding {
-        enabled = true
-    }
-
-    lintOptions {
-        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
-    }
+    buildFeatures.dataBinding = true
 
 }
 

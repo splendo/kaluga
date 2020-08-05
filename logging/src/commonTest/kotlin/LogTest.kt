@@ -61,13 +61,13 @@ internal class LogTest {
 
     @Test
     fun testLogDebugAndMessage() {
-        log(LogLevel.DEBUG, LogLevel.DEBUG.name)
+        log(LogLevel.DEBUG, message = LogLevel.DEBUG.name)
         assertLogWithMessageWasCalled(LogLevel.DEBUG)
     }
 
     @Test
     fun testLogDebugAndException() {
-        log(LogLevel.DEBUG, RuntimeException(LogLevel.DEBUG.name))
+        log(LogLevel.DEBUG, exception = RuntimeException(LogLevel.DEBUG.name))
         assertLogWithExceptionWasCalled(LogLevel.DEBUG)
     }
 
