@@ -21,6 +21,6 @@ import java.util.UUID
 
 actual class ServiceDataExtractor {
     actual fun extract(data: ServiceData): ByteArray? {
-        return data[UUID.fromString(Eddystone.ServiceUUIDLong)]
+        return data[UUID.fromString(Eddystone.ServiceUUIDFull)]
     }
 }

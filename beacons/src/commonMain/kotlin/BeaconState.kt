@@ -19,7 +19,10 @@ package com.splendo.kaluga.beacons
 
 import com.splendo.kaluga.state.State
 
-sealed class BeaconState : State<BeaconState>() {
-    data class Found(val id: BeaconID) : BeaconState()
-    data class Lost(val id: BeaconID) : BeaconState()
+sealed class BeaconState(
+    private val beaconInfo: BeaconInfo
+) : State<BeaconState>(), BeaconInfo by beaconInfo {
+
+    data class Found(val beaconInfo: BeaconInfo) : BeaconState(beaconInfo)
+    data class Lost(val beaconInfo: BeaconInfo) : BeaconState(beaconInfo)
 }

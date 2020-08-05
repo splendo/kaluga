@@ -25,7 +25,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 
 class Beacons internal constructor(
@@ -62,8 +64,22 @@ class Beacons internal constructor(
         val serviceData = device.state().map { it.advertisementData.serviceData }.first()
         val data = extractor.extract(serviceData)
         if (data != null) {
-            return Eddystone.unpackUIDFrame(data, coroutineScope)
+            return when (val frame = Eddystone.unpack(data)) {
+                is Eddystone.Frame.UIDFrame -> Beacon(
+                    BeaconInfoImpl(identifier, frame.uid, frame.txPower),
+                    coroutineScope
+                )
+                else -> null
+            }
         }
         return null
     }
+}
+
+operator fun Flow<List<Beacon>>.get(identifier: Identifier) = this.map { beacons ->
+    beacons.firstOrNull { it.identifier == identifier }
+}
+
+fun Flow<Beacon?>.state(): Flow<BeaconState> = this.flatMapLatest { beacon ->
+    beacon?.flow() ?: emptyFlow()
 }

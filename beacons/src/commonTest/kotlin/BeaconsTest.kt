@@ -18,9 +18,8 @@
 import com.splendo.kaluga.beacons.Eddystone
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlinx.coroutines.MainScope
+import kotlin.test.fail
 
 class BeaconsTest {
 
@@ -39,17 +38,18 @@ class BeaconsTest {
 
     @Test
     fun `Invalid beacon returns null`() {
-        val beacon = Eddystone.unpackUIDFrame(EmptyFrame, MainScope())
-        assertNull(beacon)
-        assertNull(beacon?.beaconID)
+        assertNull(Eddystone.unpack(EmptyFrame))
     }
 
     @Test
     fun `Valid Eddystone beacon created`() {
-        val beacon = Eddystone.unpackUIDFrame(EddystoneUIDFrame, MainScope())
-        assertNotNull(beacon)
-        assertNotNull(beacon.beaconID)
-        assertEquals("f7826da6bc5b71e0893e", beacon.beaconID.namespace)
-        assertEquals("4e4161460102", beacon.beaconID.instance)
+        when (val beacon = Eddystone.unpack(EddystoneUIDFrame)) {
+            is Eddystone.Frame.UIDFrame -> {
+                assertEquals("f7826da6bc5b71e0893e", beacon.uid.namespace)
+                assertEquals("4e4161460102", beacon.uid.instance)
+                assertEquals(-36, beacon.txPower)
+            }
+            else -> fail("Invalid Eddystone frame")
+        }
     }
 }

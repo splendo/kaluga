@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.beacons
 
-import kotlinx.coroutines.CoroutineScope
-
 private fun List<Byte>.toHexString(initial: String = "") = fold(initial) {
     acc, byte -> acc + byte.toUByte().toString(16).padStart(2, '0')
 }
@@ -27,23 +25,28 @@ class Eddystone {
 
     class UID(val namespace: String, val instance: String)
 
+    sealed class Frame {
+        data class UIDFrame(val txPower: Power, val uid: UID) : Frame()
+    }
+
     companion object {
-        const val ServiceUUIDShort = "FEAA"
-        const val ServiceUUIDLong = "0000FEAA-0000-1000-8000-00805F9B34FB"
+
+        const val ServiceUUID = "FEAA"
+        const val ServiceUUIDFull = "0000$ServiceUUID-0000-1000-8000-00805F9B34FB"
+
         private const val ValidFrameSize = 18
         private const val UIDFrameType = 0x00
 
-        fun unpackUIDFrame(data: ByteArray, coroutineScope: CoroutineScope): Beacon? {
+        fun unpack(data: ByteArray): Frame? {
             if (data.size == ValidFrameSize && data[0] == UIDFrameType.toByte()) {
                 val txPower = data[1]
                 val namespace = data.slice(2..11)
                 require(namespace.size == 10)
                 val instance = data.slice(12..17)
                 require(instance.size == 6)
-                return Beacon(
-                    UID(namespace.toHexString(), instance.toHexString()),
+                return Frame.UIDFrame(
                     txPower.toInt(),
-                    coroutineScope
+                    UID(namespace.toHexString(), instance.toHexString())
                 )
             }
             return null

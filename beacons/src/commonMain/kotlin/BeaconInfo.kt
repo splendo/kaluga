@@ -17,20 +17,16 @@
 
 package com.splendo.kaluga.beacons
 
-import com.splendo.kaluga.state.HotStateRepo
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.bluetooth.device.Identifier
 
-typealias BeaconID = Eddystone.UID
-typealias Power = Int
-
-class Beacon(
-    private val beaconInfo: BeaconInfo,
-    coroutineScope: CoroutineScope
-) : HotStateRepo<BeaconState>(coroutineContext = coroutineScope.coroutineContext) {
-
-    var identifier = beaconInfo.identifier
-
-    override suspend fun initialValue(): BeaconState {
-        return BeaconState.Found(beaconInfo)
-    }
+interface BeaconInfo {
+    var identifier: Identifier
+    var beaconID: BeaconID
+    var txPower: Power
 }
+
+data class BeaconInfoImpl(
+    override var identifier: Identifier,
+    override var beaconID: BeaconID,
+    override var txPower: Power
+) : BeaconInfo

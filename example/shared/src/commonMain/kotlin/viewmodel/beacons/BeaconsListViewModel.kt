@@ -52,7 +52,7 @@ class BeaconsListViewModel(private val beaconz: Beacons, navigator: Navigator<Be
         scope.launch { beaconz.beacons()
             .map { beacons ->
                 beacons.map { beacon ->
-                    BeaconsListBeaconViewModel(beacon, navigator)
+                    BeaconsListBeaconViewModel(beacon.identifier, beaconz, navigator)
                 }
             }
             .collect { beacons ->

@@ -21,6 +21,6 @@ import com.splendo.kaluga.bluetooth.UUID
 
 actual class ServiceDataExtractor {
     actual fun extract(data: ServiceData): ByteArray? {
-        return data[UUID.UUIDWithString(Eddystone.ServiceUUIDShort)]
+        return data[UUID.UUIDWithString(Eddystone.ServiceUUID)]
     }
 }
