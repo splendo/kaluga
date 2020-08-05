@@ -23,7 +23,8 @@
                  android:label="@string/app_name"
                  android:supportsRtl="true"
                  android:theme="@style/AppTheme"
-                 tools:ignore="GoogleAppIndexingWarning">
+                 tools:ignore="GoogleAppIndexingWarning"
+                 android:requestLegacyExternalStorage="true" tools:targetApi="q">
 
     <activity android:name="com.splendo.kaluga.androidtesthelper.AndroidTestHelperActivity"
               android:label="Empty, use the instrumentation tests">
