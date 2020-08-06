@@ -478,7 +478,6 @@
 				ORGANIZATIONNAME = Splendo;
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
-						DevelopmentTeam = Q4HEW2JVA9;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -752,7 +751,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q4HEW2JVA9;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -871,7 +870,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q4HEW2JVA9;
+				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
