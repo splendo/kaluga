@@ -11,14 +11,18 @@ import KotlinNativeFramework
 
 class BeaconsViewCell: UICollectionViewCell {
 
-    static let identifier = String(describing: BeaconsViewCell.self)
+    static var identifier: String { String(describing: Self.self) }
 
     @IBOutlet private var namespaceLabel: UILabel!
     @IBOutlet private var instanceLabel: UILabel!
     @IBOutlet private var txPowerLabel: UILabel!
 
     private let disposeBag = DisposeBag()
-    var viewModel: BeaconsListBeaconViewModel?
+    private var viewModel: BeaconsListBeaconViewModel?
+
+    func configure(with viewModel: BeaconsListBeaconViewModel) {
+        self.viewModel = viewModel
+    }
 
     func startMonitoring() {
 
@@ -32,7 +36,7 @@ class BeaconsViewCell: UICollectionViewCell {
 
         viewModel?.txPower.observe { [weak self] txPower in
             self?.txPowerLabel.text = txPower as? String
-        }
+        }.addTo(disposeBag: disposeBag)
     }
 
     func stopMonitoring() {

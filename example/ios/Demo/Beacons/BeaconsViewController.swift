@@ -11,7 +11,12 @@ import KotlinNativeFramework
 
 class BeaconsViewController: UICollectionViewController {
 
-    private var beacons = [BeaconsListBeaconViewModel]()
+    private var beacons = [BeaconsListBeaconViewModel]() {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+
     private var lifecycleManager: LifecycleManager!
 
     private lazy var flowLayout: UICollectionViewFlowLayout = {
@@ -26,7 +31,7 @@ class BeaconsViewController: UICollectionViewController {
         .createBeaconsListViewModel(
             parent: self,
             service: KNBeaconsFramework().service
-    )
+        )
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -37,7 +42,7 @@ class BeaconsViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
             guard let viewModel = self?.viewModel else { return }
 
             viewModel.isScanning.observe { isScanning in
@@ -46,8 +51,6 @@ class BeaconsViewController: UICollectionViewController {
 
             viewModel.beacons.observe { devices in
                 self?.beacons = devices as? [BeaconsListBeaconViewModel] ?? []
-                self?.collectionView?.reloadData()
-                self?.collectionView.layoutIfNeeded()
             }.addTo(disposeBag: disposeBag)
         }
     }
@@ -62,7 +65,7 @@ class BeaconsViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let beaconCell = collectionView.dequeueReusableCell(withReuseIdentifier: BeaconsViewCell.identifier, for: indexPath) as! BeaconsViewCell
-        beaconCell.viewModel = beacons[indexPath.row]
+        beaconCell.configure(with: beacons[indexPath.row])
         return beaconCell
     }
 
@@ -86,7 +89,6 @@ class BeaconsViewController: UICollectionViewController {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
 
-
     private func updateNavigationItem(isScanning: Bool) {
         let title = isScanning ? "beacons_stop_monitoring" : "beacons_start_monitoring"
         let item = UIBarButtonItem(
@@ -95,6 +97,6 @@ class BeaconsViewController: UICollectionViewController {
             target: viewModel,
             action: #selector(viewModel.onScanPressed)
         )
-        self.navigationItem.setRightBarButton(item, animated: true)
+        navigationItem.setRightBarButton(item, animated: true)
     }
 }
