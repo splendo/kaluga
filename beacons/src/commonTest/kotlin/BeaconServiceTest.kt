@@ -37,12 +37,12 @@ class BeaconServiceTest {
     }
 
     @Test
-    fun `Invalid beacon returns null`() {
+    fun invalidBeaconReturnsNull() {
         assertNull(Eddystone.unpack(EmptyFrame))
     }
 
     @Test
-    fun `Valid Eddystone beacon created`() {
+    fun validEddystoneBeaconCreated() {
         when (val beacon = Eddystone.unpack(EddystoneUIDFrame)) {
             is Eddystone.Frame.UIDFrame -> {
                 assertEquals("f7826da6bc5b71e0893e", beacon.uid.namespace)
