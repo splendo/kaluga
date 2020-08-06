@@ -22,7 +22,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.splendo.kaluga.architecture.navigation.Navigator
+import kotlin.reflect.KProperty1
+import kotlin.reflect.KVisibility
+import kotlin.reflect.full.memberProperties
+
+/**
+ * Implement this interface for public properties of a [ViewModel] that should automatically bind to a [KalugaViewModelLifecycleObserver].
+ */
+interface LifecycleSubscribable {
+    /**
+     * Subscribes this subscribable to a [Activity] and its [FragmentManager].
+     * @param activity The [Activity] managing the lifecycle.
+     * @param fragmentManager The [FragmentManager] for this lifecycle.
+     */
+    fun subscribe(activity: Activity, fragmentManager: FragmentManager)
+    fun unsubscribe()
+}
 
 /**
  * [LifecycleObserver] used to manage the lifecycle of a [BaseViewModel]
@@ -32,21 +47,33 @@ import com.splendo.kaluga.architecture.navigation.Navigator
  */
 class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    fun onCreate() {
+        viewModel::class.memberProperties.forEach { property ->
+            (property as? KProperty1<VM, Any?>)?.let {
+                if (it.getter.visibility == KVisibility.PUBLIC)
+                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.subscribe(activity, fragmentManager)
+            }
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        viewModel::class.memberProperties.forEach { property ->
+            (property as? KProperty1<VM, Any?>)?.let {
+                if (it.getter.visibility == KVisibility.PUBLIC)
+                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.unsubscribe()
+            }
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
-        if (viewModel is NavigatingViewModel<*>) {
-            val navigator: Navigator<*> = viewModel.navigator
-            navigator.subscribe(activity, fragmentManager)
-        }
         viewModel.didResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
-        if (viewModel is NavigatingViewModel<*>) {
-            val navigator: Navigator<*> = viewModel.navigator
-            navigator.unsubscribe()
-        }
         viewModel.didPause()
     }
 }

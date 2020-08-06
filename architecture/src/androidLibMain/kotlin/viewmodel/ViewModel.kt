@@ -31,8 +31,8 @@ actual open class ViewModel internal actual constructor() : androidx.lifecycle.V
 }
 
 /**
- * Binds an [AppCompatActivity] to the [ViewModel] to manage the viewmodel lifecycle
- * @param activity The [Activity] to bind to
+ * Binds an [AppCompatActivity] to the [ViewModel] to manage the viewmodel lifecycle.
+ * @param activity The [Activity] to bind to.
  */
 fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
     activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity.supportFragmentManager))
@@ -40,8 +40,8 @@ fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
 
 /**
  * Binds a [Fragment] to the [ViewModel] to manage the viewmodel lifecycle
- * @param fragment The [Fragment] to bind to
- * @return `true` if the ViewModel could be bound to the [Fragment]
+ * @param fragment The [Fragment] to bind to.
+ * @return `true` if the ViewModel could be bound to the [Fragment].
  */
 fun <VM : BaseViewModel> VM.bind(fragment: Fragment): Boolean {
     val activity = fragment.activity ?: return false
