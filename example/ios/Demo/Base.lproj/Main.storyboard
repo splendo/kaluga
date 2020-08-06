@@ -406,7 +406,7 @@
                                                                     <rect key="frame" x="69" y="0.0" width="78" height="41"/>
                                                                     <state key="normal" title="Disconnect"/>
                                                                     <connections>
-                                                                        <action selector="onDisonnectPressed" destination="Btz-mm-dF6" eventType="touchUpInside" id="1HB-7H-csY"/>
+                                                                        <action selector="onDisconnectPressed" destination="Btz-mm-dF6" eventType="touchUpInside" id="1HB-7H-csY"/>
                                                                     </connections>
                                                                 </button>
                                                             </subviews>

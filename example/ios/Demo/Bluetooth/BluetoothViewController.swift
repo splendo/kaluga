@@ -98,7 +98,7 @@ class BluetoothViewController : UICollectionViewController {
 
 class BluetoothCell: UICollectionViewCell {
     
-    struct Companion {
+    fileprivate struct Companion {
         static let identifier = "BluetoothCell"
     }
     
@@ -121,13 +121,13 @@ class BluetoothCell: UICollectionViewCell {
     @IBOutlet var moreButtonContainer: UIView!
     @IBOutlet var moreButton: UIButton!
     
-    var device: BluetoothListDeviceViewModel? = nil
+    fileprivate var device: BluetoothListDeviceViewModel? = nil
     
     @IBAction func onConnectPressed() {
         device?.onConnectPressed()
     }
     
-    @IBAction func onDisonnectPressed() {
+    @IBAction func onDisconnectPressed() {
         device?.onDisconnectPressed()
     }
     

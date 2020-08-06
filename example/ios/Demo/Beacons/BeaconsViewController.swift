@@ -11,22 +11,26 @@ import KotlinNativeFramework
 
 class BeaconsViewController: UICollectionViewController {
 
-    lazy var viewModel = KNArchitectureFramework()
+    private var beacons = [BeaconsListBeaconViewModel]()
+    private var lifecycleManager: LifecycleManager!
+
+    private lazy var flowLayout: UICollectionViewFlowLayout = {
+        let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
+        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        flowLayout.minimumLineSpacing = 4
+        return flowLayout
+    }()
+
+    private lazy var viewModel = KNArchitectureFramework()
         .createBeaconsListViewModel(
             parent: self,
             service: KNBeaconsFramework().service
     )
 
-    private var beacons: [BeaconsListBeaconViewModel] = []
-    private var lifecycleManager: LifecycleManager!
-
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        let flowLayout = FittingWidthAutomaticHeightCollectionViewFlowLayout()
-        flowLayout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-        flowLayout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
-        flowLayout.minimumLineSpacing = 4
         collectionView.collectionViewLayout = flowLayout
     }
 
@@ -46,18 +50,6 @@ class BeaconsViewController: UICollectionViewController {
                 self?.collectionView.layoutIfNeeded()
             }.addTo(disposeBag: disposeBag)
         }
-    }
-
-    private func updateNavigationItem(isScanning: Bool) {
-        if (isScanning) {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_stop_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
-        } else {
-            self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_start_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
-        }
-    }
-
-    @objc private func toggleScanning() {
-        viewModel.onScanPressed()
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -92,5 +84,17 @@ class BeaconsViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+    }
+
+
+    private func updateNavigationItem(isScanning: Bool) {
+        let title = isScanning ? "beacons_stop_monitoring" : "beacons_start_monitoring"
+        let item = UIBarButtonItem(
+            title: NSLocalizedString(title, comment: ""),
+            style: .plain,
+            target: viewModel,
+            action: #selector(viewModel.onScanPressed)
+        )
+        self.navigationItem.setRightBarButton(item, animated: true)
     }
 }

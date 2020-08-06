@@ -47,6 +47,9 @@
 "bluetooth_stop_scanning" = "Stop Scanning";
 "bluetooth_no_name" = "Unnamed Bluetooth Device";
 
+"beacons_start_monitoring" = "Start Monitoring";
+"beacons_stop_monitoring" = "Stop Monitoring";
+
 "rssi" = "%d dBm";
 "txPower" = "%s dBm";
 "distance" = "%.2f m";
@@ -57,7 +60,7 @@
 "bluetooth_connected" = "Connected";
 "bluetooth_connecting" = "Connecting";
 "bluetooth_disconnected" = "Disconnected";
-"bluetooth_disconneting" = "Disconnecting";
+"bluetooth_disconnecting" = "Disconnecting";
 "bluetooth_reconnecting" = "Reconnecting";
 "bluetooth_discovering" = "Discovering";
 
