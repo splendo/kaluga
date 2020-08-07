@@ -1,6 +1,6 @@
 publishing {
     publications {
-        kotlinMultiplatform {
+        kotlinMultiplatform { publication ->
             artifactId = module.name
             groupId = "com.splendo.kaluga"
             version = gradle.ext.library_version
@@ -73,6 +73,14 @@ afterEvaluate {
             root.appendNode('description', 'Collection of Kotlin Flow based libraries')
             root.appendNode('url', 'https://github.com/splendo/kaluga')
             root.children().last() + pomConfig
+        }
+        File moduleFile = new File(project.buildDir, "publications/${publication.name}/module.json")
+        if (moduleFile.exists()) {
+            publication.artifact(new org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact(moduleFile) {
+                protected String getDefaultExtension() {
+                    return 'module';
+                }
+            })
         }
     }
 }

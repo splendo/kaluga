@@ -9,7 +9,6 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven(url = "https://dl.bintray.com/kaluga/com.splendo.kaluga")
     google()
     jcenter()
 }
