@@ -24,5 +24,4 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 class TestActivity : KalugaViewModelActivity<HudViewModel>() {
 
     override val viewModel: HudViewModel by viewModels()
-
 }

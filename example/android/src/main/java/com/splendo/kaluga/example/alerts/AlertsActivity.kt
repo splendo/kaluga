@@ -20,8 +20,6 @@ package com.splendo.kaluga.example.alerts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.AlertViewModel

@@ -15,23 +15,10 @@
 
  */
 
-package com.splendo.kaluga.hud
+package com.splendo.kaluga.alerts
 
-actual class HUD(actual val hudConfig: HudConfig) {
-    actual class Builder : BaseHUDBuilder() {
-        actual fun create(hudConfig: HudConfig) = HUD(hudConfig)
-    }
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-    private var _isVisible: Boolean = false
-    actual val isVisible: Boolean get() = _isVisible
-
-    actual fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        _isVisible = true
-        completion.invoke()
-    }
-
-    actual fun dismiss(animated: Boolean, completion: () -> Unit) {
-        _isVisible = false
-        completion.invoke()
-    }
+class AlertsViewModel : BaseViewModel() {
+    val alertBuilder = AlertBuilder()
 }

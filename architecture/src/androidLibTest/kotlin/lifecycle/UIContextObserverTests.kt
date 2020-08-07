@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
+import kotlin.test.assertEquals
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -31,9 +32,8 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import kotlin.test.assertEquals
 
-class UIContextTests : BaseTest() {
+class UIContextObserverTests : BaseTest() {
 
     @Mock
     private lateinit var activity: Activity

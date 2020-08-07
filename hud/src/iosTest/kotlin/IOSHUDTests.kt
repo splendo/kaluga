@@ -48,7 +48,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun builderSetStyleAndTitle() {
         assertNotNull(
-           builder.build {
+            builder.build {
                 setStyle(HUDStyle.CUSTOM)
                 setTitle("Foo")
             }
