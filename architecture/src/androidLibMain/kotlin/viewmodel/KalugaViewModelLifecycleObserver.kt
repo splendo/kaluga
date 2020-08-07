@@ -36,24 +36,18 @@ import kotlin.reflect.full.memberProperties
  */
 class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity?, private val lifecycleOwner: LifecycleOwner, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
+    private val lifecycleSubscribables: List<LifecycleSubscribable> get() = viewModel::class.memberProperties
+        .filter { it.getter.visibility == KVisibility.PUBLIC }
+        .mapNotNull { (it as? KProperty1<VM, Any?>)?.getter?.call(viewModel) as? LifecycleSubscribable}
+
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
-        viewModel::class.memberProperties.forEach { property ->
-            (property as? KProperty1<VM, Any?>)?.let {
-                if (it.getter.visibility == KVisibility.PUBLIC)
-                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.subscribe(activity, lifecycleOwner, fragmentManager)
-            }
-        }
+        lifecycleSubscribables.forEach { it.subscribe(activity, lifecycleOwner, fragmentManager) }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
-        viewModel::class.memberProperties.forEach { property ->
-            (property as? KProperty1<VM, Any?>)?.let {
-                if (it.getter.visibility == KVisibility.PUBLIC)
-                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.unsubscribe()
-            }
-        }
+        lifecycleSubscribables.forEach { it.unsubscribe() }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
