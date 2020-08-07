@@ -214,7 +214,6 @@ android {
     }
 }
 
-
 task printConfigurations {
     doLast {
         configurations.each { println it }
