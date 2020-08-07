@@ -1,6 +1,9 @@
 # Compiled class file
 *.class
 
+# code coverage files
+*.exec
+
 # Log file
 *.log
 
