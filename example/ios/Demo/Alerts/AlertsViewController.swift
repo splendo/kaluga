@@ -21,7 +21,7 @@ import KotlinNativeFramework
 
 class AlertsViewController: UITableViewController {
 
-    private lazy var viewModel = AlertViewModel(builder: AlertBuilder(viewController: self))
+    private lazy var viewModel = AlertViewModel(builder: AlertInterface.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
     
     deinit {

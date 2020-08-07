@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.lifecycle
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -43,3 +44,8 @@ interface LifecycleSubscribable {
      */
     fun unsubscribe()
 }
+
+/**
+ * Convenience method to subscribe an [AppCompatActivity] to this [LifecycleSubscribable] using its default [LifecycleOwner] and [FragmentManager].
+ */
+fun LifecycleSubscribable.subscribe(activity: AppCompatActivity) = subscribe(activity, activity, activity.supportFragmentManager)

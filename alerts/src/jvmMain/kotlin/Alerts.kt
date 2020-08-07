@@ -1,5 +1,3 @@
-package com.splendo.kaluga.alerts
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,16 +16,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder : BaseAlertBuilder() {
-
-    override fun create(): AlertInterface {
-        return AlertInterface(createAlert())
-    }
-}
+package com.splendo.kaluga.alerts
 
 actual class AlertInterface(
     alert: Alert
 ) : BaseAlertPresenter(alert) {
+
+    actual class Builder : BaseAlertBuilder() {
+
+        actual fun create(): AlertInterface {
+            return AlertInterface(createAlert())
+        }
+    }
 
     override fun showAsync(animated: Boolean, completion: (() -> Unit)) {
         TODO("not implemented")

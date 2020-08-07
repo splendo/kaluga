@@ -9,7 +9,7 @@ Using Alerts is very simple. You can show an alert from shared code like this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create OK action
     val okAction = Alert.Action("OK") // POSITIVE/DEFAULT style
     // Create Cancel action
@@ -32,7 +32,7 @@ Or this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create an Alert with title, message and actions
     val alert = builder.buildAlert {
         setTitle(title)
@@ -46,27 +46,102 @@ fun showAlert(builder: AlertBuilder, title: String) = MainScope().launch(MainQue
 
 > You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
 
-But you have to prepare `AlertBuilder` object from specific platform.
-On Android this builder needs a `Context` object:
+## Builder
+
+The `AlertInterface.Builder` class can be used to build Alerts.
+
+### Build alert
+
+- `buildAlert(initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+
+### Build action sheet
+
+- `buildActionSheet(initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+
+### Set title, style and message
+
+- `setTitle(title: String?)` — sets optional title for the alert
+- `setMessage(message: String?)` — sets an optional message for the alert
+
+### Set buttons
+
+- `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert
+- `setNegativeButton(title: String, handler: AlertActionHandler)` — sets a negative button for the alert
+- `setNeutralButton(title: String, handler: AlertActionHandler)` — sets a neutral button for the alert
+
+> On Android you can have only maximum of 3 buttons (each of type Positive, Negative and Neutral) for the alert with Alert.Style.ALERT
+
+### Set actions for action sheet
+
+- `addActions(actions: List<Alert.Action>)` or `addActions(vararg actions: Alert.Action)` — adds a list of actions for the alert
+
+> On iOS you can have only 1 button with type of Action.Style.Cancel / Negative
+
+#### Action styles
+
+On Android actions can be: `Positive`, `Negative` and `Neutral`.
+On iOS actions can be: `Default`, `Cancel` and `Destructive`.
+
+## Platform Specific Building
+The `AlertInterface.Builder` object should be created from the platform side.
+
+### Android
+On Android this builder needs a `UIContextObserver` (see Architecture) object to provide the current context in which to display the alert.
+For `BaseViewModel`, the `UIContextObserver` will be automatically provided with the correct context, provided the builder is publicly visible and bound to a `KalugaViewModelLifecycleObserver`.
+
+```kotlin
+class AlertViewModel: ViewModel() {
+
+    val builder = AlertInterface.Builder()
+
+    fun buildAlert() = builder.buildAlert {
+        // Alert Logic
+    }
+}
+```
+
+And then in your `Activity`:
+
+```kotlin
+class MyActivity: KalugaViewModelActivity<AlertViewModel>() {
+
+    private val viewModel: HudViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        viewModel.buildAlert()
+    }
+}
+```
+
+For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
 // Android specific
-val builder = AlertBuilder(context)
-SharedKt.showAlert(builder, "Hello from Android")
+val contextObserver = UIContextObserver()
+val builder = AlertInterface.Builder(contextObserver)
+contextObserver.subscribe(activity)
+builder.buildAlert {
+    // Alert Logic
+}
 ```
 
+### iOS
 On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
 // iOS specific
-let builder = AlertsAlertBuilder(viewController)
-SharedKt.showAlert(builder, "Hello from iOS")
+let builder = AlertInterface.Builder(viewController)
+builder.buildAlert {
+    // Alert Logic
+}
 ```
 
 You can also show action sheet using Actions with handlers:
 
 ```kotlin
-fun showList(builder: AlertBuilder) = MainScope().launch(MainQueueDispatcher) {
+fun showList(builder: AlertInterface.Builder) = MainScope().launch(MainQueueDispatcher) {
     builder.buildActionSheet {
         setTitle("Select an option")
         addActions(
@@ -94,39 +169,3 @@ alert.show()
 // Dismiss
 alert.dismiss()
 ```
-
-## Builder
-
-The `BaseAlertBuilder` abstract class has implementations on the Android as `AlertBuilder` and iOS as `AlertsAlertBuilder`.
-
-### Build alert
-
-- `buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
-
-### Build action sheet
-
-- `buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
-
-### Set title, style and message
-
-- `setTitle(title: String?)` — sets optional title for the alert
-- `setMessage(message: String?)` — sets an optional message for the alert
-
-### Set buttons
-
-- `setPositiveButton(title: String, handler: AlertActionHandler)` — sets a positive button for the alert
-- `setNegativeButton(title: String, handler: AlertActionHandler)` — sets a negative button for the alert
-- `setNeutralButton(title: String, handler: AlertActionHandler)` — sets a neutral button for the alert
-
-> On Android you can have only maximum of 3 buttons (each of type Positive, Negative and Neutral) for the alert with Alert.Style.ALERT
-
-### Set actions for action sheet
-
-- `addActions(actions: List<Alert.Action>)` or `addActions(vararg actions: Alert.Action)` — adds a list of actions for the alert
-
-> On iOS you can have only 1 button with type of Action.Style.Cancel / Negative
-
-#### Action styles
-
-On Android actions can be: `Positive`, `Negative` and `Neutral`.
-On iOS actions can be: `Default`, `Cancel` and `Destructive`.

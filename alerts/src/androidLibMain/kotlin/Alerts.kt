@@ -31,14 +31,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-actual class AlertBuilder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseAlertBuilder(), LifecycleSubscribable by uiContextObserver {
-    override fun create() = AlertInterface(createAlert(), uiContextObserver)
-}
-
 actual class AlertInterface(
     private val alert: Alert,
     private val uiContextObserver: UIContextObserver = UIContextObserver()
 ) : BaseAlertPresenter(alert), CoroutineScope by MainScope()  {
+
+    actual class Builder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseAlertBuilder(), LifecycleSubscribable by uiContextObserver {
+        actual fun create() = AlertInterface(createAlert(), uiContextObserver)
+    }
 
     private companion object {
         fun transform(style: Alert.Action.Style): Int = when (style) {
