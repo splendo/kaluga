@@ -23,7 +23,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.fragment.app.FragmentManager
-import com.splendo.kaluga.architecture.viewmodel.LifecycleSubscribable
+import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -36,20 +37,11 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     private var activity: Activity? = null
     private var fragmentManager: FragmentManager? = null
 
-    /**
-     * Subscribes the Navigator to a [Activity] and [FragmentManager]
-     * Subscription is used to determine which activity/fragmentManager is responsible for certain navigating actions
-     * @param activity The [Activity] to handle navigation
-     * @param fragmentManager The [FragmentManager] to handle fragment navigation
-     */
-    override fun subscribe(activity: Activity, fragmentManager: FragmentManager) {
+    override fun subscribe(activity: Activity?, lifecycleOwner: LifecycleOwner, fragmentManager: FragmentManager) {
         this.activity = activity
         this.fragmentManager = fragmentManager
     }
 
-    /**
-     * Unsubscribes the Navigator from its current [Activity] and [FragmentManager]
-     */
     override fun unsubscribe() {
         activity = null
         fragmentManager = null

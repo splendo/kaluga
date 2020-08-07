@@ -1,21 +1,3 @@
-package com.splendo.kaluga.hud
-
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import kotlin.test.assertFails
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -33,6 +15,24 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.hud
+
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import kotlin.test.assertFails
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.setMain
+import org.junit.After
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 
 class HudViewModelTests {
 
@@ -61,18 +61,6 @@ class HudViewModelTests {
             viewModel.subscribe(activity)
             viewModel.builder.build()
             viewModel.unsubscribe()
-        }
-    }
-
-    @Test
-    fun testExceptionIfBuildWithoutSubscribe() {
-        val activity = mock(AppCompatActivity::class.java)
-        val fragmentManager = mock(FragmentManager::class.java)
-        `when`(activity.supportFragmentManager).thenReturn(fragmentManager)
-
-        val viewModel = HudViewModel()
-        assertFails {
-            viewModel.builder.build()
         }
     }
 }

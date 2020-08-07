@@ -1,15 +1,3 @@
-package com.splendo.kaluga.hud
-
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import platform.UIKit.UIScreen
-import platform.UIKit.UIViewController
-import platform.UIKit.UIWindow
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -28,9 +16,22 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUDTests {
+package com.splendo.kaluga.hud
+
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import platform.UIKit.UIScreen
+import platform.UIKit.UIViewController
+import platform.UIKit.UIWindow
+
+class IOSHUDTests : HUDTests() {
 
     private lateinit var window: UIWindow
+    override val builder get() = HUD.Builder(UIViewController())
 
     @BeforeTest
     fun setUp() {
@@ -40,15 +41,15 @@ class IOSHUDTests {
     @Test
     fun builderInitializer() {
         assertNotNull(
-            IOSHUD.Builder(UIViewController()).build()
+            builder.build()
         )
     }
 
     @Test
     fun builderSetStyleAndTitle() {
         assertNotNull(
-            IOSHUD.Builder(UIViewController()).build {
-                setStyle(HUD.Style.CUSTOM)
+           builder.build {
+                setStyle(HUDStyle.CUSTOM)
                 setTitle("Foo")
             }
         )
@@ -57,7 +58,7 @@ class IOSHUDTests {
     @Test
     fun presentIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD.Builder(hostView).build()
+        val indicator = HUD.Builder(hostView).build()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
@@ -68,7 +69,7 @@ class IOSHUDTests {
     @Test
     fun dismissIndicator() {
         val hostView = UIViewController()
-        val indicator = IOSHUD.Builder(hostView).build()
+        val indicator = HUD.Builder(hostView).build()
         window.rootViewController = hostView
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)

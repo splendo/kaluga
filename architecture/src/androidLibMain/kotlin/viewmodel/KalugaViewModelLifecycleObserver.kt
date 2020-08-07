@@ -18,26 +18,16 @@
 package com.splendo.kaluga.architecture.viewmodel
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
-
-/**
- * Implement this interface for public properties of a [ViewModel] that should automatically bind to a [KalugaViewModelLifecycleObserver].
- */
-interface LifecycleSubscribable {
-    /**
-     * Subscribes this subscribable to a [Activity] and its [FragmentManager].
-     * @param activity The [Activity] managing the lifecycle.
-     * @param fragmentManager The [FragmentManager] for this lifecycle.
-     */
-    fun subscribe(activity: Activity, fragmentManager: FragmentManager)
-    fun unsubscribe()
-}
 
 /**
  * [LifecycleObserver] used to manage the lifecycle of a [BaseViewModel]
@@ -45,14 +35,14 @@ interface LifecycleSubscribable {
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
-class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity, private val fragmentManager: FragmentManager) : LifecycleObserver {
+class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity?, private val lifecycleOwner: LifecycleOwner, private val fragmentManager: FragmentManager) : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
         viewModel::class.memberProperties.forEach { property ->
             (property as? KProperty1<VM, Any?>)?.let {
                 if (it.getter.visibility == KVisibility.PUBLIC)
-                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.subscribe(activity, fragmentManager)
+                    (it.getter.call(viewModel) as? LifecycleSubscribable)?.subscribe(activity, lifecycleOwner, fragmentManager)
             }
         }
     }

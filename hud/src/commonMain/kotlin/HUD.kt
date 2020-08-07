@@ -1,12 +1,3 @@
-package com.splendo.kaluga.hud
-
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -25,60 +16,59 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.hud
+
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
+import com.splendo.kaluga.base.MainQueueDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
 /**
- * Interface that defines loading indicator class, which can be shown or dismissed
+ * Style of the Loading Indicator
  */
-interface HUD {
+enum class HUDStyle(val value: Int) {
+    /** System appearance */
+    SYSTEM(0),
+    /** Custom appearance */
+    CUSTOM(1);
 
-    /**
-     * Style of the Loading Indicator
-     */
-    enum class Style(val value: Int) {
-        /** System appearance */
-        SYSTEM(0),
-        /** Custom appearance */
-        CUSTOM(1);
-
-        companion object {
-            fun valueOf(value: Int) = values().first { it.value == value }
-        }
+    companion object {
+        fun valueOf(value: Int) = values().first { it.value == value }
     }
+}
 
-    /**
-     * Interface used to build loading indicator
-     */
-    abstract class Builder {
+abstract class BaseHUDBuilder {
+    internal val lock = Lock()
 
-        private val lock = Lock()
+    /** The style of the loading indicator */
+    internal var style: HUDStyle = HUDStyle.SYSTEM
 
-        /** The style of the loading indicator */
-        private var style: Style = Style.SYSTEM
+    /** Sets the style for the loading indicator */
+    fun setStyle(style: HUDStyle) = apply { this.style = style }
 
-        /** Sets the style for the loading indicator */
-        fun setStyle(style: Style) = apply { this.style = style }
+    /** The title of the loading indicator */
+    internal var title: String? = null
 
-        /** The title of the loading indicator */
-        private var title: String? = null
+    /** Set the title for the loading indicator */
+    fun setTitle(title: String?) = apply { this.title = title }
 
-        /** Set the title for the loading indicator */
-        fun setTitle(title: String?) = apply { this.title = title }
+    /** Sets default style and empty title */
+    internal fun clear() {
+        setStyle(HUDStyle.SYSTEM)
+        setTitle(null)
+    }
+}
 
-        /** Returns built loading indicator */
-        fun build(initialize: Builder.() -> Unit = { }): HUD = lock.withLock {
-            clear()
-            initialize()
-            return create(HudConfig(style, title))
-        }
+expect class HUD {
 
+    class Builder : BaseHUDBuilder {
         /** Returns created loading indicator */
-        abstract fun create(hudConfig: HudConfig): HUD
-
-        /** Sets default style and empty title */
-        private fun clear() {
-            setStyle(Style.SYSTEM)
-            setTitle(null)
-        }
+        fun create(hudConfig: HudConfig): HUD
     }
+
+    val hudConfig: HudConfig
 
     /**
      * Returns true if indicator is visible
@@ -100,29 +90,39 @@ interface HUD {
      * @param completion The block to execute after the presentation finishes
      */
     fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
+}
 
-    /**
-     * Dismisses the indicator after [timeMillis] milliseconds
-     * @param timeMillis The number of milliseconds to wait
-     */
-    fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
+val HUD.title: String? get() = hudConfig.title
+val HUD.style: HUDStyle get() = hudConfig.style
+
+/**
+ * Dismisses the indicator after [timeMillis] milliseconds
+ * @param timeMillis The number of milliseconds to wait
+ */
+fun HUD.dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
+    GlobalScope.launch(MainQueueDispatcher) {
+        delay(timeMillis)
+        dismiss(animated)
+    }
+}
+
+/**
+ * Presents and keep presenting the indicator during block execution,
+ * hides view after block finished.
+ * @param block The block to execute with hud visible
+ */
+fun HUD.presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
+    present(animated) {
         GlobalScope.launch(MainQueueDispatcher) {
-            delay(timeMillis)
+            block()
             dismiss(animated)
         }
     }
+}
 
-    /**
-     * Presents and keep presenting the indicator during block execution,
-     * hides view after block finished.
-     * @param block The block to execute with hud visible
-     */
-    fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
-        present(animated) {
-            GlobalScope.launch(MainQueueDispatcher) {
-                block()
-                dismiss(animated)
-            }
-        }
-    }
+/** Returns built loading indicator */
+fun HUD.Builder.build(initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
+    clear()
+    initialize()
+    return create(HudConfig(style, title))
 }

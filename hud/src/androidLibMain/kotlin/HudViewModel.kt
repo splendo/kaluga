@@ -1,8 +1,3 @@
-package com.splendo.kaluga.hud
-
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -21,12 +16,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-open class HudViewModel : ViewModel() {
+package com.splendo.kaluga.hud
 
-    val builder = AndroidHUD.Builder()
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+
+open class HudViewModel : BaseViewModel() {
+
+    val builder = HUD.Builder()
 
     fun subscribe(activity: AppCompatActivity) {
-        builder.subscribe(activity, activity.supportFragmentManager)
+        builder.subscribe(activity, activity, activity.supportFragmentManager)
     }
 
     fun unsubscribe() {

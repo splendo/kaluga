@@ -1,28 +1,3 @@
-package com.splendo.kaluga.hud
-
-import android.content.Context
-import android.content.res.ColorStateList
-import android.content.res.Resources.ID_NULL
-import android.os.Bundle
-import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
-import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -41,23 +16,40 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
+package com.splendo.kaluga.hud
 
-    class Builder : HUD.Builder() {
+import android.content.Context
+import android.content.res.ColorStateList
+import android.content.res.Resources.ID_NULL
+import android.os.Bundle
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
-        private val uiContextObserver = UiContextObserver()
+actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, uiContextObserver: UIContextObserver) : CoroutineScope by MainScope() {
 
-        fun subscribe(lifecycleOwner: LifecycleOwner, fragmentManager: FragmentManager) {
-            uiContextObserver.uiContextData = UiContextObserver.UiContextData(
-                lifecycleOwner, fragmentManager
-            )
-        }
+    actual class Builder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseHUDBuilder(), LifecycleSubscribable by uiContextObserver {
 
-        fun unsubscribe() {
-            uiContextObserver.uiContextData = null
-        }
-
-        override fun create(hudConfig: HudConfig) = AndroidHUD(
+        actual fun create(hudConfig: HudConfig) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,
             uiContextObserver
@@ -70,19 +62,19 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
         var dismissCompletionBlock: () -> Unit = {}
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
-        private val style get() = HUD.Style.valueOf(arguments?.getInt(STYLE_KEY) ?: HUD.Style.SYSTEM.value)
+        private val style get() = HUDStyle.valueOf(arguments?.getInt(STYLE_KEY) ?: HUDStyle.SYSTEM.value)
         private val title get() = arguments?.getString(TITLE_KEY)
 
         @ColorInt
         private fun backgroundColor(context: Context): Int = when (style) {
-            HUD.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.windowBackground)
-            HUD.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorBackground)
+            HUDStyle.SYSTEM -> resolveAttrColor(context, android.R.attr.windowBackground)
+            HUDStyle.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorBackground)
         }
 
         @ColorInt
         private fun foregroundColor(context: Context): Int = when (style) {
-            HUD.Style.SYSTEM -> resolveAttrColor(context, android.R.attr.colorAccent)
-            HUD.Style.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorAccent)
+            HUDStyle.SYSTEM -> resolveAttrColor(context, android.R.attr.colorAccent)
+            HUDStyle.CUSTOM -> ContextCompat.getColor(context, R.color.li_colorAccent)
         }
 
         @ColorInt
@@ -144,17 +136,19 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
     private var dialogState = MutableLiveData<DialogState>()
+    private var previousUIContextData: UIContextObserver.UIContextData? = null
 
     init {
-        checkNotNull(uiContextObserver.uiContextData) { "Please subscribe builder to existing UI context before building HUD" }
-        subscribeIfNeeded(uiContextObserver.uiContextData)
-        uiContextObserver.onUiContextDataWillChange = { newValue, oldValue ->
-            unsubscribeIfNeeded(oldValue)
-            subscribeIfNeeded(newValue)
+        launch {
+            uiContextObserver.uiContextData.collect { uiContextData ->
+                unsubscribeIfNeeded(previousUIContextData)
+                subscribeIfNeeded(uiContextData)
+                previousUIContextData = uiContextData
+            }
         }
     }
 
-    private fun unsubscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
+    private fun unsubscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
         if (uiContextData != null) {
             runBlocking(Dispatchers.Main.immediate) {
                 dialogState.removeObservers(uiContextData.lifecycleOwner)
@@ -162,7 +156,7 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
         }
     }
 
-    private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
+    private fun subscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
         if (uiContextData != null) {
             runBlocking(Dispatchers.Main.immediate) {
                 dialogState.observe(uiContextData.lifecycleOwner, Observer {
@@ -175,14 +169,14 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
         }
     }
 
-    override val isVisible get() = loadingDialog.isVisible
+    actual val isVisible get() = loadingDialog.isVisible
 
-    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
+    actual fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         loadingDialog.presentCompletionBlock = completion
         dialogState.postValue(DialogState.Visible)
     }
 
-    override fun dismiss(animated: Boolean, completion: () -> Unit) {
+    actual fun dismiss(animated: Boolean, completion: () -> Unit) {
         loadingDialog.dismissCompletionBlock = completion
         dialogState.postValue(DialogState.Gone)
     }

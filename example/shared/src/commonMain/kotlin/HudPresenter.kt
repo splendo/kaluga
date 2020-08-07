@@ -1,8 +1,3 @@
-package com.splendo.kaluga.example.shared
-
-import com.splendo.kaluga.hud.HUD
-import kotlinx.coroutines.delay
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -21,6 +16,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.example.shared
+
+import com.splendo.kaluga.hud.HUD
+import com.splendo.kaluga.hud.HUDStyle
+import com.splendo.kaluga.hud.build
+import com.splendo.kaluga.hud.dismissAfter
+import com.splendo.kaluga.hud.presentDuring
+import kotlinx.coroutines.delay
+
 class HudPresenter(private val builder: HUD.Builder) {
 
     fun showSystem() {
@@ -31,7 +35,7 @@ class HudPresenter(private val builder: HUD.Builder) {
 
     fun showCustom() {
         builder.build {
-            setStyle(HUD.Style.CUSTOM)
+            setStyle(HUDStyle.CUSTOM)
             setTitle("This is a custom title")
         }.presentDuring {
             // Simulate heavy task
