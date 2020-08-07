@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
+import com.splendo.kaluga.alerts.AlertBuilder
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -32,6 +33,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
@@ -133,6 +135,10 @@ val viewModelModule = module {
         ArchitectureDetailsViewModel(name, number, Navigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
+    }
+
+    viewModel {
+        AlertViewModel(AlertBuilder())
     }
 
     viewModel {

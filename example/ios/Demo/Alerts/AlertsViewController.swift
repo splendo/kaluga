@@ -21,14 +21,25 @@ import KotlinNativeFramework
 
 class AlertsViewController: UITableViewController {
 
-    private lazy var alertPresenter = AlertPresenter(builder: AlertBuilder(viewController: self))
+    private lazy var viewModel = AlertViewModel(builder: AlertBuilder(viewController: self))
+    private var lifecycleManager: LifecycleManager!
+    
+    deinit {
+        lifecycleManager.unbind()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { _ in }
+    }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch indexPath.row {
-        case 0: alertPresenter.showAlert()
-        case 1: alertPresenter.showAndDismissAfter(timeSecs: 3)
-        case 2: alertPresenter.showList()
+        case 0: viewModel.showAlert()
+        case 1: viewModel.showAndDismissAfter(timeSecs: 3)
+        case 2: viewModel.showList()
         default: ()
         }
     }

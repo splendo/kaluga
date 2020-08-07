@@ -20,13 +20,14 @@ package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.AlertBuilder
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AlertPresenter(private val builder: AlertBuilder) {
+class AlertViewModel(val builder: AlertBuilder) : BaseViewModel() {
 
     fun showAlert() = MainScope().launch(MainQueueDispatcher) {
         val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)

@@ -1,9 +1,3 @@
-package com.splendo.kaluga.alerts
-
-import android.app.AlertDialog
-import android.content.Context
-import com.splendo.kaluga.utils.applyIf
-
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
@@ -21,16 +15,30 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val context: Context) : BaseAlertBuilder() {
-    override fun create() = AlertInterface(createAlert(), context)
+package com.splendo.kaluga.alerts
+
+import android.app.AlertDialog
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
+import com.splendo.kaluga.utils.applyIf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
+actual class AlertBuilder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseAlertBuilder(), LifecycleSubscribable by uiContextObserver {
+    override fun create() = AlertInterface(createAlert(), uiContextObserver)
 }
 
 actual class AlertInterface(
     private val alert: Alert,
-    private val context: Context
-) : BaseAlertPresenter(alert) {
-
-    private var alertDialog: AlertDialog? = null
+    private val uiContextObserver: UIContextObserver = UIContextObserver()
+) : BaseAlertPresenter(alert), CoroutineScope by MainScope()  {
 
     private companion object {
         fun transform(style: Alert.Action.Style): Int = when (style) {
@@ -40,8 +48,48 @@ actual class AlertInterface(
         }
     }
 
+    private sealed class DialogPresentation {
+        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit): DialogPresentation()
+        object Hidden : DialogPresentation()
+    }
+
+    private val presentation = MutableLiveData<DialogPresentation>(DialogPresentation.Hidden)
+    private var alertDialog: AlertDialog? = null
+    private var previousUIContextData: UIContextObserver.UIContextData? = null
+
+    init {
+        launch {
+            uiContextObserver.uiContextData.collect { uiContextData ->
+                unsubscribeIfNeeded(previousUIContextData)
+                subscribeIfNeeded(uiContextData)
+                previousUIContextData = uiContextData
+            }
+        }
+    }
+
+    private fun unsubscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
+        if (uiContextData != null) {
+            runBlocking(Dispatchers.Main.immediate) {
+                presentation.removeObservers(uiContextData.lifecycleOwner)
+            }
+        }
+    }
+
+    private fun subscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
+        uiContextData?.let { contextData ->
+            runBlocking(Dispatchers.Main.immediate) {
+                presentation.observe(uiContextData.lifecycleOwner, Observer { dialogPresentation ->
+                    when (dialogPresentation) {
+                        is DialogPresentation.Showing -> contextData.activity?.let { presentDialog(it, dialogPresentation) }
+                        is DialogPresentation.Hidden -> alertDialog?.dismiss()
+                    }
+                })
+            }
+        }
+    }
+
     override fun dismissAlert(animated: Boolean) {
-        alertDialog?.dismiss()
+        presentation.postValue(DialogPresentation.Hidden)
     }
 
     override fun showAlert(
@@ -49,6 +97,10 @@ actual class AlertInterface(
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit
     ) {
+        presentation.postValue(DialogPresentation.Showing(animated, afterHandler, completion))
+    }
+
+    private fun presentDialog(context: Context, presentation: DialogPresentation.Showing) {
         alertDialog = AlertDialog.Builder(context)
             .setTitle(alert.title)
             .setMessage(alert.message)
@@ -56,7 +108,7 @@ actual class AlertInterface(
                 val titles = alert.actions.map { it.title }.toTypedArray()
                 setItems(titles) { _, which ->
                     val action = alert.actions[which].apply { handler() }
-                    afterHandler(action)
+                    presentation.afterHandler(action)
                 }
             }
             .create()
@@ -64,15 +116,15 @@ actual class AlertInterface(
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
                         action.handler()
-                        afterHandler(action)
+                        presentation.afterHandler(action)
                     }
                 }
             }
             .apply {
                 setOnDismissListener { alertDialog = null }
-                setOnCancelListener { afterHandler(null) }
+                setOnCancelListener { presentation.afterHandler(null) }
                 show()
             }
-        completion()
+        presentation.completion()
     }
 }

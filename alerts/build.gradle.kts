@@ -17,6 +17,13 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+
+    val ext = (gradle as ExtensionAware).extra
+
+    implementation(project(":architecture", ""))
+}
+
 kotlin {
     sourceSets {
         getByName("commonMain") {

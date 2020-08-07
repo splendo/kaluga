@@ -1,10 +1,3 @@
-package com.splendo.kaluga.alerts
-
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
-import kotlin.coroutines.resume
-import kotlinx.coroutines.suspendCancellableCoroutine
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,6 +15,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.alerts
+
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 typealias AlertActionHandler = () -> Unit
 
