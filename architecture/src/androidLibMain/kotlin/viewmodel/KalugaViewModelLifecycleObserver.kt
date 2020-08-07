@@ -38,7 +38,7 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> get() = viewModel::class.memberProperties
         .filter { it.getter.visibility == KVisibility.PUBLIC }
-        .mapNotNull { (it as? KProperty1<VM, Any?>)?.getter?.call(viewModel) as? LifecycleSubscribable}
+        .mapNotNull { (it as? KProperty1<VM, Any?>)?.getter?.call(viewModel) as? LifecycleSubscribable }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun onCreate() {
