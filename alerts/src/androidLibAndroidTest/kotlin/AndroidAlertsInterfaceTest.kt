@@ -22,6 +22,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.splendo.kaluga.test.AlertsInterfaceTests
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -33,13 +34,13 @@ import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
 
-class MockAlertsTest {
+class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    private val builder get() = activityRule.activity.viewModel.alertBuilder
+    override val builder get() = activityRule.activity.viewModel.alertBuilder
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
@@ -116,24 +117,6 @@ class MockAlertsTest {
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
         device.findObject(By.text("OK")).click()
-        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
-    }
-
-    @Test
-    fun testAlertFlowCancel() = runBlockingTest {
-        val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildAlert {
-                setTitle("Hello")
-                setPositiveButton("OK")
-                setNegativeButton("Cancel")
-            }
-
-            val result = coroutineContext.run { presenter.show() }
-            assertNull(result)
-        }
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        // On cancel call, we expect the dialog to be dismissed
-        coroutine.cancel()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
