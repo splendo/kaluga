@@ -19,17 +19,16 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
 import com.splendo.kaluga.utils.applyIf
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 actual class AlertInterface(
     private val alert: Alert,
@@ -53,43 +52,26 @@ actual class AlertInterface(
         object Hidden : DialogPresentation()
     }
 
-    private val presentation = MutableLiveData<DialogPresentation>(DialogPresentation.Hidden)
+    private val presentation = ConflatedBroadcastChannel<DialogPresentation>(DialogPresentation.Hidden)
     private var alertDialog: AlertDialog? = null
-    private var previousUIContextData: UIContextObserver.UIContextData? = null
 
     init {
         launch {
-            uiContextObserver.uiContextData.collect { uiContextData ->
-                unsubscribeIfNeeded(previousUIContextData)
-                subscribeIfNeeded(uiContextData)
-                previousUIContextData = uiContextData
-            }
-        }
-    }
-
-    private fun unsubscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
-        if (uiContextData != null) {
-            runBlocking(Dispatchers.Main.immediate) {
-                presentation.removeObservers(uiContextData.lifecycleOwner)
-            }
-        }
-    }
-
-    private fun subscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
-        uiContextData?.let { contextData ->
-            runBlocking(Dispatchers.Main.immediate) {
-                presentation.observe(uiContextData.lifecycleOwner, Observer { dialogPresentation ->
-                    when (dialogPresentation) {
-                        is DialogPresentation.Showing -> contextData.activity?.let { presentDialog(it, dialogPresentation) }
-                        is DialogPresentation.Hidden -> alertDialog?.dismiss()
-                    }
-                })
+            combine(uiContextObserver.uiContextData, presentation.asFlow()) { uiContextData, dialogPresentation ->
+                Pair(uiContextData, dialogPresentation)
+            }.collect { contextPresentation ->
+                when(val dialogPresentation = contextPresentation.second) {
+                    is DialogPresentation.Showing -> contextPresentation.first?.activity?.let { presentDialog(it, dialogPresentation) } ?: run { alertDialog = null }
+                    is DialogPresentation.Hidden -> alertDialog?.dismiss()
+                }
             }
         }
     }
 
     override fun dismissAlert(animated: Boolean) {
-        presentation.postValue(DialogPresentation.Hidden)
+        launch {
+            presentation.send(DialogPresentation.Hidden)
+        }
     }
 
     override fun showAlert(
@@ -97,7 +79,9 @@ actual class AlertInterface(
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit
     ) {
-        presentation.postValue(DialogPresentation.Showing(animated, afterHandler, completion))
+        launch {
+            presentation.send(DialogPresentation.Showing(animated, afterHandler, completion))
+        }
     }
 
     private fun presentDialog(context: Context, presentation: DialogPresentation.Showing) {

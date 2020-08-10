@@ -34,16 +34,15 @@ import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, uiContextObserver: UIContextObserver) : CoroutineScope by MainScope() {
 
@@ -135,36 +134,17 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
     }
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
-    private var dialogState = MutableLiveData<DialogState>()
-    private var previousUIContextData: UIContextObserver.UIContextData? = null
+    private var dialogState = ConflatedBroadcastChannel<DialogState>(DialogState.Gone)
 
     init {
         launch {
-            uiContextObserver.uiContextData.collect { uiContextData ->
-                unsubscribeIfNeeded(previousUIContextData)
-                subscribeIfNeeded(uiContextData)
-                previousUIContextData = uiContextData
-            }
-        }
-    }
-
-    private fun unsubscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
-        if (uiContextData != null) {
-            runBlocking(Dispatchers.Main.immediate) {
-                dialogState.removeObservers(uiContextData.lifecycleOwner)
-            }
-        }
-    }
-
-    private fun subscribeIfNeeded(uiContextData: UIContextObserver.UIContextData?) {
-        if (uiContextData != null) {
-            runBlocking(Dispatchers.Main.immediate) {
-                dialogState.observe(uiContextData.lifecycleOwner, Observer {
-                    when (it) {
-                        is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")
-                        is DialogState.Gone -> loadingDialog.dismiss()
-                    }
-                })
+            combine(uiContextObserver.uiContextData, dialogState.asFlow()) { uiContextData, dialogPresentation ->
+                Pair(uiContextData, dialogPresentation)
+            }.collect { contextPresentation ->
+                when (contextPresentation.second) {
+                    is DialogState.Visible -> contextPresentation.first?.fragmentManager?.let { loadingDialog.show(it, "Kaluga.HUD") }
+                    is DialogState.Gone -> if (loadingDialog.isAdded) loadingDialog.dismiss()
+                }
             }
         }
     }
@@ -173,11 +153,15 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
 
     actual fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
         loadingDialog.presentCompletionBlock = completion
-        dialogState.postValue(DialogState.Visible)
+        launch {
+            dialogState.send(DialogState.Visible)
+        }
     }
 
     actual fun dismiss(animated: Boolean, completion: () -> Unit) {
         loadingDialog.dismissCompletionBlock = completion
-        dialogState.postValue(DialogState.Gone)
+        launch {
+            dialogState.send(DialogState.Gone)
+        }
     }
 }
