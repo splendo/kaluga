@@ -2,9 +2,11 @@
 
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.cinterop.CValue
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.UIKit.NSLayoutConstraint
@@ -59,12 +61,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
+class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
 
     class Builder(private val viewController: UIViewController) : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = IOSHUD(
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = IOSHUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
-            viewController
+            viewController,
+            coroutineScope
         )
     }
 
@@ -165,11 +168,15 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
     override val isVisible get() = hudViewController.presentingViewController != null
 
     override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+        debug("Present Coroutine")
         if (!isVisible) {
+            debug("Not Visible")
             topViewController.presentViewController(hudViewController, animated) {
+                debug("Complete")
                 continuation.resume(this)
             }
         } else {
+            debug("Resume")
             continuation.resume(this)
         }
     }

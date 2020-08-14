@@ -3,6 +3,8 @@ package com.splendo.kaluga.hud
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.MultiplatformMainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -28,7 +30,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 /**
  * Interface that defines loading indicator class, which can be shown or dismissed
  */
-interface HUD {
+interface HUD : CoroutineScope {
 
     /**
      * Style of the Loading Indicator
@@ -64,14 +66,14 @@ interface HUD {
         fun setTitle(title: String?) = apply { this.title = title }
 
         /** Returns built loading indicator */
-        fun build(initialize: Builder.() -> Unit = { }): HUD = lock.withLock {
+        fun build(coroutineScope: CoroutineScope = MultiplatformMainScope(), initialize: Builder.() -> Unit = { }): HUD = lock.withLock {
             clear()
             initialize()
-            return create(HudConfig(style, title))
+            return create(HudConfig(style, title), coroutineScope)
         }
 
         /** Returns created loading indicator */
-        abstract fun create(hudConfig: HudConfig): HUD
+        abstract fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope = MultiplatformMainScope()): HUD
 
         /** Sets default style and empty title */
         private fun clear() {
@@ -104,7 +106,7 @@ interface HUD {
      * @param timeMillis The number of milliseconds to wait
      */
     fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
-        GlobalScope.launch(MainQueueDispatcher) {
+        launch(MainQueueDispatcher) {
             delay(timeMillis)
             dismiss(animated)
         }
@@ -115,10 +117,9 @@ interface HUD {
      * hides view after block finished.
      * @param block The block to execute with hud visible
      */
-    suspend fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
+    suspend fun <T> presentDuring(animated: Boolean = true, block: suspend HUD.() -> T): T {
         present(animated)
-        GlobalScope.launch(MainQueueDispatcher) {
-            block()
+        return block().also {
             dismiss(animated)
         }
     }
