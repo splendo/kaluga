@@ -104,7 +104,9 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun dismissViewController(dismissSpec: NavigationSpec.Dismiss) {
-        assertParent()?.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.completion?.invoke() }
+        val parent = assertParent() ?: return
+        val toDismiss = dismissSpec.toDismiss(parent)
+        toDismiss.dismissViewControllerAnimated(dismissSpec.animated) { dismissSpec.completion?.invoke() }
     }
 
     private fun showViewController(showSpec: NavigationSpec.Show) {

@@ -87,7 +87,7 @@ extension ArchitectureInputViewController : UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let resultingString = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
         postInput(text: resultingString, fromTextField: textField)
-        return true
+        return false
     }
     
     private func postInput(text: String, fromTextField textField: UITextField) {
