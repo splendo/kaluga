@@ -1,10 +1,10 @@
 package com.splendo.kaluga.hud
 
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.CoroutineScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlinx.coroutines.CoroutineScope
 
 /*
 

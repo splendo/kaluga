@@ -5,7 +5,6 @@ import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.MultiplatformMainScope
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

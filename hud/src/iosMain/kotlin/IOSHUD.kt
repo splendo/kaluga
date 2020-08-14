@@ -61,12 +61,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
+class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
 
-    class Builder(private val viewController: UIViewController) : HUD.Builder() {
+    class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController = { it }) : HUD.Builder() {
         override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = IOSHUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
             viewController,
+            wrapper,
             coroutineScope
         )
     }
@@ -149,12 +150,12 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         }
     }
 
-    private val hudViewController = UIViewController(null, null).apply {
+    private val hudViewController = wrapper(UIViewController(null, null).apply {
         modalPresentationStyle = UIModalPresentationOverFullScreen
         modalTransitionStyle = UIModalTransitionStyleCrossDissolve
         view.backgroundColor = UIColor.clearColor
         view.addSubview(containerView)
-    }
+    })
 
     private val topViewController: UIViewController
         get() {
@@ -165,7 +166,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             return result ?: viewController
         }
 
-    override val isVisible get() = hudViewController.presentingViewController != null
+    override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
     override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         debug("Present Coroutine")
@@ -183,7 +184,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
 
     override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
         if (isVisible) {
-            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated) {
+            hudViewController.presentingViewController()?.dismissViewControllerAnimated(animated) {
                 continuation.resume(Unit)
             }
         } else {

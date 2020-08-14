@@ -2,7 +2,6 @@ package com.splendo.kaluga.hud
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 
 /*
 
