@@ -19,6 +19,8 @@ package com.splendo.kaluga.architecture.viewmodel
 
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -26,7 +28,7 @@ import kotlinx.coroutines.cancelChildren
 /**
  * Simple ViewModel class
  */
-expect open class ViewModel internal constructor() {
+expect open class ViewModel internal constructor(dispatchers: DispatcherProvider) {
     /**
      * [CoroutineScope] of the ViewModel
      */
@@ -41,7 +43,7 @@ expect open class ViewModel internal constructor() {
 /**
  * Default [ViewModel] implementation respecting the Lifecycle of the presenting view
  */
-open class BaseViewModel : ViewModel() {
+open class BaseViewModel : ViewModel(DefaultDispatcherProvider()) {
 
     private val resumedJobs = SupervisorJob()
 

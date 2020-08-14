@@ -12,7 +12,9 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Rule
 
 /*
@@ -47,6 +49,9 @@ class AndroidHUDTests {
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
+
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     private val builder get() = activityRule.activity.viewModel.builder
 
@@ -55,13 +60,18 @@ class AndroidHUDTests {
         const val PROCESSING = "Processing..."
     }
 
+    @Before
+    fun setup() {
+        builder.setDispatcherProvider(coroutinesTestRule.testDispatcherProvider)
+    }
+
     @Test
-    fun builderInitializer() {
+    fun builderInitializer() = coroutinesTestRule.testDispatcher.runBlockingTest {
         assertNotNull(builder.build())
     }
 
     @Test
-    fun indicatorShow() = runBlockingTest {
+    fun indicatorShow() = coroutinesTestRule.testDispatcher.runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -70,7 +80,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismiss() = runBlockingTest {
+    fun indicatorDismiss() = coroutinesTestRule.testDispatcher.runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -82,7 +92,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismissAfter() = runBlockingTest {
+    fun indicatorDismissAfter() = coroutinesTestRule.testDispatcher.runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -94,7 +104,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun testPresentDuring() = runBlockingTest {
+    fun testPresentDuring() = coroutinesTestRule.testDispatcher.runBlockingTest {
         lateinit var indicatorProcessing: HUD
 
         val loading1 = EmptyCompletableDeferred()
@@ -134,7 +144,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun rotateActivity() = runBlockingTest {
+    fun rotateActivity() = coroutinesTestRule.testDispatcher.runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()

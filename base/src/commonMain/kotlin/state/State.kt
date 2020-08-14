@@ -17,6 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 package com.splendo.kaluga.state
 
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.flow.HotFlowable
@@ -107,7 +109,7 @@ interface HandleAfterOldStateIsRemoved<S : State<S>> {
  * @param T the [State] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+abstract class StateRepo<S : State<S>>(private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(), coroutineContext: CoroutineContext = dispatchers.main()) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     private val stateMutex = Mutex()
 
@@ -226,7 +228,7 @@ abstract class StateRepo<S : State<S>>(coroutineContext: CoroutineContext = Main
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
-abstract class HotStateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
+abstract class HotStateRepo<S : State<S>>(private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(), coroutineContext: CoroutineContext = dispatchers.main()) : StateRepo<S>(dispatchers, coroutineContext) {
 
     private val hotFlowable = lazy {
         HotFlowable(runBlocking { initialize() })
@@ -237,7 +239,7 @@ abstract class HotStateRepo<S : State<S>>(coroutineContext: CoroutineContext = M
 /**
  * A [StateRepo] that represents its [State] as a Cold flow. Data will only be set when the State repo is observed
  */
-abstract class ColdStateRepo<S : State<S>>(coroutineContext: CoroutineContext = MainQueueDispatcher) : StateRepo<S>(coroutineContext) {
+abstract class ColdStateRepo<S : State<S>>(private val dispatchers: DispatcherProvider = DefaultDispatcherProvider(), coroutineContext: CoroutineContext = dispatchers.main()) : StateRepo<S>(dispatchers, coroutineContext) {
 
     override val flowable: ColdFlowable<S> = ColdFlowable({
         initialize()

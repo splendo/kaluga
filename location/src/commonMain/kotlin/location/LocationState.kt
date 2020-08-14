@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -247,7 +249,8 @@ class LocationStateRepo(
             locationPermission: Permission.Location,
             autoRequestPermission: Boolean = true,
             autoEnableLocations: Boolean = true,
-            coroutineContext: CoroutineContext = MainQueueDispatcher
+            dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
+            coroutineContext: CoroutineContext = dispatchers.main()
         ): LocationStateRepo
     }
 

@@ -46,6 +46,7 @@ kotlin {
         getByName("commonTest") {
             dependencies {
                 api(project(":test-utils", ""))
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8")
             }
         }
 

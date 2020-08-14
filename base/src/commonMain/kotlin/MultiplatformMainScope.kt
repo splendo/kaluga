@@ -20,6 +20,6 @@ package com.splendo.kaluga.base
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
-fun MultiplatformMainScope(): CoroutineScope {
-    return CoroutineScope(SupervisorJob() + MainQueueDispatcher)
+fun MultiplatformMainScope(dispatchers: DefaultDispatcherProvider = DefaultDispatcherProvider()): CoroutineScope {
+    return CoroutineScope(SupervisorJob() + dispatchers.main())
 }

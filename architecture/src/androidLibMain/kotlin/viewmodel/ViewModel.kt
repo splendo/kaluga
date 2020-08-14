@@ -20,8 +20,10 @@ package com.splendo.kaluga.architecture.viewmodel
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 
-actual open class ViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
+actual open class ViewModel internal actual constructor(private val dispatchers: DispatcherProvider) : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 

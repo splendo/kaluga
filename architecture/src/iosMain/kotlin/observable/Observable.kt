@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.HotFlowable
 import kotlin.properties.Delegates
@@ -82,10 +84,10 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
  * @param flow The [Flow] whose value to match
  * @param coroutineScope The [CoroutineScope] on which the observe the [Flow]
  */
-class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
+class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope, private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()) : Observable<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(dispatchers.main()) {
             flow.collect {
                 value = ObservableOptional.Value(it)
             }
@@ -145,10 +147,10 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
  * @param flowable The [HotFlowable] to synchronize to
  * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
  */
-class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope, private val dispatchers: DispatcherProvider = DefaultDispatcherProvider()) : Subject<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(dispatchers.main()) {
             flowable.flow().collect {
                 value = ObservableOptional.Value(it)
             }
@@ -156,7 +158,7 @@ class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutine
     }
 
     override fun post(newValue: T) {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(dispatchers.main()) {
             flowable.set(newValue)
         }
     }

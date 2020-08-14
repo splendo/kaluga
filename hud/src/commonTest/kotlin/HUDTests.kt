@@ -1,5 +1,7 @@
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -25,6 +27,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 class HUDTests {
 
     class MockHUD(val style: HUD.Style, val title: String?) : HUD {
+
+        override val dispatchers: DispatcherProvider = DefaultDispatcherProvider() // use test dispatcher
+
         lateinit var onPresentCalled: () -> Unit
         lateinit var onDismissCalled: () -> Unit
 
@@ -44,7 +49,7 @@ class HUDTests {
     }
 
     class MockBuilder : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = MockHUD(hudConfig.style, hudConfig.title)
+        override fun create(hudConfig: HudConfig, dispatchers: DispatcherProvider) = MockHUD(hudConfig.style, hudConfig.title)
     }
 
     @Test

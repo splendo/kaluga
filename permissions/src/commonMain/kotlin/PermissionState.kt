@@ -18,6 +18,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
@@ -81,8 +83,9 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
  */
 abstract class PermissionStateRepo<P : Permission>(
     private val monitoringInterval: Long = defaultMonitoringInterval,
-    coroutineContext: CoroutineContext = MainQueueDispatcher
-) : ColdStateRepo<PermissionState<P>>(coroutineContext) {
+    dispatchers: DispatcherProvider = DefaultDispatcherProvider(),
+    coroutineContext: CoroutineContext = dispatchers.main()
+) : ColdStateRepo<PermissionState<P>>(dispatchers, coroutineContext) {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000

@@ -19,5 +19,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 expect val MainQueueDispatcher: CoroutineDispatcher
+
+interface DispatcherProvider {
+
+    fun main(): CoroutineDispatcher = MainQueueDispatcher
+    fun default(): CoroutineDispatcher = Dispatchers.Default
+
+}
+
+class DefaultDispatcherProvider : DispatcherProvider

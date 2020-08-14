@@ -20,9 +20,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.runBlocking
 
 /*
@@ -43,7 +46,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
+class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver, override val dispatchers: DispatcherProvider = DefaultDispatcherProvider()) : HUD {
 
     class Builder : HUD.Builder() {
 
@@ -59,10 +62,11 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
             uiContextObserver.uiContextData = null
         }
 
-        override fun create(hudConfig: HudConfig) = AndroidHUD(
+        override fun create(hudConfig: HudConfig, dispatchers: DispatcherProvider) = AndroidHUD(
             R.layout.loading_indicator_view,
             hudConfig,
-            uiContextObserver
+            uiContextObserver,
+            dispatchers
         )
     }
 
@@ -158,7 +162,7 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private fun unsubscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
-            runBlocking(Dispatchers.Main.immediate) {
+            runBlocking(dispatchers.main()) {
                 dialogState.removeObservers(uiContextData.lifecycleOwner)
             }
         }
@@ -166,7 +170,7 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     private fun subscribeIfNeeded(uiContextData: UiContextObserver.UiContextData?) {
         if (uiContextData != null) {
-            runBlocking(Dispatchers.Main.immediate) {
+            runBlocking(dispatchers.main()) {
                 dialogState.observe(uiContextData.lifecycleOwner, Observer {
                     when (it) {
                         is DialogState.Visible -> loadingDialog.show(uiContextData.fragmentManager, "Kaluga.HUD")

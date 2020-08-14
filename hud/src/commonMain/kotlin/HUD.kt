@@ -2,6 +2,8 @@ package com.splendo.kaluga.hud
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import com.splendo.kaluga.base.DefaultDispatcherProvider
+import com.splendo.kaluga.base.DispatcherProvider
 import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -30,6 +32,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
  */
 interface HUD {
 
+    val dispatchers: DispatcherProvider
+
     /**
      * Style of the Loading Indicator
      */
@@ -47,7 +51,7 @@ interface HUD {
     /**
      * Interface used to build loading indicator
      */
-    abstract class Builder {
+    abstract class Builder(private var dispatchers: DispatcherProvider = DefaultDispatcherProvider()) {
 
         private val lock = Lock()
 
@@ -63,15 +67,18 @@ interface HUD {
         /** Set the title for the loading indicator */
         fun setTitle(title: String?) = apply { this.title = title }
 
+        /** Sets a dispatcher provider */
+        fun setDispatcherProvider(dispatchers: DispatcherProvider) = apply { this.dispatchers = dispatchers }
+
         /** Returns built loading indicator */
         fun build(initialize: Builder.() -> Unit = { }): HUD = lock.withLock {
             clear()
             initialize()
-            return create(HudConfig(style, title))
+            return create(HudConfig(style, title), dispatchers)
         }
 
         /** Returns created loading indicator */
-        abstract fun create(hudConfig: HudConfig): HUD
+        abstract fun create(hudConfig: HudConfig, dispatcherProvider: DispatcherProvider): HUD
 
         /** Sets default style and empty title */
         private fun clear() {
@@ -104,7 +111,7 @@ interface HUD {
      * @param timeMillis The number of milliseconds to wait
      */
     fun dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
-        GlobalScope.launch(MainQueueDispatcher) {
+        GlobalScope.launch(dispatchers.main()) {
             delay(timeMillis)
             dismiss(animated)
         }
@@ -117,7 +124,7 @@ interface HUD {
      */
     suspend fun presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
         present(animated)
-        GlobalScope.launch(MainQueueDispatcher) {
+        GlobalScope.launch(dispatchers.main()) {
             block()
             dismiss(animated)
         }
