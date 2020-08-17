@@ -1,8 +1,10 @@
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlinx.coroutines.CoroutineScope
 
 /*
 
@@ -24,17 +26,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 class HUDTests {
 
-    class MockHUD(val style: HUD.Style, val title: String?) : HUD {
+    class MockHUD(val style: HUD.Style, val title: String?, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
         lateinit var onPresentCalled: () -> Unit
         lateinit var onDismissCalled: () -> Unit
 
         override val isVisible: Boolean = false
-        override fun present(animated: Boolean, completion: () -> Unit): HUD {
+        override suspend fun present(animated: Boolean): HUD {
             onPresentCalled()
             return this
         }
 
-        override fun dismiss(animated: Boolean, completion: () -> Unit) {
+        override suspend fun dismiss(animated: Boolean) {
             onDismissCalled()
         }
 
@@ -44,11 +46,11 @@ class HUDTests {
     }
 
     class MockBuilder : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = MockHUD(hudConfig.style, hudConfig.title)
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = MockHUD(hudConfig.style, hudConfig.title, coroutineScope)
     }
 
     @Test
-    fun testBuilder() {
+    fun testBuilder() = runBlocking {
         val builder = MockBuilder()
         val hud1 = builder.build() as MockHUD
         assertEquals(hud1.style, HUD.Style.SYSTEM)

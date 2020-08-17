@@ -20,6 +20,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 
@@ -41,7 +44,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver) : HUD {
+class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudConfig, uiContextObserver: UiContextObserver, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
 
     class Builder : HUD.Builder() {
 
@@ -57,10 +60,11 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
             uiContextObserver.uiContextData = null
         }
 
-        override fun create(hudConfig: HudConfig) = AndroidHUD(
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = AndroidHUD(
             R.layout.loading_indicator_view,
             hudConfig,
-            uiContextObserver
+            uiContextObserver,
+            coroutineScope
         )
     }
 
@@ -129,11 +133,13 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
         override fun onStart() {
             super.onStart()
             presentCompletionBlock()
+            presentCompletionBlock = {}
         }
 
         override fun onStop() {
             super.onStop()
             dismissCompletionBlock()
+            dismissCompletionBlock = {}
         }
     }
 
@@ -177,13 +183,17 @@ class AndroidHUD private constructor(@LayoutRes viewResId: Int, hudConfig: HudCo
 
     override val isVisible get() = loadingDialog.isVisible
 
-    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        loadingDialog.presentCompletionBlock = completion
+    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+        loadingDialog.presentCompletionBlock = {
+            continuation.resume(this)
+        }
         dialogState.postValue(DialogState.Visible)
     }
 
-    override fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismissCompletionBlock = completion
+    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
+        loadingDialog.dismissCompletionBlock = {
+            continuation.resume(Unit)
+        }
         dialogState.postValue(DialogState.Gone)
     }
 }

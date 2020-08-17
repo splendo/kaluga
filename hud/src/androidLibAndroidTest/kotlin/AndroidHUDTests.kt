@@ -11,8 +11,10 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 
 /*
@@ -61,7 +63,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorShow() {
+    fun indicatorShow() = runBlocking {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -70,7 +72,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismiss() {
+    fun indicatorDismiss() = runBlocking {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -82,7 +84,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun indicatorDismissAfter() {
+    fun indicatorDismissAfter() = runBlocking {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -94,27 +96,28 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun testPresentDuring() = runBlockingTest {
-        lateinit var indicatorProcessing: HUD
-
+    fun testPresentDuring() = runBlocking {
         val loading1 = EmptyCompletableDeferred()
         val loading2 = EmptyCompletableDeferred()
         val processing = EmptyCompletableDeferred()
 
         val indicatorLoading = builder.build {
             setTitle(LOADING)
-        }.presentDuring {
-            loading1.await()
-            // after appearance of dialog is confirmed, launch another one on top
-            launch {
-                indicatorProcessing = builder.build {
-                    setTitle(PROCESSING)
-                }.presentDuring {
-                    processing.await()
+        }
+        val indicatorProcessing = CompletableDeferred<HUD>()
+        MainScope().launch {
+            indicatorLoading.presentDuring {
+                    loading1.await()
+                    val processingDialog = builder.build {
+                        setTitle(PROCESSING)
+                    }
+                indicatorProcessing.complete(processingDialog)
+                processingDialog.presentDuring {
+                        processing.await()
+                    }
+                loading2.await()
                 }
             }
-            loading2.await()
-        }
 
         // check the Loading dialog pops up and is reported as visible
         device.assertTextAppears(LOADING)
@@ -124,7 +127,7 @@ class AndroidHUDTests {
         // check the Processing dialog is popped on top
         device.assertTextDisappears(LOADING)
         device.assertTextAppears(PROCESSING)
-        assertTrue(indicatorProcessing.isVisible)
+        assertTrue(indicatorProcessing.await().isVisible)
         processing.complete()
 
         // check the Loading dialog appears again
@@ -134,7 +137,7 @@ class AndroidHUDTests {
     }
 
     @Test
-    fun rotateActivity() {
+    fun rotateActivity() = runBlocking {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()

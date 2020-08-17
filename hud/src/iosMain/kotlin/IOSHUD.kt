@@ -2,7 +2,10 @@
 
 package com.splendo.kaluga.hud
 
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.cinterop.CValue
+import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGRect
 import platform.UIKit.NSLayoutConstraint
@@ -57,12 +60,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController) : HUD {
+class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
 
-    class Builder(private val viewController: UIViewController) : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = IOSHUD(
+    class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController = { it }) : HUD.Builder() {
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = IOSHUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
-            viewController
+            viewController,
+            wrapper,
+            coroutineScope
         )
     }
 
@@ -144,12 +149,12 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         }
     }
 
-    private val hudViewController = UIViewController(null, null).apply {
+    private val hudViewController = wrapper(UIViewController(null, null).apply {
         modalPresentationStyle = UIModalPresentationOverFullScreen
         modalTransitionStyle = UIModalTransitionStyleCrossDissolve
         view.backgroundColor = UIColor.clearColor
         view.addSubview(containerView)
-    }
+    })
 
     private val topViewController: UIViewController
         get() {
@@ -160,21 +165,25 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             return result ?: viewController
         }
 
-    override val isVisible get() = hudViewController.presentingViewController != null
+    override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
-    override fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
+    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         if (!isVisible) {
-            topViewController.presentViewController(hudViewController, animated, completion)
+            topViewController.presentViewController(hudViewController, animated) {
+                continuation.resume(this)
+            }
         } else {
-            completion()
+            continuation.resume(this)
         }
     }
 
-    override fun dismiss(animated: Boolean, completion: () -> Unit) {
+    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
         if (isVisible) {
-            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated, completion)
+            hudViewController.presentingViewController()?.dismissViewControllerAnimated(animated) {
+                continuation.resume(Unit)
+            }
         } else {
-            completion()
+            continuation.resume(Unit)
         }
     }
 }
