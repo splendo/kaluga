@@ -79,15 +79,13 @@ expect class HUD {
      * Presents as indicator
      *
      * @param animated Pass `true` to animate the presentation
-     * @param completion The block to execute after the presentation finishes
      */
-    fun present(animated: Boolean = true, completion: () -> Unit = {}): HUD
+    suspend fun present(animated: Boolean = true): HUD
 
     /**
      * Dismisses the indicator
      *
      * @param animated Pass `true` to animate the transition
-     * @param completion The block to execute after the presentation finishes
      */
     fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
 }

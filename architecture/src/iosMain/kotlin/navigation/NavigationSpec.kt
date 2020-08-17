@@ -90,10 +90,11 @@ sealed class NavigationSpec {
 
     /**
      * Dismisses the parent.
+     * @param toDismiss Determines the [UIViewController] to dismiss based on the provided parent viewController.
      * @param animated Specifies whether transition should be animated
      * @param completion Optional function to call when dismissal has completed
      */
-    data class Dismiss(val animated: Boolean = false, val completion: (() -> Unit)? = null) : NavigationSpec()
+    data class Dismiss(val toDismiss: (UIViewController) -> UIViewController = { it }, val animated: Boolean = false, val completion: (() -> Unit)? = null) : NavigationSpec()
 
     /**
      * Lets the parent show a [UIViewController] using [UIViewController.showViewController]
