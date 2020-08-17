@@ -25,19 +25,16 @@ inline class InternalLogger(val logger: Logger) : ru.pocketbyte.kydra.log.Logger
     override fun log(level: ru.pocketbyte.kydra.log.LogLevel, tag: String?, message: String) {
         logger.log(
             level.getLogLevel(),
-            transformTag(tag),
-            transformMessage(message)
+            tag,
+            message
         )
     }
 
     override fun log(level: ru.pocketbyte.kydra.log.LogLevel, tag: String?, exception: Throwable) {
         logger.log(
             level.getLogLevel(),
-            transformTag(tag),
+            tag,
             exception
         )
     }
 }
-
-internal expect fun transformTag(tag: String?): String?
-internal expect fun transformMessage(message: String): String

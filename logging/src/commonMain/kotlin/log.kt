@@ -1,4 +1,3 @@
-package com.splendo.kaluga.logging
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -16,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.logging
 
 import ru.pocketbyte.kydra.log.KydraLog
 
@@ -49,30 +50,33 @@ fun logger(): Logger {
 }
 
 /**
- * Writes log with provided level and empty tag.
+ * Writes log with provided level and tag.
  * @param level Log level
+ * @param tag Log tag
  * @param message Message to be written into log
  */
-fun log(level: LogLevel, message: String) {
-    KydraLog.log(level.logLevel, null, message)
+fun log(level: LogLevel, tag: String? = null, message: String) {
+    KydraLog.log(level.logLevel, transformTag(tag), transformMessage(message))
 }
 
 /**
  * Writes exception log with provided level and empty tag.
  * @param level Log level
+ * @param tag Log tag
  * @param exception Exception to be written into log
  */
-fun log(level: LogLevel, exception: Throwable) {
-    KydraLog.log(level.logLevel, null, exception)
+fun log(level: LogLevel, tag: String? = null, exception: Throwable) {
+    KydraLog.log(level.logLevel, transformTag(tag), exception)
 }
 
 /**
- * Writes log with provided level and empty tag.
- * @param level Log level
- * @param function Function that returns message to be written into log
- */
-fun log(level: LogLevel, function: () -> String) {
-    KydraLog.log(level.logLevel, null, function)
+* Writes log with provided level and empty tag.
+* @param level Log level
+* @param tag Log tag
+* @param function Function that returns message to be written into log
+*/
+fun log(level: LogLevel, tag: String? = null, function: () -> String) {
+    KydraLog.log(level.logLevel, tag) { transformMessage(function()) }
 }
 
 // ================================================================
@@ -83,7 +87,7 @@ fun log(level: LogLevel, function: () -> String) {
  * @param message Message to be written into log.
  */
 fun info(tag: String?, message: String) {
-    KydraLog.log(LogLevel.INFO.logLevel, tag, message)
+    log(LogLevel.INFO, tag, message)
 }
 
 /**
@@ -91,7 +95,7 @@ fun info(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun info(message: String) {
-    KydraLog.log(LogLevel.INFO.logLevel, null, message)
+    log(LogLevel.INFO, null, message)
 }
 
 /**
@@ -100,7 +104,7 @@ fun info(message: String) {
  * @param exception Exception to be written into log.
  */
 fun info(tag: String?, exception: Throwable) {
-    KydraLog.log(LogLevel.INFO.logLevel, tag, exception)
+    log(LogLevel.INFO, tag, exception)
 }
 
 /**
@@ -108,7 +112,7 @@ fun info(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun info(exception: Throwable) {
-    KydraLog.log(LogLevel.INFO.logLevel, null, exception)
+    log(LogLevel.INFO, null, exception)
 }
 
 /**
@@ -117,7 +121,7 @@ fun info(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun info(tag: String?, function: () -> String) {
-    KydraLog.log(LogLevel.INFO.logLevel, tag, function)
+    log(LogLevel.INFO, tag, function)
 }
 
 /**
@@ -136,7 +140,7 @@ fun info(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun debug(tag: String?, message: String) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, tag, message)
+    log(LogLevel.DEBUG, tag, message)
 }
 
 /**
@@ -144,7 +148,7 @@ fun debug(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun debug(message: String) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, null, message)
+    log(LogLevel.DEBUG, null, message)
 }
 
 /**
@@ -153,7 +157,7 @@ fun debug(message: String) {
  * @param exception Exception to be written into log.
  */
 fun debug(tag: String?, exception: Throwable) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, tag, exception)
+    log(LogLevel.DEBUG, tag, exception)
 }
 
 /**
@@ -161,7 +165,7 @@ fun debug(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun debug(exception: Throwable) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, null, exception)
+    log(LogLevel.DEBUG, null, exception)
 }
 
 /**
@@ -170,7 +174,7 @@ fun debug(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun debug(tag: String?, function: () -> String) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, tag, function)
+    log(LogLevel.DEBUG, tag, function)
 }
 
 /**
@@ -178,7 +182,7 @@ fun debug(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun debug(function: () -> String) {
-    KydraLog.log(LogLevel.DEBUG.logLevel, null, function)
+    log(LogLevel.DEBUG, null, function)
 }
 
 // ================================================================
@@ -189,7 +193,7 @@ fun debug(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun warn(tag: String?, message: String) {
-    KydraLog.log(LogLevel.WARNING.logLevel, tag, message)
+    log(LogLevel.WARNING, tag, message)
 }
 
 /**
@@ -197,7 +201,7 @@ fun warn(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun warn(message: String) {
-    KydraLog.log(LogLevel.WARNING.logLevel, null, message)
+    log(LogLevel.WARNING, null, message)
 }
 
 /**
@@ -206,7 +210,7 @@ fun warn(message: String) {
  * @param exception Exception to be written into log.
  */
 fun warn(tag: String?, exception: Throwable) {
-    KydraLog.log(LogLevel.WARNING.logLevel, tag, exception)
+    log(LogLevel.WARNING, tag, exception)
 }
 
 /**
@@ -214,7 +218,7 @@ fun warn(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun warn(exception: Throwable) {
-    KydraLog.log(LogLevel.WARNING.logLevel, null, exception)
+    log(LogLevel.WARNING, null, exception)
 }
 
 /**
@@ -223,7 +227,7 @@ fun warn(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun warn(tag: String?, function: () -> String) {
-    KydraLog.log(LogLevel.WARNING.logLevel, tag, function)
+    log(LogLevel.WARNING, tag, function)
 }
 
 /**
@@ -231,7 +235,7 @@ fun warn(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun warn(function: () -> String) {
-    KydraLog.log(LogLevel.WARNING.logLevel, null, function)
+    log(LogLevel.WARNING, null, function)
 }
 
 // ================================================================
@@ -242,7 +246,7 @@ fun warn(function: () -> String) {
  * @param message Message to be written into log.
  */
 fun error(tag: String?, message: String) {
-    KydraLog.log(LogLevel.ERROR.logLevel, tag, message)
+    log(LogLevel.ERROR, tag, message)
 }
 
 /**
@@ -250,7 +254,7 @@ fun error(tag: String?, message: String) {
  * @param message Message to be written into log.
  */
 fun error(message: String) {
-    KydraLog.log(LogLevel.ERROR.logLevel, null, message)
+    log(LogLevel.ERROR, null, message)
 }
 
 /**
@@ -259,7 +263,7 @@ fun error(message: String) {
  * @param exception Exception to be written into log.
  */
 fun error(tag: String?, exception: Throwable) {
-    KydraLog.log(LogLevel.ERROR.logLevel, tag, exception)
+    log(LogLevel.ERROR, tag, exception)
 }
 
 /**
@@ -267,7 +271,7 @@ fun error(tag: String?, exception: Throwable) {
  * @param exception Exception to be written into log.
  */
 fun error(exception: Throwable) {
-    KydraLog.log(LogLevel.ERROR.logLevel, null, exception)
+    log(LogLevel.ERROR, null, exception)
 }
 
 /**
@@ -276,7 +280,7 @@ fun error(exception: Throwable) {
  * @param function Function that returns message to be written into log
  */
 fun error(tag: String?, function: () -> String) {
-    KydraLog.log(LogLevel.ERROR.logLevel, tag, function)
+    log(LogLevel.ERROR, tag, function)
 }
 
 /**
@@ -284,5 +288,5 @@ fun error(tag: String?, function: () -> String) {
  * @param function Function that returns message to be written into log
  */
 fun error(function: () -> String) {
-    KydraLog.log(LogLevel.ERROR.logLevel, null, function)
+    log(LogLevel.ERROR, null, function)
 }

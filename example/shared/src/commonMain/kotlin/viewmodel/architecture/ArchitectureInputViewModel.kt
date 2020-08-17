@@ -33,25 +33,25 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class InputNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>): NavigationAction<DetailsSpecRow<*>>(bundle)
+class InputNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>) : NavigationAction<DetailsSpecRow<*>>(bundle)
 
 class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : NavigatingViewModel<InputNavigation>(navigator) {
 
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")
 
-    private val _nameInput  = HotFlowable("")
+    private val _nameInput = HotFlowable("")
     val nameInput = _nameInput.toSubject(coroutineScope)
 
-    private val _numberInput  = HotFlowable<String>("")
+    private val _numberInput = HotFlowable("")
     val numberInput = _numberInput.toSubject(coroutineScope)
 
-    private val _isNameValid: Flow<Boolean> get() {return _nameInput.flow().map {
+    private val _isNameValid: Flow<Boolean> get() { return _nameInput.flow().map {
         it.isNotEmpty()
-    }}
+    } }
     val isNameValid = _isNameValid.toObservable(coroutineScope)
 
-    private val _isNumberValid: Flow<Boolean> get() {return _numberInput.flow().map {
+    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.flow().map {
         it.toIntOrNull() != null
     } }
     val isNumberValid = _isNumberValid.toObservable(coroutineScope)
@@ -66,7 +66,7 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
         val numberResult: ObservableOptional<String> by numberInput
         val number: String? by numberResult
         coroutineScope.launch {
-            if(isValid.first()) {
+            if (isValid.first()) {
                 navigator.navigate(InputNavigation(DetailsSpec().toBundle { row ->
                     when (row) {
                         is DetailsSpecRow.NameRow -> row.convertValue(name ?: "")
@@ -76,5 +76,4 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
             }
         }
     }
-
 }

@@ -42,27 +42,27 @@ class ArchitectureInputViewController: UIViewController  {
             }
             
             viewModel.nameHeader.observe { header in
-                self?.nameLabel.text = header as? String
+                self?.nameLabel.text = header as String?
             }.addTo(disposeBag: disposeBag)
             
             viewModel.nameInput.observe { name in
-                self?.nameInput.text = name as? String
+                self?.nameInput.text = name as String?
             }.addTo(disposeBag: disposeBag)
             
             viewModel.isNameValid.observe { isValid in
-                self?.nameError.isHidden = (isValid as? Bool ?? false)
+                self?.nameError.isHidden = isValid?.boolValue ?? false
             }.addTo(disposeBag: disposeBag)
             
             viewModel.numberHeader.observe { header in
-                self?.numberLabel.text = header as? String
+                self?.numberLabel.text = header as String?
             }.addTo(disposeBag: disposeBag)
             
             viewModel.numberInput.observe { number in
-                self?.numberInput.text = number as? String
+                self?.numberInput.text = number as String?
             }.addTo(disposeBag: disposeBag)
             
             viewModel.isNumberValid.observe { isValid in
-                self?.numberError.isHidden = (isValid as? Bool ?? false)
+                self?.numberError.isHidden = isValid?.boolValue ?? false
             }.addTo(disposeBag: disposeBag)
         }
     }
@@ -72,8 +72,8 @@ class ArchitectureInputViewController: UIViewController  {
     }
     
     private func onDetailsDismissed(resultName: String, resultNumber: Int32) {
-        viewModel.nameInput.post(newValue: resultName)
-        viewModel.numberInput.post(newValue: String(resultNumber))
+        viewModel.nameInput.post(newValue: NSString(string: resultName))
+        viewModel.numberInput.post(newValue: NSString(string: "\(resultNumber)"))
     }
     
 }
@@ -87,15 +87,14 @@ extension ArchitectureInputViewController : UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let resultingString = ((textField.text ?? "") as NSString).replacingCharacters(in: range, with: string)
         postInput(text: resultingString, fromTextField: textField)
-        return true
+        return false
     }
     
     private func postInput(text: String, fromTextField textField: UITextField) {
         if (textField == nameInput) {
-            viewModel.nameInput.post(newValue: text)
+            viewModel.nameInput.post(newValue: NSString(string: text))
         } else if (textField == numberInput) {
-            viewModel.numberInput.post(newValue: text)
+            viewModel.numberInput.post(newValue: NSString(string: text))
         }
     }
-    
 }

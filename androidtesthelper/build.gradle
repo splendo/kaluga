@@ -39,6 +39,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -55,10 +58,8 @@ android {
     }
 
     lintOptions {
-        disable "InvalidPackage" // https://github.com/Kotlin/kotlinx.coroutines/issues/2004
+        disable "MissingClass"
     }
-
-
 }
 
 apply from: "../gradle/android_dependencies.gradle"

@@ -1,4 +1,3 @@
-package com.splendo.kaluga.base.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,21 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-import com.splendo.kaluga.utils.byOrdinalOrDefault
-import kotlin.test.Test
-import kotlin.test.assertEquals
+package com.splendo.kaluga.resources
 
-class ByOrdinalOrDefaultTest {
-     enum class Numbers {
-         one, two
-     }
+import androidx.appcompat.app.AppCompatActivity
 
-    @Test
-    fun test() {
-        assertEquals(Numbers.one, Enum.byOrdinalOrDefault(0, Numbers.two))
-        assertEquals(Numbers.two, Enum.byOrdinalOrDefault(1, Numbers.one))
-        assertEquals(Numbers.two, Enum.byOrdinalOrDefault(-1, Numbers.two))
-        assertEquals(Numbers.one, Enum.byOrdinalOrDefault(2, Numbers.one))
-    }
-
-}
+class TestActivity : AppCompatActivity()

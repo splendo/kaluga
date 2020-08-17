@@ -87,7 +87,7 @@ actual class BluetoothPermissionManager(
     private fun checkAuthorization(): IOSPermissionsHelper.AuthorizationStatus {
         val version = IOSVersion.systemVersion
         return when {
-            version.isOSVersionOrNewer(IOSVersion(13, 0, 0)) -> CBCentralManager().authorization.toAuthorizationStatus()
+            version >= IOSVersion(13) -> CBCentralManager().authorization.toAuthorizationStatus()
             else -> CBPeripheralManager.authorizationStatus().toPeripheralAuthorizationStatus()
         }
     }
