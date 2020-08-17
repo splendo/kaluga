@@ -44,3 +44,6 @@ internal inline fun ru.pocketbyte.kydra.log.LogLevel.getLogLevel(): LogLevel {
         ru.pocketbyte.kydra.log.LogLevel.ERROR -> LogLevel.ERROR
     }
 }
+
+internal expect fun transformTag(tag: String?): String?
+internal expect fun transformMessage(message: String): String

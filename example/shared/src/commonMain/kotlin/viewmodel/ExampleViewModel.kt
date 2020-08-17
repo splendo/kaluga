@@ -33,7 +33,6 @@ sealed class ExampleTabNavigation : NavigationAction<Nothing>(null) {
 
     object FeatureList : ExampleTabNavigation()
     object Info : ExampleTabNavigation()
-
 }
 
 class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingViewModel<ExampleTabNavigation>(navigator) {
@@ -45,7 +44,7 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
 
     val tabs = observableOf(listOf(Tab.FeatureList, Tab.Info))
 
-    private val _tab  = HotFlowable<Tab>(Tab.FeatureList)
+    private val _tab = HotFlowable<Tab>(Tab.FeatureList)
     val tab = _tab.toSubject(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {

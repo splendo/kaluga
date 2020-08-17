@@ -35,7 +35,7 @@ import kotlinx.coroutines.flow.first
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
     private var channel: BroadcastChannel<T>? = null
-    protected fun ensureChannel():BroadcastChannel<T> {
+    protected fun ensureChannel(): BroadcastChannel<T> {
         return channel ?: channelFactory().also { channel = it }
     }
 
@@ -47,8 +47,7 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
     }
 
     override suspend fun set(value: T) {
-        channel?.send(value) ?:
-            warn("'$value' offered to Flowable but there is no channel active")
+        channel?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
     }
 
     override fun cancelFlows() {
@@ -56,7 +55,7 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         channel = null
     }
 
-    override fun setBlocking(value:T) {
+    override fun setBlocking(value: T) {
         // if a conflated broadcast channel is used it always accepts input non-blocking (provided the channel is not closed)
         runBlocking {
             set(value)

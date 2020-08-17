@@ -1,4 +1,3 @@
-package com.splendo.kaluga.utils
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.utils
+
 /**
  * Returns the enum by matching ordinals position, or the given default value if no ordinals match.
  *
@@ -26,7 +27,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
  * @return The enum value matching the ordinal, or the default.
  *
  */
-inline fun <reified T: Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal:Int, defaultValue:T): T {
+inline fun <reified T : Enum<T>> Enum.Companion.byOrdinalOrDefault(ordinal: Int, defaultValue: T): T {
     return if (ordinal !in enumValues<T>().indices)
         defaultValue
     else
