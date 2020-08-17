@@ -40,7 +40,8 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
 
     private val publicVmProperties: List<KProperty1<VM, Any?>> by lazy {
         viewModel::class.memberProperties
-            .mapNotNull { it as? KProperty1<VM, Any?> }.filter { it.getter.visibility == KVisibility.PUBLIC && it.getter.returnType.isSubtypeOf(LifecycleSubscribable::class.starProjectedType) }
+            .mapNotNull { it as? KProperty1<VM, Any?> }
+            .filter { it.getter.visibility == KVisibility.PUBLIC && it.getter.returnType.isSubtypeOf(LifecycleSubscribable::class.starProjectedType) }
     }
     private val lifecycleSubscribables: List<LifecycleSubscribable> get() = publicVmProperties.map { it.getter.call(viewModel) as LifecycleSubscribable }
 
