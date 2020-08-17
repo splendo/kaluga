@@ -2,6 +2,7 @@ package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.hud.HUD
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -23,20 +24,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class HudPresenter(private val builder: HUD.Builder) {
+class HudPresenter(private val builder: HUD.Builder, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) : CoroutineScope by coroutineScope {
 
     fun showSystem() {
         // SYSTEM style by default
         // No title by default
 
-        MultiplatformMainScope().launch {
-            builder.build().present().dismissAfter(3_000)
+        launch {
+            builder.build(coroutineScope).present().dismissAfter(3_000)
         }
     }
 
     fun showCustom() {
-        MultiplatformMainScope().launch {
-            builder.build {
+        launch {
+            builder.build(coroutineScope) {
                 setStyle(HUD.Style.CUSTOM)
                 setTitle("This is a custom title")
             }.presentDuring {

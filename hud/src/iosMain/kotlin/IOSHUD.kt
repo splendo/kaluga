@@ -2,7 +2,6 @@
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.cinterop.CValue
@@ -169,15 +168,11 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
     override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
     override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
-        debug("Present Coroutine")
         if (!isVisible) {
-            debug("Not Visible")
             topViewController.presentViewController(hudViewController, animated) {
-                debug("Complete")
                 continuation.resume(this)
             }
         } else {
-            debug("Resume")
             continuation.resume(this)
         }
     }

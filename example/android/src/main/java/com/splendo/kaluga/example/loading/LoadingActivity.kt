@@ -22,6 +22,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewModelScope
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.HudPresenter
 import com.splendo.kaluga.hud.HudViewModel
@@ -52,6 +53,6 @@ class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
 }
 
 class ViewModel : HudViewModel() {
-    fun showSystem() = HudPresenter(builder).showSystem()
-    fun showCustom() = HudPresenter(builder).showCustom()
+    fun showSystem() = HudPresenter(builder, viewModelScope).showSystem()
+    fun showCustom() = HudPresenter(builder, viewModelScope).showCustom()
 }
