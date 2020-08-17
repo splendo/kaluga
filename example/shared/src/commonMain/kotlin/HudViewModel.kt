@@ -25,22 +25,27 @@ import com.splendo.kaluga.hud.build
 import com.splendo.kaluga.hud.dismissAfter
 import com.splendo.kaluga.hud.presentDuring
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class HudViewModel(val builder: HUD.Builder) : BaseViewModel() {
 
     fun onShowSystemPressed() {
         // SYSTEM style by default
         // No title by default
-        builder.build().present().dismissAfter(3_000)
+        coroutineScope.launch {
+            builder.build().present().dismissAfter(3_000)
+        }
     }
 
     fun onShowCustomPressed() {
-        builder.build {
-            setStyle(HUDStyle.CUSTOM)
-            setTitle("This is a custom title")
-        }.presentDuring {
-            // Simulate heavy task
-            delay(3_000)
+        coroutineScope.launch {
+            builder.build {
+                setStyle(HUDStyle.CUSTOM)
+                setTitle("This is a custom title")
+            }.presentDuring {
+                // Simulate heavy task
+                delay(3_000)
+            }
         }
     }
 }

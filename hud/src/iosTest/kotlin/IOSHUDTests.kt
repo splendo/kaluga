@@ -18,20 +18,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import kotlin.test.BeforeTest
+import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.utils.complete
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import platform.UIKit.UIScreen
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import platform.UIKit.UIViewController
 import platform.UIKit.UIWindow
 
 class IOSHUDTests : HUDTests() {
 
-    private lateinit var window: UIWindow
-    override val builder get() = HUD.Builder(UIViewController())
     class HUDViewController : UIViewController(null, null) {
 
         var mockPresentingHUD: MockPresentingHUD? = null
@@ -64,6 +64,10 @@ class IOSHUDTests : HUDTests() {
         }
     }
 
+    private lateinit var window: UIWindow
+    override val builder get() = createBuilder(HUDViewController())
+    private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView) { MockPresentingHUD(it) }
+
     @Test
     fun builderInitializer() {
         assertNotNull(
@@ -84,7 +88,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun presentIndicator() = runBlocking {
         val hostView = HUDViewController()
-        val indicator = IOSHUD.Builder(hostView, wrapper = { MockPresentingHUD(it) }).build()
+        val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         val didPresent = EmptyCompletableDeferred()
@@ -99,7 +103,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun dismissIndicator() = runBlocking {
         val hostView = HUDViewController()
-        val indicator = IOSHUD.Builder(hostView, wrapper = { MockPresentingHUD(it) }).build()
+        val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         val didFinishPresenting = EmptyCompletableDeferred()

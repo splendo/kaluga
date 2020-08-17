@@ -36,22 +36,24 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, uiContextObserver: UIContextObserver) : CoroutineScope by MainScope() {
+actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, uiContextObserver: UIContextObserver, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     actual class Builder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseHUDBuilder(), LifecycleSubscribable by uiContextObserver {
 
-        actual fun create(hudConfig: HudConfig) = HUD(
+        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,
-            uiContextObserver
+            uiContextObserver,
+            coroutineScope
         )
     }
 
@@ -120,11 +122,13 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         override fun onStart() {
             super.onStart()
             presentCompletionBlock()
+            presentCompletionBlock = {}
         }
 
         override fun onStop() {
             super.onStop()
             dismissCompletionBlock()
+            dismissCompletionBlock = {}
         }
     }
 
@@ -151,17 +155,21 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
 
     actual val isVisible get() = loadingDialog.isVisible
 
-    actual fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
-        loadingDialog.presentCompletionBlock = completion
-        launch {
-            dialogState.send(DialogState.Visible)
+    actual suspend fun present(animated: Boolean): HUD {
+        dialogState.send(DialogState.Visible)
+        return suspendCoroutine { continuation ->
+            loadingDialog.presentCompletionBlock = {
+                continuation.resume(this)
+            }
         }
     }
 
-    actual fun dismiss(animated: Boolean, completion: () -> Unit) {
-        loadingDialog.dismissCompletionBlock = completion
-        launch {
-            dialogState.send(DialogState.Gone)
+    actual suspend fun dismiss(animated: Boolean) {
+        dialogState.send(DialogState.Gone)
+        suspendCoroutine<Unit> { continuation ->
+            loadingDialog.dismissCompletionBlock = {
+                continuation.resume(Unit)
+            }
         }
     }
 }

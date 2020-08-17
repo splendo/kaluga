@@ -17,21 +17,21 @@
 
 package com.splendo.kaluga.hud
 
-actual class HUD(actual val hudConfig: HudConfig) {
+import kotlinx.coroutines.CoroutineScope
+
+actual class HUD(actual val hudConfig: HudConfig, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
     actual class Builder : BaseHUDBuilder() {
-        actual fun create(hudConfig: HudConfig) = HUD(hudConfig)
+        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(hudConfig, coroutineScope)
     }
 
     private var _isVisible: Boolean = false
     actual val isVisible: Boolean get() = _isVisible
 
-    actual fun present(animated: Boolean, completion: () -> Unit): HUD = apply {
+    actual suspend fun present(animated: Boolean): HUD = apply {
         _isVisible = true
-        completion.invoke()
     }
 
-    actual fun dismiss(animated: Boolean, completion: () -> Unit) {
+    actual suspend fun dismiss(animated: Boolean) {
         _isVisible = false
-        completion.invoke()
     }
 }

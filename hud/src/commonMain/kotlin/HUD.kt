@@ -21,7 +21,8 @@ package com.splendo.kaluga.hud
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.base.MainQueueDispatcher
-import kotlinx.coroutines.GlobalScope
+import com.splendo.kaluga.base.MultiplatformMainScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -61,11 +62,11 @@ abstract class BaseHUDBuilder {
     }
 }
 
-expect class HUD {
+expect class HUD : CoroutineScope {
 
     class Builder : BaseHUDBuilder {
         /** Returns created loading indicator */
-        fun create(hudConfig: HudConfig): HUD
+        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope = MultiplatformMainScope()): HUD
     }
 
     val hudConfig: HudConfig
@@ -87,7 +88,7 @@ expect class HUD {
      *
      * @param animated Pass `true` to animate the transition
      */
-    fun dismiss(animated: Boolean = true, completion: () -> Unit = {})
+    suspend fun dismiss(animated: Boolean = true)
 }
 
 val HUD.title: String? get() = hudConfig.title
@@ -98,7 +99,7 @@ val HUD.style: HUDStyle get() = hudConfig.style
  * @param timeMillis The number of milliseconds to wait
  */
 fun HUD.dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
-    GlobalScope.launch(MainQueueDispatcher) {
+    launch(MainQueueDispatcher) {
         delay(timeMillis)
         dismiss(animated)
     }
@@ -109,18 +110,14 @@ fun HUD.dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
  * hides view after block finished.
  * @param block The block to execute with hud visible
  */
-fun HUD.presentDuring(animated: Boolean = true, block: suspend () -> Unit): HUD = apply {
-    present(animated) {
-        GlobalScope.launch(MainQueueDispatcher) {
-            block()
-            dismiss(animated)
-        }
-    }
+suspend fun <T> HUD.presentDuring(animated: Boolean = true, block: suspend HUD.() -> T): T {
+    present(animated)
+    return block().also { dismiss(animated) }
 }
 
 /** Returns built loading indicator */
-fun HUD.Builder.build(initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
+fun HUD.Builder.build(coroutineScope: CoroutineScope = MultiplatformMainScope(), initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
     clear()
     initialize()
-    return create(HudConfig(style, title))
+    return create(HudConfig(style, title), coroutineScope)
 }
