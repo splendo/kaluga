@@ -60,7 +60,7 @@ println("Detected primary arch from sdk $sdkName: $gradle.ext.ios_primary_arch")
 
 
 // set global variable to decide how many iOS source sets to use. More than one sourceset can create problems for project dependencies and gives false errors in the IDE
-// currently the xcodecompat plugin also supports only arm32/arm64/iosx64 so this is off by default
+// currently the xcodecompat plugin also supports only arm64/iosx64 so this is off by default
 // it is automatically enabled when publishing, in order to generate multiple artifacts
 def envFlag = System.env.IOS_ONE_SOURCESET
 boolean isPublishTask = gradle.startParameter.taskNames.any  { it.startsWith("publish") || it.startsWith("bintray") }
