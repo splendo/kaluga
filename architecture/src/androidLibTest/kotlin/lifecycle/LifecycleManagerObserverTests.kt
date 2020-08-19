@@ -25,7 +25,6 @@ import com.splendo.kaluga.test.BaseTest
 import kotlin.test.assertEquals
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.junit.Assert.assertNull
 import org.junit.Before
@@ -33,7 +32,7 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-class UIContextObserverTests : BaseTest() {
+class LifecycleManagerObserverTests : BaseTest() {
 
     @Mock
     private lateinit var activity: Activity
@@ -50,14 +49,14 @@ class UIContextObserverTests : BaseTest() {
 
     @Test
     fun testUIContextObserverHandlerCalled() = runBlocking {
-        val observer = UIContextObserver()
-        val data: UIContextObserver.UIContextData? = UIContextObserver.UIContextData(
+        val observer = LifecycleManagerObserver()
+        val data: LifecycleManagerObserver.UIContextData? = LifecycleManagerObserver.UIContextData(
             activity, lifecycleOwner, fragmentManager
         )
 
-        val deferredUIContext = MutableList(3) { CompletableDeferred<UIContextObserver.UIContextData?>() }
+        val deferredUIContext = MutableList(3) { CompletableDeferred<LifecycleManagerObserver.UIContextData?>() }
         val job = launch(Dispatchers.Main) {
-            observer.uiContextData.collect { context ->
+            observer.managerState.collect { context ->
                 deferredUIContext.firstOrNull { !it.isCompleted }?.complete(context)
             }
         }

@@ -19,8 +19,8 @@ package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse

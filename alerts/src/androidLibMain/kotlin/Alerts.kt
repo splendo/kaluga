@@ -20,10 +20,10 @@ package com.splendo.kaluga.alerts
 import android.app.AlertDialog
 import android.content.Context
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
-import com.splendo.kaluga.utils.applyIf
+import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.base.MultiplatformMainScope
+import com.splendo.kaluga.base.utils.applyIf
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -32,11 +32,15 @@ import kotlinx.coroutines.launch
 
 actual class AlertInterface(
     private val alert: Alert,
-    private val uiContextObserver: UIContextObserver = UIContextObserver()
-) : BaseAlertPresenter(alert), CoroutineScope by MainScope()  {
+    private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+    private val coroutineScope: CoroutineScope = MultiplatformMainScope()
+) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope  {
 
-    actual class Builder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseAlertBuilder(), LifecycleSubscribable by uiContextObserver {
-        actual fun create() = AlertInterface(createAlert(), uiContextObserver)
+    actual class Builder(
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+        private val coroutineScope: CoroutineScope = MultiplatformMainScope()
+    ) : BaseAlertBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
+        actual fun create() = AlertInterface(createAlert(), lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {
@@ -57,8 +61,8 @@ actual class AlertInterface(
 
     init {
         launch {
-            combine(uiContextObserver.uiContextData, presentation.asFlow()) { uiContextData, dialogPresentation ->
-                Pair(uiContextData, dialogPresentation)
+            combine(lifecycleManagerObserver.managerState, presentation.asFlow()) { managerState, dialogPresentation ->
+                Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
                 when(val dialogPresentation = contextPresentation.second) {
                     is DialogPresentation.Showing -> contextPresentation.first?.activity?.let { presentDialog(it, dialogPresentation) } ?: run { alertDialog = null }

@@ -35,24 +35,24 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.architecture.lifecycle.UIContextObserver
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
+import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, uiContextObserver: UIContextObserver, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
-    actual class Builder(private val uiContextObserver: UIContextObserver = UIContextObserver()) : BaseHUDBuilder(), LifecycleSubscribable by uiContextObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUDBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
 
         actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,
-            uiContextObserver,
+            lifecycleManagerObserver,
             coroutineScope
         )
     }
@@ -63,7 +63,7 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         var dismissCompletionBlock: () -> Unit = {}
 
         private val viewResId get() = arguments?.getInt(RESOURCE_ID_KEY) ?: ID_NULL
-        private val style get() = HUDStyle.valueOf(arguments?.getInt(STYLE_KEY) ?: HUDStyle.SYSTEM.value)
+        private val style get() = Enum.byOrdinalOrDefault(arguments?.getInt(STYLE_KEY) ?: -1, HUDStyle.SYSTEM)
         private val title get() = arguments?.getString(TITLE_KEY)
 
         @ColorInt
@@ -138,11 +138,11 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
     }
 
     private val loadingDialog = LoadingDialog.newInstance(viewResId, hudConfig)
-    private var dialogState = ConflatedBroadcastChannel<DialogState>(DialogState.Gone)
+    private var dialogState = MutableStateFlow<DialogState>(DialogState.Gone)
 
     init {
         launch {
-            combine(uiContextObserver.uiContextData, dialogState.asFlow()) { uiContextData, dialogPresentation ->
+            combine(lifecycleManagerObserver.managerState, dialogState) { uiContextData, dialogPresentation ->
                 Pair(uiContextData, dialogPresentation)
             }.collect { contextPresentation ->
                 when (contextPresentation.second) {
@@ -156,20 +156,21 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
     actual val isVisible get() = loadingDialog.isVisible
 
     actual suspend fun present(animated: Boolean): HUD {
-        dialogState.send(DialogState.Visible)
         return suspendCoroutine { continuation ->
             loadingDialog.presentCompletionBlock = {
                 continuation.resume(this)
             }
+            dialogState.value = DialogState.Visible
         }
     }
 
     actual suspend fun dismiss(animated: Boolean) {
-        dialogState.send(DialogState.Gone)
         suspendCoroutine<Unit> { continuation ->
             loadingDialog.dismissCompletionBlock = {
                 continuation.resume(Unit)
             }
+
+            dialogState.value = DialogState.Gone
         }
     }
 }

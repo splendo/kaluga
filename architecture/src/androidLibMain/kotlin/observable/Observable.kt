@@ -24,7 +24,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty

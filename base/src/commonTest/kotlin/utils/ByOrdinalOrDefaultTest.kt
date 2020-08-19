@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.test.utils
 
-import com.splendo.kaluga.utils.byOrdinalOrDefault
+import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

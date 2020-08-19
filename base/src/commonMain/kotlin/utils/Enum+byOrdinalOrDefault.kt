@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.utils
+package com.splendo.kaluga.base.utils
 
 /**
  * Returns the enum by matching ordinals position, or the given default value if no ordinals match.

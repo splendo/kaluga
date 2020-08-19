@@ -1,4 +1,4 @@
-package com.splendo.kaluga.utils
+package com.splendo.kaluga.base.utils
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands

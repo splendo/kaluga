@@ -29,15 +29,11 @@ import kotlinx.coroutines.launch
 /**
  * Style of the Loading Indicator
  */
-enum class HUDStyle(val value: Int) {
+enum class HUDStyle {
     /** System appearance */
-    SYSTEM(0),
+    SYSTEM,
     /** Custom appearance */
-    CUSTOM(1);
-
-    companion object {
-        fun valueOf(value: Int) = values().first { it.value == value }
-    }
+    CUSTOM
 }
 
 abstract class BaseHUDBuilder {

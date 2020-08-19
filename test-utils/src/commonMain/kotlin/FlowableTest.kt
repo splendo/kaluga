@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
