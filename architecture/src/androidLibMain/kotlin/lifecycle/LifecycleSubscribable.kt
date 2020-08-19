@@ -63,7 +63,6 @@ open class LifecycleSubscriber : LifecycleSubscribable {
     override fun unsubscribe() {
         this.manager = null
     }
-
 }
 
 /**
