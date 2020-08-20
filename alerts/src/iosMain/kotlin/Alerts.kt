@@ -1,18 +1,3 @@
-package com.splendo.kaluga.alerts
-
-import platform.Foundation.NSString
-import platform.Foundation.localizedStringWithFormat
-import platform.UIKit.UIAlertAction
-import platform.UIKit.UIAlertActionStyle
-import platform.UIKit.UIAlertActionStyleCancel
-import platform.UIKit.UIAlertActionStyleDefault
-import platform.UIKit.UIAlertActionStyleDestructive
-import platform.UIKit.UIAlertController
-import platform.UIKit.UIAlertControllerStyle
-import platform.UIKit.UIAlertControllerStyleActionSheet
-import platform.UIKit.UIAlertControllerStyleAlert
-import platform.UIKit.UIViewController
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -31,15 +16,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual class AlertBuilder(private val viewController: UIViewController) : BaseAlertBuilder() {
-    override fun create() = AlertInterface(createAlert(), viewController)
-}
+package com.splendo.kaluga.alerts
+
+import platform.Foundation.NSString
+import platform.Foundation.localizedStringWithFormat
+import platform.UIKit.UIAlertAction
+import platform.UIKit.UIAlertActionStyle
+import platform.UIKit.UIAlertActionStyleCancel
+import platform.UIKit.UIAlertActionStyleDefault
+import platform.UIKit.UIAlertActionStyleDestructive
+import platform.UIKit.UIAlertController
+import platform.UIKit.UIAlertControllerStyle
+import platform.UIKit.UIAlertControllerStyleActionSheet
+import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIViewController
 
 actual class AlertInterface(
     private val alert: Alert,
     private val parent: UIViewController
 ) : BaseAlertPresenter(alert) {
-
+    
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
             Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault
@@ -50,6 +46,10 @@ actual class AlertInterface(
             Alert.Style.ALERT -> UIAlertControllerStyleAlert
             Alert.Style.ACTION_LIST -> UIAlertControllerStyleActionSheet
         }
+    }
+
+    actual class Builder(private val viewController: UIViewController) : BaseAlertBuilder() {
+        actual fun create() = AlertInterface(createAlert(), viewController)
     }
 
     override fun dismissAlert(animated: Boolean) {

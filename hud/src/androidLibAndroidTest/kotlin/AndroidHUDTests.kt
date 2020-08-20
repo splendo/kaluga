@@ -1,22 +1,3 @@
-package com.splendo.kaluga.hud
-
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.Until
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.junit.Rule
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -34,6 +15,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.hud
+
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.Rule
+
 const val DEFAULT_TIMEOUT = 2_500L
 
 fun UiDevice.assertTextAppears(text: String) {
@@ -44,13 +45,13 @@ fun UiDevice.assertTextDisappears(text: String) {
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
-class AndroidHUDTests {
+class AndroidHUDTests : HUDTests() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    private val builder get() = activityRule.activity.viewModel.builder
+    override val builder get() = activityRule.activity.viewModel.builder
 
     companion object {
         const val LOADING = "Loading..."

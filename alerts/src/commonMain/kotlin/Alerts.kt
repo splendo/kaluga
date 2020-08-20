@@ -1,10 +1,3 @@
-package com.splendo.kaluga.alerts
-
-import co.touchlab.stately.concurrency.Lock
-import co.touchlab.stately.concurrency.withLock
-import kotlin.coroutines.resume
-import kotlinx.coroutines.suspendCancellableCoroutine
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,6 +15,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.alerts
+
+import co.touchlab.stately.concurrency.Lock
+import co.touchlab.stately.concurrency.withLock
+import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 typealias AlertActionHandler = () -> Unit
 
@@ -132,7 +132,16 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
     )
 }
 
-expect class AlertInterface : BaseAlertPresenter
+expect class AlertInterface : BaseAlertPresenter {
+    class Builder : BaseAlertBuilder {
+        /**
+         * Creates AlertInterface object
+         *
+         * @return The AlertInterface object
+         */
+        internal fun create(): AlertInterface
+    }
+}
 
 /**
  * Base alert builder class, which used to create an alert, which can be shown and dismissed
@@ -146,7 +155,7 @@ abstract class BaseAlertBuilder {
     private var message: String? = null
     private var actions: MutableList<Alert.Action> = mutableListOf()
     private var style: Alert.Style = Alert.Style.ALERT
-    private val lock = Lock()
+    internal val lock = Lock()
 
     /**
      * Sets the [title] displayed in the alert
@@ -214,33 +223,7 @@ abstract class BaseAlertBuilder {
      *
      * @param style The style of an alert
      */
-    private fun setStyle(style: Alert.Style) = apply { this.style = style }
-
-    /**
-     * Builds an alert using DSL syntax (thread safe)
-     *
-     * @param initialize The block to construct an Alert
-     * @return The built alert interface object
-     */
-    fun buildAlert(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = lock.withLock {
-        reset()
-        setStyle(Alert.Style.ALERT)
-        initialize()
-        return create()
-    }
-
-    /**
-     * Builds an alert using DSL syntax (thread safe)
-     *
-     * @param initialize The block to construct an Alert
-     * @return The built alert interface object
-     */
-    fun buildActionSheet(initialize: BaseAlertBuilder.() -> Unit): AlertInterface = lock.withLock {
-        reset()
-        setStyle(Alert.Style.ACTION_LIST)
-        initialize()
-        return create()
-    }
+    internal fun setStyle(style: Alert.Style) = apply { this.style = style }
 
     /**
      * Adds an [action] to the alert
@@ -252,7 +235,7 @@ abstract class BaseAlertBuilder {
     /**
      * Reset builder into initial state
      */
-    private fun reset() = apply {
+    internal fun reset() = apply {
         this.title = null
         this.message = null
         this.actions.clear()
@@ -274,13 +257,30 @@ abstract class BaseAlertBuilder {
 
         return Alert(title, message, actions, style)
     }
-
-    /**
-     * Creates AlertInterface object
-     *
-     * @return The AlertInterface object
-     */
-    internal abstract fun create(): AlertInterface
 }
 
-expect class AlertBuilder : BaseAlertBuilder
+/**
+ * Builds an alert using DSL syntax (thread safe)
+ *
+ * @param initialize The block to construct an Alert
+ * @return The built alert interface object
+ */
+fun AlertInterface.Builder.buildAlert(initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
+    reset()
+    setStyle(Alert.Style.ALERT)
+    initialize()
+    return create()
+}
+
+/**
+ * Builds an alert using DSL syntax (thread safe)
+ *
+ * @param initialize The block to construct an Alert
+ * @return The built alert interface object
+ */
+fun AlertInterface.Builder.buildActionSheet(initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
+    reset()
+    setStyle(Alert.Style.ACTION_LIST)
+    initialize()
+    return create()
+}

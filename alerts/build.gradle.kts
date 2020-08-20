@@ -17,6 +17,15 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+
+    val ext = (gradle as ExtensionAware).extra
+
+    implementation(project(":architecture", ""))
+    implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
+    androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
+}
+
 kotlin {
     sourceSets {
         getByName("commonMain") {

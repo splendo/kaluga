@@ -1,11 +1,3 @@
-package com.splendo.kaluga.example.shared
-
-import com.splendo.kaluga.base.MultiplatformMainScope
-import com.splendo.kaluga.hud.HUD
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -24,21 +16,31 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class HudPresenter(private val builder: HUD.Builder, private val coroutineScope: CoroutineScope = MultiplatformMainScope()) : CoroutineScope by coroutineScope {
+package com.splendo.kaluga.example.shared
 
-    fun showSystem() {
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.hud.HUD
+import com.splendo.kaluga.hud.HUDStyle
+import com.splendo.kaluga.hud.build
+import com.splendo.kaluga.hud.dismissAfter
+import com.splendo.kaluga.hud.presentDuring
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+class HudViewModel(val builder: HUD.Builder) : BaseViewModel() {
+
+    fun onShowSystemPressed() {
         // SYSTEM style by default
         // No title by default
-
-        launch {
-            builder.build(coroutineScope).present().dismissAfter(3_000)
+        coroutineScope.launch {
+            builder.build().present().dismissAfter(3_000)
         }
     }
 
-    fun showCustom() {
-        launch {
-            builder.build(coroutineScope) {
-                setStyle(HUD.Style.CUSTOM)
+    fun onShowCustomPressed() {
+        coroutineScope.launch {
+            builder.build {
+                setStyle(HUDStyle.CUSTOM)
                 setTitle("This is a custom title")
             }.presentDuring {
                 // Simulate heavy task

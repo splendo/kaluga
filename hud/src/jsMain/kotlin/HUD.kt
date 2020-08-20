@@ -15,21 +15,23 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.hud
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.DialogFragment
+import kotlinx.coroutines.CoroutineScope
 
-/**
- * Convenience [DialogFragment] that is bound to a [ViewModel]
- */
-abstract class KalugaViewModelDialogFragment<VM : BaseViewModel> : DialogFragment() {
+actual class HUD(actual val hudConfig: HudConfig, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+    actual class Builder : BaseHUDBuilder() {
+        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(hudConfig, coroutineScope)
+    }
 
-    abstract val viewModel: VM
+    private var _isVisible: Boolean = false
+    actual val isVisible: Boolean get() = _isVisible
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.bind(this)
+    actual suspend fun present(animated: Boolean): HUD = apply {
+        _isVisible = true
+    }
+
+    actual suspend fun dismiss(animated: Boolean) {
+        _isVisible = false
     }
 }

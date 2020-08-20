@@ -1,9 +1,3 @@
-package hud
-
-import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.hud.IOSHUD
-import platform.UIKit.UIViewController
-
 /*
  Copyright 2020 Splendo Consulting B.V. The Netherlands
 
@@ -21,10 +15,10 @@ import platform.UIKit.UIViewController
 
  */
 
-class KNHUDFramework {
+package com.splendo.kaluga.alerts
 
-    fun hudPresenter(uiViewController: UIViewController): HudPresenter {
-        return HudPresenter(IOSHUD.Builder(uiViewController))
-    }
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
+class AlertsViewModel : BaseViewModel() {
+    val alertBuilder = AlertInterface.Builder()
 }

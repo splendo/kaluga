@@ -1,21 +1,3 @@
-package com.splendo.kaluga.alerts
-
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import androidx.test.uiautomator.By
-import androidx.test.uiautomator.UiDevice
-import androidx.test.uiautomator.Until
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.withContext
-import org.junit.Rule
-import org.junit.Test
-
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
@@ -33,12 +15,32 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class MockAlertsTest {
+package com.splendo.kaluga.alerts
+
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.ActivityTestRule
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
+import com.splendo.kaluga.test.AlertsInterfaceTests
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.withContext
+import org.junit.Rule
+import org.junit.Test
+
+class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
+    override val builder get() = activityRule.activity.viewModel.alertBuilder
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
@@ -46,8 +48,6 @@ class MockAlertsTest {
 
     @Test
     fun testBuilderReuse() = runBlockingTest {
-
-        val builder = AlertBuilder(activityRule.activity)
 
         CoroutineScope(Dispatchers.Main).launch {
             builder.buildAlert {
@@ -72,7 +72,6 @@ class MockAlertsTest {
 
     @Test
     fun testConcurrentBuilders() = runBlockingTest {
-        val builder = AlertBuilder(activityRule.activity)
         val alerts: MutableList<AlertInterface> = mutableListOf()
 
         CoroutineScope(Dispatchers.Main).launch {
@@ -94,7 +93,7 @@ class MockAlertsTest {
     @Test
     fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            AlertBuilder(activityRule.activity).buildAlert {
+            builder.buildAlert {
                 setTitle("Hello")
                 setPositiveButton("OK")
             }.show()
@@ -108,7 +107,7 @@ class MockAlertsTest {
     fun testAlertFlowWithCoroutines() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val action = Alert.Action("OK")
-            val presenter = AlertBuilder(activityRule.activity).buildAlert {
+            val presenter = builder.buildAlert {
                 setTitle("Hello")
                 addActions(listOf(action))
             }
@@ -122,9 +121,9 @@ class MockAlertsTest {
     }
 
     @Test
-    fun testAlertFlowCancel() = runBlockingTest {
+    fun rotateActivity() {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = AlertBuilder(activityRule.activity).buildAlert {
+            val presenter = builder.buildAlert {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")
@@ -134,8 +133,15 @@ class MockAlertsTest {
             assertNull(result)
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        // On cancel call, we expect the dialog to be dismissed
+
+        // Rotate screen
+        device.setOrientationLeft()
+        // HUD should be on screen
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+
+        device.setOrientationNatural()
         coroutine.cancel()
+        // Finally should be gone
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 }

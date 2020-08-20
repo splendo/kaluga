@@ -20,9 +20,9 @@ package com.splendo.kaluga.base.test.flow
 import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

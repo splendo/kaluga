@@ -31,6 +31,11 @@ To achieve this, the View should be bound using the `KalugaViewModelLifecycleObs
 For convenience default implementations for `Activity`, `Fragment`, and `DialogFragment` exist (`KalugaViewModelActivity`, `KalugaViewModelFragment`, and `KalugaViewModelDialogFragment` respectively).
 Alternatively the user can call `didResume()` and `didPause()` on the ViewModel manually in the `onResume()` and `onPause()` methods.
 
+The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all public `LifecycleSubscribable` properties of the viewModel.
+Implement this interface if a viewModel has properties that should be lifecycle or context aware.
+It can be delegated using `LifecycleSubscriber`.
+The `LifecycleManagerObserver` is a default implementation of `LifecycleSubscribable` that provides updates to the context as a `Flow`.
+
 On iOS automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
 When bound the viewModel lifecycle is automatically matched with the viewControllers `viewDidAppear` and `viewDidDisappear` methods.
 The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound viewModel.

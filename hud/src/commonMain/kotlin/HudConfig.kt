@@ -1,5 +1,3 @@
-package com.splendo.kaluga.hud
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,9 +16,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.hud
+
 data class HudConfig(
     /** Style of the HUD */
-    val style: HUD.Style = HUD.Style.SYSTEM,
+    val style: HUDStyle = HUDStyle.SYSTEM,
     /** Optional title of the HUD */
     val title: String? = null
 )

@@ -20,39 +20,26 @@ package com.splendo.kaluga.example.loading
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.viewModelScope
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
-import com.splendo.kaluga.example.shared.HudPresenter
-import com.splendo.kaluga.hud.HudViewModel
+import com.splendo.kaluga.example.shared.HudViewModel
 import kotlinx.android.synthetic.main.activity_loading.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("SetTextI18n")
-class LoadingActivity : AppCompatActivity(R.layout.activity_loading) {
+class LoadingActivity : KalugaViewModelActivity<HudViewModel>(R.layout.activity_loading) {
 
-    private val viewModel: ViewModel by viewModels()
+    override val viewModel: HudViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscribe(this)
 
         btn_show_loading_indicator_system.setOnClickListener {
-            viewModel.showSystem()
+            viewModel.onShowSystemPressed()
         }
 
         btn_show_loading_indicator_custom.setOnClickListener {
-            viewModel.showCustom()
+            viewModel.onShowCustomPressed()
         }
     }
-
-    override fun onDestroy() {
-        viewModel.unsubscribe()
-        super.onDestroy()
-    }
-}
-
-class ViewModel : HudViewModel() {
-    fun showSystem() = HudPresenter(builder, viewModelScope).showSystem()
-    fun showCustom() = HudPresenter(builder, viewModelScope).showCustom()
 }

@@ -15,21 +15,11 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.hud
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.DialogFragment
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-/**
- * Convenience [DialogFragment] that is bound to a [ViewModel]
- */
-abstract class KalugaViewModelDialogFragment<VM : BaseViewModel> : DialogFragment() {
+open class HudViewModel : BaseViewModel() {
 
-    abstract val viewModel: VM
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        viewModel.bind(this)
-    }
+    val builder = HUD.Builder()
 }

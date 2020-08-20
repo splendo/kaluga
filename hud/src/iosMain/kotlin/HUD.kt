@@ -1,3 +1,21 @@
+/*
+
+Copyright 2019 Splendo Consulting B.V. The Netherlands
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+*/
+
 @file:Suppress("USELESS_CAST") // as CGFloat is needed for arm32.
 
 package com.splendo.kaluga.hud
@@ -42,28 +60,13 @@ import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.widthAnchor
 import platform.UIKit.window
 
-/*
+actual class HUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+    actual class Builder internal constructor(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController) : BaseHUDBuilder() {
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
+        constructor(viewController: UIViewController) : this(viewController, { it })
 
-     http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-*/
-
-class IOSHUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : HUD, CoroutineScope by coroutineScope {
-
-    class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController = { it }) : HUD.Builder() {
-        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = IOSHUD(
+        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
             viewController,
             wrapper,
@@ -72,7 +75,7 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
     }
 
     private class ContainerView(
-        private val hudConfig: HudConfig,
+        internal val hudConfig: HudConfig,
         frame: CValue<CGRect>
     ) : UIView(frame) {
 
@@ -80,16 +83,16 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
 
         private val backgroundColor: UIColor
             get() = when (hudConfig.style) {
-                HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
-                HUD.Style.SYSTEM ->
+                HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorBackground") ?: UIColor.lightGrayColor
+                HUDStyle.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.blackColor else UIColor.whiteColor
             }
 
         private val foregroundColor: UIColor
             get() = when (hudConfig.style) {
-                HUD.Style.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
-                HUD.Style.SYSTEM ->
+                HUDStyle.CUSTOM -> UIColor.colorNamed("li_colorAccent") ?: UIColor.darkGrayColor
+                HUDStyle.SYSTEM ->
                     if (traitCollection.userInterfaceStyle == UIUserInterfaceStyle.UIUserInterfaceStyleDark)
                         UIColor.whiteColor else UIColor.blackColor
             }
@@ -165,9 +168,10 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
             return result ?: viewController
         }
 
-    override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
+    actual val hudConfig: HudConfig = containerView.hudConfig
+    actual val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
-    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
+    actual suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         if (!isVisible) {
             topViewController.presentViewController(hudViewController, animated) {
                 continuation.resume(this)
@@ -177,9 +181,9 @@ class IOSHUD private constructor(private val containerView: ContainerView, priva
         }
     }
 
-    override suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
+    actual suspend fun dismiss(animated: Boolean) = suspendCoroutine<Unit> { continuation ->
         if (isVisible) {
-            hudViewController.presentingViewController()?.dismissViewControllerAnimated(animated) {
+            hudViewController.presentingViewController?.dismissViewControllerAnimated(animated) {
                 continuation.resume(Unit)
             }
         } else {
