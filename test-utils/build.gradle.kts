@@ -15,12 +15,11 @@ val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
                 implementation(project(":permissions", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
@@ -29,6 +28,18 @@ kotlin {
         getByName("jsMain") {
             dependencies {
                 api(kotlin("test-js"))
+            }
+        }
+
+        getByName("jvmMain") {
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
+            }
+        }
+
+        getByName("androidLibMain") {
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
             }
         }
     }
