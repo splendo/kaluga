@@ -16,6 +16,10 @@ pluginManagement {
                 // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
                 useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
             }
+            if (requested.id.id == "org.jetbrains.kotlin.plugin.serialization") {
+                // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
+                useModule("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
+            }
             if (requested.id.id == "com.android.library") {
                 useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
             }
