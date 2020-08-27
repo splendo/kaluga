@@ -74,8 +74,9 @@ afterEvaluate {
             root.appendNode('url', 'https://github.com/splendo/kaluga')
             root.children().last() + pomConfig
         }
+        boolean isPublishToMavenLocalTask = gradle.startParameter.taskNames.any  { it == "publishToMavenLocal" }
         File moduleFile = new File(project.buildDir, "publications/${publication.name}/module.json")
-        if (moduleFile.exists()) {
+        if (!isPublishToMavenLocalTask && moduleFile.exists()) {
             publication.artifact(new org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact(moduleFile) {
                 protected String getDefaultExtension() {
                     return 'module';
