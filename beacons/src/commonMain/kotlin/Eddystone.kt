@@ -41,9 +41,7 @@ class Eddystone {
             if (data.size == ValidFrameSize && data[0] == UIDFrameType.toByte()) {
                 val txPower = data[1]
                 val namespace = data.slice(2..11)
-                require(namespace.size == 10)
                 val instance = data.slice(12..17)
-                require(instance.size == 6)
                 return Frame.UIDFrame(
                     txPower.toInt(),
                     UID(namespace.toHexString(), instance.toHexString())
