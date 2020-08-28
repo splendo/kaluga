@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.base.typedMap
-import com.splendo.kaluga.base.UUID
 import platform.CoreBluetooth.CBAdvertisementDataIsConnectable
 import platform.CoreBluetooth.CBAdvertisementDataLocalNameKey
 import platform.CoreBluetooth.CBAdvertisementDataManufacturerDataKey

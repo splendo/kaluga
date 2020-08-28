@@ -22,7 +22,6 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.resources.localized
 
 sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
@@ -41,7 +40,7 @@ sealed class Feature(val title: String) {
     object Alerts : Feature("feature_alerts".localized())
     object Architecture : Feature("feature_architecture".localized())
     object Bluetooth : Feature("feature_bluetooth".localized())
-    object Beacons: Feature("feature_beacons".localized())
+    object Beacons : Feature("feature_beacons".localized())
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
     object Location : Feature("feature_location".localized())

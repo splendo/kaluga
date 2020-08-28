@@ -63,7 +63,7 @@ class BeaconService internal constructor(
     private suspend fun createBeaconWith(identifier: Identifier): Beacon? {
         val device = bluetooth.devices()[identifier]
         val serviceData = device.state().map { it.advertisementData.serviceData }.first()
-        val data = extractor.extract(serviceData,  Eddystone.ServiceUUIDFull)
+        val data = extractor.extract(serviceData, Eddystone.ServiceUUIDFull)
         if (data != null) {
             return when (val frame = Eddystone.unpack(data)) {
                 is Eddystone.Frame.UIDFrame -> Beacon(

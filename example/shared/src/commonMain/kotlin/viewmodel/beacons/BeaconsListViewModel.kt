@@ -51,7 +51,7 @@ class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel()
                 }
             }
             .collect { beacons ->
-                 cleanDevices()
+                cleanDevices()
                 _beacons.value = beacons
             }
         }

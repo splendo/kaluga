@@ -21,8 +21,8 @@ import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.beacons.BeaconState
 import com.splendo.kaluga.beacons.BeaconService
+import com.splendo.kaluga.beacons.BeaconState
 import com.splendo.kaluga.beacons.get
 import com.splendo.kaluga.beacons.state
 import com.splendo.kaluga.bluetooth.device.Identifier
