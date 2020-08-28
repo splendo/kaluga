@@ -21,7 +21,7 @@ import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.beacons.BeaconService
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -29,10 +29,10 @@ import kotlinx.coroutines.launch
 @ExperimentalStdlibApi
 class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel() {
 
-    private val _isScanning = ConflatedBroadcastChannel<Boolean>()
+    private val _isScanning = MutableStateFlow(false)
     val isScanning = _isScanning.toObservable(coroutineScope)
 
-    private val _beacons = ConflatedBroadcastChannel<List<BeaconsListBeaconViewModel>>()
+    private val _beacons = MutableStateFlow<List<BeaconsListBeaconViewModel>>(emptyList())
     val beacons = _beacons.toObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
@@ -41,7 +41,7 @@ class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel()
         scope.launch {
             service
                 .isMonitoring()
-                .collect { _isScanning.send(it) }
+                .collect { _isScanning.value = true }
         }
 
         scope.launch { service.beacons()
@@ -52,13 +52,13 @@ class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel()
             }
             .collect { beacons ->
                  cleanDevices()
-                _beacons.send(beacons)
+                _beacons.value = beacons
             }
         }
     }
 
     fun onScanPressed() {
-        if (_isScanning.valueOrNull == true) {
+        if (_isScanning.value) {
             service.stopMonitoring()
         } else {
             service.startMonitoring()
@@ -71,6 +71,6 @@ class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel()
     }
 
     private fun cleanDevices() {
-        _beacons.valueOrNull?.forEach { it.onCleared() }
+        _beacons.value.forEach { it.onCleared() }
     }
 }
