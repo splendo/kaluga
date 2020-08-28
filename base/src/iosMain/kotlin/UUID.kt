@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.base
 
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSUUID

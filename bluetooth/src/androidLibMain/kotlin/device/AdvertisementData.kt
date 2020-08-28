@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import no.nordicsemi.android.support.v18.scanner.ScanResult

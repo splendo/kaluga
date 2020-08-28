@@ -18,6 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo

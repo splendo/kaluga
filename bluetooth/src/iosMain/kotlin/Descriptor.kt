@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.toNSData
+import com.splendo.kaluga.base.uuidString
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo

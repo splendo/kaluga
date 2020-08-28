@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 
-typealias ServiceData = Map<UUID, ByteArray?>
-
-expect class ServiceDataExtractor {
-    fun extract(data: ServiceData): ByteArray?
+actual class ServiceDataExtractor {
+    actual fun extract(data: ServiceData, uuidString: String): ByteArray? {
+        return data[UUID.UUIDWithString(uuidString)]
+    }
 }

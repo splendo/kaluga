@@ -25,7 +25,7 @@ import android.content.IntentFilter
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper

@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.UUID
+import com.splendo.kaluga.base.uuidString
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 

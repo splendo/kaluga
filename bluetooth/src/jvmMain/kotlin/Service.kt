@@ -17,4 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.UUID
+
 actual open class Service(override val uuid: UUID, override val characteristics: List<Characteristic>) : BaseService

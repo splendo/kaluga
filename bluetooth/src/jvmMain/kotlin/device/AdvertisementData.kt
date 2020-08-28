@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 
 actual class AdvertisementData : BaseAdvertisementData {
 

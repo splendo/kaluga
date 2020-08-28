@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device

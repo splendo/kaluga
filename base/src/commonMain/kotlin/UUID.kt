@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.base
 
 expect class UUID
 

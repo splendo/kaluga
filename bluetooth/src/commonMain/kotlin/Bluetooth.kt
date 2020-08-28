@@ -18,6 +18,8 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.MainQueueDispatcher
+import com.splendo.kaluga.base.UUID
+import com.splendo.kaluga.base.uuidString
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device

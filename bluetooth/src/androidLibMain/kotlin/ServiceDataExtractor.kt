@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.UUID
+import java.util.UUID
 
 actual class ServiceDataExtractor {
-    actual fun extract(data: ServiceData): ByteArray? {
-        return data[UUID.UUIDWithString(Eddystone.ServiceUUID)]
+    actual fun extract(data: ServiceData, uuidString: String): ByteArray? {
+        return data[UUID.fromString(uuidString)]
     }
 }

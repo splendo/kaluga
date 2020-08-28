@@ -18,6 +18,7 @@
 package com.splendo.kaluga.beacons
 
 import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.ServiceDataExtractor
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.state
@@ -62,7 +63,7 @@ class BeaconService internal constructor(
     private suspend fun createBeaconWith(identifier: Identifier): Beacon? {
         val device = bluetooth.devices()[identifier]
         val serviceData = device.state().map { it.advertisementData.serviceData }.first()
-        val data = extractor.extract(serviceData)
+        val data = extractor.extract(serviceData,  Eddystone.ServiceUUIDFull)
         if (data != null) {
             return when (val frame = Eddystone.unpack(data)) {
                 is Eddystone.Frame.UIDFrame -> Beacon(

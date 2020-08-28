@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.UUID
+
 interface BaseService {
     val uuid: UUID
     val characteristics: List<Characteristic>

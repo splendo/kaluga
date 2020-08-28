@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth
 
 actual class ServiceDataExtractor {
-    actual fun extract(data: ServiceData): ByteArray? {
+    actual fun extract(data: ServiceData, uuidString: String): ByteArray? {
         TODO("Not implemented")
     }
 }
