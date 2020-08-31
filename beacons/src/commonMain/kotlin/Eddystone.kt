@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.beacons
 
-private fun List<Byte>.toHexString(initial: String = "") = fold(initial) {
-    acc, byte -> acc + byte.toUByte().toString(16).padStart(2, '0')
-}
+import com.splendo.kaluga.base.utils.toHexString
+
+private fun List<Byte>.toHexString() = toByteArray().toHexString()
 
 class Eddystone {
 
@@ -31,7 +31,7 @@ class Eddystone {
 
     companion object {
 
-        const val ServiceUUID = "FEAA"
+        private const val ServiceUUID = "FEAA"
         const val ServiceUUIDFull = "0000$ServiceUUID-0000-1000-8000-00805F9B34FB"
 
         private const val ValidFrameSize = 18
