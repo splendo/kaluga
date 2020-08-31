@@ -41,7 +41,7 @@ class BeaconsListViewModel(private val service: BeaconService) : BaseViewModel()
         scope.launch {
             service
                 .isMonitoring()
-                .collect { _isScanning.value = true }
+                .collect { _isScanning.value = it }
         }
 
         scope.launch { service.beacons()
