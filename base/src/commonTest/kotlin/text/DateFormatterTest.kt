@@ -30,7 +30,7 @@ class DateFormatterTest {
 
     companion object {
         private val UnitedStatesLocale = createLocale("en", "US")
-        private val PSTTimeZone = TimeZone.get("Europe/Amsterdam")!!
+        private val PSTTimeZone = TimeZone.current()
     }
 
     @Test
