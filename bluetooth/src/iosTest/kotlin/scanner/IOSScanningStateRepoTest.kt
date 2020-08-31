@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
 import platform.CoreBluetooth.CBUUID

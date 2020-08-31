@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager

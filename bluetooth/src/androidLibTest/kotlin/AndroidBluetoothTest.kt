@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.UUID
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceState
