@@ -21,8 +21,8 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.beacons.BeaconService
-import com.splendo.kaluga.beacons.ServiceDataExtractor
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.bluetooth.ServiceDataExtractor
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
