@@ -119,6 +119,14 @@ expect class Date : Comparable<Date> {
      * @return A copy of this [Date]
      */
     fun copy(): Date
+
+    /**
+     * Returns whether this Date is in the same [timeZone] and has the same time based on [millisecondSinceEpoch]
+     * @return `true` if the two dates are equal
+     */
+    override fun equals(other:Any?): Boolean
+
+    override fun hashCode(): Int
 }
 
 /**
@@ -142,3 +150,13 @@ operator fun Date.plus(date: Date): Date {
         millisecondSinceEpoch += date.millisecondSinceEpoch
     }
 }
+
+/**
+ * Creates a [Date] relative to the current time, in the UTC timezone
+ * @param offsetInMilliseconds The offset in milliseconds from the current time. Defaults to 0
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [Date] relative to the current time, in the UTC timezone
+ */
+fun Date.Companion.nowUtc(offsetInMilliseconds: Long = 0L, locale: Locale = defaultLocale): Date =
+    now(offsetInMilliseconds, TimeZone.utc, locale)
+

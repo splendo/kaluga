@@ -77,9 +77,9 @@ actual class Date(internal val calendar: Calendar) : Comparable<Date> {
 
     actual fun copy(): Date = Date(calendar.clone() as Calendar)
 
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         return (other as? Date)?.let {
-            calendar == it.calendar
+            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 

@@ -37,6 +37,8 @@ import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSInteger
+import platform.posix.fmod
+import kotlin.math.round
 
 actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<Date> {
     actual companion object {
@@ -105,15 +107,25 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
         get() = calendar.component(NSCalendarUnitNanosecond, fromDate = date).toInt() / nanoSecondPerMilliSecond
         set(value) { updateDateForComponent(NSCalendarUnitNanosecond, value * nanoSecondPerMilliSecond) }
     actual var millisecondSinceEpoch: Long
-        get() = (date.timeIntervalSince1970 * 1000.0).toLong()
+        get() {
+            val time = date.timeIntervalSince1970
+            val decimalDigits = (time % 1.0) * 1000
+            return time.toLong() * 1000L + round(decimalDigits).toLong()
+        }
         set(value) { date = NSDate.dateWithTimeIntervalSince1970(value.toDouble() / 1000.0) }
 
     actual fun copy(): Date = Date(calendar.copy() as NSCalendar, date.copy() as NSDate)
 
-    override fun equals(other: Any?): Boolean {
-        return (other as? Date)?.let {
-            calendar == it.calendar && date == it.date
+    actual override fun equals(other: Any?): Boolean {
+        return (other as? Date)?.let { other ->
+            calendar.calendarIdentifier == other.calendar.calendarIdentifier && millisecondSinceEpoch == other.millisecondSinceEpoch && this.calendar.timeZone == other.calendar.timeZone
         } ?: false
+    }
+
+    actual override fun hashCode(): Int {
+        var result = calendar.calendarIdentifier.hashCode()
+        result = 31 * result + date.hashCode()
+        return result
     }
 
     override fun compareTo(other: Date): Int = this.date.compare(other.date).toInt()
@@ -123,5 +135,9 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
         calendar.dateByAddingUnit(component, (value - previousValue).toLong() as NSInteger, date, 0.toULong() as NSCalendarOptions)?.let {
             date = it
         }
+    }
+
+    override fun toString(): String {
+        return date.toString()
     }
 }

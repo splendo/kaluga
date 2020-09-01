@@ -18,11 +18,35 @@
 package com.splendo.kaluga.base.test.utils
 
 import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.nowUtc
+import com.splendo.kaluga.base.utils.plus
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class DateTest {
+
+    @Test
+    fun testEquality() {
+        val now = Date.now()
+        assertEquals(now, now.copy(), "copied Date should be equal")
+
+
+        val nearEpoch = Date.epoch(1001)
+        assertEquals(Date.epoch(1001), nearEpoch, "equally created dates should be equal")
+
+        assertEquals(Date.epoch(1002), nearEpoch + Date.epoch(1), "Date from addition should be equal")
+    }
+
+    @Test
+    fun testUTCDate() {
+        val utcNow = Date.nowUtc()
+        val epochNow = utcNow.millisecondSinceEpoch
+        val now = Date.epoch(epochNow, TimeZone.get("UTC")!!)
+        assertEquals(utcNow.millisecondSinceEpoch, now.millisecondSinceEpoch)
+        assertEquals(utcNow, now)
+    }
 
     @Test
     fun testCreateEpochDate() {
