@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Default values for SalesForce connection: these strings should be overwritten on strings.xml of the actual App -->
+    <string name="sf_serverUrl">insert here the url of the SalesForce server</string>
+    <string name="sf_ConsumerKey">insert here value of remoteAccessConsumerKey from SalesForce</string>
+    <string name="sf_oauthRedirectURI">insert here value of URI for successful authentication with oauth</string>
+    <string name="sf_androidPushNotificationClientId">insert here the client id for SalesForce push notifications</string>
+
+    <string name="salesforce_logout">Logout from SalesForce</string>
+
+</resources>

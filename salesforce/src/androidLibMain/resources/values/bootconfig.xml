@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="remoteAccessConsumerKey">@string/sf_ConsumerKey</string>
+    <string name="oauthRedirectURI">@string/sf_oauthRedirectURI</string>
+    <string-array name="oauthScopes">
+        <item>api</item>
+        <item>web</item>
+    </string-array>
+    <string name="androidPushNotificationClientId">@string/sf_androidPushNotificationClientId</string>
+</resources>

@@ -1,3 +1,9 @@
-<manifest package="com.splendo.kaluga.template"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.splendo.kaluga.salesforce">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:manageSpaceActivity="com.salesforce.androidsdk.ui.ManageSpaceActivity" />
+</manifest>
