@@ -32,7 +32,6 @@ class DateTest {
         val now = Date.now()
         assertEquals(now, now.copy(), "copied Date should be equal")
 
-
         val nearEpoch = Date.epoch(1001)
         assertEquals(Date.epoch(1001), nearEpoch, "equally created dates should be equal")
 
