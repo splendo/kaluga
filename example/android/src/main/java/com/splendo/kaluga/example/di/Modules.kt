@@ -33,6 +33,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.salesforce.LoginActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -88,6 +89,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
+                    is FeatureListNavigationAction.SalesForce -> NavigationSpec.Activity(LoginActivity::class.java)
                 }
             })
     }

@@ -42,4 +42,10 @@
     <string name="location_enable_background">Enable Background</string>
     <string name="location_disable_background">Disable Background</string>
 
+    <!-- Resources for salesforce module -->
+    <string name="sf_serverUrl">https://a.valid.endpoint.force.com/</string>
+    <string name="sf_ConsumerKey">valid consumer key</string>
+    <string name="sf_oauthRedirectURI">valid-endpoint://oauth/success</string>
+    <string name="sf_androidPushNotificationClientId">valid client id</string>
+
 </resources>

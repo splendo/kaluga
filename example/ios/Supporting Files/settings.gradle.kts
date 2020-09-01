@@ -66,6 +66,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":resources")
     project(":resources").projectDir = file("../../../resources")
 
+    include(":salesforce")
+    project(":salesforce").projectDir = file("../../../salesforce")
+
     include(":test-utils")
     project(":test-utils").projectDir = file("../../../test-utils")
 }

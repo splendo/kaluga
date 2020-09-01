@@ -22,7 +22,7 @@ android {
     buildToolsVersion gradle.android_build_tools_version
     defaultConfig {
         applicationId "com.splendo.kaluga.example"
-        minSdkVersion gradle.android_min_sdk_version
+        minSdkVersion 23 // temp hardcoding of minSdk not to conflict with salesforce minSDK version
         targetSdkVersion gradle.android_target_sdk_version
         versionCode 1
         versionName "1.0"
@@ -60,6 +60,7 @@ dependencies {
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:salesforce:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -72,6 +73,7 @@ dependencies {
         implementation project(":hud")
         implementation project(":architecture")
         implementation project(":keyboard")
+        implementation project(":salesforce")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
