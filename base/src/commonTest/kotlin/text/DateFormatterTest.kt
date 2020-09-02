@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.text.DateFormatter
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.nowUtc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -36,10 +37,12 @@ class DateFormatterTest {
     @Test
     fun testFormatDate() {
         val formatter = DateFormatter.dateFormat(DateFormatStyle.Short, PSTTimeZone, UnitedStatesLocale)
-        val date = Date.now().apply {
+        val date = Date.nowUtc().apply {
             year = 2020
             month = 1
             day = 8
+            hour = 12
+            minute = 1
         }
 
         assertEquals("1/8/20", formatter.format(date))

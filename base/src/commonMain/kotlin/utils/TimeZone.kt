@@ -29,6 +29,8 @@ enum class TimeZoneNameStyle {
     Long
 }
 
+val TimeZone.Companion.utc: TimeZone by lazy { TimeZone.get("UTC")!! }
+
 expect class TimeZone {
     companion object {
         /**

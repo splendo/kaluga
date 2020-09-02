@@ -72,9 +72,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual fun copy(): Date = Date(kotlin.js.Date(date.getMilliseconds()))
 
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         return (other as? Date)?.let {
-            date == it.date
+            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
@@ -84,5 +84,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
             date.getMilliseconds() == other.millisecond -> 0
             else -> 1
         }
+    }
+
+    actual override fun hashCode(): Int {
+        return date.hashCode()
     }
 }
