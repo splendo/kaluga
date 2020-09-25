@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
+actual abstract class Observable<T> : BaseObservable<T>() {
 
     /**
      * [LiveData] syncing with this observable
@@ -111,8 +111,8 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : O
      * Posts a new value to the Subject
      * @param value New value to set
      */
-    fun postValue(value: T) {
-        liveData.postValue(value)
+    actual open fun post(newValue: T) {
+        liveData.postValue(newValue)
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {

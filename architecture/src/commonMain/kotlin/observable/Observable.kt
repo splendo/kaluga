@@ -49,15 +49,40 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
     }
 }
 
+object ObservableException : Exception()
+
+abstract class BaseObservable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
+    val current: T get() {
+        val delegatedValue by this
+        return when (delegatedValue) {
+            is ObservableOptional.Value -> (delegatedValue as ObservableOptional.Value<T>).value
+            is ObservableOptional.Nothing -> throw ObservableException
+        }
+    }
+    val currentOrNull: T? get() {
+        val delegatedValue by this
+        return when (delegatedValue) {
+            is ObservableOptional.Value -> (delegatedValue as ObservableOptional.Value<T>).value
+            is ObservableOptional.Nothing -> null
+        }
+    }
+}
+
 /**
  * Property that can be observed
  */
-expect abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>>
+expect abstract class Observable<T> : BaseObservable<T>
 
 /**
  * [Observable] that can change its data
  */
-expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableOptional<T>>
+expect abstract class Subject<T> : Observable<T>, ReadWriteProperty<Any?, ObservableOptional<T>> {
+    /**
+     * Updates the value of the [Subject]
+     * @param newValue The new value of the subject
+     */
+    open fun post(newValue: T)
+}
 
 expect fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T>
 
