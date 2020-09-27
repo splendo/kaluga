@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-actual class Navigator<A : NavigationAction<*>> {
+actual interface Navigator<A : NavigationAction<*>> {
 
-    actual fun navigate(action: A) {
-        TODO("Not Yet Implemented")
-    }
+    actual fun navigate(action: A)
 }

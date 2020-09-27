@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
+import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
 import platform.UIKit.UIViewController
 import platform.UIKit.addChildViewController
@@ -48,9 +49,9 @@ class LifecycleManager internal constructor(clearViewModel: () -> Unit) {
 
 /**
  * Callback invoked at the start of a lifecycle (corresponding to [UIViewController.viewDidAppear] of the bound ViewController.
- * Contains a [DisposeBag] that is cleaned automatically at the end of each lifecycle.
+ * Returns a List [Disposable] that are cleaned automatically at the end of each lifecycle.
  */
-typealias onLifeCycleChanged = (DisposeBag) -> Unit
+typealias onLifeCycleChanged = () -> List<Disposable>
 
 internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewModel: VM, private val onLifecycle: onLifeCycleChanged) : UIViewController(null, null) {
 
@@ -65,7 +66,7 @@ internal class ViewModelLifecycleManager<VM : BaseViewModel>(private val viewMod
         super.viewDidAppear(animated)
 
         viewModel.didResume()
-        onLifecycle.invoke(lifecycleManager.disposeBag)
+        onLifecycle().forEach { lifecycleManager.disposeBag.add(it) }
     }
 
     override fun viewDidDisappear(animated: Boolean) {

@@ -23,16 +23,31 @@ typealias DisposeHandler = () -> Unit
 
 /**
  * Reference to an object that should be disposed in time
+ */
+interface Disposable {
+    /**
+     * Disposes the associated object
+     */
+    fun dispose()
+
+    /**
+     * Adds this disposable to a [DisposeBag]
+     */
+    fun addTo(disposeBag: DisposeBag)
+}
+
+/**
+ * PLain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
-class Disposable(onDispose: DisposeHandler) {
+class SimpleDisposable(onDispose: DisposeHandler) : Disposable {
 
     private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
-    fun dispose() {
+    override fun dispose() {
         disposeHandler?.invoke()
         disposeHandler = null
         GC.collect()
@@ -41,7 +56,7 @@ class Disposable(onDispose: DisposeHandler) {
     /**
      * Adds this disposable to a [DisposeBag]
      */
-    fun addTo(disposeBag: DisposeBag) {
+    override fun addTo(disposeBag: DisposeBag) {
         disposeBag.add(this)
     }
 }
@@ -49,7 +64,7 @@ class Disposable(onDispose: DisposeHandler) {
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag]
  */
-class DisposeBag {
+class DisposeBag : Disposable {
 
     private val disposables = mutableListOf<Disposable>()
     private val nestedBags = mutableListOf<DisposeBag>()
@@ -68,11 +83,15 @@ class DisposeBag {
         disposables.add(disposable)
     }
 
+    override fun addTo(disposeBag: DisposeBag) {
+        disposeBag.add(this)
+    }
+
     /**
      * Disposes all [Disposable]s and nested [DisposeBag]s added to this [DisposeBag].
      * Added elements can only be disposed once
      */
-    fun dispose() {
+    override fun dispose() {
         disposables.forEach { it.dispose() }
         disposables.clear()
         nestedBags.forEach { it.dispose() }

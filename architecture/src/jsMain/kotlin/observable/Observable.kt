@@ -91,7 +91,6 @@ class DefaultSubject<T>(initialValue: T) : Subject<T>() {
     init {
         value = ObservableOptional.Value(initialValue)
     }
-
 }
 
 class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : Subject<T>() {

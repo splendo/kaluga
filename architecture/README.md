@@ -56,14 +56,11 @@ class SomeViewModel : BaseViewModel() {
     val flowableSubject = flowable.toSubject(coroutineScope)
 
     fun readValue(defaultValue: Int): Int? {
-        val currentFlowResult: ObservableOptional<Int> by flowObservable
-        val currentFlowValue: Int? by  currentFlowResult
-        return currentFlowValue
+        return flowObservable.currentOrNull
     }
 
     fun postValue(value: Int) {
-        var currentSubjectResult: ObservableOptional<Int> by flowableSubject
-        currentSubjectResult = ObservableOptional.Value(value) 
+        flowableSubject.post(value)
     }
 }
 ```
@@ -71,7 +68,7 @@ class SomeViewModel : BaseViewModel() {
 On the platform level observables can be observed. The platform specific observer will be notified of any changes to the observable.
 Observables are stateful, so any new observer will receive the last emitted value.
 
-On Android both observable and subject are easily converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
+On Android both observable and subject can easily be converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
 
 ```kotlin
 val observable: Observable<Int>
@@ -92,6 +89,9 @@ Calling this returns a `Disposable` object. The caller is responsible for dispos
 A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.addTo()` to add a Disposable to a DisposeBag.
 DisposeBags can be emptied using `dispose()`. To post new data to the Subject the `post()` method can be called.
 
+Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
+Observables can be mapped to Combine `Published` classes directly from Swift however.
+
 ```kotlin
 val observable: Observable<Int>
 val subject: Subject<Int>
@@ -110,7 +110,7 @@ init {
 ```
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
-Use this callback to start observing data that should be bound to the lifecycle and put the disposables in the provided `DisposeBag`.
+Use this callback to start observing data that should be bound to the lifecycle and return the resulting list of `Disposable`.
 At the end of a lifecycle (`viewDidDisappear`) the Observables are automatically disposed.
 
 ## Navigation
@@ -151,7 +151,7 @@ val viewModel = SomeNavigatingViewModel(
     })
 
 // iOS
-val viewModel = SomeNavigatingViewModeel(
+val viewModel = SomeNavigatingViewModel(
     Navigator(viewController) { action ->
         when (action) {
             is ActionA -> NavigationSpec.Present(present = { someViewController() })
