@@ -23,7 +23,7 @@ class KeyboardManagerViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { _ in })
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { return [] })
     }
     
     @IBAction

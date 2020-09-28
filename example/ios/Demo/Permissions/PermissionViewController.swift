@@ -40,25 +40,32 @@ class PermissionViewController: UIViewController {
         
         requestPermissionButton.setTitle(NSLocalizedString("permission_request", comment: ""), for: .normal)
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] (disposeBag) in
-            self?.viewModel.permissionStateMessage.observe(onNext: { (message) in
-                self?.permissionStateLabel.text = NSLocalizedString(message as String? ?? "", comment: "")
-                }).addTo(disposeBag: disposeBag)
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
             
-            self?.viewModel.requestMessage.observe(onNext: { (optionalMessage) in
-                guard let message = optionalMessage as String? else {
-                    return
-                }
-                
-                let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
-                self?.present(alert, animated: true, completion: nil)
-                
-                }).addTo(disposeBag: disposeBag)
+            guard let viewModel = self?.viewModel else {
+                return []
+            }
             
-            self?.viewModel.showPermissionButton.observe(onNext: { (show) in
-                self?.requestPermissionButton.isHidden = !(show as? Bool ?? false)
-                }).addTo(disposeBag: disposeBag)
+            return [
+                viewModel.permissionStateMessage.observe(onNext: { (message) in
+                    self?.permissionStateLabel.text = NSLocalizedString(message as String? ?? "", comment: "")
+                    }),
+                
+                viewModel.requestMessage.observe(onNext: { (optionalMessage) in
+                    guard let message = optionalMessage as String? else {
+                        return
+                    }
+                    
+                    let alert = UIAlertController(title: NSLocalizedString("permission_request", comment: ""), message: message, preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: ""), style: .default, handler: nil))
+                    self?.present(alert, animated: true, completion: nil)
+                    
+                    }),
+                
+                viewModel.showPermissionButton.observe(onNext: { (show) in
+                    self?.requestPermissionButton.isHidden = !(show as? Bool ?? false)
+                    })
+            ]
         })
     }
     

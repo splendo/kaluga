@@ -24,17 +24,17 @@ class InfoViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
             
             guard let viewModel = self?.viewModel else {
-                return
+                return []
             }
             
-            viewModel.observeButtons(disposeBag: disposeBag) { (buttons: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+            return [viewModel.observeButtons() { (buttons: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
                 self?.buttons = buttons
                 self?.onSelected = onSelected
                 self?.tableView.reloadData()
-            }
+            }]
         }
     }
     
