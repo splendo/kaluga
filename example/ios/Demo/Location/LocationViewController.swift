@@ -40,10 +40,10 @@ class LocationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] (disposeBag) in
-            self?.viewModel.location.observe(onNext: { (location) in
+        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
+            return [self?.viewModel.location.observe(onNext: { (location) in
                 self?.label.text = location as String?
-                }).addTo(disposeBag: disposeBag)
+                })]
         })
     }
 }
