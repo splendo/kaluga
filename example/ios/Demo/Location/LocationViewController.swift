@@ -41,7 +41,10 @@ class LocationViewController: UIViewController {
         super.viewDidLoad()
 
         lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
-            return [self?.viewModel.location.observe(onNext: { (location) in
+            guard let viewModel = self?.viewModel else {
+                return []
+            }
+            return [viewModel.location.observe(onNext: { (location) in
                 self?.label.text = location as String?
                 })]
         })
