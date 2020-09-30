@@ -58,6 +58,9 @@ actual class Date(internal val calendar: Calendar) : Comparable<Date> {
     actual var weekDay: Int
         get() = calendar.get(Calendar.DAY_OF_WEEK) + 1
         set(value) { calendar.set(Calendar.DAY_OF_WEEK, value - 1) }
+    actual var firstWeekDay: Int
+        get() = calendar.firstDayOfWeek
+        set(value) { calendar.firstDayOfWeek = value }
 
     actual var hour: Int
         get() = calendar.get(Calendar.HOUR_OF_DAY)

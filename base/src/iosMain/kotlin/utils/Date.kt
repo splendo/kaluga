@@ -92,6 +92,9 @@ actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Compa
     actual var weekDay: Int
         get() = calendar.component(NSCalendarUnitWeekday, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitWeekday, value) }
+    actual var firstWeekDay: Int
+        get() = (calendar.firstWeekday.toInt() + 1)
+        set(value) { calendar.firstWeekday = (value - 1).toULong() }
 
     actual var hour: Int
         get() = calendar.component(NSCalendarUnitHour, fromDate = date).toInt()
