@@ -19,7 +19,7 @@ package com.splendo.kaluga.architecture.navigation
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.stringify
 
 /**
  * Value of a [NavigationBundleSpecRow]
@@ -144,10 +144,10 @@ sealed class NavigationBundleValue<T> {
     data class SerializedValue<T> internal constructor(val serializer: KSerializer<T>, override val value: T) : NavigationBundleValue<T>() {
 
         companion object {
-            private val json = Json(JsonConfiguration.Stable)
+            private val json = Json {}
         }
 
-        val valueString: String = json.stringify(serializer, value)
+        val valueString: String = json.encodeToString(serializer, value)
     }
 
     data class ShortValue internal constructor(override val value: Short) : NavigationBundleValue<Short>()

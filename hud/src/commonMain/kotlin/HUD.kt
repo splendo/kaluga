@@ -20,9 +20,9 @@ package com.splendo.kaluga.hud
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.MultiplatformMainScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -62,7 +62,7 @@ expect class HUD : CoroutineScope {
 
     class Builder : BaseHUDBuilder {
         /** Returns created loading indicator */
-        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope = MultiplatformMainScope()): HUD
+        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope = MainScope()): HUD
     }
 
     val hudConfig: HudConfig
@@ -95,7 +95,7 @@ val HUD.style: HUDStyle get() = hudConfig.style
  * @param timeMillis The number of milliseconds to wait
  */
 fun HUD.dismissAfter(timeMillis: Long, animated: Boolean = true): HUD = apply {
-    launch(MainQueueDispatcher) {
+    launch(Dispatchers.Main) {
         delay(timeMillis)
         dismiss(animated)
     }
@@ -112,7 +112,7 @@ suspend fun <T> HUD.presentDuring(animated: Boolean = true, block: suspend HUD.(
 }
 
 /** Returns built loading indicator */
-fun HUD.Builder.build(coroutineScope: CoroutineScope = MultiplatformMainScope(), initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
+fun HUD.Builder.build(coroutineScope: CoroutineScope = MainScope(), initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
     clear()
     initialize()
     return create(HudConfig(style, title), coroutineScope)

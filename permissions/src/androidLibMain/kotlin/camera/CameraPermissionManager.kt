@@ -41,9 +41,9 @@ actual class CameraPermissionManager(
 
     override suspend fun initializeState(): PermissionState<Permission.Camera> {
         return when {
-            !supported -> PermissionState.Denied.Locked(this)
-            permissionsManager.hasPermissions -> PermissionState.Allowed(this)
-            else -> PermissionState.Denied.Requestable(this)
+            !supported -> PermissionState.Denied.Locked()
+            permissionsManager.hasPermissions -> PermissionState.Allowed()
+            else -> PermissionState.Denied.Requestable()
         }
     }
 

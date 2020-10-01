@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -57,7 +58,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
             stateRepo.takeAndChangeState { state ->
                 when (state) {
                     is PermissionState.Denied -> state.allow
-                    is PermissionState.Allowed -> state.remain
+                    is PermissionState.Allowed -> state.remain()
                 }
             }
         }
@@ -74,10 +75,10 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
                 when (state) {
                     is PermissionState.Allowed -> suspend { state.deny(locked) }
                     is PermissionState.Denied.Requestable -> {
-                        if (locked) state.lock else state.remain
+                        if (locked) state.lock else state.remain()
                     }
                     is PermissionState.Denied.Locked -> {
-                        if (locked) state.remain else state.unlock
+                        if (locked) state.remain() else state.unlock
                     }
                 }
             }

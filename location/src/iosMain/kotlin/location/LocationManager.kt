@@ -17,12 +17,13 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.MainQueueDispatcher
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -88,8 +89,15 @@ actual class LocationManager(
 
     private val authorizationStatus: CLAuthorizationStatusKotlin get() = CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin()
 
-    var isMonitoringLocationEnable = false
-    var isMonitoringLocationUpdate = false
+    private var _isMonitoringLocationEnable = AtomicBoolean(false)
+    var isMonitoringLocationEnable
+        get() = _isMonitoringLocationEnable.value
+        set(value) { _isMonitoringLocationEnable.value = value }
+
+    private var _isMonitoringLocationUpdate = AtomicBoolean(false)
+    var isMonitoringLocationUpdate
+        get() = _isMonitoringLocationUpdate.value
+        set(value) { _isMonitoringLocationUpdate.value = value }
 
     override suspend fun startMonitoringLocationEnabled() {
         isMonitoringLocationEnable = true
@@ -132,7 +140,7 @@ actual class LocationManager(
 actual class LocationStateRepoBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
     private val locationManager: CLLocationManager = CLLocationManager(),
-    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle), MainQueueDispatcher)
+    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle), Dispatchers.Main)
 ) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {

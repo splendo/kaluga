@@ -66,7 +66,7 @@ actual class CalendarPermissionManager(
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Calendar> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
+        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
     }
 
     override suspend fun startMonitoring(interval: Long) {

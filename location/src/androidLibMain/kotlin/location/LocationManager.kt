@@ -32,12 +32,12 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -136,7 +136,7 @@ actual class LocationManager(
                     val enablingHandler = CompletableDeferred<Boolean>()
                     enablingHandlers[identifier] = enablingHandler
 
-                    MainScope().launch(MainQueueDispatcher) {
+                    MainScope().launch {
                         val intent = EnableLocationActivity.intent(context, identifier, e)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)
@@ -216,7 +216,7 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 
 actual class LocationStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
-    private val permissions: Permissions = Permissions(PermissionsBuilder(context), MainQueueDispatcher)
+    private val permissions: Permissions = Permissions(PermissionsBuilder(context), Dispatchers.Main)
 ) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {

@@ -21,9 +21,9 @@ import android.app.AlertDialog
 import android.content.Context
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.utils.applyIf
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -33,12 +33,12 @@ import kotlinx.coroutines.launch
 actual class AlertInterface(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-    private val coroutineScope: CoroutineScope = MultiplatformMainScope()
+    private val coroutineScope: CoroutineScope = MainScope()
 ) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope  {
 
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
-        private val coroutineScope: CoroutineScope = MultiplatformMainScope()
+        private val coroutineScope: CoroutineScope = MainScope()
     ) : BaseAlertBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
         actual fun create() = AlertInterface(createAlert(), lifecycleManagerObserver, coroutineScope)
     }

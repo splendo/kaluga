@@ -91,7 +91,7 @@ private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermis
         didRevokePermission = CompletableDeferred()
     }
 
-    var initialState: PermissionState<Permission.Storage> = PermissionState.Denied.Requestable(this)
+    var initialState: PermissionState<Permission.Storage> = PermissionState.Denied.Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()

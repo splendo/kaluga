@@ -23,14 +23,19 @@ kotlin {
 
     sourceSets {
         getByName("commonMain") {
+            val ext = (gradle as ExtensionAware).extra
+
             dependencies {
                 implementation(project(":logging", ""))
+                implementation("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
                 api(project(":base", ""))
             }
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils", ""))
+                api(project(":test-utils", ""))
+
+
             }
         }
     }

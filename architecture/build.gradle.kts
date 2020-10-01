@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("plugin.serialization") version "1.4.0"
     id("jacoco")
     id("com.android.library")
     id("maven-publish")
@@ -27,7 +27,6 @@ dependencies {
     val serialization_version: String by ext
 
     api("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    api("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version")
     api("androidx.lifecycle:lifecycle-runtime-ktx:$androidx_lifecycle_version")
     api("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version")
     api("androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version")
@@ -41,46 +40,14 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
-                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
 
         getByName("commonTest") {
             dependencies {
                 api(project(":test-utils", ""))
-            }
-        }
-
-        getByName("jvmMain") {
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime:$serialization_version")
-            }
-        }
-        getByName("jsMain") {
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-js:$serialization_version")
-            }
-        }
-
-        getByName("${ext["ios_primary_arch"]}Main") {
-            kotlin.srcDirs("src/iosMain")
-            dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
-            }
-        }
-        val singleSet = ext["ios_one_sourceset"] as Boolean
-        if (!singleSet) {
-
-            getByName("iosarm32Main") {
-                kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
-                }
-            }
-            getByName("${ext["ios_secondary_arch"]}Main") {
-                dependencies {
-                    api("org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:$serialization_version")
-                }
             }
         }
     }

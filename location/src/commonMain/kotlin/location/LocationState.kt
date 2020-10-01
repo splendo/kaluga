@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.MainQueueDispatcher
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -34,7 +35,7 @@ import kotlinx.coroutines.flow.map
  * @param location The [Location] associated with the state.
  * @param locationManager The [BaseLocationManager] managing the location state
  */
-sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State<LocationState>() {
+sealed class LocationState(open val location: Location, private val locationManager: BaseLocationManager) : State() {
 
     @InternalCoroutinesApi
     override suspend fun initialState() {
@@ -247,26 +248,26 @@ class LocationStateRepo(
             locationPermission: Permission.Location,
             autoRequestPermission: Boolean = true,
             autoEnableLocations: Boolean = true,
-            coroutineContext: CoroutineContext = MainQueueDispatcher
+            coroutineContext: CoroutineContext = Dispatchers.Main
         ): LocationStateRepo
     }
 
-    private var lastKnownLocation: Location = Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR)
+    private var lastKnownLocation:AtomicReference<Location> = AtomicReference(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR))
     private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this)
 
     @InternalCoroutinesApi
     override suspend fun initialValue(): LocationState {
         return if (!locationManager.isPermitted()) {
-            LocationState.Disabled.NotPermitted(LocationState.Disabled.NotPermitted.generateLocation(lastKnownLocation), locationManager)
+            LocationState.Disabled.NotPermitted(LocationState.Disabled.NotPermitted.generateLocation(lastKnownLocation.get()), locationManager)
         } else if (!locationManager.isLocationEnabled()) {
-            LocationState.Disabled.NoGPS(LocationState.Disabled.NoGPS.generateLocation(lastKnownLocation), locationManager)
+            LocationState.Disabled.NoGPS(LocationState.Disabled.NoGPS.generateLocation(lastKnownLocation.get()), locationManager)
         } else {
-            LocationState.Enabled(lastKnownLocation, locationManager)
+            LocationState.Enabled(lastKnownLocation.get(), locationManager)
         }
     }
 
     override suspend fun deinitialize(state: LocationState) {
-        lastKnownLocation = state.location
+        lastKnownLocation.set(state.location)
     }
 }
 

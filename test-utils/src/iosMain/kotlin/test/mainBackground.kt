@@ -15,24 +15,21 @@
 
  */
 
-package com.splendo.kaluga.architecture.viewmodel
+package com.splendo.kaluga.test
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import com.splendo.kaluga.logging.debug
+import platform.CoreFoundation.*
+import kotlin.native.concurrent.*
+import kotlin.native.internal.test.*
+import kotlin.system.*
 
-actual open class ViewModel internal actual constructor() {
-
-    private val lifecycleJob = SupervisorJob()
-
-    actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
-
-    fun clear() {
-        onCleared()
+fun mainBackground(args: Array<String>) {
+    debug("using background thread for iOS tests")
+    val worker = Worker.start(name = "main-background")
+    worker.execute(TransferMode.SAFE, { args.freeze() }) {
+        val result = testLauncherEntryPoint(it)
+        exitProcess(result)
     }
-
-    protected actual open fun onCleared() {
-        lifecycleJob.cancelChildren()
-    }
+    CFRunLoopRun()
+    error("CFRunLoopRun should never return")
 }

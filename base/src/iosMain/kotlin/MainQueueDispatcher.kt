@@ -18,62 +18,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.base
 
-import kotlin.coroutines.CoroutineContext
+import kotlinx.cinterop.staticCFunction
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import platform.Foundation.NSThread
+import platform.darwin.dispatch_get_main_queue
+import platform.darwin.dispatch_sync_f
 import kotlin.native.concurrent.Continuation0
 import kotlin.native.concurrent.Continuation1
 import kotlin.native.concurrent.Continuation2
-import kotlin.native.concurrent.DetachedObjectGraph
-import kotlin.native.concurrent.attach
 import kotlin.native.concurrent.callContinuation0
 import kotlin.native.concurrent.callContinuation1
 import kotlin.native.concurrent.callContinuation2
-import kotlinx.cinterop.staticCFunction
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Delay
-import kotlinx.coroutines.Runnable
-import platform.Foundation.NSOperationQueue
-import platform.Foundation.NSThread
-import platform.darwin.DISPATCH_TIME_NOW
-import platform.darwin.dispatch_after
-import platform.darwin.dispatch_async
-import platform.darwin.dispatch_async_f
-import platform.darwin.dispatch_get_main_queue
-import platform.darwin.dispatch_queue_t
-import platform.darwin.dispatch_sync_f
-import platform.darwin.dispatch_time
 
-internal class NsQueueDispatcher(private val dispatchQueue: dispatch_queue_t) : CoroutineDispatcher(), Delay {
-
-    override fun isDispatchNeeded(context: CoroutineContext) = !NSThread.currentThread().isMainThread
-
-    // Dispatch block on given queue
-    override fun dispatch(context: CoroutineContext, block: Runnable) {
-        dispatch_async(dispatchQueue) {
-            block.run()
-        }
-    }
-
-    // Support Delay
-    override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeMillis * 1_000_000), dispatchQueue) {
-            with(continuation) {
-                resumeUndispatched(Unit)
-            }
-        }
-    }
-}
-
-actual val MainQueueDispatcher: CoroutineDispatcher = NsQueueDispatcher(dispatch_get_main_queue())
-
-inline fun <reified T> executeAsync(queue: NSOperationQueue, crossinline producerConsumer: () -> Pair<T, (T) -> Unit>) {
-    dispatch_async_f(queue.underlyingQueue, DetachedObjectGraph {
-        producerConsumer()
-    }.asCPointer(), staticCFunction { it ->
-        val result = DetachedObjectGraph<Pair<T, (T) -> Unit>>(it).attach()
-        result.second(result.first)
-    })
-}
+actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main
 
 inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Unit) = Continuation0(
     block, staticCFunction { invokerArg ->

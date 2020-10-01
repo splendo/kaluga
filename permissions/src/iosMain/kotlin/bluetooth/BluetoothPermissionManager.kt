@@ -73,7 +73,7 @@ actual class BluetoothPermissionManager(
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Bluetooth> {
-        return IOSPermissionsHelper.getPermissionState(checkAuthorization(), this)
+        return IOSPermissionsHelper.getPermissionState(checkAuthorization())
     }
 
     override suspend fun startMonitoring(interval: Long) {

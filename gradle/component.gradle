@@ -4,6 +4,8 @@ repositories {
     jcenter()
 }
 
+apply(plugin: "com.adarshr.test-logger")
+
 kotlin {
 
     targets {
@@ -31,7 +33,14 @@ kotlin {
     }
 
     if (gradle.ios_primary_arch == "iosx64")
-        targetFromPreset(presets.iosX64, gradle.ios_primary_arch)
+        targetFromPreset(presets.iosX64, gradle.ios_primary_arch) {
+            binaries {
+                // Use this entry point to turn the thread tests are run to a background thread instead of the main thread
+                // This better allows testing the main dispatcher, and testing cross thread access
+                binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.mainBackground"]
+            }
+
+        }
 
     if (gradle.ios_primary_arch == "iosarm64")
         targetFromPreset(presets.iosArm64, gradle.ios_primary_arch)
@@ -62,8 +71,7 @@ kotlin {
 
         commonMain {
             dependencies {
-                implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$gradle.kotlinx_coroutines_version"
+                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:${gradle.kotlinx_coroutines_version}!!"
             }
         }
 
@@ -71,7 +79,6 @@ kotlin {
             dependencies {
                 implementation kotlin("test-common")
                 implementation kotlin("test-annotations-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
             }
         }
 
@@ -103,8 +110,7 @@ kotlin {
         "${gradle.ios_primary_arch}Main" {
             kotlin.srcDirs("src/iosMain")
             dependencies {
-                implementation kotlin("stdlib-common")
-                implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
+                // none for now
             }
         }
 
@@ -120,10 +126,6 @@ kotlin {
 
             iosarm32Main {
                 kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
-                }
             }
             iosarm32Test {
                 kotlin.srcDirs("src/iosTest")
@@ -133,10 +135,6 @@ kotlin {
             }
             "${gradle.ios_secondary_arch}Main" {
                 kotlin.srcDirs("src/iosMain")
-                dependencies {
-                    implementation kotlin("stdlib-common")
-                    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-native:$gradle.kotlinx_coroutines_version"
-                }
             }
             "${gradle.ios_secondary_arch}Test" {
                 kotlin.srcDirs("src/iosTest")

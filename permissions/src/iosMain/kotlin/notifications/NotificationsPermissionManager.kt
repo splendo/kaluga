@@ -67,7 +67,7 @@ actual class NotificationsPermissionManager(
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Notifications> {
-        return IOSPermissionsHelper.getPermissionState(authorization(), this)
+        return IOSPermissionsHelper.getPermissionState(authorization())
     }
 
     override suspend fun startMonitoring(interval: Long) {

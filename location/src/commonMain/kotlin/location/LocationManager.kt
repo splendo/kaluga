@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.location
 
+import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -39,30 +41,30 @@ abstract class BaseLocationManager(
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
-    private var monitoringPermissionsJob: Job? = null
+    private var monitoringPermissionsJob:AtomicReference<Job?> = AtomicReference(null)
 
     internal open fun startMonitoringPermissions() {
-        if (monitoringPermissionsJob != null) return
-        monitoringPermissionsJob = launch {
+        if (monitoringPermissionsJob.get() != null) return
+        monitoringPermissionsJob.set(launch {
             locationPermissionRepo.collect { state ->
                 when (state) {
-                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request()
+                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(locationPermission))
                     else -> {}
                 }
                 val hasPermission = state is PermissionState.Allowed
                 locationStateRepo.takeAndChangeState { locationState ->
                     when (locationState) {
-                        is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain else (locationState as LocationState.Permitted).revokePermission
-                        is LocationState.Disabled.NotPermitted -> if (hasPermission) locationState.permit(isLocationEnabled()) else locationState.remain
+                        is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
+                        is LocationState.Disabled.NotPermitted -> if (hasPermission) locationState.permit(isLocationEnabled()) else locationState.remain()
                     }
                 }
             }
-        }
+        })
     }
 
     internal open fun stopMonitoringPermissions() {
-        monitoringPermissionsJob?.cancel()
-        monitoringPermissionsJob = null
+        monitoringPermissionsJob.get()?.cancel()
+        monitoringPermissionsJob.set(null)
     }
 
     internal suspend fun isPermitted(): Boolean {
@@ -78,9 +80,9 @@ abstract class BaseLocationManager(
         launch {
             locationStateRepo.takeAndChangeState { state ->
                 when (state) {
-                    is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain
-                    is LocationState.Disabled.NotPermitted -> state.remain
-                    is LocationState.Enabled -> if (isLocationEnabled()) state.remain else state.disable
+                    is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
+                    is LocationState.Disabled.NotPermitted -> state.remain()
+                    is LocationState.Enabled -> if (isLocationEnabled()) state.remain() else state.disable
                 }
             }
         }

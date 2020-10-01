@@ -36,5 +36,10 @@ kotlin {
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
+        getByName("commonTest") {
+            dependencies {
+                implementation(project(":test-utils", ""))
+            }
+        }
     }
 }

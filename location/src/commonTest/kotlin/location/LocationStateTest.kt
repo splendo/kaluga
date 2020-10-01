@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.MainQueueDispatcher
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -38,6 +39,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.cancel
@@ -82,7 +85,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @BeforeTest
     fun setup() {
         super.beforeTest()
-        coroutineScope = CoroutineScope(MainQueueDispatcher + testCoroutine)
+        coroutineScope = CoroutineScope(Dispatchers.Main + testCoroutine)
         permissionsBuilder = MockPermissionsBuilder()
         permissions = Permissions(permissionsBuilder, coroutineContext = coroutineScope.coroutineContext)
         locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
@@ -97,21 +100,24 @@ class LocationStateTest : FlowableTest<LocationState>() {
     }
 
     @Test
-    fun testStartEnabled() {
+    fun testStartEnabled() = runBlocking<Unit> {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
         assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
         assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
-        permissionManager.reset()
         testWithFlow {
             test {
-                assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
-                locationManager.startMonitoringPermissionsCompleted.await()
-                locationManager.startMonitoringLocationEnabledCompleted.complete()
-                locationManager.startMonitoringLocationCompleted.complete()
-                assertTrue(it is LocationState.Enabled)
-                assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+                try {
+                    assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+                    locationManager.startMonitoringPermissionsCompleted.await()
+                    locationManager.startMonitoringLocationEnabledCompleted.complete()
+                    locationManager.startMonitoringLocationCompleted.complete()
+                    assertTrue(it is LocationState.Enabled)
+                    assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
+                } catch(t: Throwable) {
+                    com.splendo.kaluga.logging.error("error in test: ", t)
+                }
             }
         }
 
@@ -126,7 +132,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testStartNoPermission() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Denied.Requestable(permissionManager)
+        permissionManager.currentState = PermissionState.Denied.Requestable()
         testWithFlow {
             test {
                 assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
@@ -144,7 +150,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testStartNoPermissionAutoRequest() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Denied.Requestable(permissionManager)
+        permissionManager.currentState = PermissionState.Denied.Requestable()
         testWithFlow {
             test {
                 assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
@@ -179,7 +185,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testStartNoPermissionAutoRequestNoGPS() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Denied.Requestable(permissionManager)
+        permissionManager.currentState = PermissionState.Denied.Requestable()
         testWithFlow {
             test {
                 assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
@@ -210,7 +216,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testStartNoGPS() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = false
         testWithFlow {
             test {
@@ -234,7 +240,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true)
         assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
         assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = false
         testWithFlow {
             test {
@@ -267,7 +273,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testLocationChanged() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         testWithFlow {
             test {
@@ -299,7 +305,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testMultipleLocationChanged() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         testWithFlow {
             test {
@@ -328,7 +334,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testPermissionRevoked() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         testWithFlow {
             test {
@@ -366,7 +372,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testGPSDisabled() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         testWithFlow {
             test {
@@ -403,9 +409,9 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testResumeFlow() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
@@ -428,9 +434,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
             )
         }
 
-        permissionManager.reset()
-        locationManager.reset()
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(location1, it.location)
@@ -449,9 +453,10 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testResumeFlowPermissionDenied() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
@@ -471,10 +476,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
             locationManager.stopMonitoringLocationEnabledCompleted
         )
 
-        permissionManager.reset()
-        locationManager.reset()
-        permissionManager.currentState = PermissionState.Denied.Locked(permissionManager)
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+        permissionManager.currentState = PermissionState.Denied.Locked()
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Disabled.NotPermitted)
                 assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.PERMISSION_DENIED), it.location)
@@ -490,9 +493,9 @@ class LocationStateTest : FlowableTest<LocationState>() {
     @Test
     fun testResumeFlowGPSDisabled() {
         setupLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false)
-        permissionManager.currentState = PermissionState.Allowed(permissionManager)
+        permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Enabled)
                 assertEquals(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR), it.location)
@@ -512,10 +515,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
             locationManager.stopMonitoringLocationEnabledCompleted
         )
 
-        permissionManager.reset()
-        locationManager.reset()
         locationManager.locationEnabled = false
-        FlowTest(locationStateRepo.flowable).testWithFlow {
+        FlowTest(MainScope(), {locationStateRepo.flowable}).testWithFlow {
             test {
                 assertTrue(it is LocationState.Disabled.NoGPS)
                 assertEquals(Location.UnknownLocation.WithLastLocation(location1, Location.UnknownLocation.Reason.NO_GPS), it.location)
@@ -532,11 +533,14 @@ class LocationStateTest : FlowableTest<LocationState>() {
     private fun setupLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean) {
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations, coroutineScope.coroutineContext)
         locationManager = locationStateRepoBuilder.locationManager
-        flowable.complete(locationStateRepo.flowable)
+        //flowable = locationStateRepo.flowable)
         // Make sure permissionState has been created as it may break the tests otherwise
         permissions[locationPermission]
         permissionManager = permissionsBuilder.locationPMManager
-        locationManager.reset()
+    }
+
+    override fun flowable(): Flowable<LocationState> {
+        return locationStateRepo.flowable
     }
 }
 
@@ -575,25 +579,18 @@ class MockLocationManager(
     locationStateRepo
 ) {
 
-    var locationEnabled: Boolean = false
+    val _locationEnabled = AtomicBoolean(false)
+    var locationEnabled:Boolean
+        get() = _locationEnabled.value
+        set(it) { _locationEnabled.value = it }
 
-    var startMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-    var stopMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-    var startMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-    var stopMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-    var requestLocationEnableCompleted = EmptyCompletableDeferred()
-    var startMonitoringLocationCompleted = EmptyCompletableDeferred()
-    var stopMonitoringLocationCompleted = EmptyCompletableDeferred()
-
-    fun reset() {
-        startMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-        stopMonitoringPermissionsCompleted = EmptyCompletableDeferred()
-        startMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-        stopMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
-        requestLocationEnableCompleted = EmptyCompletableDeferred()
-        startMonitoringLocationCompleted = EmptyCompletableDeferred()
-        stopMonitoringLocationCompleted = EmptyCompletableDeferred()
-    }
+    val startMonitoringPermissionsCompleted = EmptyCompletableDeferred()
+    val stopMonitoringPermissionsCompleted = EmptyCompletableDeferred()
+    val startMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
+    val stopMonitoringLocationEnabledCompleted = EmptyCompletableDeferred()
+    val requestLocationEnableCompleted = EmptyCompletableDeferred()
+    val startMonitoringLocationCompleted = EmptyCompletableDeferred()
+    val stopMonitoringLocationCompleted = EmptyCompletableDeferred()
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()

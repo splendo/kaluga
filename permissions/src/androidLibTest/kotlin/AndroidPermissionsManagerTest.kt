@@ -87,7 +87,6 @@ class AndroidPermissionsManagerTest : BaseTest() {
         androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
         packageInfo.requestedPermissions = permissions
         androidPermissionsManager.requestPermissions()
-
         assertTrue(AndroidPermissionsManager.waitingPermissions.containsAll(permissions.toList()))
         verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
     }

@@ -17,13 +17,16 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                val ext =  (gradle as ExtensionAware).extra
+
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$kotlinx_coroutines_version")
                 implementation(project(":permissions", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
+                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
+                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
         getByName("jsMain") {
@@ -31,5 +34,12 @@ kotlin {
                 api(kotlin("test-js"))
             }
         }
+    }
+}
+
+android {
+    dependencies {
+        val ext =  (gradle as ExtensionAware).extra
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
     }
 }

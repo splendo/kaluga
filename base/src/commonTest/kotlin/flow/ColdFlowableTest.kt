@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.test.flow
 
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
@@ -116,9 +115,10 @@ class ColdFlowableTest : BaseTest() {
         val values1 = CompletableDeferred<List<Int>>()
         val values2 = CompletableDeferred<List<Int>>()
         val scope = MainScope()
+        val flow = flowable.flow()
         val job1 = scope.launch {
             val values = emptyList<Int>().toMutableList()
-            flowable.flow().take(3).collect { value ->
+            flow.take(3).collect { value ->
                 values.add(value)
                 if (values.size == 3) {
                     values1.complete(values)
@@ -162,13 +162,13 @@ class ColdFlowableTest : BaseTest() {
 
     @Test
     fun testStoppingFlow() = runBlocking {
-        val scope = MultiplatformMainScope()
+        val scope = MainScope()
+        val flow = flowable.flow()
         val job = scope.launch {
-            flowable.flow().collect {}
+           flow.collect {}
         }
-        withContext(scope.coroutineContext) {
-            flowable.set(1)
-        }
+        initialized.await()
+        flowable.set(1)
         assertFalse(broadcastChannel.isClosedForSend)
         job.cancel()
         deinitialized.await()
