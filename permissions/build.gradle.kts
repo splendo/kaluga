@@ -27,7 +27,6 @@ kotlin {
 
             dependencies {
                 implementation(project(":logging", ""))
-                implementation("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
                 api(project(":base", ""))
             }
         }
