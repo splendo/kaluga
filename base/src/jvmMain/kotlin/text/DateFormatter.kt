@@ -63,8 +63,20 @@ actual class DateFormatter(private val format: SimpleDateFormat) {
         set(value) { updateSymbols { it.shortMonths = value.toTypedArray() } }
 
     actual var weekdays: List<String>
-        get() = symbols.weekdays.toList()
-        set(value) { updateSymbols { it.weekdays = value.toTypedArray() } }
+        get() {
+            val weekdaysWithEmptyFirst = symbols.weekdays.toList()
+            return if (weekdaysWithEmptyFirst.size > 1) {
+                weekdaysWithEmptyFirst.subList(1, weekdaysWithEmptyFirst.size)
+            } else {
+                emptyList()
+            }
+        }
+        set(value) { updateSymbols {
+            val weekdaysWithEmptyFirst = value.toMutableList().apply {
+                add(0, "")
+            }
+            it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
+        } }
     actual var shortWeekdays: List<String>
         get() = symbols.shortWeekdays.toList()
         set(value) { updateSymbols { it.shortWeekdays = value.toTypedArray() } }
