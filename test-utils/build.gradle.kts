@@ -11,7 +11,6 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
-val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
 kotlin {
     sourceSets {
@@ -22,11 +21,10 @@ kotlin {
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
+
                 implementation(project(":permissions", ""))
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
         getByName("jsMain") {
