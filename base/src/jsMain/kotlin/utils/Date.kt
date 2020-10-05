@@ -53,6 +53,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
     actual var weekDay: Int
         get() = date.getDate() + 1
         set(value) { }
+    actual var firstWeekDay: Int
+        get() = 1
+        set(value) { }
 
     actual var hour: Int
         get() = date.getHours()

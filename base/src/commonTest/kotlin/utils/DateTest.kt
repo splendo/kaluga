@@ -18,9 +18,11 @@
 package com.splendo.kaluga.base.test.utils
 
 import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -42,7 +44,7 @@ class DateTest {
     fun testUTCDate() {
         val utcNow = Date.nowUtc()
         val epochNow = utcNow.millisecondSinceEpoch
-        val now = Date.epoch(epochNow, TimeZone.get("UTC")!!)
+        val now = Date.epoch(epochNow, TimeZone.utc)
         assertEquals(utcNow.millisecondSinceEpoch, now.millisecondSinceEpoch)
         assertEquals(utcNow, now)
     }
@@ -78,5 +80,35 @@ class DateTest {
         epoch.month += 22
         assertEquals(1971, epoch.year)
         assertEquals(if (isEarlierThanGMT) 10 else 11, epoch.month)
+    }
+
+    @Test
+    fun testGet() {
+        val someDay = Date.epoch(574695462750, TimeZone.utc)
+
+        assertEquals(1, someDay.era)
+        assertEquals(1988, someDay.year)
+        assertEquals(12, someDay.weekOfYear)
+        assertEquals(3, someDay.month)
+        assertEquals(3, someDay.weekOfMonth)
+        assertEquals(18, someDay.day)
+        assertEquals(78, someDay.dayOfYear)
+        assertEquals(6, someDay.weekDay)
+        assertEquals(13, someDay.hour)
+        assertEquals(37, someDay.minute)
+        assertEquals(42, someDay.second)
+        assertEquals(750, someDay.millisecond)
+    }
+
+    @Test
+    fun testStartOfWeek() {
+        val france = Locale.createLocale("fr", "FR")
+        val us = Locale.createLocale("en", "US")
+
+        val frenchNow = Date.now(0, TimeZone.utc, france)
+        val usNow = Date.now(0, TimeZone.utc, us)
+
+        assertEquals(2, frenchNow.firstWeekDay)
+        assertEquals(1, usNow.firstWeekDay)
     }
 }
