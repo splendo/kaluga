@@ -32,6 +32,14 @@ kotlin {
                 api(kotlin("test-js"))
             }
         }
+
+        getByName("jvmMain") {
+            val ext =  (gradle as ExtensionAware).extra
+
+            dependencies {
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
+            }
+        }
     }
 }
 
