@@ -26,7 +26,7 @@ abstract class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: Navi
 /**
  * Class that can trigger a given [NavigationAction]
  */
-expect class Navigator<A : NavigationAction<*>> {
+expect interface Navigator<A : NavigationAction<*>> {
     /**
      * Triggers a given [NavigationAction]
      * @param action The [NavigationAction] to trigger

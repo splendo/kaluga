@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -69,7 +70,7 @@ val utilitiesModule = module {
 val viewModelModule = module {
     viewModel {
         ExampleViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { FeaturesListFragment() })
                     is ExampleTabNavigation.Info -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { InfoFragment() })
@@ -80,7 +81,7 @@ val viewModelModule = module {
 
     viewModel {
         FeatureListViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
                     is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
@@ -94,7 +95,7 @@ val viewModelModule = module {
 
     viewModel {
         InfoViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {
                         val title = action.bundle?.get(DialogSpecRow.TitleRow) ?: ""
@@ -114,7 +115,7 @@ val viewModelModule = module {
 
     viewModel {
         PermissionsListViewModel(
-            Navigator {
+            ActivityNavigator {
                 NavigationSpec.Activity(PermissionsDemoActivity::class.java)
             })
     }
@@ -125,14 +126,14 @@ val viewModelModule = module {
 
     viewModel {
         ArchitectureInputViewModel(
-            Navigator {
+            ActivityNavigator {
                 NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
             }
         )
     }
 
     viewModel { (name: String, number: Int) ->
-        ArchitectureDetailsViewModel(name, number, Navigator {
+        ArchitectureDetailsViewModel(name, number, ActivityNavigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
     }
