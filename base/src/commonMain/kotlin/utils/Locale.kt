@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
+
 /**
  * A [Locale] object represents a specific geographical, political, or cultural region.
  */
@@ -132,3 +134,8 @@ expect class Locale {
      */
     val alternateQuotationEnd: String
 }
+
+/**
+ * Locale for English/US in a POSIX format. Useful shortcut when dealing with fixed locale formats.
+ */
+val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
