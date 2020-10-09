@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
-
 /**
  * A [Locale] object represents a specific geographical, political, or cultural region.
  */
