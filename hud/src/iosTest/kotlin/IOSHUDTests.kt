@@ -18,21 +18,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.base.runOnMain
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import platform.UIKit.UIViewController
-import platform.UIKit.UIWindow
 import kotlin.native.concurrent.ensureNeverFrozen
 
 class IOSHUDTests : HUDTests() {
@@ -81,26 +75,32 @@ class IOSHUDTests : HUDTests() {
     private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView, { MockPresentingHUD(it) })
 
     @Test
-    fun presentIndicator() = runBlocking {
+    fun presentIndicator() = runOnMain {
         val hostView = HUDViewController()
         val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        indicator.present(false)
+
+        runBlocking { indicator.present(false) }
+
         assertTrue(indicator.isVisible)
         hostView.mockPresentingHUD?.parent = null
         hostView.mockPresentingHUD = null
     }
 
     @Test
-    fun dismissIndicator() = runBlocking {
+    fun dismissIndicator() = runOnMain {
         val hostView = HUDViewController()
         val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        indicator.present(false)
-        assertTrue(indicator.isVisible)
-        indicator.dismiss(false)
+
+        runBlocking {
+            indicator.present(false)
+            assertTrue(indicator.isVisible)
+            indicator.dismiss(false)
+        }
+
         assertFalse(indicator.isVisible)
         hostView.mockPresentingHUD?.parent = null
         hostView.mockPresentingHUD = null
