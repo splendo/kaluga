@@ -132,3 +132,8 @@ expect class Locale {
      */
     val alternateQuotationEnd: String
 }
+
+/**
+ * Locale for English/US in a POSIX format. Useful shortcut when dealing with fixed locale formats.
+ */
+val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")

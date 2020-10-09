@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.enUsPosix
 
 /**
  * Style used for formatting a [Date] to and from a [String]
@@ -85,6 +86,9 @@ expect class DateFormatter {
 
         /**
          * Creates a [DateFormatter] using a custom Date format pattern.
+         * On iOS some user settings may take precedent over the format (i.e. using 12 hour clock).
+         * To prevent this, ensure that the provided [locale] is of a `POSIX` type.
+         * A convenience [fixedPatternFormat] method exists to default to this behaviour.
          * @param pattern The pattern to apply.
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
@@ -145,3 +149,17 @@ expect class DateFormatter {
      */
     fun parse(string: String): Date?
 }
+
+/**
+ * Creates a fixed [DateFormatter] using a custom Date format pattern, localized by the [Locale.enUsPosix] [Locale].
+ * Use this to ensure that displaying time in 12 or 24 hour format is not overridden by the user.
+ * @param pattern The pattern to apply.
+ * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ */
+fun DateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZone = TimeZone.current()) = patternFormat(pattern, timeZone, Locale.enUsPosix)
+
+/**
+ * Creates a [DateFormatter] that formats time according to the ISo 8601 format.
+ * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ */
+fun DateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)

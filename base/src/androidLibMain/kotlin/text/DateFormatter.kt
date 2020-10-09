@@ -15,6 +15,7 @@
 
  */
 
+@file:JvmName("AndroidDateFormatter")
 package com.splendo.kaluga.base.text
 
 import com.splendo.kaluga.base.utils.Date
@@ -78,8 +79,20 @@ actual class DateFormatter(private val format: SimpleDateFormat) {
             it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
         } }
     actual var shortWeekdays: List<String>
-        get() = symbols.shortWeekdays.toList()
-        set(value) { updateSymbols { it.shortWeekdays = value.toTypedArray() } }
+        get() {
+            val weekdaysWithEmptyFirst = symbols.shortWeekdays.toList()
+            return if (weekdaysWithEmptyFirst.size > 1) {
+                weekdaysWithEmptyFirst.subList(1, weekdaysWithEmptyFirst.size)
+            } else {
+                emptyList()
+            }
+        }
+        set(value) { updateSymbols {
+            val weekdaysWithEmptyFirst = value.toMutableList().apply {
+                add(0, "")
+            }
+            it.shortWeekdays = weekdaysWithEmptyFirst.toTypedArray()
+        } }
 
     actual var amString: String
         get() = symbols.amPmStrings.toList()[0]

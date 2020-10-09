@@ -19,10 +19,12 @@ package com.splendo.kaluga.base.test.text
 
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.DateFormatter
+import com.splendo.kaluga.base.text.iso8601Pattern
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
 import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.nowUtc
+import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -56,5 +58,12 @@ class DateFormatterTest {
         assertEquals(2020, date.year)
         assertEquals(1, date.month)
         assertEquals(8, date.day)
+    }
+
+    @Test
+    fun testFormatFixedDate() {
+        val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
+        val date = Date.epoch(574695462750)
+        assertEquals("1988-03-18T13:37:42.750+0000", formatter.format(date))
     }
 }
