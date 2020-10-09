@@ -17,7 +17,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("ru.pocketbyte.kydra:kydra-log:1.1.1")
+                implementation("ru.pocketbyte.kydra:kydra-log:1.1.2")
             }
         }
         commonTest {

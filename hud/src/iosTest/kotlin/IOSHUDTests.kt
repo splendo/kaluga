@@ -18,8 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.debug
+import kotlinx.coroutines.Dispatchers
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -27,12 +30,18 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import platform.UIKit.UIViewController
 import platform.UIKit.UIWindow
+import kotlin.native.concurrent.ensureNeverFrozen
 
 class IOSHUDTests : HUDTests() {
 
     class HUDViewController : UIViewController(null, null) {
+
+        init {
+            this.ensureNeverFrozen()
+        }
 
         var mockPresentingHUD: MockPresentingHUD? = null
 
@@ -57,6 +66,10 @@ class IOSHUDTests : HUDTests() {
 
     class MockPresentingHUD(val hudViewController: UIViewController) : UIViewController(null, null) {
 
+        init {
+            this.ensureNeverFrozen()
+        }
+
         var parent: UIViewController? = null
 
         override fun presentingViewController(): UIViewController? {
@@ -64,26 +77,8 @@ class IOSHUDTests : HUDTests() {
         }
     }
 
-    private lateinit var window: UIWindow
-    override val builder get() = createBuilder(HUDViewController())
-    private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView) { MockPresentingHUD(it) }
-
-    @Test
-    fun builderInitializer() {
-        assertNotNull(
-            builder.build()
-        )
-    }
-
-    @Test
-    fun builderSetStyleAndTitle() {
-        assertNotNull(
-            builder.build {
-                setStyle(HUDStyle.CUSTOM)
-                setTitle("Foo")
-            }
-        )
-    }
+    override val builder = createBuilder(HUDViewController())
+    private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView, { MockPresentingHUD(it) })
 
     @Test
     fun presentIndicator() = runBlocking {
@@ -91,13 +86,10 @@ class IOSHUDTests : HUDTests() {
         val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        val didPresent = EmptyCompletableDeferred()
-        launch {
-            indicator.present(false)
-            assertTrue(indicator.isVisible)
-            didPresent.complete()
-        }
-        didPresent.await()
+        indicator.present(false)
+        assertTrue(indicator.isVisible)
+        hostView.mockPresentingHUD?.parent = null
+        hostView.mockPresentingHUD = null
     }
 
     @Test
@@ -106,14 +98,11 @@ class IOSHUDTests : HUDTests() {
         val indicator = createBuilder(hostView).build()
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
-        val didFinishPresenting = EmptyCompletableDeferred()
-        launch {
-            indicator.present(false)
-            assertTrue(indicator.isVisible)
-            indicator.dismiss(false)
-            assertFalse(indicator.isVisible)
-            didFinishPresenting.complete()
-        }
-        didFinishPresenting.await()
+        indicator.present(false)
+        assertTrue(indicator.isVisible)
+        indicator.dismiss(false)
+        assertFalse(indicator.isVisible)
+        hostView.mockPresentingHUD?.parent = null
+        hostView.mockPresentingHUD = null
     }
 }

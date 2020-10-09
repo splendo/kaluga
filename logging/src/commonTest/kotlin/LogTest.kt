@@ -19,18 +19,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.logging
 
 import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class LogTest {
+class LogTest {
 
-    private lateinit var mockLogger: LoggerMock
-
-    @BeforeTest
-    fun setUp() {
-        mockLogger = initLogger(LoggerMock()) as LoggerMock
-    }
+    private var mockLogger: LoggerMock = initLogger(LoggerMock())
 
     @AfterTest
     fun tearDown() {

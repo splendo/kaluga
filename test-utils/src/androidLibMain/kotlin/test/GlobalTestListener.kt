@@ -35,7 +35,7 @@ actual class GlobalTestListener {
 
     actual fun beforeTest() {
         Dispatchers.setMain(mainDispatcher)
-        initLogger(object : Logger {
+        initLogger<Logger>(object : Logger {
             override fun log(level: LogLevel, tag: String?, message: String) {
                 println("${level.name}\t:$tag\t:$message")
             }

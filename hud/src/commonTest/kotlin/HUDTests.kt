@@ -20,9 +20,27 @@ package com.splendo.kaluga.hud
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 abstract class HUDTests {
+
+    @Test
+    fun builderInitializer() {
+        assertNotNull(
+            builder.build()
+        )
+    }
+
+    @Test
+    fun builderSetStyleAndTitle() {
+        assertNotNull(
+            builder.build {
+                setStyle(HUDStyle.CUSTOM)
+                setTitle("Foo")
+            }
+        )
+    }
 
     @Test
     fun testBuilder() {

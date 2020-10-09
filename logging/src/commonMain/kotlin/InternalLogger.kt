@@ -20,7 +20,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 /**
  * This class is used to wrap the KydraLog dependency.
  */
-inline class InternalLogger(val logger: Logger) : ru.pocketbyte.kydra.log.Logger {
+class InternalLogger<T:Logger>(val logger: T) : ru.pocketbyte.kydra.log.Logger {
 
     override fun log(level: ru.pocketbyte.kydra.log.LogLevel, tag: String?, message: String) {
         logger.log(

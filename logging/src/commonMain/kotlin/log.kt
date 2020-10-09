@@ -28,8 +28,7 @@ import ru.pocketbyte.kydra.log.KydraLog
  * @param logger - logged to be used for log output
  * @return first logger used for initialisation.
  */
-fun initLogger(logger: Logger): Logger {
-    println("init logger..")
+fun <T:Logger>initLogger(logger: Logger): T {
     try {
         KydraLog.init(InternalLogger(logger))
     } catch (e: IllegalStateException) {
@@ -42,9 +41,9 @@ fun initLogger(logger: Logger): Logger {
 /**
  * @return first logger you have used for initialisation.
  */
-fun logger(): Logger {
+fun <T:Logger>logger(): T {
     try {
-        return (KydraLog.logger as InternalLogger).logger
+        return (KydraLog.logger as InternalLogger<*>).logger as T
     } catch (e: Exception) {
         println("LOG: error making logger: $e")
         e.printStackTrace()

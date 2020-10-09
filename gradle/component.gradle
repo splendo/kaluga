@@ -150,6 +150,7 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
+                useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
                 enableLanguageFeature("InlineClasses")
             }
         }

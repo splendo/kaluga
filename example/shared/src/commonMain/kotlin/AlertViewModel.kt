@@ -23,7 +23,6 @@ import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
@@ -31,7 +30,7 @@ import kotlinx.coroutines.launch
 
 class AlertViewModel(val builder: AlertInterface.Builder) : BaseViewModel() {
 
-    fun showAlert() = MainScope().launch(MainQueueDispatcher) {
+    fun showAlert() = MainScope().launch() {
         val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
         val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
         val alert = builder.buildAlert {
@@ -45,20 +44,20 @@ class AlertViewModel(val builder: AlertInterface.Builder) : BaseViewModel() {
         }
     }
 
-    fun showAndDismissAfter(timeSecs: Long) = MainScope().launch(MainQueueDispatcher) {
-        val coroutine = MainScope().launch(MainQueueDispatcher) {
+    fun showAndDismissAfter(timeSecs: Long) = MainScope().launch {
+        val coroutine = MainScope().launch() {
             builder.buildAlert {
                 setTitle("Wait for $timeSecs sec...")
                 setPositiveButton("OK")
             }.show()
         }
-        MainScope().launch(MainQueueDispatcher) {
+        MainScope().launch {
             delay(timeSecs * 1_000)
             coroutine.cancel()
         }
     }
 
-    fun showList() = MainScope().launch(MainQueueDispatcher) {
+    fun showList() = MainScope().launch {
         builder.buildActionSheet {
             setTitle("Select an option")
             addActions(

@@ -95,23 +95,7 @@ fun UiDevice.assertTextAppears(text: String) {
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))
 }
 
-fun UiDevice.assertTextDisappears(text: String) {
-    assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
-}
-
 class ExampleInstrumentedTest {
-
-    @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
-
-    private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-
-    private val viewModel get() = activityRule.activity.viewModel
-
-    @Test
-    fun viewModelTitleNotNullTest() {
-        assertNotNull(viewModel.title)
-    }
 
     @Test
     fun sampleTextOnScreenTest() {

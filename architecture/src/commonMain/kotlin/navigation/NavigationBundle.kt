@@ -19,7 +19,6 @@ package com.splendo.kaluga.architecture.navigation
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.stringify
 
 /**
  * Value of a [NavigationBundleSpecRow]

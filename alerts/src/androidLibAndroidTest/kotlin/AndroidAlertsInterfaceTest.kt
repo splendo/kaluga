@@ -17,8 +17,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
@@ -33,14 +33,23 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.BeforeTest
 
 class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
     @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
+    var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    override val builder get() = activityRule.activity.viewModel.alertBuilder
+
+    var activity:TestActivity? = null
+
+    @BeforeTest
+    fun activityInit() {
+        activityRule.scenario.onActivity { activity = it }
+    }
+
+    override val builder get() = activity!!.viewModel.alertBuilder
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L

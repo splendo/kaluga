@@ -19,8 +19,8 @@ package com.splendo.kaluga.keyboard
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -28,21 +28,30 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.BeforeTest
 
 class MockKeyboardTest {
 
     @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
+    var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
         const val INTERVAL = 100L
     }
 
+    var activity:TestActivity? = null
+
+    @BeforeTest
+    fun activityInit() {
+        activityRule.scenario.onActivity { activity = it }
+    }
+
+
     @Test
     fun testShowKeyboard() = runBlockingTest {
-        val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
-        val keyboardHostingView = activityRule.activity.textView
+        val keyboardManager = KeyboardManagerBuilder(activity!!).create()
+        val keyboardHostingView = activity!!.textView
 
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
 

@@ -22,7 +22,6 @@ import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.initLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.setMain
 
@@ -51,7 +50,7 @@ actual class GlobalTestListener {
 
     actual fun beforeTest() {
         Dispatchers.setMain(mainDispatcher)
-        initLogger(object : Logger {
+        initLogger<Logger>(object : Logger {
             override fun log(level: LogLevel, tag: String?, message: String) {
                 println("${level.name}\t:$tag\t:$message")
             }
