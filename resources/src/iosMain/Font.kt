@@ -19,4 +19,4 @@ package com.splendo.kaluga.resources
 
 import platform.UIKit.UIFont
 
-actual typealias Font = UIFont
+actual data class Font(val uiFont: UIFont)

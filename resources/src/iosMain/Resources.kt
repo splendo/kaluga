@@ -41,5 +41,5 @@ actual class ImageLoader(private val bundle: NSBundle, private val traitCollecti
 }
 
 actual class FontLoader actual constructor() {
-    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize) ?: defaultValue
+    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = UIFont.fontWithName(identifier, UIFont.labelFontSize)?.let { Font(it) } ?: defaultValue
 }
