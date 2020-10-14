@@ -23,6 +23,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.delay
 import org.junit.Before
 import org.junit.Rule
@@ -37,12 +38,9 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests() {
         const val INTERVAL = 100L
     }
 
-    private lateinit var lifecycleManagerObserver: LifecycleManagerObserver
-
     @Before
     fun setUp() {
-        lifecycleManagerObserver = LifecycleManagerObserver()
-        lifecycleManagerObserver.manager = LifecycleSubscribable.LifecycleManager(activityRule.activity, activityRule.activity, activityRule.activity.supportFragmentManager)
+        builder.subscribe(activityRule.activity)
     }
 
     override suspend fun verifyShow() {
@@ -53,7 +51,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests() {
         validateKeyboard(false)
     }
 
-    override val builder get() = KeyboardManager.Builder(lifecycleManagerObserver)
+    override val builder get() = KeyboardManager.Builder()
     override val view get() = activityRule.activity.textView.id
 
     private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {

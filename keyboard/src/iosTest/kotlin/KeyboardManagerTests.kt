@@ -1,4 +1,4 @@
-package com.splendo.kaluga.keyboard
+ package com.splendo.kaluga.keyboard
 
 import kotlin.test.assertTrue
 import platform.CoreGraphics.CGRectMake

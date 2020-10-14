@@ -37,7 +37,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoActions() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert(MultiplatformMainScope()) {
+            builder.buildAlert(this) {
                 setTitle("OK")
             }
         }
@@ -47,7 +47,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoTitleOrMessage() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert(MultiplatformMainScope()) {
+            builder.buildAlert(this) {
                 setPositiveButton("OK")
             }
         }
@@ -57,7 +57,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildAlert(MultiplatformMainScope()) {
+            val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")
@@ -73,7 +73,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testActionSheetFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildActionSheet(MultiplatformMainScope()) {
+            val presenter = builder.buildActionSheet(this) {
                 setTitle("Choose")
                 setPositiveButton("Option 1")
                 setPositiveButton("Option 2")

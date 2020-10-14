@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.base.mainHandler
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -119,16 +120,20 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
             }
         }
 
-        override fun onStart() {
-            super.onStart()
-            presentCompletionBlock()
-            presentCompletionBlock = {}
+        override fun onResume() {
+            super.onResume()
+            mainHandler.post {
+                presentCompletionBlock()
+                presentCompletionBlock = {}
+            }
         }
 
-        override fun onStop() {
-            super.onStop()
-            dismissCompletionBlock()
-            dismissCompletionBlock = {}
+        override fun onPause() {
+            super.onPause()
+            mainHandler.post {
+                dismissCompletionBlock()
+                dismissCompletionBlock = {}
+            }
         }
     }
 

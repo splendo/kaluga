@@ -50,7 +50,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
     fun testBuilderReuse() = runBlockingTest {
 
         CoroutineScope(Dispatchers.Main).launch {
-            builder.buildAlert {
+            builder.buildAlert(this@runBlockingTest) {
                 setTitle("Test")
                 setPositiveButton("OK")
             }.show()
@@ -59,7 +59,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
             device.findObject(By.text("OK")).click()
             assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
 
-            builder.buildAlert {
+            builder.buildAlert(this@runBlockingTest) {
                 setTitle("Hello")
                 setNegativeButton("Cancel")
             }.show()
@@ -76,7 +76,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 0 until 10) {
-                alerts.add(builder.buildAlert {
+                alerts.add(builder.buildAlert(this) {
                     setTitle("Alert$i")
                     setPositiveButton("OK$i")
                 })
@@ -93,7 +93,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
     @Test
     fun testAlertShow() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            builder.buildAlert {
+            builder.buildAlert(this) {
                 setTitle("Hello")
                 setPositiveButton("OK")
             }.show()
@@ -107,7 +107,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
     fun testAlertFlowWithCoroutines() = runBlockingTest {
         CoroutineScope(Dispatchers.Main).launch {
             val action = Alert.Action("OK")
-            val presenter = builder.buildAlert {
+            val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
                 addActions(listOf(action))
             }
@@ -121,9 +121,9 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
     }
 
     @Test
-    fun rotateActivity() {
+    fun rotateActivity() = runBlockingTest {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildAlert {
+            val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")
