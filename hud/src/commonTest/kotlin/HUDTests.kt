@@ -18,6 +18,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.MultiplatformMainScope
+import com.splendo.kaluga.base.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -25,11 +27,12 @@ import kotlin.test.assertNull
 abstract class HUDTests {
 
     @Test
-    fun testBuilder() {
-        val hud1 = builder.build()
+    fun testBuilder() = runBlocking {
+        val mainScope = MultiplatformMainScope()
+        val hud1 = builder.build(mainScope)
         assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
-        val hud2 = builder.build {
+        val hud2 = builder.build(mainScope) {
             setStyle(HUDStyle.CUSTOM)
             setTitle("Title")
         }

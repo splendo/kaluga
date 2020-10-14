@@ -9,22 +9,22 @@ Showing and hiding the keyboard is done through the KeyboardManager.
 
 ````kotlin
 // Shared code
-fun showKeyboard(builder: KeyboardManagerBuilder, view: KeyboardHostingView) {
+fun showKeyboard(builder: KeyboardManager.Builder, view: KeyboardHostingView) {
     val keyboardManager = builder.create()
     keyboardManager.show(view)
 }
 
-fun hideKeyboard(builder: KeyboardManagerBuilder) {
+fun hideKeyboard(builder: KeyboardManager.Builder) {
     val keyboardManager = builder.create()
     keyboardManager.hide()
 }
 ```
 
-The `KeyboardManagerBuilder` and `KeyboardHostingView` are provided on the platform. On Android the builder is created for an `Activity`, where the keyboardHostingView is any `android.view.View` attached to the activity.
+The `KeyboardManager.Builder` and `KeyboardHostingView` are provided on the platform. On Android the builder uses a `LifecycleManagerObserver` (see Architecture), where the keyboardHostingView is any `android.view.View` attached to the `Activity` of the .
 
 ````kotlin
 // In Activity
-val builder = KeyboardManagerBuilder(this)
+val builder = KeyboardManager.Builder(this)
 val keyboardHostingView = this.findById(R.id.some_view)
 ````
 

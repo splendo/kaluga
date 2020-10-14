@@ -18,6 +18,10 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    implementation(project(":architecture", ""))
+}
+
 kotlin {
     sourceSets {
         getByName("commonMain") {

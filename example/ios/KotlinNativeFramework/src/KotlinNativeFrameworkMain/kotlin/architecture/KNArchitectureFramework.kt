@@ -41,7 +41,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
-import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -163,7 +163,7 @@ class KNArchitectureFramework {
     }
 
     fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
-        return KeyboardViewModel({KeyboardManagerBuilder()}, {textField})
+        return KeyboardViewModel(KeyboardManager.Builder(), textField)
     }
 
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {

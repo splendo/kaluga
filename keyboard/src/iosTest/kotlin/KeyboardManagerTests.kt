@@ -10,16 +10,16 @@ class IOSKeyboardManagerTests : KeyboardManagerTests() {
     private val application = UIApplication.sharedApplication
     private val textField = MockTextField()
 
-    override val builder get() = KeyboardManagerBuilder(application)
+    override val builder get() = KeyboardManager.Builder(application)
 
     override val view: KeyboardHostingView
         get() = textField
 
-    override fun verifyShow() {
+    override suspend fun verifyShow() {
         assertTrue(textField.didBecomeFirstResponder)
     }
 
-    override fun verifyDismiss() {
+    override suspend fun verifyDismiss() {
         // Should test resign First responder
     }
 }
