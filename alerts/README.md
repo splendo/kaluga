@@ -15,7 +15,7 @@ fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().laun
     // Create Cancel action
     val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
     // Create an Alert with title, message and actions
-    val alert = builder.buildAlert {
+    val alert = builder.buildAlert(this) {
         setTitle(title)
         setMessage("This is sample message")
         addActions(okAction, cancelAction)
@@ -34,7 +34,7 @@ Or this:
 // Shared code
 fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create an Alert with title, message and actions
-    val alert = builder.buildAlert {
+    val alert = builder.buildAlert(this) {
         setTitle(title)
         setPositiveButton("Yes") { /* handle `Yes` action */ }
         setNegativeButton("No") { /* handle `No` action */ }
@@ -52,11 +52,11 @@ The `AlertInterface.Builder` class can be used to build Alerts.
 
 ### Build alert
 
-- `buildAlert(initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildAlert(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
 
 ### Build action sheet
 
-- `buildActionSheet(initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildActionSheet(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
 
 ### Set title, style and message
 

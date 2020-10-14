@@ -57,10 +57,23 @@ abstract class BaseHUDBuilder {
     }
 }
 
+/**
+ * Class showing a loading indicator HUD.
+ */
 expect class HUD : CoroutineScope {
 
+    /**
+     * Builder class for creating a [HUD]
+     */
     class Builder : BaseHUDBuilder {
-        /** Returns created loading indicator */
+        /** */
+        /**
+         * Builds a [HUD] based on some [HudConfig].
+         *
+         * @param hudConfig The [HudConfig] used for configuring the HUD style.
+         * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
+         * @return The [HUD] to diplay.
+         */
         fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
     }
 
@@ -110,7 +123,12 @@ suspend fun <T> HUD.presentDuring(animated: Boolean = true, block: suspend HUD.(
     return block().also { dismiss(animated) }
 }
 
-/** Returns built loading indicator */
+/**
+ * Builds a [HUD] to display a loading indicator
+ *
+ * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
+ * @param initialize Method for initializing the [HUD.Builder]
+ */
 fun HUD.Builder.build(coroutineScope: CoroutineScope, initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
     clear()
     initialize()

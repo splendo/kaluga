@@ -138,6 +138,7 @@ expect class AlertInterface : BaseAlertPresenter {
         /**
          * Creates AlertInterface object
          *
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The AlertInterface object
          */
         internal fun create(coroutineScope: CoroutineScope): AlertInterface
@@ -263,6 +264,7 @@ abstract class BaseAlertBuilder {
 /**
  * Builds an alert using DSL syntax (thread safe)
  *
+ * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
@@ -276,6 +278,7 @@ fun AlertInterface.Builder.buildAlert(coroutineScope: CoroutineScope, initialize
 /**
  * Builds an alert using DSL syntax (thread safe)
  *
+ * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
