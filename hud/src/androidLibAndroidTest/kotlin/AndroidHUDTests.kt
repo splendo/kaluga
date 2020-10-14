@@ -24,24 +24,21 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import com.splendo.kaluga.architecture.lifecycle.subscribe
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 const val DEFAULT_TIMEOUT = 2_500L
 
@@ -129,7 +126,7 @@ class AndroidHUDTests : HUDTests() {
                 setTitle(LOADING)
             }
             val indicatorProcessing = CompletableDeferred<HUD>()
-            CoroutineScope(Dispatchers.Main).launch processing@ {
+            CoroutineScope(Dispatchers.Main).launch processing@{
                 indicatorLoading.presentDuring {
                     presenting.complete()
                     loading1.await()

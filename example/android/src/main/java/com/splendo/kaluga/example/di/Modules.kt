@@ -21,7 +21,6 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
