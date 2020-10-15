@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import kotlin.test.Test
@@ -71,14 +72,14 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun builderInitializer() {
         assertNotNull(
-            builder.build()
+            builder.build(MultiplatformMainScope())
         )
     }
 
     @Test
     fun builderSetStyleAndTitle() {
         assertNotNull(
-            builder.build {
+            builder.build(MultiplatformMainScope()) {
                 setStyle(HUDStyle.CUSTOM)
                 setTitle("Foo")
             }
@@ -88,7 +89,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun presentIndicator() = runBlocking {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build()
+        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         val didPresent = EmptyCompletableDeferred()
@@ -103,7 +104,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun dismissIndicator() = runBlocking {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build()
+        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
         val didFinishPresenting = EmptyCompletableDeferred()

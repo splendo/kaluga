@@ -21,7 +21,6 @@ package com.splendo.kaluga.hud
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.MultiplatformMainScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,11 +57,24 @@ abstract class BaseHUDBuilder {
     }
 }
 
+/**
+ * Class showing a loading indicator HUD.
+ */
 expect class HUD : CoroutineScope {
 
+    /**
+     * Builder class for creating a [HUD]
+     */
     class Builder : BaseHUDBuilder {
-        /** Returns created loading indicator */
-        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope = MultiplatformMainScope()): HUD
+        /** */
+        /**
+         * Builds a [HUD] based on some [HudConfig].
+         *
+         * @param hudConfig The [HudConfig] used for configuring the HUD style.
+         * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
+         * @return The [HUD] to diplay.
+         */
+        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
     }
 
     val hudConfig: HudConfig
@@ -111,8 +123,13 @@ suspend fun <T> HUD.presentDuring(animated: Boolean = true, block: suspend HUD.(
     return block().also { dismiss(animated) }
 }
 
-/** Returns built loading indicator */
-fun HUD.Builder.build(coroutineScope: CoroutineScope = MultiplatformMainScope(), initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
+/**
+ * Builds a [HUD] to display a loading indicator
+ *
+ * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
+ * @param initialize Method for initializing the [HUD.Builder]
+ */
+fun HUD.Builder.build(coroutineScope: CoroutineScope, initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
     clear()
     initialize()
     return create(HudConfig(style, title), coroutineScope)

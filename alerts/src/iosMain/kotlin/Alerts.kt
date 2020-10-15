@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
 import platform.Foundation.localizedStringWithFormat
 import platform.UIKit.UIAlertAction
@@ -49,7 +50,7 @@ actual class AlertInterface(
     }
 
     actual class Builder(private val viewController: UIViewController) : BaseAlertBuilder() {
-        actual fun create() = AlertInterface(createAlert(), viewController)
+        actual fun create(coroutineScope: CoroutineScope) = AlertInterface(createAlert(), viewController)
     }
 
     override fun dismissAlert(animated: Boolean) {

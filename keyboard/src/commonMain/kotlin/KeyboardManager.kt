@@ -1,5 +1,3 @@
-package com.splendo.kaluga.keyboard
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +15,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.keyboard
+
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Class that can a keyboard can be shown for
@@ -41,7 +43,9 @@ interface BaseKeyboardManager {
     fun hide()
 }
 
-expect class KeyboardManager : BaseKeyboardManager
+expect class KeyboardManager : BaseKeyboardManager {
+    class Builder : BaseKeyboardManagerBuilder
+}
 
 /**
  * Base KeyboardManager builder class, which used to create an KeyboardManager
@@ -55,7 +59,5 @@ abstract class BaseKeyboardManagerBuilder {
      *
      * @return The KeyboardManager object
      */
-    abstract fun create(): KeyboardManager
+    abstract fun create(coroutineScope: CoroutineScope): KeyboardManager
 }
-
-expect class KeyboardManagerBuilder : BaseKeyboardManagerBuilder

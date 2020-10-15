@@ -21,7 +21,6 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
@@ -53,7 +52,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewMod
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -146,7 +145,7 @@ val viewModelModule = module {
         HudViewModel(HUD.Builder())
     }
 
-    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, keyboardHostingView: () -> KeyboardHostingView) ->
-        KeyboardViewModel(keyboardManagerBuilder, keyboardHostingView)
+    viewModel { (keyboardHostingView: KeyboardHostingView) ->
+        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
     }
 }

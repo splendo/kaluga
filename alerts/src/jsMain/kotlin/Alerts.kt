@@ -18,13 +18,15 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import kotlinx.coroutines.CoroutineScope
+
 actual class AlertInterface(
     alert: Alert
 ) : BaseAlertPresenter(alert) {
 
     actual class Builder : BaseAlertBuilder() {
 
-        actual fun create(): AlertInterface {
+        actual fun create(coroutineScope: CoroutineScope): AlertInterface {
             return AlertInterface(createAlert())
         }
     }

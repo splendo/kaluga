@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.keyboard
 
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ class TestActivity : AppCompatActivity() {
 
         val view = LinearLayout(this)
         textView = TextView(this)
+        textView.id = View.generateViewId()
         view.addView(textView)
         setContentView(view)
     }

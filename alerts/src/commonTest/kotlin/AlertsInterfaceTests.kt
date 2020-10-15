@@ -21,6 +21,7 @@ package com.splendo.kaluga.test
 import com.splendo.kaluga.alerts.AlertInterface
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
+import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -36,7 +37,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoActions() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert {
+            builder.buildAlert(this) {
                 setTitle("OK")
             }
         }
@@ -46,7 +47,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertBuilderExceptionNoTitleOrMessage() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert {
+            builder.buildAlert(this) {
                 setPositiveButton("OK")
             }
         }
@@ -56,7 +57,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testAlertFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildAlert {
+            val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
                 setPositiveButton("OK")
                 setNegativeButton("Cancel")
@@ -72,7 +73,7 @@ abstract class AlertsInterfaceTests {
     @Test
     fun testActionSheetFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildActionSheet {
+            val presenter = builder.buildActionSheet(this) {
                 setTitle("Choose")
                 setPositiveButton("Option 1")
                 setPositiveButton("Option 2")

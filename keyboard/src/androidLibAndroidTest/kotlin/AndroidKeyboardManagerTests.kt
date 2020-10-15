@@ -21,15 +21,12 @@ import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
 
-class MockKeyboardTest {
+class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
@@ -39,21 +36,21 @@ class MockKeyboardTest {
         const val INTERVAL = 100L
     }
 
-    @Test
-    fun testShowKeyboard() = runBlockingTest {
-        val keyboardManager = KeyboardManagerBuilder(activityRule.activity).create()
-        val keyboardHostingView = activityRule.activity.textView
-
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-
-            keyboardManager.show(keyboardHostingView)
-            validateKeyboard(true)
-
-            keyboardManager.hide()
-            validateKeyboard(false)
-        }
-        Unit
+    @Before
+    fun setUp() {
+        builder.subscribe(activityRule.activity)
     }
+
+    override suspend fun verifyShow() {
+        validateKeyboard(true)
+    }
+
+    override suspend fun verifyDismiss() {
+        validateKeyboard(false)
+    }
+
+    override val builder get() = KeyboardManager.Builder()
+    override val view get() = activityRule.activity.textView.id
 
     private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {
         val inputMethodManager = InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

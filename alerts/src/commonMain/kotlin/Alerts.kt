@@ -20,6 +20,7 @@ package com.splendo.kaluga.alerts
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -137,9 +138,10 @@ expect class AlertInterface : BaseAlertPresenter {
         /**
          * Creates AlertInterface object
          *
+         * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
          * @return The AlertInterface object
          */
-        internal fun create(): AlertInterface
+        internal fun create(coroutineScope: CoroutineScope): AlertInterface
     }
 }
 
@@ -262,25 +264,27 @@ abstract class BaseAlertBuilder {
 /**
  * Builds an alert using DSL syntax (thread safe)
  *
+ * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun AlertInterface.Builder.buildAlert(initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
+fun AlertInterface.Builder.buildAlert(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
     reset()
     setStyle(Alert.Style.ALERT)
     initialize()
-    return create()
+    return create(coroutineScope)
 }
 
 /**
  * Builds an alert using DSL syntax (thread safe)
  *
+ * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun AlertInterface.Builder.buildActionSheet(initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
+fun AlertInterface.Builder.buildActionSheet(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface = lock.withLock {
     reset()
     setStyle(Alert.Style.ACTION_LIST)
     initialize()
-    return create()
+    return create(coroutineScope)
 }

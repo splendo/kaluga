@@ -33,13 +33,13 @@ class HudViewModel(val builder: HUD.Builder) : BaseViewModel() {
         // SYSTEM style by default
         // No title by default
         coroutineScope.launch {
-            builder.build().present().dismissAfter(3_000)
+            builder.build(this).present().dismissAfter(3_000)
         }
     }
 
     fun onShowCustomPressed() {
         coroutineScope.launch {
-            builder.build {
+            builder.build(this) {
                 setStyle(HUDStyle.CUSTOM)
                 setTitle("This is a custom title")
             }.presentDuring {
