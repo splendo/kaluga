@@ -21,7 +21,7 @@ package com.splendo.kaluga.keyboard
 import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
 import platform.UIKit.UIView
-import platform.objc.sel_registerName
+import platform.darwin.sel_registerName
 
 actual typealias KeyboardHostingView = UIView
 
