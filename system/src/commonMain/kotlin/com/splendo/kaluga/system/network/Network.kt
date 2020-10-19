@@ -17,24 +17,12 @@
 
 package com.splendo.kaluga.system.network
 
-import kotlinx.coroutines.flow.Flow
+interface ReachableNetworkConnection {
+    val isExpensive: Boolean
+}
 
-expect class Network {
-    /**
-     * Subscribe to Network.
-     */
-    fun subscribe()
-
-    /**
-     * Unsubscribe from Network.
-     */
-    fun unsubscribe()
-
-    /**
-     * Returns true when the device is connected to a network and it has connection,
-     * otherwise false when the device is connected to a network but has no connection.
-     *
-     * @return A boolean value that identify the availability of connection.
-     */
-    val isConnectivityAvailable: Flow<Boolean>
+sealed class Network {
+    data class Cellular(override val isExpensive: Boolean = true) : Network(), ReachableNetworkConnection
+    data class Wifi(override val isExpensive: Boolean = false) : Network(), ReachableNetworkConnection
+    object Absent : Network()
 }
