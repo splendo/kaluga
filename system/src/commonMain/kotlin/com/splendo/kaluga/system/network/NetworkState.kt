@@ -17,9 +17,51 @@
 
 package com.splendo.kaluga.system.network
 
-sealed class NetworkState {
-    object Available : NetworkState()
-    object Unavailable : NetworkState()
-    object Losing : NetworkState()
-    object Lost : NetworkState()
+import com.splendo.kaluga.state.HandleAfterNewStateIsSet
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.state.State
+
+sealed class NetworkState(open val networkType: Network, private val networkManager: BaseNetworkManager) : State<NetworkState>() {
+
+    override suspend fun finalState() {
+        super.finalState()
+    }
+
+    override suspend fun initialState() {
+        super.initialState()
+    }
+
+    interface Permitted : HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
+        suspend fun initialState()
+        suspend fun finalState()
+    }
+
+    data class Available(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager), Permitted {
+
+        override suspend fun afterNewStateIsSet(newState: NetworkState) {
+            when (newState) {
+                !is Available -> networkManager.stopMonitoringNetwork()
+                else -> {}
+            }
+        }
+
+        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
+            when (oldState) {
+                is Unavailable -> networkManager.startMonitoringNetwork()
+                else -> {}
+            }
+        }
+
+        override suspend fun initialState() {
+            networkManager.startMonitoringNetwork()
+        }
+
+        override suspend fun finalState() {
+            networkManager.stopMonitoringNetwork()
+        }
+
+    }
+
+    data class Unavailable(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager)
+
 }
