@@ -46,11 +46,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-actual class HUDImpl private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : HUD(coroutineScope) {
+actual class HUD private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
-    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : HUD.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
 
-        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUDImpl(
+        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,
             lifecycleManagerObserver,
@@ -160,7 +160,7 @@ actual class HUDImpl private constructor(@LayoutRes viewResId: Int, override val
 
     override val isVisible get() = loadingDialog.isVisible
 
-    override suspend fun present(animated: Boolean): HUDImpl {
+    override suspend fun present(animated: Boolean): HUD {
         return suspendCoroutine { continuation ->
             loadingDialog.presentCompletionBlock = {
                 continuation.resume(this)

@@ -10,7 +10,7 @@ class IOSKeyboardManagerTests : KeyboardManagerTests() {
     private val application = UIApplication.sharedApplication
     private val textField = MockTextField()
 
-    override val builder get() = KeyboardManagerImpl.Builder(application)
+    override val builder get() = KeyboardManager.Builder(application)
 
     override val view: KeyboardHostingView
         get() = textField

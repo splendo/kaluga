@@ -60,13 +60,13 @@ import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.widthAnchor
 import platform.UIKit.window
 
-actual class HUDImpl private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : HUD(coroutineScope) {
+actual class HUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
-    actual class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController) : HUD.Builder() {
+    actual class Builder(private val viewController: UIViewController, private val wrapper: (UIViewController) -> UIViewController) : BaseHUD.Builder() {
 
         constructor(viewController: UIViewController) : this(viewController, { it })
 
-        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUDImpl(
+        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             ContainerView(hudConfig, viewController.view.window?.bounds ?: UIScreen.mainScreen.bounds),
             viewController,
             wrapper,
@@ -171,7 +171,7 @@ actual class HUDImpl private constructor(private val containerView: ContainerVie
     override val hudConfig: HudConfig = containerView.hudConfig
     override val isVisible: Boolean get() = hudViewController.presentingViewController() != null
 
-    override suspend fun present(animated: Boolean): HUDImpl = suspendCoroutine { continuation ->
+    override suspend fun present(animated: Boolean): HUD = suspendCoroutine { continuation ->
         if (!isVisible) {
             topViewController.presentViewController(hudViewController, animated) {
                 continuation.resume(this)

@@ -49,7 +49,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests() {
         validateKeyboard(false)
     }
 
-    override val builder get() = KeyboardManagerImpl.Builder()
+    override val builder get() = KeyboardManager.Builder()
     override val view get() = activityRule.activity.textView.id
 
     private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {

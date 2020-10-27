@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -50,9 +50,9 @@ import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.hud.HUDImpl
+import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.keyboard.KeyboardManagerImpl
+import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -138,14 +138,14 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AlertViewModel(AlertInterface.Builder())
+        AlertViewModel(AlertPresenter.Builder())
     }
 
     viewModel {
-        HudViewModel(HUDImpl.Builder())
+        HudViewModel(HUD.Builder())
     }
 
     viewModel { (keyboardHostingView: KeyboardHostingView) ->
-        KeyboardViewModel(KeyboardManagerImpl.Builder(), keyboardHostingView)
+        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
     }
 }

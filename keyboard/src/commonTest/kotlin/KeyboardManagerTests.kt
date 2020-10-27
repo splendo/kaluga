@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 
 abstract class KeyboardManagerTests {
 
-    abstract val builder: KeyboardManagerImpl.Builder
+    abstract val builder: KeyboardManager.Builder
     abstract val view: KeyboardHostingView
 
     @Test

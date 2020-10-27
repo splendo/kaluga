@@ -29,15 +29,15 @@ import kotlinx.coroutines.launch
 
 actual typealias KeyboardHostingView = Int
 
-actual class KeyboardManagerImpl(
+actual class KeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
-) : KeyboardManager, CoroutineScope by coroutineScope {
+) : BaseKeyboardManager, CoroutineScope by coroutineScope {
 
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : KeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManagerImpl(lifecycleManagerObserver, coroutineScope)
+    ) : BaseKeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 
     private var activity: Activity? = null

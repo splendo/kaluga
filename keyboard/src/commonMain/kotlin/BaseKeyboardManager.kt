@@ -29,12 +29,12 @@ expect class KeyboardHostingView
 /**
  * Interface that defines the actions available for the Keyboard Manager
  */
-interface KeyboardManager {
+interface BaseKeyboardManager {
 
     /**
      * Base KeyboardManager builder class, which used to create an KeyboardManager
      *
-     * @see KeyboardManagerImpl
+     * @see KeyboardManager
      */
     interface Builder : LifecycleSubscribable {
 
@@ -43,7 +43,7 @@ interface KeyboardManager {
          *
          * @return The KeyboardManager object
          */
-        fun create(coroutineScope: CoroutineScope): KeyboardManager
+        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
     }
 
     /**
@@ -59,9 +59,15 @@ interface KeyboardManager {
     fun hide()
 }
 
-expect class KeyboardManagerImpl : KeyboardManager {
+/**
+ * Manager for Showing and Hiding the Keyboard.
+ */
+expect class KeyboardManager : BaseKeyboardManager {
 
-    class Builder : KeyboardManager.Builder {
-        override fun create(coroutineScope: CoroutineScope): KeyboardManagerImpl
+    /**
+     * Builder for creating a [KeyboardManager].
+     */
+    class Builder : BaseKeyboardManager.Builder {
+        override fun create(coroutineScope: CoroutineScope): KeyboardManager
     }
 }

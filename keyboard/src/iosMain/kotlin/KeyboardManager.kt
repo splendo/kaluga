@@ -25,10 +25,10 @@ import platform.darwin.sel_registerName
 
 actual typealias KeyboardHostingView = UIView
 
-actual class KeyboardManagerImpl(private val application: UIApplication) : KeyboardManager {
+actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
-    actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : KeyboardManager.Builder {
-        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManagerImpl(application)
+    actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
     }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {
