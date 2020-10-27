@@ -35,37 +35,36 @@ enum class HUDStyle {
     CUSTOM
 }
 
-abstract class BaseHUDBuilder {
-    internal val lock = Lock()
-
-    /** The style of the loading indicator */
-    internal var style: HUDStyle = HUDStyle.SYSTEM
-
-    /** Sets the style for the loading indicator */
-    fun setStyle(style: HUDStyle) = apply { this.style = style }
-
-    /** The title of the loading indicator */
-    internal var title: String? = null
-
-    /** Set the title for the loading indicator */
-    fun setTitle(title: String?) = apply { this.title = title }
-
-    /** Sets default style and empty title */
-    internal fun clear() {
-        setStyle(HUDStyle.SYSTEM)
-        setTitle(null)
-    }
-}
-
 /**
  * Class showing a loading indicator HUD.
  */
-expect class HUD : CoroutineScope {
+abstract class HUD(coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
 
     /**
      * Builder class for creating a [HUD]
      */
-    class Builder : BaseHUDBuilder {
+    abstract class Builder {
+
+        internal val lock = Lock()
+
+        /** The style of the loading indicator */
+        internal var style: HUDStyle = HUDStyle.SYSTEM
+
+        /** Sets the style for the loading indicator */
+        fun setStyle(style: HUDStyle) = apply { this.style = style }
+
+        /** The title of the loading indicator */
+        internal var title: String? = null
+
+        /** Set the title for the loading indicator */
+        fun setTitle(title: String?) = apply { this.title = title }
+
+        /** Sets default style and empty title */
+        internal fun clear() {
+            setStyle(HUDStyle.SYSTEM)
+            setTitle(null)
+        }
+
         /** */
         /**
          * Builds a [HUD] based on some [HudConfig].
@@ -74,29 +73,42 @@ expect class HUD : CoroutineScope {
          * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
          * @return The [HUD] to diplay.
          */
-        fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
+        abstract fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUD
     }
 
-    val hudConfig: HudConfig
+    abstract val hudConfig: HudConfig
 
     /**
      * Returns true if indicator is visible
      */
-    val isVisible: Boolean
+    abstract val isVisible: Boolean
 
     /**
      * Presents as indicator
      *
      * @param animated Pass `true` to animate the presentation
      */
-    suspend fun present(animated: Boolean = true): HUD
+    abstract suspend fun present(animated: Boolean = true): HUD
 
     /**
      * Dismisses the indicator
      *
      * @param animated Pass `true` to animate the transition
      */
-    suspend fun dismiss(animated: Boolean = true)
+    abstract suspend fun dismiss(animated: Boolean = true)
+}
+
+/**
+ * Default [HUD] implementation.
+ */
+expect class HUDImpl : HUD {
+
+    /**
+     * Builder class for creating a [HUDImpl]
+     */
+    class Builder : HUD.Builder {
+        override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope): HUDImpl
+    }
 }
 
 val HUD.title: String? get() = hudConfig.title
@@ -124,10 +136,10 @@ suspend fun <T> HUD.presentDuring(animated: Boolean = true, block: suspend HUD.(
 }
 
 /**
- * Builds a [HUD] to display a loading indicator
+ * Builds a [HUDImpl] to display a loading indicator
  *
  * @param coroutineScope The [CoroutineScope] managing the HUD lifecycle.
- * @param initialize Method for initializing the [HUD.Builder]
+ * @param initialize Method for initializing the [HUDImpl.Builder]
  */
 fun HUD.Builder.build(coroutineScope: CoroutineScope, initialize: HUD.Builder.() -> Unit = { }): HUD = lock.withLock {
     clear()

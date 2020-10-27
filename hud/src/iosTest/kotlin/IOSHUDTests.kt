@@ -67,7 +67,7 @@ class IOSHUDTests : HUDTests() {
 
     private lateinit var window: UIWindow
     override val builder get() = createBuilder(HUDViewController())
-    private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView) { MockPresentingHUD(it) }
+    private fun createBuilder(hostView: UIViewController): HUDImpl.Builder = HUDImpl.Builder(hostView) { MockPresentingHUD(it) }
 
     @Test
     fun builderInitializer() {

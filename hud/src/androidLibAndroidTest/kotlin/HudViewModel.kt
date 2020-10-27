@@ -21,5 +21,5 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
 open class HudViewModel : BaseViewModel() {
 
-    val builder = HUD.Builder()
+    val builder = HUDImpl.Builder()
 }

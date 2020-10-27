@@ -40,5 +40,5 @@ abstract class HUDTests {
         assertEquals(hud2.title, "Title")
     }
 
-    protected abstract val builder: HUD.Builder
+    protected abstract val builder: HUDImpl.Builder
 }

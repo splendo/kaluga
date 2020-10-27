@@ -46,11 +46,11 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+actual class HUDImpl private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : HUD(coroutineScope) {
 
-    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUDBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : HUD.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
 
-        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
+        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUDImpl(
             R.layout.loading_indicator_view,
             hudConfig,
             lifecycleManagerObserver,
@@ -158,9 +158,9 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         }
     }
 
-    actual val isVisible get() = loadingDialog.isVisible
+    override val isVisible get() = loadingDialog.isVisible
 
-    actual suspend fun present(animated: Boolean): HUD {
+    override suspend fun present(animated: Boolean): HUDImpl {
         return suspendCoroutine { continuation ->
             loadingDialog.presentCompletionBlock = {
                 continuation.resume(this)
@@ -169,7 +169,7 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         }
     }
 
-    actual suspend fun dismiss(animated: Boolean) {
+    override suspend fun dismiss(animated: Boolean) {
         suspendCoroutine<Unit> { continuation ->
             loadingDialog.dismissCompletionBlock = {
                 continuation.resume(Unit)
