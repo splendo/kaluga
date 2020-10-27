@@ -72,7 +72,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
     @Test
     fun testConcurrentBuilders() = runBlockingTest {
-        val alerts: MutableList<AlertPresenter> = mutableListOf()
+        val alerts: MutableList<BaseAlertPresenter> = mutableListOf()
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 0 until 10) {
