@@ -20,6 +20,7 @@ package com.splendo.kaluga.hud
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -43,7 +44,7 @@ abstract class HUD(coroutineScope: CoroutineScope) : CoroutineScope by coroutine
     /**
      * Builder class for creating a [HUD]
      */
-    abstract class Builder {
+    abstract class Builder : LifecycleSubscribable {
 
         internal val lock = Lock()
 

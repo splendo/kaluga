@@ -22,10 +22,10 @@ import kotlinx.coroutines.CoroutineScope
 
 actual class KeyboardHostingView
 
-actual class KeyboardManager : BaseKeyboardManager {
+actual class KeyboardManagerImpl : KeyboardManager {
 
-    actual class Builder : BaseKeyboardManagerBuilder() {
-        override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
+    actual class Builder : KeyboardManager.Builder {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManagerImpl()
     }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {

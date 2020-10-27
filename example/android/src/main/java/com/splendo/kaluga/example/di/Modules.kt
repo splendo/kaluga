@@ -50,9 +50,9 @@ import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.hud.HUD
+import com.splendo.kaluga.hud.HUDImpl
 import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.keyboard.KeyboardManagerImpl
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -142,10 +142,10 @@ val viewModelModule = module {
     }
 
     viewModel {
-        HudViewModel(HUD.Builder())
+        HudViewModel(HUDImpl.Builder())
     }
 
     viewModel { (keyboardHostingView: KeyboardHostingView) ->
-        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
+        KeyboardViewModel(KeyboardManagerImpl.Builder(), keyboardHostingView)
     }
 }
