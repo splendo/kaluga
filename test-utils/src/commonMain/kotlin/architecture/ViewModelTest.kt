@@ -15,10 +15,28 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.architecture
 
-import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.test.BaseTest
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
-fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = runBlocking { awaitAll(*deferreds) }
+abstract class BaseViewModelTest<VM : BaseViewModel> internal constructor() : BaseTest() {
+
+    protected var viewModel: VM? = null
+
+    @BeforeTest
+    fun setUp() {
+        viewModel = createViewModel()
+    }
+
+    @AfterTest
+    fun tearDown() {
+        viewModel = null
+    }
+
+    protected abstract fun createViewModel(): VM
+}
+
+expect abstract class ViewModelTest<VM : BaseViewModel> : BaseViewModelTest<VM>

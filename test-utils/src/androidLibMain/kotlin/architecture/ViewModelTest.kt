@@ -15,10 +15,14 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.architecture
 
-import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import org.junit.Rule
 
-fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = runBlocking { awaitAll(*deferreds) }
+actual abstract class ViewModelTest<VM : BaseViewModel> : BaseViewModelTest<VM>() {
+
+    @Rule
+    val instantExecutorRule = InstantTaskExecutorRule()
+}

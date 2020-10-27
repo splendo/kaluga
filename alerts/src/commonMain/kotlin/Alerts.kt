@@ -213,7 +213,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * @return The alert object
          * @throws IllegalArgumentException in case missing title and/or message or actions
          */
-        internal fun createAlert(): Alert {
+        protected fun createAlert(): Alert {
             if (style == Alert.Style.ALERT) {
                 require(title != null || message != null) { "Please set title and/or message for the Alert" }
             } // Action sheet on iOS can be without title and message
@@ -249,9 +249,9 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         dismissAlert(animated)
     }
 
-    internal abstract fun dismissAlert(animated: Boolean = true)
+    protected abstract fun dismissAlert(animated: Boolean = true)
 
-    internal abstract fun showAlert(
+    protected abstract fun showAlert(
         animated: Boolean = true,
         afterHandler: (Alert.Action?) -> Unit = {},
         completion: () -> Unit = {}

@@ -15,10 +15,18 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.mock.architecture
 
-import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.awaitAll
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
-fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = runBlocking { awaitAll(*deferreds) }
+actual class MockLifecycleSubscriber : LifecycleSubscribable {
+    override var manager: LifecycleSubscribable.LifecycleManager? = null
+
+    override fun subscribe(manager: LifecycleSubscribable.LifecycleManager) {
+        this.manager = manager
+    }
+
+    override fun unsubscribe() {
+        manager = null
+    }
+}

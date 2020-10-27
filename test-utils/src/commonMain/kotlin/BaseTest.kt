@@ -1,4 +1,3 @@
-package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -16,6 +15,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.test
 
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
@@ -41,5 +42,4 @@ open class BaseTest {
     open fun afterTest() {
         testListener.afterTest()
     }
-
 }
