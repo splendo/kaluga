@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.runOnMain
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -26,14 +27,14 @@ import kotlin.test.assertNull
 abstract class HUDTests {
 
     @Test
-    fun builderInitializer() {
+    fun builderInitializer() = runOnMain { 
         assertNotNull(
             builder.build()
         )
     }
 
     @Test
-    fun builderSetStyleAndTitle() {
+    fun builderSetStyleAndTitle() = runOnMain{ 
         assertNotNull(
             builder.build {
                 setStyle(HUDStyle.CUSTOM)
@@ -43,7 +44,7 @@ abstract class HUDTests {
     }
 
     @Test
-    fun testBuilder() {
+    fun testBuilder() = runOnMain {
         val hud1 = builder.build()
         assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
