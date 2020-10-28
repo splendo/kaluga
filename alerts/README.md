@@ -52,7 +52,7 @@ The `AlertPresenter.Builder` class can be used to build Alerts.
 
 ### Build alert
 
-- `buildAlert(coroutineScope: CoroutineScope, initialize: AbstractAlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe
+- `buildAlert(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe
 
 ### Build action sheet
 

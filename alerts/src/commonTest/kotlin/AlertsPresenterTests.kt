@@ -29,7 +29,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class AlertsInterfaceTests {
+abstract class AlertsPresenterTests {
 
     abstract val builder: AlertPresenter.Builder
 

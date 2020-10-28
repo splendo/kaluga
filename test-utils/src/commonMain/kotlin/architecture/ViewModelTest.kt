@@ -27,13 +27,13 @@ abstract class BaseViewModelTest<VM : BaseViewModel> internal constructor() : Ba
     protected var viewModel: VM? = null
 
     @BeforeTest
-    fun setUp() {
+    open fun setUp() {
         super.beforeTest()
         viewModel = createViewModel()
     }
 
     @AfterTest
-    fun tearDown() {
+    open fun tearDown() {
         super.afterTest()
         viewModel = null
     }

@@ -224,10 +224,10 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         }
 
         /**
-         * Creates AlertInterface object
+         * Creates the [BaseAlertPresenter] described by this builder.
          *
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
-         * @return The AlertInterface object
+         * @return The [BaseAlertPresenter] described by this builder.
          */
         abstract fun create(coroutineScope: CoroutineScope): BaseAlertPresenter
     }
