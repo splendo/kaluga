@@ -1,4 +1,3 @@
-
 pluginManagement {
 
     repositories {
@@ -48,4 +47,3 @@ include(":location")
 include(":androidtesthelper")
 include(":keyboard")
 include(":resources")
-// include(":fields")
