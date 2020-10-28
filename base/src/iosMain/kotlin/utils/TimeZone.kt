@@ -32,7 +32,7 @@ import platform.Foundation.secondsFromGMT
 import platform.Foundation.timeZoneWithAbbreviation
 import platform.Foundation.timeZoneWithName
 
-actual class TimeZone(val timeZone: NSTimeZone) {
+actual class TimeZone internal constructor(val timeZone: NSTimeZone) {
 
     actual companion object {
         actual fun get(identifier: String): TimeZone? {

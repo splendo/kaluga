@@ -40,7 +40,7 @@ import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
 
-actual class Date(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<Date> {
+actual class Date internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<Date> {
     actual companion object {
 
         const val nanoSecondPerMilliSecond = 1000 * 1000
