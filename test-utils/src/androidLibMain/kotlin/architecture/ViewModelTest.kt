@@ -21,8 +21,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import org.junit.Rule
 
-actual abstract class ViewModelTest<VM : BaseViewModel> : BaseViewModelTest<VM>() {
+actual abstract class ViewModelTest<VM : BaseViewModel> actual constructor() : BaseViewModelTest<VM>() {
 
-    @Rule
+    @Rule @JvmField
     val instantExecutorRule = InstantTaskExecutorRule()
 }

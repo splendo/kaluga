@@ -41,4 +41,4 @@ abstract class BaseViewModelTest<VM : BaseViewModel> internal constructor() : Ba
     protected abstract fun createViewModel(): VM
 }
 
-expect abstract class ViewModelTest<VM : BaseViewModel> : BaseViewModelTest<VM>
+expect abstract class ViewModelTest<VM : BaseViewModel> constructor() : BaseViewModelTest<VM>

@@ -20,7 +20,7 @@ package com.splendo.kaluga.test.architecture
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import kotlin.test.AfterTest
 
-actual abstract class ViewModelTest<VM : BaseViewModel> : BaseViewModelTest<VM>() {
+actual abstract class ViewModelTest<VM : BaseViewModel> actual constructor() : BaseViewModelTest<VM>() {
 
     @AfterTest
     override fun afterTest() {
