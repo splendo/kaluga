@@ -15,36 +15,20 @@
 
  */
 
+@file:JvmName("AndroidAwaitCurrentValue")
 package com.splendo.kaluga.test.utils
 
 import com.splendo.kaluga.architecture.observable.Observable
+import com.splendo.kaluga.architecture.observable.ObservableOptional
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 
-const val DefaultTimeout = 2000L
-
-suspend fun <T> List<T>.awaitElementAt(
-    index: Int,
-    timeOut: Long = DefaultTimeout
-): T = withTimeout(timeOut) {
-    while (size <= index) {
-        delay(100)
-    }
-    get(index)
-}
-
-suspend fun <T> awaitEquals(
-    expected: T,
-    timeOut: Long = DefaultTimeout,
-    current: (() -> T)
-) = withTimeout(timeOut) {
-    while (expected != current()) {
-        delay(100)
-    }
-}
-
-expect suspend fun <T> Observable<T>.awaitCurrentValue(
+actual suspend fun <T> Observable<T>.awaitCurrentValue(
     timeOut: Long
-): T
-
-suspend fun <T> Observable<T>.awaitCurrentValue() = awaitCurrentValue(DefaultTimeout)
+): T = withTimeout(timeOut) {
+    val value by this@awaitCurrentValue
+    while (value is ObservableOptional.Nothing) {
+        delay(100)
+    }
+    (value as ObservableOptional.Value).value
+}

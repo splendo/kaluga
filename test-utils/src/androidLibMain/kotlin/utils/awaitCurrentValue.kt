@@ -15,36 +15,27 @@
 
  */
 
+@file:JvmName("AndroidAwaitCurrentValue")
 package com.splendo.kaluga.test.utils
 
+import androidx.lifecycle.Observer
 import com.splendo.kaluga.architecture.observable.Observable
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.withTimeout
 
-const val DefaultTimeout = 2000L
-
-suspend fun <T> List<T>.awaitElementAt(
-    index: Int,
-    timeOut: Long = DefaultTimeout
-): T = withTimeout(timeOut) {
-    while (size <= index) {
-        delay(100)
-    }
-    get(index)
-}
-
-suspend fun <T> awaitEquals(
-    expected: T,
-    timeOut: Long = DefaultTimeout,
-    current: (() -> T)
-) = withTimeout(timeOut) {
-    while (expected != current()) {
-        delay(100)
-    }
-}
-
-expect suspend fun <T> Observable<T>.awaitCurrentValue(
+actual suspend fun <T> Observable<T>.awaitCurrentValue(
     timeOut: Long
-): T
+): T = withTimeout(timeOut) {
+    val receivedData = CompletableDeferred<T?>()
+    val observer = object : Observer<T> {
+        override fun onChanged(value: T?) {
+            this@awaitCurrentValue.liveData.removeObserver(this)
+            receivedData.complete(value)
+        }
+    }
 
-suspend fun <T> Observable<T>.awaitCurrentValue() = awaitCurrentValue(DefaultTimeout)
+    liveData.observeForever(observer)
+
+    @Suppress("UNCHECKED_CAST")
+    receivedData.await() as T
+}
