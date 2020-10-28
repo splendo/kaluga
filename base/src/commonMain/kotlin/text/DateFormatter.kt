@@ -214,9 +214,11 @@ fun DateFormatter.Companion.dateTimeFormat(
     timeZone: TimeZone = TimeZone.current(),
     locale: Locale = defaultLocale
 ): DateFormatter {
-    val formatWithYear = DateFormatter.dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
+    val formatWithYear = dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
     return if (excludeYear) {
-        DateFormatter.patternFormat(patternWithoutYear(formatWithYear.pattern), timeZone, locale)
+        val datePatternWithYear = dateFormat(dateStyle, timeZone, locale).pattern
+        val datePatternWithoutYear = patternWithoutYear(datePatternWithYear)
+        patternFormat(formatWithYear.pattern.replace(datePatternWithYear, datePatternWithoutYear), timeZone, locale)
     } else {
         formatWithYear
     }
