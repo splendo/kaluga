@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper date solution for Java Script
-actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
+actual class Date internal constructor(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
