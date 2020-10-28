@@ -22,29 +22,22 @@ import co.touchlab.stately.collections.IsoMutableList
 
 class LoggerMock : Logger {
 
-    val exceptionsList = IsoMutableList<Throwable?>()
+    val throwableList = IsoMutableList<Throwable?>()
     val messageList = IsoMutableList<String?>()
     val tagList = IsoMutableList<String?>()
     val levelList = IsoMutableList<LogLevel?>()
-
-    override fun log(level: LogLevel, tag: String?, message: String) {
-        levelList.add(level)
-        tagList.add(tag)
-        messageList.add(message)
-        exceptionsList.add(null)
-    }
-
-    override fun log(level: LogLevel, tag: String?, exception: Throwable) {
-        levelList.add(level)
-        tagList.add(tag)
-        messageList.add(null)
-        exceptionsList.add(exception)
-    }
 
     fun clear() {
         levelList.clear()
         messageList.clear()
         tagList.clear()
-        exceptionsList.clear()
+        throwableList.clear()
+    }
+
+    override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
+        levelList.add(level)
+        tagList.add(tag)
+        throwableList.add(throwable)
+        messageList.add(message?.invoke())        
     }
 }

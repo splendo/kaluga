@@ -18,7 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.state
 
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
@@ -26,8 +25,6 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
-import com.splendo.kaluga.logging.debug
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
@@ -36,6 +33,8 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
@@ -50,7 +49,8 @@ open class State {
      * Use this to indicate to the state machine the state should stay the same
      * @return a special continuation that will be recognized by the state machine. Running this continuation will cause an error.
      */
-    fun <S:State>remain():suspend() -> S = remain as suspend () -> S
+    @Suppress("UNCHECKED_CAST") // cast should normally work since the receiver uses one type of state
+    fun<S : State>  remain(): suspend() -> S = remain as suspend () -> S
 
     /**
      * Called when this state is the first state of the state machine
@@ -112,20 +112,23 @@ interface HandleAfterOldStateIsRemoved<S : State> {
 /**
  * The state repo can change holds the current [State] (which can be accessed as a flow), and can be used to change the current state
  *
- * @param T the [State] represented by this repo.
+ * @param S the [State] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
 abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
     private val stateMutex = Semaphore(1)
     // TODO: currently Mutex cannot be frozen on native, this will be fixed in a future release of kotlinx.coroutines
-    //private val stateMutex = Mutex()
-
+    // private val stateMutex = Mutex()
+    
     abstract val flowable: BaseFlowable<S>
+    private val _changedState = AtomicReference<S?>(null)
+    internal var changedState
+        get() = _changedState.get()
+        set(value) { _changedState.set(value)}
 
-    internal val changedState: AtomicReference<S?> = AtomicReference(null)
     private suspend fun setChangedState(value: S) {
-        changedState.set(value.freeze())
+        changedState = value
         flowable.set(value)
     }
 
@@ -139,20 +142,13 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
         return flowable.flow(flowConfig)
     }
 
-    internal suspend fun initialize(): S {
-        stateMutex.acquire()
-        try {
-            val value = initialValue()
-            changedState.set(value.freeze())
-            value.initialState()
-            return value
-        } catch (t: Throwable) {
-            com.splendo.kaluga.logging.error("error setting state", t)
-            throw t
-        } finally {
-            stateMutex.release()
-        }
-    }
+    internal suspend fun initialize(): S = stateMutex.withPermit {
+        val value = initialValue()
+        changedState = value
+        value        
+    }.also { 
+        it.initialState() // let the state initialize outside of the mutex to avoid deadlocks
+    } 
 
     /**
      * Gets the initial value of the repo
@@ -161,7 +157,7 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
     abstract suspend fun initialValue(): S
 
     internal fun state(): S {
-        return changedState.get() ?: error("StateRepo($this) not yet initialized.")
+        return changedState ?: error("StateRepo($this) not yet initialized.")
     }
 
     /**
@@ -185,7 +181,7 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
     suspend fun useState(action: suspend (S) -> Unit) = coroutineScope {
-        stateMutex.acquire(); try {
+        stateMutex.withPermit {
             val result = EmptyCompletableDeferred()
             launch {
                 try {
@@ -196,8 +192,6 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
                 }
             }
             return@coroutineScope result.await()
-        } finally {
-            stateMutex.release()
         }
     }
 
@@ -213,16 +207,15 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
      */
     suspend fun takeAndChangeState(action: suspend(S) -> suspend () -> S): S = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
-        stateMutex.acquire(); try {
+        stateMutex.withPermit {
             val result = CompletableDeferred<S>()
             launch {
                 try {
                     val beforeState = state()
                     val transition = action(beforeState)
-                    if (beforeState.remain<State>() === transition) {
+                    if (beforeState.remain<S>() === transition) {
                         result.complete(beforeState)
-                    }
-                    else {
+                    } else {
                         (beforeState as? HandleBeforeCreating)?.beforeCreatingNewState()
                         val newState = transition()
                         (beforeState as? HandleAfterCreating<S>)?.afterCreatingNewState(newState)
@@ -232,12 +225,12 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
                         (newState as? HandleAfterOldStateIsRemoved<S>)?.afterOldStateIsRemoved(beforeState)
                         result.complete(newState)
                     }
-                } catch (e: Throwable) {
-                    result.completeExceptionally(e)
+                } catch (t: Throwable) {
+                    result.completeExceptionally(t)
                 }
             }
             return@coroutineScope result.await()
-        } finally { stateMutex.release() }
+        }
     }
 }
 
@@ -257,10 +250,9 @@ abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Disp
  */
 abstract class ColdStateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<S>(coroutineContext) {
 
-    override val flowable: ColdFlowable<S> = ColdFlowable({
+    override val flowable: ColdFlowable<S> = ColdFlowable( {
         initialize()
-    }, {
-            state ->
+    }, { state ->
         state.finalState()
         deinitialize(state)
     })

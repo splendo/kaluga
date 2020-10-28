@@ -34,15 +34,21 @@ import kotlin.native.concurrent.callContinuation2
 actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main
 
 inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Unit) = Continuation0(
-    block, staticCFunction { invokerArg ->
+    block, 
+    staticCFunction { invokerArg ->
         if (NSThread.isMainThread()) {
             invokerArg!!.callContinuation0()
         } else {
-            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
-                args!!.callContinuation0()
-            })
+            dispatch_sync_f(
+                dispatch_get_main_queue(), 
+                invokerArg, 
+                staticCFunction { args ->
+                    args!!.callContinuation0() 
+                }
+            )
         }
-    }, singleShot)
+    }, 
+    singleShot)
 
 inline fun <T1> mainContinuation(singleShot: Boolean = true, noinline block: (T1) -> Unit) = Continuation1(
     block, staticCFunction { invokerArg ->

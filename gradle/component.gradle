@@ -4,8 +4,6 @@ repositories {
     jcenter()
 }
 
-apply(plugin: "com.adarshr.test-logger")
-
 kotlin {
 
     targets {

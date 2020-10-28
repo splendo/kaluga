@@ -18,15 +18,16 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-import co.touchlab.stately.concurrency.AtomicInt
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
@@ -50,9 +51,7 @@ abstract class FlowableTest<T>: BaseTest() {
 
 }
 
-open class FlowTest<T>(scope: CoroutineScope, flowable:()->Flowable<T>):CoroutineScope by scope {
-
-    val flowable: Flowable<T> = flowable()
+open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flowable<T>):CoroutineScope by scope {
 
     open var filter:suspend(T)->Boolean = { true }
 
@@ -62,17 +61,21 @@ open class FlowTest<T>(scope: CoroutineScope, flowable:()->Flowable<T>):Coroutin
 
     private lateinit var testChannel: Channel<Pair<TestBlock<T>, EmptyCompletableDeferred>>
 
-    private suspend fun endFlow() {
+    suspend fun resetFlow() {
         awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
-        debug("test channel closed")
         job?.cancel()
-        debug("Ending flow")
-       // TODO: freezing issue on iOS 
-       // if(!testChannel.isClosedForReceive) testChannel.close()
-       // tests.clear()
+        debug("Ending flow, job canceled")
+
+        firstTestBlock = true
+        testChannel.close()
+
+        debug("test channel closed")
+
+        tests.clear()
+        testChannel = Channel(Channel.UNLIMITED)
     }
 
-    protected val waitForTestToSucceed = 6000L * 10
+    protected val waitForTestToSucceed = 6000L * 10 / 10
 
     private suspend fun awaitTestBlocks() {
         if (tests.size == 0) {
@@ -96,43 +99,53 @@ open class FlowTest<T>(scope: CoroutineScope, flowable:()->Flowable<T>):Coroutin
             testChannel = Channel(Channel.UNLIMITED)
             // startFlow is only called when the first test block is offered
             block()
-            endFlow()
+            resetFlow()
         }
     }
 
+    @Suppress("SuspendFunctionOnCoroutineScope")
     private suspend fun startFlow() {
         this.ensureNeverFrozen()
 
-        debug("start flow...")
-
-        val flowable = flowable
+        val flowable = flowable()
         val testChannel = testChannel
         val filter = filter
 
-        job = MainScope().launch {
-            debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-            flowable.flow().filter(filter).collect { value ->
-                debug("in flow received [$value]")
-                val test = testChannel.receive()
-                debug("received test block $test")
-                try {
-                    test.first(value)
-                    debug("ran test block $test")
-                    test.second.complete(Unit)
-                } catch (e: Throwable) {
-                    warn("Exception when testing... $e cause: ${e.cause}", e)
-                    e.printStackTrace()
+        debug("launch flow scope...")
+        val started = EmptyCompletableDeferred()
+        try {
+            job = launch(Dispatchers.Main) {
+                started.complete()
+                debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
+                flowable.flow().filter(filter).collect { value ->
+                    debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
+                    val test = testChannel.receive()
+                    debug("received test block $test")
                     try {
-                        test.second.completeExceptionally(e)
-                    } catch (e:Throwable) {
-                        com.splendo.kaluga.logging.error("exception in completing", e)
-
+                        test.first(value)
+                        debug("ran test block $test")
+                        test.second.complete(Unit)
+                    } catch (t: Throwable) {
+                        warn(throwable = t) { "Exception when testing... $t cause: ${t.cause}" }
+                        try {
+                            test.second.completeExceptionally(t)
+                        } catch (t: Throwable) {
+                            e(throwable = t) { "exception in completing completable" }
+                        }
                     }
+                    debug("handeling value completed [$value]")
                 }
-                debug("flow completed")
+                debug("flow collect completed")
+
             }
-            debug("flow start scope was launched")
+        } catch (t:Throwable) {
+            e(throwable = t) { "error launching"}
+            throw t
         }
+        debug("wait for main thread to be launched in $job")
+        started.await()
+        debug("waited for main thread to be launched")
+
     }
 
     suspend fun action(action:ActionBlock) {

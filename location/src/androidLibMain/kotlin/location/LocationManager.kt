@@ -38,7 +38,6 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
@@ -136,7 +135,7 @@ actual class LocationManager(
                     val enablingHandler = CompletableDeferred<Boolean>()
                     enablingHandlers[identifier] = enablingHandler
 
-                    MainScope().launch {
+                    launch(Dispatchers.Main) {
                         val intent = EnableLocationActivity.intent(context, identifier, e)
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         context.startActivity(intent)

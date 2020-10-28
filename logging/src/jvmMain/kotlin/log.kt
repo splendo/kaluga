@@ -1,7 +1,5 @@
-package com.splendo.kaluga.logging
 /*
-
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -16,21 +14,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+@file:JvmName("JvmLogKt")
+package com.splendo.kaluga.logging
 
-import android.annotation.SuppressLint
-import android.os.Build
+import ru.pocketbyte.kydra.log.PrintLogger
 
-const val TAG_LENGTH_LIMIT = 23
-
-@SuppressLint("ObsoleteSdkInt")
-internal actual fun transformTag(tag: String?): String? {
-    return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M && tag != null && tag.length > TAG_LENGTH_LIMIT) {
-        tag.substring(0, 23)
-    } else {
-        tag
-    }
-}
-
-internal actual fun transformMessage(message: String): String {
-    return message
-}
+actual val defaultLogger:Logger = KydraLogger(PrintLogger())
+actual var logger = defaultLogger 

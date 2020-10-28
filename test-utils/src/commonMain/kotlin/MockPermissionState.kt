@@ -26,6 +26,7 @@ import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.d
 import kotlinx.coroutines.CompletableDeferred
 
 class MockPermissionStateRepo<P:Permission> : PermissionStateRepo<P>() {
@@ -39,7 +40,7 @@ class MockPermissionManager<P:Permission>(private val permissionRepo: Permission
     private val _currentState:AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
     var currentState:PermissionState<P>
         get() = _currentState.get()
-        set(s) = _currentState.set(s.freeze())
+        set(s) = _currentState.set(s)
 
     fun setPermissionAllowed() {
         changePermission { grantPermission() }

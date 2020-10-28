@@ -67,7 +67,7 @@ class BaseFlowableTest : FlowableTest<String>() {
 
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
-        flowable.set("foo")
+        flowable().set("foo")
         test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
@@ -76,7 +76,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testExceptionBeingThrown() = testWithFlow {
         action {
-            flowable.set("Test")
+            flowable().set("Test")
         }
         try {
             test {
@@ -95,7 +95,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testStopFlow() = testWithFlow {
         val scope = MainScope()
-        val flow = flowable.flow()
+        val flow = flowable().flow()
         val collectionJob = scope.async {
             flow.collect { }
         }
@@ -103,12 +103,13 @@ class BaseFlowableTest : FlowableTest<String>() {
         delay(500) // TODO instead listen to flow subscriber count
 
         // withContext(MainScope().coroutineContext) {
-            flowable.cancelFlows()
+            flowable().cancelFlows()
         // }
         collectionJob.await()
     }
 
+    val flow = HotFlowable("")
     override fun flowable(): Flowable<String> {
-        return HotFlowable("")
+        return flow
     }
 }

@@ -20,15 +20,14 @@ package com.splendo.kaluga.base.flow
 import co.touchlab.stately.concurrency.AtomicInt
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.splendo.kaluga.logging.d
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 /**
  * A [BaseFlowable] that represents a Cold flow. This flowable will only become active once observed and deinitialises once no observers are present.
@@ -41,20 +40,21 @@ import kotlinx.coroutines.withContext
  */
 class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
-    private val counterMutex = Mutex()
+    private val counterMutex = Semaphore(1)
     private var flowingCounter = AtomicInt(0)
 
-    @ExperimentalCoroutinesApi
     override fun flow(flowConfig: FlowConfig): Flow<T> {
-        return super.flow(flowConfig).onStart {
-                counterMutex.withLock {
+        return super.flow(flowConfig)
+            .onStart {
+                counterMutex.withPermit {
                     val count = flowingCounter.incrementAndGet()
                     if (count == 1) {
                         set(initialize())
                     }
                 }
-            }.onCompletion {
-                counterMutex.withLock {
+            }
+            .onCompletion {
+                counterMutex.withPermit {
                     val count = flowingCounter.decrementAndGet()
                     if (count == 0) {
                         val finalValue = currentValue()

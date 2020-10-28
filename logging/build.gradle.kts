@@ -16,8 +16,11 @@ version = ext["library_version"]!!
 kotlin {
     sourceSets {
         commonMain {
+            val ext = (gradle as ExtensionAware).extra
             dependencies {
                 implementation("ru.pocketbyte.kydra:kydra-log:1.1.2")
+                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+
             }
         }
         commonTest {

@@ -21,7 +21,6 @@ package com.splendo.kaluga.state
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.flow.Flowable
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -104,10 +103,9 @@ class TrafficLight : HotStateRepo<TrafficLightState>() {
 
 class StateRepoTest : FlowableTest<TrafficLightState>() {
 
-    private lateinit var trafficLight: TrafficLight
+    private val trafficLight = TrafficLight()
 
     override fun flowable(): Flowable<TrafficLightState> {
-        trafficLight = TrafficLight()
         return trafficLight.flowable
     }
 
@@ -227,7 +225,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
 
     @Test
     fun testMultipleObservers() = testWithFlow {
-        val greenState = flowable.flow().first()
+        val greenState = flowable().flow().first()
         assertTrue(greenState is TrafficLightState.GreenLight)
         trafficLight.takeAndChangeState {
             when (val state = it) {
@@ -235,14 +233,18 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
                 else -> state.remain()
             }
         }
-        val yellowState = flowable.flow().first()
+        val yellowState = flowable().flow().first()
         assertTrue(yellowState is TrafficLightState.YellowLight)
     }
 
     @Test
     fun changeStateInsideChangeState() = testWithFlow {
+
+        test {} // trigger start of flow
+        
         val transitionsCompleted = EmptyCompletableDeferred()
         trafficLight.takeAndChangeState { state ->
+            @Suppress("DeferredResultUnused") // we want to test async but don't care about the result
             async {
                 trafficLight.takeAndChangeState { newState ->
                     when (newState) {
@@ -260,7 +262,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
             }
         }
         transitionsCompleted.await()
-        val redState = flowable.flow().first()
+        val redState = flowable().flow().first()
         assertTrue(redState is TrafficLightState.RedLight)
     }
 }

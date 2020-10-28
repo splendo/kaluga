@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import kotlin.test.assertEquals
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class AndroidNavigationBundleTest {
 

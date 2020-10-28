@@ -51,7 +51,6 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         channel.get()?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
     }
 
-
     override fun cancelFlows() {
         channel.get()?.let {
             it.close()

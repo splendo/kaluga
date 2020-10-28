@@ -15,7 +15,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    See the License for the specific language governing permissions and
    limitations under the License.
 
-*/
+ */
 
 interface Logger {
 
@@ -23,27 +23,29 @@ interface Logger {
      * Writes log with provided level and tag.
      * @param level Log level
      * @param tag Tag of the log record. Nullable
+     * @param throwable Throwable to be written into log
      * @param message Message to be written into log
      */
-    fun log(level: LogLevel, tag: String?, message: String)
-
-    /**
-     * Writes exception log with provided level and tag.
-     * @param level Log level
-     * @param tag Tag of the log record. Nullable
-     * @param exception Exception to be written into log
-     */
-    fun log(level: LogLevel, tag: String?, exception: Throwable)
+    fun log(level: LogLevel, tag: String? = null, throwable: Throwable? = null, message: (()->String)? = null)
 }
 
-internal inline fun ru.pocketbyte.kydra.log.LogLevel.getLogLevel(): LogLevel {
-    return when (this) {
-        ru.pocketbyte.kydra.log.LogLevel.DEBUG -> LogLevel.DEBUG
-        ru.pocketbyte.kydra.log.LogLevel.INFO -> LogLevel.INFO
-        ru.pocketbyte.kydra.log.LogLevel.WARNING -> LogLevel.WARNING
-        ru.pocketbyte.kydra.log.LogLevel.ERROR -> LogLevel.ERROR
+open class TransformLogger(
+    private val logger: Logger,
+    private val transformLogLevel: ((LogLevel) -> LogLevel)? = null,
+    private val transformTag: ((String?) -> String?)? = null,    
+    private val transformThrowable: ((Throwable?) -> Throwable?)? = null,
+    private val transformMessage: ((String?) -> String?)? = null,
+):Logger {
+
+    override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message:  (() -> String)?) {
+
+        logger.log(
+            transformLogLevel?.invoke(level) ?: level,
+            transformTag?.invoke(tag) ?: tag,
+            transformThrowable?.invoke(throwable) ?: throwable,
+            // already resolve the lazy message if it needs transformation (else we cannot transform it)
+            // after transform wrap it in a "lazy" closure again {{🤗}}
+            transformMessage?.invoke(message?.invoke())?.let {{it}} ?: message
+        )
     }
 }
-
-internal expect fun transformTag(tag: String?): String?
-internal expect fun transformMessage(message: String): String
