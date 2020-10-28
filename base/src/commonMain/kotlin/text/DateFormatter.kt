@@ -60,7 +60,11 @@ expect class DateFormatter {
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
-        fun dateFormat(style: DateFormatStyle = DateFormatStyle.Medium, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
+        fun dateFormat(
+            style: DateFormatStyle = DateFormatStyle.Medium,
+            timeZone: TimeZone = TimeZone.current(),
+            locale: Locale = defaultLocale
+        ): DateFormatter
 
         /**
          * Creates a [DateFormatter] that only formats the time components of a [Date]
@@ -68,7 +72,11 @@ expect class DateFormatter {
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
-        fun timeFormat(style: DateFormatStyle = DateFormatStyle.Medium, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
+        fun timeFormat(
+            style: DateFormatStyle = DateFormatStyle.Medium,
+            timeZone: TimeZone = TimeZone.current(),
+            locale: Locale = defaultLocale
+        ): DateFormatter
 
         /**
          * Creates a [DateFormatter] that formats both date and time components of a [Date]
@@ -93,8 +101,14 @@ expect class DateFormatter {
          * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
          * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
          */
-        fun patternFormat(pattern: String, timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale): DateFormatter
+        fun patternFormat(
+            pattern: String,
+            timeZone: TimeZone = TimeZone.current(),
+            locale: Locale = defaultLocale
+        ): DateFormatter
     }
+
+    var pattern: String
 
     /**
      * The [TimeZone] this [DateFormatter] formats its dates to.
@@ -163,3 +177,49 @@ fun DateFormatter.Companion.fixedPatternFormat(pattern: String, timeZone: TimeZo
  * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
  */
 fun DateFormatter.Companion.iso8601Pattern(timeZone: TimeZone = TimeZone.current()) = fixedPatternFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", timeZone)
+
+/**
+ * Creates a [DateFormatter] that only formats the date components of a [Date]
+ * @param style The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * @param excludeYear When [true] the year will not be part of the format.
+ * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+ */
+fun DateFormatter.Companion.dateFormat(
+    style: DateFormatStyle = DateFormatStyle.Medium,
+    excludeYear: Boolean,
+    timeZone: TimeZone = TimeZone.current(),
+    locale: Locale = defaultLocale
+): DateFormatter {
+    val formatWithYear = dateFormat(style, timeZone, locale)
+    return if (excludeYear) {
+        patternFormat(patternWithoutYear(formatWithYear.pattern), timeZone, locale)
+    } else {
+        formatWithYear
+    }
+}
+
+/**
+ * Creates a [DateFormatter] that formats both date and time components of a [Date]
+ * @param dateStyle The [DateFormatStyle] used for formatting the date components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * @param excludeYear When [true] the year will not be part of the format.
+ * @param timeStyle The [DateFormatStyle] used for formatting the time components of the [Date]. Defaults to [DateFormatStyle.Medium].
+ * @param timeZone The [TimeZone] for which the date should be formatted. Defaults to [TimeZone.current].
+ * @param locale The [Locale] for which the date should be formatted. Defaults to [Locale.defaultLocale].
+ */
+fun DateFormatter.Companion.dateTimeFormat(
+    dateStyle: DateFormatStyle = DateFormatStyle.Medium,
+    excludeYear: Boolean,
+    timeStyle: DateFormatStyle = DateFormatStyle.Medium,
+    timeZone: TimeZone = TimeZone.current(),
+    locale: Locale = defaultLocale
+): DateFormatter {
+    val formatWithYear = DateFormatter.dateTimeFormat(dateStyle, timeStyle, timeZone, locale)
+    return if (excludeYear) {
+        DateFormatter.patternFormat(patternWithoutYear(formatWithYear.pattern), timeZone, locale)
+    } else {
+        formatWithYear
+    }
+}
+
+internal fun DateFormatter.Companion.patternWithoutYear(pattern: String): String = pattern.replace("\\W*[Yy]+\\W*".toRegex(), "")

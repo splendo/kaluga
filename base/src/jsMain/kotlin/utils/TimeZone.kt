@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper timezone solution for Java Script
-actual class TimeZone {
+actual class TimeZone internal constructor() {
 
     actual companion object {
         actual fun get(identifier: String): TimeZone? = TimeZone()
