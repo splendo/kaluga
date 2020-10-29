@@ -18,9 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
@@ -52,7 +52,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewMod
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -69,7 +69,7 @@ val utilitiesModule = module {
 val viewModelModule = module {
     viewModel {
         ExampleViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { FeaturesListFragment() })
                     is ExampleTabNavigation.Info -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { InfoFragment() })
@@ -80,7 +80,7 @@ val viewModelModule = module {
 
     viewModel {
         FeatureListViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
                     is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
@@ -94,7 +94,7 @@ val viewModelModule = module {
 
     viewModel {
         InfoViewModel(
-            Navigator { action ->
+            ActivityNavigator { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {
                         val title = action.bundle?.get(DialogSpecRow.TitleRow) ?: ""
@@ -114,7 +114,7 @@ val viewModelModule = module {
 
     viewModel {
         PermissionsListViewModel(
-            Navigator {
+            ActivityNavigator {
                 NavigationSpec.Activity(PermissionsDemoActivity::class.java)
             })
     }
@@ -125,27 +125,27 @@ val viewModelModule = module {
 
     viewModel {
         ArchitectureInputViewModel(
-            Navigator {
+            ActivityNavigator {
                 NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
             }
         )
     }
 
     viewModel { (name: String, number: Int) ->
-        ArchitectureDetailsViewModel(name, number, Navigator {
+        ArchitectureDetailsViewModel(name, number, ActivityNavigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
     }
 
     viewModel {
-        AlertViewModel(AlertInterface.Builder())
+        AlertViewModel(AlertPresenter.Builder())
     }
 
     viewModel {
         HudViewModel(HUD.Builder())
     }
 
-    viewModel { (keyboardManagerBuilder: () -> KeyboardManagerBuilder, keyboardHostingView: () -> KeyboardHostingView) ->
-        KeyboardViewModel(keyboardManagerBuilder, keyboardHostingView)
+    viewModel { (keyboardHostingView: KeyboardHostingView) ->
+        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
     }
 }

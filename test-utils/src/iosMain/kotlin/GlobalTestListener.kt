@@ -1,4 +1,3 @@
-package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,11 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.test
+
 actual class GlobalTestListener {
     actual fun beforeTest() {
     }
 
     actual fun afterTest() {
     }
-
 }

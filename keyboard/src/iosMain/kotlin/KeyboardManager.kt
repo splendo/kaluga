@@ -1,9 +1,3 @@
-package com.splendo.kaluga.keyboard
-
-import platform.UIKit.UIApplication
-import platform.UIKit.UIView
-import platform.objc.sel_registerName
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,13 +16,20 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.keyboard
+
+import kotlinx.coroutines.CoroutineScope
+import platform.UIKit.UIApplication
+import platform.UIKit.UIView
+import platform.darwin.sel_registerName
+
 actual typealias KeyboardHostingView = UIView
 
-actual class KeyboardManagerBuilder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManagerBuilder() {
-    override fun create() = KeyboardManager(application)
-}
-
 actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
+
+    actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
+    }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {
         if (keyboardHostingView.canBecomeFirstResponder) {

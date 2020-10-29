@@ -30,17 +30,28 @@ import platform.Foundation.NSDateFormatterNoStyle
 import platform.Foundation.NSDateFormatterShortStyle
 import platform.Foundation.NSDateFormatterStyle
 
-actual class DateFormatter(private val format: NSDateFormatter) {
+actual class DateFormatter private constructor(private val format: NSDateFormatter) {
 
     actual companion object {
-        actual fun dateFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(style, null, timeZone, locale)
-        actual fun timeFormat(style: DateFormatStyle, timeZone: TimeZone, locale: Locale): DateFormatter = createDateFormatter(null, style, timeZone, locale)
+        actual fun dateFormat(
+            style: DateFormatStyle,
+            timeZone: TimeZone,
+            locale: Locale
+        ): DateFormatter = createDateFormatter(style, null, timeZone, locale)
+
+        actual fun timeFormat(
+            style: DateFormatStyle,
+            timeZone: TimeZone,
+            locale: Locale
+        ): DateFormatter = createDateFormatter(null, style, timeZone, locale)
+
         actual fun dateTimeFormat(
             dateStyle: DateFormatStyle,
             timeStyle: DateFormatStyle,
             timeZone: TimeZone,
             locale: Locale
         ): DateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
+
         actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
             this.locale = locale.nsLocale
             this.timeZone = timeZone.timeZone
@@ -59,6 +70,10 @@ actual class DateFormatter(private val format: NSDateFormatter) {
             this.timeStyle = timeStyle.nsDateFormatterStyle()
         })
     }
+
+    actual var pattern: String
+        get() = format.dateFormat
+        set(value) { format.dateFormat = value }
 
     actual var timeZone: TimeZone
         get() = TimeZone(format.timeZone)

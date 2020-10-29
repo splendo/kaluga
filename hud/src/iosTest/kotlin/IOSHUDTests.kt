@@ -75,9 +75,26 @@ class IOSHUDTests : HUDTests() {
     private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView, { MockPresentingHUD(it) })
 
     @Test
+    fun builderInitializer() {
+        assertNotNull(
+            builder.build(MultiplatformMainScope())
+        )
+    }
+
+    @Test
+    fun builderSetStyleAndTitle() {
+        assertNotNull(
+            builder.build(MultiplatformMainScope()) {
+                setStyle(HUDStyle.CUSTOM)
+                setTitle("Foo")
+            }
+        )
+    }
+
+    @Test
     fun presentIndicator() = runOnMain {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build()
+        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 
@@ -91,7 +108,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun dismissIndicator() = runOnMain {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build()
+        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 

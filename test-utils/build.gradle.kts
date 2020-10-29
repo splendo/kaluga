@@ -3,14 +3,21 @@ plugins {
     id("jacoco")
     id("maven-publish")
     id("com.android.library")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
+
+val androidx_arch_core_testing_version = ext["androidx_arch_core_testing_version"]!!
+
+dependencies {
+    implementation("androidx.arch.core:core-testing:$androidx_arch_core_testing_version")
+}
 
 kotlin {
     sourceSets {
@@ -21,10 +28,13 @@ kotlin {
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
-
-                implementation(project(":permissions", ""))
+                implementation(project(":alerts", ""))
+                implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":hud", ""))
+                implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":permissions", ""))
             }
         }
         getByName("jsMain") {

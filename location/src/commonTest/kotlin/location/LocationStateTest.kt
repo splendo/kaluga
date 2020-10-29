@@ -28,7 +28,7 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Test

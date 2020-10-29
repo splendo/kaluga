@@ -1,4 +1,3 @@
-package com.splendo.kaluga.test
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -17,6 +16,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.test
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
@@ -33,8 +34,8 @@ actual class GlobalTestListener {
 
     actual fun afterTest() {
         // we want to avoid triggering Swing or FX
-        //Dispatchers.resetMain()
-        //mainDispatcher.close()
-        //mainDispatcher.cancelChildren()
+        // Dispatchers.resetMain()
+        // mainDispatcher.close()
+        // mainDispatcher.cancelChildren()
     }
 }

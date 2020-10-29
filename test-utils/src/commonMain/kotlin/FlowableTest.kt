@@ -20,8 +20,6 @@ package com.splendo.kaluga.test
 
 import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.logging.e
@@ -29,7 +27,6 @@ import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
@@ -37,11 +34,11 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
-typealias TestBlock<T> = suspend(T)->Unit
-typealias ActionBlock = suspend()->Unit
+typealias TestBlock<T> = suspend(T) -> Unit
+typealias ActionBlock = suspend() -> Unit
 typealias FlowTestBlock<T> =  suspend FlowTest<T>.() -> Unit
 
-abstract class FlowableTest<T>: BaseTest() {
+abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T>) = runBlocking {
         FlowTest(this, ::flowable).testWithFlow(block)
@@ -53,9 +50,9 @@ abstract class FlowableTest<T>: BaseTest() {
 
 open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flowable<T>):CoroutineScope by scope {
 
-    open var filter:suspend(T)->Boolean = { true }
+    open var filter: suspend(T) -> Boolean = { true }
 
-    private val tests:MutableList<EmptyCompletableDeferred> = mutableListOf()
+    private val tests: MutableList<EmptyCompletableDeferred> = mutableListOf()
 
     var job: Job? = null
 
@@ -90,7 +87,6 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
             } finally {
                 tests.removeAll { !it.isActive }
             }
-
         }
     }
 
@@ -148,7 +144,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
 
     }
 
-    suspend fun action(action:ActionBlock) {
+    suspend fun action(action: ActionBlock) {
         awaitTestBlocks()
         action()
         debug("did action")
@@ -169,7 +165,4 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
         tests.add(completable)
         testChannel.offer(Pair(test, completable))
     }
-
-
 }
-

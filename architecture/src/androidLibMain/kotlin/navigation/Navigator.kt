@@ -24,15 +24,19 @@ import android.provider.Settings
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: A)
+}
+
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
  * Requires to be subscribed to an activity via [subscribe] to work
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) : LifecycleSubscribable by LifecycleSubscriber() {
+class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) : Navigator<A>, LifecycleSubscribable by LifecycleSubscriber() {
 
-    actual fun navigate(action: A) {
+    override fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 

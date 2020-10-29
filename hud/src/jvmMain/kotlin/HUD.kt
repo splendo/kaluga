@@ -19,19 +19,19 @@ package com.splendo.kaluga.hud
 
 import kotlinx.coroutines.CoroutineScope
 
-actual class HUD(actual val hudConfig: HudConfig, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
-    actual class Builder : BaseHUDBuilder() {
-        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(hudConfig, coroutineScope)
+actual class HUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
+    actual class Builder : BaseHUD.Builder() {
+        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(hudConfig, coroutineScope)
     }
 
     private var _isVisible: Boolean = false
-    actual val isVisible: Boolean get() = _isVisible
+    override val isVisible: Boolean get() = _isVisible
 
-    actual suspend fun present(animated: Boolean): HUD = apply {
+    override suspend fun present(animated: Boolean): HUD = apply {
         _isVisible = true
     }
 
-    actual suspend fun dismiss(animated: Boolean) {
+    override suspend fun dismiss(animated: Boolean) {
         _isVisible = false
     }
 }

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-actual class TimeZone(internal val timeZone: java.util.TimeZone) {
+actual class TimeZone internal constructor(internal val timeZone: java.util.TimeZone) {
 
     actual companion object {
         actual fun get(identifier: String): TimeZone? {

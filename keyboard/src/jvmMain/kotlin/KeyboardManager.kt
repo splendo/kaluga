@@ -1,5 +1,3 @@
-package com.splendo.kaluga.keyboard
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -18,13 +16,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.keyboard
+
+import kotlinx.coroutines.CoroutineScope
+
 actual class KeyboardHostingView
 
-actual class KeyboardManagerBuilder : BaseKeyboardManagerBuilder() {
-    override fun create() = KeyboardManager()
-}
-
 actual class KeyboardManager : BaseKeyboardManager {
+
+    actual class Builder : BaseKeyboardManager.Builder {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
+    }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.

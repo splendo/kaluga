@@ -23,6 +23,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.splendo.kaluga.architecture.lifecycle.subscribe
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import kotlin.test.Test
@@ -30,9 +31,13 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
@@ -43,6 +48,7 @@ fun UiDevice.assertTextAppears(text: String) {
 }
 
 fun UiDevice.assertTextDisappears(text: String) {
+    waitForIdle()
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
@@ -66,8 +72,19 @@ class AndroidHUDTests : HUDTests() {
         const val PROCESSING = "Processing..."
     }
 
+    @Before
+    fun setUp() {
+        builder.subscribe(activityRule.activity)
+    }
+
     @Test
-    fun indicatorShow() = runBlocking {
+    fun builderInitializer() = runBlocking {
+        assertNotNull(builder.build(MainScope()))
+        Unit
+    }
+
+    @Test
+    fun indicatorShow() = runBlockingTest {
         val indicator = builder.build {
             setTitle(LOADING)
         }.present()
@@ -76,88 +93,99 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
-    fun indicatorDismiss() = runBlocking {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
-        indicator.dismiss()
-        device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
-    }
-
-    @Test
-    fun indicatorDismissAfter() = runBlocking {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
-        indicator.dismissAfter(500)
-        device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
-    }
-
-    @Test
-    fun testPresentDuring() = runBlocking {
-        val loading1 = EmptyCompletableDeferred()
-        val loading2 = EmptyCompletableDeferred()
-        val processing = EmptyCompletableDeferred()
-
-        val indicatorLoading = builder.build {
-            setTitle(LOADING)
+    fun indicatorDismiss() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
+            val indicator = builder.build(this) {
+                    setTitle(LOADING)
+                }.present()
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
+            indicator.dismiss()
+            device.assertTextDisappears(LOADING)
+            assertFalse(indicator.isVisible)
         }
-        val indicatorProcessing = CompletableDeferred<HUD>()
-        MainScope().launch {
-            indicatorLoading.presentDuring {
+    }
+
+    @Test
+    fun indicatorDismissAfter() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
+            val indicator = builder.build(this) {
+                setTitle(LOADING)
+            }.present()
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
+            indicator.dismissAfter(500)
+            device.assertTextDisappears(LOADING)
+            assertFalse(indicator.isVisible)
+        }
+    }
+
+    @Test
+    fun testPresentDuring() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
+            val presenting = EmptyCompletableDeferred()
+            val loading1 = EmptyCompletableDeferred()
+            val loading2 = EmptyCompletableDeferred()
+            val processing = EmptyCompletableDeferred()
+
+            val indicatorLoading = builder.build(this) {
+                setTitle(LOADING)
+            }
+            val indicatorProcessing = CompletableDeferred<BaseHUD>()
+            CoroutineScope(Dispatchers.Main).launch processing@{
+                indicatorLoading.presentDuring {
+                    presenting.complete()
                     loading1.await()
-                    val processingDialog = builder.build {
+                    val processingDialog = builder.build(this@processing) {
                         setTitle(PROCESSING)
                     }
-                indicatorProcessing.complete(processingDialog)
-                processingDialog.presentDuring {
+                    indicatorProcessing.complete(processingDialog)
+                    processingDialog.presentDuring {
                         processing.await()
                     }
-                loading2.await()
+                    loading2.await()
                 }
             }
 
-        // check the Loading dialog pops up and is reported as visible
-        device.assertTextAppears(LOADING)
-        assertTrue(indicatorLoading.isVisible)
-        loading1.complete()
+            presenting.await()
+            // check the Loading dialog pops up and is reported as visible
+            device.assertTextAppears(LOADING)
+            assertTrue(indicatorLoading.isVisible)
+            loading1.complete()
 
-        // check the Processing dialog is popped on top
-        device.assertTextDisappears(LOADING)
-        device.assertTextAppears(PROCESSING)
-        assertTrue(indicatorProcessing.await().isVisible)
-        processing.complete()
+            // check the Processing dialog is popped on top
+            device.assertTextDisappears(LOADING)
+            device.assertTextAppears(PROCESSING)
+            assertTrue(indicatorProcessing.await().isVisible)
+            processing.complete()
 
-        // check the Loading dialog appears again
-        device.assertTextDisappears(PROCESSING)
-        device.assertTextAppears(LOADING)
-        loading2.complete()
+            // check the Loading dialog appears again
+            device.assertTextDisappears(PROCESSING)
+            device.assertTextAppears(LOADING)
+            loading2.complete()
+        }
     }
 
     @Test
-    fun rotateActivity() = runBlocking {
-        val indicator = builder.build {
-            setTitle(LOADING)
-        }.present()
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+    fun rotateActivity() = runBlockingTest {
+        CoroutineScope(Dispatchers.Main).launch {
+            val indicator = builder.build(this) {
+                setTitle(LOADING)
+            }.present()
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
 
-        // Rotate screen
-        device.setOrientationLeft()
-        // HUD should be on screen
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+            // Rotate screen
+            device.setOrientationLeft()
+            // HUD should be on screen
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
 
-        device.setOrientationNatural()
-        indicator.dismiss()
-        // Finally should be gone
-        device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
+            device.setOrientationNatural()
+            indicator.dismiss()
+            // Finally should be gone
+            device.assertTextDisappears(LOADING)
+            assertFalse(indicator.isVisible)
+        }
     }
 }

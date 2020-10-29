@@ -21,7 +21,7 @@ class LoadingViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { _ in }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { return [] }
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

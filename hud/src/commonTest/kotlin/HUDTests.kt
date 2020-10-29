@@ -45,10 +45,10 @@ abstract class HUDTests {
 
     @Test
     fun testBuilder() = runOnMain {
-        val hud1 = builder.build()
+        val hud1 = builder.build(mainScope)
         assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
-        val hud2 = builder.build {
+        val hud2 = builder.build(mainScope) {
             setStyle(HUDStyle.CUSTOM)
             setTitle("Title")
         }

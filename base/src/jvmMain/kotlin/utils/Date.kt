@@ -19,7 +19,7 @@ package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
 
-actual class Date(internal val calendar: Calendar) : Comparable<Date> {
+actual class Date internal constructor(internal val calendar: Calendar) : Comparable<Date> {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
@@ -56,8 +56,11 @@ actual class Date(internal val calendar: Calendar) : Comparable<Date> {
         get() = calendar.get(Calendar.DAY_OF_YEAR)
         set(value) { calendar.set(Calendar.DAY_OF_YEAR, value) }
     actual var weekDay: Int
-        get() = calendar.get(Calendar.DAY_OF_WEEK) + 1
-        set(value) { calendar.set(Calendar.DAY_OF_WEEK, value - 1) }
+        get() = calendar.get(Calendar.DAY_OF_WEEK)
+        set(value) { calendar.set(Calendar.DAY_OF_WEEK, value) }
+    actual var firstWeekDay: Int
+        get() = calendar.firstDayOfWeek
+        set(value) { calendar.firstDayOfWeek = value }
 
     actual var hour: Int
         get() = calendar.get(Calendar.HOUR_OF_DAY)

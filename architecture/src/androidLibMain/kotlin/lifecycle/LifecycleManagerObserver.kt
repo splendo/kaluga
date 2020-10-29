@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class LifecycleManagerObserver : LifecycleSubscriber(), CoroutineScope by MainScope() {
+class LifecycleManagerObserver : LifecycleSubscriber() {
 
     override var manager: LifecycleSubscribable.LifecycleManager?
         get() = super.manager

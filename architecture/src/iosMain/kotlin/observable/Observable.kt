@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
+actual abstract class Observable<T> : BaseObservable<T>() {
 
     private val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableOptional<T> by Delegates.observable(ObservableOptional.Nothing()) { _, _, new ->
@@ -48,7 +48,7 @@ actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<
         if (lastResult is ObservableOptional.Value<T>) {
             onNext.invoke(lastResult.value)
         }
-        return Disposable { observers.remove(onNext) }
+        return SimpleDisposable { observers.remove(onNext) }
     }
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
@@ -95,14 +95,16 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
 
 actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
 
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
+        this.value = value
+    }
+
     /**
      * Updates the value of the [Subject]
      * @param newValue The new value of the subject
      */
-    abstract fun post(newValue: T)
-
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
-        this.value = value
+    actual open fun post(newValue: T) {
+        value = ObservableOptional.Value(newValue)
     }
 }
 
@@ -114,10 +116,6 @@ class DefaultSubject<T>(initialValue: T) : Subject<T>() {
 
     init {
         value = ObservableOptional.Value(initialValue)
-    }
-
-    override fun post(newValue: T) {
-        value = ObservableOptional.Value(newValue)
     }
 }
 
@@ -136,7 +134,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
 
     override fun post(newValue: T) {
         remoteValue = newValue
-        value = ObservableOptional.Value(newValue)
+        super.post(newValue)
     }
 }
 
@@ -150,7 +148,7 @@ class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutine
     init {
         coroutineScope.launch(Dispatchers.Main) {
             flowable.flow().collect {
-                value = ObservableOptional.Value(it)
+                super.post(it)
             }
         }
     }

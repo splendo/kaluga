@@ -19,7 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.hud.HUD
+import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HUDStyle
 import com.splendo.kaluga.hud.build
 import com.splendo.kaluga.hud.dismissAfter
@@ -27,19 +27,19 @@ import com.splendo.kaluga.hud.presentDuring
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class HudViewModel(val builder: HUD.Builder) : BaseViewModel() {
+class HudViewModel(val builder: BaseHUD.Builder) : BaseViewModel() {
 
     fun onShowSystemPressed() {
         // SYSTEM style by default
         // No title by default
         coroutineScope.launch {
-            builder.build().present().dismissAfter(3_000)
+            builder.build(this).present().dismissAfter(3_000)
         }
     }
 
     fun onShowCustomPressed() {
         coroutineScope.launch {
-            builder.build {
+            builder.build(this) {
                 setStyle(HUDStyle.CUSTOM)
                 setTitle("This is a custom title")
             }.presentDuring {

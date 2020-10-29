@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlin.native.internal.GC
 import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.pointed
@@ -47,17 +48,21 @@ import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
 
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: A)
+}
+
 /**
- * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
+ * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
+class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) : Navigator<A> {
 
     private val parent = WeakReference(parentVC)
 
-    actual fun navigate(action: A) {
+    override fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 

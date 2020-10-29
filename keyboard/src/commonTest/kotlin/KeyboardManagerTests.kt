@@ -17,26 +17,41 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
+import com.splendo.kaluga.base.MultiplatformMainScope
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import kotlin.test.Test
+import kotlinx.coroutines.launch
 
 abstract class KeyboardManagerTests {
 
-    abstract val builder: KeyboardManagerBuilder
+    abstract val builder: KeyboardManager.Builder
     abstract val view: KeyboardHostingView
 
     @Test
-    fun testShow() {
-        builder.create().show(view)
-        verifyShow()
+    fun testShow() = runBlocking {
+        val result = EmptyCompletableDeferred()
+        MultiplatformMainScope().launch {
+            builder.create(this).show(view)
+            verifyShow()
+            result.complete()
+        }
+        result.await()
     }
 
-    abstract fun verifyShow()
+    abstract suspend fun verifyShow()
 
     @Test
-    fun testDismiss() {
-        builder.create().hide()
-        verifyDismiss()
+    fun testDismiss() = runBlocking {
+        val result = EmptyCompletableDeferred()
+        MultiplatformMainScope().launch {
+            builder.create(this).hide()
+            verifyDismiss()
+            result.complete()
+        }
+        result.await()
     }
 
-    abstract fun verifyDismiss()
+    abstract suspend fun verifyDismiss()
 }

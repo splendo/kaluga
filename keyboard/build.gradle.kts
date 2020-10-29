@@ -22,6 +22,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
+                implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
             }
         }

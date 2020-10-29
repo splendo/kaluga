@@ -19,50 +19,38 @@ package com.splendo.kaluga.keyboard
 
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.test.rule.ActivityTestRule
+import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Before
 import org.junit.Rule
-import org.junit.Test
-import kotlin.test.BeforeTest
 
-class MockKeyboardTest {
+class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
     @get:Rule
-    var activityRule = ActivityScenarioRule(TestActivity::class.java)
+    var activityRule = ActivityTestRule(TestActivity::class.java)
 
     companion object {
         const val DEFAULT_TIMEOUT = 1_000L
         const val INTERVAL = 100L
     }
 
-    var activity:TestActivity? = null
-
-    @BeforeTest
-    fun activityInit() {
-        activityRule.scenario.onActivity { activity = it }
+    @Before
+    fun setUp() {
+        builder.subscribe(activityRule.activity)
     }
 
-
-    @Test
-    fun testShowKeyboard() = runBlockingTest {
-        val keyboardManager = KeyboardManagerBuilder(activity!!).create()
-        val keyboardHostingView = activity!!.textView
-
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-
-            keyboardManager.show(keyboardHostingView)
-            validateKeyboard(true)
-
-            keyboardManager.hide()
-            validateKeyboard(false)
-        }
-        Unit
+    override suspend fun verifyShow() {
+        validateKeyboard(true)
     }
+
+    override suspend fun verifyDismiss() {
+        validateKeyboard(false)
+    }
+
+    override val builder get() = KeyboardManager.Builder()
+    override val view get() = activityRule.activity.textView.id
 
     private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {
         val inputMethodManager = InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

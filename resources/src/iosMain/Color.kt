@@ -34,7 +34,7 @@ actual val Color.greenInt: Int get() = (green * 255.0).toInt()
 actual val Color.alpha: Double get() = CGColorGetAlpha(uiColor.CGColor)?.toDouble()
 actual val Color.alphaInt: Int get() = (alpha * 255.0).toInt()
 
-actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): Color = Color(UIColor.colorWithRed(red.toFloat() as CGFloat, green.toFloat() as CGFloat, blue.toFloat() as CGFloat, alpha.toFloat() as CGFloat))
+actual fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double): Color = Color(UIColor.colorWithRed(red as CGFloat, green as CGFloat, blue as CGFloat, alpha as CGFloat))
 actual fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int): Color {
     return colorFrom(redInt.toDouble() / 255.0, greenInt.toDouble() / 255.0, blueInt.toDouble() / 255.0, alphaInt.toDouble() / 255.0)
 }
