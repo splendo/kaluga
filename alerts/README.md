@@ -9,7 +9,7 @@ Using Alerts is very simple. You can show an alert from shared code like this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create OK action
     val okAction = Alert.Action("OK") // POSITIVE/DEFAULT style
     // Create Cancel action
@@ -32,7 +32,7 @@ Or this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
     // Create an Alert with title, message and actions
     val alert = builder.buildAlert(this) {
         setTitle(title)
@@ -48,15 +48,15 @@ fun showAlert(builder: AlertInterface.Builder, title: String) = MainScope().laun
 
 ## Builder
 
-The `AlertInterface.Builder` class can be used to build Alerts.
+The `AlertPresenter.Builder` class can be used to build Alerts.
 
 ### Build alert
 
-- `buildAlert(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildAlert(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe
 
 ### Build action sheet
 
-- `buildActionSheet(coroutineScope: CoroutineScope, initialize: AlertInterface.Builder.() -> Unit): AlertInterface` — builder to create `AlertInterface`, thread-safe
+- `buildActionSheet(coroutineScope: CoroutineScope, initialize: AlertPresenter.Builder.() -> Unit): AlertPresenter` — builder to create `AlertPresenter`, thread-safe
 
 ### Set title, style and message
 
@@ -83,7 +83,7 @@ On Android actions can be: `Positive`, `Negative` and `Neutral`.
 On iOS actions can be: `Default`, `Cancel` and `Destructive`.
 
 ## Platform Specific Building
-The `AlertInterface.Builder` object should be created from the platform side.
+The `AlertPresenter.Builder` object should be created from the platform side.
 
 ### Android
 On Android this builder needs a `UIContextObserver` (see Architecture) object to provide the current context in which to display the alert.
@@ -92,7 +92,7 @@ For `BaseViewModel`, the `UIContextObserver` will be automatically provided with
 ```kotlin
 class AlertViewModel: ViewModel() {
 
-    val builder = AlertInterface.Builder()
+    val builder = AlertPresenter.Builder()
 
     fun buildAlert() = builder.buildAlert {
         // Alert Logic
@@ -120,7 +120,7 @@ For other usages, make sure to call `UIContextObserver.subscribe` and `UIContext
 ```kotlin
 // Android specific
 val contextObserver = UIContextObserver()
-val builder = AlertInterface.Builder(contextObserver)
+val builder = AlertPresenter.Builder(contextObserver)
 contextObserver.subscribe(activity)
 builder.buildAlert {
     // Alert Logic
@@ -132,7 +132,7 @@ On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
 // iOS specific
-let builder = AlertInterface.Builder(viewController)
+let builder = AlertPresenter.Builder(viewController)
 builder.buildAlert {
     // Alert Logic
 }
@@ -141,7 +141,7 @@ builder.buildAlert {
 You can also show action sheet using Actions with handlers:
 
 ```kotlin
-fun showList(builder: AlertInterface.Builder) = MainScope().launch(MainQueueDispatcher) {
+fun showList(builder: AlertPresenter.Builder) = MainScope().launch(MainQueueDispatcher) {
     builder.buildActionSheet {
         setTitle("Select an option")
         addActions(

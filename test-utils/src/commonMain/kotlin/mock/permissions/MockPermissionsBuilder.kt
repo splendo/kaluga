@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.permissions
+package com.splendo.kaluga.test.mock.permissions
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.Permission

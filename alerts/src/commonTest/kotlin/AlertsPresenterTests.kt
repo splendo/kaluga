@@ -18,10 +18,9 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.runBlocking
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
@@ -30,9 +29,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class AlertsInterfaceTests {
+abstract class AlertsPresenterTests {
 
-    abstract val builder: AlertInterface.Builder
+    abstract val builder: AlertPresenter.Builder
 
     @Test
     fun testAlertBuilderExceptionNoActions() = runBlocking {

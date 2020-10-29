@@ -24,8 +24,8 @@ actual class KeyboardHostingView
 
 actual class KeyboardManager : BaseKeyboardManager {
 
-    actual class Builder : BaseKeyboardManagerBuilder() {
-        override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
+    actual class Builder : BaseKeyboardManager.Builder {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
     }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {

@@ -29,7 +29,7 @@ import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.awaitAllBlocking
-import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest

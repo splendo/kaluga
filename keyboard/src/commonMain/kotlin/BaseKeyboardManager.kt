@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -29,6 +30,21 @@ expect class KeyboardHostingView
  * Interface that defines the actions available for the Keyboard Manager
  */
 interface BaseKeyboardManager {
+
+    /**
+     * Base KeyboardManager builder class, which used to create an KeyboardManager
+     *
+     * @see KeyboardManager
+     */
+    interface Builder : LifecycleSubscribable {
+
+        /**
+         * Creates KeyboardManager object
+         *
+         * @return The KeyboardManager object
+         */
+        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
+    }
 
     /**
      * Shows the keyboard for a given [KeyboardHostingView]
@@ -43,21 +59,15 @@ interface BaseKeyboardManager {
     fun hide()
 }
 
-expect class KeyboardManager : BaseKeyboardManager {
-    class Builder : BaseKeyboardManagerBuilder
-}
-
 /**
- * Base KeyboardManager builder class, which used to create an KeyboardManager
- *
- * @see KeyboardManager
+ * Manager for Showing and Hiding the Keyboard.
  */
-abstract class BaseKeyboardManagerBuilder {
+expect class KeyboardManager : BaseKeyboardManager {
 
     /**
-     * Creates KeyboardManager object
-     *
-     * @return The KeyboardManager object
+     * Builder for creating a [KeyboardManager].
      */
-    abstract fun create(coroutineScope: CoroutineScope): KeyboardManager
+    class Builder : BaseKeyboardManager.Builder {
+        override fun create(coroutineScope: CoroutineScope): KeyboardManager
+    }
 }

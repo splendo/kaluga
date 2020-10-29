@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
-actual class AlertInterface(
+actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
@@ -37,8 +37,8 @@ actual class AlertInterface(
 
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseAlertBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual fun create(coroutineScope: CoroutineScope) = AlertInterface(createAlert(), lifecycleManagerObserver, coroutineScope)
+    ) : BaseAlertPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
+        actual override fun create(coroutineScope: CoroutineScope) = AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {

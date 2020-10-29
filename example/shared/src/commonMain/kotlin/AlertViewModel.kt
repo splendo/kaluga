@@ -19,7 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
@@ -27,7 +27,7 @@ import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AlertViewModel(val builder: AlertInterface.Builder) : BaseViewModel() {
+class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseViewModel() {
 
     fun showAlert() {
         coroutineScope.launch {

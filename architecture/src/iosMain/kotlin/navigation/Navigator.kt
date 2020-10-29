@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlin.native.internal.GC
 import kotlin.native.ref.WeakReference
 import kotlinx.cinterop.pointed
@@ -47,7 +48,7 @@ import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
 
-actual interface Navigator<A : NavigationAction<*>> {
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
     actual fun navigate(action: A)
 }
 

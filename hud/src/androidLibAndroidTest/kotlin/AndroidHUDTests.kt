@@ -125,7 +125,7 @@ class AndroidHUDTests : HUDTests() {
             val indicatorLoading = builder.build(this) {
                 setTitle(LOADING)
             }
-            val indicatorProcessing = CompletableDeferred<HUD>()
+            val indicatorProcessing = CompletableDeferred<BaseHUD>()
             CoroutineScope(Dispatchers.Main).launch processing@{
                 indicatorLoading.presentDuring {
                     presenting.complete()

@@ -20,14 +20,14 @@ package com.splendo.kaluga.alerts
 
 import kotlinx.coroutines.CoroutineScope
 
-actual class AlertInterface(
+actual class AlertPresenter(
     alert: Alert
 ) : BaseAlertPresenter(alert) {
 
-    actual class Builder : BaseAlertBuilder() {
+    actual class Builder : BaseAlertPresenter.Builder() {
 
-        actual fun create(coroutineScope: CoroutineScope): AlertInterface {
-            return AlertInterface(createAlert())
+        actual override fun create(coroutineScope: CoroutineScope): AlertPresenter {
+            return AlertPresenter(createAlert())
         }
     }
 

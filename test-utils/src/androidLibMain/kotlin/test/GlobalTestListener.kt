@@ -1,14 +1,3 @@
-package com.splendo.kaluga.test
-
-import com.splendo.kaluga.logging.LogLevel
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.initLogger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.resetMain
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -26,6 +15,17 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.test
+
+import com.splendo.kaluga.logging.LogLevel
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.initLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
 
 // Android Studio will shown an error when parsing this file because it's also defined in the unit test module
 // To clear the error close the file and restart Android Studio ¯\_(ツ)_/¯

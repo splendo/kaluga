@@ -36,8 +36,8 @@ actual class KeyboardManager(
 
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : BaseKeyboardManagerBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
-        override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, coroutineScope)
+    ) : BaseKeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 
     private var activity: Activity? = null

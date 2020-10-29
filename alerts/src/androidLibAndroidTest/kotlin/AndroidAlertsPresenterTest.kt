@@ -22,7 +22,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import com.splendo.kaluga.test.AlertsInterfaceTests
+import com.splendo.kaluga.test.AlertsPresenterTests
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
 
-class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
+class AndroidAlertsPresenterTest : AlertsPresenterTests() {
 
     @get:Rule
     var activityRule = ActivityTestRule(TestActivity::class.java)
@@ -72,7 +72,7 @@ class AndroidAlertsInterfaceTest : AlertsInterfaceTests() {
 
     @Test
     fun testConcurrentBuilders() = runBlockingTest {
-        val alerts: MutableList<AlertInterface> = mutableListOf()
+        val alerts: MutableList<BaseAlertPresenter> = mutableListOf()
 
         CoroutineScope(Dispatchers.Main).launch {
             for (i in 0 until 10) {
