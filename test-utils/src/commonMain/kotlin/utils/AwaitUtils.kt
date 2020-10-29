@@ -21,14 +21,15 @@ import com.splendo.kaluga.architecture.observable.Observable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 
-const val DefaultTimeout = 2000L
+private const val DefaultTimeout = 2000L
+private const val DefaultDelay = 100L
 
 suspend fun <T> List<T>.awaitElementAt(
     index: Int,
     timeOut: Long = DefaultTimeout
 ): T = withTimeout(timeOut) {
     while (size <= index) {
-        delay(100)
+        delay(DefaultDelay)
     }
     get(index)
 }
@@ -39,7 +40,7 @@ suspend fun <T> awaitEquals(
     current: (() -> T)
 ) = withTimeout(timeOut) {
     while (expected != current()) {
-        delay(100)
+        delay(DefaultDelay)
     }
 }
 
