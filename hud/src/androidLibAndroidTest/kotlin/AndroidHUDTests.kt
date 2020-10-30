@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.hud
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.filters.FlakyTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -32,12 +31,11 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
@@ -77,120 +75,127 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
-    fun indicatorShow() = runBlockingTest {
+    fun indicatorShow() = runBlocking {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
-        }.present()
+        }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
     }
 
     @Test
-    fun indicatorDismiss() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val indicator = builder.build(this) {
-                    setTitle(LOADING)
-                }.present()
-            device.assertTextAppears(LOADING)
-            assertTrue(indicator.isVisible)
-            indicator.dismiss()
-            device.assertTextDisappears(LOADING)
-            assertFalse(indicator.isVisible)
+    fun indicatorDismiss() = runBlocking {
+        val indicator = builder.build(MainScope()) {
+                setTitle(LOADING)
+            }
+
+        launch(Dispatchers.Main) {
+            indicator.present()
         }
+        device.assertTextAppears(LOADING)
+        assertTrue(indicator.isVisible)
+        indicator.dismiss()
+        device.assertTextDisappears(LOADING)
+        assertFalse(indicator.isVisible)
     }
 
     @Test
-    fun indicatorDismissAfter() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val indicator = builder.build(this) {
-                setTitle(LOADING)
-            }.present()
-            device.assertTextAppears(LOADING)
-            assertTrue(indicator.isVisible)
+    fun indicatorDismissAfter() = runBlocking {
+        val indicator = builder.build(MainScope()) {
+            setTitle(LOADING)
+        }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
+        device.assertTextAppears(LOADING)
+        assertTrue(indicator.isVisible)
+        launch(Dispatchers.Main) {
             indicator.dismissAfter(500)
-            device.assertTextDisappears(LOADING)
-            assertFalse(indicator.isVisible)
         }
+        device.assertTextDisappears(LOADING)
+        assertFalse(indicator.isVisible)
     }
 
     @Test
-    fun testPresentDuring() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val presenting = EmptyCompletableDeferred()
-            val loading1 = EmptyCompletableDeferred()
-            val loading2 = EmptyCompletableDeferred()
-            val processing = EmptyCompletableDeferred()
+    fun testPresentDuring() = runBlocking {
+        val presenting = EmptyCompletableDeferred()
+        val loading1 = EmptyCompletableDeferred()
+        val loading2 = EmptyCompletableDeferred()
+        val processing = EmptyCompletableDeferred()
 
-            val indicatorLoading = builder.build(this) {
-                setTitle(LOADING)
-            }
-            val indicatorProcessing = CompletableDeferred<BaseHUD>()
-            CoroutineScope(Dispatchers.Main).launch processing@{
-                indicatorLoading.presentDuring {
-                    presenting.complete()
-                    loading1.await()
-                    val processingDialog = builder.build(this@processing) {
-                        setTitle(PROCESSING)
-                    }
-                    indicatorProcessing.complete(processingDialog)
-                    processingDialog.presentDuring {
-                        processing.await()
-                    }
-                    loading2.await()
-                }
-            }
-
-            presenting.await()
-            // check the Loading dialog pops up and is reported as visible
-            device.assertTextAppears(LOADING)
-            assertTrue(indicatorLoading.isVisible)
-            loading1.complete()
-
-            // check the Processing dialog is popped on top
-            device.assertTextDisappears(LOADING)
-            device.assertTextAppears(PROCESSING)
-            assertTrue(indicatorProcessing.await().isVisible)
-            processing.complete()
-
-            // check the Loading dialog appears again
-            device.assertTextDisappears(PROCESSING)
-            device.assertTextAppears(LOADING)
-            loading2.complete()
+        val indicatorLoading = builder.build(MainScope()) {
+            setTitle(LOADING)
         }
+        val indicatorProcessing = CompletableDeferred<BaseHUD>()
+        launch(Dispatchers.Main) {
+            indicatorLoading.presentDuring {
+                presenting.complete()
+                loading1.await()
+                val processingDialog = builder.build(MainScope()) {
+                    setTitle(PROCESSING)
+                }
+                indicatorProcessing.complete(processingDialog)
+                processingDialog.presentDuring {
+                    processing.await()
+                }
+                loading2.await()
+            }
+        }
+
+        presenting.await()
+        // check the Loading dialog pops up and is reported as visible
+        device.assertTextAppears(LOADING)
+        assertTrue(indicatorLoading.isVisible)
+        loading1.complete()
+
+        // check the Processing dialog is popped on top
+        device.assertTextDisappears(LOADING)
+        device.assertTextAppears(PROCESSING)
+        assertTrue(indicatorProcessing.await().isVisible)
+        processing.complete()
+
+        // check the Loading dialog appears again
+        device.assertTextDisappears(PROCESSING)
+        device.assertTextAppears(LOADING)
+        loading2.complete()
     }
 
     @Test
-    fun rotateActivity() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
-            val indicator = builder.build(this) {
-                setTitle(LOADING)
-            }.present()
-            device.assertTextAppears(LOADING)
-            assertTrue(indicator.isVisible)
-
-            // Rotate screen
-
-            for(times in 4 downTo 0) {
-                try {
-
-                    device.setOrientationLeft()
-                    delay(200)
-                    // HUD should be on screen
-                    device.assertTextAppears(LOADING)
-                    assertTrue(indicator.isVisible)
-                } catch (e:java.lang.AssertionError) {
-                    if (times == 0) throw e
-                }
-                finally {
-                    device.setOrientationNatural()
-                    delay(200)
-                }
-            }
-
-            indicator.dismiss()
-            // Finally should be gone
-            device.assertTextDisappears(LOADING)
-            assertFalse(indicator.isVisible)
+    fun rotateActivity() = runBlocking {
+        val indicator = builder.build(MainScope()) {
+            setTitle(LOADING)
         }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
+        device.assertTextAppears(LOADING)
+        assertTrue(indicator.isVisible)
+
+        // Rotate screen
+
+        for(times in 4 downTo 0) {
+            try {
+
+                device.setOrientationLeft()
+                delay(200)
+                // HUD should be on screen
+                device.assertTextAppears(LOADING)
+                assertTrue(indicator.isVisible)
+            } catch (e:java.lang.AssertionError) {
+                if (times == 0) throw e
+            }
+            finally {
+                device.setOrientationNatural()
+                delay(200)
+            }
+        }
+
+        indicator.dismiss()
+        // Finally should be gone
+        device.assertTextDisappears(LOADING)
+        assertFalse(indicator.isVisible)
     }
 }
