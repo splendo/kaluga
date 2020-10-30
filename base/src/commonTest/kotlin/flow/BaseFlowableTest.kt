@@ -100,11 +100,10 @@ class BaseFlowableTest : FlowableTest<String>() {
             flow.collect { }
         }
 
-        delay(500) // TODO instead listen to flow subscriber count
+        delay(500) // TODO instead listen to flow subscriber count, which we can do once we use SharedFlow instead of BroadcastChannel
 
-        // withContext(MainScope().coroutineContext) {
-            flowable().cancelFlows()
-        // }
+        flowable().cancelFlows()
+
         collectionJob.await()
     }
 
