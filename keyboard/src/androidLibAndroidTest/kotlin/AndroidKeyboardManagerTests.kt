@@ -1,64 +1,72 @@
 /*
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+      http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ */
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-
-*/
-
-package com.splendo.kaluga.keyboard
-
+import android.app.Activity
 import android.content.Context
+import android.os.IBinder
+import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
-import com.splendo.kaluga.architecture.lifecycle.subscribe
-import kotlinx.coroutines.delay
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.keyboard.KeyboardManagerTests
 import org.junit.Before
-import org.junit.Rule
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.eq
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 
 class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
-    @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
-
     companion object {
-        const val DEFAULT_TIMEOUT = 1_000L
-        const val INTERVAL = 100L
+        private const val viewId = 1
     }
+
+    private lateinit var mockActivity: Activity
+    private lateinit var mockView: View
+    private lateinit var mockWindowToken: IBinder
+    private lateinit var mockInputMethodManager: InputMethodManager
+    override lateinit var builder: KeyboardManager.Builder
 
     @Before
-    fun setUp() {
-        builder.subscribe(activityRule.activity)
+    fun before() {
+        mockActivity = mock(Activity::class.java)
+        val mockLifecycleOwner = mock(LifecycleOwner::class.java)
+        val mockFragmentManager = mock(FragmentManager::class.java)
+        mockView = mock(View::class.java)
+        mockInputMethodManager = mock(InputMethodManager::class.java)
+        mockWindowToken = mock(IBinder::class.java)
+
+        `when`(mockActivity.getSystemService(eq(Context.INPUT_METHOD_SERVICE))).thenReturn(mockInputMethodManager)
+        `when`(mockActivity.currentFocus).thenReturn(mockView)
+        `when`(mockActivity.findViewById<View>(ArgumentMatchers.eq(viewId))).thenReturn(mockView)
+        `when`(mockView.windowToken).thenReturn(mockWindowToken)
+        `when`(mockInputMethodManager.isAcceptingText).thenReturn(true)
+
+        builder = KeyboardManager.Builder()
+        builder.subscribe(LifecycleSubscribable.LifecycleManager(mockActivity, mockLifecycleOwner, mockFragmentManager))
     }
 
-    override suspend fun verifyShow() {
-        validateKeyboard(true)
+    override fun verifyShow() {
+        verify(mockView).requestFocus()
+        verify(mockInputMethodManager).toggleSoftInput(eq(InputMethodManager.SHOW_FORCED), eq(InputMethodManager.HIDE_IMPLICIT_ONLY))
     }
 
-    override suspend fun verifyDismiss() {
-        validateKeyboard(false)
+    override fun verifyDismiss() {
+        verify(mockInputMethodManager).hideSoftInputFromWindow(eq(mockWindowToken), eq(0))
     }
 
-    override val builder get() = KeyboardManager.Builder()
-    override val view get() = activityRule.activity.textView.id
-
-    private suspend fun validateKeyboard(expected: Boolean, timeout: Long = DEFAULT_TIMEOUT): Boolean {
-        val inputMethodManager = InstrumentationRegistry.getInstrumentation().targetContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        var totalDelay = 0L
-        while (totalDelay < timeout && inputMethodManager.isAcceptingText != expected) {
-            totalDelay += INTERVAL
-            delay(INTERVAL)
-        }
-        return inputMethodManager.isAcceptingText == expected
-    }
+    override val view get() = viewId
 }

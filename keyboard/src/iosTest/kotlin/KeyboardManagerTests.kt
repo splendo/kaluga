@@ -1,4 +1,4 @@
- package com.splendo.kaluga.keyboard
+package com.splendo.kaluga.keyboard
 
 import kotlin.test.assertTrue
 import platform.CoreGraphics.CGRectMake
@@ -15,11 +15,11 @@ class IOSKeyboardManagerTests : KeyboardManagerTests() {
     override val view: KeyboardHostingView
         get() = textField
 
-    override suspend fun verifyShow() {
+    override fun verifyShow() {
         assertTrue(textField.didBecomeFirstResponder)
     }
 
-    override suspend fun verifyDismiss() {
+    override fun verifyDismiss() {
         // Should test resign First responder
     }
 }
