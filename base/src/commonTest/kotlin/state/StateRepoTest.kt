@@ -31,6 +31,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.yield
 
 sealed class TrafficLightState : State(),
     HandleBeforeCreating,
@@ -256,11 +257,23 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
                     }
                     transitionsCompleted.complete()
                 }
+                // yield a few times to give async block a chance to run
+                repeat(10) { yield(); delay(10) }
+
                 when (state) {
                     is TrafficLightState.RedLight -> state.becomeGreen
                     is TrafficLightState.YellowLight -> state.becomeRed
                     is TrafficLightState.GreenLight -> state.becomeYellow
                 }
+            }
+
+            // state mutex should protect the order here
+
+            test {
+                assertTrue(it is TrafficLightState.YellowLight)
+            }
+            test {
+                assertTrue(it is TrafficLightState.RedLight)
             }
 
             transitionsCompleted.await()
