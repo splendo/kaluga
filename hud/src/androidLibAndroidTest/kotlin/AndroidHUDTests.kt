@@ -39,7 +39,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
-const val DEFAULT_TIMEOUT = 2_500L
+const val DEFAULT_TIMEOUT = 5_000L
 
 fun UiDevice.assertTextAppears(text: String) {
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))
