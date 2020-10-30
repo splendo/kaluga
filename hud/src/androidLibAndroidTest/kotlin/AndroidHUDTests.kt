@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.hud
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import androidx.test.filters.FlakyTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
@@ -34,6 +35,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
@@ -42,6 +44,7 @@ import kotlin.test.BeforeTest
 const val DEFAULT_TIMEOUT = 5_000L
 
 fun UiDevice.assertTextAppears(text: String) {
+    waitForIdle()
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))
 }
 
@@ -166,12 +169,24 @@ class AndroidHUDTests : HUDTests() {
             assertTrue(indicator.isVisible)
 
             // Rotate screen
-            device.setOrientationLeft()
-            // HUD should be on screen
-            device.assertTextAppears(LOADING)
-            assertTrue(indicator.isVisible)
 
-            device.setOrientationNatural()
+            for(times in 4 downTo 0) {
+                try {
+
+                    device.setOrientationLeft()
+                    delay(200)
+                    // HUD should be on screen
+                    device.assertTextAppears(LOADING)
+                    assertTrue(indicator.isVisible)
+                } catch (e:java.lang.AssertionError) {
+                    if (times == 0) throw e
+                }
+                finally {
+                    device.setOrientationNatural()
+                    delay(200)
+                }
+            }
+
             indicator.dismiss()
             // Finally should be gone
             device.assertTextDisappears(LOADING)
