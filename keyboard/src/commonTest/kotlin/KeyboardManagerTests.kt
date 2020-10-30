@@ -22,8 +22,11 @@ abstract class KeyboardManagerTests {
     abstract val builder: KeyboardManager.Builder
     abstract val view: KeyboardHostingView
 
+    var isUITest = false
+
     @Test
     fun testShow() = runOnMain {
+        if (isUITest) return@runOnMain
         builder.create(MainScope()).show(view)
         verifyShow()
     }
@@ -32,6 +35,7 @@ abstract class KeyboardManagerTests {
 
     @Test
     fun testDismiss() = runOnMain {
+        if (isUITest) return@runOnMain
         builder.create(MainScope()).hide()
         verifyDismiss()
     }

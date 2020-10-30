@@ -27,6 +27,7 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.exceptions.base.MockitoException
 
 class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
@@ -42,7 +43,12 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests() {
 
     @Before
     fun before() {
-        mockActivity = mock(Activity::class.java)
+        try {
+            mockActivity = mock(Activity::class.java)
+        } catch (mockException: MockitoException) {
+            isUITest = true
+            return
+        }
         val mockLifecycleOwner = mock(LifecycleOwner::class.java)
         val mockFragmentManager = mock(FragmentManager::class.java)
         mockView = mock(View::class.java)
