@@ -19,8 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.hud
 
 import com.splendo.kaluga.base.runOnMain
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.MainScope
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -75,26 +74,9 @@ class IOSHUDTests : HUDTests() {
     private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView, { MockPresentingHUD(it) })
 
     @Test
-    fun builderInitializer() {
-        assertNotNull(
-            builder.build(MultiplatformMainScope())
-        )
-    }
-
-    @Test
-    fun builderSetStyleAndTitle() {
-        assertNotNull(
-            builder.build(MultiplatformMainScope()) {
-                setStyle(HUDStyle.CUSTOM)
-                setTitle("Foo")
-            }
-        )
-    }
-
-    @Test
     fun presentIndicator() = runOnMain {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
+        val indicator = createBuilder(hostView).build(MainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 
@@ -108,7 +90,7 @@ class IOSHUDTests : HUDTests() {
     @Test
     fun dismissIndicator() = runOnMain {
         val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build(MultiplatformMainScope())
+        val indicator = createBuilder(hostView).build(MainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 

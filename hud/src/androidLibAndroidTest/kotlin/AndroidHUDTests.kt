@@ -35,9 +35,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Before
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
@@ -58,11 +56,14 @@ class AndroidHUDTests : HUDTests() {
     var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
     var activity:TestActivity? = null
+    
     @BeforeTest
     fun activityInit() {
-        activityRule.scenario.onActivity { activity = it }
+        activityRule.scenario.onActivity {
+            activity = it
+            builder.subscribe(it)
+        }        
     }
-
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
     override val builder get() = activity!!.viewModel.builder
@@ -72,20 +73,9 @@ class AndroidHUDTests : HUDTests() {
         const val PROCESSING = "Processing..."
     }
 
-    @Before
-    fun setUp() {
-        builder.subscribe(activityRule.activity)
-    }
-
-    @Test
-    fun builderInitializer() = runBlocking {
-        assertNotNull(builder.build(MainScope()))
-        Unit
-    }
-
     @Test
     fun indicatorShow() = runBlockingTest {
-        val indicator = builder.build {
+        val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }.present()
         device.assertTextAppears(LOADING)
