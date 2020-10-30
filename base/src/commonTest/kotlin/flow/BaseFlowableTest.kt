@@ -81,13 +81,13 @@ class BaseFlowableTest : FlowableTest<String>() {
         try {
             test {
                 debug("cause an exception")
-                throw Exception("some error!")
+                throw Exception("This is an expected error for testing.")
             }
             debug("wait for the exception..")
             action {}
             fail("No throwable was thrown, even though we caused an exception")
         } catch (t: Throwable) {
-            assertEquals("some error!", t.message)
+            assertEquals("This is an expected error for testing.", t.message)
             debug("We got the throwable ($t) we expected")
         }
     }
