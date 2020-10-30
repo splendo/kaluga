@@ -18,7 +18,6 @@
 package com.splendo.kaluga.test
 
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -26,9 +25,6 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.logging.d
 import kotlinx.coroutines.CompletableDeferred
 
 class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
