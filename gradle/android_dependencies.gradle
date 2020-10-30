@@ -25,6 +25,9 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
+    //noinspection GradleDependency this is locked from being higher by other libraries used.
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
+
     androidTestImplementation "androidx.test:core:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test:core-ktx:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test.uiautomator:uiautomator:2.2.0"
