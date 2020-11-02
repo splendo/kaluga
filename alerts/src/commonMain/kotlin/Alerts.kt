@@ -203,7 +203,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         internal fun reset() = apply {
             this.title = null
             this.message = null
-            this.actions.clear()
+            this.actions = mutableListOf()
             this.style = Alert.Style.ALERT
         }
 

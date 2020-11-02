@@ -22,18 +22,26 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.AlertsPresenterTests
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
+import kotlin.random.Random
 import kotlin.test.BeforeTest
+import kotlin.time.Duration
 
 class AndroidAlertsPresenterTest : AlertsPresenterTests() {
 
@@ -52,71 +60,77 @@ class AndroidAlertsPresenterTest : AlertsPresenterTests() {
     override val builder get() = activity!!.viewModel.alertBuilder
 
     companion object {
-        const val DEFAULT_TIMEOUT = 1_000L
+        const val DEFAULT_TIMEOUT = 5_000L
     }
 
     @Test
-    fun testBuilderReuse() = runBlockingTest {
+    fun testBuilderReuse() = runBlocking {
 
-        CoroutineScope(Dispatchers.Main).launch {
-            builder.buildAlert(this@runBlockingTest) {
+        launch(Dispatchers.Main) {
+            builder.buildAlert(MainScope()) {
                 setTitle("Test")
                 setPositiveButton("OK")
             }.show()
+        }
 
-            device.wait(Until.findObject(By.text("Test")), DEFAULT_TIMEOUT)
-            device.findObject(By.text("OK")).click()
-            assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
+        device.wait(Until.findObject(By.text("Test")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
 
-            builder.buildAlert(this@runBlockingTest) {
+        launch(Dispatchers.Main) {
+            builder.buildAlert(MainScope()) {
                 setTitle("Hello")
-                setNegativeButton("Cancel")
+                setNegativeButton("CANCEL") // sometimes this ends up uppercased in the dialog
             }.show()
+        }
 
-            device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-            device.findObject(By.text("Cancel")).click()
-            assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("CANCEL")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testConcurrentBuilders() = runBlocking {
+        val alerts = Array(10) { CompletableDeferred<BaseAlertPresenter>() }
+
+        (0..9).forEach { i ->
+            launch(Dispatchers.Default) {
+                alerts[i].complete(
+                    builder.buildAlert(MainScope()) {
+                        setTitle("Alert$i")
+                        setPositiveButton("OK$i")
+                    }
+                )
+            }
+        }
+        (0..9).forEach { i ->
+            launch(Dispatchers.Main) {
+                alerts[i].await().show()
+            }
+            device.wait(Until.findObject(By.text("Alert$i")), DEFAULT_TIMEOUT)
+            device.wait(Until.findObject(By.text("OK$i")), DEFAULT_TIMEOUT).click()
+            assertTrue(device.wait(Until.gone(By.text("Alert$i")), DEFAULT_TIMEOUT))
         }
     }
 
     @Test
-    fun testConcurrentBuilders() = runBlockingTest {
-        val alerts: MutableList<BaseAlertPresenter> = mutableListOf()
-
-        CoroutineScope(Dispatchers.Main).launch {
-            for (i in 0 until 10) {
-                alerts.add(builder.buildAlert(this) {
-                    setTitle("Alert$i")
-                    setPositiveButton("OK$i")
-                })
-            }
-            for (i in 0 until 10) {
-                alerts[i].show()
-                device.wait(Until.findObject(By.text("Alert$i")), DEFAULT_TIMEOUT)
-                device.findObject(By.text("OK$i")).click()
-                assertTrue(device.wait(Until.gone(By.text("Alert$i")), DEFAULT_TIMEOUT))
-            }
-        }
-    }
-
-    @Test
-    fun testAlertShow() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch(Dispatchers.Main) {
-            builder.buildAlert(this) {
+    fun testAlertShow() = runBlocking {
+        launch(Dispatchers.Main) {
+            builder.buildAlert(MainScope()) {
                 setTitle("Hello")
                 setPositiveButton("OK")
             }.show()
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        device.findObject(By.text("OK")).click()
+        device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
     @Test
-    fun testAlertFlowWithCoroutines() = runBlockingTest {
-        CoroutineScope(Dispatchers.Main).launch {
+    fun testAlertFlowWithCoroutines() = runBlocking {
+        launch(Dispatchers.Main) {
             val action = Alert.Action("OK")
-            val presenter = builder.buildAlert(this) {
+            val presenter = builder.buildAlert(MainScope()) {
                 setTitle("Hello")
                 addActions(listOf(action))
             }
@@ -125,13 +139,13 @@ class AndroidAlertsPresenterTest : AlertsPresenterTests() {
             assertEquals(result, action)
         }
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
-        device.findObject(By.text("OK")).click()
+        device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
 
     @Test
-    fun rotateActivity() = runBlockingTest {
-        val coroutine = CoroutineScope(Dispatchers.Main).launch {
+    fun rotateActivity() = runBlocking {
+        val job = launch(Dispatchers.Main) {
             val presenter = builder.buildAlert(this) {
                 setTitle("Hello")
                 setPositiveButton("OK")
@@ -149,7 +163,8 @@ class AndroidAlertsPresenterTest : AlertsPresenterTests() {
         device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
 
         device.setOrientationNatural()
-        coroutine.cancel()
+
+        job.cancel()
         // Finally should be gone
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
