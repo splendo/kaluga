@@ -83,7 +83,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
             return
         }
 
-        withTimeout(waitForTestToSucceed) {// only wait for one minute
+        withTimeout(waitForTestToSucceed) {
             try {
                 debug("await all test blocks (${tests.size}), give it $waitForTestToSucceed milliseconds")
                 tests.awaitAll()
