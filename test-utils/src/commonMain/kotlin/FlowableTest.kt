@@ -75,7 +75,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
         testChannel = Channel(Channel.UNLIMITED)
     }
 
-    protected val waitForTestToSucceed = 6000L * 10 / 10
+    protected val waitForTestToSucceed = 6000L * 10
 
     private suspend fun awaitTestBlocks() {
         if (tests.size == 0) {
