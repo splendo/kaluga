@@ -85,7 +85,7 @@ actual class NetworkManager actual constructor(
         val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
         context.info = interpretCPointer(this.objcPtr())
 
-        if(!areParametersSet(context)) {
+        if (!areParametersSet(context)) {
             println("Something went wrong setting the parameters")
         }
 
@@ -99,7 +99,7 @@ actual class NetworkManager actual constructor(
         isListening = true
     }
 
-    private fun areParametersSet(context: SCNetworkReachabilityContext) : Boolean {
+    private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
         if (!SCNetworkReachabilitySetCallback(reachability, callback, context.ptr)) {
             return false
         }
@@ -116,7 +116,7 @@ actual class NetworkManager actual constructor(
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     println("DEBUG: in kSCNetworkReachabilityFlagsReachable")
-                    if (flags ==  kSCNetworkReachabilityFlagsIsWWAN) {
+                    if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
                         println("DEBUG: in cellar case")
                         handleNetworkStateChanged(Network.Cellular())
                     } else {

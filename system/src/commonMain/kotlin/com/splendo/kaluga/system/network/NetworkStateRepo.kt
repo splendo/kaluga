@@ -19,11 +19,11 @@ package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.state.ColdStateRepo
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.coroutines.CoroutineContext
 
-class NetworkStateRepo (
+class NetworkStateRepo(
     context: Any?,
     coroutineContext: CoroutineContext = MainQueueDispatcher
 ) : ColdStateRepo<NetworkState>(coroutineContext = coroutineContext) {

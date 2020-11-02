@@ -59,9 +59,7 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         override suspend fun finalState() {
             networkManager.stopMonitoringNetwork()
         }
-
     }
 
     data class Unavailable(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager)
-
 }

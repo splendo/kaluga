@@ -59,7 +59,6 @@ actual class NetworkManager actual constructor(
             connectivityManager.unregisterNetworkCallback(connectivityCallbacks)
         } else {
             // connectivityReceiver.abortBroadcast()
-
         }
     }
 
