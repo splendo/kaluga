@@ -18,7 +18,7 @@ kotlin {
     val statelyVersion: String by project
 
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(project(":base", ""))
                 implementation(project(":architecture", ""))
@@ -26,6 +26,12 @@ kotlin {
 
                 implementation("co.touchlab:stately-common:$statelyVersion")
                 implementation("co.touchlab:stately-concurrency:$statelyVersion")
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation(project(":test-utils", ""))
             }
         }
     }
