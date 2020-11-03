@@ -18,7 +18,6 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.logging.d
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -41,7 +40,7 @@ abstract class BaseLocationManager(
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
-    private var monitoringPermissionsJob:AtomicReference<Job?> = AtomicReference(null)
+    private var monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
 
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob.get() != null) return // optimization to skip making a job
@@ -73,7 +72,6 @@ abstract class BaseLocationManager(
             if (monitoringPermissionsJob.compareAndSet(it, null))
                 it.cancel()
         }
-        
     }
 
     internal suspend fun isPermitted(): Boolean {

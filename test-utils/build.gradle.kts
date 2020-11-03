@@ -23,7 +23,7 @@ kotlin {
     sourceSets {
         getByName("commonMain") {
             dependencies {
-                val ext =  (gradle as ExtensionAware).extra
+                val ext = (gradle as ExtensionAware).extra
 
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
@@ -44,7 +44,7 @@ kotlin {
         }
 
         getByName("jvmMain") {
-            val ext =  (gradle as ExtensionAware).extra
+            val ext = (gradle as ExtensionAware).extra
 
             dependencies {
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
@@ -55,7 +55,7 @@ kotlin {
 
 android {
     dependencies {
-        val ext =  (gradle as ExtensionAware).extra
+        val ext = (gradle as ExtensionAware).extra
         api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
     }
 }

@@ -20,7 +20,6 @@ package com.splendo.kaluga.base.flow
 import co.touchlab.stately.concurrency.AtomicInt
 import com.splendo.kaluga.flow.BaseFlowable
 import com.splendo.kaluga.flow.FlowConfig
-import com.splendo.kaluga.logging.d
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow

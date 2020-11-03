@@ -26,10 +26,10 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.warn
-import java.util.Timer
-import kotlin.concurrent.fixedRateTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.Timer
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * Convenience class for requesting a [Permission]

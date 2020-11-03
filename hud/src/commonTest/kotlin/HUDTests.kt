@@ -28,14 +28,14 @@ import kotlin.test.assertNull
 abstract class HUDTests {
 
     @Test
-    fun builderInitializer() = runOnMain { 
+    fun builderInitializer() = runOnMain {
         assertNotNull(
             builder.build(MainScope())
         )
     }
 
     @Test
-    fun builderSetStyleAndTitle() = runOnMain{ 
+    fun builderSetStyleAndTitle() = runOnMain {
         assertNotNull(
             builder.build(MainScope()) {
                 setStyle(HUDStyle.CUSTOM)

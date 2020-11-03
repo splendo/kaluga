@@ -167,9 +167,14 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
     }
 
     private fun printBoolean(arg: Any?, locale: Locale) {
-        print((arg?.let {
-            (arg as? Boolean) ?: true
-        } ?: false).toString(), locale)
+        print(
+            (
+                arg?.let {
+                    (arg as? Boolean) ?: true
+                } ?: false
+                ).toString(),
+            locale
+        )
     }
 
     private fun print(s: String, locale: Locale) {
@@ -755,8 +760,11 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (width == -1 && flags.contains(Flag.LEFT_JUSTIFY)) throw StringFormatterException.MissingFormatWidthException(toString())
         checkBadFlags(
             currentChar,
-            Flag.PLUS, Flag.LEADING_SPACE, Flag.ZERO_PAD,
-            Flag.GROUP, Flag.PARENTHESES
+            Flag.PLUS,
+            Flag.LEADING_SPACE,
+            Flag.ZERO_PAD,
+            Flag.GROUP,
+            Flag.PARENTHESES
         )
     }
 
@@ -764,8 +772,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         checkBadFlags(
             currentChar,
-            Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
-            Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
+            Flag.ALTERNATE,
+            Flag.PLUS,
+            Flag.LEADING_SPACE,
+            Flag.ZERO_PAD,
+            Flag.GROUP,
+            Flag.PARENTHESES
         )
 
         // '-' requires a width
@@ -776,8 +788,12 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         if (precision != -1) throw StringFormatterException.IllegalFormatPrecisionException(precision)
         checkBadFlags(
             currentChar,
-            Flag.ALTERNATE, Flag.PLUS, Flag.LEADING_SPACE,
-            Flag.ZERO_PAD, Flag.GROUP, Flag.PARENTHESES
+            Flag.ALTERNATE,
+            Flag.PLUS,
+            Flag.LEADING_SPACE,
+            Flag.ZERO_PAD,
+            Flag.GROUP,
+            Flag.PARENTHESES
         )
 
         // '-' requires a width

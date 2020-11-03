@@ -19,11 +19,10 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.utils.applyIf
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
@@ -34,7 +33,7 @@ actual class AlertPresenter(
     private val alert: Alert,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
-) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope  {
+) : BaseAlertPresenter(alert), CoroutineScope by coroutineScope {
 
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
@@ -51,7 +50,7 @@ actual class AlertPresenter(
     }
 
     private sealed class DialogPresentation {
-        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit): DialogPresentation()
+        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit) : DialogPresentation()
         object Hidden : DialogPresentation()
     }
 
@@ -63,7 +62,7 @@ actual class AlertPresenter(
             combine(lifecycleManagerObserver.managerState, presentation.asFlow()) { managerState, dialogPresentation ->
                 Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
-                when(val dialogPresentation = contextPresentation.second) {
+                when (val dialogPresentation = contextPresentation.second) {
                     is DialogPresentation.Showing -> contextPresentation.first?.activity?.let { presentDialog(it, dialogPresentation) } ?: run { alertDialog = null }
                     is DialogPresentation.Hidden -> alertDialog?.dismiss()
                 }

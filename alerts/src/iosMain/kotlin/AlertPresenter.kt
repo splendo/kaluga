@@ -36,7 +36,7 @@ actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController
 ) : BaseAlertPresenter(alert) {
-    
+
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
             Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault

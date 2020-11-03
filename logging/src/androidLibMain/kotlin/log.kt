@@ -22,10 +22,9 @@ import android.os.Build
 import ru.pocketbyte.kydra.log.AndroidLogger
 
 actual val defaultLogger: Logger =
-    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M )
+    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
         TransformLogger(KydraLogger(AndroidLogger()), transformTag = { it?.substring(0..23) })
     else
         KydraLogger(AndroidLogger())
 
-actual var logger:Logger = defaultLogger 
-
+actual var logger: Logger = defaultLogger

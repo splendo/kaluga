@@ -34,40 +34,55 @@ import kotlin.native.concurrent.callContinuation2
 actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main
 
 inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Unit) = Continuation0(
-    block, 
+    block,
     staticCFunction { invokerArg ->
         if (NSThread.isMainThread()) {
             invokerArg!!.callContinuation0()
         } else {
             dispatch_sync_f(
-                dispatch_get_main_queue(), 
-                invokerArg, 
+                dispatch_get_main_queue(),
+                invokerArg,
                 staticCFunction { args ->
-                    args!!.callContinuation0() 
+                    args!!.callContinuation0()
                 }
             )
         }
-    }, 
-    singleShot)
+    },
+    singleShot
+)
 
 inline fun <T1> mainContinuation(singleShot: Boolean = true, noinline block: (T1) -> Unit) = Continuation1(
-    block, staticCFunction { invokerArg ->
+    block,
+    staticCFunction { invokerArg ->
         if (NSThread.isMainThread()) {
             invokerArg!!.callContinuation1<T1>()
         } else {
-            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
-                args!!.callContinuation1<T1>()
-            })
+            dispatch_sync_f(
+                dispatch_get_main_queue(),
+                invokerArg,
+                staticCFunction { args ->
+                    args!!.callContinuation1<T1>()
+                }
+            )
         }
-    }, singleShot)
+    },
+    singleShot
+)
 
 inline fun <T1, T2> mainContinuation(singleShot: Boolean = true, noinline block: (T1, T2) -> Unit) = Continuation2(
-    block, staticCFunction { invokerArg ->
+    block,
+    staticCFunction { invokerArg ->
         if (NSThread.isMainThread()) {
             invokerArg!!.callContinuation2<T1, T2>()
         } else {
-            dispatch_sync_f(dispatch_get_main_queue(), invokerArg, staticCFunction { args ->
-                args!!.callContinuation2<T1, T2>()
-            })
+            dispatch_sync_f(
+                dispatch_get_main_queue(),
+                invokerArg,
+                staticCFunction { args ->
+                    args!!.callContinuation2<T1, T2>()
+                }
+            )
         }
-    }, singleShot)
+    },
+    singleShot
+)

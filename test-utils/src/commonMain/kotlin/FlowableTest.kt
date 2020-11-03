@@ -39,7 +39,7 @@ import kotlinx.coroutines.withTimeout
 
 typealias TestBlock<T> = suspend(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
-typealias FlowTestBlock<T> =  suspend FlowTest<T>.() -> Unit
+typealias FlowTestBlock<T> = suspend FlowTest<T>.() -> Unit
 
 abstract class FlowableTest<T> : BaseTest() {
 
@@ -47,11 +47,10 @@ abstract class FlowableTest<T> : BaseTest() {
         FlowTest(this, ::flowable).testWithFlow(block)
     }
 
-    abstract fun flowable():Flowable<T>
-
+    abstract fun flowable(): Flowable<T>
 }
 
-open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flowable<T>):CoroutineScope by scope {
+open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable: () -> Flowable<T>) : CoroutineScope by scope {
 
     open var filter: suspend(T) -> Boolean = { true }
 
@@ -62,7 +61,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
     private lateinit var testChannel: Channel<Pair<TestBlock<T>, EmptyCompletableDeferred>>
 
     suspend fun resetFlow() {
-        awaitTestBlocks()// get the final test blocks that were executed and check for exceptions
+        awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
         job?.cancel()
         debug("Ending flow, job canceled")
 
@@ -135,16 +134,14 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
                     debug("handeling value completed [$value]")
                 }
                 debug("flow collect completed")
-
             }
-        } catch (t:Throwable) {
-            e(throwable = t) { "error launching"}
+        } catch (t: Throwable) {
+            e(throwable = t) { "error launching" }
             throw t
         }
         debug("wait for main thread to be launched in $job")
         started.await()
         debug("waited for main thread to be launched")
-
     }
 
     suspend fun action(action: ActionBlock) {
@@ -155,7 +152,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable:()->Flo
 
     var firstTestBlock = true
 
-    suspend fun test(skip:Int=0, test:TestBlock<T>) {
+    suspend fun test(skip: Int = 0, test: TestBlock<T>) {
         if (firstTestBlock) {
             firstTestBlock = false
             tests.ensureNeverFrozen()

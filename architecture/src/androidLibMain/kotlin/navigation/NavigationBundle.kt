@@ -67,11 +67,14 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
 fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>): NavigationBundle<R> {
-    return NavigationBundle(spec, spec.rows.associate { row ->
-        mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
-            Pair(row, it)
-        } ?: throw BundleConversionError()
-    })
+    return NavigationBundle(
+        spec,
+        spec.rows.associate { row ->
+            mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
+                Pair(row, it)
+            } ?: throw BundleConversionError()
+        }
+    )
 }
 
 /**

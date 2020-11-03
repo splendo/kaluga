@@ -22,35 +22,28 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.test.AlertsPresenterTests
+import com.splendo.kaluga.test.AlertPresenterTests
 import kotlinx.coroutines.CompletableDeferred
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
-import kotlin.random.Random
 import kotlin.test.BeforeTest
-import kotlin.time.Duration
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-class AndroidAlertsPresenterTest : AlertsPresenterTests() {
+class AndroidAlertPresenterTest : AlertPresenterTests() {
 
     @get:Rule
     var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
 
-    var activity:TestActivity? = null
+    var activity: TestActivity? = null
 
     @BeforeTest
     fun activityInit() {

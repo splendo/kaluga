@@ -26,18 +26,18 @@ interface Logger {
      * @param throwable Throwable to be written into log
      * @param message Message to be written into log
      */
-    fun log(level: LogLevel, tag: String? = null, throwable: Throwable? = null, message: (()->String)? = null)
+    fun log(level: LogLevel, tag: String? = null, throwable: Throwable? = null, message: (() -> String)? = null)
 }
 
 open class TransformLogger(
     private val logger: Logger,
     private val transformLogLevel: ((LogLevel) -> LogLevel)? = null,
-    private val transformTag: ((String?) -> String?)? = null,    
+    private val transformTag: ((String?) -> String?)? = null,
     private val transformThrowable: ((Throwable?) -> Throwable?)? = null,
     private val transformMessage: ((String?) -> String?)? = null,
-):Logger {
+) : Logger {
 
-    override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message:  (() -> String)?) {
+    override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
 
         logger.log(
             transformLogLevel?.invoke(level) ?: level,
@@ -45,7 +45,7 @@ open class TransformLogger(
             transformThrowable?.invoke(throwable) ?: throwable,
             // already resolve the lazy message if it needs transformation (else we cannot transform it)
             // after transform wrap it in a "lazy" closure again {{🤗}}
-            transformMessage?.invoke(message?.invoke())?.let {{it}} ?: message
+            transformMessage?.invoke(message?.invoke())?.let { { it } } ?: message
         )
     }
 }

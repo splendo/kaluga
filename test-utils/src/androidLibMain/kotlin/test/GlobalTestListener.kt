@@ -44,7 +44,6 @@ actual class GlobalTestListener {
         Dispatchers.setMain(mainDispatcher)
     }
 
-
     actual fun afterTest() {
         Dispatchers.resetMain()
         mainDispatcher.close()

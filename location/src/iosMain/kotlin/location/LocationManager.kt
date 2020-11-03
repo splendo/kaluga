@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
@@ -32,6 +31,7 @@ import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.Foundation.NSBundle
 import platform.Foundation.NSError
 import platform.darwin.NSObject
+import kotlin.coroutines.CoroutineContext
 
 actual class LocationManager(
     private val locationManager: CLLocationManager,

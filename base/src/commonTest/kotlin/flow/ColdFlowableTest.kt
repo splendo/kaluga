@@ -22,11 +22,6 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -35,7 +30,11 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ColdFlowableTest : BaseTest() {
 
@@ -54,12 +53,15 @@ class ColdFlowableTest : BaseTest() {
             {
                 initialized.complete()
                 0
-            }, {
-                    value -> deinitialized.complete(value)
-            }) {
-                if (broadcastChannel.isClosedForSend)
-                    broadcastChannel = ConflatedBroadcastChannel()
-                broadcastChannel
+            },
+            {
+                value ->
+                deinitialized.complete(value)
+            }
+        ) {
+            if (broadcastChannel.isClosedForSend)
+                broadcastChannel = ConflatedBroadcastChannel()
+            broadcastChannel
         }
     }
 
@@ -165,7 +167,7 @@ class ColdFlowableTest : BaseTest() {
         val scope = MainScope()
         val flow = flowable.flow()
         val job = scope.launch {
-           flow.collect {}
+            flow.collect {}
         }
         initialized.await()
         flowable.set(1)

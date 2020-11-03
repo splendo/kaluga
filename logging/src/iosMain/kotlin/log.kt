@@ -23,14 +23,15 @@ import kotlin.native.concurrent.SharedImmutable
 
 @SharedImmutable
 actual val defaultLogger: Logger = TransformLogger(
-    KydraLogger(NSLogger()), 
-    transformMessage = {  
+    KydraLogger(NSLogger()),
+    transformMessage = {
         // Since on iOS Kydra uses NSLog, the messages is formatted. % signs should therefore be escaped
         it?.replace("%", "%%")
-    })
+    }
+)
 
 @SharedImmutable
 private val _logger = co.touchlab.stately.concurrency.AtomicReference(defaultLogger)
 actual var logger
     get() = _logger.value
-    set(value) { _logger.value = value}
+    set(value) { _logger.value = value }

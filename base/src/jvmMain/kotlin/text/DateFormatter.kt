@@ -91,12 +91,14 @@ actual class DateFormatter private constructor(private val format: SimpleDateFor
                 emptyList()
             }
         }
-        set(value) { updateSymbols {
-            val weekdaysWithEmptyFirst = value.toMutableList().apply {
-                add(0, "")
+        set(value) {
+            updateSymbols {
+                val weekdaysWithEmptyFirst = value.toMutableList().apply {
+                    add(0, "")
+                }
+                it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
             }
-            it.weekdays = weekdaysWithEmptyFirst.toTypedArray()
-        } }
+        }
     actual var shortWeekdays: List<String>
         get() {
             val weekdaysWithEmptyFirst = symbols.shortWeekdays.toList()
@@ -106,12 +108,14 @@ actual class DateFormatter private constructor(private val format: SimpleDateFor
                 emptyList()
             }
         }
-        set(value) { updateSymbols {
-            val weekdaysWithEmptyFirst = value.toMutableList().apply {
-                add(0, "")
+        set(value) {
+            updateSymbols {
+                val weekdaysWithEmptyFirst = value.toMutableList().apply {
+                    add(0, "")
+                }
+                it.shortWeekdays = weekdaysWithEmptyFirst.toTypedArray()
             }
-            it.shortWeekdays = weekdaysWithEmptyFirst.toTypedArray()
-        } }
+        }
 
     actual var amString: String
         get() = symbols.amPmStrings.toList()[0]

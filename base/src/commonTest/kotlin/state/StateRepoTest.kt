@@ -22,18 +22,19 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.test.FlowableTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.yield
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-sealed class TrafficLightState : State(),
+sealed class TrafficLightState :
+    State(),
     HandleBeforeCreating,
     HandleAfterCreating<TrafficLightState>,
     HandleBeforeOldStateIsRemoved<TrafficLightState>,
@@ -84,7 +85,8 @@ sealed class TrafficLightState : State(),
     class GreenLight internal constructor() : TrafficLightState() {
 
         val becomeYellow = suspend {
-            YellowLight() }
+            YellowLight()
+        }
 
         val becomeRed = suspend { RedLight() }
     }

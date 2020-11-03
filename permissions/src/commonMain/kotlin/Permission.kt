@@ -36,11 +36,11 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionState
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permissions that can be requested by Kaluga
@@ -117,16 +117,16 @@ expect class PermissionsBuilder : BasePermissionsBuilder
 class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
 
     private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
-    
-    private fun <P:Permission>permissionStateRepo(permission: P)
-        = permissionStateRepos.get(permission) ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
-    
+
+    private fun <P : Permission> permissionStateRepo(permission: P) =
+        permissionStateRepos.get(permission) ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
+
     /**
      * Gets a [Flow] of [PermissionState] for a given [Permission]
      * @param permission The [Permission] for which the [PermissionState] flow should be provided
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
-    operator fun <P:Permission>get(permission: P): Flow<PermissionState<out Permission>> {
+    operator fun <P : Permission> get(permission: P): Flow<PermissionState<out Permission>> {
         return permissionStateRepo(permission).flow()
     }
 
@@ -135,7 +135,7 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
      * @param permission The [Permission] for which the [PermissionManager] should be returned
      * @return The [PermissionManager] for the given [Permission]
      */
-    fun <P:Permission>getManager(permission: P): PermissionManager<out Permission> {
+    fun <P : Permission> getManager(permission: P): PermissionManager<out Permission> {
         return permissionStateRepo(permission).permissionManager
     }
 
@@ -143,7 +143,7 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
      * Requests a [Permission]
      * @return `true` if the permission was granted, `false` otherwise.
      */
-    suspend fun <P:Permission>request(p:P):Boolean {
+    suspend fun <P : Permission> request(p: P): Boolean {
         return get(p).request(getManager(p))
     }
 
@@ -170,7 +170,7 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
  * Requests a [Permission] on a [Flow] of [PermissionState]
  * @return `true` if the permission was granted, `false` otherwise.
  */
-suspend fun <P:Permission>Flow<PermissionState<out P>>.request(permissionManager: PermissionManager<out P>): Boolean {
+suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionManager: PermissionManager<out P>): Boolean {
     return this.transformLatest { state ->
         when (state) {
             is PermissionState.Allowed -> emit(true)

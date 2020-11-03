@@ -38,6 +38,6 @@ class LoggerMock : Logger {
         levelList.add(level)
         tagList.add(tag)
         throwableList.add(throwable)
-        messageList.add(message?.invoke())        
+        messageList.add(message?.invoke())
     }
 }

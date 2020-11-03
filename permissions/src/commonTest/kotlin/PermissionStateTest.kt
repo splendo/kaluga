@@ -21,16 +21,15 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.flow.Flowable
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>() {
 
@@ -45,7 +44,6 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         super.beforeTest()
 
         permissionStateRepo = MockPermissionStateRepo()
-
     }
 
     @Test
@@ -54,7 +52,7 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         assertFalse(permissionStateRepo.permissionManager.hasStoppedMonitoring.isCompleted)
 
         permissionStateRepo.flow().first()
-        
+
         testWithFlow {
             test {
                 assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionStateRepo.permissionManager.hasStartedMonitoring.getCompleted())
@@ -134,7 +132,6 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
         }
         assertFalse(hasRequested.await())
     }
-
 }
 
 private class MockPermissionStateRepo : PermissionStateRepo<Permission.Microphone>() {

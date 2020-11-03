@@ -21,12 +21,12 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.delay
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 

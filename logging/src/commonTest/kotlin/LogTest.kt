@@ -43,12 +43,13 @@ class LogTest {
         message: String? = null
     ) {
 
-        listOf(mockLogger.tagList.size,
-                mockLogger.levelList.size,
-                mockLogger.throwableList.size,
-                mockLogger.messageList.size,
-                mockLogger.levelList.size
-            ).forEach {
+        listOf(
+            mockLogger.tagList.size,
+            mockLogger.levelList.size,
+            mockLogger.throwableList.size,
+            mockLogger.messageList.size,
+            mockLogger.levelList.size
+        ).forEach {
             assertEquals(1, it)
         }
 
@@ -58,7 +59,6 @@ class LogTest {
         assertEquals(message, mockLogger.messageList[0])
 
         mockLogger.clear()
-
     }
 
     @Test
@@ -67,14 +67,17 @@ class LogTest {
         val wrappedException = RuntimeException("wrapped exception for testing", exception)
         val nullPointerException = NullPointerException()
 
-        wrapLogger { logger -> TransformLogger(logger,
-            transformLogLevel = { LogLevel.ERROR },
-            transformTag = { it?.toUpperCase() ?: "NULL" },
-            transformThrowable = { it?.let { wrappedException } ?: nullPointerException},
-            transformMessage = { it?.toLowerCase()?.capitalize() ?: "Null"}
-            ) }
+        wrapLogger { logger ->
+            TransformLogger(
+                logger,
+                transformLogLevel = { LogLevel.ERROR },
+                transformTag = { it?.toUpperCase() ?: "NULL" },
+                transformThrowable = { it?.let { wrappedException } ?: nullPointerException },
+                transformMessage = { it?.toLowerCase()?.capitalize() ?: "Null" }
+            )
+        }
 
-        debug("tAg", exception ) { "mEsSaGe" }
+        debug("tAg", exception) { "mEsSaGe" }
         assertLog(LogLevel.ERROR, "TAG", wrappedException, "Message")
 
         debug { "mEsSaGe" }
@@ -82,21 +85,21 @@ class LogTest {
 
         resetLogger()
         setMockLogger()
-        debug("tAg", exception ) { "mEsSaGe" }
-        assertLog(LogLevel.DEBUG, "tAg", exception,  "mEsSaGe")
+        debug("tAg", exception) { "mEsSaGe" }
+        assertLog(LogLevel.DEBUG, "tAg", exception, "mEsSaGe")
         resetLogger()
         debug("we can still log")
     }
 
     fun test(
         logLevel: LogLevel,
-        method1:(tag: String?, message: String)->Unit,
-        method2:(message: String)->Unit,
-        method3:(tag: String?, throwable: Throwable)->Unit,
-        method4:(throwable: Throwable)->Unit,
-        method5:(tag: String?, message: () -> String)->Unit,
-        method6:(message: () -> String)->Unit,
-        method7:(tag: String?, throwable: Throwable?, message: ()->String)->Unit,
+        method1: (tag: String?, message: String) -> Unit,
+        method2: (message: String) -> Unit,
+        method3: (tag: String?, throwable: Throwable) -> Unit,
+        method4: (throwable: Throwable) -> Unit,
+        method5: (tag: String?, message: () -> String) -> Unit,
+        method6: (message: () -> String) -> Unit,
+        method7: (tag: String?, throwable: Throwable?, message: () -> String) -> Unit,
     ) {
         val tag = logLevel.name.toLowerCase().capitalize()
         val message = logLevel.name.toUpperCase()
@@ -110,14 +113,14 @@ class LogTest {
         assertLog(logLevel, tag = tag, throwable = throwable)
         method4(throwable)
         assertLog(logLevel, throwable = throwable)
-        method5(tag) { message}
+        method5(tag) { message }
         assertLog(logLevel, tag = tag, message = message)
         method6 { message }
         assertLog(logLevel, message = message)
-        method7(tag, throwable) { message}
+        method7(tag, throwable) { message }
         assertLog(logLevel, tag, throwable, message)
     }
-    
+
     @Test
     fun testDebug() =
         test(
@@ -128,7 +131,8 @@ class LogTest {
             method4 = ::debug,
             method5 = ::debug,
             method6 = ::debug,
-            method7 = ::debug)
+            method7 = ::debug
+        )
 
     @Test
     fun testD() =
@@ -140,7 +144,8 @@ class LogTest {
             method4 = ::d,
             method5 = ::d,
             method6 = ::d,
-            method7 = ::d)
+            method7 = ::d
+        )
 
     @Test
     fun testInfo() =
@@ -152,7 +157,8 @@ class LogTest {
             method4 = ::info,
             method5 = ::info,
             method6 = ::info,
-            method7 = ::info)
+            method7 = ::info
+        )
 
     @Test
     fun testI() =
@@ -164,7 +170,8 @@ class LogTest {
             method4 = ::i,
             method5 = ::i,
             method6 = ::i,
-            method7 = ::i)
+            method7 = ::i
+        )
 
     @Test
     fun testWarn() =
@@ -176,8 +183,9 @@ class LogTest {
             method4 = ::warn,
             method5 = ::warn,
             method6 = ::warn,
-            method7 = ::warn)
-    
+            method7 = ::warn
+        )
+
     @Test
     fun testW() =
         test(
@@ -188,7 +196,8 @@ class LogTest {
             method4 = ::w,
             method5 = ::w,
             method6 = ::w,
-            method7 = ::w)
+            method7 = ::w
+        )
 
     @Test
     fun testError() =
@@ -200,7 +209,8 @@ class LogTest {
             method4 = ::error,
             method5 = ::error,
             method6 = ::error,
-            method7 = ::error)
+            method7 = ::error
+        )
 
     @Test
     fun testE() =
@@ -212,6 +222,6 @@ class LogTest {
             method4 = ::e,
             method5 = ::e,
             method6 = ::e,
-            method7 = ::e)
-
+            method7 = ::e
+        )
 }

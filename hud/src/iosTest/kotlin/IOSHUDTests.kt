@@ -20,13 +20,13 @@ package com.splendo.kaluga.hud
 
 import com.splendo.kaluga.base.runOnMain
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.runBlocking
+import platform.UIKit.UIViewController
+import kotlin.native.concurrent.ensureNeverFrozen
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.runBlocking
-import platform.UIKit.UIViewController
-import kotlin.native.concurrent.ensureNeverFrozen
 
 class IOSHUDTests : HUDTests() {
 

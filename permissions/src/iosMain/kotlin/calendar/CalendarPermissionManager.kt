@@ -51,15 +51,18 @@ actual class CalendarPermissionManager(
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSCalendarsUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
-            eventStore.requestAccessToEntityType(EKEntityType.EKEntityTypeEvent, mainContinuation { success, error ->
-                timerHelper.isWaiting = false
-                error?.let {
-                    debug(it.localizedDescription)
-                    revokePermission(true)
-                } ?: run {
-                    if (success) grantPermission() else revokePermission(true)
+            eventStore.requestAccessToEntityType(
+                EKEntityType.EKEntityTypeEvent,
+                mainContinuation { success, error ->
+                    timerHelper.isWaiting = false
+                    error?.let {
+                        debug(it.localizedDescription)
+                        revokePermission(true)
+                    } ?: run {
+                        if (success) grantPermission() else revokePermission(true)
+                    }
                 }
-            })
+            )
         } else {
             revokePermission(true)
         }

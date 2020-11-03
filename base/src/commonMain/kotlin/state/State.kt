@@ -50,7 +50,7 @@ open class State {
      * @return a special continuation that will be recognized by the state machine. Running this continuation will cause an error.
      */
     @Suppress("UNCHECKED_CAST") // cast should normally work since the receiver uses one type of state
-    fun<S : State>  remain(): suspend() -> S = remain as suspend () -> S
+    fun <S : State> remain(): suspend() -> S = remain as suspend () -> S
 
     /**
      * Called when this state is the first state of the state machine
@@ -120,12 +120,12 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
     private val stateMutex = Semaphore(1)
     // TODO: currently Mutex cannot be frozen on native, this will be fixed in a future release of kotlinx.coroutines
     // private val stateMutex = Mutex()
-    
+
     abstract val flowable: BaseFlowable<S>
     private val _changedState = AtomicReference<S?>(null)
     internal var changedState
         get() = _changedState.get()
-        set(value) { _changedState.set(value)}
+        set(value) { _changedState.set(value) }
 
     private suspend fun setChangedState(value: S) {
         changedState = value
@@ -145,10 +145,10 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
     internal suspend fun initialize(): S = stateMutex.withPermit {
         val value = initialValue()
         changedState = value
-        value        
-    }.also { 
+        value
+    }.also {
         it.initialState() // let the state initialize outside of the mutex to avoid deadlocks
-    } 
+    }
 
     /**
      * Gets the initial value of the repo
@@ -250,12 +250,15 @@ abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Disp
  */
 abstract class ColdStateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<S>(coroutineContext) {
 
-    override val flowable: ColdFlowable<S> = ColdFlowable( {
-        initialize()
-    }, { state ->
-        state.finalState()
-        deinitialize(state)
-    })
+    override val flowable: ColdFlowable<S> = ColdFlowable(
+        {
+            initialize()
+        },
+        { state ->
+            state.finalState()
+            deinitialize(state)
+        }
+    )
 
     abstract suspend fun deinitialize(state: S)
 }

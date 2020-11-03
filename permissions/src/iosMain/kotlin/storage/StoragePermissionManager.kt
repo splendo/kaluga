@@ -48,10 +48,12 @@ actual class StoragePermissionManager(
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
-            PHPhotoLibrary.requestAuthorization(mainContinuation { status ->
-                timerHelper.isWaiting = false
-                IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
-            })
+            PHPhotoLibrary.requestAuthorization(
+                mainContinuation { status ->
+                    timerHelper.isWaiting = false
+                    IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
+                }
+            )
         } else {
             revokePermission(true)
         }

@@ -34,8 +34,8 @@ class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
 class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
 
-    private val _currentState:AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
-    var currentState:PermissionState<P>
+    private val _currentState: AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
+    var currentState: PermissionState<P>
         get() = _currentState.get()
         set(s) = _currentState.set(s)
 

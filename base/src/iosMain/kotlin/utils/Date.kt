@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import kotlin.math.round
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSCalendarOptions
 import platform.Foundation.NSCalendarUnit
@@ -39,6 +38,7 @@ import platform.Foundation.dateWithTimeIntervalSinceNow
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
+import kotlin.math.round
 
 actual class Date internal constructor(private val calendar: NSCalendar, initialDate: NSDate) : Comparable<Date> {
     actual companion object {

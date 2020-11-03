@@ -27,10 +27,6 @@ import androidx.test.uiautomator.Until
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -39,6 +35,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 const val DEFAULT_TIMEOUT = 5_000L
 
@@ -57,14 +57,14 @@ class AndroidHUDTests : HUDTests() {
     @get:Rule
     var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
-    var activity:TestActivity? = null
-    
+    var activity: TestActivity? = null
+
     @BeforeTest
     fun activityInit() {
         activityRule.scenario.onActivity {
             activity = it
             builder.subscribe(it)
-        }        
+        }
     }
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
@@ -90,8 +90,8 @@ class AndroidHUDTests : HUDTests() {
     @Test
     fun indicatorDismiss() = runBlocking {
         val indicator = builder.build(MainScope()) {
-                setTitle(LOADING)
-            }
+            setTitle(LOADING)
+        }
 
         launch(Dispatchers.Main) {
             indicator.present()
@@ -177,19 +177,18 @@ class AndroidHUDTests : HUDTests() {
 
         // Rotate screen
 
-        for(times in 4 downTo 0) {
+        for (times in 4 downTo 0) {
             try {
-                d("HUD","$times left to try for rotation test")
+                d("HUD", "$times left to try for rotation test")
                 device.setOrientationLeft()
                 delay(200)
                 // HUD should be on screen
                 device.assertTextAppears(LOADING)
                 assertTrue(indicator.isVisible)
                 break
-            } catch (e:java.lang.AssertionError) {
+            } catch (e: java.lang.AssertionError) {
                 if (times == 0) throw e
-            }
-            finally {
+            } finally {
                 device.setOrientationNatural()
                 delay(200)
             }

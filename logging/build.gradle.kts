@@ -20,7 +20,6 @@ kotlin {
             dependencies {
                 implementation("ru.pocketbyte.kydra:kydra-log:1.1.2")
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
-
             }
         }
         commonTest {

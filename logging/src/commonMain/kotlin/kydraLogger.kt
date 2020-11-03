@@ -26,7 +26,7 @@ val logLevel = arrayOf(
     ru.pocketbyte.kydra.log.LogLevel.ERROR
 )
 
-fun LogLevel.logLevel():ru.pocketbyte.kydra.log.LogLevel {
+fun LogLevel.logLevel(): ru.pocketbyte.kydra.log.LogLevel {
     return logLevel[this.ordinal]
     // optimization for:
     // return when(this) {
@@ -37,7 +37,7 @@ fun LogLevel.logLevel():ru.pocketbyte.kydra.log.LogLevel {
     // }
 }
 
-class KydraLogger(val kydraLogger: ru.pocketbyte.kydra.log.Logger):Logger {
+class KydraLogger(val kydraLogger: ru.pocketbyte.kydra.log.Logger) : Logger {
     override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
         if (message != null)
             kydraLogger.log(level.logLevel(), tag, message())

@@ -19,5 +19,5 @@ package com.splendo.kaluga.logging
 
 import ru.pocketbyte.kydra.log.PrintLogger
 
-actual val defaultLogger:Logger = KydraLogger(PrintLogger())
-actual var logger = defaultLogger 
+actual val defaultLogger: Logger = KydraLogger(PrintLogger())
+actual var logger = defaultLogger

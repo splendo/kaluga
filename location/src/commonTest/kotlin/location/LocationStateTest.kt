@@ -29,16 +29,16 @@ import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.FlowableTest
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.awaitAll
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.awaitAll
 
 class LocationStateTest : FlowableTest<LocationState>() {
 
@@ -51,7 +51,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
             verticalAccuracy = 1.0,
             altitude = 1.0,
             speed = 1.0,
-            course = 1.0)
+            course = 1.0
+        )
         private val location2 = Location.KnownLocation(
             latitude = 52.079,
             longitude = 4.3413,
@@ -75,7 +76,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
     private lateinit var permissionManager: MockPermissionManager<Permission.Location>
     private lateinit var locationManager: MockLocationManager
 
-    lateinit var locationStateRepo:LocationStateRepo
+    lateinit var locationStateRepo: LocationStateRepo
 
     @AfterTest
     override fun afterTest() {
@@ -101,10 +102,10 @@ class LocationStateTest : FlowableTest<LocationState>() {
         resetFlow()
 
         awaitAll(
-                permissionManager.hasStoppedMonitoring,
-                locationManager.stopMonitoringPermissionsCompleted,
-                locationManager.stopMonitoringLocationCompleted,
-                locationManager.stopMonitoringLocationEnabledCompleted
+            permissionManager.hasStoppedMonitoring,
+            locationManager.stopMonitoringPermissionsCompleted,
+            locationManager.stopMonitoringLocationCompleted,
+            locationManager.stopMonitoringLocationEnabledCompleted
         )
     }
 
@@ -184,7 +185,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
 
         resetFlow()
 
-        awaitAll (
+        awaitAll(
             permissionManager.hasStoppedMonitoring,
             locationManager.stopMonitoringPermissionsCompleted,
             locationManager.stopMonitoringLocationEnabledCompleted
@@ -276,7 +277,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
             permissionManager.hasStoppedMonitoring,
             locationManager.stopMonitoringPermissionsCompleted,
             locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted)
+            locationManager.stopMonitoringLocationEnabledCompleted
+        )
     }
 
     @Test
@@ -305,7 +307,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
             permissionManager.hasStoppedMonitoring,
             locationManager.stopMonitoringPermissionsCompleted,
             locationManager.stopMonitoringLocationCompleted,
-            locationManager.stopMonitoringLocationEnabledCompleted)
+            locationManager.stopMonitoringLocationEnabledCompleted
+        )
     }
 
     @Test
@@ -411,7 +414,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
             assertTrue(it is LocationState.Enabled)
             assertEquals(location1, it.location)
         }
-        
+
         awaitAll(
             permissionManager.hasStoppedMonitoring,
             locationManager.stopMonitoringPermissionsCompleted,
@@ -436,7 +439,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
             assertTrue(it is LocationState.Enabled)
             assertEquals(location1, it.location)
         }
-        
+
         resetFlow()
 
         awaitAll(
@@ -509,7 +512,7 @@ class LocationStateTest : FlowableTest<LocationState>() {
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations, coroutineScope.coroutineContext)
         locationManager = locationStateRepoBuilder.locationManager
         permissionManager = permissionsBuilder.locationPMManager
-        
+
         testWithFlow(test)
     }
 
@@ -523,19 +526,26 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
     lateinit var locationManager: MockLocationManager
 
     override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, object : BaseLocationManager.Builder {
+        return LocationStateRepo(
+            locationPermission,
+            permissions,
+            autoRequestPermission,
+            autoEnableLocations,
+            object : BaseLocationManager.Builder {
 
-            override fun create(
-                locationPermission: Permission.Location,
-                permissions: Permissions,
-                autoRequestPermission: Boolean,
-                autoEnableLocations: Boolean,
-                locationStateRepo: LocationStateRepo
-            ): BaseLocationManager {
-                locationManager = MockLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
-                return locationManager
-            }
-        }, coroutineContext)
+                override fun create(
+                    locationPermission: Permission.Location,
+                    permissions: Permissions,
+                    autoRequestPermission: Boolean,
+                    autoEnableLocations: Boolean,
+                    locationStateRepo: LocationStateRepo
+                ): BaseLocationManager {
+                    locationManager = MockLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
+                    return locationManager
+                }
+            },
+            coroutineContext
+        )
     }
 }
 
@@ -554,7 +564,7 @@ class MockLocationManager(
 ) {
 
     val _locationEnabled = AtomicBoolean(false)
-    var locationEnabled:Boolean
+    var locationEnabled: Boolean
         get() = _locationEnabled.value
         set(it) { _locationEnabled.value = it }
 

@@ -25,9 +25,9 @@ import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [LocationStateRepo]
@@ -88,7 +88,7 @@ sealed class LocationState(open val location: Location, private val locationMana
          * A [LocationState.Disabled] that was disabled due to missing permissions.
          */
         data class NotPermitted(override val location: Location, private val locationManager: BaseLocationManager) : Disabled(location, locationManager) {
-            
+
             /**
              * Transforms this state into [LocationState] that has sufficient permissions
              * @param enabled `true` if GPS is turned on, `false` otherwise.
@@ -228,10 +228,10 @@ class LocationStateRepo(
         ): LocationStateRepo
     }
     private var _lastKnownLocation = AtomicReference<Location>(Location.UnknownLocation.WithoutLastLocation(Location.UnknownLocation.Reason.NOT_CLEAR))
-    private var lastKnownLocation:Location
+    private var lastKnownLocation: Location
         get() = _lastKnownLocation.get()
-        set(value) {_lastKnownLocation.set(value)}
-    
+        set(value) { _lastKnownLocation.set(value) }
+
     private val locationManager = locationManagerBuilder.create(locationPermission, permissions, autoRequestPermission, autoEnableLocations, this)
 
     override suspend fun initialValue(): LocationState {

@@ -22,10 +22,6 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.fail
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -34,6 +30,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class BaseFlowableTest : FlowableTest<String>() {
 

@@ -1,9 +1,9 @@
 package com.splendo.kaluga.keyboard
 
-import kotlin.test.assertTrue
 import platform.CoreGraphics.CGRectMake
 import platform.UIKit.UIApplication
 import platform.UIKit.UITextField
+import kotlin.test.assertTrue
 
 class IOSKeyboardManagerTests : KeyboardManagerTests() {
 

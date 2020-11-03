@@ -18,10 +18,12 @@
 package com.splendo.kaluga.test
 
 import com.splendo.kaluga.logging.debug
-import platform.CoreFoundation.*
-import kotlin.native.concurrent.*
-import kotlin.native.internal.test.*
-import kotlin.system.*
+import platform.CoreFoundation.CFRunLoopRun
+import kotlin.native.concurrent.TransferMode
+import kotlin.native.concurrent.Worker
+import kotlin.native.concurrent.freeze
+import kotlin.native.internal.test.testLauncherEntryPoint
+import kotlin.system.exitProcess
 
 fun mainBackground(args: Array<String>) {
     debug("using background thread for iOS tests")
