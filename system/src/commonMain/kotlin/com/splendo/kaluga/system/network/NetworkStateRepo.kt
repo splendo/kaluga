@@ -19,9 +19,9 @@ package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.state.ColdStateRepo
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.coroutines.CoroutineContext
 
 class NetworkStateRepo(
     context: Any?,
@@ -32,9 +32,8 @@ class NetworkStateRepo(
 
     override suspend fun deinitialize(state: NetworkState) { }
 
-    override suspend fun initialValue(): NetworkState {
-        return NetworkState.Available(Network.Wifi(), networkManager)
-    }
+    override suspend fun initialValue(): NetworkState =
+        NetworkState.Unavailable(Network.Absent, networkManager)
 }
 
 fun Flow<NetworkState>.network(): Flow<Network> {
