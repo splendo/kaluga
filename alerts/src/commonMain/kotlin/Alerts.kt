@@ -22,8 +22,8 @@ import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
 
@@ -203,7 +203,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         internal fun reset() = apply {
             this.title = null
             this.message = null
-            this.actions.clear()
+            this.actions = mutableListOf()
             this.style = Alert.Style.ALERT
         }
 

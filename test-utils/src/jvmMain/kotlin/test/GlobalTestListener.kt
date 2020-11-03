@@ -18,9 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.logging.LogLevel
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.initLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
@@ -33,16 +30,6 @@ actual class GlobalTestListener {
 
     actual fun beforeTest() {
         Dispatchers.setMain(mainDispatcher)
-        initLogger(object : Logger {
-            override fun log(level: LogLevel, tag: String?, message: String) {
-                println("${level.name}\t:$tag\t:$message")
-            }
-
-            override fun log(level: LogLevel, tag: String?, exception: Throwable) {
-                println("${level.name}\t:$tag\t:${exception.message}")
-                exception.printStackTrace()
-            }
-        })
     }
 
     actual fun afterTest() {

@@ -22,14 +22,14 @@ import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.base.runBlocking
-import kotlin.test.Test
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNull
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.test.Test
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 
-abstract class AlertsPresenterTests {
+abstract class AlertPresenterTests {
 
     abstract val builder: AlertPresenter.Builder
 

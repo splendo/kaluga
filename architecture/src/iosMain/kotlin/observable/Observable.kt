@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.HotFlowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 actual abstract class Observable<T> : BaseObservable<T>() {
 
@@ -85,7 +85,7 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
 class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main) {
             flow.collect {
                 value = ObservableOptional.Value(it)
             }
@@ -146,7 +146,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
 class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main) {
             flowable.flow().collect {
                 super.post(it)
             }
@@ -154,7 +154,7 @@ class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutine
     }
 
     override fun post(newValue: T) {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main) {
             flowable.set(newValue)
         }
     }

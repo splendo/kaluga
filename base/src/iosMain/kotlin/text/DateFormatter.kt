@@ -52,23 +52,27 @@ actual class DateFormatter private constructor(private val format: NSDateFormatt
             locale: Locale
         ): DateFormatter = createDateFormatter(dateStyle, timeStyle, timeZone, locale)
 
-        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(NSDateFormatter().apply {
-            this.locale = locale.nsLocale
-            this.timeZone = timeZone.timeZone
-            dateFormat = pattern
-        })
+        actual fun patternFormat(pattern: String, timeZone: TimeZone, locale: Locale): DateFormatter = DateFormatter(
+            NSDateFormatter().apply {
+                this.locale = locale.nsLocale
+                this.timeZone = timeZone.timeZone
+                dateFormat = pattern
+            }
+        )
 
         fun createDateFormatter(
             dateStyle: DateFormatStyle?,
             timeStyle: DateFormatStyle?,
             timeZone: TimeZone,
             locale: Locale
-        ): DateFormatter = DateFormatter(NSDateFormatter().apply {
-            this.locale = locale.nsLocale
-            this.timeZone = timeZone.timeZone
-            this.dateStyle = dateStyle.nsDateFormatterStyle()
-            this.timeStyle = timeStyle.nsDateFormatterStyle()
-        })
+        ): DateFormatter = DateFormatter(
+            NSDateFormatter().apply {
+                this.locale = locale.nsLocale
+                this.timeZone = timeZone.timeZone
+                this.dateStyle = dateStyle.nsDateFormatterStyle()
+                this.timeStyle = timeStyle.nsDateFormatterStyle()
+            }
+        )
     }
 
     actual var pattern: String

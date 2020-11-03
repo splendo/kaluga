@@ -20,8 +20,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.cinterop.CValue
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
@@ -59,6 +57,8 @@ import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.widthAnchor
 import platform.UIKit.window
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 actual class HUD private constructor(private val containerView: ContainerView, private val viewController: UIViewController, wrapper: (UIViewController) -> UIViewController, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
@@ -152,12 +152,14 @@ actual class HUD private constructor(private val containerView: ContainerView, p
         }
     }
 
-    private val hudViewController = wrapper(UIViewController(null, null).apply {
-        modalPresentationStyle = UIModalPresentationOverFullScreen
-        modalTransitionStyle = UIModalTransitionStyleCrossDissolve
-        view.backgroundColor = UIColor.clearColor
-        view.addSubview(containerView)
-    })
+    private val hudViewController = wrapper(
+        UIViewController(null, null).apply {
+            modalPresentationStyle = UIModalPresentationOverFullScreen
+            modalTransitionStyle = UIModalTransitionStyleCrossDissolve
+            view.backgroundColor = UIColor.clearColor
+            view.addSubview(containerView)
+        }
+    )
 
     private val topViewController: UIViewController
         get() {

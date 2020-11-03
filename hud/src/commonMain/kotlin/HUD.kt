@@ -21,8 +21,8 @@ package com.splendo.kaluga.hud
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -120,7 +120,7 @@ val BaseHUD.style: HUDStyle get() = hudConfig.style
  * @param timeMillis The number of milliseconds to wait
  */
 fun BaseHUD.dismissAfter(timeMillis: Long, animated: Boolean = true): BaseHUD = apply {
-    launch(MainQueueDispatcher) {
+    launch(Dispatchers.Main) {
         delay(timeMillis)
         dismiss(animated)
     }

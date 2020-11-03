@@ -24,10 +24,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
@@ -39,6 +35,10 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class AndroidPermissionsManagerTest : BaseTest() {
 
@@ -87,7 +87,6 @@ class AndroidPermissionsManagerTest : BaseTest() {
         androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
         packageInfo.requestedPermissions = permissions
         androidPermissionsManager.requestPermissions()
-
         assertTrue(AndroidPermissionsManager.waitingPermissions.containsAll(permissions.toList()))
         verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
     }

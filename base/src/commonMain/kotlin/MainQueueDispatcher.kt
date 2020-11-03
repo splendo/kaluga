@@ -20,4 +20,5 @@ package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CoroutineDispatcher
 
+@Deprecated("Use Dispatchers.Main")
 expect val MainQueueDispatcher: CoroutineDispatcher

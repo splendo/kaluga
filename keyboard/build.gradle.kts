@@ -26,5 +26,11 @@ kotlin {
                 implementation(project(":base", ""))
             }
         }
+
+        getByName("commonTest") {
+            dependencies {
+                api(project(":test-utils", ""))
+            }
+        }
     }
 }

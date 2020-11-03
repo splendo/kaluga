@@ -48,8 +48,8 @@ actual class LocationPermissionManager(
 
     override suspend fun initializeState(): PermissionState<Permission.Location> {
         return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed(this)
-            else -> PermissionState.Denied.Requestable(this)
+            permissionsManager.hasPermissions -> PermissionState.Allowed()
+            else -> PermissionState.Denied.Requestable()
         }
     }
 

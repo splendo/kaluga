@@ -23,6 +23,8 @@ kotlin {
 
     sourceSets {
         getByName("commonMain") {
+            val ext = (gradle as ExtensionAware).extra
+
             dependencies {
                 implementation(project(":logging", ""))
                 api(project(":base", ""))
@@ -30,7 +32,7 @@ kotlin {
         }
         getByName("commonTest") {
             dependencies {
-                implementation(project(":test-utils", ""))
+                api(project(":test-utils", ""))
             }
         }
     }

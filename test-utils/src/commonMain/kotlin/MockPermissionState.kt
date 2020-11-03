@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -33,7 +34,10 @@ class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
 class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
 
-    var currentState: PermissionState<P> = PermissionState.Denied.Requestable(this)
+    private val _currentState: AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
+    var currentState: PermissionState<P>
+        get() = _currentState.get()
+        set(s) = _currentState.set(s)
 
     fun setPermissionAllowed() {
         changePermission { grantPermission() }
@@ -52,15 +56,9 @@ class MockPermissionManager<P : Permission>(private val permissionRepo: Permissi
         permissionRepo.useState { currentState = it }
     }
 
-    var hasRequestedPermission = EmptyCompletableDeferred()
-    var hasStartedMonitoring = CompletableDeferred<Long>()
-    var hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    fun reset() {
-        hasRequestedPermission = EmptyCompletableDeferred()
-        hasStartedMonitoring = CompletableDeferred()
-        hasStoppedMonitoring = EmptyCompletableDeferred()
-    }
+    val hasRequestedPermission = EmptyCompletableDeferred()
+    val hasStartedMonitoring = CompletableDeferred<Long>()
+    val hasStoppedMonitoring = EmptyCompletableDeferred()
 
     override suspend fun requestPermission() {
         hasRequestedPermission.complete()

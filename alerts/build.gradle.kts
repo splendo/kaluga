@@ -3,9 +3,10 @@ plugins {
     id("jacoco")
     id("maven-publish")
     id("com.android.library")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 apply(from = "../gradle/publishable_component.gradle")
 
@@ -32,8 +33,11 @@ kotlin {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+            }
+        }
+        getByName("commonTest") {
+            dependencies {
+                implementation(project(":test-utils", ""))
             }
         }
     }
