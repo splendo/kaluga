@@ -7,8 +7,8 @@ A library allows you to show HUD (e.g. loading indicator) view.
 Show default HUD:
 
 ```kotlin
-val hud = builder.build()
 launch {
+    val hud = builder.build(this)
     hud.present()
     // do Stuff
     hud.dismiss()
@@ -21,11 +21,11 @@ launch {
 Custom HUD with title:
 
 ```kotlin
-val hud = builder.build {
-    setStyle(HUDStyle.CUSTOM)
-    setTitle("Loading...")
-}
 launch {
+    val hud = builder.build(this) {
+        setStyle(HUDStyle.CUSTOM)
+        setTitle("Loading...")
+    }
     hud.present()
 }
 ```
@@ -51,7 +51,7 @@ class HudViewModel: BaseViewModel() {
 
     fun present() {
         coroutineScope.launch {
-            viewModel.builder.build {
+            viewModel.builder.build(this) {
               setStyle(HUDStyle.CUSTOM)
               setTitle("Loading...")
             }.present()
@@ -83,7 +83,7 @@ val contextObserver = UIContextObserver()
 val builder = AlertBuilder(contextObserver)
 contextObserver.subscribe(activity)
 launch {
-    builder.build {
+    builder.build(this) {
         setStyle(HUDStyle.CUSTOM)
         setTitle("Loading...")
     }.present()

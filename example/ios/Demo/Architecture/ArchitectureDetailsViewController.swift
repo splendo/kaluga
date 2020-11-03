@@ -42,14 +42,20 @@ class ArchitectureDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
-            self?.viewModel.name.observe { name in
-                self?.nameLabel.text = name as String?
-            }.addTo(disposeBag: disposeBag)
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
             
-            self?.viewModel.number.observe { number in
-                self?.numberLabel.text = number as String?
-            }.addTo(disposeBag: disposeBag)
+            guard let viewModel = self?.viewModel else {
+                return []
+            }
+            
+            return [
+                viewModel.name.observe { name in
+                    self?.nameLabel.text = name as String?
+                },
+                viewModel.number.observe { number in
+                    self?.numberLabel.text = number as String?
+                }
+            ]
         }
     }
     

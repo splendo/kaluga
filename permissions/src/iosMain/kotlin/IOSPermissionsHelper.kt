@@ -74,11 +74,11 @@ class IOSPermissionsHelper {
          * @param authorizationStatus The [AuthorizationStatus] to map
          * @param permissionManager The [PermissionManager] associated with the [PermissionState]
          */
-        fun <P : Permission> getPermissionState(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>): PermissionState<P> {
+        fun <P : Permission> getPermissionState(authorizationStatus: AuthorizationStatus): PermissionState<P> {
             return when (authorizationStatus) {
-                AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable(permissionManager)
-                AuthorizationStatus.Authorized -> PermissionState.Allowed(permissionManager)
-                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.Locked(permissionManager)
+                AuthorizationStatus.NotDetermined -> PermissionState.Denied.Requestable()
+                AuthorizationStatus.Authorized -> PermissionState.Allowed()
+                AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> PermissionState.Denied.Locked()
             }
         }
 

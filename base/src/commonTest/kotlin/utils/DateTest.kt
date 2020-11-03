@@ -18,9 +18,12 @@
 package com.splendo.kaluga.base.test.utils
 
 import com.splendo.kaluga.base.utils.Date
+import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
+import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -29,7 +32,7 @@ class DateTest {
 
     @Test
     fun testEquality() {
-        val now = Date.now()
+        val now = Date.now(locale = Locale.enUsPosix)
         assertEquals(now, now.copy(), "copied Date should be equal")
 
         val nearEpoch = Date.epoch(1001)
@@ -40,43 +43,73 @@ class DateTest {
 
     @Test
     fun testUTCDate() {
-        val utcNow = Date.nowUtc()
+        val utcNow = Date.nowUtc(locale = Locale.enUsPosix)
         val epochNow = utcNow.millisecondSinceEpoch
-        val now = Date.epoch(epochNow, TimeZone.get("UTC")!!)
+        val now = Date.epoch(epochNow, TimeZone.utc, locale = Locale.enUsPosix)
         assertEquals(utcNow.millisecondSinceEpoch, now.millisecondSinceEpoch)
         assertEquals(utcNow, now)
     }
 
     @Test
     fun testCreateEpochDate() {
-        val someDay = Date.epoch().apply {
+        val someDay = Date.epoch(locale = Locale.enUsPosix).apply {
             year = 2020
             month = 5
             day = 12
             hour = 8
             minute = 45
         }
-        val epoch = Date.epoch()
+        val epoch = Date.epoch(locale = Locale.enUsPosix)
 
         assertTrue(epoch < someDay)
     }
 
     @Test
     fun testCreateNowDate() {
-        val now = Date.now()
-        val epoch = Date.epoch()
+        val now = Date.now(locale = Locale.enUsPosix)
+        val epoch = Date.epoch(locale = Locale.enUsPosix)
 
         assertTrue(now > epoch)
     }
 
     @Test
     fun testUpdateDate() {
-        val epoch = Date.epoch()
+        val epoch = Date.epoch(locale = Locale.enUsPosix)
         val isEarlierThanGMT = epoch.timeZone.offsetFromGMTAtDateInMilliseconds(epoch) < 0
         assertEquals(if (isEarlierThanGMT) 1969 else 1970, epoch.year)
         assertEquals(if (isEarlierThanGMT) 12 else 1, epoch.month)
         epoch.month += 22
         assertEquals(1971, epoch.year)
         assertEquals(if (isEarlierThanGMT) 10 else 11, epoch.month)
+    }
+
+    @Test
+    fun testGet() {
+        val someDay = Date.epoch(574695462750, TimeZone.utc, locale = Locale.enUsPosix)
+
+        assertEquals(1, someDay.era)
+        assertEquals(1988, someDay.year)
+        assertEquals(12, someDay.weekOfYear)
+        assertEquals(3, someDay.month)
+        assertEquals(3, someDay.weekOfMonth)
+        assertEquals(18, someDay.day)
+        assertEquals(78, someDay.dayOfYear)
+        assertEquals(6, someDay.weekDay)
+        assertEquals(13, someDay.hour)
+        assertEquals(37, someDay.minute)
+        assertEquals(42, someDay.second)
+        assertEquals(750, someDay.millisecond)
+    }
+
+    @Test
+    fun testStartOfWeek() {
+        val france = Locale.createLocale("fr", "FR")
+        val us = Locale.createLocale("en", "US")
+
+        val frenchNow = Date.now(0, TimeZone.utc, france)
+        val usNow = Date.now(0, TimeZone.utc, us)
+
+        assertEquals(2, frenchNow.firstWeekDay)
+        assertEquals(1, usNow.firstWeekDay)
     }
 }

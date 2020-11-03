@@ -19,9 +19,10 @@ package architecture
 
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.Subject
+import com.splendo.kaluga.architecture.observable.Disposable
 import com.splendo.kaluga.architecture.observable.DisposeBag
-import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
@@ -40,7 +41,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
-import com.splendo.kaluga.keyboard.KeyboardManagerBuilder
+import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -58,7 +59,7 @@ class KNArchitectureFramework {
         containerView: UIView,
         featuresList: () -> UIViewController,
         info: () -> UIViewController): ExampleViewModel {
-        return ExampleViewModel(Navigator(parent) { action ->
+        return ExampleViewModel(ViewControllerNavigator(parent) { action ->
             NavigationSpec.Nested(
                 NavigationSpec.Nested.Type.Replace(1),
                 containerView,
@@ -71,7 +72,7 @@ class KNArchitectureFramework {
 
     fun createFeatureListViewModel(parent: UIViewController): FeatureListViewModel {
         return FeatureListViewModel(
-            Navigator(parent) { action ->
+            ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Segue(
                     when (action) {
                         is FeatureListNavigationAction.Location -> "showLocation"
@@ -86,7 +87,7 @@ class KNArchitectureFramework {
 
     fun createInfoViewModel(parent: UIViewController): InfoViewModel {
         return InfoViewModel(
-            Navigator(parent) { action ->
+            ViewControllerNavigator(parent) { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {
                         NavigationSpec.Present(true, present = {
@@ -108,7 +109,7 @@ class KNArchitectureFramework {
 
     fun createPermissionListViewModel(parent: UIViewController, createPermissionViewController: (Permission) -> UIViewController): PermissionsListViewModel {
         return PermissionsListViewModel(
-            Navigator(parent) { action ->
+            ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Push(push = {
                     val bundle = action.bundle ?: return@Push UIViewController()
                     val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
@@ -141,7 +142,7 @@ class KNArchitectureFramework {
 
     fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
         return ArchitectureInputViewModel(
-            Navigator(parent) { action ->
+            ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Present(present = {
                     val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
                     val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
@@ -152,7 +153,7 @@ class KNArchitectureFramework {
     }
 
     fun createArchitectureDetailsViewModel(parent: UIViewController, name: String, number: Int, onDismiss: (String, Int) -> Unit): ArchitectureDetailsViewModel {
-        return ArchitectureDetailsViewModel(name, number, Navigator(parent) { action ->
+        return ArchitectureDetailsViewModel(name, number, ViewControllerNavigator(parent) { action ->
             NavigationSpec.Dismiss(completion = {
                 val finalName = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
                 val finalNumber = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
@@ -162,7 +163,7 @@ class KNArchitectureFramework {
     }
 
     fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
-        return KeyboardViewModel({KeyboardManagerBuilder()}, {textField})
+        return KeyboardViewModel(KeyboardManager.Builder(), textField)
     }
 
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
@@ -171,9 +172,9 @@ class KNArchitectureFramework {
 
 }
 
-fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag, addOnPressed: (UIButton, () -> Unit) -> Unit) {
+fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton, () -> Unit) -> Unit): List<Disposable> {
     val selectedButtonDisposeBag = DisposeBag()
-    tabs.observe { tabs ->
+    return listOf(tabs.observe { tabs ->
         selectedButtonDisposeBag.dispose()
         stackView.arrangedSubviews.forEach { subView -> (subView as UIView).removeFromSuperview() }
         tabs.forEach { tab ->
@@ -190,26 +191,25 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, disposeBag: DisposeBag,
             }
             stackView.addArrangedSubview(button)
         }
-    }.addTo(disposeBag)
-    disposeBag.add(selectedButtonDisposeBag)
+    })
 }
 
-fun FeatureListViewModel.observeFeatures(disposeBag: DisposeBag, onFeaturesChanged: (List<String>, (Int) -> Unit) -> Unit) {
-    feature.observe { features ->
+fun FeatureListViewModel.observeFeatures(onFeaturesChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
+    return feature.observe { features ->
         val titles = features.map { feature -> feature.title }
         onFeaturesChanged(titles) { index -> this.onFeaturePressed(features[index]) }
-    }.addTo(disposeBag)
+    }
 }
 
-fun InfoViewModel.observeButtons(disposeBag: DisposeBag, onInfoButtonsChanged: (List<String>, (Int) -> Unit) -> Unit) {
-    buttons.observe { buttons ->
+fun InfoViewModel.observeButtons(onInfoButtonsChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
+    return buttons.observe { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
-    }.addTo(disposeBag)
+    }
 }
 
-fun PermissionsListViewModel.observePermissions(disposeBag: DisposeBag, onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit) {
-    permissions.observe { permissions ->
+fun PermissionsListViewModel.observePermissions(onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit): Disposable {
+    return permissions.observe { permissions ->
         onPermissionsChanged(permissions) { index -> this.onPermissionPressed(permissions[index]) }
-    }.addTo(disposeBag)
+    }
 }

@@ -19,54 +19,58 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.shared
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.alerts.buildActionSheet
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class AlertViewModel(val builder: AlertInterface.Builder) : BaseViewModel() {
+class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseViewModel() {
 
-    fun showAlert() = MainScope().launch(MainQueueDispatcher) {
-        val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
-        val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
-        val alert = builder.buildAlert {
-            setTitle("Hello, Kaluga 🐟")
-            setMessage("This is sample message")
-            addActions(okAction, cancelAction)
-        }
-        when (alert.show()) {
-            okAction -> debug("OK pressed")
-            cancelAction -> debug("Cancel pressed")
+    fun showAlert() {
+        coroutineScope.launch {
+            val okAction = Alert.Action("OK", Alert.Action.Style.POSITIVE)
+            val cancelAction = Alert.Action("Cancel", Alert.Action.Style.NEGATIVE)
+            val alert = builder.buildAlert(this) {
+                setTitle("Hello, Kaluga 🐟")
+                setMessage("This is sample message")
+                addActions(okAction, cancelAction)
+            }
+            when (alert.show()) {
+                okAction -> debug("OK pressed")
+                cancelAction -> debug("Cancel pressed")
+            }
         }
     }
 
-    fun showAndDismissAfter(timeSecs: Long) = MainScope().launch(MainQueueDispatcher) {
-        val coroutine = MainScope().launch(MainQueueDispatcher) {
-            builder.buildAlert {
-                setTitle("Wait for $timeSecs sec...")
-                setPositiveButton("OK")
+    fun showAndDismissAfter(timeSecs: Long) {
+        coroutineScope.launch {
+            val job = launch {
+                builder.buildAlert(coroutineScope) {
+                    setTitle("Wait for $timeSecs sec...")
+                    setPositiveButton("OK")
+                }.show()
+            }
+            launch {
+                delay(timeSecs * 1_000)
+                job.cancel()
+            }
+        }
+    }
+
+    fun showList() {
+        coroutineScope.launch {
+            builder.buildActionSheet(this) {
+                setTitle("Select an option")
+                addActions(
+                    Alert.Action("Option 1") { debug("Option 1") },
+                    Alert.Action("Option 2") { debug("Option 2") },
+                    Alert.Action("Option 3") { debug("Option 3") },
+                    Alert.Action("Option 4") { debug("Option 4") }
+                )
             }.show()
         }
-        MainScope().launch(MainQueueDispatcher) {
-            delay(timeSecs * 1_000)
-            coroutine.cancel()
-        }
-    }
-
-    fun showList() = MainScope().launch(MainQueueDispatcher) {
-        builder.buildActionSheet {
-            setTitle("Select an option")
-            addActions(
-                Alert.Action("Option 1") { debug("Option 1") },
-                Alert.Action("Option 2") { debug("Option 2") },
-                Alert.Action("Option 3") { debug("Option 3") },
-                Alert.Action("Option 4") { debug("Option 4") }
-            )
-        }.show()
     }
 }

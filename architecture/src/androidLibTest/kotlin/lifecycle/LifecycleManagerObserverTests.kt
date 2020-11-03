@@ -22,7 +22,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
-import kotlin.test.assertEquals
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -32,6 +31,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
+import kotlin.test.assertEquals
 
 class LifecycleManagerObserverTests : BaseTest() {
 
@@ -52,7 +52,9 @@ class LifecycleManagerObserverTests : BaseTest() {
     fun testUIContextObserverHandlerCalled() = runBlocking {
         val observer = LifecycleManagerObserver()
         val data: LifecycleSubscribable.LifecycleManager? = LifecycleSubscribable.LifecycleManager(
-            activity, lifecycleOwner, fragmentManager
+            activity,
+            lifecycleOwner,
+            fragmentManager
         )
 
         val deferredUIContext = MutableList(3) { CompletableDeferred<LifecycleSubscribable.LifecycleManager?>() }

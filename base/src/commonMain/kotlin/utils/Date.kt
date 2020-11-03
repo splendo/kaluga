@@ -90,6 +90,11 @@ expect class Date : Comparable<Date> {
     var weekDay: Int
 
     /**
+     * The first day of the week. E.g. Sunday in the US, Monday in France. Starts at 1.
+     */
+    var firstWeekDay: Int
+
+    /**
      * The hour of the current day
      */
     var hour: Int

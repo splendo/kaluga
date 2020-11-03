@@ -92,3 +92,23 @@ The initializer will be called if the number of flows observing changes from 0 t
 The deinitializer will be called when the number of flows observing changes drops to 0.
 Use `ColdFlowable` and `ColdStateRepo` for this behaviour.
 Note that by default `ColdFlowable` closes itself before calling its deinitializer function.
+
+### Date
+Kaluga includes a `Date` class to manage and compare time.
+Dates can be created using either `Date.now()` or `Date.epoch()`.
+Dates are mutable be default and can be compared.
+
+```kotlin
+val today = Date.now()
+val tomorrow = today.copy().apply {
+    day += 1
+}
+assertTrue(today < tomorrow)
+```
+
+### Formating
+It's possible to format to and from some data types using Kaluga.
+
+- `Date` can be formatted and parsed using a `DateFormatter`
+- `Number` can be formatted and parsed using a `NumberFormatter`
+- `String` can be formatted to include different data types using `StringFormatter`

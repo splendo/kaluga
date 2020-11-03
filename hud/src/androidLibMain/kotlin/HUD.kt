@@ -36,20 +36,21 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.base.mainHandler
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : CoroutineScope by coroutineScope {
+actual class HUD private constructor(@LayoutRes viewResId: Int, override val hudConfig: HudConfig, lifecycleManagerObserver: LifecycleManagerObserver, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
-    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUDBuilder(), LifecycleSubscribable by lifecycleManagerObserver {
+    actual class Builder(private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()) : BaseHUD.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
 
-        actual fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
+        actual override fun create(hudConfig: HudConfig, coroutineScope: CoroutineScope) = HUD(
             R.layout.loading_indicator_view,
             hudConfig,
             lifecycleManagerObserver,
@@ -119,16 +120,20 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
             }
         }
 
-        override fun onStart() {
-            super.onStart()
-            presentCompletionBlock()
-            presentCompletionBlock = {}
+        override fun onResume() {
+            super.onResume()
+            mainHandler.post {
+                presentCompletionBlock()
+                presentCompletionBlock = {}
+            }
         }
 
-        override fun onStop() {
-            super.onStop()
-            dismissCompletionBlock()
-            dismissCompletionBlock = {}
+        override fun onPause() {
+            super.onPause()
+            mainHandler.post {
+                dismissCompletionBlock()
+                dismissCompletionBlock = {}
+            }
         }
     }
 
@@ -153,9 +158,9 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         }
     }
 
-    actual val isVisible get() = loadingDialog.isVisible
+    override val isVisible get() = loadingDialog.isVisible
 
-    actual suspend fun present(animated: Boolean): HUD {
+    override suspend fun present(animated: Boolean): HUD {
         return suspendCoroutine { continuation ->
             loadingDialog.presentCompletionBlock = {
                 continuation.resume(this)
@@ -164,7 +169,7 @@ actual class HUD private constructor(@LayoutRes viewResId: Int, actual val hudCo
         }
     }
 
-    actual suspend fun dismiss(animated: Boolean) {
+    override suspend fun dismiss(animated: Boolean) {
         suspendCoroutine<Unit> { continuation ->
             loadingDialog.dismissCompletionBlock = {
                 continuation.resume(Unit)

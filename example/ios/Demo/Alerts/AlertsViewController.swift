@@ -21,7 +21,7 @@ import KotlinNativeFramework
 
 class AlertsViewController: UITableViewController {
 
-    private lazy var viewModel = AlertViewModel(builder: AlertInterface.Builder(viewController: self))
+    private lazy var viewModel = AlertViewModel(builder: AlertPresenter.Builder(viewController: self))
     private var lifecycleManager: LifecycleManager!
     
     deinit {
@@ -31,7 +31,7 @@ class AlertsViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { _ in }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { return [] }
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

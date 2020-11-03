@@ -24,13 +24,13 @@ class FeaturesListViewController : UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
-            guard let viewModel = self?.viewModel else { return }
-            viewModel.observeFeatures(disposeBag: disposeBag) { (features: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+            guard let viewModel = self?.viewModel else { return [] }
+            return [viewModel.observeFeatures() { (features: [String], onSelected: @escaping (KotlinInt) -> KotlinUnit) in
                 self?.features = features
                 self?.onSelected = onSelected
                 self?.tableView.reloadData()
-            }
+            }]
         }
     }
     

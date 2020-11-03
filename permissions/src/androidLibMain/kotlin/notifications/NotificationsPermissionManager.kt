@@ -34,7 +34,7 @@ actual class NotificationsPermissionManager(
 
     override suspend fun initializeState(): PermissionState<Permission.Notifications> {
         // Permission always granted
-        return PermissionState.Allowed(this)
+        return PermissionState.Allowed()
     }
 
     override suspend fun startMonitoring(interval: Long) {

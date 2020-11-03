@@ -18,40 +18,57 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import android.util.Log.d
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.splendo.kaluga.architecture.lifecycle.subscribe
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import org.junit.Rule
+import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.junit.Rule
 
-const val DEFAULT_TIMEOUT = 2_500L
+const val DEFAULT_TIMEOUT = 5_000L
 
 fun UiDevice.assertTextAppears(text: String) {
+    waitForIdle()
     assertNotNull(this.wait(Until.findObject(By.text(text)), DEFAULT_TIMEOUT))
 }
 
 fun UiDevice.assertTextDisappears(text: String) {
+    waitForIdle()
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
 class AndroidHUDTests : HUDTests() {
 
     @get:Rule
-    var activityRule = ActivityTestRule(TestActivity::class.java)
+    var activityRule = ActivityScenarioRule(TestActivity::class.java)
+
+    var activity: TestActivity? = null
+
+    @BeforeTest
+    fun activityInit() {
+        activityRule.scenario.onActivity {
+            activity = it
+            builder.subscribe(it)
+        }
+    }
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    override val builder get() = activityRule.activity.viewModel.builder
+    override val builder get() = activity!!.viewModel.builder
 
     companion object {
         const val LOADING = "Loading..."
@@ -59,24 +76,26 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
-    fun builderInitializer() {
-        assertNotNull(builder.build())
-    }
-
-    @Test
     fun indicatorShow() = runBlocking {
-        val indicator = builder.build {
+        val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
-        }.present()
+        }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
     }
 
     @Test
     fun indicatorDismiss() = runBlocking {
-        val indicator = builder.build {
+        val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
-        }.present()
+        }
+
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
         indicator.dismiss()
@@ -86,40 +105,48 @@ class AndroidHUDTests : HUDTests() {
 
     @Test
     fun indicatorDismissAfter() = runBlocking {
-        val indicator = builder.build {
+        val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
-        }.present()
+        }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
-        indicator.dismissAfter(500)
+        launch(Dispatchers.Main) {
+            indicator.dismissAfter(500)
+        }
         device.assertTextDisappears(LOADING)
         assertFalse(indicator.isVisible)
     }
 
     @Test
     fun testPresentDuring() = runBlocking {
+        val presenting = EmptyCompletableDeferred()
         val loading1 = EmptyCompletableDeferred()
         val loading2 = EmptyCompletableDeferred()
         val processing = EmptyCompletableDeferred()
 
-        val indicatorLoading = builder.build {
+        val indicatorLoading = builder.build(MainScope()) {
             setTitle(LOADING)
         }
-        val indicatorProcessing = CompletableDeferred<HUD>()
-        MainScope().launch {
+        val indicatorProcessing = CompletableDeferred<BaseHUD>()
+        launch(Dispatchers.Main) {
             indicatorLoading.presentDuring {
-                    loading1.await()
-                    val processingDialog = builder.build {
-                        setTitle(PROCESSING)
-                    }
+                presenting.complete()
+                loading1.await()
+                val processingDialog = builder.build(MainScope()) {
+                    setTitle(PROCESSING)
+                }
                 indicatorProcessing.complete(processingDialog)
                 processingDialog.presentDuring {
-                        processing.await()
-                    }
-                loading2.await()
+                    processing.await()
                 }
+                loading2.await()
             }
+        }
 
+        presenting.await()
         // check the Loading dialog pops up and is reported as visible
         device.assertTextAppears(LOADING)
         assertTrue(indicatorLoading.isVisible)
@@ -139,22 +166,36 @@ class AndroidHUDTests : HUDTests() {
 
     @Test
     fun rotateActivity() = runBlocking {
-        val indicator = builder.build {
+        val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
-        }.present()
+        }
+        launch(Dispatchers.Main) {
+            indicator.present()
+        }
         device.assertTextAppears(LOADING)
         assertTrue(indicator.isVisible)
 
         // Rotate screen
-        device.setOrientationLeft()
-        // HUD should be on screen
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
 
-        device.setOrientationNatural()
+        for (times in 4 downTo 0) {
+            try {
+                d("HUD", "$times left to try for rotation test")
+                device.setOrientationLeft()
+                delay(200)
+                // HUD should be on screen
+                device.assertTextAppears(LOADING)
+                assertTrue(indicator.isVisible)
+                break
+            } catch (e: java.lang.AssertionError) {
+                if (times == 0) throw e
+            } finally {
+                device.setOrientationNatural()
+                delay(200)
+            }
+        }
+
         indicator.dismiss()
         // Finally should be gone
         device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
     }
 }

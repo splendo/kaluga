@@ -51,8 +51,8 @@ class ArchitectureInputActivity : KalugaViewModelActivity<ArchitectureInputViewM
         if (requestCode == ArchitectureInputActivity.requestCode && resultCode == ArchitectureDetailsActivity.resultCode) {
             val spec = DetailsSpec()
             data?.extras?.toNavigationBundle(spec)?.let { bundle ->
-                viewModel.nameInput.postValue(bundle.get(DetailsSpecRow.NameRow))
-                viewModel.numberInput.postValue(bundle.get(DetailsSpecRow.NumberRow).toString())
+                viewModel.nameInput.post(bundle.get(DetailsSpecRow.NameRow))
+                viewModel.numberInput.post(bundle.get(DetailsSpecRow.NumberRow).toString())
             }
         }
     }

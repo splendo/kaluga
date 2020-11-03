@@ -18,18 +18,38 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
+import com.splendo.kaluga.base.runOnMain
+import kotlinx.coroutines.MainScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 abstract class HUDTests {
 
     @Test
-    fun testBuilder() {
-        val hud1 = builder.build()
+    fun builderInitializer() = runOnMain {
+        assertNotNull(
+            builder.build(MainScope())
+        )
+    }
+
+    @Test
+    fun builderSetStyleAndTitle() = runOnMain {
+        assertNotNull(
+            builder.build(MainScope()) {
+                setStyle(HUDStyle.CUSTOM)
+                setTitle("Foo")
+            }
+        )
+    }
+
+    @Test
+    fun testBuilder() = runOnMain {
+        val hud1 = builder.build(MainScope())
         assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
-        val hud2 = builder.build {
+        val hud2 = builder.build(MainScope()) {
             setStyle(HUDStyle.CUSTOM)
             setTitle("Title")
         }

@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-actual data class Locale(val locale: java.util.Locale) {
+actual class Locale internal constructor(val locale: java.util.Locale) {
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
         actual fun createLocale(language: String, country: String): Locale = Locale(java.util.Locale(language, country))

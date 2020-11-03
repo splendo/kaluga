@@ -15,9 +15,16 @@ version = ext["library_version"]!!
 
 kotlin {
     sourceSets {
+
+        val ext = (gradle as ExtensionAware).extra
+
         getByName("commonMain") {
             dependencies {
                 implementation(project(":logging", ""))
+                api("co.touchlab:stately-common:${ext["stately_version"]}")
+                api("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
+                api("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
+                api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
         getByName("commonTest") {

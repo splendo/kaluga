@@ -37,9 +37,9 @@ class ExampleViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
-            guard let viewModel = self?.viewModel, let bottomView = self?.bottomView else { return }
-            viewModel.observeTabs(stackView: bottomView, disposeBag: disposeBag) { (button: UIButton, action: @escaping () -> KotlinUnit) in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
+            guard let viewModel = self?.viewModel, let bottomView = self?.bottomView else { return [] }
+            return viewModel.observeTabs(stackView: bottomView) { (button: UIButton, action: @escaping () -> KotlinUnit) in
                 button.addAction { let _ = action() }
             }
         }
