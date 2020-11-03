@@ -21,7 +21,7 @@ import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 
-sealed class NetworkState(open val networkType: Network, private val networkManager: BaseNetworkManager) : State<NetworkState>() {
+sealed class NetworkState(open val networkType: Network, private val networkManager: BaseNetworkManager) : State() {
 
     override suspend fun finalState() {
         super.finalState()
