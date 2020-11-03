@@ -19,7 +19,6 @@ package com.splendo.kaluga.architecture.navigation
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 /**
  * A row within a [NavigationBundleSpec] that is associated with a given [NavigationBundleSpecType]
@@ -149,7 +148,7 @@ sealed class NavigationBundleSpecType<T> {
     }
     class SerializedType<T>(private val serializer: KSerializer<T>) : NavigationBundleSpecType<T>() {
         companion object {
-            private val json = Json(JsonConfiguration.Stable)
+            private val json = Json { }
         }
 
         override fun convertValue(value: T): NavigationBundleValue<T> {
@@ -157,7 +156,7 @@ sealed class NavigationBundleSpecType<T> {
         }
 
         fun generateValue(stringValue: String): NavigationBundleValue<T> {
-            return NavigationBundleValue.SerializedValue(serializer, json.parse(serializer, stringValue))
+            return NavigationBundleValue.SerializedValue(serializer, json.decodeFromString(serializer, stringValue))
         }
     }
 

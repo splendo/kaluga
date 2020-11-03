@@ -50,7 +50,7 @@ class PermissionViewModel(private val permissions: Permissions, private val perm
 
     fun requestPermission() {
         coroutineScope.launch {
-            _requestMessage.set((if (permissions[permission].request()) "permission_request_success" else "permission_request_failed").localized())
+            _requestMessage.set((if (permissions.request(permission)) "permission_request_success" else "permission_request_failed").localized())
             _requestMessage.set(null)
         }
     }

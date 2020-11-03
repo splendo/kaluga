@@ -16,7 +16,7 @@ version = ext["library_version"]!!
 dependencies {
     val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
     implementation("com.google.android.gms:play-services-location:$play_services_version")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.5")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9")
 }
 
 kotlin {
@@ -24,6 +24,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":permissions", ""))
+                implementation(project(":logging", ""))
             }
         }
         commonTest {

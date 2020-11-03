@@ -18,8 +18,9 @@
 package com.splendo.kaluga.base
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.MainScope
 
+@Deprecated("Use MainScope", ReplaceWith("MainScope()", "kotlinx.coroutines.MainScope"))
 fun MultiplatformMainScope(): CoroutineScope {
-    return CoroutineScope(SupervisorJob() + MainQueueDispatcher)
+    return MainScope()
 }

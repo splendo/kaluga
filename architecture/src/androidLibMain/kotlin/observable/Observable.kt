@@ -25,14 +25,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import kotlin.properties.ObservableProperty
-import kotlin.properties.ReadOnlyProperty
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlin.properties.ObservableProperty
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 actual abstract class Observable<T> : BaseObservable<T>() {
 
@@ -94,7 +94,8 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : O
 
     protected fun initialize() {
         mediatorLiveData.addSource(providerLiveData) {
-            value -> mediatorLiveData.postValue(value)
+            value ->
+            mediatorLiveData.postValue(value)
         }
         // Start observing the LiveData for any changes to propagate to the two way binding
         // Waits until the coroutine is canceled to remove the observer

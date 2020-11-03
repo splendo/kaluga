@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.architecture.viewmodel
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
@@ -26,7 +26,7 @@ actual open class ViewModel internal actual constructor() {
 
     private val lifecycleJob = SupervisorJob()
 
-    actual val coroutineScope = CoroutineScope(MainQueueDispatcher + lifecycleJob)
+    actual val coroutineScope = CoroutineScope(Dispatchers.Main + lifecycleJob)
 
     fun clear() {
         onCleared()

@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
-import com.splendo.kaluga.alerts.AlertInterface
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -138,7 +138,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        AlertViewModel(AlertInterface.Builder())
+        AlertViewModel(AlertPresenter.Builder())
     }
 
     viewModel {

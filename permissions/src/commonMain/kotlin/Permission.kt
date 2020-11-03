@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.base.MainQueueDispatcher
+import co.touchlab.stately.collections.IsoMutableMap
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
@@ -35,11 +35,12 @@ import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Permissions that can be requested by Kaluga
@@ -113,21 +114,40 @@ expect class PermissionsBuilder : BasePermissionsBuilder
  * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = MainQueueDispatcher) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
 
-    private val permissionStateRepos: MutableMap<Permission, PermissionStateRepo<*>> = mutableMapOf()
+    private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
+
+    private fun <P : Permission> permissionStateRepo(permission: P) =
+        permissionStateRepos.get(permission) ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
 
     /**
      * Gets a [Flow] of [PermissionState] for a given [Permission]
      * @param permission The [Permission] for which the [PermissionState] flow should be provided
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
-    operator fun get(permission: Permission): Flow<PermissionState<*>> {
-        val permissionStateRepo = permissionStateRepos[permission] ?: createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
-        return permissionStateRepo.flow()
+    operator fun <P : Permission> get(permission: P): Flow<PermissionState<out Permission>> {
+        return permissionStateRepo(permission).flow()
     }
 
-    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = MainQueueDispatcher): PermissionStateRepo<*> {
+    /**
+     * Gets a the of [PermissionManager] for a given [Permission]
+     * @param permission The [Permission] for which the [PermissionManager] should be returned
+     * @return The [PermissionManager] for the given [Permission]
+     */
+    fun <P : Permission> getManager(permission: P): PermissionManager<out Permission> {
+        return permissionStateRepo(permission).permissionManager
+    }
+
+    /**
+     * Requests a [Permission]
+     * @return `true` if the permission was granted, `false` otherwise.
+     */
+    suspend fun <P : Permission> request(p: P): Boolean {
+        return get(p).request(getManager(p))
+    }
+
+    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = Dispatchers.Main): PermissionStateRepo<*> {
         return when (permission) {
             is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder, coroutineContext)
             is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder, coroutineContext)
@@ -150,11 +170,11 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
  * Requests a [Permission] on a [Flow] of [PermissionState]
  * @return `true` if the permission was granted, `false` otherwise.
  */
-suspend fun Flow<PermissionState<*>>.request(): Boolean {
+suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionManager: PermissionManager<out P>): Boolean {
     return this.transformLatest { state ->
         when (state) {
             is PermissionState.Allowed -> emit(true)
-            is PermissionState.Denied.Requestable -> state.request()
+            is PermissionState.Denied.Requestable -> state.request(permissionManager)
             is PermissionState.Denied.Locked -> emit(false)
         }
     }.first()

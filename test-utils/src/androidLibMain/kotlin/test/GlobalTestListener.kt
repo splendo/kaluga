@@ -1,14 +1,3 @@
-package com.splendo.kaluga.test
-
-import com.splendo.kaluga.logging.LogLevel
-import com.splendo.kaluga.logging.Logger
-import com.splendo.kaluga.logging.initLogger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.resetMain
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -27,28 +16,37 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+package com.splendo.kaluga.test
+
+import com.splendo.kaluga.logging.LogLevel
+import com.splendo.kaluga.logging.Logger
+import com.splendo.kaluga.logging.logger
+import com.splendo.kaluga.logging.resetLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+
 // Android Studio will shown an error when parsing this file because it's also defined in the unit test module
 // To clear the error close the file and restart Android Studio ¯\_(ツ)_/¯
 actual class GlobalTestListener {
 
-    private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("UI thread")
+    private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("synthetic UI thread")
 
     actual fun beforeTest() {
+        logger = object : Logger {
+            override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
+                println("$level: ${tag?.let {"[$it]"} ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
+                throwable?.printStackTrace(System.out)
+            }
+        }
         Dispatchers.setMain(mainDispatcher)
-        initLogger(object : Logger {
-            override fun log(level: LogLevel, tag: String?, message: String) {
-                println("${level.name}\t:$tag\t:$message")
-            }
-
-            override fun log(level: LogLevel, tag: String?, exception: Throwable) {
-                println("${level.name}\t:$tag\t:${exception.message}")
-                exception.printStackTrace()
-            }
-        })
     }
 
     actual fun afterTest() {
         Dispatchers.resetMain()
         mainDispatcher.close()
+        resetLogger()
     }
 }

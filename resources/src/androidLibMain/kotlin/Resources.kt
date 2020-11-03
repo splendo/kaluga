@@ -23,12 +23,15 @@ import android.graphics.Typeface
 import android.os.Handler
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 import kotlinx.coroutines.CompletableDeferred
 
-actual class StringLoader(private val context: Context) {
-    actual constructor() : this(applicationContext)
+actual class StringLoader(private val context: Context?) {
+    actual constructor() : this(if (application != null) applicationContext else null)
     actual fun loadString(identifier: String, defaultValue: String): String {
+        if (context == null)
+            return defaultValue
         val id = context.resources.getIdentifier(identifier, "string", context.packageName)
         return try {
             context.getString(id)
@@ -38,9 +41,11 @@ actual class StringLoader(private val context: Context) {
     }
 }
 
-actual class ColorLoader(private val context: Context) {
-    actual constructor() : this(applicationContext)
+actual class ColorLoader(private val context: Context?) {
+    actual constructor() : this(if (application != null) applicationContext else null)
     actual fun loadColor(identifier: String, defaultValue: Color?): Color? {
+        if (context == null)
+            return defaultValue
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)
         return try {
             ContextCompat.getColor(context, id)
@@ -50,9 +55,11 @@ actual class ColorLoader(private val context: Context) {
     }
 }
 
-actual class ImageLoader(private val context: Context) {
-    actual constructor() : this(applicationContext)
+actual class ImageLoader(private val context: Context?) {
+    actual constructor() : this(if (application != null) applicationContext else null)
     actual fun loadImage(identifier: String, defaultValue: Image?): Image? {
+        if (context == null)
+            return defaultValue
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
         return try {
             ContextCompat.getDrawable(context, id)?.let { Image(it) }
@@ -62,9 +69,11 @@ actual class ImageLoader(private val context: Context) {
     }
 }
 
-actual class FontLoader(private val context: Context, private val handler: Handler?) {
-    actual constructor() : this(applicationContext, null)
+actual class FontLoader(private val context: Context?, private val handler: Handler?) {
+    actual constructor() : this(if (application != null) applicationContext else null, null)
     actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
+        if (context == null)
+            return defaultValue
         val id = context.resources.getIdentifier(identifier, "font", context.packageName)
         return try {
             val deferredFont = CompletableDeferred<Typeface?>()

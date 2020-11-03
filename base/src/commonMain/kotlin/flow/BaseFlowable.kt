@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.flow
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -34,9 +35,9 @@ import kotlinx.coroutines.flow.first
  */
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
-    private var channel: BroadcastChannel<T>? = null
+    private val channel: AtomicReference<BroadcastChannel<T>?> = AtomicReference(null)
     protected fun ensureChannel(): BroadcastChannel<T> {
-        return channel ?: channelFactory().also { channel = it }
+        return channel.get() ?: channelFactory().also { channel.set(it) }
     }
 
     override fun flow(flowConfig: FlowConfig): Flow<T> {
@@ -47,12 +48,14 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
     }
 
     override suspend fun set(value: T) {
-        channel?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
+        channel.get()?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
     }
 
     override fun cancelFlows() {
-        channel?.close()
-        channel = null
+        channel.get()?.let {
+            it.close()
+            channel.compareAndSet(it, null)
+        }
     }
 
     override fun setBlocking(value: T) {
@@ -62,5 +65,5 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         }
     }
 
-    protected suspend fun currentValue(): T? = channel?.asFlow()?.first()
+    protected suspend fun currentValue(): T? = channel.get()?.asFlow()?.first()
 }

@@ -18,12 +18,12 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.flow.HotFlowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Result type for an [Observable]. Used to allow for the distinction between `null` and optional values

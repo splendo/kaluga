@@ -10,15 +10,15 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.3'
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.4'
     }
 }
 
 plugins {
-    id 'kotlin-multiplatform'
     id 'maven-publish'
-    id 'org.jlleitschuh.gradle.ktlint' version '9.2.1'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.2.1'
+    id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
+    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.4.1'
 }
 
 allprojects {
@@ -44,16 +44,18 @@ group 'com.splendo.kaluga'
 version gradle.ext.library_version
 
 
-publishing {
-    publications {
-        kotlinMultiplatform {
-            artifactId = "kaluga"
 
-            pom {
-                name = 'Splendo Kaluga Library'
-                description = 'A set of Kotlin multiplatform components'
-                url = 'https://splendo.com'
-            }
-        }
-    }
-}
+// TODO: multiplatform module in main project does not seem to work anymore, which breaks publishing
+//publishing {
+//    publications {
+//        kotlinMultiplatform {
+//            artifactId = "kaluga"
+//
+//            pom {
+//                name = 'Splendo Kaluga Library'
+//                description = 'A set of Kotlin multiplatform components'
+//                url = 'https://splendo.com'
+//            }
+//        }
+//    }
+//}

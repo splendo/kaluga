@@ -39,8 +39,8 @@ actual class StoragePermissionManager(
 
     override suspend fun initializeState(): PermissionState<Permission.Storage> {
         return when {
-            permissionsManager.hasPermissions -> PermissionState.Allowed(this)
-            else -> PermissionState.Denied.Requestable(this)
+            permissionsManager.hasPermissions -> PermissionState.Allowed()
+            else -> PermissionState.Denied.Requestable()
         }
     }
 

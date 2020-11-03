@@ -17,16 +17,11 @@
 
 package com.splendo.kaluga.base.test.flow
 
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
-import kotlin.test.BeforeTest
-import kotlin.test.Ignore
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.fail
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -35,15 +30,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.test.Ignore
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 class BaseFlowableTest : FlowableTest<String>() {
-
-    @BeforeTest
-    override fun beforeTest() {
-        super.beforeTest()
-
-        flowable.complete(HotFlowable(""))
-    }
 
     // doesn't test BaseFlowable directly, but shows some the working of some coroutine principles used in the class
     // unignore if you want to experiment more
@@ -62,12 +54,12 @@ class BaseFlowableTest : FlowableTest<String>() {
             delay(500)
             r = "FooBar"
         }
-        delay(100)
+        delay(200)
         assertEquals("Foo", r)
         c.send("Bar")
-        delay(100)
+        delay(200)
         assertEquals("Bar", r)
-        delay(100)
+        delay(200)
         c.cancel()
         delay(1000)
         assertEquals("FooBar", r)
@@ -75,7 +67,7 @@ class BaseFlowableTest : FlowableTest<String>() {
 
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
-        flowable.await().set("foo")
+        flowable().set("foo")
         test {
             assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
         }
@@ -84,31 +76,39 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testExceptionBeingThrown() = testWithFlow {
         action {
-            flowable.await().set("Test")
+            flowable().set("Test")
         }
         try {
             test {
                 debug("cause an exception")
-                throw Exception("some error!")
+                throw Exception("This is an expected error for testing.")
             }
             debug("wait for the exception..")
             action {}
             fail("No throwable was thrown, even though we caused an exception")
         } catch (t: Throwable) {
-            assertEquals("some error!", t.message)
+            assertEquals("This is an expected error for testing.", t.message)
             debug("We got the throwable ($t) we expected")
         }
     }
 
     @Test
-    fun testStopFlow() = runBlocking {
-        val flowable = flowable.await()
-        val scope = MultiplatformMainScope()
+    fun testStopFlow() = testWithFlow {
+        val scope = MainScope()
+        val flow = flowable().flow()
         val collectionJob = scope.async {
-            flowable.flow().collect { }
+            flow.collect { }
         }
-        delay(100) // TODO instead listen to flow subscriber count
-        flowable.cancelFlows()
+
+        delay(500) // TODO instead listen to flow subscriber count, which we can do once we use SharedFlow instead of BroadcastChannel
+
+        flowable().cancelFlows()
+
         collectionJob.await()
+    }
+
+    val flow = HotFlowable("")
+    override fun flowable(): Flowable<String> {
+        return flow
     }
 }

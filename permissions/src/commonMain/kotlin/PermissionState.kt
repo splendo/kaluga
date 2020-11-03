@@ -18,57 +18,57 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
+import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [Permission]
  * @param permissionManager The [PermissionManager] managing the associated [Permission]
  */
-sealed class PermissionState<P : Permission>(private val permissionManager: PermissionManager<P>) : State<PermissionState<P>>() {
+sealed class PermissionState<P : Permission> : State() {
 
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
+    class Allowed<P : Permission>() : PermissionState<P>() {
 
         internal fun deny(locked: Boolean): Denied<P> {
-            return if (locked) Denied.Locked(permissionManager) else Denied.Requestable(permissionManager)
+            return if (locked) Denied.Locked() else Denied.Requestable()
         }
     }
 
     /**
      * When in this state the [Permission] is denied. If can either be requestable of blocked from request.
      */
-    sealed class Denied<P : Permission>(private val permissionManager: PermissionManager<P>) : PermissionState<P>(permissionManager) {
+    sealed class Denied<P : Permission> : PermissionState<P>() {
 
         internal val allow: suspend () -> Allowed<P> = {
-            Allowed(permissionManager)
+            Allowed()
         }
 
         /**
          * When in this state the [Permission] is denied and cannot be requested
          */
-        class Locked<P : Permission>(permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+        class Locked<P : Permission>() : Denied<P>() {
 
             internal val unlock: suspend () -> Requestable<P> = {
-                Requestable(permissionManager)
+                Requestable()
             }
         }
 
         /**
          * When in this state the [Permission] is denied but can be requested. Use [request] to request the permission.
          */
-        class Requestable<P : Permission>(private val permissionManager: PermissionManager<P>) : Denied<P>(permissionManager) {
+        class Requestable<P : Permission> : Denied<P>() {
 
-            suspend fun request() {
+            suspend fun request(permissionManager: PermissionManager<out Permission>) {
                 permissionManager.requestPermission()
             }
 
             internal val lock: suspend () -> Locked<P> = {
-                Locked(permissionManager)
+                Locked()
             }
         }
     }
@@ -81,7 +81,7 @@ sealed class PermissionState<P : Permission>(private val permissionManager: Perm
  */
 abstract class PermissionStateRepo<P : Permission>(
     private val monitoringInterval: Long = defaultMonitoringInterval,
-    coroutineContext: CoroutineContext = MainQueueDispatcher
+    coroutineContext: CoroutineContext = Dispatchers.Main
 ) : ColdStateRepo<PermissionState<P>>(coroutineContext) {
 
     companion object {

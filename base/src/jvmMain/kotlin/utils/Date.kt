@@ -19,15 +19,19 @@ package com.splendo.kaluga.base.utils
 
 import java.util.Calendar
 
-actual class Date(internal val calendar: Calendar) : Comparable<Date> {
+actual class Date internal constructor(internal val calendar: Calendar) : Comparable<Date> {
 
     actual companion object {
-        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
+        actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+            Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
                 add(Calendar.MILLISECOND, offsetInMilliseconds.toInt())
-            })
-        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
-            timeInMillis = offsetInMilliseconds
-        })
+            }
+        )
+        actual fun epoch(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(
+            Calendar.getInstance(timeZone.timeZone, locale.locale).apply {
+                timeInMillis = offsetInMilliseconds
+            }
+        )
     }
 
     actual var timeZone: TimeZone

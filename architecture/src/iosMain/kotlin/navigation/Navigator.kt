@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import kotlin.native.internal.GC
-import kotlin.native.ref.WeakReference
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
@@ -46,8 +45,10 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
+import kotlin.native.internal.GC
+import kotlin.native.ref.WeakReference
 
-actual interface Navigator<A : NavigationAction<*>> {
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
     actual fun navigate(action: A)
 }
 
@@ -149,7 +150,12 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
         parent.addChildViewController(child)
         nestedSpec.containerView.addSubview(child.view)
         val constraints = nestedSpec.constraints?.invoke(child.view, nestedSpec.containerView) ?: listOf(
-            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute -> CGFloat
+            NSLayoutAttributeLeading,
+            NSLayoutAttributeTrailing,
+            NSLayoutAttributeTop,
+            NSLayoutAttributeBottom
+        ).map { attribute ->
+            CGFloat
             NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }

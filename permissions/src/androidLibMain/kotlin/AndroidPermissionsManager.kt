@@ -26,16 +26,16 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.logging.warn
-import java.util.Timer
-import kotlin.concurrent.fixedRateTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.Timer
+import kotlin.concurrent.fixedRateTimer
 
 /**
  * Convenience class for requesting a [Permission]
  * @param context The context for which to request the [Permission]
  * @param permissionManager The [PermissionManager] managing the requested permission
- * @param permissions List of permissions to request. Should correspond to  [Manifest.permission].
+ * @param permissions List of permissions to request. Should correspond to [Manifest.permission].
  * @param coroutineScope The coroutineScope on which to handle permission requests.
  */
 class AndroidPermissionsManager<P : Permission> constructor(
@@ -110,9 +110,10 @@ class AndroidPermissionsManager<P : Permission> constructor(
      * Calls [PermissionManager.grantPermission] if the permission became granted and [PermissionManager.revokePermission] if it became denied.
      * @param interval The interval in milliseconds between checks in changes to the permission state.
      */
-    suspend fun startMonitoring(interval: Long) {
+    fun startMonitoring(interval: Long) {
         updateLastPermissions()
         if (timer != null) return
+        // TODO use a coroutine bases timer as in iOS
         timer = fixedRateTimer(period = interval) {
             val changed = permissions.fold(true) { previous, permission ->
                 val systemPermissionState = ContextCompat.checkSelfPermission(context, permission)
@@ -133,7 +134,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     /**
      * Stops monitoring for changes to the permission.
      */
-    suspend fun stopMonitoring() {
+    fun stopMonitoring() {
         timer?.cancel()
         timer = null
     }

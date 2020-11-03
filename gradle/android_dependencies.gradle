@@ -20,11 +20,13 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
     implementation "androidx.appcompat:appcompat:$gradle.androidx_appcompat_version"
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.1.0'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$gradle.kotlinx_coroutines_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+
+    //noinspection GradleDependency this is locked from being higher by other libraries used.
+    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
 
     androidTestImplementation "androidx.test:core:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test:core-ktx:$gradle.androidx_test_version"
