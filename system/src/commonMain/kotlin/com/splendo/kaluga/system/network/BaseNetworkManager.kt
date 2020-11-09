@@ -22,6 +22,23 @@ import kotlinx.coroutines.launch
 
 abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo) : CoroutineScope by networkStateRepo {
 
+    internal abstract suspend fun isNetworkEnabled(): Boolean
+
+    internal fun handleNetworkEnabledChanged() {
+        launch {
+            networkStateRepo.takeAndChangeState { state: NetworkState ->
+                when (state) {
+                    is NetworkState.Available -> {
+                        if (isNetworkEnabled()) state.remain() else state.unavailable
+                    }
+                    is NetworkState.Unavailable -> {
+                        if (isNetworkEnabled()) state.available else state.remain()
+                    }
+                }
+            }
+        }
+    }
+
     internal abstract suspend fun startMonitoringNetwork()
     internal abstract suspend fun stopMonitoringNetwork()
 
