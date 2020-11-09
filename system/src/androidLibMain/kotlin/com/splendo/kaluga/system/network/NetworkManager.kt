@@ -43,10 +43,10 @@ actual class NetworkManager actual constructor(
     private lateinit var networkConnectivityCallbacks: NetworkConnectivityCallbacks
     private lateinit var networkConnectivityReceiver: NetworkConnectivityReceiver
 
-    private var _isNetworkEnabled = AtomicReference<Boolean>(false)
+    private var _isNetworkEnabled = AtomicReference(false)
     private var isNetworkEnabled: Boolean
-    get() = _isNetworkEnabled.get()
-    set(value) = _isNetworkEnabled.set(value)
+        get() = _isNetworkEnabled.get()
+        set(value) = _isNetworkEnabled.set(value)
 
     override suspend fun isNetworkEnabled(): Boolean = isNetworkEnabled
 
