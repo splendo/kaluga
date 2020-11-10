@@ -31,24 +31,36 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         super.initialState()
     }
 
-    interface Permitted : HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
+    interface StateHandler : HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
         suspend fun initialState()
         suspend fun finalState()
     }
 
-    data class Available(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager), Permitted {
+    val availableWithWifi: suspend () -> Available = {
+        Available(Network.Wifi(), networkManager)
+    }
+
+    val availableWithCellular: suspend () -> Available = {
+        Available(Network.Cellular(), networkManager)
+    }
+
+    val unavailable: suspend () -> Unavailable = {
+        Unavailable(Network.Absent, networkManager)
+    }
+
+    data class Available(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager), StateHandler {
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
-                !is Available -> networkManager.stopMonitoringNetwork()
-                else -> {}
+                is Unavailable -> networkManager.stopMonitoringNetwork()
+                else -> Unit
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
             when (oldState) {
                 is Unavailable -> networkManager.startMonitoringNetwork()
-                else -> {}
+                else -> Unit
             }
         }
 
@@ -61,5 +73,31 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         }
     }
 
-    data class Unavailable(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager)
+    data class Unavailable(
+        override val networkType: Network, val networkManager: BaseNetworkManager
+    ) : NetworkState(networkType, networkManager), StateHandler {
+
+        override suspend fun afterNewStateIsSet(newState: NetworkState) {
+            when (newState) {
+                is Available -> networkManager.startMonitoringNetwork()
+                else -> Unit
+            }
+        }
+
+        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
+            when (oldState) {
+                is Available -> networkManager.stopMonitoringNetwork()
+                else -> Unit
+            }
+        }
+
+        override suspend fun initialState() {
+            networkManager.startMonitoringNetwork()
+        }
+
+        override suspend fun finalState() {
+            networkManager.stopMonitoringNetwork()
+        }
+
+    }
 }
