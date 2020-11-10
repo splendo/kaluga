@@ -15,7 +15,7 @@ version = ext["library_version"]!!
 
 kotlin {
 
-    val statelyVersion: String by project
+    val ext = (gradle as ExtensionAware).extra
 
     sourceSets {
         commonMain {
@@ -23,8 +23,8 @@ kotlin {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
 
-                implementation("co.touchlab:stately-common:$statelyVersion")
-                implementation("co.touchlab:stately-concurrency:$statelyVersion")
+                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
+                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
 
