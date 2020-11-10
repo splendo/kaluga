@@ -75,7 +75,7 @@ actual class NetworkManager actual constructor(
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
             isNetworkEnabled = true
-            handleNetworkEnabledChanged()
+
             val networkType = determineNetworkType()
             handleNetworkStateChanged(networkType)
         }
@@ -83,21 +83,18 @@ actual class NetworkManager actual constructor(
         override fun onUnavailable() {
             super.onUnavailable()
             isNetworkEnabled = false
-            handleNetworkEnabledChanged()
             handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
         }
 
         override fun onLosing(network: Network, maxMsToLive: Int) {
             super.onLosing(network, maxMsToLive)
             isNetworkEnabled = false
-            handleNetworkEnabledChanged()
             handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
         }
 
         override fun onLost(network: Network) {
             super.onLost(network)
             isNetworkEnabled = false
-            handleNetworkEnabledChanged()
             handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
         }
 
@@ -128,12 +125,10 @@ actual class NetworkManager actual constructor(
             if (networkInfo?.isConnectedOrConnecting == true) {
                 val networkType = determineNetworkType()
                 isNetworkEnabled = true
-                handleNetworkEnabledChanged()
                 handleNetworkStateChanged(networkType)
                 debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
             } else {
                 isNetworkEnabled = false
-                handleNetworkEnabledChanged()
                 handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
                 debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
             }
