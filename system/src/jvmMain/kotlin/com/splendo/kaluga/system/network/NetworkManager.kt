@@ -18,6 +18,10 @@
 package com.splendo.kaluga.system.network
 
 actual class NetworkManager actual constructor(networkStateRepo: NetworkStateRepo, context: Any?) : BaseNetworkManager(networkStateRepo) {
+    override suspend fun isNetworkEnabled(): Boolean {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun startMonitoringNetwork() {
         TODO("Not yet implemented")
     }
