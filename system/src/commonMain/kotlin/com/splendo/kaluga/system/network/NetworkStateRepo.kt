@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.system.network
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.state.ColdStateRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -28,12 +29,28 @@ class NetworkStateRepo(
     coroutineContext: CoroutineContext = Dispatchers.Main
 ) : ColdStateRepo<NetworkState>(coroutineContext = coroutineContext) {
 
-    private val networkManager: BaseNetworkManager = NetworkManager(this, context)
+    private var _lastKnownNetwork = AtomicReference<Network>(Network.Absent)
+    internal var lastKnownNetwork: Network
+        get() = _lastKnownNetwork.get()
+        set(value) { _lastKnownNetwork.set(value) }
 
-    override suspend fun deinitialize(state: NetworkState) { }
+    internal var networkManager: BaseNetworkManager = NetworkManager(this, context)
 
-    override suspend fun initialValue(): NetworkState =
-        NetworkState.Unavailable(Network.Absent, networkManager)
+    override suspend fun deinitialize(state: NetworkState) {
+        lastKnownNetwork = state.networkType
+    }
+
+    override suspend fun initialValue(): NetworkState {
+        return if (networkManager.isNetworkEnabled()) {
+            return when (lastKnownNetwork) {
+                is Network.Wifi -> NetworkState.Available(Network.Wifi(), networkManager)
+                is Network.Cellular -> NetworkState.Available(Network.Cellular(), networkManager)
+                else -> NetworkState.Unavailable(Network.Absent, networkManager)
+            }
+        } else {
+            NetworkState.Unavailable(Network.Absent, networkManager)
+        }
+    }
 }
 
 fun Flow<NetworkState>.network(): Flow<Network> {
