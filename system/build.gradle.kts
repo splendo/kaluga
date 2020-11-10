@@ -21,7 +21,6 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(project(":base", ""))
-                implementation(project(":architecture", ""))
                 implementation(project(":logging", ""))
 
                 implementation("co.touchlab:stately-common:$statelyVersion")
