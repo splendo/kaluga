@@ -17,12 +17,13 @@
 
 package com.splendo.kaluga.system.network
 
+import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.logging.debug
 import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.interpretCPointer
 import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.objcPtr
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.staticCFunction
 import platform.SystemConfiguration.SCNetworkReachabilityCallBack
@@ -36,30 +37,35 @@ import platform.SystemConfiguration.SCNetworkReachabilitySetCallback
 import platform.SystemConfiguration.SCNetworkReachabilitySetDispatchQueue
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
-import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
 actual class NetworkManager actual constructor(
-    private val networkStateRepo: NetworkStateRepo,
+    networkStateRepo: NetworkStateRepo,
     context: Any?
 ) : BaseNetworkManager(networkStateRepo) {
 
     private val reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
-    private var isListening = false
 
-    private val callback: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
-        println("DEBUG: Inside SCNetworkReachabilityCallBack staticCFunction")
+    private var _isListening = AtomicReference(false)
+    private var isListening: Boolean
+        get() = _isListening.get()
+        set(value) = _isListening.set(value)
 
+    private var _isNetworkEnabled = AtomicReference(false)
+    private var isNetworkEnabled: Boolean
+        get() = _isNetworkEnabled.get()
+        set(value) = _isNetworkEnabled.set(value)
+
+    private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
         if (info == null) {
-            println("DEBUG: info is null, returning.")
+            debug { "DEBUG: info is null, returning." }
             return@staticCFunction
         }
         val networkManager = info.asStableRef<NetworkManager>().get()
-
-        dispatch_async(dispatch_get_main_queue()) {
-            networkManager.checkReachability(networkManager, flags)
-        }
+        networkManager.checkReachability(networkManager, flags)
     }
+
+    override suspend fun isNetworkEnabled(): Boolean = isNetworkEnabled
 
     override suspend fun startMonitoringNetwork() {
         // val currentVersion = UIDevice.currentDevice.systemVersion.split(".")[0].toInt()
@@ -70,37 +76,35 @@ actual class NetworkManager actual constructor(
         //     println("current ios version is < 12 $currentVersion")
         //     configureSCNetworkReachability()
         // }
-        configureSCNetworkReachability()
+        startNotifier()
     }
 
     override suspend fun stopMonitoringNetwork() {
-        TODO("Not yet implemented")
+        stopNotifier()
     }
 
-    private fun configureSCNetworkReachability() {
+    private fun startNotifier() {
         if (isListening) {
             return
         }
 
         val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
-        context.info = interpretCPointer(this.objcPtr())
+        context.info = StableRef.create(this@NetworkManager).asCPointer()
 
         if (!areParametersSet(context)) {
-            println("Something went wrong setting the parameters")
+            debug { "Something went wrong setting the parameters" }
         }
 
-        dispatch_async(dispatch_get_main_queue()) {
-            val flag = nativeHeap.alloc<SCNetworkReachabilityFlagsVar>()
-            SCNetworkReachabilityGetFlags(reachability, flag.ptr)
-            nativeHeap.free(flag.rawPtr)
-        }
+        val flag = nativeHeap.alloc<SCNetworkReachabilityFlagsVar>()
+        SCNetworkReachabilityGetFlags(reachability, flag.ptr)
 
-        nativeHeap.free(context.rawPtr)
         isListening = true
+        nativeHeap.free(context.rawPtr)
+        nativeHeap.free(flag.rawPtr)
     }
 
     private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
-        if (!SCNetworkReachabilitySetCallback(reachability, callback, context.ptr)) {
+        if (!SCNetworkReachabilitySetCallback(reachability, onNetworkStateChanged, context.ptr)) {
             return false
         }
 
@@ -110,24 +114,25 @@ actual class NetworkManager actual constructor(
         return true
     }
 
+    private fun stopNotifier() {
+        isListening = false
+    }
+
     private fun checkReachability(networkManager: NetworkManager, flags: SCNetworkReachabilityFlags) {
-        println("DEBUG: in checkReachability()")
-            println("DEBUG: in currentReachabilityFlags != flags")
-            when (flags) {
-                kSCNetworkReachabilityFlagsReachable -> {
-                    println("DEBUG: in kSCNetworkReachabilityFlagsReachable")
-                    if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        println("DEBUG: in cellar case")
-                        handleNetworkStateChanged(Network.Cellular())
-                    } else {
-                        println("DEBUG: in wifi case")
-                        handleNetworkStateChanged(Network.Wifi())
-                    }
-                }
-                else -> {
-                    println("DEBUG: in absent case")
-                    networkManager.handleNetworkStateChanged(Network.Absent)
+        when (flags) {
+            kSCNetworkReachabilityFlagsReachable -> {
+                if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
+                    isNetworkEnabled = true
+                    networkManager.handleNetworkStateChanged(Network.Cellular())
+                } else {
+                    isNetworkEnabled = true
+                    networkManager.handleNetworkStateChanged(Network.Wifi())
                 }
             }
+            else -> {
+                isNetworkEnabled = false
+                networkManager.handleNetworkStateChanged(Network.Absent)
+            }
+        }
     }
 }
