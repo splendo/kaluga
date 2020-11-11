@@ -20,9 +20,6 @@ package com.splendo.kaluga.system.network
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.FlowableTest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -34,12 +31,8 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     override fun flowable(): Flowable<NetworkState> = networkStateRepo.flowable
 
-    private val testCoroutine = SupervisorJob()
-
-    private val coroutineScope = CoroutineScope(Dispatchers.Main + testCoroutine)
-
     private fun testNetworkState(context: Any?, test: FlowTestBlock<NetworkState>) {
-        networkStateRepo = NetworkStateRepo(context, coroutineScope.coroutineContext)
+        networkStateRepo = NetworkStateRepo(context)
         networkManager = MockNetworkManager(networkStateRepo)
 
         networkStateRepo.networkManager = networkManager

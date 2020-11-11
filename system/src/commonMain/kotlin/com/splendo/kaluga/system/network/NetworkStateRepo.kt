@@ -19,15 +19,12 @@ package com.splendo.kaluga.system.network
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.state.ColdStateRepo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.coroutines.CoroutineContext
 
 class NetworkStateRepo(
     context: Any?,
-    coroutineContext: CoroutineContext = Dispatchers.Main
-) : ColdStateRepo<NetworkState>(coroutineContext = coroutineContext) {
+) : ColdStateRepo<NetworkState>() {
 
     private var _lastKnownNetwork = AtomicReference<Network>(Network.Absent)
     internal var lastKnownNetwork: Network
