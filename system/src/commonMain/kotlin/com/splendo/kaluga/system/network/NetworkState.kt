@@ -53,14 +53,14 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
                 is Unavailable -> networkManager.stopMonitoringNetwork()
-                else -> Unit
+                is Available -> Unit
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
             when (oldState) {
                 is Unavailable -> networkManager.startMonitoringNetwork()
-                else -> Unit
+                is Available -> Unit
             }
         }
 
@@ -82,14 +82,14 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
                 is Available -> networkManager.startMonitoringNetwork()
-                else -> Unit
+                is Unavailable -> Unit
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
             when (oldState) {
                 is Available -> networkManager.stopMonitoringNetwork()
-                else -> Unit
+                is Unavailable -> Unit
             }
         }
 

@@ -34,14 +34,14 @@ abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo
                         when (network) {
                             is Network.Cellular -> state.availableWithCellular
                             is Network.Wifi -> state.availableWithWifi
-                            else -> state.unavailable
+                            is Network.Absent -> state.unavailable
                         }
                     }
                     is NetworkState.Unavailable -> {
                         when (network) {
                             is Network.Cellular -> state.availableWithCellular
                             is Network.Wifi -> state.availableWithWifi
-                            else -> state.unavailable
+                            is Network.Absent -> state.unavailable
                         }
                     }
                 }
