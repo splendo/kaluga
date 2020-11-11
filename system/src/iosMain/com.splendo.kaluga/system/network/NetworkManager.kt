@@ -19,6 +19,7 @@ package com.splendo.kaluga.system.network
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
+import com.splendo.kaluga.system.network.services.NWPathNetworkManager
 import com.splendo.kaluga.system.network.services.NetworkManagerService
 import com.splendo.kaluga.system.network.services.SCNetworkManager
 
@@ -42,11 +43,17 @@ actual class NetworkManager actual constructor(
         get() = _scNetworkManager.get()
         set(value) = _scNetworkManager.set(value)
 
+    private var _nwPathNetworkManager = AtomicReference<NWPathNetworkManager?>(null)
+    private var nwPathNetworkManager: NWPathNetworkManager?
+        get() = _nwPathNetworkManager.get()
+        set(value) = _nwPathNetworkManager.set(value)
+
     override suspend fun isNetworkEnabled(): Boolean = isNetworkEnabled
 
     override suspend fun startMonitoringNetwork() {
         if (IOSVersion.systemVersion > IOSVersion(12)) {
-
+            nwPathNetworkManager = NWPathNetworkManager(this)
+            nwPathNetworkManager?.startNotifier()
         } else {
             scNetworkManager = SCNetworkManager(this)
             scNetworkManager?.startNotifier()
@@ -54,8 +61,9 @@ actual class NetworkManager actual constructor(
     }
 
     override suspend fun stopMonitoringNetwork() {
-        if (IOSVersion.systemVersion > IOSVersion(12)) {
-
+        if (IOSVersion.systemVersion >= IOSVersion(12)) {
+            nwPathNetworkManager?.stopNotifier()
+            nwPathNetworkManager = null
         } else {
             scNetworkManager?.stopNotifier()
             scNetworkManager = null
