@@ -36,11 +36,9 @@ class ConnectivityReceiverNetworkManager(
         debug { "DEBUG_KALUGA_SYSTEM: networkInfo is $networkInfo" }
         if (networkInfo?.isConnectedOrConnecting == true) {
             val networkType = determineNetworkType()
-            networkManagerService.setIsNetworkEnabled(true)
             networkManagerService.handleStateChanged(networkType)
             debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
         } else {
-            networkManagerService.setIsNetworkEnabled(false)
             networkManagerService.handleStateChanged(Network.Absent)
             debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
         }

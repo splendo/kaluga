@@ -38,14 +38,10 @@ class NetworkStateRepo(
     }
 
     override suspend fun initialValue(): NetworkState {
-        return if (networkManager.isNetworkEnabled()) {
-            return when (lastKnownNetwork) {
-                is Network.Wifi -> NetworkState.Available(Network.Wifi(), networkManager)
-                is Network.Cellular -> NetworkState.Available(Network.Cellular(), networkManager)
-                else -> NetworkState.Unavailable(Network.Absent, networkManager)
-            }
-        } else {
-            NetworkState.Unavailable(Network.Absent, networkManager)
+        return when (lastKnownNetwork) {
+            is Network.Wifi -> NetworkState.Available(Network.Wifi(), networkManager)
+            is Network.Cellular -> NetworkState.Available(Network.Cellular(), networkManager)
+            else -> NetworkState.Unavailable(Network.Absent, networkManager)
         }
     }
 }

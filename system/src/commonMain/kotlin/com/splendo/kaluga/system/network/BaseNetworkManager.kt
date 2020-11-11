@@ -24,7 +24,6 @@ abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo
 
     internal abstract suspend fun startMonitoringNetwork()
     internal abstract suspend fun stopMonitoringNetwork()
-    internal abstract suspend fun isNetworkEnabled(): Boolean
 
     internal fun handleNetworkStateChanged(network: Network) {
         launch {

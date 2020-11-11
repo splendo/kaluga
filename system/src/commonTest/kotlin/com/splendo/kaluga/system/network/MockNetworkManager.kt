@@ -17,27 +17,16 @@
 
 package com.splendo.kaluga.system.network
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.logging.debug
 
 class MockNetworkManager(
     networkStateRepo: NetworkStateRepo
 ) : BaseNetworkManager(networkStateRepo) {
 
-    private var _isNetworkEnabled = AtomicReference(false)
-    internal var isNetworkEnabled: Boolean
-        get() = _isNetworkEnabled.get()
-        set(value) = _isNetworkEnabled.set(value)
-
     val startMonitoringNetworkCompleted = EmptyCompletableDeferred()
     val stopMonitoringNetworkCompleted = EmptyCompletableDeferred()
 
-    override suspend fun isNetworkEnabled(): Boolean {
-        debug { "Inside MockeNetworkManager isNetworkEnabled is $isNetworkEnabled" }
-        return isNetworkEnabled
-    }
 
     override suspend fun startMonitoringNetwork() {
         startMonitoringNetworkCompleted.complete()

@@ -61,7 +61,6 @@ class NWPathNetworkManager(
     private fun checkReachability(network: nw_path_t) {
         when (nw_path_get_status(network)) {
             nw_path_status_satisfied -> {
-                networkManagerService.setIsNetworkEnabled(true)
                 if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
                     if(nw_path_is_expensive(network)) {
                         // connected to hotspot
@@ -75,7 +74,6 @@ class NWPathNetworkManager(
                 }
             }
             nw_path_status_unsatisfied -> {
-                networkManagerService.setIsNetworkEnabled(false)
                 networkManagerService.handleStateChanged(Network.Absent)
             }
         }

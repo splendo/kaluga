@@ -28,11 +28,6 @@ actual class NetworkManager actual constructor(
     context: Any?
 ) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
 
-    private var _isNetworkEnabled = AtomicReference(false)
-    private var isNetworkEnabled: Boolean
-        get() = _isNetworkEnabled.get()
-        set(value) = _isNetworkEnabled.set(value)
-
     private var _scNetworkManager = AtomicReference<SCNetworkManager?>(null)
     private var scNetworkManager: SCNetworkManager?
         get() = _scNetworkManager.get()
@@ -42,8 +37,6 @@ actual class NetworkManager actual constructor(
     private var nwPathNetworkManager: NWPathNetworkManager?
         get() = _nwPathNetworkManager.get()
         set(value) = _nwPathNetworkManager.set(value)
-
-    override suspend fun isNetworkEnabled(): Boolean = isNetworkEnabled
 
     override suspend fun startMonitoringNetwork() {
         if (IOSVersion.systemVersion > IOSVersion(12)) {
@@ -64,12 +57,6 @@ actual class NetworkManager actual constructor(
             scNetworkManager = null
         }
     }
-
-    override fun setIsNetworkEnabled(newValue: Boolean) {
-        isNetworkEnabled = newValue
-    }
-
-    override fun getIsNetworkEnabled(): Boolean = isNetworkEnabled
 
     override fun handleStateChanged(network: Network) = handleNetworkStateChanged(network)
 }

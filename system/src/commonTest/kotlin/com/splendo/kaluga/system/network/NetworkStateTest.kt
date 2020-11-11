@@ -57,7 +57,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
 
         action {
-            networkManager.isNetworkEnabled = true
             networkManager.handleNetworkStateChanged(Network.Wifi())
         }
 
@@ -79,7 +78,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     @Test
     fun `test from available to unavailable`() = testNetworkState(null) {
-        networkManager.isNetworkEnabled = true
         networkStateRepo.lastKnownNetwork = Network.Cellular()
 
         test {
@@ -88,7 +86,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
 
         action {
-            networkManager.isNetworkEnabled = false
             networkManager.handleNetworkStateChanged(Network.Absent)
         }
 
@@ -102,7 +99,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     @Test
     fun `return Absent if isNetworkEnabled is true, but lastKnownNetwork is Absent`() = testNetworkState(null) {
-        networkManager.isNetworkEnabled = true
         networkStateRepo.lastKnownNetwork = Network.Absent
 
         test {
@@ -121,8 +117,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
 
         action {
-            networkManager.isNetworkEnabled = true
-
             networkManager.handleNetworkStateChanged(Network.Absent)
         }
 
@@ -135,7 +129,6 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     @Test
     fun `initialState as Available with Wifi then change to Cellular`() = testNetworkState(null) {
-        networkManager.isNetworkEnabled = true
         networkStateRepo.lastKnownNetwork = Network.Wifi()
 
         test {

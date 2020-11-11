@@ -104,15 +104,12 @@ class SCNetworkManager(
         when (flags) {
             kSCNetworkReachabilityFlagsReachable -> {
                 if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                    scNetworkManager.networkManager.setIsNetworkEnabled(true)
                     scNetworkManager.networkManager.handleStateChanged(Network.Cellular())
                 } else {
-                    scNetworkManager.networkManager.setIsNetworkEnabled(true)
                     scNetworkManager.networkManager.handleStateChanged(Network.Wifi())
                 }
             }
             else -> {
-                scNetworkManager.networkManager.setIsNetworkEnabled(false)
                 scNetworkManager.networkManager.handleStateChanged(Network.Absent)
             }
         }

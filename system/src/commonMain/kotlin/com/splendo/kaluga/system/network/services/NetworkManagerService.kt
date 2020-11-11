@@ -20,8 +20,5 @@ package com.splendo.kaluga.system.network.services
 import com.splendo.kaluga.system.network.Network
 
 interface NetworkManagerService {
-    fun setIsNetworkEnabled(newValue: Boolean)
-    fun getIsNetworkEnabled(): Boolean
-
     fun handleStateChanged(network: Network)
 }
