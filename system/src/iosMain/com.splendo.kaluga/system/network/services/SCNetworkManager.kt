@@ -44,6 +44,11 @@ class SCNetworkManager(
     val networkManager: NetworkManagerService
 ) : NetworkManagerHandler {
 
+    private var _isListening = AtomicReference(false)
+    private var isListening: Boolean
+        get() = _isListening.get()
+        set(value) = _isListening.set(value)
+
     private var _reachability = AtomicReference<SCNetworkReachabilityRef?>(null)
     private var reachability: SCNetworkReachabilityRef?
         get() = _reachability.get()
@@ -59,7 +64,7 @@ class SCNetworkManager(
     }
 
     override fun startNotifier() {
-        if (networkManager.getIsListening()) {
+        if (isListening) {
             return
         }
         reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
@@ -74,13 +79,14 @@ class SCNetworkManager(
         val flag = nativeHeap.alloc<SCNetworkReachabilityFlagsVar>()
         SCNetworkReachabilityGetFlags(reachability, flag.ptr)
 
-        networkManager.setIsListening(true)
+        isListening = true
         nativeHeap.free(context.rawPtr)
         nativeHeap.free(flag.rawPtr)
     }
 
     override fun stopNotifier() {
         reachability = null
+        isListening = false
     }
 
     private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
