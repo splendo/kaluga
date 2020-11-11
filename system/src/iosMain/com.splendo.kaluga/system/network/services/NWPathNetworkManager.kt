@@ -18,7 +18,6 @@
 package com.splendo.kaluga.system.network.services
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.system.network.Network
 import platform.Network.nw_interface_type_cellular
 import platform.Network.nw_interface_type_wifi
