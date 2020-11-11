@@ -198,4 +198,10 @@ class AndroidHUDTests : HUDTests() {
         // Finally should be gone
         device.assertTextDisappears(LOADING)
     }
+
+    @Test
+    fun testBuilderFromActivity() {
+        MainScope().launch { activity?.showHUD() }
+        device.assertTextAppears("Activity")
+    }
 }

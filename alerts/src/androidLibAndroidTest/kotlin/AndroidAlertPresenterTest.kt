@@ -161,4 +161,10 @@ class AndroidAlertPresenterTest : AlertPresenterTests() {
         // Finally should be gone
         assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
     }
+
+    @Test
+    fun testBuilderFromActivity() {
+        MainScope().launch { activity?.showAlert() }
+        device.wait(Until.findObject(By.text("Activity")), DEFAULT_TIMEOUT)
+    }
 }
