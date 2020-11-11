@@ -53,12 +53,14 @@ import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.dispatch_get_main_queue
 
-sealed class NetworkManagerHandler  {
+sealed class NetworkManagerHandler {
+    abstract val networkManagerService: NetworkManagerService
+
     abstract fun startNotifier()
     abstract fun stopNotifier()
 
     class NWPathNetworkManager(
-        private val networkManagerService: NetworkManagerService
+        override val networkManagerService: NetworkManagerService,
     ) : NetworkManagerHandler() {
 
         private var _nwPathMonitor = AtomicReference<nw_path_monitor_t>(null)
@@ -105,7 +107,7 @@ sealed class NetworkManagerHandler  {
     }
 
     class SCNetworkManager(
-        val networkManager: NetworkManagerService
+        override val networkManagerService: NetworkManagerService
     ) : NetworkManagerHandler() {
 
         private var _isListening = AtomicReference(false)
@@ -168,13 +170,13 @@ sealed class NetworkManagerHandler  {
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        scNetworkManager.networkManager.handleStateChanged(Network.Cellular())
+                        scNetworkManager.networkManagerService.handleStateChanged(Network.Cellular())
                     } else {
-                        scNetworkManager.networkManager.handleStateChanged(Network.Wifi())
+                        scNetworkManager.networkManagerService.handleStateChanged(Network.Wifi())
                     }
                 }
                 else -> {
-                    scNetworkManager.networkManager.handleStateChanged(Network.Absent)
+                    scNetworkManager.networkManagerService.handleStateChanged(Network.Absent)
                 }
             }
         }
