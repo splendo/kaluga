@@ -61,7 +61,7 @@ actual class NetworkManager actual constructor(
         if (Build.VERSION.SDK_INT >= 24) {
             connectivityManager.unregisterNetworkCallback(networkConnectivityCallbacks)
         } else {
-            // connectivityReceiver.abortBroadcast()
+            (context as Context).unregisterReceiver(networkConnectivityReceiver)
         }
     }
 
