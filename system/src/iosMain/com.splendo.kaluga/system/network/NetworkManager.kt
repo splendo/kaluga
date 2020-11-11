@@ -19,42 +19,36 @@ package com.splendo.kaluga.system.network
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
-import com.splendo.kaluga.system.network.services.NWPathNetworkManager
+import com.splendo.kaluga.system.network.services.NetworkManagerHandler
 import com.splendo.kaluga.system.network.services.NetworkManagerService
-import com.splendo.kaluga.system.network.services.SCNetworkManager
 
 actual class NetworkManager actual constructor(
     networkStateRepo: NetworkStateRepo,
     context: Any?
 ) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
 
-    private var _scNetworkManager = AtomicReference<SCNetworkManager?>(null)
-    private var scNetworkManager: SCNetworkManager?
-        get() = _scNetworkManager.get()
-        set(value) = _scNetworkManager.set(value)
-
-    private var _nwPathNetworkManager = AtomicReference<NWPathNetworkManager?>(null)
-    private var nwPathNetworkManager: NWPathNetworkManager?
-        get() = _nwPathNetworkManager.get()
-        set(value) = _nwPathNetworkManager.set(value)
+    private var _networkManagerHandler = AtomicReference<NetworkManagerHandler?>(null)
+    private var networkManagerHandler: NetworkManagerHandler?
+        get() = _networkManagerHandler.get()
+        set(value) = _networkManagerHandler.set(value)
 
     override suspend fun startMonitoringNetwork() {
         if (IOSVersion.systemVersion > IOSVersion(12)) {
-            nwPathNetworkManager = NWPathNetworkManager(this)
-            nwPathNetworkManager?.startNotifier()
+            networkManagerHandler = NetworkManagerHandler.NWPathNetworkManager(this)
+            networkManagerHandler?.startNotifier()
         } else {
-            scNetworkManager = SCNetworkManager(this)
-            scNetworkManager?.startNotifier()
+            networkManagerHandler = NetworkManagerHandler.SCNetworkManager(this)
+            networkManagerHandler?.startNotifier()
         }
     }
 
     override suspend fun stopMonitoringNetwork() {
         if (IOSVersion.systemVersion >= IOSVersion(12)) {
-            nwPathNetworkManager?.stopNotifier()
-            nwPathNetworkManager = null
+            networkManagerHandler?.stopNotifier()
+            networkManagerHandler = null
         } else {
-            scNetworkManager?.stopNotifier()
-            scNetworkManager = null
+            networkManagerHandler?.stopNotifier()
+            networkManagerHandler = null
         }
     }
 
