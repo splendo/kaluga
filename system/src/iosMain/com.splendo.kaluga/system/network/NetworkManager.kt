@@ -28,11 +28,6 @@ actual class NetworkManager actual constructor(
     context: Any?
 ) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
 
-    private var _isListening = AtomicReference(false)
-    private var isListening: Boolean
-        get() = _isListening.get()
-        set(value) = _isListening.set(value)
-
     private var _isNetworkEnabled = AtomicReference(false)
     private var isNetworkEnabled: Boolean
         get() = _isNetworkEnabled.get()
@@ -70,15 +65,9 @@ actual class NetworkManager actual constructor(
         }
     }
 
-    override fun setIsListening(newValue: Boolean) {
-        isListening = newValue
-    }
-
     override fun setIsNetworkEnabled(newValue: Boolean) {
         isNetworkEnabled = newValue
     }
-
-    override fun getIsListening(): Boolean = isListening
 
     override fun getIsNetworkEnabled(): Boolean = isNetworkEnabled
 
