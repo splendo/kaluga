@@ -16,4 +16,4 @@ networkStateRepo.flow().network().collect {
     foo(it)
 }
 ```
-It is possible to get a flow of `Network` instead of receiving `NetworkState` using `.network()` method.
+It is possible to get a flow of `Network` instead of receiving `NetworkState` by using `.network()` method.
