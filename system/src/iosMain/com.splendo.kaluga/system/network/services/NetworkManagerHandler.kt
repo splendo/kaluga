@@ -17,7 +17,167 @@
 
 package com.splendo.kaluga.system.network.services
 
-interface NetworkManagerHandler {
-    fun startNotifier()
-    fun stopNotifier()
+import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.system.network.Network
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.StableRef
+import kotlinx.cinterop.alloc
+import kotlinx.cinterop.asStableRef
+import kotlinx.cinterop.nativeHeap
+import kotlinx.cinterop.ptr
+import kotlinx.cinterop.staticCFunction
+import platform.Network.nw_interface_type_cellular
+import platform.Network.nw_interface_type_wifi
+import platform.Network.nw_path_get_status
+import platform.Network.nw_path_is_expensive
+import platform.Network.nw_path_monitor_create
+import platform.Network.nw_path_monitor_set_update_handler
+import platform.Network.nw_path_monitor_start
+import platform.Network.nw_path_monitor_t
+import platform.Network.nw_path_monitor_update_handler_t
+import platform.Network.nw_path_status_satisfied
+import platform.Network.nw_path_status_unsatisfied
+import platform.Network.nw_path_t
+import platform.Network.nw_path_uses_interface_type
+import platform.SystemConfiguration.SCNetworkReachabilityCallBack
+import platform.SystemConfiguration.SCNetworkReachabilityContext
+import platform.SystemConfiguration.SCNetworkReachabilityCreateWithName
+import platform.SystemConfiguration.SCNetworkReachabilityFlags
+import platform.SystemConfiguration.SCNetworkReachabilityFlagsVar
+import platform.SystemConfiguration.SCNetworkReachabilityGetFlags
+import platform.SystemConfiguration.SCNetworkReachabilityRef
+import platform.SystemConfiguration.SCNetworkReachabilitySetCallback
+import platform.SystemConfiguration.SCNetworkReachabilitySetDispatchQueue
+import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
+import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
+import platform.darwin.dispatch_get_main_queue
+
+sealed class NetworkManagerHandler  {
+    abstract fun startNotifier()
+    abstract fun stopNotifier()
+
+    class NWPathNetworkManager(
+        private val networkManagerService: NetworkManagerService
+    ) : NetworkManagerHandler() {
+
+        private var _nwPathMonitor = AtomicReference<nw_path_monitor_t>(null)
+        private var nwPathMonitor: nw_path_monitor_t
+            get() = _nwPathMonitor.get()
+            set(value) = _nwPathMonitor.set(value)
+
+        private val onNetworkStateChanged = object : nw_path_monitor_update_handler_t {
+            override fun invoke(network: nw_path_t) {
+                checkReachability(network)
+            }
+        }
+
+        override fun startNotifier() {
+            nwPathMonitor = nw_path_monitor_create()
+            nw_path_monitor_set_update_handler(nwPathMonitor, onNetworkStateChanged)
+            nw_path_monitor_start(nwPathMonitor)
+        }
+
+        override fun stopNotifier() {
+            nwPathMonitor = null
+        }
+
+        private fun checkReachability(network: nw_path_t) {
+            when (nw_path_get_status(network)) {
+                nw_path_status_satisfied -> {
+                    if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
+                        if(nw_path_is_expensive(network)) {
+                            // connected to hotspot
+                            networkManagerService.handleStateChanged(Network.Wifi(isExpensive = true))
+                        } else {
+                            networkManagerService.handleStateChanged(Network.Wifi())
+                        }
+                    }
+                    else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
+                        networkManagerService.handleStateChanged(Network.Cellular())
+                    }
+                }
+                nw_path_status_unsatisfied -> {
+                    networkManagerService.handleStateChanged(Network.Absent)
+                }
+            }
+        }
+    }
+
+    class SCNetworkManager(
+        val networkManager: NetworkManagerService
+    ) : NetworkManagerHandler() {
+
+        private var _isListening = AtomicReference(false)
+        private var isListening: Boolean
+            get() = _isListening.get()
+            set(value) = _isListening.set(value)
+
+        private var _reachability = AtomicReference<SCNetworkReachabilityRef?>(null)
+        private var reachability: SCNetworkReachabilityRef?
+            get() = _reachability.get()
+            set(value) = _reachability.set(value)
+
+        private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
+            if (info == null) {
+                return@staticCFunction
+            }
+
+            val networkManager = info.asStableRef<SCNetworkManager>().get()
+            networkManager.checkReachability(networkManager, flags)
+        }
+
+        override fun startNotifier() {
+            if (isListening) {
+                return
+            }
+            reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
+
+            val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
+            context.info = StableRef.create(this@SCNetworkManager).asCPointer()
+
+            if (!areParametersSet(context)) {
+                debug { "Something went wrong setting the parameters" }
+            }
+
+            val flag = nativeHeap.alloc<SCNetworkReachabilityFlagsVar>()
+            SCNetworkReachabilityGetFlags(reachability, flag.ptr)
+
+            isListening = true
+            nativeHeap.free(context.rawPtr)
+            nativeHeap.free(flag.rawPtr)
+        }
+
+        override fun stopNotifier() {
+            reachability = null
+            isListening = false
+        }
+
+        private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
+            if (!SCNetworkReachabilitySetCallback(reachability, onNetworkStateChanged, context.ptr)) {
+                return false
+            }
+
+            if (!SCNetworkReachabilitySetDispatchQueue(reachability, dispatch_get_main_queue())) {
+                return false
+            }
+            return true
+        }
+
+        private fun checkReachability(scNetworkManager: SCNetworkManager, flags: SCNetworkReachabilityFlags) {
+            when (flags) {
+                kSCNetworkReachabilityFlagsReachable -> {
+                    if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
+                        scNetworkManager.networkManager.handleStateChanged(Network.Cellular())
+                    } else {
+                        scNetworkManager.networkManager.handleStateChanged(Network.Wifi())
+                    }
+                }
+                else -> {
+                    scNetworkManager.networkManager.handleStateChanged(Network.Absent)
+                }
+            }
+        }
+
+    }
 }
