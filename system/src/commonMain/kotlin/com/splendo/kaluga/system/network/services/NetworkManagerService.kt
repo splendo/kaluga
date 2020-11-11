@@ -25,10 +25,7 @@ interface NetworkManagerHandler {
 }
 
 interface NetworkManagerService {
-    fun setIsListening(newValue: Boolean)
     fun setIsNetworkEnabled(newValue: Boolean)
-
-    fun getIsListening(): Boolean
     fun getIsNetworkEnabled(): Boolean
 
     fun handleStateChanged(network: Network)
