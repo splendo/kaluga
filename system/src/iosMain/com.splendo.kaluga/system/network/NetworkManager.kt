@@ -21,9 +21,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.system.network.services.NetworkManagerService
 import com.splendo.kaluga.system.network.services.SCNetworkManager
-import platform.SystemConfiguration.SCNetworkReachabilityFlags
-import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
-import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 
 actual class NetworkManager actual constructor(
     networkStateRepo: NetworkStateRepo,
@@ -60,26 +57,8 @@ actual class NetworkManager actual constructor(
         if (IOSVersion.systemVersion > IOSVersion(12)) {
 
         } else {
-            scNetworkManager = null
             scNetworkManager?.stopNotifier()
-        }
-    }
-
-    private fun checkReachability(networkManager: NetworkManager, flags: SCNetworkReachabilityFlags) {
-        when (flags) {
-            kSCNetworkReachabilityFlagsReachable -> {
-                if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                    isNetworkEnabled = true
-                    networkManager.handleNetworkStateChanged(Network.Cellular())
-                } else {
-                    isNetworkEnabled = true
-                    networkManager.handleNetworkStateChanged(Network.Wifi())
-                }
-            }
-            else -> {
-                isNetworkEnabled = false
-                networkManager.handleNetworkStateChanged(Network.Absent)
-            }
+            scNetworkManager = null
         }
     }
 
