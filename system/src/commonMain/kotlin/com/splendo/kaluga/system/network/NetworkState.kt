@@ -31,11 +31,6 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         super.initialState()
     }
 
-    interface StateHandler : HandleBeforeOldStateIsRemoved<NetworkState>, HandleAfterNewStateIsSet<NetworkState> {
-        suspend fun initialState()
-        suspend fun finalState()
-    }
-
     val availableWithWifi: suspend () -> Available = {
         Available(Network.Wifi(), networkManager)
     }
@@ -48,7 +43,12 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
         Unavailable(Network.Absent, networkManager)
     }
 
-    data class Available(override val networkType: Network, val networkManager: BaseNetworkManager) : NetworkState(networkType, networkManager), StateHandler {
+    data class Available(
+        override val networkType: Network,
+        val networkManager: BaseNetworkManager
+    ) : NetworkState(networkType, networkManager),
+        HandleBeforeOldStateIsRemoved<NetworkState>,
+        HandleAfterNewStateIsSet<NetworkState> {
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
@@ -75,7 +75,9 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
 
     data class Unavailable(
         override val networkType: Network, val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager), StateHandler {
+    ) : NetworkState(networkType, networkManager),
+        HandleBeforeOldStateIsRemoved<NetworkState>,
+        HandleAfterNewStateIsSet<NetworkState> {
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
