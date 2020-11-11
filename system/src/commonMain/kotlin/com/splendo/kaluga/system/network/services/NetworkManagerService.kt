@@ -19,11 +19,6 @@ package com.splendo.kaluga.system.network.services
 
 import com.splendo.kaluga.system.network.Network
 
-interface NetworkManagerHandler {
-    fun startNotifier()
-    fun stopNotifier()
-}
-
 interface NetworkManagerService {
     fun setIsNetworkEnabled(newValue: Boolean)
     fun getIsNetworkEnabled(): Boolean
