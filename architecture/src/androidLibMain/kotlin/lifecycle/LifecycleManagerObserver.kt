@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.lifecycle
 
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -32,3 +33,21 @@ class LifecycleManagerObserver : LifecycleSubscriber() {
     private val _managerState = MutableStateFlow<LifecycleSubscribable.LifecycleManager?>(null)
     val managerState: StateFlow<LifecycleSubscribable.LifecycleManager?> = _managerState
 }
+
+/**
+ * @return The [LifecycleManagerObserver] that only reports the lifecycle of this [AppCompatActivity].
+ * Will be created if need but only one instance will exist.
+ *
+ * For example can be used by code in the Activity itself.
+ *
+ * Warning: do not use this attempt to use this observer in cases where a dependent class such a Builder
+ * exists over the lifespan of several Activities (e.g. when recreated due to rotation etc).
+ * In particular this applies to places such as a ViewModel, which can outlive a single Activity.
+ *
+ */
+fun AppCompatActivity.lifecycleManagerObserver(): LifecycleManagerObserver =
+    getOrPutAndRemoveOnDestroyFromCache(
+        onCreate = { it.subscribe(this@lifecycleManagerObserver) },
+        onDestroy = { it.unsubscribe() },
+        defaultValue = { LifecycleManagerObserver() }
+    )
