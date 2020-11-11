@@ -18,33 +18,17 @@
 package com.splendo.kaluga.system.network
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.logging.debug
-import kotlinx.cinterop.COpaquePointer
-import kotlinx.cinterop.StableRef
-import kotlinx.cinterop.alloc
-import kotlinx.cinterop.asStableRef
-import kotlinx.cinterop.nativeHeap
-import kotlinx.cinterop.ptr
-import kotlinx.cinterop.staticCFunction
-import platform.SystemConfiguration.SCNetworkReachabilityCallBack
-import platform.SystemConfiguration.SCNetworkReachabilityContext
-import platform.SystemConfiguration.SCNetworkReachabilityCreateWithName
+import com.splendo.kaluga.base.IOSVersion
+import com.splendo.kaluga.system.network.services.NetworkManagerService
+import com.splendo.kaluga.system.network.services.SCNetworkManager
 import platform.SystemConfiguration.SCNetworkReachabilityFlags
-import platform.SystemConfiguration.SCNetworkReachabilityFlagsVar
-import platform.SystemConfiguration.SCNetworkReachabilityGetFlags
-import platform.SystemConfiguration.SCNetworkReachabilityRef
-import platform.SystemConfiguration.SCNetworkReachabilitySetCallback
-import platform.SystemConfiguration.SCNetworkReachabilitySetDispatchQueue
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
-import platform.darwin.dispatch_get_main_queue
 
 actual class NetworkManager actual constructor(
     networkStateRepo: NetworkStateRepo,
     context: Any?
-) : BaseNetworkManager(networkStateRepo) {
-
-    private val reachability = SCNetworkReachabilityCreateWithName(null, "www.appleiphonecell.com")
+) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
 
     private var _isListening = AtomicReference(false)
     private var isListening: Boolean
@@ -56,66 +40,29 @@ actual class NetworkManager actual constructor(
         get() = _isNetworkEnabled.get()
         set(value) = _isNetworkEnabled.set(value)
 
-    private val onNetworkStateChanged: SCNetworkReachabilityCallBack = staticCFunction { ref: SCNetworkReachabilityRef?, flags: SCNetworkReachabilityFlags, info: COpaquePointer? ->
-        if (info == null) {
-            debug { "DEBUG: info is null, returning." }
-            return@staticCFunction
-        }
-        val networkManager = info.asStableRef<NetworkManager>().get()
-        networkManager.checkReachability(networkManager, flags)
-    }
+    private var _scNetworkManager = AtomicReference<SCNetworkManager?>(null)
+    private var scNetworkManager: SCNetworkManager?
+        get() = _scNetworkManager.get()
+        set(value) = _scNetworkManager.set(value)
 
     override suspend fun isNetworkEnabled(): Boolean = isNetworkEnabled
 
     override suspend fun startMonitoringNetwork() {
-        // val currentVersion = UIDevice.currentDevice.systemVersion.split(".")[0].toInt()
-        // if (currentVersion >= 12) {
-        //     println("current ios version is > 12 $currentVersion")
-        //     // configureNwPath()
-        // } else {
-        //     println("current ios version is < 12 $currentVersion")
-        //     configureSCNetworkReachability()
-        // }
-        startNotifier()
+        if (IOSVersion.systemVersion > IOSVersion(12)) {
+
+        } else {
+            scNetworkManager = SCNetworkManager(this)
+            scNetworkManager?.startNotifier()
+        }
     }
 
     override suspend fun stopMonitoringNetwork() {
-        stopNotifier()
-    }
+        if (IOSVersion.systemVersion > IOSVersion(12)) {
 
-    private fun startNotifier() {
-        if (isListening) {
-            return
+        } else {
+            scNetworkManager = null
+            scNetworkManager?.stopNotifier()
         }
-
-        val context = nativeHeap.alloc<SCNetworkReachabilityContext>()
-        context.info = StableRef.create(this@NetworkManager).asCPointer()
-
-        if (!areParametersSet(context)) {
-            debug { "Something went wrong setting the parameters" }
-        }
-
-        val flag = nativeHeap.alloc<SCNetworkReachabilityFlagsVar>()
-        SCNetworkReachabilityGetFlags(reachability, flag.ptr)
-
-        isListening = true
-        nativeHeap.free(context.rawPtr)
-        nativeHeap.free(flag.rawPtr)
-    }
-
-    private fun areParametersSet(context: SCNetworkReachabilityContext): Boolean {
-        if (!SCNetworkReachabilitySetCallback(reachability, onNetworkStateChanged, context.ptr)) {
-            return false
-        }
-
-        if (!SCNetworkReachabilitySetDispatchQueue(reachability, dispatch_get_main_queue())) {
-            return false
-        }
-        return true
-    }
-
-    private fun stopNotifier() {
-        isListening = false
     }
 
     private fun checkReachability(networkManager: NetworkManager, flags: SCNetworkReachabilityFlags) {
@@ -135,4 +82,18 @@ actual class NetworkManager actual constructor(
             }
         }
     }
+
+    override fun setIsListening(newValue: Boolean) {
+        isListening = newValue
+    }
+
+    override fun setIsNetworkEnabled(newValue: Boolean) {
+        isNetworkEnabled = newValue
+    }
+
+    override fun getIsListening(): Boolean = isListening
+
+    override fun getIsNetworkEnabled(): Boolean = isNetworkEnabled
+
+    override fun handleStateChanged(network: Network) = handleNetworkStateChanged(network)
 }
