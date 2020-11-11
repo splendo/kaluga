@@ -17,31 +17,28 @@
 
 package com.splendo.kaluga.system.network
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
-import android.net.Network
-import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.annotation.RequiresApi
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
+import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
+import com.splendo.kaluga.system.network.services.NetworkManagerService
 
 interface NetworkHelper {
-    fun determineNetworkType(): com.splendo.kaluga.system.network.Network
+    fun determineNetworkType(): Network
 }
 
 actual class NetworkManager actual constructor(
     networkStateRepo: NetworkStateRepo,
     private val context: Any?
-) : BaseNetworkManager(networkStateRepo) {
+) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
 
     private val connectivityManager = (context as Context).getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    private lateinit var networkConnectivityCallbacks: NetworkConnectivityCallbacks
-    private lateinit var networkConnectivityReceiver: NetworkConnectivityReceiver
+    private lateinit var networkConnectivityCallbacks: ConnectivityCallbackNetworkManager
+    private lateinit var networkConnectivityReceiver: ConnectivityReceiverNetworkManager
 
     private var _isNetworkEnabled = AtomicReference(false)
     private var isNetworkEnabled: Boolean
@@ -52,12 +49,10 @@ actual class NetworkManager actual constructor(
 
     override suspend fun startMonitoringNetwork() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            debug { "DEBUG_KALUGA_SYSTEM: subscribing to ConnectivityCallbacks" }
-            networkConnectivityCallbacks = NetworkConnectivityCallbacks()
+            networkConnectivityCallbacks = ConnectivityCallbackNetworkManager(this, connectivityManager)
             connectivityManager.registerDefaultNetworkCallback(networkConnectivityCallbacks)
         } else {
-            debug { "DEBUG_KALUGA_SYSTEM: subscribing to ConnectivityReceiver" }
-            networkConnectivityReceiver = NetworkConnectivityReceiver()
+            networkConnectivityReceiver = ConnectivityReceiverNetworkManager(this, connectivityManager)
             (context as Context).registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         }
     }
@@ -70,77 +65,12 @@ actual class NetworkManager actual constructor(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    private inner class NetworkConnectivityCallbacks : ConnectivityManager.NetworkCallback(), NetworkHelper {
-        override fun onAvailable(network: Network) {
-            super.onAvailable(network)
-            isNetworkEnabled = true
-
-            val networkType = determineNetworkType()
-            handleNetworkStateChanged(networkType)
-        }
-
-        override fun onUnavailable() {
-            super.onUnavailable()
-            isNetworkEnabled = false
-            handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
-        }
-
-        override fun onLosing(network: Network, maxMsToLive: Int) {
-            super.onLosing(network, maxMsToLive)
-            isNetworkEnabled = false
-            handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
-        }
-
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            isNetworkEnabled = false
-            handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
-        }
-
-        override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {
-            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-            val isCellularDataEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
-            val isWifiEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
-
-            return when {
-                isWifiEnabled -> {
-                    com.splendo.kaluga.system.network.Network.Wifi()
-                }
-                isCellularDataEnabled -> {
-                    com.splendo.kaluga.system.network.Network.Cellular()
-                }
-                else -> {
-                    com.splendo.kaluga.system.network.Network.Absent
-                }
-            }
-        }
+    override fun setIsNetworkEnabled(newValue: Boolean) {
+        isNetworkEnabled = newValue
     }
 
-    private inner class NetworkConnectivityReceiver : BroadcastReceiver(), NetworkHelper {
-        override fun onReceive(c: Context, intent: Intent) {
-            debug { "DEBUG_KALUGA_SYSTEM: onReceive ConnectivityReceiver" }
-            val networkInfo = connectivityManager.activeNetworkInfo
-            debug { "DEBUG_KALUGA_SYSTEM: networkInfo is $networkInfo" }
-            if (networkInfo?.isConnectedOrConnecting == true) {
-                val networkType = determineNetworkType()
-                isNetworkEnabled = true
-                handleNetworkStateChanged(networkType)
-                debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
-            } else {
-                isNetworkEnabled = false
-                handleNetworkStateChanged(com.splendo.kaluga.system.network.Network.Absent)
-                debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
-            }
-        }
+    override fun getIsNetworkEnabled(): Boolean = isNetworkEnabled
 
-        override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {
-            val isMetered = connectivityManager.isActiveNetworkMetered
-            return when {
-                (!isMetered && connectivityManager.isDefaultNetworkActive) -> com.splendo.kaluga.system.network.Network.Wifi()
-                isMetered -> com.splendo.kaluga.system.network.Network.Cellular()
-                else -> com.splendo.kaluga.system.network.Network.Absent
-            }
-        }
-    }
+    override fun handleStateChanged(network: Network) =
+        handleNetworkStateChanged(network)
 }
