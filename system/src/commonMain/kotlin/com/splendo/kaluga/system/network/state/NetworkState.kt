@@ -34,15 +34,15 @@ sealed class NetworkState(open val networkType: Network, private val networkMana
     }
 
     val availableWithWifi: suspend () -> Available = {
-        Available(Network.Wifi(), networkManager)
+        Available(Network.Known.Wifi(), networkManager)
     }
 
     val availableWithCellular: suspend () -> Available = {
-        Available(Network.Cellular(), networkManager)
+        Available(Network.Known.Cellular(), networkManager)
     }
 
     val unavailable: suspend () -> Unavailable = {
-        Unavailable(Network.Absent, networkManager)
+        Unavailable(Network.Known.Absent, networkManager)
     }
 
     data class Available(

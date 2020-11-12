@@ -29,7 +29,7 @@ class NetworkStateRepo(
     context: Any?,
 ) : ColdStateRepo<NetworkState>() {
 
-    private var _lastKnownNetwork = AtomicReference<Network>(Network.Absent)
+    private var _lastKnownNetwork = AtomicReference<Network>(Network.Known.Absent)
     internal var lastKnownNetwork: Network
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
@@ -42,9 +42,9 @@ class NetworkStateRepo(
 
     override suspend fun initialValue(): NetworkState {
         return when (lastKnownNetwork) {
-            is Network.Wifi -> NetworkState.Available(Network.Wifi(), networkManager)
-            is Network.Cellular -> NetworkState.Available(Network.Cellular(), networkManager)
-            else -> NetworkState.Unavailable(Network.Absent, networkManager)
+            is Network.Known.Wifi -> NetworkState.Available(Network.Known.Wifi(), networkManager)
+            is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular(), networkManager)
+            else -> NetworkState.Unavailable(Network.Known.Absent, networkManager)
         }
     }
 }

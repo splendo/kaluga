@@ -39,7 +39,7 @@ class ConnectivityReceiverNetworkManager(
             networkManagerService.handleStateChanged(networkType)
             debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
         } else {
-            networkManagerService.handleStateChanged(Network.Absent)
+            networkManagerService.handleStateChanged(Network.Known.Absent)
             debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
         }
     }
@@ -47,9 +47,9 @@ class ConnectivityReceiverNetworkManager(
     override fun determineNetworkType(): Network {
         val isMetered = connectivityManager.isActiveNetworkMetered
         return when {
-            (!isMetered && connectivityManager.isDefaultNetworkActive) -> Network.Wifi()
-            isMetered -> Network.Cellular()
-            else -> Network.Absent
+            (!isMetered && connectivityManager.isDefaultNetworkActive) -> Network.Known.Wifi()
+            isMetered -> Network.Known.Cellular()
+            else -> Network.Known.Absent
         }
     }
 }

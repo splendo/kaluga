@@ -46,7 +46,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     fun `test initialValue is Unavailable`() = testNetworkState(null) {
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Absent, it.networkType)
+            assertEquals(Network.Known.Absent, it.networkType)
         }
         resetFlow()
     }
@@ -55,45 +55,45 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     fun `test network state changed`() = testNetworkState(null) {
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(it.networkType, Network.Absent)
+            assertEquals(it.networkType, Network.Known.Absent)
         }
 
         action {
-            networkManager.handleNetworkStateChanged(Network.Wifi())
+            networkManager.handleNetworkStateChanged(Network.Known.Wifi())
         }
 
         test {
             assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Wifi(), it.networkType)
+            assertEquals(Network.Known.Wifi(), it.networkType)
         }
 
         action {
-            networkManager.handleNetworkStateChanged(Network.Cellular())
+            networkManager.handleNetworkStateChanged(Network.Known.Cellular())
         }
 
         test {
             assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Cellular(), it.networkType)
+            assertEquals(Network.Known.Cellular(), it.networkType)
         }
         resetFlow()
     }
 
     @Test
     fun `test from available to unavailable`() = testNetworkState(null) {
-        networkStateRepo.lastKnownNetwork = Network.Cellular()
+        networkStateRepo.lastKnownNetwork = Network.Known.Cellular()
 
         test {
             assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Cellular(), it.networkType)
+            assertEquals(Network.Known.Cellular(), it.networkType)
         }
 
         action {
-            networkManager.handleNetworkStateChanged(Network.Absent)
+            networkManager.handleNetworkStateChanged(Network.Known.Absent)
         }
 
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Absent, it.networkType)
+            assertEquals(Network.Known.Absent, it.networkType)
         }
 
         resetFlow()
@@ -101,11 +101,11 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     @Test
     fun `return Absent if isNetworkEnabled is true, but lastKnownNetwork is Absent`() = testNetworkState(null) {
-        networkStateRepo.lastKnownNetwork = Network.Absent
+        networkStateRepo.lastKnownNetwork = Network.Known.Absent
 
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Absent, it.networkType)
+            assertEquals(Network.Known.Absent, it.networkType)
         }
 
         resetFlow()
@@ -115,35 +115,35 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     fun `return Unavailable if isNetworkEnabled is true, and handleNetworkEnabledChanged is called with Absent`() = testNetworkState(null) {
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Absent, it.networkType)
+            assertEquals(Network.Known.Absent, it.networkType)
         }
 
         action {
-            networkManager.handleNetworkStateChanged(Network.Absent)
+            networkManager.handleNetworkStateChanged(Network.Known.Absent)
         }
 
         test {
             assertTrue { it is NetworkState.Unavailable }
-            assertEquals(Network.Absent, it.networkType)
+            assertEquals(Network.Known.Absent, it.networkType)
         }
         resetFlow()
     }
 
     @Test
     fun `initialState as Available with Wifi then change to Cellular`() = testNetworkState(null) {
-        networkStateRepo.lastKnownNetwork = Network.Wifi()
+        networkStateRepo.lastKnownNetwork = Network.Known.Wifi()
 
         test {
             assertTrue { it is NetworkState.Available }
-            assertEquals(Network.Wifi(), it.networkType)
+            assertEquals(Network.Known.Wifi(), it.networkType)
         }
 
         action {
-            networkManager.handleNetworkStateChanged(Network.Cellular())
+            networkManager.handleNetworkStateChanged(Network.Known.Cellular())
         }
 
         test {
-            assertEquals(Network.Cellular(), it.networkType)
+            assertEquals(Network.Known.Cellular(), it.networkType)
         }
     }
 }

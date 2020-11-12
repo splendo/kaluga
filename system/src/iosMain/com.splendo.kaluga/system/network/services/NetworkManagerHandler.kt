@@ -90,17 +90,17 @@ sealed class NetworkManagerHandler {
                     if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
                         if(nw_path_is_expensive(network)) {
                             // connected to hotspot
-                            networkManagerService.handleStateChanged(Network.Wifi(isExpensive = true))
+                            networkManagerService.handleStateChanged(Network.Known.Wifi(isExpensive = true))
                         } else {
-                            networkManagerService.handleStateChanged(Network.Wifi())
+                            networkManagerService.handleStateChanged(Network.Known.Wifi())
                         }
                     }
                     else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
-                        networkManagerService.handleStateChanged(Network.Cellular())
+                        networkManagerService.handleStateChanged(Network.Known.Cellular())
                     }
                 }
                 nw_path_status_unsatisfied -> {
-                    networkManagerService.handleStateChanged(Network.Absent)
+                    networkManagerService.handleStateChanged(Network.Known.Absent)
                 }
             }
         }
@@ -170,13 +170,13 @@ sealed class NetworkManagerHandler {
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        scNetworkManager.networkManagerService.handleStateChanged(Network.Cellular())
+                        scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Cellular())
                     } else {
-                        scNetworkManager.networkManagerService.handleStateChanged(Network.Wifi())
+                        scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Wifi())
                     }
                 }
                 else -> {
-                    scNetworkManager.networkManagerService.handleStateChanged(Network.Absent)
+                    scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Absent)
                 }
             }
         }

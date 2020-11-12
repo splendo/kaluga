@@ -40,18 +40,18 @@ class ConnectivityCallbackNetworkManager(
     override fun onUnavailable() {
         super.onUnavailable()
 
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Absent)
+        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun onLosing(network: Network, maxMsToLive: Int) {
         super.onLosing(network, maxMsToLive)
 
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Absent)
+        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun onLost(network: Network) {
         super.onLost(network)
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Absent)
+        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {
@@ -61,13 +61,13 @@ class ConnectivityCallbackNetworkManager(
 
         return when {
             isWifiEnabled -> {
-                com.splendo.kaluga.system.network.Network.Wifi()
+                com.splendo.kaluga.system.network.Network.Known.Wifi()
             }
             isCellularDataEnabled -> {
-                com.splendo.kaluga.system.network.Network.Cellular()
+                com.splendo.kaluga.system.network.Network.Known.Cellular()
             }
             else -> {
-                com.splendo.kaluga.system.network.Network.Absent
+                com.splendo.kaluga.system.network.Network.Known.Absent
             }
         }
     }

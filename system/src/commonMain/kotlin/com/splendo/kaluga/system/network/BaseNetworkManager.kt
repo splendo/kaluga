@@ -33,16 +33,20 @@ abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo
                 when (state) {
                     is NetworkState.Available -> {
                         when (network) {
-                            is Network.Cellular -> state.availableWithCellular
-                            is Network.Wifi -> state.availableWithWifi
-                            is Network.Absent -> state.unavailable
+                            is Network.Unknown.UnknownWithoutLastNetwork -> TODO()
+                            is Network.Unknown.UnknownWithLastNetwork -> TODO()
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
                         }
                     }
                     is NetworkState.Unavailable -> {
                         when (network) {
-                            is Network.Cellular -> state.availableWithCellular
-                            is Network.Wifi -> state.availableWithWifi
-                            is Network.Absent -> state.unavailable
+                            is Network.Unknown.UnknownWithoutLastNetwork -> TODO()
+                            is Network.Unknown.UnknownWithLastNetwork -> TODO()
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
                         }
                     }
                 }
