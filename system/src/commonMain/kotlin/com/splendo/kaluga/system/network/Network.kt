@@ -22,7 +22,20 @@ interface ReachableNetworkConnection {
 }
 
 sealed class Network {
-    data class Cellular(override val isExpensive: Boolean = true) : Network(), ReachableNetworkConnection
-    data class Wifi(override val isExpensive: Boolean = false) : Network(), ReachableNetworkConnection
-    object Absent : Network()
+    sealed class Unknown(open val reason: Reason): Network() {
+        enum class Reason {
+            CONNECTING,
+            LOSING
+        }
+        class UnknownWithoutLastNetwork(override val reason: Reason) : Unknown(reason)
+        class UnknownWithLastNetwork(
+            val lastKnownNetwork: Network.Known,
+            override val reason: Reason
+        ) : Unknown(reason)
+    }
+    sealed class Known : Network() {
+        data class Cellular(override val isExpensive: Boolean = true) : Known(), ReachableNetworkConnection
+        data class Wifi(override val isExpensive: Boolean = false) : Known(), ReachableNetworkConnection
+        object Absent : Network()
+    }
 }
