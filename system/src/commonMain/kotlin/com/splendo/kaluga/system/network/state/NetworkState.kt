@@ -15,11 +15,13 @@
 
  */
 
-package com.splendo.kaluga.system.network
+package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
+import com.splendo.kaluga.system.network.BaseNetworkManager
+import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(open val networkType: Network, private val networkManager: BaseNetworkManager) : State() {
 

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.system.network
 
+import com.splendo.kaluga.system.network.state.NetworkState
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

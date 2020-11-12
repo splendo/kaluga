@@ -15,10 +15,13 @@
 
  */
 
-package com.splendo.kaluga.system.network
+package com.splendo.kaluga.system.network.state
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.system.network.BaseNetworkManager
+import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.NetworkManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

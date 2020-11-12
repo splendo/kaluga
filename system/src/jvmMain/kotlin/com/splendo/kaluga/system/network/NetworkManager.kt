@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.system.network
 
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
+
 actual class NetworkManager actual constructor(networkStateRepo: NetworkStateRepo, context: Any?) : BaseNetworkManager(networkStateRepo) {
 
     override suspend fun startMonitoringNetwork() {

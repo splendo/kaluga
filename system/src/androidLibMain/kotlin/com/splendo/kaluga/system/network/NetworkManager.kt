@@ -24,6 +24,7 @@ import android.os.Build
 import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
 import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
 import com.splendo.kaluga.system.network.services.NetworkManagerService
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 interface NetworkHelper {
     fun determineNetworkType(): Network

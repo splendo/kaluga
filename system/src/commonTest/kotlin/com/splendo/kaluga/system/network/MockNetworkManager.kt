@@ -19,6 +19,7 @@ package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 class MockNetworkManager(
     networkStateRepo: NetworkStateRepo

@@ -21,6 +21,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.system.network.services.NetworkManagerHandler
 import com.splendo.kaluga.system.network.services.NetworkManagerService
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 actual class NetworkManager actual constructor(
     networkStateRepo: NetworkStateRepo,

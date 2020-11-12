@@ -18,6 +18,8 @@
 package com.splendo.kaluga.system.network
 
 import com.splendo.kaluga.flow.Flowable
+import com.splendo.kaluga.system.network.state.NetworkState
+import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.FlowableTest
 import kotlin.test.Test
