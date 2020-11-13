@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import kotlin.native.internal.GC
+import com.splendo.kaluga.base.GCScheduler
 
 typealias DisposeHandler = () -> Unit
 
@@ -50,7 +50,7 @@ class SimpleDisposable(onDispose: DisposeHandler) : Disposable {
     override fun dispose() {
         disposeHandler?.invoke()
         disposeHandler = null
-        GC.collect()
+        GCScheduler.schedule()
     }
 
     /**
