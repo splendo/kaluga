@@ -22,6 +22,7 @@ import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.NetworkManager
+import com.splendo.kaluga.system.network.unknownNetworkOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -29,7 +30,7 @@ class NetworkStateRepo(
     context: Any?,
 ) : ColdStateRepo<NetworkState>() {
 
-    private var _lastKnownNetwork = AtomicReference<Network>(Network.Known.Absent)
+    private var _lastKnownNetwork = AtomicReference<Network>(Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR))
     internal var lastKnownNetwork: Network
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
@@ -41,10 +42,24 @@ class NetworkStateRepo(
     }
 
     override suspend fun initialValue(): NetworkState {
-        return when (lastKnownNetwork) {
-            is Network.Known.Wifi -> NetworkState.Available(Network.Known.Wifi(), networkManager)
+        return when(lastKnownNetwork) {
+            is Network.Unknown.WithoutLastNetwork -> {
+                with (lastKnownNetwork as Network.Unknown.WithoutLastNetwork) {
+                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager)
+                }
+            }
+            is Network.Unknown.WithLastNetwork -> {
+                with (lastKnownNetwork as Network.Unknown.WithLastNetwork) {
+                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager)
+                }
+            }
             is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular(), networkManager)
-            else -> NetworkState.Unavailable(Network.Known.Absent, networkManager)
+            is Network.Known.Wifi -> {
+                with(lastKnownNetwork as Network.Known.Wifi) {
+                    NetworkState.Available(Network.Known.Wifi(isExpensive), networkManager)
+                }
+            }
+            Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent, networkManager)
         }
     }
 }
