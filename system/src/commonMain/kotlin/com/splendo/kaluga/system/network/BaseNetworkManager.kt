@@ -33,8 +33,12 @@ abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo
                 when (state) {
                     is NetworkState.Available -> {
                         when (network) {
-                            is Network.Unknown.UnknownWithoutLastNetwork -> TODO()
-                            is Network.Unknown.UnknownWithLastNetwork -> TODO()
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
                             is Network.Known.Cellular -> state.availableWithCellular
                             is Network.Known.Wifi -> state.availableWithWifi
                             Network.Known.Absent -> state.unavailable
@@ -42,8 +46,25 @@ abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo
                     }
                     is NetworkState.Unavailable -> {
                         when (network) {
-                            is Network.Unknown.UnknownWithoutLastNetwork -> TODO()
-                            is Network.Unknown.UnknownWithLastNetwork -> TODO()
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
+                        }
+                    }
+                    is NetworkState.Unknown -> {
+                        when (network) {
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
                             is Network.Known.Cellular -> state.availableWithCellular
                             is Network.Known.Wifi -> state.availableWithWifi
                             Network.Known.Absent -> state.unavailable
