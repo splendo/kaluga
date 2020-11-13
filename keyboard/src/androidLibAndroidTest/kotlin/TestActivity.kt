@@ -15,19 +15,27 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+package com.splendo.kaluga.keyboard
 
-package com.splendo.kaluga.hud
+import android.os.Bundle
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 
-import androidx.activity.viewModels
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
+class TestActivity : AppCompatActivity() {
 
-class TestActivity : KalugaViewModelActivity<HudViewModel>() {
+    lateinit var view: TextView
 
-    override val viewModel: HudViewModel by viewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        view = TextView(this).apply {
+            text = "keyboard"
+            id = 1337
+            setContentView(this)
+        }
+    }
 
-    suspend fun showHUD() {
-        hudBuilder().build(viewModel.coroutineScope) {
-            setTitle("Activity")
-        }.present(false)
+    fun showKeyboard() {
+        keyboardManagerBuilder().create(lifecycleScope).show(view.id)
     }
 }

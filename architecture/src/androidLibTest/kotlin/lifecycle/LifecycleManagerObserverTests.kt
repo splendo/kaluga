@@ -43,7 +43,7 @@ class LifecycleManagerObserverTests : BaseTest() {
     private lateinit var fragmentManager: FragmentManager
 
     @Before
-    fun setUp() {
+    override fun beforeTest() {
         super.beforeTest()
         MockitoAnnotations.initMocks(this)
     }

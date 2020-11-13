@@ -14,6 +14,7 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.architecture
 
 import androidx.appcompat.app.AppCompatActivity
 
