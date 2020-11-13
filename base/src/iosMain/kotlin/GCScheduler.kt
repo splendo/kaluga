@@ -36,4 +36,3 @@ object GCScheduler {
         isCollecting.value = false
     }
 }
-
