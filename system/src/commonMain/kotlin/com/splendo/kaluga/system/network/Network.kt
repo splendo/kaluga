@@ -25,10 +25,11 @@ sealed class Network {
     sealed class Unknown(open val reason: Reason): Network() {
         enum class Reason {
             CONNECTING,
-            LOSING
+            LOSING,
+            NOT_CLEAR
         }
-        class UnknownWithoutLastNetwork(override val reason: Reason) : Unknown(reason)
-        class UnknownWithLastNetwork(
+        class WithoutLastNetwork(override val reason: Reason) : Unknown(reason)
+        class WithLastNetwork(
             val lastKnownNetwork: Network.Known,
             override val reason: Reason
         ) : Unknown(reason)
@@ -36,6 +37,14 @@ sealed class Network {
     sealed class Known : Network() {
         data class Cellular(override val isExpensive: Boolean = true) : Known(), ReachableNetworkConnection
         data class Wifi(override val isExpensive: Boolean = false) : Known(), ReachableNetworkConnection
-        object Absent : Network()
+        object Absent : Known()
+    }
+}
+
+fun Network.unknownNetworkOf(reason: Network.Unknown.Reason): Network.Unknown {
+    return when (this) {
+        is Network.Unknown.WithoutLastNetwork -> Network.Unknown.WithoutLastNetwork(reason)
+        is Network.Unknown.WithLastNetwork -> Network.Unknown.WithLastNetwork(this.lastKnownNetwork, reason)
+        is Network.Known -> Network.Unknown.WithLastNetwork(this, reason)
     }
 }
