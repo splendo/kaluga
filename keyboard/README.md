@@ -24,7 +24,7 @@ The `KeyboardManager.Builder` and `KeyboardHostingView` are provided on the plat
 
 On Android the builder uses a `LifecycleManagerObserver` (see Architecture) unless it is a member of a `ViewModel`, where the keyboardHostingView is any resource Id for a `View` attached to the `Activity` bound to the manager.
 
-You can use the `AppCompatActivity.hudBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
+You can use the `AppCompatActivity.keyboardManagerBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ```kotlin
 // In Activity
