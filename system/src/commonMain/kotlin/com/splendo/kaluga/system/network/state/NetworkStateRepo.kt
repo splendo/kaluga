@@ -25,6 +25,7 @@ import com.splendo.kaluga.system.network.NetworkManager
 import com.splendo.kaluga.system.network.unknownNetworkOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class NetworkStateRepo(
     context: Any?,
@@ -35,7 +36,10 @@ class NetworkStateRepo(
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal var networkManager: BaseNetworkManager = NetworkManager(this, context)
+    internal val networkManager: BaseNetworkManager =
+        NetworkManager(context) {
+            onNetworkStateChange(it)
+        }
 
     override suspend fun deinitialize(state: NetworkState) {
         lastKnownNetwork = state.networkType
@@ -60,6 +64,54 @@ class NetworkStateRepo(
                 }
             }
             Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent, networkManager)
+        }
+    }
+
+    private fun onNetworkStateChange(network: Network) {
+        launch {
+            takeAndChangeState { state: NetworkState ->
+                when (state) {
+                    is NetworkState.Available -> {
+                        when (network) {
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
+                        }
+                    }
+                    is NetworkState.Unavailable -> {
+                        when (network) {
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
+                        }
+                    }
+                    is NetworkState.Unknown -> {
+                        when (network) {
+                            is Network.Unknown.WithoutLastNetwork -> {
+                                { state.unknownWithoutLastNetwork(network.reason) }
+                            }
+                            is Network.Unknown.WithLastNetwork -> {
+                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
+                            }
+                            is Network.Known.Cellular -> state.availableWithCellular
+                            is Network.Known.Wifi -> state.availableWithWifi
+                            Network.Known.Absent -> state.unavailable
+                        }
+                    }
+                }
+            }
         }
     }
 }
