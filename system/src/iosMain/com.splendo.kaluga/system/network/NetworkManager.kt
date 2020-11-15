@@ -20,13 +20,11 @@ package com.splendo.kaluga.system.network
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.system.network.services.NetworkManagerHandler
-import com.splendo.kaluga.system.network.services.NetworkManagerService
-import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 actual class NetworkManager actual constructor(
-    networkStateRepo: NetworkStateRepo,
-    context: Any?
-) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
+    private val context: Any?,
+    private val onNetworkStateChange: NetworkStateChange
+) : BaseNetworkManager(onNetworkStateChange) {
 
     private var _networkManagerHandler = AtomicReference<NetworkManagerHandler?>(null)
     private var networkManagerHandler: NetworkManagerHandler?
@@ -35,10 +33,10 @@ actual class NetworkManager actual constructor(
 
     override suspend fun startMonitoringNetwork() {
         if (IOSVersion.systemVersion > IOSVersion(12)) {
-            networkManagerHandler = NetworkManagerHandler.NWPathNetworkManager(this)
+            networkManagerHandler = NetworkManagerHandler.NWPathNetworkManager(onNetworkStateChange)
             networkManagerHandler?.startNotifier()
         } else {
-            networkManagerHandler = NetworkManagerHandler.SCNetworkManager(this)
+            networkManagerHandler = NetworkManagerHandler.SCNetworkManager(onNetworkStateChange)
             networkManagerHandler?.startNotifier()
         }
     }
@@ -52,6 +50,4 @@ actual class NetworkManager actual constructor(
             networkManagerHandler = null
         }
     }
-
-    override fun handleStateChanged(network: Network) = handleNetworkStateChanged(network)
 }

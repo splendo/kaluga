@@ -23,17 +23,16 @@ import android.net.ConnectivityManager
 import android.os.Build
 import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
 import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
-import com.splendo.kaluga.system.network.services.NetworkManagerService
-import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 interface NetworkHelper {
     fun determineNetworkType(): Network
 }
 
 actual class NetworkManager actual constructor(
-    networkStateRepo: NetworkStateRepo,
-    private val context: Any?
-) : BaseNetworkManager(networkStateRepo), NetworkManagerService {
+    private val context: Any?,
+    private val onNetworkStateChange: NetworkStateChange
+
+) : BaseNetworkManager(onNetworkStateChange) {
 
     private val connectivityManager = (context as Context).getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
@@ -42,10 +41,10 @@ actual class NetworkManager actual constructor(
 
     override suspend fun startMonitoringNetwork() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            networkConnectivityCallbacks = ConnectivityCallbackNetworkManager(this, connectivityManager)
+            networkConnectivityCallbacks = ConnectivityCallbackNetworkManager(onNetworkStateChange, connectivityManager)
             connectivityManager.registerDefaultNetworkCallback(networkConnectivityCallbacks)
         } else {
-            networkConnectivityReceiver = ConnectivityReceiverNetworkManager(this, connectivityManager)
+            networkConnectivityReceiver = ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager)
             (context as Context).registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         }
     }
@@ -57,7 +56,4 @@ actual class NetworkManager actual constructor(
             (context as Context).unregisterReceiver(networkConnectivityReceiver)
         }
     }
-
-    override fun handleStateChanged(network: Network) =
-        handleNetworkStateChanged(network)
 }
