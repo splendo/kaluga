@@ -17,63 +17,16 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.system.network.state.NetworkState
-import com.splendo.kaluga.system.network.state.NetworkStateRepo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
+typealias NetworkStateChange =  (Network) -> Unit
 
-abstract class BaseNetworkManager(private val networkStateRepo: NetworkStateRepo) : CoroutineScope by networkStateRepo {
+abstract class BaseNetworkManager(private val onNetworkStateChange: NetworkStateChange) {
 
     internal abstract suspend fun startMonitoringNetwork()
     internal abstract suspend fun stopMonitoringNetwork()
 
     internal fun handleNetworkStateChanged(network: Network) {
-        launch {
-            networkStateRepo.takeAndChangeState { state: NetworkState ->
-                when (state) {
-                    is NetworkState.Available -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> {
-                                { state.unknownWithoutLastNetwork(network.reason) }
-                            }
-                            is Network.Unknown.WithLastNetwork -> {
-                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
-                            }
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.unavailable
-                        }
-                    }
-                    is NetworkState.Unavailable -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> {
-                                { state.unknownWithoutLastNetwork(network.reason) }
-                            }
-                            is Network.Unknown.WithLastNetwork -> {
-                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
-                            }
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.unavailable
-                        }
-                    }
-                    is NetworkState.Unknown -> {
-                        when (network) {
-                            is Network.Unknown.WithoutLastNetwork -> {
-                                { state.unknownWithoutLastNetwork(network.reason) }
-                            }
-                            is Network.Unknown.WithLastNetwork -> {
-                                { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
-                            }
-                            is Network.Known.Cellular -> state.availableWithCellular
-                            is Network.Known.Wifi -> state.availableWithWifi
-                            Network.Known.Absent -> state.unavailable
-                        }
-                    }
-                }
-            }
-        }
+        onNetworkStateChange(network)
     }
 }
 
-expect class NetworkManager(networkStateRepo: NetworkStateRepo, context: Any? = null) : BaseNetworkManager
+expect class NetworkManager(context: Any? = null, onNetworkStateChange: NetworkStateChange) : BaseNetworkManager
