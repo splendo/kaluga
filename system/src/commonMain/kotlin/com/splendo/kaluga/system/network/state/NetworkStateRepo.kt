@@ -36,7 +36,7 @@ class NetworkStateRepo(
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal val networkManager: BaseNetworkManager =
+    internal var networkManager: BaseNetworkManager =
         NetworkManager(context) {
             onNetworkStateChange(it)
         }
