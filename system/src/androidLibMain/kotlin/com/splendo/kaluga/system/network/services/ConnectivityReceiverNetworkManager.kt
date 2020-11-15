@@ -24,9 +24,10 @@ import android.net.ConnectivityManager
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.NetworkHelper
+import com.splendo.kaluga.system.network.NetworkStateChange
 
 class ConnectivityReceiverNetworkManager(
-    private val networkManagerService: NetworkManagerService,
+    private val handleStateChange: NetworkStateChange,
     private val connectivityManager: ConnectivityManager
 ) : BroadcastReceiver(), NetworkHelper {
 
@@ -36,10 +37,10 @@ class ConnectivityReceiverNetworkManager(
         debug { "DEBUG_KALUGA_SYSTEM: networkInfo is $networkInfo" }
         if (networkInfo?.isConnectedOrConnecting == true) {
             val networkType = determineNetworkType()
-            networkManagerService.handleStateChanged(networkType)
+            handleStateChange(networkType)
             debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
         } else {
-            networkManagerService.handleStateChanged(Network.Known.Absent)
+            handleStateChange(Network.Known.Absent)
             debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
         }
     }

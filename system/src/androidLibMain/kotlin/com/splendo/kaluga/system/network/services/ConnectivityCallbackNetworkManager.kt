@@ -23,35 +23,47 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.splendo.kaluga.system.network.NetworkHelper
+import com.splendo.kaluga.system.network.NetworkStateChange
 
 @RequiresApi(Build.VERSION_CODES.M)
 class ConnectivityCallbackNetworkManager(
-    private val networkManagerService: NetworkManagerService,
+    private val handleStateChange: NetworkStateChange,
     private val connectivityManager: ConnectivityManager
 ) : ConnectivityManager.NetworkCallback(), NetworkHelper {
 
     override fun onAvailable(network: Network) {
         super.onAvailable(network)
-
+        println("onAvailable")
         val networkType = determineNetworkType()
-        networkManagerService.handleStateChanged(networkType)
+
+        handleStateChange(networkType)
     }
 
     override fun onUnavailable() {
         super.onUnavailable()
-
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
+        println("onUnavailable")
+        handleStateChange(
+            com.splendo.kaluga.system.network.Network.Unknown.WithoutLastNetwork(
+                com.splendo.kaluga.system.network.Network.Unknown.Reason.LOSING
+            )
+        )
     }
 
     override fun onLosing(network: Network, maxMsToLive: Int) {
         super.onLosing(network, maxMsToLive)
+        println("onLosing")
+        handleStateChange(
+            com.splendo.kaluga.system.network.Network.Unknown.WithoutLastNetwork(
+                com.splendo.kaluga.system.network.Network.Unknown.Reason.LOSING
+            )
+        )
 
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun onLost(network: Network) {
         super.onLost(network)
-        networkManagerService.handleStateChanged(com.splendo.kaluga.system.network.Network.Known.Absent)
+        println("onLost")
+        handleStateChange(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {

@@ -20,6 +20,7 @@ package com.splendo.kaluga.system.network.services
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.NetworkStateChange
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.StableRef
 import kotlinx.cinterop.alloc
@@ -54,13 +55,13 @@ import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.dispatch_get_main_queue
 
 sealed class NetworkManagerHandler {
-    abstract val networkManagerService: NetworkManagerService
+    abstract val handleStateChange: NetworkStateChange
 
     abstract fun startNotifier()
     abstract fun stopNotifier()
 
     class NWPathNetworkManager(
-        override val networkManagerService: NetworkManagerService,
+        override val handleStateChange: NetworkStateChange,
     ) : NetworkManagerHandler() {
 
         private var _nwPathMonitor = AtomicReference<nw_path_monitor_t>(null)
@@ -90,24 +91,24 @@ sealed class NetworkManagerHandler {
                     if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
                         if(nw_path_is_expensive(network)) {
                             // connected to hotspot
-                            networkManagerService.handleStateChanged(Network.Known.Wifi(isExpensive = true))
+                            handleStateChange(Network.Known.Wifi(isExpensive = true))
                         } else {
-                            networkManagerService.handleStateChanged(Network.Known.Wifi())
+                            handleStateChange(Network.Known.Wifi())
                         }
                     }
                     else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
-                        networkManagerService.handleStateChanged(Network.Known.Cellular())
+                        handleStateChange(Network.Known.Cellular())
                     }
                 }
                 nw_path_status_unsatisfied -> {
-                    networkManagerService.handleStateChanged(Network.Known.Absent)
+                    handleStateChange(Network.Known.Absent)
                 }
             }
         }
     }
 
     class SCNetworkManager(
-        override val networkManagerService: NetworkManagerService
+        override val handleStateChange: NetworkStateChange
     ) : NetworkManagerHandler() {
 
         private var _isListening = AtomicReference(false)
@@ -170,13 +171,13 @@ sealed class NetworkManagerHandler {
             when (flags) {
                 kSCNetworkReachabilityFlagsReachable -> {
                     if (flags == kSCNetworkReachabilityFlagsIsWWAN) {
-                        scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Cellular())
+                        scNetworkManager.handleStateChange(Network.Known.Cellular())
                     } else {
-                        scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Wifi())
+                        scNetworkManager.handleStateChange(Network.Known.Wifi())
                     }
                 }
                 else -> {
-                    scNetworkManager.networkManagerService.handleStateChanged(Network.Known.Absent)
+                    scNetworkManager.handleStateChange(Network.Known.Absent)
                 }
             }
         }
