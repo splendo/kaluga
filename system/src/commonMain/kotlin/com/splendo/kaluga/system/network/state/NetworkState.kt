@@ -23,8 +23,10 @@ import com.splendo.kaluga.state.State
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
 
-sealed class NetworkState(open val networkType: Network, open val networkManager: BaseNetworkManager) : State() {
-
+sealed class NetworkState(
+    open val networkType: Network,
+    open val networkManager: BaseNetworkManager
+) : State() {
     override suspend fun initialState() {
         super.initialState()
         networkManager.startMonitoringNetwork()
@@ -63,22 +65,21 @@ sealed class NetworkState(open val networkType: Network, open val networkManager
         HandleAfterNewStateIsSet<NetworkState> {
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
-            when(newState) {
+            when (newState) {
                 is Unknown -> Unit
-                is Available -> networkManager.startMonitoringNetwork()
-                is Unavailable -> networkManager.stopMonitoringNetwork()
+                is Available -> Unit
+                is Unavailable -> networkManager.startMonitoringNetwork()
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
-            when(oldState) {
+            when (oldState) {
                 is Unknown -> Unit
-                is Available -> networkManager.stopMonitoringNetwork()
+                is Available -> Unit
                 is Unavailable -> networkManager.stopMonitoringNetwork()
             }
         }
     }
-
     data class Available(
         override val networkType: Network.Known,
         override val networkManager: BaseNetworkManager
@@ -88,17 +89,17 @@ sealed class NetworkState(open val networkType: Network, open val networkManager
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
-                is Unavailable -> networkManager.stopMonitoringNetwork()
+                is Unknown -> Unit
                 is Available -> Unit
-                is Unknown -> networkManager.startMonitoringNetwork()
+                is Unavailable -> networkManager.startMonitoringNetwork()
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
             when (oldState) {
-                is Unavailable -> networkManager.startMonitoringNetwork()
+                is Unknown -> Unit
                 is Available -> Unit
-                is Unknown -> networkManager.startMonitoringNetwork()
+                is Unavailable -> Unit
             }
         }
     }
@@ -112,17 +113,17 @@ sealed class NetworkState(open val networkType: Network, open val networkManager
 
         override suspend fun afterNewStateIsSet(newState: NetworkState) {
             when (newState) {
-                is Available -> networkManager.startMonitoringNetwork()
-                is Unavailable -> Unit
                 is Unknown -> networkManager.startMonitoringNetwork()
+                is Available -> Unit
+                is Unavailable -> Unit
             }
         }
 
         override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
             when (oldState) {
+                is Unknown -> networkManager.stopMonitoringNetwork()
                 is Available -> networkManager.stopMonitoringNetwork()
                 is Unavailable -> Unit
-                is Unknown -> networkManager.stopMonitoringNetwork()
             }
         }
     }
