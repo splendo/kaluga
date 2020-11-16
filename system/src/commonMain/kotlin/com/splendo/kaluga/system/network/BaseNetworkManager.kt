@@ -19,7 +19,9 @@ package com.splendo.kaluga.system.network
 
 typealias NetworkStateChange =  (Network) -> Unit
 
-abstract class BaseNetworkManager(private val onNetworkStateChange: NetworkStateChange) {
+abstract class BaseNetworkManager(
+    protected open val onNetworkStateChange: NetworkStateChange
+) {
 
     interface Builder {
         fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager
@@ -27,10 +29,6 @@ abstract class BaseNetworkManager(private val onNetworkStateChange: NetworkState
 
     internal abstract suspend fun startMonitoringNetwork()
     internal abstract suspend fun stopMonitoringNetwork()
-
-    internal fun handleNetworkStateChanged(network: Network) {
-        onNetworkStateChange(network)
-    }
 }
 
 expect class NetworkManager : BaseNetworkManager
