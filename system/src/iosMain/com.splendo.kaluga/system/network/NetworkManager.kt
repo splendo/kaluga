@@ -21,10 +21,14 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.system.network.services.NetworkManagerHandler
 
-actual class NetworkManager actual constructor(
-    private val context: Any?,
+actual class NetworkManager(
     private val onNetworkStateChange: NetworkStateChange
 ) : BaseNetworkManager(onNetworkStateChange) {
+
+    class Builder : BaseNetworkManager.Builder {
+        override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
+            NetworkManager(onNetworkStateChange)
+    }
 
     private var _networkManagerHandler = AtomicReference<NetworkManagerHandler?>(null)
     private var networkManagerHandler: NetworkManagerHandler?

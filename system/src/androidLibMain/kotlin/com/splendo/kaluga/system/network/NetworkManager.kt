@@ -21,6 +21,7 @@ import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
 import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
 
@@ -28,13 +29,17 @@ interface NetworkHelper {
     fun determineNetworkType(): Network
 }
 
-actual class NetworkManager actual constructor(
-    private val context: Any?,
+actual class NetworkManager (
+    private val context: Context,
     private val onNetworkStateChange: NetworkStateChange
-
 ) : BaseNetworkManager(onNetworkStateChange) {
 
-    private val connectivityManager = (context as Context).getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseNetworkManager.Builder {
+        override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
+            NetworkManager(context, onNetworkStateChange)
+    }
+
+    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     private lateinit var networkConnectivityCallbacks: ConnectivityCallbackNetworkManager
     private lateinit var networkConnectivityReceiver: ConnectivityReceiverNetworkManager
@@ -45,7 +50,7 @@ actual class NetworkManager actual constructor(
             connectivityManager.registerDefaultNetworkCallback(networkConnectivityCallbacks)
         } else {
             networkConnectivityReceiver = ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager)
-            (context as Context).registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            context.registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         }
     }
 
