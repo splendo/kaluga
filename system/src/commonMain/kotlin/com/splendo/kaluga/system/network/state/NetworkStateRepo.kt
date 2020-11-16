@@ -39,9 +39,8 @@ class NetworkStateRepo(
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal var networkManager: BaseNetworkManager = networkManagerBuilder.create {
-        onNetworkStateChange(it)
-    }
+    internal var networkManager: BaseNetworkManager =
+        networkManagerBuilder.create(::onNetworkStateChange)
 
     override suspend fun deinitialize(state: NetworkState) {
         lastKnownNetwork = state.networkType
