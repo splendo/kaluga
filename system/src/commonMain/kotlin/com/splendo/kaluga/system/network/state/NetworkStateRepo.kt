@@ -67,7 +67,7 @@ class NetworkStateRepo(
         }
     }
 
-    private fun onNetworkStateChange(network: Network) {
+    internal fun onNetworkStateChange(network: Network) {
         launch {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
