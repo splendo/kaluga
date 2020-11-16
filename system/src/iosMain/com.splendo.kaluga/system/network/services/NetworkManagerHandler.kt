@@ -32,6 +32,7 @@ import platform.Network.nw_interface_type_cellular
 import platform.Network.nw_interface_type_wifi
 import platform.Network.nw_path_get_status
 import platform.Network.nw_path_is_expensive
+import platform.Network.nw_path_monitor_cancel
 import platform.Network.nw_path_monitor_create
 import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
@@ -82,6 +83,7 @@ sealed class NetworkManagerHandler {
         }
 
         override fun stopNotifier() {
+            nw_path_monitor_cancel(nwPathMonitor)
             nwPathMonitor = null
         }
 
@@ -181,6 +183,5 @@ sealed class NetworkManagerHandler {
                 }
             }
         }
-
     }
 }
