@@ -37,26 +37,6 @@ sealed class NetworkState(
         networkManager.stopMonitoringNetwork()
     }
 
-    val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
-        Unknown(Network.Unknown.WithLastNetwork(network, reason), networkManager)
-    }
-
-    val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
-        Unknown(Network.Unknown.WithoutLastNetwork(it), networkManager)
-    }
-
-    val availableWithWifi: suspend () -> Available = {
-        Available(Network.Known.Wifi(), networkManager)
-    }
-
-    val availableWithCellular: suspend () -> Available = {
-        Available(Network.Known.Cellular(), networkManager)
-    }
-
-    val unavailable: suspend () -> Unavailable = {
-        Unavailable(Network.Known.Absent, networkManager)
-    }
-
     data class Unknown(
         override val networkType: Network.Unknown,
         override val networkManager: BaseNetworkManager
@@ -78,6 +58,18 @@ sealed class NetworkState(
                 is Available -> Unit
                 is Unavailable -> networkManager.stopMonitoringNetwork()
             }
+        }
+
+        val availableWithWifi: suspend () -> Available = {
+            Available(Network.Known.Wifi(), networkManager)
+        }
+
+        val availableWithCellular: suspend () -> Available = {
+            Available(Network.Known.Cellular(), networkManager)
+        }
+
+        val unavailable: suspend () -> Unavailable = {
+            Unavailable(Network.Known.Absent, networkManager)
         }
     }
     data class Available(
@@ -102,6 +94,26 @@ sealed class NetworkState(
                 is Unavailable -> Unit
             }
         }
+
+        val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
+            Unknown(Network.Unknown.WithLastNetwork(network, reason), networkManager)
+        }
+
+        val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
+            Unknown(Network.Unknown.WithoutLastNetwork(it), networkManager)
+        }
+
+        val availableWithWifi: suspend () -> Available = {
+            Available(Network.Known.Wifi(), networkManager)
+        }
+
+        // Available doesn't implement availableWithCellular because when wifi is turned off
+        // (but cellular is active), the transition are
+        // Available (Wifi) -> Unavailable -> Available(Cellular)
+
+        val unavailable: suspend () -> Unavailable = {
+            Unavailable(Network.Known.Absent, networkManager)
+        }
     }
 
     data class Unavailable(
@@ -125,6 +137,14 @@ sealed class NetworkState(
                 is Available -> networkManager.stopMonitoringNetwork()
                 is Unavailable -> Unit
             }
+        }
+
+        val availableWithWifi: suspend () -> Available = {
+            Available(Network.Known.Wifi(), networkManager)
+        }
+
+        val availableWithCellular: suspend () -> Available = {
+            Available(Network.Known.Cellular(), networkManager)
         }
     }
 }
