@@ -9,7 +9,7 @@ Using Alerts is very simple. You can show an alert from shared code like this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch {
     // Create OK action
     val okAction = Alert.Action("OK") // POSITIVE/DEFAULT style
     // Create Cancel action
@@ -32,23 +32,26 @@ Or this:
 
 ```kotlin
 // Shared code
-fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch(MainQueueDispatcher) {
+fun showAlert(builder: AlertPresenter.Builder, title: String) = MainScope().launch {
     // Create an Alert with title, message and actions
     val alert = builder.buildAlert(this) {
         setTitle(title)
-        setPositiveButton("Yes") { /* handle `Yes` action */ }
-        setNegativeButton("No") { /* handle `No` action */ }
+        setPositiveButton("Yes") { println("yes pressed") }
+        setNegativeButton("No") { println("No pressed") }
     }
     // Show
     alert.show()
 }
 ```
 
-> You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
-
 ## Builder
 
-The `AlertPresenter.Builder` class can be used to build Alerts.
+The `AlertPresenter.Builder` class can be used to build Alerts. 
+
+### Android
+On Android this builder needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel` 
+
+You can use the `AppCompatActivity.alertPresenterBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ### Build alert
 
@@ -154,7 +157,6 @@ fun showList(builder: AlertPresenter.Builder) = MainScope().launch(MainQueueDisp
 }
 ```
 > Cancel action will be added automatically on iOS platform
-> You should use `launch` with built-in `MainQueueDispatcher` dispatcher.
 
 In order to dismiss alert you can use `dismiss()` function:
 

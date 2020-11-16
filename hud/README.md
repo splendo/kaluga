@@ -41,8 +41,9 @@ The `HUD` has methods to show and dismiss a loading indicator view:
 The `HUD.Builder` class can be used to build HUDs.
 
 ### Android
-On Android the builder needs a `UIContextObserver` (see Architecture) object to provide the current context in which to display the HUD.
-For `BaseViewModel`, the `UIContextObserver` will be automatically provided with the correct context, provided the builder is publicly visible and bound to a `KalugaViewModelLifecycleObserver`.
+On Android this builder needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel` 
+
+You can use the `AppCompatActivity.hudBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ```kotlin
 class HudViewModel: BaseViewModel() {

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
@@ -45,7 +46,6 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
-import kotlin.native.internal.GC
 import kotlin.native.ref.WeakReference
 
 actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
@@ -84,7 +84,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
             is NavigationSpec.Browser -> openBrowser(spec)
         }
         // Since navigation often references UIViewControllers they should be freed up to keep ARC working
-        GC.collect()
+        GCScheduler.schedule()
     }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
