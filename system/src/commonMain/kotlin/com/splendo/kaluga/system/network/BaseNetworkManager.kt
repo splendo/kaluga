@@ -21,6 +21,10 @@ typealias NetworkStateChange =  (Network) -> Unit
 
 abstract class BaseNetworkManager(private val onNetworkStateChange: NetworkStateChange) {
 
+    interface Builder {
+        fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager
+    }
+
     internal abstract suspend fun startMonitoringNetwork()
     internal abstract suspend fun stopMonitoringNetwork()
 
@@ -29,4 +33,4 @@ abstract class BaseNetworkManager(private val onNetworkStateChange: NetworkState
     }
 }
 
-expect class NetworkManager(context: Any? = null, onNetworkStateChange: NetworkStateChange) : BaseNetworkManager
+expect class NetworkManager : BaseNetworkManager
