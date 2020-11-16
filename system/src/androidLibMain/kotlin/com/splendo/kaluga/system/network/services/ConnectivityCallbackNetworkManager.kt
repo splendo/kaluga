@@ -33,7 +33,6 @@ class ConnectivityCallbackNetworkManager(
 
     override fun onAvailable(network: Network) {
         super.onAvailable(network)
-        println("onAvailable")
         val networkType = determineNetworkType()
 
         handleStateChange(networkType)
@@ -41,17 +40,11 @@ class ConnectivityCallbackNetworkManager(
 
     override fun onUnavailable() {
         super.onUnavailable()
-        println("onUnavailable")
-        handleStateChange(
-            com.splendo.kaluga.system.network.Network.Unknown.WithoutLastNetwork(
-                com.splendo.kaluga.system.network.Network.Unknown.Reason.LOSING
-            )
-        )
+        handleStateChange(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
     override fun onLosing(network: Network, maxMsToLive: Int) {
         super.onLosing(network, maxMsToLive)
-        println("onLosing")
         handleStateChange(
             com.splendo.kaluga.system.network.Network.Unknown.WithoutLastNetwork(
                 com.splendo.kaluga.system.network.Network.Unknown.Reason.LOSING
@@ -62,7 +55,6 @@ class ConnectivityCallbackNetworkManager(
 
     override fun onLost(network: Network) {
         super.onLost(network)
-        println("onLost")
         handleStateChange(com.splendo.kaluga.system.network.Network.Known.Absent)
     }
 
