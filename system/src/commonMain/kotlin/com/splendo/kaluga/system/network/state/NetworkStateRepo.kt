@@ -21,25 +21,27 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
-import com.splendo.kaluga.system.network.NetworkManager
 import com.splendo.kaluga.system.network.unknownNetworkOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class NetworkStateRepo(
-    context: Any?,
+    networkManagerBuilder: BaseNetworkManager.Builder,
 ) : ColdStateRepo<NetworkState>() {
+
+    interface Builder {
+        fun create(): NetworkStateRepo
+    }
 
     private var _lastKnownNetwork = AtomicReference<Network>(Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR))
     internal var lastKnownNetwork: Network
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal var networkManager: BaseNetworkManager =
-        NetworkManager(context) {
-            onNetworkStateChange(it)
-        }
+    internal var networkManager: BaseNetworkManager = networkManagerBuilder.create {
+        onNetworkStateChange(it)
+    }
 
     override suspend fun deinitialize(state: NetworkState) {
         lastKnownNetwork = state.networkType
