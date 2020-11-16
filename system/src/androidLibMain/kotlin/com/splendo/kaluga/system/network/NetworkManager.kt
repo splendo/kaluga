@@ -31,7 +31,7 @@ interface NetworkHelper {
 
 actual class NetworkManager (
     private val context: Context,
-    private val onNetworkStateChange: NetworkStateChange
+    override val onNetworkStateChange: NetworkStateChange
 ) : BaseNetworkManager(onNetworkStateChange) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseNetworkManager.Builder {
@@ -58,7 +58,7 @@ actual class NetworkManager (
         if (Build.VERSION.SDK_INT >= 24) {
             connectivityManager.unregisterNetworkCallback(networkConnectivityCallbacks)
         } else {
-            (context as Context).unregisterReceiver(networkConnectivityReceiver)
+            context.unregisterReceiver(networkConnectivityReceiver)
         }
     }
 }

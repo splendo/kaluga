@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.system.network.services.NetworkManagerHandler
 
 actual class NetworkManager(
-    private val onNetworkStateChange: NetworkStateChange
+    override val onNetworkStateChange: NetworkStateChange
 ) : BaseNetworkManager(onNetworkStateChange) {
 
     class Builder : BaseNetworkManager.Builder {
