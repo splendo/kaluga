@@ -23,7 +23,6 @@ kotlin {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
 
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
