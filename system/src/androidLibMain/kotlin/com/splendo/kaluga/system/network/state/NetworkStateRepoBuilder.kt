@@ -19,12 +19,12 @@ package com.splendo.kaluga.system.network.state
 
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.system.network.NetworkManager
+import com.splendo.kaluga.system.network.NetworkManagerBuilder
 
 actual class NetworkStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
 ) : NetworkStateRepo.Builder {
 
     override fun create(): NetworkStateRepo =
-        NetworkStateRepo(NetworkManager.Builder(context))
+        NetworkStateRepo(NetworkManagerBuilder(context))
 }

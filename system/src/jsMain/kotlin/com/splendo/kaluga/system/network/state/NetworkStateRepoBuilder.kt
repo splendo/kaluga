@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.system.network.NetworkManager
+import com.splendo.kaluga.system.network.NetworkManagerBuilder
 
 actual class NetworkStateRepoBuilder : NetworkStateRepo.Builder {
-    override fun create(): NetworkStateRepo = NetworkStateRepo(NetworkManager.Builder())
+    override fun create(): NetworkStateRepo = NetworkStateRepo(NetworkManagerBuilder())
 }
