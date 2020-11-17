@@ -17,16 +17,17 @@
 
 package com.splendo.kaluga.system.network
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
-import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
+import com.splendo.kaluga.system.network.services.NetworkManagerHandler
 
-interface NetworkHelper {
+interface NetworkHelper<T> {
     fun determineNetworkType(): Network
+    val networkHandler: T
 }
 
 actual class NetworkManager (
@@ -35,30 +36,37 @@ actual class NetworkManager (
 ) : BaseNetworkManager(onNetworkStateChange) {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseNetworkManager.Builder {
-        override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
-            NetworkManager(context, onNetworkStateChange)
+        override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                NetworkManager(context, onNetworkStateChange)
+            } else {
+                NetworkManager(context, onNetworkStateChange)
+            }
+        }
+
     }
 
     private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    private lateinit var networkConnectivityCallbacks: ConnectivityCallbackNetworkManager
-    private lateinit var networkConnectivityReceiver: ConnectivityReceiverNetworkManager
+    private lateinit var networkManagerHandler: NetworkManagerHandler
 
     override suspend fun startMonitoringNetwork() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            networkConnectivityCallbacks = ConnectivityCallbackNetworkManager(onNetworkStateChange, connectivityManager)
-            connectivityManager.registerDefaultNetworkCallback(networkConnectivityCallbacks)
+            networkManagerHandler = NetworkManagerHandler.ConnectivityCallbackNetworkManager(onNetworkStateChange, connectivityManager)
+            connectivityManager.registerDefaultNetworkCallback(
+                (networkManagerHandler as NetworkHelper<ConnectivityManager.NetworkCallback>).networkHandler
+            )
         } else {
-            networkConnectivityReceiver = ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager)
-            context.registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            networkManagerHandler = NetworkManagerHandler.ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager)
+            context.registerReceiver((networkManagerHandler as NetworkHelper<BroadcastReceiver>).networkHandler, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
         }
     }
 
     override suspend fun stopMonitoringNetwork() {
         if (Build.VERSION.SDK_INT >= 24) {
-            connectivityManager.unregisterNetworkCallback(networkConnectivityCallbacks)
+            connectivityManager.unregisterNetworkCallback((networkManagerHandler as NetworkHelper<ConnectivityManager.NetworkCallback>).networkHandler)
         } else {
-            context.unregisterReceiver(networkConnectivityReceiver)
+            context.unregisterReceiver((networkManagerHandler as NetworkHelper<BroadcastReceiver>).networkHandler)
         }
     }
 }
