@@ -17,48 +17,124 @@
 
 package com.splendo.kaluga.system.network
 
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
-import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
-import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
+import androidx.annotation.RequiresApi
+import com.splendo.kaluga.logging.debug
 
-interface NetworkHelper {
-    fun determineNetworkType(): Network
-}
+sealed class NetworkManager<T>(
+    protected val context: Context
+) : BaseNetworkManager {
 
-actual class NetworkManager (
-    private val context: Context,
-    override val onNetworkStateChange: NetworkStateChange
-) : BaseNetworkManager(onNetworkStateChange) {
+    abstract val networkHandler: T
+    abstract fun determineNetworkType(): Network
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseNetworkManager.Builder {
-        override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
-            NetworkManager(context, onNetworkStateChange)
-    }
+    protected val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    @RequiresApi(Build.VERSION_CODES.N)
+    class AndroidConnectivityCallbackManager(
+        override val onNetworkStateChange: NetworkStateChange,
+        context: Context
+    ) : NetworkManager<ConnectivityManager.NetworkCallback>(context) {
 
-    private lateinit var networkConnectivityCallbacks: ConnectivityCallbackNetworkManager
-    private lateinit var networkConnectivityReceiver: ConnectivityReceiverNetworkManager
+        override val networkHandler = object :  ConnectivityManager.NetworkCallback() {
 
-    override suspend fun startMonitoringNetwork() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            networkConnectivityCallbacks = ConnectivityCallbackNetworkManager(onNetworkStateChange, connectivityManager)
-            connectivityManager.registerDefaultNetworkCallback(networkConnectivityCallbacks)
-        } else {
-            networkConnectivityReceiver = ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager)
-            context.registerReceiver(networkConnectivityReceiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+            override fun onAvailable(network: android.net.Network) {
+                super.onAvailable(network)
+                val networkType = determineNetworkType()
+
+                onNetworkStateChange(networkType)
+            }
+
+            override fun onUnavailable() {
+                super.onUnavailable()
+                onNetworkStateChange(Network.Known.Absent)
+            }
+
+            override fun onLosing(network: android.net.Network, maxMsToLive: Int) {
+                super.onLosing(network, maxMsToLive)
+                onNetworkStateChange(
+                    Network.Unknown.WithoutLastNetwork(
+                        Network.Unknown.Reason.LOSING
+                    )
+                )
+
+            }
+
+            override fun onLost(network: android.net.Network) {
+                super.onLost(network)
+                onNetworkStateChange(Network.Known.Absent)
+            }
+        }
+
+        init {
+            connectivityManager.registerDefaultNetworkCallback(networkHandler)
+        }
+
+        override fun determineNetworkType(): com.splendo.kaluga.system.network.Network {
+            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val isCellularDataEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ?: false
+            val isWifiEnabled = capabilities?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ?: false
+
+            return when {
+                isWifiEnabled -> {
+                    Network.Known.Wifi()
+                }
+                isCellularDataEnabled -> {
+                    Network.Known.Cellular()
+                }
+                else -> {
+                    Network.Known.Absent
+                }
+            }
+        }
+
+        override fun dispose() {
+            connectivityManager.unregisterNetworkCallback(networkHandler)
         }
     }
 
-    override suspend fun stopMonitoringNetwork() {
-        if (Build.VERSION.SDK_INT >= 24) {
-            connectivityManager.unregisterNetworkCallback(networkConnectivityCallbacks)
-        } else {
-            context.unregisterReceiver(networkConnectivityReceiver)
+    class AndroidConnectivityReceiverManager(
+        override val onNetworkStateChange: NetworkStateChange,
+        context: Context
+    ) : NetworkManager<BroadcastReceiver>(context) {
+
+        override val networkHandler = object : BroadcastReceiver() {
+            override fun onReceive(c: Context, intent: Intent) {
+                debug { "DEBUG_KALUGA_SYSTEM: onReceive ConnectivityReceiver" }
+                val networkInfo = connectivityManager.activeNetworkInfo
+                debug { "DEBUG_KALUGA_SYSTEM: networkInfo is $networkInfo" }
+                if (networkInfo?.isConnectedOrConnecting == true) {
+                    val networkType = determineNetworkType()
+                    onNetworkStateChange(networkType)
+                    debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
+                } else {
+                    onNetworkStateChange(Network.Known.Absent)
+                    debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
+                }
+            }
+        }
+
+        init {
+            context.registerReceiver(networkHandler, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+        }
+
+        override fun determineNetworkType(): Network {
+            val isMetered = connectivityManager.isActiveNetworkMetered
+            return when {
+                (!isMetered && connectivityManager.isDefaultNetworkActive) -> Network.Known.Wifi()
+                isMetered -> Network.Known.Cellular()
+                else -> Network.Known.Absent
+            }
+        }
+
+        override fun dispose() {
+            context.unregisterReceiver(networkHandler)
         }
     }
 }
