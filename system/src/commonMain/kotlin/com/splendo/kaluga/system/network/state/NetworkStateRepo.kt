@@ -40,6 +40,12 @@ class NetworkStateRepo(
         set(value) { _lastKnownNetwork.set(value) }
 
     internal var networkManager: BaseNetworkManager? = null
+        set(value) {
+            if (field != null && value == null){
+                field!!.dispose()
+            }
+            field = value
+        }
 
     override suspend fun deinitialize(state: NetworkState) {
         lastKnownNetwork = state.networkType
