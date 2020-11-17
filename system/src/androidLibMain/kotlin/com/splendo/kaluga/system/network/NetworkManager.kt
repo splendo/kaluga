@@ -27,11 +27,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.splendo.kaluga.logging.debug
 
-sealed class NetworkManager<T>(
+sealed class NetworkManager(
     protected val context: Context
 ) : BaseNetworkManager {
 
-    abstract val networkHandler: T
     abstract fun determineNetworkType(): Network
 
     protected val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -40,9 +39,9 @@ sealed class NetworkManager<T>(
     class AndroidConnectivityCallbackManager(
         override val onNetworkStateChange: NetworkStateChange,
         context: Context
-    ) : NetworkManager<ConnectivityManager.NetworkCallback>(context) {
+    ) : NetworkManager(context) {
 
-        override val networkHandler = object :  ConnectivityManager.NetworkCallback() {
+        private val networkHandler = object :  ConnectivityManager.NetworkCallback() {
 
             override fun onAvailable(network: android.net.Network) {
                 super.onAvailable(network)
@@ -102,9 +101,9 @@ sealed class NetworkManager<T>(
     class AndroidConnectivityReceiverManager(
         override val onNetworkStateChange: NetworkStateChange,
         context: Context
-    ) : NetworkManager<BroadcastReceiver>(context) {
+    ) : NetworkManager(context) {
 
-        override val networkHandler = object : BroadcastReceiver() {
+        private val networkHandler = object : BroadcastReceiver() {
             override fun onReceive(c: Context, intent: Intent) {
                 debug { "DEBUG_KALUGA_SYSTEM: onReceive ConnectivityReceiver" }
                 val networkInfo = connectivityManager.activeNetworkInfo
