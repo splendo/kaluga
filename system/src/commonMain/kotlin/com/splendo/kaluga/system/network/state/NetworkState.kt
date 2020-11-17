@@ -18,23 +18,17 @@
 package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.state.State
-import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.BaseNetworkManager
+import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(
     open val networkType: Network,
-    open val networkManager: BaseNetworkManager
 ) : State() {
-
-    override suspend fun finalState() {
-        super.finalState()
-        networkManager.dispose()
-    }
 
     data class Unknown(
         override val networkType: Network.Unknown,
-        override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager) {
+        val networkManager: BaseNetworkManager
+    ) : NetworkState(networkType) {
 
         val availableWithWifi: suspend () -> Available = {
             Available(Network.Known.Wifi(), networkManager)
@@ -50,8 +44,8 @@ sealed class NetworkState(
     }
     data class Available(
         override val networkType: Network.Known,
-        override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager) {
+        val networkManager: BaseNetworkManager
+    ) : NetworkState(networkType) {
 
         val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
             Unknown(Network.Unknown.WithLastNetwork(network, reason), networkManager)
@@ -76,8 +70,8 @@ sealed class NetworkState(
 
     data class Unavailable(
         override val networkType: Network.Known,
-        override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager) {
+        val networkManager: BaseNetworkManager
+    ) : NetworkState(networkType) {
 
         val availableWithWifi: suspend () -> Available = {
             Available(Network.Known.Wifi(), networkManager)
