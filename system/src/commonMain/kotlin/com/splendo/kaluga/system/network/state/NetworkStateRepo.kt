@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class NetworkStateRepo(
-    networkManagerBuilder: BaseNetworkManager.Builder,
+    private val networkManagerBuilder: BaseNetworkManager.Builder,
 ) : ColdStateRepo<NetworkState>() {
 
     interface Builder {
@@ -39,32 +39,33 @@ class NetworkStateRepo(
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal var networkManager: BaseNetworkManager =
-        networkManagerBuilder.create(::onNetworkStateChange)
+    internal var networkManager: BaseNetworkManager? = null
 
     override suspend fun deinitialize(state: NetworkState) {
         lastKnownNetwork = state.networkType
+        networkManager = null
     }
 
     override suspend fun initialValue(): NetworkState {
+        networkManager = networkManagerBuilder.create(::onNetworkStateChange)
         return when(lastKnownNetwork) {
             is Network.Unknown.WithoutLastNetwork -> {
                 with (lastKnownNetwork as Network.Unknown.WithoutLastNetwork) {
-                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager)
+                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager!!)
                 }
             }
             is Network.Unknown.WithLastNetwork -> {
                 with (lastKnownNetwork as Network.Unknown.WithLastNetwork) {
-                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager)
+                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager!!)
                 }
             }
-            is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular(), networkManager)
+            is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular(), networkManager!!)
             is Network.Known.Wifi -> {
                 with(lastKnownNetwork as Network.Known.Wifi) {
-                    NetworkState.Available(Network.Known.Wifi(isExpensive), networkManager)
+                    NetworkState.Available(Network.Known.Wifi(isExpensive), networkManager!!)
                 }
             }
-            Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent, networkManager)
+            Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent, networkManager!!)
         }
     }
 
