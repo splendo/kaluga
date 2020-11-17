@@ -41,8 +41,10 @@ class NetworkStateRepo(
 
     internal var networkManager: BaseNetworkManager? = null
         set(value) {
-            if (field != null && value == null){
-                field!!.dispose()
+            field?.let {
+                if(value == null) {
+                    it.dispose()
+                }
             }
             field = value
         }
