@@ -21,8 +21,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.system.network.services.ConnectivityCallbackNetworkManager
-import com.splendo.kaluga.system.network.services.ConnectivityReceiverNetworkManager
 
 actual class NetworkManagerBuilder(
     private val context: Context = ApplicationHolder.applicationContext
@@ -32,9 +30,9 @@ actual class NetworkManagerBuilder(
 
     override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ConnectivityCallbackNetworkManager(onNetworkStateChange, connectivityManager)
+            NetworkManager.AndroidConnectivityCallbackManager(onNetworkStateChange, context)
         } else {
-            ConnectivityReceiverNetworkManager(onNetworkStateChange, connectivityManager, context)
+            NetworkManager.AndroidConnectivityReceiverManager(onNetworkStateChange, context)
         }
     }
 }
