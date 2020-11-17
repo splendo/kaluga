@@ -18,21 +18,17 @@
 package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.state.State
-import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
+import com.splendo.kaluga.system.network.BaseNetworkManager
 
 sealed class NetworkState(
     open val networkType: Network,
     open val networkManager: BaseNetworkManager
 ) : State() {
-    override suspend fun initialState() {
-        super.initialState()
-        networkManager.startMonitoringNetwork()
-    }
 
     override suspend fun finalState() {
         super.finalState()
-        networkManager.stopMonitoringNetwork()
+        networkManager.dispose()
     }
 
     data class Unknown(
