@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.system.network.state
 
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
@@ -40,25 +38,7 @@ sealed class NetworkState(
     data class Unknown(
         override val networkType: Network.Unknown,
         override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager),
-        HandleBeforeOldStateIsRemoved<NetworkState>,
-        HandleAfterNewStateIsSet<NetworkState> {
-
-        override suspend fun afterNewStateIsSet(newState: NetworkState) {
-            when (newState) {
-                is Unknown -> Unit
-                is Available -> Unit
-                is Unavailable -> networkManager.startMonitoringNetwork()
-            }
-        }
-
-        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
-            when (oldState) {
-                is Unknown -> Unit
-                is Available -> Unit
-                is Unavailable -> networkManager.stopMonitoringNetwork()
-            }
-        }
+    ) : NetworkState(networkType, networkManager) {
 
         val availableWithWifi: suspend () -> Available = {
             Available(Network.Known.Wifi(), networkManager)
@@ -75,25 +55,7 @@ sealed class NetworkState(
     data class Available(
         override val networkType: Network.Known,
         override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager),
-        HandleBeforeOldStateIsRemoved<NetworkState>,
-        HandleAfterNewStateIsSet<NetworkState> {
-
-        override suspend fun afterNewStateIsSet(newState: NetworkState) {
-            when (newState) {
-                is Unknown -> Unit
-                is Available -> Unit
-                is Unavailable -> networkManager.startMonitoringNetwork()
-            }
-        }
-
-        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
-            when (oldState) {
-                is Unknown -> Unit
-                is Available -> Unit
-                is Unavailable -> Unit
-            }
-        }
+    ) : NetworkState(networkType, networkManager) {
 
         val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
             Unknown(Network.Unknown.WithLastNetwork(network, reason), networkManager)
@@ -119,25 +81,7 @@ sealed class NetworkState(
     data class Unavailable(
         override val networkType: Network.Known,
         override val networkManager: BaseNetworkManager
-    ) : NetworkState(networkType, networkManager),
-        HandleBeforeOldStateIsRemoved<NetworkState>,
-        HandleAfterNewStateIsSet<NetworkState> {
-
-        override suspend fun afterNewStateIsSet(newState: NetworkState) {
-            when (newState) {
-                is Unknown -> networkManager.startMonitoringNetwork()
-                is Available -> Unit
-                is Unavailable -> Unit
-            }
-        }
-
-        override suspend fun beforeOldStateIsRemoved(oldState: NetworkState) {
-            when (oldState) {
-                is Unknown -> networkManager.stopMonitoringNetwork()
-                is Available -> networkManager.stopMonitoringNetwork()
-                is Unavailable -> Unit
-            }
-        }
+    ) : NetworkState(networkType, networkManager) {
 
         val availableWithWifi: suspend () -> Available = {
             Available(Network.Known.Wifi(), networkManager)
