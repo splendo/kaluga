@@ -27,7 +27,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import com.splendo.kaluga.logging.debug
 
-sealed class NetworkManager(
+actual sealed class NetworkManager(
     protected val context: Context
 ) : BaseNetworkManager {
 

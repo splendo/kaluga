@@ -22,3 +22,5 @@ actual class NetworkManagerBuilder : BaseNetworkManager.Builder {
         TODO("Not yet implemented")
     }
 }
+
+actual sealed class NetworkManager

@@ -53,7 +53,7 @@ import platform.SystemConfiguration.kSCNetworkReachabilityFlagsIsWWAN
 import platform.SystemConfiguration.kSCNetworkReachabilityFlagsReachable
 import platform.darwin.dispatch_get_main_queue
 
-sealed class NetworkManager : BaseNetworkManager {
+actual sealed class NetworkManager : BaseNetworkManager {
 
     class NWPathNetworkManager(
         override val onNetworkStateChange: NetworkStateChange,
