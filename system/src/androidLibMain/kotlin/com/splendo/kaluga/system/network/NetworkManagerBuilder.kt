@@ -18,15 +18,12 @@
 package com.splendo.kaluga.system.network
 
 import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Build
 import com.splendo.kaluga.base.ApplicationHolder
 
 actual class NetworkManagerBuilder(
     private val context: Context = ApplicationHolder.applicationContext
 ) : BaseNetworkManager.Builder {
-
-    private val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
