@@ -89,7 +89,7 @@ class NetworkStateRepo(
                             is Network.Unknown.WithLastNetwork -> {
                                 { state.unknownWithLastNetwork(network.lastKnownNetwork, network.reason) }
                             }
-                            is Network.Known.Cellular -> state.remain()
+                            is Network.Known.Cellular -> state.availableWithCellular
                             is Network.Known.Wifi -> state.availableWithWifi
                             Network.Known.Absent -> state.unavailable
                         }
