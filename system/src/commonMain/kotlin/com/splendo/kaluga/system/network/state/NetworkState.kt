@@ -59,9 +59,9 @@ sealed class NetworkState(
             Available(Network.Known.Wifi(), networkManager)
         }
 
-        // Available doesn't implement availableWithCellular because when wifi is turned off
-        // (but cellular is active), the transition are
-        // Available (Wifi) -> Unavailable -> Available(Cellular)
+        val availableWithCellular: suspend () -> Available = {
+            Available(Network.Known.Cellular(), networkManager)
+        }
 
         val unavailable: suspend () -> Unavailable = {
             Unavailable(Network.Known.Absent, networkManager)
