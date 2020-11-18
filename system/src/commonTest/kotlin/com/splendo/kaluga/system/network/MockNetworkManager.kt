@@ -17,23 +17,14 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.system.network.state.NetworkStateRepo
-
 class MockNetworkManager(
-    networkStateRepo: NetworkStateRepo
-) : BaseNetworkManager(networkStateRepo) {
+    override val onNetworkStateChange: NetworkStateChange
+) : BaseNetworkManager {
 
-    val startMonitoringNetworkCompleted = EmptyCompletableDeferred()
-    val stopMonitoringNetworkCompleted = EmptyCompletableDeferred()
+    override fun dispose() = Unit
+}
 
-
-    override suspend fun startMonitoringNetwork() {
-        startMonitoringNetworkCompleted.complete()
-    }
-
-    override suspend fun stopMonitoringNetwork() {
-        stopMonitoringNetworkCompleted.complete()
-    }
+class MockNetworkManagerBuilder : BaseNetworkManager.Builder {
+    override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
+        MockNetworkManager(onNetworkStateChange)
 }
