@@ -105,7 +105,7 @@ class SomeViewController : UIViewController {
 
 ### Testing ViewModels
 
-See the `test-utils` module for base test that help setting up the ViewModel in the main thread, while still allowing `Dispatchers.Main` to function. 
+See the `test-utils` module for base test classes that help setting up the ViewModel in the main thread, while still allowing `Dispatchers.Main` to function. 
 
 ## Observables
 Kaluga supports data binding using `Observables` (one way binding) and `Subjects` (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
