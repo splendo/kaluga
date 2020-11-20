@@ -3,9 +3,8 @@
 ## Testing from a background thread to let `Dispatchers.Main` function properly
 
 By default Kotlin/Native tests run on the UI thread, similar to regular Swift tests.
-
-As with these regular test, this presents problems when trying to dispatch work to the main thread.
-In particular for Kotlin bases test, usinf the `Dispatchers.Main`dispatcher -either directly or indirectly- will not work.
+As with these regular tests, this presents problems when trying to dispatch work to the main thread.
+In particular for Kotlin based tests, using `Dispatchers.Main` -either directly or indirectly- will not work.
 
 One solution is to test from a background thread, `test-utils` provides an alternate test entry point which launches a background thread and then consumes the iOS main runloop from the test thread. This allows work dispatched to `Main` to function.
 
