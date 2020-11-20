@@ -22,8 +22,6 @@ kotlin {
             dependencies {
                 implementation(project(":base", ""))
                 implementation(project(":logging", ""))
-
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }
 
