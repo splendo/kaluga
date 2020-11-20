@@ -18,7 +18,6 @@
 package com.splendo.kaluga.system.network.state
 
 import com.splendo.kaluga.state.State
-import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
 
 sealed class NetworkState(
@@ -26,59 +25,56 @@ sealed class NetworkState(
 ) : State() {
 
     data class Unknown(
-        override val networkType: Network.Unknown,
-        val networkManager: BaseNetworkManager
+        override val networkType: Network.Unknown
     ) : NetworkState(networkType) {
 
         val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi(), networkManager)
+            Available(Network.Known.Wifi())
         }
 
         val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular(), networkManager)
+            Available(Network.Known.Cellular())
         }
 
         val unavailable: suspend () -> Unavailable = {
-            Unavailable(Network.Known.Absent, networkManager)
+            Unavailable(Network.Known.Absent)
         }
     }
     data class Available(
         override val networkType: Network.Known,
-        val networkManager: BaseNetworkManager
     ) : NetworkState(networkType) {
 
         val unknownWithLastNetwork: suspend (network: Network.Known, reason: Network.Unknown.Reason) -> Unknown = { network, reason ->
-            Unknown(Network.Unknown.WithLastNetwork(network, reason), networkManager)
+            Unknown(Network.Unknown.WithLastNetwork(network, reason))
         }
 
         val unknownWithoutLastNetwork: suspend (reason: Network.Unknown.Reason) -> Unknown = {
-            Unknown(Network.Unknown.WithoutLastNetwork(it), networkManager)
+            Unknown(Network.Unknown.WithoutLastNetwork(it))
         }
 
         val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi(), networkManager)
+            Available(Network.Known.Wifi())
         }
 
         val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular(), networkManager)
+            Available(Network.Known.Cellular())
         }
 
         val unavailable: suspend () -> Unavailable = {
-            Unavailable(Network.Known.Absent, networkManager)
+            Unavailable(Network.Known.Absent)
         }
     }
 
     data class Unavailable(
         override val networkType: Network.Known,
-        val networkManager: BaseNetworkManager
     ) : NetworkState(networkType) {
 
         val availableWithWifi: suspend () -> Available = {
-            Available(Network.Known.Wifi(), networkManager)
+            Available(Network.Known.Wifi())
         }
 
         val availableWithCellular: suspend () -> Available = {
-            Available(Network.Known.Cellular(), networkManager)
+            Available(Network.Known.Cellular())
         }
     }
 }
