@@ -32,7 +32,7 @@ To achieve this, the View should be bound to `KalugaViewModelLifecycleObserver' 
 
 ```kotlin
 class SomeActivity : Activity {
-    private val viewModel: SomeViewModel = // create ViewModel
+    private val viewModel: SomeViewModel = SomeViewModel() // create ViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +45,7 @@ For convenience default implementations for `Activity`, `Fragment`, and `DialogF
 
 ```kotlin
 class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
-    override val viewModel: SomeViewModel = // create ViewModel
+    override val viewModel: SomeViewModel = SomeViewModel // create ViewModel
 }
 ```
 
@@ -103,6 +103,10 @@ class SomeViewController : UIViewController {
 }
 ```
 
+### Testing ViewModels
+
+See the `test-utils` module for base test classes that help setting up the ViewModel in the main thread, while still allowing `Dispatchers.Main` to function. 
+
 ## Observables
 Kaluga supports data binding using `Observables` (one way binding) and `Subjects` (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
 Subjects can be created using either an `ObservableProperty` or `BaseFlowable`. All these can easily be converted using `asObservable()` or `asSubject()` respectively.
@@ -113,7 +117,7 @@ class SomeViewModel : BaseViewModel() {
     private val flow = flowOf(1, 2, 3)
     val flowObservable = flow.toObservable(coroutineScope)
 
-    val flowable: BaseFlowable<Int> = // someFlowable
+    val flowable: BaseFlowable<Int> = SomeStateRepo() // someFlowable
     val flowableSubject = flowable.toSubject(coroutineScope)
 
     fun readValue(defaultValue: Int): Int? {

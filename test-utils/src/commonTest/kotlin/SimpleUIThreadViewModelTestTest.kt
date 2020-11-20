@@ -14,17 +14,25 @@
     limitations under the License.
 
  */
-
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.test
 
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import kotlin.test.AfterTest
+import com.splendo.kaluga.test.SimpleUIThreadViewModelTestTest.ViewModel
+import com.splendo.kaluga.test.architecture.SimpleUIThreadViewModelTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
-actual abstract class ViewModelTest<VM : BaseViewModel> actual constructor() : BaseViewModelTest<VM>() {
+class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>() {
 
-    @AfterTest
-    override fun afterTest() {
-        viewModel?.clear()
-        super.afterTest()
+    class ViewModel : BaseViewModel() {
+        var v = ""
+    }
+
+    override fun createViewModel() = ViewModel()
+
+    @Test
+    fun test() = testWithViewModel {
+        assertEquals("", viewModel.v)
+        viewModel.v = "foo" // should not crash on native
     }
 }
