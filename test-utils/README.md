@@ -62,7 +62,7 @@ class SomeTest:UIThreadViewModelTest<MyViewModelTestContext, MyViewModel> {
 
         val alertBuilder = MockAlertPresenter.Builder()
         
-        override fun createViewModel() = MyViewModel(alertBuilder) // can be passes to viewmodel
+        override fun createViewModel() = MyViewModel(alertBuilder) // can be passed to viewmodel
     }
 
     @Test
