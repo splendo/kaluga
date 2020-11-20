@@ -56,23 +56,19 @@ class NetworkStateRepo(
 
     override suspend fun initialValue(): NetworkState {
         networkManager = networkManagerBuilder.create(::onNetworkStateChange)
-        return when(lastKnownNetwork) {
-            is Network.Unknown.WithoutLastNetwork -> {
-                with (lastKnownNetwork as Network.Unknown.WithoutLastNetwork) {
-                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager!!)
-                }
-            }
-            is Network.Unknown.WithLastNetwork -> {
-                with (lastKnownNetwork as Network.Unknown.WithLastNetwork) {
-                    NetworkState.Unknown(unknownNetworkOf(reason), networkManager!!)
-                }
-            }
+
+        return when(val network = lastKnownNetwork) {
+            is Network.Unknown.WithoutLastNetwork -> NetworkState.Unknown(
+                network.unknownNetworkOf(network.reason),
+                networkManager!!
+            )
+            is Network.Unknown.WithLastNetwork -> NetworkState.Unknown(
+                network.unknownNetworkOf(network.reason), networkManager!!
+            )
             is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular(), networkManager!!)
-            is Network.Known.Wifi -> {
-                with(lastKnownNetwork as Network.Known.Wifi) {
-                    NetworkState.Available(Network.Known.Wifi(isExpensive), networkManager!!)
-                }
-            }
+            is Network.Known.Wifi -> NetworkState.Available(
+                Network.Known.Wifi(network.isExpensive), networkManager!!
+            )
             Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent, networkManager!!)
         }
     }
