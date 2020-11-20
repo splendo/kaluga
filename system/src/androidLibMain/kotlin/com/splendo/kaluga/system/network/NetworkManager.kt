@@ -25,7 +25,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.splendo.kaluga.logging.debug
 
 actual sealed class NetworkManager(
     protected val context: Context
@@ -105,16 +104,12 @@ actual sealed class NetworkManager(
 
         private val networkHandler = object : BroadcastReceiver() {
             override fun onReceive(c: Context, intent: Intent) {
-                debug { "DEBUG_KALUGA_SYSTEM: onReceive ConnectivityReceiver" }
                 val networkInfo = connectivityManager.activeNetworkInfo
-                debug { "DEBUG_KALUGA_SYSTEM: networkInfo is $networkInfo" }
                 if (networkInfo?.isConnectedOrConnecting == true) {
                     val networkType = determineNetworkType()
                     onNetworkStateChange(networkType)
-                    debug { "DEBUG_KALUGA_SYSTEM: network is available from ConnectivityReceiver" }
                 } else {
                     onNetworkStateChange(Network.Known.Absent)
-                    debug { "DEBUG_KALUGA_SYSTEM: network is not available from ConnectivityReceiver" }
                 }
             }
         }
