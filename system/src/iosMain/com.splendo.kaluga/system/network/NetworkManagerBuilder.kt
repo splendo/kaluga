@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.IOSVersion
 actual class NetworkManagerBuilder : BaseNetworkManager.Builder {
 
     override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager {
-        return if (IOSVersion.systemVersion > IOSVersion(12)) {
+        return if (IOSVersion.systemVersion >= IOSVersion(12)) {
             NetworkManager.NWPathNetworkManager(onNetworkStateChange)
         } else {
             NetworkManager.SCNetworkManager(onNetworkStateChange)
