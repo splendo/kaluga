@@ -18,12 +18,12 @@
 package com.splendo.kaluga.system.network.state
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 
 class NetworkStateRepo(
     private val networkManagerBuilder: BaseNetworkManager.Builder,
@@ -74,7 +74,7 @@ class NetworkStateRepo(
     }
 
     internal fun onNetworkStateChange(network: Network) {
-        launch {
+        runBlocking(coroutineContext) {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
                     is NetworkState.Available -> {
