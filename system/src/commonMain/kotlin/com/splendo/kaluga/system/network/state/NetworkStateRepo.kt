@@ -21,7 +21,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
-import com.splendo.kaluga.system.network.unknownNetworkOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -59,10 +58,10 @@ class NetworkStateRepo(
 
         return when(val network = lastKnownNetwork) {
             is Network.Unknown.WithoutLastNetwork -> NetworkState.Unknown(
-                network.unknownNetworkOf(network.reason)
+                Network.Unknown.WithoutLastNetwork(network.reason)
             )
             is Network.Unknown.WithLastNetwork -> NetworkState.Unknown(
-                network.unknownNetworkOf(network.reason)
+                Network.Unknown.WithLastNetwork(network.lastKnownNetwork, network.reason)
             )
             is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular())
             is Network.Known.Wifi -> NetworkState.Available(

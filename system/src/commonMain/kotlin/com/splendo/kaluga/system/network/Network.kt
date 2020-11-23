@@ -40,11 +40,3 @@ sealed class Network {
         object Absent : Known()
     }
 }
-
-fun Network.unknownNetworkOf(reason: Network.Unknown.Reason): Network.Unknown {
-    return when (this) {
-        is Network.Unknown.WithoutLastNetwork -> Network.Unknown.WithoutLastNetwork(reason)
-        is Network.Unknown.WithLastNetwork -> Network.Unknown.WithLastNetwork(this.lastKnownNetwork, reason)
-        is Network.Known -> Network.Unknown.WithLastNetwork(this, reason)
-    }
-}
