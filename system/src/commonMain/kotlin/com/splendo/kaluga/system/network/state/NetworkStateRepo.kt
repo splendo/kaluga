@@ -63,9 +63,11 @@ class NetworkStateRepo(
             is Network.Unknown.WithLastNetwork -> NetworkState.Unknown(
                 Network.Unknown.WithLastNetwork(network.lastKnownNetwork, network.reason)
             )
-            is Network.Known.Cellular -> NetworkState.Available(Network.Known.Cellular())
-            is Network.Known.Wifi -> NetworkState.Available(
-                Network.Known.Wifi(network.isExpensive)
+            is Network.Known.Cellular -> NetworkState.Unknown(
+                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
+            )
+            is Network.Known.Wifi -> NetworkState.Unknown(
+                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
             )
             Network.Known.Absent -> NetworkState.Unknown(
                 Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
