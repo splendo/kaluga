@@ -68,7 +68,9 @@ class NetworkStateRepo(
             is Network.Known.Wifi -> NetworkState.Available(
                 Network.Known.Wifi(network.isExpensive)
             )
-            Network.Known.Absent -> NetworkState.Unavailable(Network.Known.Absent)
+            Network.Known.Absent -> NetworkState.Unknown(
+                Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR)
+            )
         }
     }
 
