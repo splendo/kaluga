@@ -30,7 +30,8 @@ class MockSpec : NavigationBundleSpec<MockSpecRow<*>>(
         MockSpecRow.NestedBundleSpecRow,
         MockSpecRow.OptionalString,
         MockSpecRow.OptionalFloat,
-        MockSpecRow.DateSpecRow
+        MockSpecRow.DateSpecRow,
+        MockSpecRow.DateArraySpecRow
     )
 )
 
@@ -41,6 +42,7 @@ sealed class MockSpecRow<V>(associatedType: NavigationBundleSpecType<V>) : Navig
     object OptionalString : MockSpecRow<String?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.StringType))
     object OptionalFloat : MockSpecRow<Float?>(NavigationBundleSpecType.OptionalType(NavigationBundleSpecType.FloatType))
     object DateSpecRow : MockSpecRow<Date>(NavigationBundleSpecType.DateType)
+    object DateArraySpecRow : MockSpecRow<List<Date>>(NavigationBundleSpecType.DateArrayType)
 }
 
 class NestedSpec : NavigationBundleSpec<NestedSpecRow<*>>(setOf(NestedSpecRow.StringSpecRow))

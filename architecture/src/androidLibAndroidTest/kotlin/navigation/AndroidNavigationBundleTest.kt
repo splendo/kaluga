@@ -37,6 +37,10 @@ class AndroidNavigationBundleTest {
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
         val dateValue = Date.epoch(offsetInMilliseconds = 1606204800000)
+        val dateArray = listOf(
+            Date.epoch(offsetInMilliseconds = 1606204800001),
+            Date.epoch(offsetInMilliseconds = 1606204800002)
+        )
 
         val mockSpec = MockSpec()
         val navigationBundle = mockSpec.toBundle { entry ->
@@ -47,6 +51,7 @@ class AndroidNavigationBundleTest {
                 is MockSpecRow.OptionalString -> entry.associatedType.convertValue(optionalString)
                 is MockSpecRow.OptionalFloat -> entry.associatedType.convertValue(optionalFloat)
                 is MockSpecRow.DateSpecRow -> entry.associatedType.convertValue(dateValue)
+                is MockSpecRow.DateArraySpecRow -> entry.associatedType.convertValue(dateArray)
             }
         }
 
@@ -59,11 +64,14 @@ class AndroidNavigationBundleTest {
         val optionalStringResult = bundle.get(MockSpecRow.OptionalString)
         val optionalFloatResult = bundle.get(MockSpecRow.OptionalFloat)
         val dateResult = bundle.get(MockSpecRow.DateSpecRow)
+        val dateArrayResult = bundle.get(MockSpecRow.DateArraySpecRow)
+
         assertEquals(booleanValue, booleanResult)
         assertEquals(serializableValue, serializableResult)
         assertEquals(nestedString, nestedStringResult)
         assertEquals(optionalString, optionalStringResult)
         assertEquals(optionalFloat, optionalFloatResult)
         assertEquals(dateValue, dateResult)
+        assertEquals(dateArray, dateArrayResult)
     }
 }
