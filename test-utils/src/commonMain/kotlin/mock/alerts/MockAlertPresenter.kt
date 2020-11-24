@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.mock.alerts
 
+import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
@@ -36,9 +38,15 @@ class MockAlertPresenter(val alert: Alert) : BaseAlertPresenter(alert) {
         }
     }
 
-    var isPresented = false
-        private set
-    private var afterHandler: ((Alert.Action?) -> Unit)? = null
+    private var _isPresented = AtomicBoolean(false)
+    var isPresented
+        get() = _isPresented.value
+        private set(value) { _isPresented.value = value }
+
+    private var _afterHandler = AtomicReference<((Alert.Action?) -> Unit)?>(null)
+    private var afterHandler: ((Alert.Action?) -> Unit)?
+        get() = _afterHandler.get()
+        set(value) = _afterHandler.set (value)
 
     fun closeWithAction(action: Alert.Action?) {
         action?.let {
