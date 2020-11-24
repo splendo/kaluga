@@ -46,7 +46,7 @@ class MockAlertPresenter(val alert: Alert) : BaseAlertPresenter(alert) {
     private var _afterHandler = AtomicReference<((Alert.Action?) -> Unit)?>(null)
     private var afterHandler: ((Alert.Action?) -> Unit)?
         get() = _afterHandler.get()
-        set(value) = _afterHandler.set (value)
+        set(value) = _afterHandler.set(value)
 
     fun closeWithAction(action: Alert.Action?) {
         action?.let {
