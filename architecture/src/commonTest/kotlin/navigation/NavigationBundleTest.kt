@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,6 +38,7 @@ class NavigationBundleTest : BaseTest() {
         }
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
+        val dateValue = Date.now()
 
         val mockSpec = MockSpec()
         val bundle = mockSpec.toBundle { entry ->
@@ -46,6 +48,7 @@ class NavigationBundleTest : BaseTest() {
                 is MockSpecRow.NestedBundleSpecRow -> entry.convertValue(nestedBundle)
                 is MockSpecRow.OptionalString -> entry.convertValue(optionalString)
                 is MockSpecRow.OptionalFloat -> entry.convertValue(optionalFloat)
+                is MockSpecRow.DateSpecRow -> entry.convertValue(dateValue)
             }
         }
 
@@ -54,12 +57,14 @@ class NavigationBundleTest : BaseTest() {
         val bundleResult = bundle.get(MockSpecRow.NestedBundleSpecRow)
         val optionalStringResult = bundle.get(MockSpecRow.OptionalString)
         val optionalFloatResult = bundle.get(MockSpecRow.OptionalFloat)
+        val dateResult = bundle.get(MockSpecRow.DateSpecRow)
 
         assertEquals(booleanValue, booleanResult)
         assertEquals(serializableValue, serializableResult)
         assertEquals(nestedBundle, bundleResult)
         assertEquals(optionalString, optionalStringResult)
         assertEquals(optionalFloat, optionalFloatResult)
+        assertEquals(dateValue, dateResult)
 
         val nestedStringResult = bundleResult.get(NestedSpecRow.StringSpecRow)
         assertEquals(nestedString, nestedStringResult)
