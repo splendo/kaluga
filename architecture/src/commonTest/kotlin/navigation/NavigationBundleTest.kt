@@ -38,7 +38,7 @@ class NavigationBundleTest : BaseTest() {
         }
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
-        val dateValue = Date.now()
+        val dateValue = Date.epoch(offsetInMilliseconds = 1606204800000)
 
         val mockSpec = MockSpec()
         val bundle = mockSpec.toBundle { entry ->
