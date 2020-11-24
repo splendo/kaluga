@@ -15,10 +15,6 @@ version = ext["library_version"]!!
 
 val androidx_arch_core_testing_version = ext["androidx_arch_core_testing_version"]!!
 
-repositories {
-    maven("https://dl.bintray.com/ekito/koin")
-}
-
 dependencies {
     implementation("androidx.arch.core:core-testing:$androidx_arch_core_testing_version")
 }
@@ -33,33 +29,19 @@ kotlin {
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
 
-                // we don't want these to be automatically be imported,
-                // test sourcesets already depend on a main sourceset which should have the right dependencies
-                // Making this `implementation` or `api` will increase linking times for every test build.
-                // unfortunately Kotlin/Native does not support compileOnly (yet?), this generates a warning
-
-                compileOnly(project(":alerts", ""))
-                compileOnly(project(":architecture", ""))
-                compileOnly(project(":base", ""))
-                compileOnly(project(":hud", ""))
-                compileOnly(project(":keyboard", ""))
-                compileOnly(project(":logging", ""))
-                compileOnly(project(":permissions", ""))
-                compileOnly("org.koin:koin-core:" + ext["koin_version"])
-            }
-        }
-
-        getByName("commonTest") {
-            dependencies {
-                val ext = (gradle as ExtensionAware).extra
-
-                // we need this to test since in commonMain these are compileOnly
-                implementation("org.koin:koin-core:" + ext["koin_version"])
-                implementation(project(":architecture", ""))
+                // these dependencies make test linking slow, but Kotlin/Native cannot handle `compileOnly`
+                // https://github.com/splendo/kaluga/issues/208
                 implementation(project(":alerts", ""))
+                implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":hud", ""))
+                implementation(project(":keyboard", ""))
+                implementation(project(":logging", ""))
+                implementation(project(":permissions", ""))
+                implementation("org.koin:koin-core:" + ext["koin_version"])
             }
         }
+
         getByName("jsMain") {
             dependencies {
                 api(kotlin("test-js"))
