@@ -45,7 +45,7 @@ kotlin {
                 compileOnly(project(":keyboard", ""))
                 compileOnly(project(":logging", ""))
                 compileOnly(project(":permissions", ""))
-                compileOnly("org.koin:koin-core:"+ext["koin_version"])
+                compileOnly("org.koin:koin-core:" + ext["koin_version"])
             }
         }
 
@@ -54,11 +54,10 @@ kotlin {
                 val ext = (gradle as ExtensionAware).extra
 
                 // we need this to test since in commonMain these are compileOnly
-                implementation("org.koin:koin-core:"+ext["koin_version"])
+                implementation("org.koin:koin-core:" + ext["koin_version"])
                 implementation(project(":architecture", ""))
                 implementation(project(":alerts", ""))
                 implementation(project(":base", ""))
-
             }
         }
         getByName("jsMain") {

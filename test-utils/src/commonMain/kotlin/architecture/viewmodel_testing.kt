@@ -21,7 +21,6 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.test.BeforeTest
 
 abstract class ViewModelTest<VM : BaseViewModel> : BaseTest() {

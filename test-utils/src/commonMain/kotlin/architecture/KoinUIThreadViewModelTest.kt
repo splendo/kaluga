@@ -24,12 +24,12 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<VMC: KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : BaseViewModel> : UIThreadViewModelTest<VMC,VM>() {
+abstract class KoinUIThreadViewModelTest<VMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : BaseViewModel> : UIThreadViewModelTest<VMC, VM>() {
 
-    abstract class KoinViewModelTestContext<VM>(appDeclaration: KoinAppDeclaration? = null, koinModules:List<Module>):ViewModelTestContext<VM>() {
+    abstract class KoinViewModelTestContext<VM>(appDeclaration: KoinAppDeclaration? = null, koinModules: List<Module>) : ViewModelTestContext<VM>() {
 
-        constructor(vararg koinModules:Module):this(null, koinModules.toList())
-        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules:Module):this(appDeclaration, koinModules.toList())
+        constructor(vararg koinModules: Module) : this(null, koinModules.toList())
+        constructor(appDeclaration: KoinAppDeclaration, vararg koinModules: Module) : this(appDeclaration, koinModules.toList())
 
         init {
             startKoin {

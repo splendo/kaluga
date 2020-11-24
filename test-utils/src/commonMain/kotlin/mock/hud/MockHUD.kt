@@ -40,7 +40,7 @@ class MockHUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope)
     private var _isVisible = AtomicBoolean(false)
     override var isVisible: Boolean
         get() = _isVisible.value
-        private set(value) { _isVisible.value = value}
+        private set(value) { _isVisible.value = value }
 
     override suspend fun present(animated: Boolean): BaseHUD {
         isVisible = true

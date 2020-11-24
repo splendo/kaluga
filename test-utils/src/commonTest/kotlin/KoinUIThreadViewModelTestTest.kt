@@ -37,18 +37,20 @@ class KoinUIThreadViewModelTestTest :
         val s: String by inject() // test injecting into ViewModel
     }
 
-    inner class TestContext : KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
-        {
-            logger(PrintLogger()) // not the default
-        },
-        module {
-            single { "S" }
-            single<BaseAlertPresenter.Builder> { MockAlertPresenter.Builder() }
-        }
-    ), KoinComponent {
+    inner class TestContext :
+        KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
+            {
+                logger(PrintLogger()) // not the default
+            },
+            module {
+                single { "S" }
+                single<BaseAlertPresenter.Builder> { MockAlertPresenter.Builder() }
+            }
+        ),
+        KoinComponent {
         override fun createViewModel(): KoinViewModel = KoinViewModel()
 
-        val builder:BaseAlertPresenter.Builder by inject() // test injecting into context
+        val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
     override fun createViewModelContext(): TestContext = TestContext()
@@ -57,7 +59,9 @@ class KoinUIThreadViewModelTestTest :
     fun testKoinViewModelTestContext() = testWithViewModel {
         assertEquals("S", viewModel.s)
         assertTrue(builder is MockAlertPresenter.Builder)
-        assertTrue(viewModel.getKoin()._logger is PrintLogger, "KoinApplicationDeclaration should have changed the Logger")
-
+        assertTrue(
+            viewModel.getKoin()._logger is PrintLogger,
+            "KoinApplicationDeclaration should have changed the Logger"
+        )
     }
 }
