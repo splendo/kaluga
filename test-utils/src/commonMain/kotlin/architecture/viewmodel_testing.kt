@@ -21,7 +21,6 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlin.test.BeforeTest
 
 abstract class ViewModelTest<VM : BaseViewModel> : BaseTest() {
@@ -60,14 +59,12 @@ abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestCo
 
     abstract fun createViewModelContext(): VMC
 
-    fun testWithViewModel(block: suspend VMC.() -> Unit): Unit = runBlocking {
-        withContext(Dispatchers.Main) {
-            val viewModelContext = createViewModelContext()
-            try {
-                block(viewModelContext)
-            } finally {
-                viewModelContext.dispose()
-            }
+    fun testWithViewModel(block: suspend VMC.() -> Unit): Unit = runBlocking(Dispatchers.Main) {
+        val viewModelContext = createViewModelContext()
+        try {
+            block(viewModelContext)
+        } finally {
+            viewModelContext.dispose()
         }
     }
 }
