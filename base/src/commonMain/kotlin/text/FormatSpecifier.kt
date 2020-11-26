@@ -32,8 +32,6 @@ internal sealed class ParsingCharacter(val char: Char) {
     object None : ParsingCharacter(Char.MIN_VALUE)
 }
 
-@ExperimentalUnsignedTypes
-@ExperimentalStdlibApi
 internal class FormatSpecifier(private val out: StringBuilder, matchResult: MatchResult) : FormatString {
 
     companion object {

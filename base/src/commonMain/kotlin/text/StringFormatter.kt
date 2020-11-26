@@ -28,13 +28,11 @@ import com.splendo.kaluga.base.utils.Locale.Companion.defaultLocale
  * @return The formatted [String]
  * @throws [StringFormatterException] if the string could not be formatted using [args].
  */
-@ExperimentalStdlibApi
 fun String.format(vararg args: Any?, locale: Locale = defaultLocale) = StringFormatter(locale = locale).format(this, *args).toString()
 
 /**
  * Interface that adds support for an object to be formatted by [StringFormatter].
  */
-@ExperimentalStdlibApi
 interface Formattable {
     /**
      * Formats this object to a [String] using a [Locale], [Flags], width, and precision
@@ -58,7 +56,6 @@ interface Formattable {
  * @param out he [StringBuilder] used for outputting the result.
  * @param locale The [Locale] used for formatting. This is relevant for number and date formatting, as well as capitalization.
  */
-@ExperimentalStdlibApi
 class StringFormatter(private val out: StringBuilder = StringBuilder(), private val locale: Locale = defaultLocale) {
 
     companion object {
