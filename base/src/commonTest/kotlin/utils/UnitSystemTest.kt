@@ -17,20 +17,25 @@
 
 package utils
 
-import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.UnitSystem
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LocaleTest {
+class UnitSystemTest {
 
     @Test
-    fun testLocaleUnitSystem() {
-        val usLocale = Locale.createLocale("en", "US")
-        assertEquals(UnitSystem.US, usLocale.unitSystem)
-        val ukLocale = Locale.createLocale("en", "GB")
-        assertEquals(UnitSystem.UK, ukLocale.unitSystem)
-        val ruLocale = Locale.createLocale("ru", "RU")
-        assertEquals(UnitSystem.Metric, ruLocale.unitSystem)
+    fun testRawValues() {
+        assertEquals(UnitSystem.US, UnitSystem.withRawValue("U.S."))
+        assertEquals(UnitSystem.UK, UnitSystem.withRawValue("U.K."))
+        assertEquals(UnitSystem.Metric, UnitSystem.withRawValue("Other"))
+    }
+
+    @Test
+    fun testCountryCodes() {
+        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("US"))
+        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("MM"))
+        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("LR"))
+        assertEquals(UnitSystem.UK, UnitSystem.withCountryCode("GB"))
+        assertEquals(UnitSystem.Metric, UnitSystem.withCountryCode("Other"))
     }
 }

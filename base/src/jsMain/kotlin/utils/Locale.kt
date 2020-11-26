@@ -23,7 +23,7 @@ actual class Locale internal constructor(
     actual val countryCode: String = "",
     actual val variantCode: String = "",
     actual val scriptCode: String = "",
-    actual val usesMetricSystem: Boolean = true
+    actual val unitSystem: UnitSystem = UnitSystem.Metric
 ) {
 
     actual companion object {

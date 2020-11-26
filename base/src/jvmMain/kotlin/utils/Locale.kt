@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.text.upperCased
+
 actual class Locale internal constructor(val locale: java.util.Locale) {
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
@@ -35,8 +37,8 @@ actual class Locale internal constructor(val locale: java.util.Locale) {
         get() = locale.script
     actual val variantCode: String
         get() = locale.variant
-    actual val usesMetricSystem: Boolean
-        get() = !listOf("US", "MM", "LR").contains(countryCode.toUpperCase(java.util.Locale.ROOT))
+    actual val unitSystem: UnitSystem
+        get() = UnitSystem.withCountryCode(countryCode.upperCased(this))
 
     actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
     actual fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)

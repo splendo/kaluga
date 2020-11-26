@@ -81,9 +81,9 @@ expect class Locale {
     val variantCode: String
 
     /**
-     * Returns true if the [Locale] uses the metric system.
+     * Returns [UnitSystem] for the [Locale].
      */
-    val usesMetricSystem: Boolean
+    val unitSystem: UnitSystem
 
     /**
      * Gets the name of the [Locale], localized according to a given [Locale]
