@@ -41,7 +41,7 @@ actual class Locale internal constructor(val locale: java.util.Locale) {
         get() = locale.variant
     actual val usesMetricSystem: Boolean
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            LocaleData.getMeasurementSystem(ULocale.forLocale(locale)) == LocaleData.MeasurementSystem.SI
+            LocaleData.getMeasurementSystem(ULocale.forLocale(locale)) != LocaleData.MeasurementSystem.US
         } else {
             !listOf("US", "MM", "LR").contains(countryCode.toUpperCase(java.util.Locale.ROOT))
         }
