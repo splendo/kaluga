@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.mock.hud
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
@@ -36,8 +37,10 @@ class MockHUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope)
         }
     }
 
-    override var isVisible: Boolean = false
-        private set
+    private var _isVisible = AtomicBoolean(false)
+    override var isVisible: Boolean
+        get() = _isVisible.value
+        private set(value) { _isVisible.value = value }
 
     override suspend fun present(animated: Boolean): BaseHUD {
         isVisible = true

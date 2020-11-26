@@ -22,17 +22,21 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
 // we use this surrogate main thread because Swing/JavaFX testing on CI is unreliable
-actual class GlobalTestListener {
+actual open class BaseTest {
 
     private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("UI thread")
 
-    actual fun beforeTest() {
+    @BeforeTest
+    actual open fun beforeTest() {
         Dispatchers.setMain(mainDispatcher)
     }
 
-    actual fun afterTest() {
+    @AfterTest
+    actual open fun afterTest() {
         // we want to avoid triggering Swing or FX
         // Dispatchers.resetMain()
         // mainDispatcher.close()
