@@ -76,7 +76,7 @@ class NetworkStateRepo(
     }
 
     internal fun onNetworkStateChange(network: Network) {
-        runBlocking(coroutineContext) {
+        runBlocking {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
                     is NetworkState.Available -> {
