@@ -58,7 +58,7 @@ actual class Locale internal constructor(val nsLocale: NSLocale) {
     actual val unitSystem: UnitSystem
         get() = (nsLocale.objectForKey("kCFLocaleMeasurementSystemKey") as? String)?.let {
             UnitSystem.withRawValue(it)
-        } ?: UnitSystem.Metric
+        } ?: UnitSystem.METRIC
 
     actual fun name(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
     actual fun countryName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""

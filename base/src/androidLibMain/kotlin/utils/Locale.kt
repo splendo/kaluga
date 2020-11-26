@@ -43,9 +43,9 @@ actual class Locale internal constructor(val locale: java.util.Locale) {
     actual val unitSystem: UnitSystem
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             when (LocaleData.getMeasurementSystem(ULocale.forLocale(locale))) {
-                LocaleData.MeasurementSystem.US -> UnitSystem.US
-                LocaleData.MeasurementSystem.UK -> UnitSystem.UK
-                else -> UnitSystem.Metric
+                LocaleData.MeasurementSystem.US -> UnitSystem.IMPERIAL
+                LocaleData.MeasurementSystem.UK -> UnitSystem.MIXED
+                else -> UnitSystem.METRIC
             }
         } else {
             UnitSystem.withCountryCode(countryCode.upperCased(this))

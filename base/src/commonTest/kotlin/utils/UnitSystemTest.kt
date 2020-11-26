@@ -25,17 +25,17 @@ class UnitSystemTest {
 
     @Test
     fun testRawValues() {
-        assertEquals(UnitSystem.US, UnitSystem.withRawValue("U.S."))
-        assertEquals(UnitSystem.UK, UnitSystem.withRawValue("U.K."))
-        assertEquals(UnitSystem.Metric, UnitSystem.withRawValue("Other"))
+        assertEquals(UnitSystem.IMPERIAL, UnitSystem.withRawValue("U.S."))
+        assertEquals(UnitSystem.MIXED, UnitSystem.withRawValue("U.K."))
+        assertEquals(UnitSystem.METRIC, UnitSystem.withRawValue("Other"))
     }
 
     @Test
     fun testCountryCodes() {
-        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("US"))
-        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("MM"))
-        assertEquals(UnitSystem.US, UnitSystem.withCountryCode("LR"))
-        assertEquals(UnitSystem.UK, UnitSystem.withCountryCode("GB"))
-        assertEquals(UnitSystem.Metric, UnitSystem.withCountryCode("Other"))
+        assertEquals(UnitSystem.IMPERIAL, UnitSystem.withCountryCode("US"))
+        assertEquals(UnitSystem.MIXED, UnitSystem.withCountryCode("MM"))
+        assertEquals(UnitSystem.MIXED, UnitSystem.withCountryCode("LR"))
+        assertEquals(UnitSystem.MIXED, UnitSystem.withCountryCode("GB"))
+        assertEquals(UnitSystem.METRIC, UnitSystem.withCountryCode("Other"))
     }
 }

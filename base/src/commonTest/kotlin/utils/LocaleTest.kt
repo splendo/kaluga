@@ -27,10 +27,10 @@ class LocaleTest {
     @Test
     fun testLocaleUnitSystem() {
         val usLocale = Locale.createLocale("en", "US")
-        assertEquals(UnitSystem.US, usLocale.unitSystem)
+        assertEquals(UnitSystem.IMPERIAL, usLocale.unitSystem)
         val ukLocale = Locale.createLocale("en", "GB")
-        assertEquals(UnitSystem.UK, ukLocale.unitSystem)
+        assertEquals(UnitSystem.MIXED, ukLocale.unitSystem)
         val ruLocale = Locale.createLocale("ru", "RU")
-        assertEquals(UnitSystem.Metric, ruLocale.unitSystem)
+        assertEquals(UnitSystem.METRIC, ruLocale.unitSystem)
     }
 }

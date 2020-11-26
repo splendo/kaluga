@@ -19,19 +19,19 @@ package com.splendo.kaluga.base.utils
 
 enum class UnitSystem {
 
-    Metric, UK, US;
+    METRIC, MIXED, IMPERIAL;
 
     companion object {
         fun withRawValue(value: String): UnitSystem = when (value) {
-            "U.S." -> US
-            "U.K." -> UK
-            else -> Metric
+            "U.S." -> IMPERIAL
+            "U.K." -> MIXED
+            else -> METRIC
         }
 
         fun withCountryCode(code: String): UnitSystem = when {
-            listOf("US", "MM", "LR").contains(code) -> US
-            "GB" == code -> UK
-            else -> Metric
+            listOf("GB", "MM", "LR").contains(code) -> MIXED
+            "US" == code -> IMPERIAL
+            else -> METRIC
         }
     }
 }
