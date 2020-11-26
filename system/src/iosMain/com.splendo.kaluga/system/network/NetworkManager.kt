@@ -32,6 +32,7 @@ import platform.Network.nw_path_get_status
 import platform.Network.nw_path_is_expensive
 import platform.Network.nw_path_monitor_cancel
 import platform.Network.nw_path_monitor_create
+import platform.Network.nw_path_monitor_set_queue
 import platform.Network.nw_path_monitor_set_update_handler
 import platform.Network.nw_path_monitor_start
 import platform.Network.nw_path_monitor_t
@@ -59,10 +60,7 @@ actual sealed class NetworkManager : BaseNetworkManager {
         override val onNetworkStateChange: NetworkStateChange,
     ) : NetworkManager() {
 
-        private var _nwPathMonitor = AtomicReference<nw_path_monitor_t>(null)
-        private var nwPathMonitor: nw_path_monitor_t
-            get() = _nwPathMonitor.get()
-            set(value) = _nwPathMonitor.set(value)
+        private var nwPathMonitor: nw_path_monitor_t = null
 
         private val networkMonitor = object : nw_path_monitor_update_handler_t {
             override fun invoke(network: nw_path_t) {
@@ -72,8 +70,16 @@ actual sealed class NetworkManager : BaseNetworkManager {
 
         init {
             nwPathMonitor = nw_path_monitor_create()
+            nw_path_monitor_set_queue(
+                nwPathMonitor,
+                dispatch_get_main_queue()
+            )
             nw_path_monitor_set_update_handler(nwPathMonitor, networkMonitor)
             nw_path_monitor_start(nwPathMonitor)
+        }
+
+        override fun dispose() {
+            nw_path_monitor_cancel(nwPathMonitor)
         }
 
         private fun checkReachability(network: nw_path_t) {
@@ -95,10 +101,6 @@ actual sealed class NetworkManager : BaseNetworkManager {
                     onNetworkStateChange(Network.Known.Absent)
                 }
             }
-        }
-
-        override fun dispose() {
-            nw_path_monitor_cancel(nwPathMonitor)
         }
     }
 
