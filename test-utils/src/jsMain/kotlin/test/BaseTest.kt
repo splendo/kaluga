@@ -18,10 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-actual class GlobalTestListener {
-    actual fun beforeTest() {
-    }
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
-    actual fun afterTest() {
-    }
+actual open class BaseTest {
+    @BeforeTest
+    actual open fun beforeTest() {}
+
+    @AfterTest
+    actual open fun afterTest() {}
 }

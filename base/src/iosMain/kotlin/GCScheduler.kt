@@ -15,16 +15,24 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.base
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import kotlin.test.AfterTest
+import co.touchlab.stately.concurrency.AtomicBoolean
+import kotlin.native.concurrent.ThreadLocal
+import kotlin.native.internal.GC
 
-actual abstract class ViewModelTest<VM : BaseViewModel> actual constructor() : BaseViewModelTest<VM>() {
+@ThreadLocal
+object GCScheduler {
+    private val isCollecting: AtomicBoolean = AtomicBoolean(false)
 
-    @AfterTest
-    override fun afterTest() {
-        viewModel?.clear()
-        super.afterTest()
+    /**
+     * Schedules the Garbage Collector only if no other garbage collection is active.
+     * This is useful in case calling the Garbage collector could trigger another call to [GC.collect].
+     */
+    fun schedule() {
+        if (isCollecting.compareAndSet(expected = false, new = true)) {
+            GC.collect()
+        }
+        isCollecting.value = false
     }
 }

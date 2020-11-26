@@ -27,14 +27,19 @@ import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
-// Android Studio will shown an error when parsing this file because it's also defined in the unit test module
-// To clear the error close the file and restart Android Studio ¯\_(ツ)_/¯
-actual class GlobalTestListener {
+actual open class BaseTest {
+
+    // might re-enable this if needed, but to encourage cross platform behaviour it is off
+    // @Rule @JvmField
+    // val instantExecutorRule = InstantTaskExecutorRule()
 
     private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("synthetic UI thread")
 
-    actual fun beforeTest() {
+    @BeforeTest
+    actual open fun beforeTest() {
         logger = object : Logger {
             override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
                 println("$level: ${tag?.let {"[$it]"} ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
@@ -44,7 +49,8 @@ actual class GlobalTestListener {
         Dispatchers.setMain(mainDispatcher)
     }
 
-    actual fun afterTest() {
+    @AfterTest
+    actual open fun afterTest() {
         Dispatchers.resetMain()
         mainDispatcher.close()
         resetLogger()

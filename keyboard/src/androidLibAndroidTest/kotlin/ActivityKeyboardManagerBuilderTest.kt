@@ -15,30 +15,30 @@
 
  */
 
-package com.splendo.kaluga.test.architecture
+package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.BaseTest
-import kotlin.test.AfterTest
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import org.junit.Rule
 import kotlin.test.BeforeTest
+import kotlin.test.Test
 
-abstract class BaseViewModelTest<VM : BaseViewModel> internal constructor() : BaseTest() {
+class ActivityKeyboardManagerBuilderTest {
 
-    protected var viewModel: VM? = null
+    @get:Rule
+    var activityRule = ActivityScenarioRule(TestActivity::class.java)
+
+    lateinit var activity: TestActivity
 
     @BeforeTest
-    open fun setUp() {
-        super.beforeTest()
-        viewModel = createViewModel()
+    fun activityInit() {
+        activityRule.scenario.onActivity {
+            activity = it
+        }
     }
 
-    @AfterTest
-    open fun tearDown() {
-        super.afterTest()
-        viewModel = null
+    @Test
+    fun testActivityKeyboardManagerBuilder() {
+        activity.showKeyboard()
+        // not crashing is good enough since we are testing the builder, not the keyboard
     }
-
-    protected abstract fun createViewModel(): VM
 }
-
-expect abstract class ViewModelTest<VM : BaseViewModel> constructor() : BaseViewModelTest<VM>
