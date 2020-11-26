@@ -35,6 +35,8 @@ actual class Locale internal constructor(val locale: java.util.Locale) {
         get() = locale.script
     actual val variantCode: String
         get() = locale.variant
+    actual val usesMetricSystem: Boolean
+        get() = !listOf("US", "GB", "MM", "LR").contains(countryCode.toUpperCase(java.util.Locale.ROOT))
 
     actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
     actual fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)
