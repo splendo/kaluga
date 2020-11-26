@@ -23,7 +23,6 @@ import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@ExperimentalStdlibApi
 class NumberFormatterTest : BaseTest() {
 
     companion object {
@@ -135,7 +134,6 @@ class NumberFormatterTest : BaseTest() {
         assertEquals("1,2345E-06", formatters.nlFormatter.format(0.0000012345))
     }
 
-    @ExperimentalStdlibApi
     @Test
     fun testFormatCurrency() {
         val formatters = createFormatters(NumberFormatStyle.Currency(minFractionDigits = 2U, maxFractionDigits = 2U)) { it.usesGroupingSeparator = true }
