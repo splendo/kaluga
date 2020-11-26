@@ -30,5 +30,7 @@ class LocaleTest {
         assertFalse(usLocale.usesMetricSystem)
         val ruLocale = Locale.createLocale("ru", "RU")
         assertTrue(ruLocale.usesMetricSystem)
+        val ukLocale = Locale.createLocale("en", "GB")
+        assertTrue(ukLocale.usesMetricSystem)
     }
 }

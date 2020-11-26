@@ -43,7 +43,7 @@ actual class Locale internal constructor(val locale: java.util.Locale) {
         get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             LocaleData.getMeasurementSystem(ULocale.forLocale(locale)) == LocaleData.MeasurementSystem.SI
         } else {
-            !listOf("US", "GB", "MM", "LR").contains(countryCode.toUpperCase(java.util.Locale.ROOT))
+            !listOf("US", "MM", "LR").contains(countryCode.toUpperCase(java.util.Locale.ROOT))
         }
 
     actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
