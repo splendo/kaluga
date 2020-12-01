@@ -49,12 +49,12 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun `test initialValue is Unknown`() = testNetworkState {
+    fun testInitialValueUnknown() = testNetworkState {
         assertInitialValue(this)
     }
 
     @Test
-    fun `test network state changed`() = testNetworkState {
+    fun testNetworkStateChanged() = testNetworkState {
         assertInitialValue(this)
 
         action {
@@ -86,7 +86,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun `test Available NetworkState transition`() = testNetworkState {
+    fun testAvailabletransition() = testNetworkState {
         assertInitialValue(this)
 
         action {
@@ -134,7 +134,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun `test Unavailable NetworkState transition`() = testNetworkState {
+    fun testUnavailableTransition() = testNetworkState {
         assertInitialValue(this)
 
         action {
@@ -167,7 +167,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun `test Unknown NetworkState transition`() = testNetworkState {
+    fun testUnknownTransition() = testNetworkState {
         networkStateRepo.lastKnownNetwork = Network.Unknown.WithoutLastNetwork(
             Network.Unknown.Reason.NOT_CLEAR
         )
