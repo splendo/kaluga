@@ -30,22 +30,15 @@ import kotlin.test.assertTrue
 class NetworkStateTest : FlowableTest<NetworkState>() {
 
     private val networkStateRepoBuilder = MockNetworkStateRepoBuilder()
-    private val networkManagerBuilder = MockNetworkManagerBuilder()
 
     lateinit var networkStateRepo: NetworkStateRepo
-    lateinit var networkManager: BaseNetworkManager
 
     override fun flowable(): Flowable<NetworkState> = networkStateRepo.flowable
 
     private fun testNetworkState(test: FlowTestBlock<NetworkState>) {
         networkStateRepo = networkStateRepoBuilder.create()
-        networkManager = networkManagerBuilder.create {
-            networkStateRepo.onNetworkStateChange(it)
-        }
 
-        networkStateRepo.networkManager = networkManager
-
-        testWithFlowAndReset(test)
+        testWithFlow(test)
     }
 
     @Test
@@ -227,12 +220,5 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
             assertTrue { it.networkType is Network.Unknown.WithoutLastNetwork }
             assertEquals(Network.Unknown.Reason.NOT_CLEAR, (it.networkType as Network.Unknown.WithoutLastNetwork).reason)
         }
-    }
-}
-
-fun FlowableTest<NetworkState>.testWithFlowAndReset(test: FlowTestBlock<NetworkState>) {
-    testWithFlow {
-        test()
-        resetFlow()
     }
 }
