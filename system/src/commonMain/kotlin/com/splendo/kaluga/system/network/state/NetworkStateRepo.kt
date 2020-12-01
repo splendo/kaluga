@@ -33,19 +33,22 @@ class NetworkStateRepo(
         fun create(): NetworkStateRepo
     }
 
-    private var _lastKnownNetwork = AtomicReference<Network>(Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR))
+    private val _lastKnownNetwork = AtomicReference<Network>(Network.Unknown.WithoutLastNetwork(Network.Unknown.Reason.NOT_CLEAR))
     internal var lastKnownNetwork: Network
         get() = _lastKnownNetwork.get()
         set(value) { _lastKnownNetwork.set(value) }
 
-    internal var networkManager: BaseNetworkManager? = null
+    private val _networkManager = AtomicReference<BaseNetworkManager?>(null)
+    internal var networkManager: BaseNetworkManager?
+        get() = _networkManager.get()
         set(value) {
-            field?.let {
+            _networkManager.get()?.let {
                 if(value == null) {
                     it.dispose()
                 }
             }
-            field = value
+
+            _networkManager.set(value)
         }
 
     override suspend fun deinitialize(state: NetworkState) {
