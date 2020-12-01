@@ -28,7 +28,7 @@ actual val defaultLogger: Logger =
             KydraLogger(AndroidLogger()),
             transformTag = { tag ->
                 tag?.let {
-                    val maxSize = min(23, tag.length-1)
+                    val maxSize = min(23, tag.length - 1)
                     if (maxSize >= 1) {
                         tag.substring(0..maxSize)
                     } else {
