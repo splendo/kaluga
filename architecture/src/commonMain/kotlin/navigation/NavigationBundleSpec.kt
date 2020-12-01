@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.base.utils.Date
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 
@@ -181,6 +182,18 @@ sealed class NavigationBundleSpecType<T> {
     object StringArrayType : NavigationBundleSpecType<List<String>>() {
         override fun convertValue(value: List<String>): NavigationBundleValue<List<String>> {
             return NavigationBundleValue.StringArrayValue(value)
+        }
+    }
+
+    object DateType : NavigationBundleSpecType<Date>() {
+        override fun convertValue(value: Date): NavigationBundleValue<Date> {
+            return NavigationBundleValue.DateValue(value)
+        }
+    }
+
+    object DateArrayType : NavigationBundleSpecType<List<Date>>() {
+        override fun convertValue(value: List<Date>): NavigationBundleValue<List<Date>> {
+            return NavigationBundleValue.DateArrayValue(value)
         }
     }
 
