@@ -20,7 +20,6 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.utils.Locale
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
-import platform.Foundation.NSNumberFormatterCurrencyISOCodeStyle
 import platform.Foundation.NSNumberFormatterCurrencyStyle
 import platform.Foundation.NSNumberFormatterDecimalStyle
 import platform.Foundation.NSNumberFormatterPercentStyle
@@ -31,7 +30,6 @@ import platform.Foundation.NSNumberFormatterRoundHalfDown
 import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
-import platform.Foundation.currencyCode
 import platform.Foundation.numberWithInt
 import platform.darwin.NSUInteger
 

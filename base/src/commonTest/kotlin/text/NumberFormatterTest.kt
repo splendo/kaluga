@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.Locale.Companion.createLocale
 import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class NumberFormatterTest : BaseTest() {
 
