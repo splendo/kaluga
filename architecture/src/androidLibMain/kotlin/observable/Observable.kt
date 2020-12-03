@@ -27,6 +27,7 @@ import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.properties.ObservableProperty
@@ -142,7 +143,7 @@ class DefaultSubject<T>(initialValue: T, coroutineScope: CoroutineScope) : Subje
 /**
  * [Subject] that matches its value to a [ObservableProperty].
  * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
- * Use [FlowSubject] if synchronized values are required
+ * Use [FlowableSubject] if synchronized values are required
  */
 class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     private var value by observableProperty
@@ -161,11 +162,29 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, co
  * @param flowable The [HotFlowable] to synchronize to
  * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
  */
-class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
+class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     override val providerLiveData: LiveData<T> = flowable.flow().distinctUntilChanged().asLiveData(coroutineScope.coroutineContext)
     override val liveDataObserver = Observer<T> { t ->
         coroutineScope.launch {
             flowable.set(t)
+        }
+    }
+
+    init {
+        initialize()
+    }
+}
+
+/**
+ * [Subject] that synchronizes its value to a [MutableStateFlow]
+ * @param stateFlow The [MutableStateFlow] to synchronize to
+ * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
+ */
+class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
+    override val providerLiveData: LiveData<T> = stateFlow.asLiveData(coroutineScope.coroutineContext)
+    override val liveDataObserver = Observer<T> { t ->
+        coroutineScope.launch {
+            stateFlow.value = t
         }
     }
 
@@ -182,7 +201,9 @@ actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<
 
 actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
 
-actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
+actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowableSubject(this, coroutineScope)
+
+actual fun <T> MutableStateFlow<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = StateFlowSubject(this, coroutineScope)
 
 actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 
