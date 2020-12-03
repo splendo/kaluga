@@ -20,6 +20,7 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.utils.Locale
 import platform.Foundation.NSNumber
 import platform.Foundation.NSNumberFormatter
+import platform.Foundation.NSNumberFormatterCurrencyISOCodeStyle
 import platform.Foundation.NSNumberFormatterCurrencyStyle
 import platform.Foundation.NSNumberFormatterDecimalStyle
 import platform.Foundation.NSNumberFormatterPercentStyle
@@ -30,6 +31,7 @@ import platform.Foundation.NSNumberFormatterRoundHalfDown
 import platform.Foundation.NSNumberFormatterRoundHalfEven
 import platform.Foundation.NSNumberFormatterRoundUp
 import platform.Foundation.NSNumberFormatterScientificStyle
+import platform.Foundation.currencyCode
 import platform.Foundation.numberWithInt
 import platform.darwin.NSUInteger
 
@@ -76,10 +78,17 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             }
             is NumberFormatStyle.Currency -> {
                 numberStyle = NSNumberFormatterCurrencyStyle
+                style.currencyCode?.let { currencyCode ->
+                    this.currencyCode = currencyCode
+                }
                 minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
                 maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
-                minimumFractionDigits = style.minFractionDigits.toULong() as NSUInteger
-                maximumFractionDigits = style.maxFractionDigits.toULong() as NSUInteger
+                style.minFractionDigits?.let {
+                    minimumFractionDigits = it.toULong() as NSUInteger
+                }
+                style.maxFractionDigits?.let {
+                    maximumFractionDigits = it.toULong() as NSUInteger
+                }
             }
             is NumberFormatStyle.Pattern -> {
                 numberStyle = NSNumberFormatterDecimalStyle
