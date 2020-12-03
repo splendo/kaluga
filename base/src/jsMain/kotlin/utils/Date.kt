@@ -38,6 +38,7 @@ actual class Date internal constructor(internal val date: kotlin.js.Date) : Comp
     actual var month: Int
         get() = date.getMonth()
         set(value) { }
+    actual val daysInMonth: Int = 0
     actual var weekOfYear: Int
         get() = 0
         set(value) { }

@@ -78,6 +78,7 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     actual var month: Int
         get() = calendar.component(NSCalendarUnitMonth, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitMonth, value) }
+    actual val daysInMonth: Int get() = calendar.rangeOfUnit(NSCalendarUnitDay, NSCalendarUnitMonth, forDate = date).size
     actual var weekOfYear: Int
         get() = calendar.component(NSCalendarUnitWeekOfYear, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitWeekOfYear, value) }
