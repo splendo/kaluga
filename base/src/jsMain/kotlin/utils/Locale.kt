@@ -18,7 +18,13 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper locale solution for Java Script
-actual class Locale internal constructor(actual val languageCode: String, actual val countryCode: String = "", actual val variantCode: String = "", actual val scriptCode: String = "") {
+actual class Locale internal constructor(
+    actual val languageCode: String,
+    actual val countryCode: String = "",
+    actual val variantCode: String = "",
+    actual val scriptCode: String = "",
+    actual val unitSystem: UnitSystem = UnitSystem.METRIC
+) {
 
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(language)

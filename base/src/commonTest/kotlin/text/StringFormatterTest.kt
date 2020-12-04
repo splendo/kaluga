@@ -25,7 +25,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
-@ExperimentalStdlibApi
 class StringFormatterTest {
 
     companion object {

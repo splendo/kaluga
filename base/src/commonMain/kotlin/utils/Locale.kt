@@ -81,6 +81,11 @@ expect class Locale {
     val variantCode: String
 
     /**
+     * Returns [UnitSystem] for the [Locale].
+     */
+    val unitSystem: UnitSystem
+
+    /**
      * Gets the name of the [Locale], localized according to a given [Locale]
      * @param forLocale The [Locale] for which the name should be localized
      * @return The name of this [Locale]

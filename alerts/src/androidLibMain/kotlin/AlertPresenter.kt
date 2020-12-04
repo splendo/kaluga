@@ -110,7 +110,12 @@ actual class AlertPresenter(
                 }
             }
             .apply {
-                setOnDismissListener { alertDialog = null }
+                setOnDismissListener {
+                    alertDialog = null
+                    launch {
+                        this@AlertPresenter.presentation.send(DialogPresentation.Hidden)
+                    }
+                }
                 setOnCancelListener { presentation.afterHandler(null) }
                 show()
             }

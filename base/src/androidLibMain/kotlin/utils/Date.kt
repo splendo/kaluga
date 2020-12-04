@@ -47,6 +47,7 @@ actual class Date internal constructor(internal val calendar: Calendar) : Compar
     actual var month: Int
         get() = calendar.get(Calendar.MONTH) + 1
         set(value) { calendar.set(Calendar.MONTH, value - 1) }
+    actual val daysInMonth: Int get() = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
     actual var weekOfYear: Int
         get() = calendar.get(Calendar.WEEK_OF_YEAR)
         set(value) { calendar.set(Calendar.WEEK_OF_YEAR, value) }
