@@ -22,7 +22,7 @@ interface ReachableNetworkConnection {
 }
 
 sealed class Network {
-    sealed class Unknown(open val reason: Reason): Network() {
+    sealed class Unknown(open val reason: Reason) : Network() {
         enum class Reason {
             CONNECTING,
             LOSING,

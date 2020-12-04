@@ -40,7 +40,7 @@ actual sealed class NetworkManager(
         context: Context
     ) : NetworkManager(context) {
 
-        private val networkHandler = object :  ConnectivityManager.NetworkCallback() {
+        private val networkHandler = object : ConnectivityManager.NetworkCallback() {
 
             override fun onAvailable(network: android.net.Network) {
                 super.onAvailable(network)
@@ -61,7 +61,6 @@ actual sealed class NetworkManager(
                         Network.Unknown.Reason.LOSING
                     )
                 )
-
             }
 
             override fun onLost(network: android.net.Network) {

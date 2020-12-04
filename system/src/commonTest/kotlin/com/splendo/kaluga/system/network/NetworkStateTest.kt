@@ -178,9 +178,12 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
             assertTrue { it.networkType is Network.Known.Cellular }
         }
 
-        resetStateTo<NetworkState.Unknown>(Network.Unknown.WithoutLastNetwork(
-            Network.Unknown.Reason.NOT_CLEAR
-        ), this)
+        resetStateTo<NetworkState.Unknown>(
+            Network.Unknown.WithoutLastNetwork(
+                Network.Unknown.Reason.NOT_CLEAR
+            ),
+            this
+        )
 
         action {
             networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
@@ -191,9 +194,12 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
             assertTrue { it.networkType is Network.Known.Wifi }
         }
 
-        resetStateTo<NetworkState.Unknown>(Network.Unknown.WithoutLastNetwork(
-            Network.Unknown.Reason.NOT_CLEAR
-        ), this)
+        resetStateTo<NetworkState.Unknown>(
+            Network.Unknown.WithoutLastNetwork(
+                Network.Unknown.Reason.NOT_CLEAR
+            ),
+            this
+        )
 
         action {
             networkStateRepo.onNetworkStateChange(Network.Known.Absent)

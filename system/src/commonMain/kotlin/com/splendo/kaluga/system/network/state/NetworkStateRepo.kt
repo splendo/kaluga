@@ -43,7 +43,7 @@ class NetworkStateRepo(
         get() = _networkManager.get()
         set(value) {
             _networkManager.get()?.let {
-                if(value == null) {
+                if (value == null) {
                     it.dispose()
                 }
             }
@@ -59,7 +59,7 @@ class NetworkStateRepo(
     override suspend fun initialValue(): NetworkState {
         networkManager = networkManagerBuilder.create(::onNetworkStateChange)
 
-        return when(val network = lastKnownNetwork) {
+        return when (val network = lastKnownNetwork) {
             is Network.Unknown.WithoutLastNetwork -> NetworkState.Unknown(
                 Network.Unknown.WithoutLastNetwork(network.reason)
             )

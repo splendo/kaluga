@@ -86,14 +86,13 @@ actual sealed class NetworkManager : BaseNetworkManager {
             when (nw_path_get_status(network)) {
                 nw_path_status_satisfied -> {
                     if (nw_path_uses_interface_type(network, nw_interface_type_wifi)) {
-                        if(nw_path_is_expensive(network)) {
+                        if (nw_path_is_expensive(network)) {
                             // connected to hotspot
                             onNetworkStateChange(Network.Known.Wifi(isExpensive = true))
                         } else {
                             onNetworkStateChange(Network.Known.Wifi())
                         }
-                    }
-                    else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
+                    } else if (nw_path_uses_interface_type(network, nw_interface_type_cellular)) {
                         onNetworkStateChange(Network.Known.Cellular())
                     }
                 }

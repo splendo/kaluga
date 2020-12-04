@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.system.network
 
-typealias NetworkStateChange =  (Network) -> Unit
+typealias NetworkStateChange = (Network) -> Unit
 
 interface BaseNetworkManager {
     val onNetworkStateChange: NetworkStateChange
