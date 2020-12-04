@@ -32,6 +32,7 @@ import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -137,6 +138,7 @@ class AndroidAlertPresenterTest : AlertPresenterTests() {
     }
 
     @Test
+    @Ignore("test framework for rotation is unstable")
     fun rotateActivity() = runBlocking {
         val job = launch(Dispatchers.Main) {
             val presenter = builder.buildAlert(this) {
