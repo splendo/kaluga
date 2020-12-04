@@ -68,7 +68,7 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
 class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
 
     init {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flow.collect {
                 value = ObservableOptional.Value(it)
             }
@@ -111,7 +111,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
 class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flowable.flow().collect {
                 super.post(it)
             }
@@ -119,7 +119,7 @@ class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val corou
     }
 
     override fun post(newValue: T) {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flowable.set(newValue)
         }
     }
@@ -128,7 +128,7 @@ class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val corou
 class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
-        coroutineScope.launch(Dispatchers.Main) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             stateFlow.collect {
                 super.post(it)
             }
@@ -136,9 +136,7 @@ class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private va
     }
 
     override fun post(newValue: T) {
-        coroutineScope.launch(Dispatchers.Main) {
-            stateFlow.value = newValue
-        }
+        stateFlow.value = newValue
     }
 }
 

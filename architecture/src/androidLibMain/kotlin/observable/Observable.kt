@@ -26,6 +26,7 @@ import androidx.lifecycle.asLiveData
 import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -100,7 +101,7 @@ actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : O
         }
         // Start observing the LiveData for any changes to propagate to the two way binding
         // Waits until the coroutine is canceled to remove the observer
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             liveData.observeForever(liveDataObserver)
             val neverCompleting = EmptyCompletableDeferred()
             neverCompleting.await()
@@ -165,7 +166,7 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, co
 class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     override val providerLiveData: LiveData<T> = flowable.flow().distinctUntilChanged().asLiveData(coroutineScope.coroutineContext)
     override val liveDataObserver = Observer<T> { t ->
-        coroutineScope.launch {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flowable.set(t)
         }
     }
@@ -183,9 +184,7 @@ class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val corou
 class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
     override val providerLiveData: LiveData<T> = stateFlow.asLiveData(coroutineScope.coroutineContext)
     override val liveDataObserver = Observer<T> { t ->
-        coroutineScope.launch {
-            stateFlow.value = t
-        }
+        stateFlow.value = t
     }
 
     init {
