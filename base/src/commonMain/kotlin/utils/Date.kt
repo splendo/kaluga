@@ -65,6 +65,11 @@ expect class Date : Comparable<Date> {
     var month: Int
 
     /**
+     * The number of days in the current month
+     */
+    val daysInMonth: Int
+
+    /**
      * The week number within the current year.
      */
     var weekOfYear: Int
