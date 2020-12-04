@@ -159,21 +159,23 @@ sealed class NumberFormatStyle(open val roundingMode: RoundingMode) {
     }
 
     /**
-     * Formats a number to the currency of its locale.
+     * Formats a number to a currency of a given currency code fitting its locale.
      * Note: Some platforms may use different delimiters between the currency symbol and the number (if present for the locale).
      * For instance, iOS often uses a non-breaking space, whereas Android uses a common space.
      * This inconsistency is not corrected by this library and should thus be manually corrected if required.
+     * @param currencyCode The currency code to format for. When `null` defaults to the currency of the locale Defaults to `null`.
      * @param minIntegerDigits The minimum number of integer digits to show. Defaults to `0U`.
      * @param maxIntegerDigits The maximum number of integer digits to show. Defaults to `309U`.
      * @param minFractionDigits The minimum number of decimal digits to show. Defaults to `0U`.
-     * @param maxFractionDigits The maximum number of decimal digits to show. Defaults to `325U`.
+     * @param maxFractionDigits The maximum number of decimal digits to show. When `null` uses the preferred faction digits of the currency. Defaults to `null`.
      * @param roundingMode The [RoundingMode] to be applied. Defaults to [RoundingMode.HalfEven].
      */
     data class Currency(
+        val currencyCode: String? = null,
         val minIntegerDigits: UInt = 0U,
         val maxIntegerDigits: UInt = 309U,
-        val minFractionDigits: UInt = 0U,
-        val maxFractionDigits: UInt = 325U,
+        val minFractionDigits: UInt? = null,
+        val maxFractionDigits: UInt? = null,
         override val roundingMode: RoundingMode = RoundingMode.HalfEven
     ) : NumberFormatStyle(roundingMode)
 
