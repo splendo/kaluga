@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2020 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -20,18 +20,26 @@ package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.coroutines.CoroutineScope
-import platform.Foundation.NSString
-import platform.Foundation.localizedStringWithFormat
+import platform.Foundation.NSCalendar
+import platform.Foundation.NSDate
+import platform.Foundation.NSTimeInterval
+import platform.Foundation.dateWithTimeIntervalSince1970
+import platform.Foundation.timeIntervalSince1970
 import platform.UIKit.UIAlertAction
-import platform.UIKit.UIAlertActionStyle
 import platform.UIKit.UIAlertActionStyleCancel
 import platform.UIKit.UIAlertActionStyleDefault
-import platform.UIKit.UIAlertActionStyleDestructive
 import platform.UIKit.UIAlertController
-import platform.UIKit.UIAlertControllerStyle
 import platform.UIKit.UIAlertControllerStyleActionSheet
-import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIDatePicker
+import platform.UIKit.UIDatePickerMode
+import platform.UIKit.UIDatePickerStyle
 import platform.UIKit.UIViewController
+import platform.UIKit.addSubview
+import platform.UIKit.bottomAnchor
+import platform.UIKit.leadingAnchor
+import platform.UIKit.topAnchor
+import platform.UIKit.trailingAnchor
+import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 
 actual class DateTimePickerPresenter(
     private val datePicker: DateTimePicker,
@@ -48,38 +56,45 @@ actual class DateTimePickerPresenter(
     }
 
     override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
-        // UIAlertController.alertControllerWithTitle(
-        //     alert.title,
-        //     alert.message,
-        //     transform(alert.style)
-        // ).apply {
-        //     alert.actions.forEach { action ->
-        //         addAction(
-        //             UIAlertAction.actionWithTitle(
-        //                 action.title,
-        //                 transform(action.style)
-        //             ) {
-        //                 action.handler()
-        //                 afterHandler(action)
-        //             }
-        //         )
-        //     }
-        //     val cancelButtonIndex = alert.actions.indexOfFirst {
-        //         (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
-        //     }
-        //     // If there is no Cancel action inject it by default
-        //     if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
-        //         addAction(
-        //             UIAlertAction.actionWithTitle(
-        //                 NSString.localizedStringWithFormat("Cancel"),
-        //                 UIAlertActionStyleCancel
-        //             ) {
-        //                 afterHandler(null)
-        //             }
-        //         )
-        //     }
-        // }.run {
-        //     parent.presentViewController(this, animated, completion)
-        // }
+        UIAlertController.alertControllerWithTitle(null, datePicker.message, UIAlertControllerStyleActionSheet).apply {
+            val datePickerView = UIDatePicker().apply {
+                calendar = NSCalendar.currentCalendar.apply {
+                    this.locale = datePicker.locale.nsLocale
+                    this.timeZone = datePicker.selectedDate.timeZone.timeZone
+                }
+                date = NSDate.dateWithTimeIntervalSince1970((datePicker.selectedDate.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
+                locale = datePicker.locale.nsLocale
+                timeZone = datePicker.selectedDate.timeZone.timeZone
+                datePickerMode = when (val type = datePicker.type) {
+                    is DateTimePicker.Type.TimeType -> UIDatePickerMode.UIDatePickerModeTime
+                    is DateTimePicker.Type.DateType -> {
+                        type.latestDate?.let {
+                            maximumDate = NSDate.dateWithTimeIntervalSince1970((it.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
+                        }
+                        type.earliestDate?.let {
+                            minimumDate = NSDate.dateWithTimeIntervalSince1970((it.millisecondSinceEpoch.toDouble() / 1000.0) as NSTimeInterval)
+                        }
+                        UIDatePickerMode.UIDatePickerModeDate
+                    }
+                }
+                preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
+            }
+            view.addSubview(datePickerView)
+            addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleCancel) { completion(null) })
+            addAction(
+                UIAlertAction.actionWithTitle(datePicker.confirmButtonTitle, UIAlertActionStyleDefault) {
+                    completion( Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+                }
+            )
+            datePickerView.translatesAutoresizingMaskIntoConstraints = false
+            datePickerView.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0).active = true
+            datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0).active = true
+            datePickerView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 0.0).active = true
+            datePickerView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, 0.0).active = true
+
+            view.translatesAutoresizingMaskIntoConstraints = false
+        }.run {
+            parent.presentViewController(this, animated, null)
+        }
     }
 }

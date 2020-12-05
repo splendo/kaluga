@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2020 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
-
 package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.utils.Date

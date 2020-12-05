@@ -1,5 +1,5 @@
 /*
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2020 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,14 +39,16 @@ import kotlinx.coroutines.launch
 
 actual class DateTimePickerPresenter(
     private val dateTimePicker: DateTimePicker,
+    private val themeResourceId: Int,
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
     coroutineScope: CoroutineScope
 ) : BaseDateTimePickerPresenter(dateTimePicker), CoroutineScope by coroutineScope {
 
     actual class Builder(
+        private val themeResourceId: Int = 0,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseDateTimePickerPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = DateTimePickerPresenter(createDateTimePicker(), lifecycleManagerObserver, coroutineScope)
+        actual override fun create(coroutineScope: CoroutineScope) = DateTimePickerPresenter(createDateTimePicker(), themeResourceId, lifecycleManagerObserver, coroutineScope)
     }
 
     private sealed class DialogPresentation {
@@ -82,9 +84,10 @@ actual class DateTimePickerPresenter(
         val alertDialog: AlertDialog = when (val type = dateTimePicker.type) {
             is DateTimePicker.Type.TimeType -> TimePickerDialog(
                 context,
+                themeResourceId,
                 { _, hour, minute ->
                     presentation.completion(
-                        dateTimePicker.selectedDate.apply {
+                        dateTimePicker.selectedDate.copy().apply {
                             this.hour = hour
                             this.minute = minute
                         }
@@ -97,9 +100,10 @@ actual class DateTimePickerPresenter(
             is DateTimePicker.Type.DateType -> {
                 DatePickerDialog(
                     context,
+                    themeResourceId,
                     { _, year, month, dayOfMonth ->
                         presentation.completion(
-                            dateTimePicker.selectedDate.apply {
+                            dateTimePicker.selectedDate.copy().apply {
                                 this.year = year
                                 this.month = month + 1
                                 this.day = dayOfMonth
@@ -120,15 +124,7 @@ actual class DateTimePickerPresenter(
             }
         }
         alertDialog.apply {
-            dateTimePicker.message?.let {DialogInterface.BUTTON_POSITIVE,
-                dateTimePicker.confirmButtonTitle,
-                this as DialogInterface.OnClickListener
-                )
-                setButton(
-                    DialogInterface.BUTTON_NEGATIVE,
-                    dateTimePicker.cancelButtonTitle,
-                    this as DialogInterface.OnClickListener
-                )
+            dateTimePicker.message?.let {
                 setMessage(it)
             }
             setButton(

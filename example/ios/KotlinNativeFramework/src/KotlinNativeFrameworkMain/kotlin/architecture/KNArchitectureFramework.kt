@@ -78,6 +78,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Location -> "showLocation"
                         is FeatureListNavigationAction.Permissions -> "showPermissions"
                         is FeatureListNavigationAction.Alerts -> "showAlerts"
+                        is FeatureListNavigationAction.DateTimePicker -> "showDateTimePicker"
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"

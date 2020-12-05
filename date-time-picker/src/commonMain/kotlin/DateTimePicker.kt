@@ -1,6 +1,6 @@
 /*
 
-Copyright 2019 Splendo Consulting B.V. The Netherlands
+Copyright 2020 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ data class DateTimePicker(
 ) {
 
     /**
-     * Date Type to sselect
+     * Date Type to select
      */
     sealed class Type {
         /**
@@ -66,7 +66,7 @@ interface DateTimePickerActions {
      * Presents an DateTimePicker
      *
      * @param animated Pass `true` to animate the presentation
-     * @param completion The block to execute after the presentation finishes
+     * @param completion The callback invoked when a Date is selected or the dialog is cancelled
      */
     fun showAsync(animated: Boolean = true, completion: (Date?) -> Unit = {})
 
@@ -74,8 +74,7 @@ interface DateTimePickerActions {
      * Presents an DateTimePicker and suspends
      *
      * @param animated
-     * @return The [Date] that was selected
-     *         or `null` if the DateTimePicker was cancelled
+     * @return The [Date] that was selected or `null` if the DateTimePicker was cancelled
      */
     suspend fun show(animated: Boolean = true): Date?
 
