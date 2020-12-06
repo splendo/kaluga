@@ -33,6 +33,7 @@ import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIDatePicker
 import platform.UIKit.UIDatePickerMode
 import platform.UIKit.UIDatePickerStyle
+import platform.UIKit.UILabel
 import platform.UIKit.UIViewController
 import platform.UIKit.addSubview
 import platform.UIKit.bottomAnchor
@@ -56,7 +57,7 @@ actual class DateTimePickerPresenter(
     }
 
     override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
-        UIAlertController.alertControllerWithTitle(null, datePicker.message, UIAlertControllerStyleActionSheet).apply {
+        UIAlertController.alertControllerWithTitle(null, null, UIAlertControllerStyleActionSheet).apply {
             val datePickerView = UIDatePicker().apply {
                 calendar = NSCalendar.currentCalendar.apply {
                     this.locale = datePicker.locale.nsLocale
@@ -77,6 +78,7 @@ actual class DateTimePickerPresenter(
                         UIDatePickerMode.UIDatePickerModeDate
                     }
                 }
+                // TODO: When Kotlin Native supports this, iOS 14+ should pass Inline
                 preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
             }
             view.addSubview(datePickerView)
@@ -86,8 +88,19 @@ actual class DateTimePickerPresenter(
                     completion( Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
                 }
             )
+            val anchor = datePicker.message?.let {
+                val label = UILabel()
+                label.text = it
+                view.addSubview(label)
+                label.translatesAutoresizingMaskIntoConstraints = false
+                label.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0).active = true
+                label.bottomAnchor.constraintEqualToAnchor(datePickerView.topAnchor, -15.0).active = true
+                label.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 20.0).active = true
+                label.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, -20.0).active = true
+                label.bottomAnchor
+            } ?: view.topAnchor
             datePickerView.translatesAutoresizingMaskIntoConstraints = false
-            datePickerView.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0).active = true
+            datePickerView.topAnchor.constraintEqualToAnchor(anchor, 15.0).active = true
             datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0).active = true
             datePickerView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 0.0).active = true
             datePickerView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, 0.0).active = true
