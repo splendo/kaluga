@@ -18,6 +18,7 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.datetimepicker
 
+import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSCalendar
@@ -78,8 +79,10 @@ actual class DateTimePickerPresenter(
                         UIDatePickerMode.UIDatePickerModeDate
                     }
                 }
-                // TODO: When Kotlin Native supports this, iOS 14+ should pass Inline
-                preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
+                if (IOSVersion.systemVersion >= IOSVersion(13, 4, 0)) {
+                    // TODO: When Kotlin Native supports this, iOS 14+ should pass Inline
+                    preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
+                }
             }
             view.addSubview(datePickerView)
             addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleCancel) { completion(null) })
