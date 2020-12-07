@@ -76,10 +76,17 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             }
             is NumberFormatStyle.Currency -> {
                 numberStyle = NSNumberFormatterCurrencyStyle
+                style.currencyCode?.let { currencyCode ->
+                    this.currencyCode = currencyCode
+                }
                 minimumIntegerDigits = style.minIntegerDigits.toULong() as NSUInteger
                 maximumIntegerDigits = style.maxIntegerDigits.toULong() as NSUInteger
-                minimumFractionDigits = style.minFractionDigits.toULong() as NSUInteger
-                maximumFractionDigits = style.maxFractionDigits.toULong() as NSUInteger
+                style.minFractionDigits?.let {
+                    minimumFractionDigits = it.toULong() as NSUInteger
+                }
+                style.maxFractionDigits?.let {
+                    maximumFractionDigits = it.toULong() as NSUInteger
+                }
             }
             is NumberFormatStyle.Pattern -> {
                 numberStyle = NSNumberFormatterDecimalStyle
