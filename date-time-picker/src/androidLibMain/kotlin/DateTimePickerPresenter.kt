@@ -157,7 +157,7 @@ actual class DateTimePickerPresenter(
  * which can automatically track which Activity is active for it.
  *
  */
-fun AppCompatActivity.alertPresenterBuilder(): DateTimePickerPresenter.Builder =
+fun AppCompatActivity.alertPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
     getOrPutAndRemoveOnDestroyFromCache {
-        DateTimePickerPresenter.Builder(lifecycleManagerObserver())
+        DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
     }
