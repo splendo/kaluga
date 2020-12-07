@@ -22,14 +22,12 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.Date
-import com.splendo.kaluga.base.utils.applyIf
 import com.splendo.kaluga.base.utils.uses24HourClock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -157,7 +155,7 @@ actual class DateTimePickerPresenter(
  * which can automatically track which Activity is active for it.
  *
  */
-fun AppCompatActivity.alertPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
+fun AppCompatActivity.datePickerPresenterBuilder(themeResourceId: Int = 0): DateTimePickerPresenter.Builder =
     getOrPutAndRemoveOnDestroyFromCache {
         DateTimePickerPresenter.Builder(themeResourceId, lifecycleManagerObserver())
     }

@@ -18,8 +18,9 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
-import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
+import com.splendo.kaluga.datetimepicker.buildTimePicker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,52 +30,33 @@ import kotlin.test.assertNull
 
 abstract class DateTimePickerPresenterTests {
 
-    abstract val builder: DateTimePickerTestPresenter.Builder
+    abstract val builder: DateTimePickerPresenter.Builder
 
     @Test
-    fun testAlertBuilderExceptionNoActions() = runBlocking {
+    fun testDateTimePickerBuilderExceptionNoActions() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert(this) {
-                setTitle("OK")
+            builder.buildTimePicker(this) {
             }
         }
         Unit
     }
 
     @Test
-    fun testAlertBuilderExceptionNoTitleOrMessage() = runBlocking {
+    fun testDateTimePickerBuilderExceptionNoCancelTitle() = runBlocking {
         assertFailsWith<IllegalArgumentException> {
-            builder.buildAlert(this) {
-                setPositiveButton("OK")
+            builder.buildTimePicker(this) {
+                setConfirmButtonTitle("OK")
             }
         }
         Unit
     }
 
     @Test
-    fun testAlertFlowCancel() = runBlocking {
+    fun testDateTimePickerFlowCancel() = runBlocking {
         val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildAlert(this) {
-                setTitle("Hello")
-                setPositiveButton("OK")
-                setNegativeButton("Cancel")
-            }
-
-            val result = coroutineContext.run { presenter.show() }
-            assertNull(result)
-        }
-        // On cancel call, we expect the dialog to be dismissed
-        coroutine.cancel()
-    }
-
-    @Test
-    fun testActionSheetFlowCancel() = runBlocking {
-        val coroutine = CoroutineScope(Dispatchers.Main).launch {
-            val presenter = builder.buildActionSheet(this) {
-                setTitle("Choose")
-                setPositiveButton("Option 1")
-                setPositiveButton("Option 2")
-                setPositiveButton("Option 3")
+            val presenter = builder.buildTimePicker(this) {
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("Cancel")
             }
 
             val result = coroutineContext.run { presenter.show() }

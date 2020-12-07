@@ -146,7 +146,6 @@ expect class Locale {
  */
 val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
 
-
 /**
  * Indicates whether this locale use a 24 hour clock cycle.
  */

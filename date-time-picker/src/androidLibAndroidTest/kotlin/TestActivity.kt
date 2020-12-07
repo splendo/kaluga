@@ -7,11 +7,19 @@ class TestActivity : KalugaViewModelActivity<DateTimePickerViewModel>() {
 
     override val viewModel: DateTimePickerViewModel by viewModels()
 
-    suspend fun showAlert() {
-        alertPresenterBuilder().buildAlert(viewModel.coroutineScope) {
-            setTitle("Activity")
+    suspend fun showDatePicker() {
+        datePickerPresenterBuilder().buildDatePicker(viewModel.coroutineScope) {
             setMessage("Activity")
-            setPositiveButton("OK")
+            setConfirmButtonTitle("OK")
+            setCancelButtonTitle("Cancel")
+        }.show(false)
+    }
+
+    suspend fun showTimePicker() {
+        datePickerPresenterBuilder().buildTimePicker(viewModel.coroutineScope) {
+            setMessage("Activity")
+            setConfirmButtonTitle("OK")
+            setCancelButtonTitle("Cancel")
         }.show(false)
     }
 }

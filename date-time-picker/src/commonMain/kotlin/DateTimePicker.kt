@@ -141,7 +141,6 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
          */
         internal fun setType(type: DateTimePicker.Type) = apply { this.type = type }
 
-
         /**
          * Reset builder into initial state
          */

@@ -22,6 +22,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.splendo.kaluga.base.utils.Date.Companion.epoch
 import com.splendo.kaluga.test.DateTimePickerPresenterTests
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +52,7 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
         activityRule.scenario.onActivity { activity = it }
     }
 
-    override val builder get() = activity!!.viewModel.alertBuilder
+    override val builder get() = activity!!.viewModel.dateTimePickerBuilder
 
     companion object {
         const val DEFAULT_TIMEOUT = 5_000L
@@ -61,38 +62,39 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
     fun testBuilderReuse() = runBlocking {
 
         launch(Dispatchers.Main) {
-            builder.buildAlert(MainScope()) {
-                setTitle("Test")
-                setPositiveButton("OK")
+            builder.buildTimePicker(MainScope()) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("Cancel")
             }.show()
         }
 
-        device.wait(Until.findObject(By.text("Test")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
         device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
-        assertTrue(device.wait(Until.gone(By.text("Test")), DEFAULT_TIMEOUT))
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
 
         launch(Dispatchers.Main) {
-            builder.buildAlert(MainScope()) {
-                setTitle("Hello")
-                setNegativeButton("CANCEL") // sometimes this ends up uppercased in the dialog
+            builder.buildDatePicker(MainScope()) {
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
             }.show()
         }
 
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
         device.wait(Until.findObject(By.text("CANCEL")), DEFAULT_TIMEOUT).click()
-        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        assertTrue(device.wait(Until.gone(By.text("CANCEL")), DEFAULT_TIMEOUT))
     }
 
     @Test
     fun testConcurrentBuilders() = runBlocking {
-        val alerts = Array(10) { CompletableDeferred<BaseAlertPresenter>() }
+        val alerts = Array(10) { CompletableDeferred<BaseDateTimePickerPresenter>() }
 
         (0..9).forEach { i ->
             launch(Dispatchers.Default) {
                 alerts[i].complete(
-                    builder.buildAlert(MainScope()) {
-                        setTitle("Alert$i")
-                        setPositiveButton("OK$i")
+                    builder.buildTimePicker(MainScope()) {
+                        setMessage("DateTimePicker$i")
+                        setConfirmButtonTitle("OK$i")
+                        setCancelButtonTitle("CANCEL$i")
                     }
                 )
             }
@@ -101,72 +103,151 @@ class AndroidDateTimePickerPresenterTest : DateTimePickerPresenterTests() {
             launch(Dispatchers.Main) {
                 alerts[i].await().show()
             }
-            device.wait(Until.findObject(By.text("Alert$i")), DEFAULT_TIMEOUT)
+            device.wait(Until.findObject(By.text("DateTimePicker$i")), DEFAULT_TIMEOUT)
             device.wait(Until.findObject(By.text("OK$i")), DEFAULT_TIMEOUT).click()
-            assertTrue(device.wait(Until.gone(By.text("Alert$i")), DEFAULT_TIMEOUT))
+            assertTrue(device.wait(Until.gone(By.text("DateTimePicker$i")), DEFAULT_TIMEOUT))
         }
     }
 
     @Test
-    fun testAlertShow() = runBlocking {
+    fun testDatePickerShow() = runBlocking {
         launch(Dispatchers.Main) {
-            builder.buildAlert(MainScope()) {
-                setTitle("Hello")
-                setPositiveButton("OK")
+            builder.buildDatePicker(MainScope()) {
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
             }.show()
         }
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
         device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
-        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        assertTrue(device.wait(Until.gone(By.text("OK")), DEFAULT_TIMEOUT))
     }
 
     @Test
-    fun testAlertFlowWithCoroutines() = runBlocking {
+    fun testTimePickerShow() = runBlocking {
         launch(Dispatchers.Main) {
-            val action = Alert.Action("OK")
-            val presenter = builder.buildAlert(MainScope()) {
-                setTitle("Hello")
-                addActions(listOf(action))
+            builder.buildTimePicker(MainScope()) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
+            }.show()
+        }
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testTimePickerFlowWithCoroutines() = runBlocking {
+        launch(Dispatchers.Main) {
+            val selectedTime = epoch().apply {
+                hour = 23
+                minute = 42
+            }
+            val presenter = builder.buildTimePicker(MainScope()) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
+                setSelectedDate(selectedTime)
             }
 
             val result = withContext(coroutineContext) { presenter.show() }
-            assertEquals(result, action)
+            assertEquals(selectedTime, result)
         }
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
         device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
-        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testTimePickerFlowCancelledWithCoroutines() = runBlocking {
+        launch(Dispatchers.Main) {
+            val presenter = builder.buildTimePicker(MainScope()) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
+            }
+
+            val result = withContext(coroutineContext) { presenter.show() }
+            assertNull(result)
+        }
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("CANCEL")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testDatePickerFlowWithCoroutines() = runBlocking {
+        launch(Dispatchers.Main) {
+            val selectedDate = epoch().apply {
+                year = 2000
+                month = 5
+                day = 23
+            }
+            val presenter = builder.buildDatePicker(MainScope()) {
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
+                setSelectedDate(selectedDate)
+            }
+
+            val result = withContext(coroutineContext) { presenter.show() }
+            assertEquals(selectedDate, result)
+        }
+        device.wait(Until.findObject(By.text("OK")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("OK")), DEFAULT_TIMEOUT))
+    }
+
+    @Test
+    fun testDatePickerFlowCancelledWithCoroutines() = runBlocking {
+        launch(Dispatchers.Main) {
+            val presenter = builder.buildTimePicker(MainScope()) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
+            }
+
+            val result = withContext(coroutineContext) { presenter.show() }
+            assertNull(result)
+        }
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("CANCEL")), DEFAULT_TIMEOUT).click()
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
     }
 
     @Test
     @Ignore("test framework for rotation is unstable")
     fun rotateActivity() = runBlocking {
         val job = launch(Dispatchers.Main) {
-            val presenter = builder.buildAlert(this) {
-                setTitle("Hello")
-                setPositiveButton("OK")
-                setNegativeButton("Cancel")
+            val presenter = builder.buildTimePicker(this) {
+                setMessage("Message")
+                setConfirmButtonTitle("OK")
+                setCancelButtonTitle("CANCEL")
             }
 
             val result = coroutineContext.run { presenter.show() }
             assertNull(result)
         }
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
 
         // Rotate screen
         device.setOrientationLeft()
         // HUD should be on screen
-        device.wait(Until.findObject(By.text("Hello")), DEFAULT_TIMEOUT)
+        device.wait(Until.findObject(By.text("Message")), DEFAULT_TIMEOUT)
 
         device.setOrientationNatural()
 
         job.cancel()
         // Finally should be gone
-        assertTrue(device.wait(Until.gone(By.text("Hello")), DEFAULT_TIMEOUT))
+        assertTrue(device.wait(Until.gone(By.text("Message")), DEFAULT_TIMEOUT))
     }
 
     @Test
-    fun testBuilderFromActivity() {
-        MainScope().launch { activity?.showAlert() }
+    fun testDateBuilderFromActivity() {
+        MainScope().launch { activity?.showDatePicker() }
+        device.wait(Until.findObject(By.text("Activity")), DEFAULT_TIMEOUT)
+    }
+
+    @Test
+    fun testTimeBuilderFromActivity() {
+        MainScope().launch { activity?.showTimePicker() }
         device.wait(Until.findObject(By.text("Activity")), DEFAULT_TIMEOUT)
     }
 }

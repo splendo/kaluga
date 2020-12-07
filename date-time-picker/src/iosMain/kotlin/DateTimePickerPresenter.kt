@@ -80,7 +80,7 @@ actual class DateTimePickerPresenter(
                     }
                 }
                 if (IOSVersion.systemVersion >= IOSVersion(13, 4, 0)) {
-                    // TODO: When Kotlin Native supports this, iOS 14+ should pass Inline
+                    // TODO: When Moving to Kotlin 1.4.20 we should pass UIDatePickerStyleInline for iOS 14+
                     preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
                 }
             }
@@ -88,7 +88,7 @@ actual class DateTimePickerPresenter(
             addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleCancel) { completion(null) })
             addAction(
                 UIAlertAction.actionWithTitle(datePicker.confirmButtonTitle, UIAlertActionStyleDefault) {
-                    completion( Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+                    completion(Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
                 }
             )
             val anchor = datePicker.message?.let {
