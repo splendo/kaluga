@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.text.DateFormatStyle
+import com.splendo.kaluga.base.text.DateFormatter
+
 /**
  * A [Locale] object represents a specific geographical, political, or cultural region.
  */
@@ -142,3 +145,12 @@ expect class Locale {
  * Locale for English/US in a POSIX format. Useful shortcut when dealing with fixed locale formats.
  */
 val Locale.Companion.enUsPosix get() = createLocale("en", "US", "POSIX")
+
+/**
+ * Indicates whether this locale use a 24 hour clock cycle.
+ */
+val Locale.uses24HourClock: Boolean get() {
+    val formatter = DateFormatter.timeFormat(DateFormatStyle.Medium, locale = this)
+    val formattedDate = formatter.format(Date.now())
+    return !formattedDate.contains(formatter.amString) && !formattedDate.contains(formatter.pmString)
+}

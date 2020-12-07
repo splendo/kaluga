@@ -26,8 +26,7 @@ import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromC
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.utils.applyIf
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
@@ -57,12 +56,12 @@ actual class AlertPresenter(
         object Hidden : DialogPresentation()
     }
 
-    private val presentation = ConflatedBroadcastChannel<DialogPresentation>(DialogPresentation.Hidden)
+    private val presentation = MutableStateFlow<DialogPresentation>(DialogPresentation.Hidden)
     private var alertDialog: AlertDialog? = null
 
     init {
         launch {
-            combine(lifecycleManagerObserver.managerState, presentation.asFlow()) { managerState, dialogPresentation ->
+            combine(lifecycleManagerObserver.managerState, presentation) { managerState, dialogPresentation ->
                 Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
                 when (val dialogPresentation = contextPresentation.second) {
@@ -74,9 +73,7 @@ actual class AlertPresenter(
     }
 
     override fun dismissAlert(animated: Boolean) {
-        launch {
-            presentation.send(DialogPresentation.Hidden)
-        }
+        presentation.value = DialogPresentation.Hidden
     }
 
     override fun showAlert(
@@ -84,9 +81,7 @@ actual class AlertPresenter(
         afterHandler: (Alert.Action?) -> Unit,
         completion: () -> Unit
     ) {
-        launch {
-            presentation.send(DialogPresentation.Showing(animated, afterHandler, completion))
-        }
+        presentation.value = DialogPresentation.Showing(animated, afterHandler, completion)
     }
 
     private fun presentDialog(context: Context, presentation: DialogPresentation.Showing) {
@@ -112,9 +107,7 @@ actual class AlertPresenter(
             .apply {
                 setOnDismissListener {
                     alertDialog = null
-                    launch {
-                        this@AlertPresenter.presentation.send(DialogPresentation.Hidden)
-                    }
+                    this@AlertPresenter.presentation.value = DialogPresentation.Hidden
                 }
                 setOnCancelListener { presentation.afterHandler(null) }
                 show()

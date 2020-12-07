@@ -21,6 +21,7 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
 import com.splendo.kaluga.example.InfoFragment
@@ -28,6 +29,7 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
@@ -39,6 +41,7 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.DialogSpecRow
@@ -85,11 +88,13 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
                     is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
                     is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
+                    is FeatureListNavigationAction.DateTimePicker -> NavigationSpec.Activity(DateTimePickerActivity::class.java)
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
                 }
-            })
+            }
+        )
     }
 
     viewModel {
@@ -139,6 +144,10 @@ val viewModelModule = module {
 
     viewModel {
         AlertViewModel(AlertPresenter.Builder())
+    }
+
+    viewModel {
+        DateTimePickerViewModel(DateTimePickerPresenter.Builder())
     }
 
     viewModel {

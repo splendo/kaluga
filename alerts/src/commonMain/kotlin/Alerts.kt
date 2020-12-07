@@ -264,10 +264,10 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 expect class AlertPresenter : BaseAlertPresenter {
     class Builder : BaseAlertPresenter.Builder {
         /**
-         * Creates AlertInterface object
+         * Creates an [AlertPresenter]
          *
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
-         * @return The AlertInterface object
+         * @return The created [AlertPresenter]
          */
         override fun create(coroutineScope: CoroutineScope): AlertPresenter
     }
