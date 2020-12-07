@@ -21,6 +21,7 @@ package com.splendo.kaluga.datetimepicker
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.coroutines.CoroutineScope
+import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSCalendar
 import platform.Foundation.NSDate
 import platform.Foundation.NSTimeInterval
@@ -96,17 +97,17 @@ actual class DateTimePickerPresenter(
                 label.text = it
                 view.addSubview(label)
                 label.translatesAutoresizingMaskIntoConstraints = false
-                label.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0).active = true
-                label.bottomAnchor.constraintEqualToAnchor(datePickerView.topAnchor, -15.0).active = true
-                label.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 20.0).active = true
-                label.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, -20.0).active = true
+                label.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0 as CGFloat).active = true
+                label.bottomAnchor.constraintEqualToAnchor(datePickerView.topAnchor, -15.0 as CGFloat).active = true
+                label.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 20.0 as CGFloat).active = true
+                label.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, -20.0 as CGFloat).active = true
                 label.bottomAnchor
             } ?: view.topAnchor
             datePickerView.translatesAutoresizingMaskIntoConstraints = false
-            datePickerView.topAnchor.constraintEqualToAnchor(anchor, 15.0).active = true
-            datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0).active = true
-            datePickerView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 0.0).active = true
-            datePickerView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, 0.0).active = true
+            datePickerView.topAnchor.constraintEqualToAnchor(anchor, 15.0 as CGFloat).active = true
+            datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0 as CGFloat).active = true
+            datePickerView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 0.0 as CGFloat).active = true
+            datePickerView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, 0.0 as CGFloat).active = true
 
             view.translatesAutoresizingMaskIntoConstraints = false
         }.run {
