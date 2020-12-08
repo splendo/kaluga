@@ -1,7 +1,8 @@
-## System
+# System
 
-This module emit the actual network status.
+This module aim to cover system APIs such as network, audio, battery etc...
 
+## Network
 ### Usage
 The `NetworkState` is available through a `NetworkStateRepo`.
 `NetworkState` is composed by 3 states and each state contains `Network` objects:
