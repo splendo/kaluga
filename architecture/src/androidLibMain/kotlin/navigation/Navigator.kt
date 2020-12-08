@@ -21,6 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
@@ -45,7 +46,9 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
+            is NavigationSpec.RemoveFragment -> removeFragment(spec)
             is NavigationSpec.Dialog -> navigateToDialog(spec)
+            is NavigationSpec.DismissDialog -> dismissDialog(spec)
             is NavigationSpec.Camera -> navigateToCamera(spec)
             is NavigationSpec.Email -> navigateToEmail(spec)
             is NavigationSpec.FileSelector -> navigateToFileSelector(spec)
@@ -106,10 +109,27 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         transaction.commit()
     }
 
+    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
+        val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
+
+        val transaction = fragmentManager.beginTransaction()
+        transaction.remove(fragment)
+        transaction.commit()
+    }
+
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
         assert(manager?.fragmentManager != null)
         val fragmentManager = manager?.fragmentManager ?: return
         dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
+    }
+
+    private fun dismissDialog(spec: NavigationSpec.DismissDialog) {
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
+        val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
+        dialog.dismiss()
     }
 
     private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {

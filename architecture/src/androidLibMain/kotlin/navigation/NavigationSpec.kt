@@ -111,11 +111,23 @@ sealed class NavigationSpec {
     }
 
     /**
+     * Removes a [Fragment] with a given tag
+     * @param tag The tag of the [Fragment] to remove
+     */
+    data class RemoveFragment(val tag: String) : NavigationSpec()
+
+    /**
      * Shows a [DialogFragment]
      * @param tag Optional tag to add to the Dialog
      * @param createDialog Function to create the [DialogFragment] to display
      */
     data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
+
+    /**
+     * Dismisses a [DialogFragment] with a given Tag
+     * @param tag The tag of the [DialogFragment] to remove
+     */
+    data class DismissDialog(val tag: String) : NavigationSpec()
 
     /**
      * Shows the Camera
