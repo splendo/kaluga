@@ -28,6 +28,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Location : FeatureListNavigationAction()
     object Permissions : FeatureListNavigationAction()
     object Alerts : FeatureListNavigationAction()
+    object DateTimePicker : FeatureListNavigationAction()
     object LoadingIndicator : FeatureListNavigationAction()
     object Architecture : FeatureListNavigationAction()
     object Keyboard : FeatureListNavigationAction()
@@ -36,6 +37,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
 sealed class Feature(val title: String) {
     object Alerts : Feature("feature_alerts".localized())
     object Architecture : Feature("feature_architecture".localized())
+    object DateTimePicker : Feature("feature_date_time_picker".localized())
     object Keyboard : Feature("feature_keyboard".localized())
     object LoadingIndicator : Feature("feature_hud".localized())
     object Location : Feature("feature_location".localized())
@@ -47,6 +49,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
     val feature = observableOf(listOf(
         Feature.Alerts,
         Feature.Architecture,
+        Feature.DateTimePicker,
         Feature.Keyboard,
         Feature.LoadingIndicator,
         Feature.Location,
@@ -57,6 +60,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
         navigator.navigate(when (feature) {
             is Feature.Alerts -> FeatureListNavigationAction.Alerts
             is Feature.Architecture -> FeatureListNavigationAction.Architecture
+            is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
             is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
             is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
             is Feature.Location -> FeatureListNavigationAction.Location

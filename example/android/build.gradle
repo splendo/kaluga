@@ -55,6 +55,7 @@ dependencies {
         implementation "com.splendo.kaluga:location:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:date-time-picker:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
@@ -65,6 +66,7 @@ dependencies {
     else {
         implementation project(':location')
         implementation project(':base')
+        implementation project(':date-time-picker')
         implementation project(':shared')
         implementation project(":permissions")
         implementation project(":logging")

@@ -48,6 +48,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":base")
     project(":base").projectDir = file("../../../base")
 
+    include(":date-time-picker")
+    project(":date-time-picker").projectDir = file("../../../date-time-picker")
+
     include(":hud")
     project(":hud").projectDir = file("../../../hud")
 
