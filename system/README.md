@@ -1,3 +1,4 @@
+
 # System
 
 This module aim to cover system APIs such as network, audio, battery etc...
@@ -14,10 +15,12 @@ In order to receive a flow of `NetworkState`, create a `NetworkStateRepoBuilder`
 
 Sample code:
 ```kotlin
-private val networkStateRepo = NetworkStateRepoBuilder().create()
-networkStateRepo.flow().network().collect {
-    // Handle the incoming Network object
-    foo(it)
+fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
+	val networkStateRepo = networkStateRepoBuilder.create()
+	networkStateRepo.flow().network().collect {
+	    // Handle the incoming Network object
+	    foo(it)
+	}
 }
 ```
 It would be enough to call `networkStateRepo.flow().collect {...}` and receive updates of `NetworkState`, but it is possible to receive `Network` object using `.network()` function (like in the sample code above).
