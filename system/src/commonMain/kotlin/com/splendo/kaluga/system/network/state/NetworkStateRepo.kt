@@ -122,3 +122,7 @@ class NetworkStateRepo(
 fun Flow<NetworkState>.network(): Flow<Network> {
     return this.map { it.networkType }
 }
+
+fun Flow<NetworkState>.online(): Flow<Boolean> {
+    return map { it is NetworkState.Available }
+}
