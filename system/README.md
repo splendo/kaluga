@@ -17,10 +17,39 @@ Sample code:
 ```kotlin
 fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
 	val networkStateRepo = networkStateRepoBuilder.create()
-	networkStateRepo.flow().network().collect {
+	networkStateRepo.flow().collect {
 	    // Handle the incoming Network object
 	    foo(it)
 	}
 }
 ```
-It would be enough to call `networkStateRepo.flow().collect {...}` and receive updates of `NetworkState`, but it is possible to receive `Network` object using `.network()` function (like in the sample code above).
+
+In case receiving a `NetworkState` is too much, it is possible to use `network()` function which returns a `Network` object.
+
+```kotlin
+fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
+	val networkStateRepo = networkStateRepoBuilder.create()
+	networkStateRepo.flow().network().collect {
+	    doSomethingWithNetwork(it)
+	}
+}
+
+fun doSomethingWithNetwork(network: Network) {
+    ...
+}
+```
+
+Or `online()` method which returns `true` when the connection is `Available`.
+
+```kotlin
+fun bar(networkStateRepoBuilder: NetworkStateRepoBuilder) {
+	val networkStateRepo = networkStateRepoBuilder.create()
+	networkStateRepo.flow().online().collect {
+	    if (it) {
+	        // Network is Available
+	    } else {
+	        // Network is Unavailable or Unknown
+	    }
+	}
+}
+```
