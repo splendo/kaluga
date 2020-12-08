@@ -118,6 +118,11 @@ sealed class NavigationSpec {
     data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
 
     /**
+     * Dismisses a Dialog with a given Tag
+     */
+    data class DismissDialog(val tag: String) : NavigationSpec()
+
+    /**
      * Shows the Camera
      * @param type The [Type] of media to capture
      * @param requestCode The request code added to the intent
