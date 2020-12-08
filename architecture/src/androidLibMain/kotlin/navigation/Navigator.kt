@@ -46,6 +46,7 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
+            is NavigationSpec.RemoveFragment -> removeFragment(spec)
             is NavigationSpec.Dialog -> navigateToDialog(spec)
             is NavigationSpec.DismissDialog -> dismissDialog(spec)
             is NavigationSpec.Camera -> navigateToCamera(spec)
@@ -105,6 +106,16 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Fragment.Type.Replace -> transaction.replace(fragmentSpec.containerId, fragment, fragmentSpec.tag)
         }
 
+        transaction.commit()
+    }
+
+    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
+        val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
+
+        val transaction = fragmentManager.beginTransaction()
+        transaction.remove(fragment)
         transaction.commit()
     }
 
