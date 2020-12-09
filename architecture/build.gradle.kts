@@ -37,6 +37,13 @@ kotlin {
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
+
+        getByName("androidLibMain") {
+            dependencies {
+                implementation("androidx.browser:browser:1.2.0")
+            }
+        }
+
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
