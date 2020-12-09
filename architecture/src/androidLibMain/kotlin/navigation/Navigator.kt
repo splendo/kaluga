@@ -22,8 +22,10 @@ import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
 import androidx.fragment.app.DialogFragment
+import androidx.browser.customtabs.CustomTabsIntent
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
+import com.splendo.kaluga.base.ApplicationHolder
 
 actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
     actual fun navigate(action: A)
@@ -264,12 +266,26 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
 
     private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
         assert(manager?.activity != null)
-        val activity = manager?.activity ?: return
-        val uri = Uri.parse(browserSpec.url.toURI().toString())
-        val intent = Intent(Intent.ACTION_VIEW, uri)
 
-        intent.resolveActivity(activity.packageManager)?.let {
-            activity.startActivity(intent)
+        when (browserSpec.viewType) {
+            NavigationSpec.Browser.Type.CustomTab -> {
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                customTabsIntent.launchUrl(
+                    ApplicationHolder.applicationContext,
+                    Uri.parse(browserSpec.url.toURI().toString())
+                )
+            }
+            NavigationSpec.Browser.Type.Normal -> {
+                val activity = manager?.activity ?: return
+                val uri = Uri.parse(browserSpec.url.toURI().toString())
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+
+                intent.resolveActivity(activity.packageManager)?.let {
+                    activity.startActivity(intent)
+                }
+            }
         }
     }
 }
