@@ -18,6 +18,8 @@
 package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.Links
+import com.splendo.kaluga.links.utils.decodeFromList
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 
 typealias LinksStateChange = (Links) -> Unit
@@ -28,7 +30,18 @@ abstract class BaseLinksManager(open val onLinksStateChange: LinksStateChange) {
         fun create(onLinksStateChange: LinksStateChange): BaseLinksManager
     }
 
-    abstract fun <T> handleIncomingLink(data: Any, serializer: KSerializer<T>)
+    @ExperimentalSerializationApi
+    fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
+        val list = query.extractValuesAsList()
+        if (list.isEmpty()) {
+            onLinksStateChange(Links.Failure("Query was empty"))
+            return
+        }
+        val deserializedObject = decodeFromList(list, serializer)
+
+        onLinksStateChange(Links.Incoming.Result(deserializedObject))
+    }
+
     abstract fun handleOutgoingLink(url: String)
 }
 
