@@ -23,6 +23,7 @@ import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 class NetworkStateRepo(
@@ -120,9 +121,9 @@ class NetworkStateRepo(
 }
 
 fun Flow<NetworkState>.network(): Flow<Network> {
-    return this.map { it.networkType }
+    return distinctUntilChanged().map { it.networkType }
 }
 
 fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return map { it is NetworkState.Available }
+    return distinctUntilChanged().map { it is NetworkState.Available }
 }
