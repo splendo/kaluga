@@ -51,54 +51,66 @@ class LinksStateRepo(
                     is LinksState.Error -> {
                         when (link) {
                             is Links.Incoming.Result<*> -> {
-                                { state.ready(link) }
+                                { state.ready(link.data) }
                             }
                             is Links.Failure -> {
-                                { state.error(link) }
+                                { state.error(link.message) }
                             }
                             is Links.Outgoing.Link -> {
                                 { state.open(link.url) }
+                            }
+                            Links.Pending -> {
+                                { state.pending() }
                             }
                         }
                     }
                     is LinksState.Ready<*> -> {
                         when (link) {
                             is Links.Incoming.Result<*> -> {
-                                { state.ready(link) }
+                                { state.ready(link.data) }
                             }
                             is Links.Failure -> {
-                                { state.error(link) }
+                                { state.error(link.message) }
                             }
                             is Links.Outgoing.Link -> {
                                 { state.open(link.url) }
+                            }
+                            Links.Pending -> {
+                                { state.pending() }
                             }
                         }
                     }
                     is LinksState.Pending -> {
                         when (link) {
                             is Links.Incoming.Result<*> -> {
-                                { state.ready(link) }
+                                { state.ready(link.data) }
                             }
                             is Links.Failure -> {
-                                {state.error(link)}
+                                { state.error(link.message) }
                             }
                             is Links.Outgoing.Link -> {
                                 { state.open(link.url) }
                             }
+                            Links.Pending -> {
+                                 state.remain()
+                            }
                         }
                     }
                     is LinksState.Open -> {
-                        when(link) {
+                        when (link) {
                             is Links.Incoming.Result<*> -> {
-                                { state.ready(link) }
+                                { state.ready(link.data) }
                             }
 
                             is Links.Failure -> {
-                                { state.error(link) }
+                                { state.error(link.message) }
                             }
 
                             is Links.Outgoing.Link -> {
-                                state.remain()
+                                { state.open(link.url) }
+                            }
+                            Links.Pending -> {
+                                { state.pending() }
                             }
                         }
                     }
