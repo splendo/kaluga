@@ -110,12 +110,12 @@ class LinksStateRepo(
     /**
      * Convert an incoming url into an object and return it wrapped in [Links.Incoming.Result].
      * When the given Uri/NSURL is invalid, the state returns [Links.Failure].
-     * @param data Uri or NSURL
-     * @param serializer The needed object's serializer
+     * @param query query containing the values from the link.
+     * @param serializer The needed object's serializer.
      * */
-    fun <T> handleIncomingLink(data: Any, serializer: KSerializer<T>) {
+    fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
         println("linksManager is null? ${linksManager == null}")
-        linksManager?.handleIncomingLink(data, serializer)
+        linksManager?.handleIncomingLink(query, serializer)
     }
 
     /**
