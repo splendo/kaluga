@@ -17,28 +17,31 @@
 
 package com.splendo.kaluga.links.state
 
-import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.state.State
 
 sealed class LinksState : State() {
 
-    fun <T> ready(result: Links.Incoming.Result<T>) =
-        Ready(result)
+    fun <T> ready(data: T) =
+        Ready(data)
 
-    val error: suspend (failure: Links.Failure) -> Error = { failure ->
-        Error(failure)
+    val error: suspend (message: String) -> Error = { message ->
+        Error(message)
     }
 
     val open: suspend (url: String) -> Open = { url ->
         Open(url)
     }
 
+    val pending: suspend () -> Pending = {
+        Pending
+    }
+
     data class Error (
-        val failure: Links.Failure
+        val message: String
     ) : LinksState()
 
     data class Ready<T>(
-        val link: Links.Incoming.Result<T>
+        val data: T
     ) : LinksState()
 
     data class Open(
