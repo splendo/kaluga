@@ -18,28 +18,11 @@
 package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.Links
-import com.splendo.kaluga.links.utils.LinksDecoder
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.KSerializer
 import platform.Foundation.NSURL
 
 actual class LinksManager(
     override val onLinksStateChange: LinksStateChange
 ) : BaseLinksManager(onLinksStateChange) {
-
-    @ExperimentalSerializationApi
-    override fun <T> handleIncomingLink(data: Any, serializer: KSerializer<T>) {
-        val query = (data as NSURL).query
-        if (query == null) {
-            onLinksStateChange(Links.Failure("Query was null"))
-            return
-        }
-        val list = query.extractValuesAsList()
-        val decoder = LinksDecoder(ArrayDeque(list))
-        val deserializedObject = decoder.decodeSerializableValue(serializer)
-
-        onLinksStateChange(Links.Incoming.Result(deserializedObject))
-    }
 
     override fun handleOutgoingLink(url: String) {
         if (NSURL.URLWithString(url) == null) {

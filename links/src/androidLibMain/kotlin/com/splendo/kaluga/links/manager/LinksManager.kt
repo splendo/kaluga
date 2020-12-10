@@ -17,31 +17,12 @@
 
 package com.splendo.kaluga.links.manager
 
-import android.net.Uri
 import android.webkit.URLUtil
 import com.splendo.kaluga.links.Links
-import com.splendo.kaluga.links.utils.decodeFromList
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.KSerializer
 
 actual class LinksManager(
     override val onLinksStateChange: LinksStateChange
 ) : BaseLinksManager(onLinksStateChange) {
-
-    @ExperimentalSerializationApi
-    @InternalSerializationApi
-    override fun <T> handleIncomingLink(data: Any, serializer: KSerializer<T>) {
-        val query = (data as Uri).query
-        if (query == null) {
-            onLinksStateChange(Links.Failure("Query was null"))
-            return
-        }
-        val list = query.extractValuesAsList()
-        val deserializedObject = decodeFromList(list, serializer)
-
-        onLinksStateChange(Links.Incoming.Result(deserializedObject))
-    }
 
     override fun handleOutgoingLink(url: String) {
         if (!URLUtil.isValidUrl(url)) {
