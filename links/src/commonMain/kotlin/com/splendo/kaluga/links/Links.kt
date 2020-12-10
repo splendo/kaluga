@@ -26,6 +26,8 @@ sealed class Links {
         data class Link(val url: String): Outgoing()
     }
 
-    data class Failure(val error: String): Links()
+    data class Failure(val message: String): Links()
+
+    object Pending : Links()
 
 }
