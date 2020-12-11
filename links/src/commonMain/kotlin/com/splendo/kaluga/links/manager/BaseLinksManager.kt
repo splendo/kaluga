@@ -46,6 +46,9 @@ abstract class BaseLinksManager(open val onLinksStateChange: LinksStateChange) {
 }
 
 fun String.extractValuesAsList(): List<Any> {
+    if (length == 0) {
+        return emptyList()
+    }
     val list = mutableListOf<Any>()
     split("&").map {
         val (key, value) = it.split("=")
