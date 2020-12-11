@@ -20,8 +20,8 @@ package com.splendo.kaluga.links.state
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.BaseLinksManager
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateRepo
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 
 class LinksStateRepo(
@@ -125,8 +125,8 @@ class LinksStateRepo(
      * @param query query containing the values from the link.
      * @param serializer The needed object's serializer.
      * */
+    @ExperimentalSerializationApi
     fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
-        println("linksManager is null? ${linksManager == null}")
         linksManager?.handleIncomingLink(query, serializer)
     }
 
@@ -136,8 +136,6 @@ class LinksStateRepo(
      * @param url Page to be visited.
      * */
     fun handleOutgoingLink(url: String) {
-        debug { "kaluga: handleOutgoingLink" }
-        println("linksManager is null? ${linksManager == null}")
         linksManager?.handleOutgoingLink(url)
     }
 }
