@@ -15,12 +15,11 @@
 
  */
 
-package com.splendo.kaluga.test
+package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.architecture.KoinUIThreadViewModelTest
-import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
+import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -31,13 +30,13 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class KoinUIThreadViewModelTestTest :
-    UIThreadViewModelTest<KoinUIThreadViewModelTestTest.TestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
+    KoinUIThreadViewModelTest<KoinUIThreadViewModelTestTest.MyKoinViewModelTestContext, KoinUIThreadViewModelTestTest.KoinViewModel>() {
 
     class KoinViewModel : BaseViewModel(), KoinComponent {
         val s: String by inject() // test injecting into ViewModel
     }
 
-    inner class TestContext :
+    inner class MyKoinViewModelTestContext :
         KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
             {
                 logger(PrintLogger()) // not the default
@@ -45,18 +44,21 @@ class KoinUIThreadViewModelTestTest :
             module {
                 single { "S" }
                 single<BaseAlertPresenter.Builder> { MockAlertPresenter.Builder() }
+                single { KoinViewModel() }
             }
-        ),
-        KoinComponent {
-        override fun createViewModel(): KoinViewModel = KoinViewModel()
+        ) {
+
+        // if you're using this as example and don't want inject your viewmodel you can instead use `by lazy`
+        override val viewModel: KoinViewModel by inject()
 
         val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
-    override fun createViewModelContext(): TestContext = TestContext()
+    override fun createKoinViewModelTestContext(): MyKoinViewModelTestContext =
+        MyKoinViewModelTestContext()
 
     @Test
-    fun testKoinViewModelTestContext() = testWithViewModel {
+    fun testKoinViewModelTestContext() = testOnUIThread {
         assertEquals("S", viewModel.s)
         assertTrue(builder is MockAlertPresenter.Builder)
         assertTrue(

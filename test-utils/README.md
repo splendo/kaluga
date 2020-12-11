@@ -3,10 +3,10 @@
 ## Testing from a background thread to let `Dispatchers.Main` function properly
 
 By default Kotlin/Native tests run on the UI thread, similar to regular Swift tests.
-As with these regular tests, this presents problems when trying to dispatch work to the main thread.
+As with these regular tests, this presents problems when trying to dispatch work to the UI thread.
 In particular for Kotlin based tests, using `Dispatchers.Main` -either directly or indirectly- will not work.
 
-One solution is to test from a background thread, `test-utils` provides an alternate test entry point which launches a background thread and then consumes the iOS main runloop from the test thread. This allows work dispatched to `Main` to function.
+One solution is to test from a background thread, `test-utils` provides an alternate test entry point which launches a background thread and then consumes the iOS main run loop from the test thread. This allows work dispatched to `Main` to function.
 
 This alternate test entry point can be configured in your gradle configuration, inside the `ios {}` (or similar) target :
 
@@ -15,7 +15,7 @@ for `.gradle`
 
 binaries {
     // Use this entry point to turn the thread tests are run to a background thread instead of the main thread
-    // This better allows testing the main dispatcher, and testing cross thread access
+    // This better allows testing the Main dispatcher, and testing cross thread access
     binaries.getTest("DEBUG").freeCompilerArgs += ["-e", "com.splendo.kaluga.test.mainBackground"]
 }
 ```
@@ -30,43 +30,101 @@ binaries {
 }
 ```
 
-### Testing a ViewModel when testing from the background
+### Testing a ViewModel in the UI Thread when testing from the background
 
-ViewModels often have associated classes (HUD, Alerts etc) that under Kotlin/Native should be instantiated and used from the main thread.
+ViewModels often have associated classes (HUD, Alerts etc) that under Kotlin/Native should be instantiated and used from the UI thread.
 
-When testing from a background thread (see above) it's possible to extend `UIThreadViewModelTest` or `SimpleUIThreadViewModelTest`
-This will instantiate the ViewModel in the main thread when using the `testWithViewModel` method to run your tests:
+When testing from a background thread (see above) it's possible to extend `UIThreadTest` or `SimpleUIThreadTest`.
+This allows you to use the `testOnUIThread` method to run your test block on the UI.
+
+`UIThreadTest` lets you define a context class which is the scope for your test method. 
+Since the context is created on the UI thread and your test runs on it, this allow mutation of object, or using objects that need to be created on the UI thread only.
 
 ```kotlin
 
-class SomeTest:SimpleUIThreadViewModelTest<MyViewModel> {
+class MyUIThreadTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
+    inner class MyTestContext : TestContext {
+        var myContextVar = "myContext" // created in UI thread
+        
+        override fun dispose() { myContextVar = "" } // runs after the test block is run
+    }
 
-    override fun createViewModel() = MyViewModel()
+    override fun createTestContext(): MyTestContext = MyTestContext()
 
     @Test
-    fun someTest() = testWithViewModel {
-       // suspended from `Dispatchers.Main`
-       viewModel.doSomething() // available in scope
-    } 
+    fun testUIThreadTest() = testOnUIThread {
+        myContextVar = "somethingElse" // does not crash because access is also from the UI thread
+        
+        coroutineScope {
+            launch(Dispatchers.Main) {
+                println("this will actually run during the test")
+            }
+        }
+    }
 }
 ```
 
-Often times you want to have other objects instantiated alongside alongside your ViewModel. This can be done by extending the `ViewModelTestContext` object for the test:
+### Testing with Koin on the UI thread
+
+The `KoinUIThreadTest` class can be extended to configure Koin from the UI thread before running a test:
 
 ```kotlin
-class SomeTest:UIThreadViewModelTest<MyViewModelTestContext, MyViewModel> {
+class MyKoinUIThreadTest : KoinUIThreadTest<MyKoinUIThreadTest.MyKoinTestContext>() {
 
-    class MyViewModelTestContext:
-        ViewModelTestContext<ViewModel> {
-
-        val alertBuilder = MockAlertPresenter.Builder()
-        
-        override fun createViewModel() = MyViewModel(alertBuilder) // can be passed to viewmodel
+    inner class MyKoinTestContext : KoinUIThreadTest.KoinTestContext(
+        // constructor of takes app declarations and modules as parameters
+        module {
+            single { "K" }
+        }
+    ) {
+        // test injection into context
+        val k: String by inject()
     }
 
+    override fun createTestContext(): MyKoinTestContext = MyKoinTestContext()
+
     @Test
-    fun someTest() = testWithViewModel {
-       alertBuilder // also available in scope now
-    } 
+    fun testKoinUIThreadViewModelTest() = testOnUIThread {
+        assertEquals("K", k)
+    }
 }
+```
+
+### Testing a ViewModel when testing from the background
+
+It's also possible use the UI Thread context to create a kaluga ViewModel. 
+This can be done by extending  `UIThreadViewModelTest`.
+
+```kotlin
+class CustomUIThreadViewModelTest : UIThreadViewModelTest<CustomViewModelTestContext, MyViewModel>() {
+
+    class MyViewModel(val alertBuilder: BaseAlertPresenter.Builder) : BaseViewModel()
+
+    class CustomViewModelTestContext : ViewModelTestContext<MyViewModel> {
+        val mockAlertBuilder = MockAlertPresenter.Builder() // creates on UI thread and can be passed to viewModel
+        override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
+    }
+
+    override fun createViewModelContext(): CustomViewModelTestContext = CustomViewModelTestContext()
+
+    @Test
+    fun testCustomUIThreadViewModelTest() = testOnUIThread {
+
+        viewModel.alertBuilder //...
+    }
+}
+```
+
+In case no other objects are needed from the UI thread `SimpleUIThreadViewModelTest` can be used.
+
+In case both Koin and a ViewModel are used, there is `KoinUIThreadViewModelTest`. 
+If Koin provides the ViewModel you can inject it inside the TestContext:
+
+```kotlin
+override val viewModel: KoinViewModel by inject()
+```
+
+if not you can use lazy initialization:
+```kotlin
+override val viewModel by lazy { MyViewModel(myArgs) }
 ```

@@ -14,25 +14,30 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.SimpleUIThreadViewModelTestTest.ViewModel
-import com.splendo.kaluga.test.architecture.SimpleUIThreadViewModelTest
+package com.splendo.kaluga.test.koin
+
+import com.splendo.kaluga.test.com.splendo.kaluga.test.koin.KoinUIThreadTest
+import org.koin.core.inject
+import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>() {
+class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestContext>() {
 
-    class ViewModel : BaseViewModel() {
-        var v = ""
+    inner class MyKoinTestContext : KoinUIThreadTest.KoinTestContext(
+        module {
+            single { "K" }
+        }
+    ) {
+        // test injection into context
+        val k: String by inject()
     }
 
-    override fun createViewModel() = ViewModel()
+    override fun createTestContext(): MyKoinTestContext = MyKoinTestContext()
 
     @Test
-    fun test() = testOnUIThread {
-        assertEquals("", viewModel.v)
-        viewModel.v = "foo" // should not crash on native
+    fun testKoinUIThreadViewModelTest() = testOnUIThread {
+        assertEquals("K", k)
     }
 }
