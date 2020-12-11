@@ -50,7 +50,7 @@ fun String.extractValuesAsList(): List<Any> {
         return emptyList()
     }
     val list = mutableListOf<Any>()
-    split("&").map {
+    split("&").filter { it.isNotEmpty() }.map {
         val (key, value) = it.split("=")
         list.add(value)
     }
