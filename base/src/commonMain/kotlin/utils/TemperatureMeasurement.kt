@@ -17,6 +17,26 @@
 
 package com.splendo.kaluga.base.utils
 
+inline class Fahrenheit(val temperature: Double){
+    val fahrenheit get() = temperature
+    val celsius get() = Celsius((temperature -32)*5/9)
+    val kelvin get() =  celsius.kelvin
+}
+inline class Celsius(val temperature: Double) {
+    val fahrenheit get() = Fahrenheit((temperature*9/5)+32)
+    val celsius get() = temperature
+    val kelvin get() = Kelvin(temperature - 273.15)
+}
+
+inline class Kelvin(val temperature: Double){
+    val celsius get() = Celsius(temperature + 273.15)
+    val fahrenheit get() = celsius.fahrenheit
+    val kelvin get() = temperature
+}
+
+
+
+/*
 import com.splendo.kaluga.base.text.NumberFormatStyle
 import com.splendo.kaluga.base.text.NumberFormatter
 
@@ -42,3 +62,4 @@ class TemperatureMeasurement(
         return formatter.format(value)
     }
 }
+*/
