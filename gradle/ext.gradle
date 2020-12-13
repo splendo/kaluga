@@ -8,7 +8,7 @@ gradle.ext {
     stately_version = '1.0.3'
     stately_isolate_version = '1.0.3-a4'
     serialization_version = '0.20.0'
-    library_version = '0.0.5'
+    library_version = '0.0.6'
     android_min_sdk_version = 21
     android_target_sdk_version = 29
     android_build_tools_version = "29.0.3"
