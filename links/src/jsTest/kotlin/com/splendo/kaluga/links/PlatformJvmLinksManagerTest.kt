@@ -17,5 +17,4 @@
 
 package com.splendo.kaluga.links
 
-actual class PlatformLinksManagerTest {
-}
+class PlatformLinksManagerTest
