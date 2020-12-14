@@ -19,12 +19,16 @@ package com.splendo.kaluga.test
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.time.minutes
 import kotlin.time.seconds
 
 class SimpleUIThreadTestTest : SimpleUIThreadTest() {
@@ -42,15 +46,41 @@ class SimpleUIThreadTestTest : SimpleUIThreadTest() {
 }
 
 class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
-    inner class MyTestContext : TestContext {
+    inner class MyTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
         var myContext = "myContext"
     }
 
-    override fun CoroutineScope.createTestContext(): MyTestContext = MyTestContext()
+    override fun CoroutineScope.createTestContext(): MyTestContext = MyTestContext(this)
 
     @Test
     fun testUIThreadTest() = testOnUIThread {
         assertEquals("myContext", myContext)
         myContext = "someContext"
+    }
+
+    @Test
+    fun testCanceling() = testOnUIThread(cancelScopeAfterTest = true) {
+        launch {
+            // normally this would hang the test
+            while (true)
+                delay(2.minutes)
+        }
+    }
+
+    @Test
+    fun testExceptionWhenCanceling() {
+        // a custom cancel exception is thrown and caught by the method, but ours is exception is not a cancel exception
+        assertFailsWith<IllegalArgumentException> {
+            testOnUIThread(cancelScopeAfterTest = true) {
+                throw IllegalArgumentException("generic exception")
+            }
+        }
+
+        // a custom cancel exception is thrown and caught by the method, but ours is a different instance
+        assertFailsWith<CancellationException> {
+            testOnUIThread(cancelScopeAfterTest = true) {
+                throw CancellationException("some cancel exception")
+            }
+        }
     }
 }

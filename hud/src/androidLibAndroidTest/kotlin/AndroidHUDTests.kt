@@ -32,7 +32,6 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -88,11 +87,11 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
     }
 
     @Test
-    fun indicatorShow() = testOnUIThread {
+    fun indicatorShow() = testOnUIThread(cancelScopeAfterTest = true) {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }
-        launch(Dispatchers.Main) {
+        launch {
             indicator.present()
         }
         withContext(Dispatchers.Default) {
@@ -102,41 +101,44 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
     }
 
     @Test
-    fun indicatorDismiss() = testOnUIThread {
+    fun indicatorDismiss() = testOnUIThread(cancelScopeAfterTest = true) {
+
+        val indicator = builder.build(this) {
+            setTitle(LOADING)
+        }
 
         launch {
-            val indicator = builder.build(this) {
-                setTitle(LOADING)
-            }
-
             indicator.present()
+        }
 
-            withContext(Dispatchers.Default) {
-                device.assertTextAppears(LOADING)
-                assertTrue(indicator.isVisible)
-                indicator.dismiss()
-                device.assertTextDisappears(LOADING)
-                assertFalse(indicator.isVisible)
-            }
-            cancel()
-        }.join()
+        withContext(Dispatchers.Default) {
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
+            indicator.dismiss()
+            device.assertTextDisappears(LOADING)
+            assertFalse(indicator.isVisible)
+        }
     }
 
     @Test
-    fun indicatorDismissAfter() = testOnUIThread {
-        val indicator = builder.build(MainScope()) {
+    fun indicatorDismissAfter() = testOnUIThread(cancelScopeAfterTest = true) {
+        val indicator = builder.build(this) {
             setTitle(LOADING)
         }
-        launch(Dispatchers.Main) {
+
+        launch {
             indicator.present()
         }
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
-        launch(Dispatchers.Main) {
+
+        withContext(Dispatchers.Default) {
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
+
             indicator.dismissAfter(500)
+
+            device.assertTextDisappears(LOADING)
+            assertFalse(indicator.isVisible)
         }
-        device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
     }
 
     @Test
@@ -150,7 +152,7 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
             setTitle(LOADING)
         }
         val indicatorProcessing = CompletableDeferred<BaseHUD>()
-        launch(Dispatchers.Main) {
+        launch {
             indicatorLoading.presentDuring {
                 presenting.complete()
                 loading1.await()
@@ -167,20 +169,23 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
         presenting.await()
         // check the Loading dialog pops up and is reported as visible
-        device.assertTextAppears(LOADING)
-        assertTrue(indicatorLoading.isVisible)
-        loading1.complete()
 
-        // check the Processing dialog is popped on top
-        device.assertTextDisappears(LOADING)
-        device.assertTextAppears(PROCESSING)
-        assertTrue(indicatorProcessing.await().isVisible)
-        processing.complete()
+        withContext(Dispatchers.Default) {
+            device.assertTextAppears(LOADING)
+            assertTrue(indicatorLoading.isVisible)
+            loading1.complete()
 
-        // check the Loading dialog appears again
-        device.assertTextDisappears(PROCESSING)
-        device.assertTextAppears(LOADING)
-        loading2.complete()
+            // check the Processing dialog is popped on top
+            device.assertTextDisappears(LOADING)
+            device.assertTextAppears(PROCESSING)
+            assertTrue(indicatorProcessing.await().isVisible)
+            processing.complete()
+
+            // check the Loading dialog appears again
+            device.assertTextDisappears(PROCESSING)
+            device.assertTextAppears(LOADING)
+            loading2.complete()
+        }
     }
 
     @Test
@@ -189,7 +194,7 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }
-        launch(Dispatchers.Main) {
+        launch {
             indicator.present()
         }
         device.assertTextAppears(LOADING)

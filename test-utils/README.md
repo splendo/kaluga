@@ -64,6 +64,10 @@ class MyUIThreadTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
 }
 ```
 
+`testOnUIThread` also has a parameter `cancelScopeAfterTest` that is disable by default. 
+With this enabled, the scope will be canceled with a custom cancellation exception after your test block is run, and the resulting cancellation exception is ignored. 
+Other exceptions (including cancellation) will still surface as normal.
+
 ### Testing with Koin on the UI thread
 
 The `KoinUIThreadTest` class can be extended to configure Koin from the UI thread before running a test:
