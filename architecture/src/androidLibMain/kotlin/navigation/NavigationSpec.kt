@@ -271,5 +271,10 @@ sealed class NavigationSpec {
      * Opens the browser
      * @param url The [URL] to open in the browser
      */
-    data class Browser(val url: URL) : NavigationSpec()
+    data class Browser(val url: URL, val viewType: Type) : NavigationSpec() {
+        sealed class Type {
+            object CustomTab : Type()
+            object Normal : Type()
+        }
+    }
 }
