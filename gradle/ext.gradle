@@ -13,7 +13,7 @@ gradle.ext {
     android_min_sdk_version = 21
     android_target_sdk_version = 29
     android_build_tools_version = "29.0.3"
-    browserVersion = "1.2.0"
+    androidx_browser_version = "1.2.0"
 
     play_services_version = "17.1.0"
 
