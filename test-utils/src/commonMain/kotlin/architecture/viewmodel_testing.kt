@@ -20,6 +20,7 @@ package com.splendo.kaluga.test.architecture
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.UIThreadTest
+import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
 abstract class ViewModelTest<VM : ViewModel> : BaseTest() {
@@ -37,8 +38,8 @@ abstract class ViewModelTest<VM : ViewModel> : BaseTest() {
 abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
     UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
 
-    override fun createViewModelContext(): ViewModelTestContext<VM> =
-        LazyViewModelTestContext(::createViewModel)
+    override fun CoroutineScope.createTestContext(): ViewModelTestContext<VM> =
+        LazyViewModelTestContext(this, ::createViewModel)
 
     abstract fun createViewModel(): VM
 }
@@ -46,16 +47,12 @@ abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
 abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel> :
     UIThreadTest<VMC>() {
 
-    open class LazyViewModelTestContext<VM>(private val createViewModel: () -> VM) :
-        ViewModelTestContext<VM> {
+    open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
+        ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
         override val viewModel: VM by lazy { createViewModel() }
     }
 
     interface ViewModelTestContext<VM> : TestContext {
         val viewModel: VM
     }
-
-    abstract fun createViewModelContext(): VMC
-
-    override fun createTestContext(): VMC = createViewModelContext()
 }

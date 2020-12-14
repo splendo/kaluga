@@ -18,12 +18,14 @@
 package com.splendo.kaluga.test
 
 import com.splendo.kaluga.base.runBlocking
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.yield
 
 open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContext>() {
-    inner class SimpleTestContext : TestContext
+    inner class SimpleTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope
 
-    override fun createTestContext() = SimpleTestContext()
+    override fun CoroutineScope.createTestContext() = SimpleTestContext(this)
 }
 
 abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
@@ -32,14 +34,19 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
         fun dispose() {}
     }
 
-    abstract fun createTestContext(): TC
+    abstract fun CoroutineScope.createTestContext(): TC
 
-    fun testOnUIThread(block: suspend TC.() -> Unit): Unit = runBlocking(Dispatchers.Main) {
-        val testContext = createTestContext()
-        try {
-            block(testContext)
-        } finally {
-            testContext.dispose()
+    fun testOnUIThread(block: suspend TC.() -> Unit): Unit  {
+        runBlocking(Dispatchers.Main) {
+            val testContext = createTestContext()
+            yield()
+            try {
+                block(testContext)
+            } finally {
+                testContext.dispose()
+            }
         }
     }
+
+
 }

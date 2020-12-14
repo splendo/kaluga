@@ -37,7 +37,4 @@ abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinVi
             koinModules.toList()
         )
     }
-
-    abstract fun createKoinViewModelTestContext(): KVMC
-    override fun createTestContext(): KVMC = createKoinViewModelTestContext()
 }

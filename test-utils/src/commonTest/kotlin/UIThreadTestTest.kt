@@ -19,8 +19,8 @@ package com.splendo.kaluga.test
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
@@ -32,13 +32,11 @@ class SimpleUIThreadTestTest : SimpleUIThreadTest() {
     @Test
     fun testSimpleUIThreadTest() = testOnUIThread {
         withTimeout(2.seconds) {
-            coroutineScope {
-                val e = EmptyCompletableDeferred()
-                launch(Dispatchers.Main) {
-                    e.complete()
-                }
-                e.await()
+            val e = EmptyCompletableDeferred()
+            launch(Dispatchers.Main) {
+                e.complete()
             }
+            e.await()
         }
     }
 }
@@ -48,7 +46,7 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
         var myContext = "myContext"
     }
 
-    override fun createTestContext(): MyTestContext = MyTestContext()
+    override fun CoroutineScope.createTestContext(): MyTestContext = MyTestContext()
 
     @Test
     fun testUIThreadTest() = testOnUIThread {

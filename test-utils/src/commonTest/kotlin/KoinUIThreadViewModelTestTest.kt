@@ -21,6 +21,7 @@ import com.splendo.kaluga.alerts.BaseAlertPresenter
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.logger.PrintLogger
@@ -54,7 +55,7 @@ class KoinUIThreadViewModelTestTest :
         val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
-    override fun createKoinViewModelTestContext(): MyKoinViewModelTestContext =
+    override fun CoroutineScope.createTestContext(): MyKoinViewModelTestContext =
         MyKoinViewModelTestContext()
 
     @Test

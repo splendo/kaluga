@@ -28,6 +28,7 @@ import com.splendo.kaluga.test.LazyUIThreadViewModelTestTest.CustomLazyViewModel
 import com.splendo.kaluga.test.LazyUIThreadViewModelTestTest.ViewModel
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlin.test.AfterTest
 import kotlin.test.Test
@@ -43,15 +44,15 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelT
         var v: String = ""
     }
 
-    class CustomLazyViewModelTestContext(private val isDisposed: AtomicBoolean) :
-        LazyViewModelTestContext<ViewModel>({ ViewModel() }) {
+    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope, private val isDisposed: AtomicBoolean) :
+        LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
         override fun dispose() {
             isDisposed.value = true
         }
     }
 
-    override fun createViewModelContext(): CustomLazyViewModelTestContext =
-        CustomLazyViewModelTestContext(isDisposed)
+    override fun CoroutineScope.createTestContext(): CustomLazyViewModelTestContext =
+        CustomLazyViewModelTestContext(this, isDisposed)
 
     @Test
     fun testMainThreadViewModelTest() = testOnUIThread {
@@ -86,7 +87,7 @@ class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomViewModelTes
         override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
     }
 
-    override fun createViewModelContext(): CustomViewModelTestContext = CustomViewModelTestContext()
+    override fun CoroutineScope.createTestContext(): CustomViewModelTestContext = CustomViewModelTestContext()
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.test.com.splendo.kaluga.test.koin.KoinUIThreadTest
+import kotlinx.coroutines.CoroutineScope
 import org.koin.core.inject
 import org.koin.dsl.module
 import kotlin.test.Test
@@ -34,7 +35,7 @@ class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestCon
         val k: String by inject()
     }
 
-    override fun createTestContext(): MyKoinTestContext = MyKoinTestContext()
+    override fun CoroutineScope.createTestContext(): MyKoinTestContext = MyKoinTestContext()
 
     @Test
     fun testKoinUIThreadViewModelTest() = testOnUIThread {
