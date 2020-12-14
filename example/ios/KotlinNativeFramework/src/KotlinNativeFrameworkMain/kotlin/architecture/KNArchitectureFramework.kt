@@ -100,8 +100,10 @@ class KNArchitectureFramework {
                         })
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
-                        NSURL.URLWithString(action.bundle!!.get(
-                        LinkSpecRow.LinkRow))!!)
+                        NSURL.URLWithString(
+                            action.bundle!!.get(LinkSpecRow.LinkRow))!!,
+                        Navigation.Browser.Type.Normal
+                        )
                     is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(to = action.bundle?.get(
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
