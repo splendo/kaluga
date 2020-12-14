@@ -204,7 +204,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
         val settings = browserSpec.documentSelectorSettings
-        val browserVc = UIDocumentBrowserViewController(settings.types.toList())
+        val browserVc = UIDocumentBrowserViewController(forOpeningFilesWithContentTypes = settings.types.toList())
         browserVc.allowsDocumentCreation = settings.allowCreation
         browserVc.allowsPickingMultipleItems = settings.allowMultiple
 
