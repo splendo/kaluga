@@ -32,15 +32,25 @@ dependencies {
     api("androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version")
 }
 
+android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+}
+
 kotlin {
 
     sourceSets {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
 
+
         getByName("androidLibMain") {
             dependencies {
-                implementation("androidx.browser:browser:1.2.0")
+                val browserVersion: String by ext
+
+                implementation("androidx.browser:browser:$browserVersion")
             }
         }
 
