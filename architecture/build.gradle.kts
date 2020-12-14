@@ -45,7 +45,6 @@ kotlin {
         val ext = (gradle as ExtensionAware).extra
         val serialization_version: String by ext
 
-
         getByName("androidLibMain") {
             dependencies {
                 val browserVersion: String by ext

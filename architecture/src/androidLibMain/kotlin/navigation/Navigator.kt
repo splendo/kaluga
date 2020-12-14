@@ -272,10 +272,10 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
                 val builder = CustomTabsIntent.Builder()
                 val customTabsIntent = builder.build()
                 customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    customTabsIntent.launchUrl(
-                        activity,
-                        Uri.parse(browserSpec.url.toURI().toString())
-                    )
+                customTabsIntent.launchUrl(
+                    activity,
+                    Uri.parse(browserSpec.url.toURI().toString())
+                )
             }
             NavigationSpec.Browser.Type.Normal -> {
 

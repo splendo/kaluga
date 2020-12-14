@@ -272,7 +272,6 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
                 }
             }
         }
-
     }
 
     private fun openUrl(urlString: String) {
