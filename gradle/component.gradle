@@ -223,5 +223,5 @@ task printConfigurations {
 // if the include is made from the example project shared module we need to go up one more directory
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
-apply from: "$path_prefix/gradle/android_dependencies.gradle"
+apply from: "$path_prefix/gradle/android_common.gradle"
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"
