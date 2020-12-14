@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.state
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.BaseLinksManager
@@ -32,7 +33,10 @@ class LinksStateRepo(
         fun create(): LinksStateRepo
     }
 
-    var linksManager: BaseLinksManager? = null
+    private val _linksManager: AtomicReference<BaseLinksManager?> = AtomicReference(null)
+    internal var linksManager: BaseLinksManager?
+        get()= _linksManager.get()
+        set(value) = _linksManager.set(value)
 
     override suspend fun initialValue(): LinksState {
         linksManager = linksManagerBuilder.create(::onLinksStateChange)
