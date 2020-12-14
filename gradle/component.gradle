@@ -225,6 +225,17 @@ task printConfigurations {
     }
 }
 
+task copyResources(type: Copy) {
+    from file('src/iosTest/res/.')
+    into file("$buildDir/bin/iosx64/debugTest")
+}
+
+afterEvaluate {
+    tasks.named("linkDebugTestIosx64").configure {
+        dependsOn copyResources
+    }
+}
+
 // if the include is made from the example project shared module we need to go up one more directory
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
