@@ -30,7 +30,7 @@ import kotlin.test.assertTrue
 
 class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
 
-    inner class IOSHUDTestContext(coroutineScope: CoroutineScope) :HUDTestContext(coroutineScope) {
+    inner class IOSHUDTestContext(coroutineScope: CoroutineScope) : HUDTestContext(coroutineScope) {
 
         val hostView = HUDViewController()
         override val builder = createBuilder(hostView)

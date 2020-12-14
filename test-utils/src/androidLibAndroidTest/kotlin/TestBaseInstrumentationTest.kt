@@ -19,11 +19,10 @@ package com.splendo.kaluga.test
 import kotlin.test.Test
 import kotlin.test.assertFalse
 
-class TestBaseInstrumentationTest: BaseTest() {
+class TestBaseInstrumentationTest : BaseTest() {
 
     @Test
     fun testBase() {
         assertFalse(isUnitTest)
     }
-
 }

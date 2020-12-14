@@ -158,7 +158,7 @@ class NumberFormatterTest : BaseTest() {
     }
 
     @Test
-    @Ignore //https://github.com/splendo/kaluga/issues/230
+    @Ignore // https://github.com/splendo/kaluga/issues/230
     fun testFormatForeignCurrency() {
         val usdFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "USD")) { it.usesGroupingSeparator = true }
         assertEquals("$12,345.68", usdFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))

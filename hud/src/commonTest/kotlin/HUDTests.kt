@@ -27,7 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-abstract class HUDTests<HTC: HUDTestContext> : UIThreadTest<HTC>() {
+abstract class HUDTests<HTC : HUDTestContext> : UIThreadTest<HTC>() {
 
     @Test
     fun builderInitializer() = testOnUIThread {

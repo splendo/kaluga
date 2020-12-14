@@ -36,7 +36,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
 
     abstract fun CoroutineScope.createTestContext(): TC
 
-    fun testOnUIThread(block: suspend TC.() -> Unit): Unit  {
+    fun testOnUIThread(block: suspend TC.() -> Unit) {
         runBlocking(Dispatchers.Main) {
             val testContext = createTestContext()
             yield()
@@ -47,6 +47,4 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
             }
         }
     }
-
-
 }

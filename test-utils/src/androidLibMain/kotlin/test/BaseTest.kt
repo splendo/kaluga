@@ -25,7 +25,6 @@ import com.splendo.kaluga.logging.logger
 import com.splendo.kaluga.logging.resetLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -40,7 +39,7 @@ actual open class BaseTest {
 
     private val mainDispatcher: ExecutorCoroutineDispatcher by lazy { newSingleThreadContext("synthetic UI thread") }
 
-    protected val isUnitTest:Boolean
+    protected val isUnitTest: Boolean
         get() = Build.MODEL == null
 
     @BeforeTest
