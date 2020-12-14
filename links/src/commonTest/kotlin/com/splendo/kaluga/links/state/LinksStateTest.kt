@@ -42,7 +42,7 @@ class LinksStateTest : BaseLinksTest() {
         val errorMessage = "Error Message"
 
         action {
-             linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
+            linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
         }
 
         test {

@@ -20,5 +20,4 @@ package com.splendo.kaluga.links.manager
 actual class LinksManagerBuilder : BaseLinksManager.Builder {
     override fun create(onLinksStateChange: LinksStateChange): BaseLinksManager =
         LinksManager(onLinksStateChange)
-
 }

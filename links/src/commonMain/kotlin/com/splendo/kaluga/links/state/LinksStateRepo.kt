@@ -35,7 +35,7 @@ class LinksStateRepo(
 
     private val _linksManager: AtomicReference<BaseLinksManager?> = AtomicReference(null)
     internal var linksManager: BaseLinksManager?
-        get()= _linksManager.get()
+        get() = _linksManager.get()
         set(value) = _linksManager.set(value)
 
     override suspend fun initialValue(): LinksState {
@@ -96,7 +96,7 @@ class LinksStateRepo(
                                 { state.open(link.url) }
                             }
                             Links.Pending -> {
-                                 state.remain()
+                                state.remain()
                             }
                         }
                     }

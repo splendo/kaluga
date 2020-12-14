@@ -40,7 +40,7 @@ kotlin {
         }
     }
     sourceSets {
-        commonMain  {
+        commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":base", ""))

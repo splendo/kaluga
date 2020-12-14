@@ -63,7 +63,6 @@ class CommonLinksManagerTest : BaseLinksTest() {
             assertTrue { it is LinksState.Ready<*> }
             assertEquals(expectedResult, (it as LinksState.Ready<Person>).data)
         }
-
     }
 
     @Test

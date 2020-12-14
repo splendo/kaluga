@@ -36,7 +36,7 @@ sealed class LinksState : State() {
         Pending
     }
 
-    data class Error (
+    data class Error(
         val message: String
     ) : LinksState()
 

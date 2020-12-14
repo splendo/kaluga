@@ -19,15 +19,14 @@ package com.splendo.kaluga.links
 
 sealed class Links {
     sealed class Incoming : Links() {
-        data class Result<T>(val data: T): Incoming()
+        data class Result<T>(val data: T) : Incoming()
     }
 
     sealed class Outgoing : Links() {
-        data class Link(val url: String): Outgoing()
+        data class Link(val url: String) : Outgoing()
     }
 
-    data class Failure(val message: String): Links()
+    data class Failure(val message: String) : Links()
 
     object Pending : Links()
-
 }
