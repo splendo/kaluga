@@ -32,13 +32,6 @@ dependencies {
     api("androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version")
 }
 
-android {
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
-
 kotlin {
 
     sourceSets {
