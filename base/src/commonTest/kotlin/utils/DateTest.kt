@@ -91,6 +91,7 @@ class DateTest {
         assertEquals(1988, someDay.year)
         assertEquals(12, someDay.weekOfYear)
         assertEquals(3, someDay.month)
+        assertEquals(31, someDay.daysInMonth)
         assertEquals(3, someDay.weekOfMonth)
         assertEquals(18, someDay.day)
         assertEquals(78, someDay.dayOfYear)

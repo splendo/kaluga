@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import kotlin.test.BeforeTest
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
@@ -165,6 +166,7 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
+    @Ignore("Rotating in test framework is unstable")
     fun rotateActivity() = runBlocking {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)

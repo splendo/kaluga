@@ -23,7 +23,6 @@ import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@ExperimentalStdlibApi
 class NumberFormatterTest : BaseTest() {
 
     companion object {
@@ -135,7 +134,6 @@ class NumberFormatterTest : BaseTest() {
         assertEquals("1,2345E-06", formatters.nlFormatter.format(0.0000012345))
     }
 
-    @ExperimentalStdlibApi
     @Test
     fun testFormatCurrency() {
         val formatters = createFormatters(NumberFormatStyle.Currency(minFractionDigits = 2U, maxFractionDigits = 2U)) { it.usesGroupingSeparator = true }
@@ -147,6 +145,14 @@ class NumberFormatterTest : BaseTest() {
 
         assertEquals("$12,345.67", formatters.usFormatter.format(12345.67).replace("\u00A0", " "))
         assertEquals("€ 12.345,67", formatters.nlFormatter.format(12345.67).replace("\u00A0", " "))
+
+        val usdFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "USD")) { it.usesGroupingSeparator = true }
+        assertEquals("$12,345.68", usdFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
+        assertEquals("$usdForNL 12.345,68", usdFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
+
+        val yenFormatters = createFormatters(NumberFormatStyle.Currency(currencyCode = "JPY")) { it.usesGroupingSeparator = true }
+        assertEquals("${jpyForUS}12,346", yenFormatters.usFormatter.format(12345.6789).replace("\u00A0", " "))
+        assertEquals("$jpyForNL 12.346", yenFormatters.nlFormatter.format(12345.6789).replace("\u00A0", " "))
     }
 
     @Test
@@ -167,3 +173,7 @@ class NumberFormatterTest : BaseTest() {
 
     private data class Formatters(val usFormatter: NumberFormatter, val nlFormatter: NumberFormatter)
 }
+
+expect val usdForNL: String
+expect val jpyForUS: String
+expect val jpyForNL: String

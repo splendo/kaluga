@@ -67,7 +67,7 @@ android {
     }
 }
 
-apply from: "../gradle/android_dependencies.gradle"
+apply from: "../gradle/android_common.gradle"
 
 dependencies {
 

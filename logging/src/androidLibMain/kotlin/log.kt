@@ -20,10 +20,23 @@ package com.splendo.kaluga.logging
 
 import android.os.Build
 import ru.pocketbyte.kydra.log.AndroidLogger
+import java.lang.Integer.min
 
 actual val defaultLogger: Logger =
     if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M)
-        TransformLogger(KydraLogger(AndroidLogger()), transformTag = { it?.substring(0..23) })
+        TransformLogger(
+            KydraLogger(AndroidLogger()),
+            transformTag = { tag ->
+                tag?.let {
+                    val maxSize = min(23, tag.length - 1)
+                    if (maxSize >= 1) {
+                        tag.substring(0..maxSize)
+                    } else {
+                        tag
+                    }
+                }
+            }
+        )
     else
         KydraLogger(AndroidLogger())
 

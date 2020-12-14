@@ -78,6 +78,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Location -> "showLocation"
                         is FeatureListNavigationAction.Permissions -> "showPermissions"
                         is FeatureListNavigationAction.Alerts -> "showAlerts"
+                        is FeatureListNavigationAction.DateTimePicker -> "showDateTimePicker"
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
@@ -99,8 +100,10 @@ class KNArchitectureFramework {
                         })
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
-                        NSURL.URLWithString(action.bundle!!.get(
-                        LinkSpecRow.LinkRow))!!)
+                        NSURL.URLWithString(
+                            action.bundle!!.get(LinkSpecRow.LinkRow))!!,
+                            NavigationSpec.Browser.Type.Normal
+                        )
                     is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(to = action.bundle?.get(
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }

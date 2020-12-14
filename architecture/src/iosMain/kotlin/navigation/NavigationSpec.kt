@@ -357,5 +357,10 @@ sealed class NavigationSpec {
      * Opens the browser
      * @param url The [NSURL] to open in the browser
      */
-    data class Browser(val url: NSURL) : NavigationSpec()
+    data class Browser(val url: NSURL, val viewType: Type) : NavigationSpec() {
+        sealed class Type {
+            data class SafariView(val animated: Boolean, val completion: (() -> Unit)? = null) : Type()
+            object Normal : Type()
+        }
+    }
 }

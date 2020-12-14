@@ -54,7 +54,15 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
             }
         }
         is NumberFormatStyle.Scientific -> DecimalFormat(style.pattern, DecimalFormatSymbols(locale.locale))
-        is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale.locale)
+        is NumberFormatStyle.Currency -> DecimalFormat.getCurrencyInstance(locale.locale).apply {
+            style.currencyCode?.let { currencyCode ->
+                currency = Currency.getInstance(currencyCode)
+            }
+            minimumIntegerDigits = style.minIntegerDigits.toInt()
+            maximumIntegerDigits = style.maxIntegerDigits.toInt()
+            minimumFractionDigits = style.minFractionDigits?.toInt() ?: currency?.defaultFractionDigits ?: 0
+            maximumFractionDigits = style.maxFractionDigits?.toInt() ?: currency?.defaultFractionDigits ?: 0
+        }
         is NumberFormatStyle.Pattern -> DecimalFormat("${style.positivePattern};${style.negativePattern}", DecimalFormatSymbols(locale.locale))
     } as DecimalFormat
     private val symbols: DecimalFormatSymbols get() = format.decimalFormatSymbols
