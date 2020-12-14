@@ -18,12 +18,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import android.os.Build
 import com.splendo.kaluga.logging.LogLevel
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.logger
 import com.splendo.kaluga.logging.resetLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
@@ -36,23 +38,38 @@ actual open class BaseTest {
     // @Rule @JvmField
     // val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("synthetic UI thread")
+    private val mainDispatcher: ExecutorCoroutineDispatcher by lazy { newSingleThreadContext("synthetic UI thread") }
+
+    protected val isUnitTest:Boolean
+        get() = Build.MODEL == null
 
     @BeforeTest
     actual open fun beforeTest() {
-        logger = object : Logger {
-            override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-                println("$level: ${tag?.let {"[$it]"} ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
-                throwable?.printStackTrace(System.out)
+
+        if (isUnitTest) {
+
+            Dispatchers.setMain(mainDispatcher)
+
+            logger = object : Logger {
+                override fun log(
+                    level: LogLevel,
+                    tag: String?,
+                    throwable: Throwable?,
+                    message: (() -> String)?
+                ) {
+                    println("$level: ${tag?.let { "[$it]" } ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
+                    throwable?.printStackTrace(System.out)
+                }
             }
         }
-        Dispatchers.setMain(mainDispatcher)
     }
 
     @AfterTest
     actual open fun afterTest() {
-        Dispatchers.resetMain()
-        mainDispatcher.close()
-        resetLogger()
+        if (isUnitTest) {
+            mainDispatcher.close()
+            Dispatchers.resetMain()
+            resetLogger()
+        }
     }
 }

@@ -209,6 +209,11 @@ android {
             java.srcDir 'src/androidLibAndroidTest/kotlin'
             res.srcDir 'src/androidLibAndroidTest/res'
         }
+
+
+        test {
+            java.srcDir 'src/androidLibUnitTest/kotlin'
+        }
     }
 
     packagingOptions {
