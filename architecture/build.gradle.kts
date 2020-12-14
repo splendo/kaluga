@@ -40,9 +40,9 @@ kotlin {
 
         getByName("androidLibMain") {
             dependencies {
-                val browserVersion: String by ext
+                val androidx_browser_version: String by ext
 
-                implementation("androidx.browser:browser:$browserVersion")
+                implementation("androidx.browser:browser:$androidx_browser_version")
             }
         }
 
