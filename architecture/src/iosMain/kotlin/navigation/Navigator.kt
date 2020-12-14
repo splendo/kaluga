@@ -24,6 +24,7 @@ import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
+import platform.SafariServices.SFSafariViewController
 import platform.UIKit.NSLayoutAttributeBottom
 import platform.UIKit.NSLayoutAttributeLeading
 import platform.UIKit.NSLayoutAttributeTop
@@ -260,7 +261,17 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
     }
 
     private fun openBrowser(browserSpec: NavigationSpec.Browser) {
-        UIApplication.sharedApplication.openURL(browserSpec.url)
+        when (val spec = browserSpec.viewType) {
+            NavigationSpec.Browser.Type.Normal -> {
+                UIApplication.sharedApplication.openURL(browserSpec.url)
+            }
+            is NavigationSpec.Browser.Type.SafariView -> {
+                val safariVc = SFSafariViewController(browserSpec.url)
+                assertParent()?.presentViewController(safariVc, spec.animated) {
+                    spec.completion?.invoke()
+                }
+            }
+        }
     }
 
     private fun openUrl(urlString: String) {
