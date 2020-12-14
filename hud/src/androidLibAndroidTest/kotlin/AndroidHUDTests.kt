@@ -27,12 +27,15 @@ import androidx.test.uiautomator.Until
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.hud.AndroidHUDTests.AndroidHUDTestContext
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Rule
 import kotlin.test.BeforeTest
 import kotlin.test.Ignore
@@ -53,23 +56,31 @@ fun UiDevice.assertTextDisappears(text: String) {
     assertTrue(wait(Until.gone(By.text(text)), DEFAULT_TIMEOUT))
 }
 
-class AndroidHUDTests : HUDTests() {
+class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
 
     @get:Rule
     var activityRule = ActivityScenarioRule(TestActivity::class.java)
 
-    var activity: TestActivity? = null
+    lateinit var activity: TestActivity
+
+    inner class AndroidHUDTestContext(coroutineScope: CoroutineScope) : HUDTestContext(
+        coroutineScope
+    ) {
+        override val builder get() = activity.viewModel.builder
+
+        init {
+            builder.subscribe(activity)
+        }
+    }
 
     @BeforeTest
     fun activityInit() {
         activityRule.scenario.onActivity {
             activity = it
-            builder.subscribe(it)
         }
     }
 
     private val device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation())
-    override val builder get() = activity!!.viewModel.builder
 
     companion object {
         const val LOADING = "Loading..."
@@ -77,35 +88,42 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
-    fun indicatorShow() = runBlocking {
+    fun indicatorShow() = testOnUIThread {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }
         launch(Dispatchers.Main) {
             indicator.present()
         }
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
+        withContext(Dispatchers.Default) {
+            device.assertTextAppears(LOADING)
+            assertTrue(indicator.isVisible)
+        }
     }
 
     @Test
-    fun indicatorDismiss() = runBlocking {
-        val indicator = builder.build(MainScope()) {
-            setTitle(LOADING)
-        }
+    fun indicatorDismiss() = testOnUIThread {
 
-        launch(Dispatchers.Main) {
+        launch {
+            val indicator = builder.build(this) {
+                setTitle(LOADING)
+            }
+
             indicator.present()
-        }
-        device.assertTextAppears(LOADING)
-        assertTrue(indicator.isVisible)
-        indicator.dismiss()
-        device.assertTextDisappears(LOADING)
-        assertFalse(indicator.isVisible)
+
+            withContext(Dispatchers.Default) {
+                device.assertTextAppears(LOADING)
+                assertTrue(indicator.isVisible)
+                indicator.dismiss()
+                device.assertTextDisappears(LOADING)
+                assertFalse(indicator.isVisible)
+            }
+            cancel()
+        }.join()
     }
 
     @Test
-    fun indicatorDismissAfter() = runBlocking {
+    fun indicatorDismissAfter() = testOnUIThread {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }
@@ -122,7 +140,7 @@ class AndroidHUDTests : HUDTests() {
     }
 
     @Test
-    fun testPresentDuring() = runBlocking {
+    fun testPresentDuring() = testOnUIThread {
         val presenting = EmptyCompletableDeferred()
         val loading1 = EmptyCompletableDeferred()
         val loading2 = EmptyCompletableDeferred()
@@ -167,7 +185,7 @@ class AndroidHUDTests : HUDTests() {
 
     @Test
     @Ignore("Rotating in test framework is unstable")
-    fun rotateActivity() = runBlocking {
+    fun rotateActivity() = testOnUIThread {
         val indicator = builder.build(MainScope()) {
             setTitle(LOADING)
         }
@@ -203,7 +221,9 @@ class AndroidHUDTests : HUDTests() {
 
     @Test
     fun testBuilderFromActivity() {
-        MainScope().launch { activity?.showHUD() }
+        MainScope().launch { activity.showHUD() }
         device.assertTextAppears("Activity")
     }
+
+    override fun CoroutineScope.createTestContext() = AndroidHUDTestContext(this)
 }

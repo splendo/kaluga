@@ -18,7 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.base.runOnMain
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.runBlocking
 import platform.UIKit.UIViewController
@@ -28,7 +28,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class IOSHUDTests : HUDTests() {
+class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
+
+    inner class IOSHUDTestContext(coroutineScope: CoroutineScope) :HUDTestContext(coroutineScope) {
+
+        val hostView = HUDViewController()
+        override val builder = createBuilder(hostView)
+        private fun createBuilder(hostView: UIViewController): HUD.Builder =
+            HUD.Builder(hostView) { MockPresentingHUD(it) }
+    }
+
+    override fun CoroutineScope.createTestContext() = IOSHUDTestContext(this)
 
     class HUDViewController : UIViewController(null, null) {
 
@@ -70,13 +80,9 @@ class IOSHUDTests : HUDTests() {
         }
     }
 
-    override val builder = createBuilder(HUDViewController())
-    private fun createBuilder(hostView: UIViewController): HUD.Builder = HUD.Builder(hostView, { MockPresentingHUD(it) })
-
     @Test
-    fun presentIndicator() = runOnMain {
-        val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build(MainScope())
+    fun presentIndicator() = testOnUIThread {
+        val indicator = builder.build(MainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 
@@ -88,9 +94,8 @@ class IOSHUDTests : HUDTests() {
     }
 
     @Test
-    fun dismissIndicator() = runOnMain {
-        val hostView = HUDViewController()
-        val indicator = createBuilder(hostView).build(MainScope())
+    fun dismissIndicator() = testOnUIThread {
+        val indicator = builder.build(MainScope())
         assertNull(hostView.presentedViewController)
         assertFalse(indicator.isVisible)
 

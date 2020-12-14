@@ -18,24 +18,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.hud
 
-import com.splendo.kaluga.base.runOnMain
+import com.splendo.kaluga.hud.HUDTests.HUDTestContext
+import com.splendo.kaluga.test.UIThreadTest
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-abstract class HUDTests {
+abstract class HUDTests<HTC: HUDTestContext> : UIThreadTest<HTC>() {
 
     @Test
-    fun builderInitializer() = runOnMain {
+    fun builderInitializer() = testOnUIThread {
         assertNotNull(
             builder.build(MainScope())
         )
     }
 
     @Test
-    fun builderSetStyleAndTitle() = runOnMain {
+    fun builderSetStyleAndTitle() = testOnUIThread {
         assertNotNull(
             builder.build(MainScope()) {
                 setStyle(HUDStyle.CUSTOM)
@@ -45,7 +47,7 @@ abstract class HUDTests {
     }
 
     @Test
-    fun testBuilder() = runOnMain {
+    fun testBuilder() = testOnUIThread {
         val hud1 = builder.build(MainScope())
         assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
@@ -57,5 +59,7 @@ abstract class HUDTests {
         assertEquals(hud2.title, "Title")
     }
 
-    protected abstract val builder: HUD.Builder
+    abstract class HUDTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
+        abstract val builder: HUD.Builder
+    }
 }
