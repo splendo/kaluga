@@ -25,7 +25,8 @@ actual class LinksManager(
 ) : BaseLinksManager(onLinksStateChange) {
 
     override fun handleOutgoingLink(url: String) {
-        if (NSURL.URLWithString(url) == null) {
+        val _url = NSURL.URLWithString(url)
+        if (_url == null || _url?.scheme == null || _url?.host == null) {
             onLinksStateChange(Links.Failure("URL is invalid"))
             return
         }
