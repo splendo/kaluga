@@ -49,7 +49,7 @@ class MyUIThreadTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
         override fun dispose() { myContextVar = "" } // runs after the test block is run
     }
 
-    override fun createTestContext(): MyTestContext = MyTestContext()
+    override fun CoroutineScope.createTestContext(): MyTestContext = MyTestContext()
 
     @Test
     fun testUIThreadTest() = testOnUIThread {
@@ -81,7 +81,7 @@ class MyKoinUIThreadTest : KoinUIThreadTest<MyKoinUIThreadTest.MyKoinTestContext
         val k: String by inject()
     }
 
-    override fun createTestContext(): MyKoinTestContext = MyKoinTestContext()
+    override fun CoroutineScope.createTestContext(): MyKoinTestContext = MyKoinTestContext()
 
     @Test
     fun testKoinUIThreadViewModelTest() = testOnUIThread {
@@ -105,7 +105,7 @@ class CustomUIThreadViewModelTest : UIThreadViewModelTest<CustomViewModelTestCon
         override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
     }
 
-    override fun createViewModelContext(): CustomViewModelTestContext = CustomViewModelTestContext()
+    override fun CoroutineScope.createTestContext(): CustomViewModelTestContext = CustomViewModelTestContext()
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {
