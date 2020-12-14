@@ -21,6 +21,7 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
@@ -265,11 +266,26 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
     private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
         assert(manager?.activity != null)
         val activity = manager?.activity ?: return
-        val uri = Uri.parse(browserSpec.url.toURI().toString())
-        val intent = Intent(Intent.ACTION_VIEW, uri)
 
-        intent.resolveActivity(activity.packageManager)?.let {
-            activity.startActivity(intent)
+        when (browserSpec.viewType) {
+            NavigationSpec.Browser.Type.CustomTab -> {
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                customTabsIntent.launchUrl(
+                    activity,
+                    Uri.parse(browserSpec.url.toURI().toString())
+                )
+            }
+            NavigationSpec.Browser.Type.Normal -> {
+
+                val uri = Uri.parse(browserSpec.url.toURI().toString())
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+
+                intent.resolveActivity(activity.packageManager)?.let {
+                    activity.startActivity(intent)
+                }
+            }
         }
     }
 }

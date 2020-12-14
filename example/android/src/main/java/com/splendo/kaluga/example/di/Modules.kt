@@ -108,7 +108,10 @@ val viewModelModule = module {
                             InfoDialog(title, message)
                         })
                     }
-                    is InfoNavigation.Link -> NavigationSpec.Browser(URL(action.bundle!!.get(LinkSpecRow.LinkRow)))
+                    is InfoNavigation.Link -> NavigationSpec.Browser(
+                        URL(action.bundle!!.get(LinkSpecRow.LinkRow)),
+                        NavigationSpec.Browser.Type.Normal
+                    )
                     is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(
                         to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
                         subject = action.bundle?.get(MailSpecRow.SubjectRow)
