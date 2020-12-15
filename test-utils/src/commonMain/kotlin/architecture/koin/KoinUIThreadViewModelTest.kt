@@ -19,7 +19,7 @@ package com.splendo.kaluga.test.architecture.koin
 
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
 import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
-import com.splendo.kaluga.test.com.splendo.kaluga.test.koin.KoinUIThreadTest
+import com.splendo.kaluga.test.koin.KoinUIThreadTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
