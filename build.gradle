@@ -6,16 +6,16 @@ buildscript {
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.gms:google-services:4.3.3"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
+        classpath "com.google.gms:google-services:4.3.4"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
     }
 }
 
 plugins {
-    id 'kotlin-multiplatform'
     id 'maven-publish'
-    id 'org.jlleitschuh.gradle.ktlint' version '9.2.1'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.2.1'
+    id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
+    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.4.1'
 }
 
 apply plugin: "com.jfrog.bintray"

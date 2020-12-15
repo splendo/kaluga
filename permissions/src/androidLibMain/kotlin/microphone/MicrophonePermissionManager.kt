@@ -41,9 +41,9 @@ actual class MicrophonePermissionManager(
 
     override suspend fun initializeState(): PermissionState<Permission.Microphone> {
         return when {
-            !supported -> PermissionState.Denied.Locked(this)
-            permissionsManager.hasPermissions -> PermissionState.Allowed(this)
-            else -> PermissionState.Denied.Requestable(this)
+            !supported -> PermissionState.Denied.Locked()
+            permissionsManager.hasPermissions -> PermissionState.Allowed()
+            else -> PermissionState.Denied.Requestable()
         }
     }
 

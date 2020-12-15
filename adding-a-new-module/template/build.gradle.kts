@@ -25,12 +25,6 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 implementation(project(":base", ""))
-
-                /* Uncomment these lines if you want to use touchlab stately for concurrency
-                val ext = (gradle as ExtensionAware).extra
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
-                */
             }
         }
     }

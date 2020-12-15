@@ -1,10 +1,3 @@
-package com.splendo.kaluga.keyboard
-
-import android.app.Activity
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-
 /*
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
@@ -22,21 +15,52 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-actual typealias KeyboardHostingView = View
+package com.splendo.kaluga.keyboard
 
-actual class KeyboardManagerBuilder(private val activity: Activity) : BaseKeyboardManagerBuilder() {
-    override fun create() = KeyboardManager(activity)
-}
+import android.app.Activity
+import android.content.Context.INPUT_METHOD_SERVICE
+import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
+import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+
+actual typealias KeyboardHostingView = Int
 
 actual class KeyboardManager(
-    private val activity: Activity
-) : BaseKeyboardManager {
+    private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
+    coroutineScope: CoroutineScope
+) : BaseKeyboardManager, CoroutineScope by coroutineScope {
 
-    private val inputMethodManager = activity.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+    actual class Builder(
+        private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
+    ) : BaseKeyboardManager.Builder, LifecycleSubscribable by lifecycleManagerObserver {
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, coroutineScope)
+    }
+
+    private var activity: Activity? = null
+        set(value) {
+            field = value
+            inputMethodManager = value?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        }
+    private var inputMethodManager: InputMethodManager? = null
+
+    init {
+        launch {
+            lifecycleManagerObserver.managerState.collect {
+                activity = it?.activity
+            }
+        }
+    }
 
     override fun show(keyboardHostingView: KeyboardHostingView) {
         inputMethodManager?.let {
-            keyboardHostingView.requestFocus()
+            activity?.findViewById<View>(keyboardHostingView)?.requestFocus()
             it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
@@ -44,8 +68,21 @@ actual class KeyboardManager(
     override fun hide() {
         inputMethodManager?.let {
             if (it.isAcceptingText) {
-                it.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
+                it.hideSoftInputFromWindow(activity?.currentFocus?.windowToken, 0)
             }
         }
     }
+}
+
+/**
+ * @return A [KeyboardManager.Builder] which can be used to manipulate the soft keyboard while this Activity is active.
+ * Will be created if need but only one instance will exist.
+ *
+ * Warning: Do not attempt to use this builder outside of the lifespan of the Activity.
+ * Instead, for example use a [com.splendo.kaluga.architecture.viewmodel.ViewModel],
+ * which can automatically track which Activity is active for it.
+ *
+ */
+fun AppCompatActivity.keyboardManagerBuilder(): KeyboardManager.Builder = getOrPutAndRemoveOnDestroyFromCache {
+    KeyboardManager.Builder(lifecycleManagerObserver())
 }

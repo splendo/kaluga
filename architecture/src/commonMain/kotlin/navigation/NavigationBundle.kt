@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import com.splendo.kaluga.base.utils.Date
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 
 /**
  * Value of a [NavigationBundleSpecRow]
@@ -144,10 +144,10 @@ sealed class NavigationBundleValue<T> {
     data class SerializedValue<T> internal constructor(val serializer: KSerializer<T>, override val value: T) : NavigationBundleValue<T>() {
 
         companion object {
-            private val json = Json(JsonConfiguration.Stable)
+            private val json = Json {}
         }
 
-        val valueString: String = json.stringify(serializer, value)
+        val valueString: String = json.encodeToString(serializer, value)
     }
 
     data class ShortValue internal constructor(override val value: Short) : NavigationBundleValue<Short>()
@@ -168,6 +168,9 @@ sealed class NavigationBundleValue<T> {
 
     data class StringValue internal constructor(override val value: String) : NavigationBundleValue<String>()
     data class StringArrayValue internal constructor(override val value: List<String>) : NavigationBundleValue<List<String>>()
+
+    data class DateValue internal constructor(override val value: Date) : NavigationBundleValue<Date>()
+    data class DateArrayValue internal constructor(override val value: List<Date>) : NavigationBundleValue<List<Date>>()
 
     data class OptionalValue<T> internal constructor(val optionalValue: NavigationBundleValue<T>?) : NavigationBundleValue<T?>() {
         override val value: T? = optionalValue?.value

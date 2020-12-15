@@ -17,8 +17,9 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import kotlin.test.assertEquals
+import com.splendo.kaluga.base.utils.Date
 import org.junit.Test
+import kotlin.test.assertEquals
 
 class AndroidNavigationBundleTest {
 
@@ -35,6 +36,11 @@ class AndroidNavigationBundleTest {
         }
         val optionalString: String? = "Some String"
         val optionalFloat: Float? = null
+        val dateValue = Date.epoch(offsetInMilliseconds = 1606204800000)
+        val dateArray = listOf(
+            Date.epoch(offsetInMilliseconds = 1606204800001),
+            Date.epoch(offsetInMilliseconds = 1606204800002)
+        )
 
         val mockSpec = MockSpec()
         val navigationBundle = mockSpec.toBundle { entry ->
@@ -44,6 +50,8 @@ class AndroidNavigationBundleTest {
                 is MockSpecRow.NestedBundleSpecRow -> entry.associatedType.convertValue(nestedBundle)
                 is MockSpecRow.OptionalString -> entry.associatedType.convertValue(optionalString)
                 is MockSpecRow.OptionalFloat -> entry.associatedType.convertValue(optionalFloat)
+                is MockSpecRow.DateSpecRow -> entry.associatedType.convertValue(dateValue)
+                is MockSpecRow.DateArraySpecRow -> entry.associatedType.convertValue(dateArray)
             }
         }
 
@@ -52,13 +60,18 @@ class AndroidNavigationBundleTest {
         val booleanResult = bundle.get(MockSpecRow.BooleanSpecRow)
         val serializableResult = bundle.get(MockSpecRow.SerializableSpecRow)
         val bundleResult = bundle.get(MockSpecRow.NestedBundleSpecRow)
+        val nestedStringResult = bundleResult.get(NestedSpecRow.StringSpecRow)
         val optionalStringResult = bundle.get(MockSpecRow.OptionalString)
         val optionalFloatResult = bundle.get(MockSpecRow.OptionalFloat)
+        val dateResult = bundle.get(MockSpecRow.DateSpecRow)
+        val dateArrayResult = bundle.get(MockSpecRow.DateArraySpecRow)
+
         assertEquals(booleanValue, booleanResult)
         assertEquals(serializableValue, serializableResult)
-        val nestedStringResult = bundleResult.get(NestedSpecRow.StringSpecRow)
         assertEquals(nestedString, nestedStringResult)
         assertEquals(optionalString, optionalStringResult)
         assertEquals(optionalFloat, optionalFloatResult)
+        assertEquals(dateValue, dateResult)
+        assertEquals(dateArray, dateArrayResult)
     }
 }

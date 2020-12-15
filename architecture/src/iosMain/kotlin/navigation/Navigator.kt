@@ -17,13 +17,14 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import kotlin.native.internal.GC
-import kotlin.native.ref.WeakReference
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
+import platform.SafariServices.SFSafariViewController
 import platform.UIKit.NSLayoutAttributeBottom
 import platform.UIKit.NSLayoutAttributeLeading
 import platform.UIKit.NSLayoutAttributeTop
@@ -46,18 +47,23 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
+import kotlin.native.ref.WeakReference
+
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: A)
+}
 
 /**
- * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
+ * Implementation of [Navigator] used for navigating to and from [UIViewController]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
  * Whenever [navigate] is called, this class maps it to a [NavigationSpec] and performs navigation according to that
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) {
+class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) : Navigator<A> {
 
     private val parent = WeakReference(parentVC)
 
-    actual fun navigate(action: A) {
+    override fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 
@@ -79,7 +85,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
             is NavigationSpec.Browser -> openBrowser(spec)
         }
         // Since navigation often references UIViewControllers they should be freed up to keep ARC working
-        GC.collect()
+        GCScheduler.schedule()
     }
 
     private fun pushViewController(pushSpec: NavigationSpec.Push) {
@@ -145,7 +151,12 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
         parent.addChildViewController(child)
         nestedSpec.containerView.addSubview(child.view)
         val constraints = nestedSpec.constraints?.invoke(child.view, nestedSpec.containerView) ?: listOf(
-            NSLayoutAttributeLeading, NSLayoutAttributeTrailing, NSLayoutAttributeTop, NSLayoutAttributeBottom).map { attribute -> CGFloat
+            NSLayoutAttributeLeading,
+            NSLayoutAttributeTrailing,
+            NSLayoutAttributeTop,
+            NSLayoutAttributeBottom
+        ).map { attribute ->
+            CGFloat
             NSLayoutConstraint.constraintWithItem(child.view, attribute, NSLayoutRelationEqual, nestedSpec.containerView, attribute, 1.0 as CGFloat, 0.0 as CGFloat)
         }
         constraints.forEach { nestedSpec.containerView.addConstraint(it) }
@@ -194,7 +205,7 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
 
     private fun presentDocumentBrowser(browserSpec: NavigationSpec.DocumentSelector) {
         val settings = browserSpec.documentSelectorSettings
-        val browserVc = UIDocumentBrowserViewController(settings.types.toList())
+        val browserVc = UIDocumentBrowserViewController(forOpeningFilesWithContentTypes = settings.types.toList())
         browserVc.allowsDocumentCreation = settings.allowCreation
         browserVc.allowsPickingMultipleItems = settings.allowMultiple
 
@@ -250,7 +261,17 @@ actual class Navigator<A : NavigationAction<*>>(parentVC: UIViewController, priv
     }
 
     private fun openBrowser(browserSpec: NavigationSpec.Browser) {
-        UIApplication.sharedApplication.openURL(browserSpec.url)
+        when (val spec = browserSpec.viewType) {
+            NavigationSpec.Browser.Type.Normal -> {
+                UIApplication.sharedApplication.openURL(browserSpec.url)
+            }
+            is NavigationSpec.Browser.Type.SafariView -> {
+                val safariVc = SFSafariViewController(browserSpec.url)
+                assertParent()?.presentViewController(safariVc, spec.animated) {
+                    spec.completion?.invoke()
+                }
+            }
+        }
     }
 
     private fun openUrl(urlString: String) {

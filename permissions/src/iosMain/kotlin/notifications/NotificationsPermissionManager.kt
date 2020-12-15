@@ -46,9 +46,11 @@ actual class NotificationsPermissionManager(
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
         val authorizationStatus = CompletableDeferred<IOSPermissionsHelper.AuthorizationStatus>()
         launch {
-            notificationCenter.getNotificationSettingsWithCompletionHandler(mainContinuation { settings ->
-                authorizationStatus.complete(settings?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
-            })
+            notificationCenter.getNotificationSettingsWithCompletionHandler(
+                mainContinuation { settings ->
+                    authorizationStatus.complete(settings?.authorizationStatus?.toAuthorizationStatus() ?: IOSPermissionsHelper.AuthorizationStatus.NotDetermined)
+                }
+            )
         }
         authorizationStatus.await()
     }
@@ -56,18 +58,21 @@ actual class NotificationsPermissionManager(
 
     override suspend fun requestPermission() {
         timerHelper.isWaiting = true
-        notificationCenter.requestAuthorizationWithOptions(notifications.options?.options ?: UNAuthorizationOptionNone, mainContinuation { authorization, error ->
-            timerHelper.isWaiting = false
-            error?.let {
-                revokePermission(true)
-            } ?: run {
-                if (authorization) grantPermission() else revokePermission(true)
+        notificationCenter.requestAuthorizationWithOptions(
+            notifications.options?.options ?: UNAuthorizationOptionNone,
+            mainContinuation { authorization, error ->
+                timerHelper.isWaiting = false
+                error?.let {
+                    revokePermission(true)
+                } ?: run {
+                    if (authorization) grantPermission() else revokePermission(true)
+                }
             }
-        })
+        )
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Notifications> {
-        return IOSPermissionsHelper.getPermissionState(authorization(), this)
+        return IOSPermissionsHelper.getPermissionState(authorization())
     }
 
     override suspend fun startMonitoring(interval: Long) {

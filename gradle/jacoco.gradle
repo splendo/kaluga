@@ -73,7 +73,7 @@ project.afterEvaluate {
                 def rootCoverageFile = file(rootCoveragePath)
                 def connectedTestCoverageDirectoryFile = file(connectedTestCoverageDirectoryPath)
 
-                logger.lifecycle(
+                logger.info(
                         "Code coverage files found: connectedTests[$connectedTestCoverageDirectoryPath](could be false if empty): ${connectedTestCoverageDirectoryFile.exists() && connectedTestCoverageDirectoryFile.list().length > 0}, " +
                         "bitRise[$bitRiseCoveragePath](may contain null if env variable not set): ${bitRiseCoverageFile.exists()}, " +
                         "unitTest[$unitTestCoveragePath]: ${unitTestCoverageFile.exists()}, "+

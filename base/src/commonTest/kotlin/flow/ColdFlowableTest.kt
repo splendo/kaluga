@@ -17,17 +17,11 @@
 
 package com.splendo.kaluga.base.test.flow
 
-import com.splendo.kaluga.base.MultiplatformMainScope
 import com.splendo.kaluga.base.flow.ColdFlowable
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.channels.BroadcastChannel
@@ -36,7 +30,11 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ColdFlowableTest : BaseTest() {
 
@@ -55,12 +53,15 @@ class ColdFlowableTest : BaseTest() {
             {
                 initialized.complete()
                 0
-            }, {
-                    value -> deinitialized.complete(value)
-            }) {
-                if (broadcastChannel.isClosedForSend)
-                    broadcastChannel = ConflatedBroadcastChannel()
-                broadcastChannel
+            },
+            {
+                value ->
+                deinitialized.complete(value)
+            }
+        ) {
+            if (broadcastChannel.isClosedForSend)
+                broadcastChannel = ConflatedBroadcastChannel()
+            broadcastChannel
         }
     }
 
@@ -116,9 +117,10 @@ class ColdFlowableTest : BaseTest() {
         val values1 = CompletableDeferred<List<Int>>()
         val values2 = CompletableDeferred<List<Int>>()
         val scope = MainScope()
+        val flow = flowable.flow()
         val job1 = scope.launch {
             val values = emptyList<Int>().toMutableList()
-            flowable.flow().take(3).collect { value ->
+            flow.take(3).collect { value ->
                 values.add(value)
                 if (values.size == 3) {
                     values1.complete(values)
@@ -162,13 +164,13 @@ class ColdFlowableTest : BaseTest() {
 
     @Test
     fun testStoppingFlow() = runBlocking {
-        val scope = MultiplatformMainScope()
+        val scope = MainScope()
+        val flow = flowable.flow()
         val job = scope.launch {
-            flowable.flow().collect {}
+            flow.collect {}
         }
-        withContext(scope.coroutineContext) {
-            flowable.set(1)
-        }
+        initialized.await()
+        flowable.set(1)
         assertFalse(broadcastChannel.isClosedForSend)
         job.cancel()
         deinitialized.await()

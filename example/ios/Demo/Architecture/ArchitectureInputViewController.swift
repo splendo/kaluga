@@ -35,35 +35,32 @@ class ArchitectureInputViewController: UIViewController  {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] disposeBag in
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
         
             guard let viewModel = self?.viewModel else {
-                return
+                return []
             }
             
-            viewModel.nameHeader.observe { header in
-                self?.nameLabel.text = header as String?
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.nameInput.observe { name in
-                self?.nameInput.text = name as String?
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.isNameValid.observe { isValid in
-                self?.nameError.isHidden = isValid?.boolValue ?? false
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.numberHeader.observe { header in
-                self?.numberLabel.text = header as String?
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.numberInput.observe { number in
-                self?.numberInput.text = number as String?
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.isNumberValid.observe { isValid in
-                self?.numberError.isHidden = isValid?.boolValue ?? false
-            }.addTo(disposeBag: disposeBag)
+            return [
+                viewModel.nameHeader.observe { header in
+                    self?.nameLabel.text = header as String?
+                },
+                viewModel.nameInput.observe { name in
+                    self?.nameInput.text = name as String?
+                },
+                viewModel.isNameValid.observe { isValid in
+                    self?.nameError.isHidden = isValid?.boolValue ?? false
+                },
+                viewModel.numberHeader.observe { header in
+                    self?.numberLabel.text = header as String?
+                },
+                viewModel.numberInput.observe { number in
+                    self?.numberInput.text = number as String?
+                },
+                viewModel.isNumberValid.observe { isValid in
+                    self?.numberError.isHidden = isValid?.boolValue ?? false
+                }
+            ]
         }
     }
     

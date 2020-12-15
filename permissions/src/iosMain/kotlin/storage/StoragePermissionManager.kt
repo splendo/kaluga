@@ -48,17 +48,19 @@ actual class StoragePermissionManager(
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
             timerHelper.isWaiting = true
-            PHPhotoLibrary.requestAuthorization(mainContinuation { status ->
-                timerHelper.isWaiting = false
-                IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
-            })
+            PHPhotoLibrary.requestAuthorization(
+                mainContinuation { status ->
+                    timerHelper.isWaiting = false
+                    IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
+                }
+            )
         } else {
             revokePermission(true)
         }
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Storage> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
+        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
     }
 
     override suspend fun startMonitoring(interval: Long) {

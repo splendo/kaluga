@@ -1,15 +1,3 @@
-package com.splendo.kaluga.hud
-
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import platform.UIKit.UIScreen
-import platform.UIKit.UIViewController
-import platform.UIKit.UIWindow
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -28,56 +16,97 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class IOSHUDTests {
+package com.splendo.kaluga.hud
 
-    private lateinit var window: UIWindow
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.runBlocking
+import platform.UIKit.UIViewController
+import kotlin.native.concurrent.ensureNeverFrozen
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
-    @BeforeTest
-    fun setUp() {
-        window = UIWindow(UIScreen.mainScreen.bounds).apply { makeKeyAndVisible() }
+class IOSHUDTests : HUDTests<IOSHUDTests.IOSHUDTestContext>() {
+
+    inner class IOSHUDTestContext(coroutineScope: CoroutineScope) : HUDTestContext(coroutineScope) {
+
+        val hostView = HUDViewController()
+        override val builder = createBuilder(hostView)
+        private fun createBuilder(hostView: UIViewController): HUD.Builder =
+            HUD.Builder(hostView) { MockPresentingHUD(it) }
     }
 
-    @Test
-    fun builderInitializer() {
-        assertNotNull(
-            IOSHUD.Builder(UIViewController()).build()
-        )
-    }
+    override fun CoroutineScope.createTestContext() = IOSHUDTestContext(this)
 
-    @Test
-    fun builderSetStyleAndTitle() {
-        assertNotNull(
-            IOSHUD.Builder(UIViewController()).build {
-                setStyle(HUD.Style.CUSTOM)
-                setTitle("Foo")
-            }
-        )
-    }
+    class HUDViewController : UIViewController(null, null) {
 
-    @Test
-    fun presentIndicator() {
-        val hostView = UIViewController()
-        val indicator = IOSHUD.Builder(hostView).build()
-        window.rootViewController = hostView
-        assertNull(hostView.presentedViewController)
-        assertFalse(indicator.isVisible)
-        indicator.present(false)
-        assertTrue(indicator.isVisible)
-    }
+        init {
+            this.ensureNeverFrozen()
+        }
 
-    @Test
-    fun dismissIndicator() {
-        val hostView = UIViewController()
-        val indicator = IOSHUD.Builder(hostView).build()
-        window.rootViewController = hostView
-        assertNull(hostView.presentedViewController)
-        assertFalse(indicator.isVisible)
-        indicator.present(false) {
-            assertTrue(indicator.isVisible)
-            indicator.dismiss(false) {
-                assertNull(hostView.presentedViewController)
-                assertFalse(indicator.isVisible)
+        var mockPresentingHUD: MockPresentingHUD? = null
+
+        override fun presentedViewController(): UIViewController? {
+            return mockPresentingHUD
+        }
+
+        override fun presentViewController(viewControllerToPresent: UIViewController, animated: Boolean, completion: (() -> Unit)?) {
+            (viewControllerToPresent as? MockPresentingHUD)?.let {
+                mockPresentingHUD = it
+                it.parent = this
+                completion?.invoke()
             }
         }
+
+        override fun dismissViewControllerAnimated(flag: Boolean, completion: (() -> Unit)?) {
+            mockPresentingHUD?.parent = null
+            mockPresentingHUD = null
+            completion?.invoke()
+        }
+    }
+
+    class MockPresentingHUD(val hudViewController: UIViewController) : UIViewController(null, null) {
+
+        init {
+            this.ensureNeverFrozen()
+        }
+
+        var parent: UIViewController? = null
+
+        override fun presentingViewController(): UIViewController? {
+            return parent
+        }
+    }
+
+    @Test
+    fun presentIndicator() = testOnUIThread {
+        val indicator = builder.build(MainScope())
+        assertNull(hostView.presentedViewController)
+        assertFalse(indicator.isVisible)
+
+        runBlocking { indicator.present(false) }
+
+        assertTrue(indicator.isVisible)
+        hostView.mockPresentingHUD?.parent = null
+        hostView.mockPresentingHUD = null
+    }
+
+    @Test
+    fun dismissIndicator() = testOnUIThread {
+        val indicator = builder.build(MainScope())
+        assertNull(hostView.presentedViewController)
+        assertFalse(indicator.isVisible)
+
+        runBlocking {
+            indicator.present(false)
+            assertTrue(indicator.isVisible)
+            indicator.dismiss(false)
+        }
+
+        assertFalse(indicator.isVisible)
+        hostView.mockPresentingHUD?.parent = null
+        hostView.mockPresentingHUD = null
     }
 }

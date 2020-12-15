@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.permissions.location
 
+import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.utils.byOrdinalOrDefault
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -67,7 +67,7 @@ actual class LocationPermissionManager(
     }
 
     override suspend fun initializeState(): PermissionState<Permission.Location> {
-        return IOSPermissionsHelper.getPermissionState(authorizationStatus(), this)
+        return IOSPermissionsHelper.getPermissionState(authorizationStatus())
     }
 
     override suspend fun startMonitoring(interval: Long) {

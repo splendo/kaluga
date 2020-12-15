@@ -18,15 +18,15 @@
 package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.delay
 
 class PermissionRefreshSchedulerTest : BaseTest() {
 
@@ -91,7 +91,7 @@ private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermis
         didRevokePermission = CompletableDeferred()
     }
 
-    var initialState: PermissionState<Permission.Storage> = PermissionState.Denied.Requestable(this)
+    var initialState: PermissionState<Permission.Storage> = PermissionState.Denied.Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()

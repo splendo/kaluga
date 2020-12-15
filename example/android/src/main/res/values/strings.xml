@@ -3,6 +3,7 @@
 
     <string name="feature_alerts">Alerts</string>
     <string name="feature_architecture">Architecture</string>
+    <string name="feature_date_time_picker">Date Time Picker</string>
     <string name="feature_hud">Loading Indicator</string>
     <string name="feature_keyboard">Keyboard</string>
     <string name="feature_location">Location</string>
@@ -13,6 +14,12 @@
     <string name="alert_list">Show Alert List</string>
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
+
+    <string name="select_time">Select Time</string>
+    <string name="select_date">Select Date</string>
+    <string name="current_time">Current Time</string>
+    <string name="confirm_selection">Select</string>
+    <string name="cancel_selection">Cancel</string>
 
     <string name="permissions_list">Permissions List</string>
     <string name="permissions_bluetooth">Bluetooth Demo</string>
@@ -41,5 +48,4 @@
     <string name="location_background">Kaluga Background</string>
     <string name="location_enable_background">Enable Background</string>
     <string name="location_disable_background">Disable Background</string>
-
 </resources>

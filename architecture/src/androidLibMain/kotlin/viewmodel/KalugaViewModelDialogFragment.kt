@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.viewmodel
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.DialogFragment
 
 /**
@@ -27,8 +28,8 @@ abstract class KalugaViewModelDialogFragment<VM : BaseViewModel> : DialogFragmen
 
     abstract val viewModel: VM
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.bind(this)
     }
 }

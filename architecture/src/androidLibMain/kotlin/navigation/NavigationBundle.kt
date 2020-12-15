@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
+import com.splendo.kaluga.base.utils.Date
 
 /**
  * Converts a [NavigationBundle] to a [Bundle]
@@ -58,6 +59,9 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
         is NavigationBundleValue.StringValue -> bundle.putString(key, value.value)
         is NavigationBundleValue.StringArrayValue -> bundle.putStringArrayList(key, ArrayList(value.value))
         is NavigationBundleValue.OptionalValue<*> -> value.optionalValue?.let { mapValue(key, it, bundle) }
+        is NavigationBundleValue.DateValue -> bundle.putLong(key, value.value.millisecondSinceEpoch)
+        is NavigationBundleValue.DateArrayValue ->
+            bundle.putLongArray(key, LongArray(value.value.size) { value.value[it].millisecondSinceEpoch })
     }
 }
 
@@ -67,11 +71,14 @@ internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bund
  * @throws [BundleConversionError] if the [Bundle] does not contain the correct keys or values associated with the [NavigationBundleSpec]
  */
 fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationBundleSpec<R>): NavigationBundle<R> {
-    return NavigationBundle(spec, spec.rows.associate { row ->
-        mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
-            Pair(row, it)
-        } ?: throw BundleConversionError()
-    })
+    return NavigationBundle(
+        spec,
+        spec.rows.associate { row ->
+            mapValue(row.key ?: row.javaClass.simpleName, row.associatedType)?.let {
+                Pair(row, it)
+            } ?: throw BundleConversionError()
+        }
+    )
 }
 
 /**
@@ -113,6 +120,12 @@ internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>)
             } else {
                 specType.convertValue(null)
             }
+        }
+        is NavigationBundleSpecType.DateType -> getLong(key).let { value ->
+            specType.convertValue(Date.epoch(value))
+        }
+        is NavigationBundleSpecType.DateArrayType -> getLongArray(key)?.let { array ->
+            specType.convertValue(array.map { Date.epoch(it) })
         }
     }
 }

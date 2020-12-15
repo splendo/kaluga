@@ -7,7 +7,12 @@ A library allows you to show HUD (e.g. loading indicator) view.
 Show default HUD:
 
 ```kotlin
-val hud = builder.build().present()
+launch {
+    val hud = builder.build(this)
+    hud.present()
+    // do Stuff
+    hud.dismiss()
+}
 ```
 
 > Default style is `.SYSTEM` and it will adapt colors for current appearance (dark/light)
@@ -16,36 +21,42 @@ val hud = builder.build().present()
 Custom HUD with title:
 
 ```kotlin
-val hud = builder.build {
-    setStyle(HUD.Style.CUSTOM)
-    setTitle("Loading...")
-}.present()
+launch {
+    val hud = builder.build(this) {
+        setStyle(HUDStyle.CUSTOM)
+        setTitle("Loading...")
+    }
+    hud.present()
+}
 ```
 
-The `HUD` interface has implementation on the Android as `AndroidHUD` class
-and on the iOS as `IOSHUD` class.
-
 The `HUD` has methods to show and dismiss a loading indicator view:
-- `present(animated: Boolean = true, completion: () -> Unit = {}): HUD` — show
-- `dismiss(animated: Boolean = true, completion: () -> Unit = {})` — dismiss
+- `present(animated: Boolean = true): HUD` — show
+- `dismiss(animated: Boolean = true)` — dismiss
 - `dismissAfter(timeMillis: Long, animated: Boolean = true): HUD` — dismiss after `timeMillis` milliseconds
-- `presentDuring(block: suspend () -> Unit): HUD` — show and keep visible during `block` execution
+- `presentDuring(block: suspend HUD.() -> T): T` — show and keep visible during `block` execution, returning the result `T` of the block after dismissal.
+
+## Builder
+
+The `HUD.Builder` class can be used to build HUDs.
 
 ### Android
+On Android this builder needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel` 
 
-On Android you need to subscribe the builder to `LifecycleOwner` and pass `FragmentManager`, the best way is to use `HudViewModel`:
+You can use the `AppCompatActivity.hudBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 ```kotlin
-open class HudViewModel: ViewModel() {
+class HudViewModel: BaseViewModel() {
 
-    val builder = AndroidHUD.Builder()
+    val builder = HUD.Builder()
 
-    fun subscribe(activity: AppCompatActivity) {
-        builder.subscribe(activity, activity.supportFragmentManager)
-    }
-
-    fun unsubscribe() {
-        builder.unsubscribe()
+    fun present() {
+        coroutineScope.launch {
+            viewModel.builder.build(this) {
+              setStyle(HUDStyle.CUSTOM)
+              setTitle("Loading...")
+            }.present()
+        }
     }
 }
 ```
@@ -53,22 +64,30 @@ open class HudViewModel: ViewModel() {
 And then in your `Activity`:
 
 ```kotlin
-class MyActivity: AppCompatActivity() {
+class MyActivity: KalugaViewModelActivity<HudViewModel>() {
 
-    private val viewModel: HudViewModel by viewModels()
+    override val viewModel: HudViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.subscribe(this)
-        //
-        // Pass viewModel.builder to shared code
-        //
+
+        viewModel.present()
     }
 
-    override fun onDestroy() {
-        viewModel.unsubscribe()
-        super.onDestroy()
-    }
+}
+```
+
+For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.
+
+```kotlin
+val contextObserver = UIContextObserver()
+val builder = AlertBuilder(contextObserver)
+contextObserver.subscribe(activity)
+launch {
+    builder.build(this) {
+        setStyle(HUDStyle.CUSTOM)
+        setTitle("Loading...")
+    }.present()
 }
 ```
 
@@ -89,7 +108,7 @@ Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
 On iOS this builder should be instantiated with `UIViewController`:
 
 ```swift
-let builder = IOSHUD.Builder(viewController)
+let builder = HUD.Builder(viewController)
 ```
 
 Define your Color Sets in project's assets if using `.CUSTOM` style:

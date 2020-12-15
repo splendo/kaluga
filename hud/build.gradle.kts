@@ -21,7 +21,6 @@ repositories {
 dependencies {
 
     val ext = (gradle as ExtensionAware).extra
-
     implementation("androidx.fragment:fragment:${ext["androidx_fragment_version"]}")
     androidTestImplementation("androidx.fragment:fragment-ktx:${ext["androidx_fragment_version"]}")
 }
@@ -32,9 +31,14 @@ kotlin {
         getByName("commonMain") {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
+                implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
-                implementation("co.touchlab:stately-common:${ext["stately_version"]}")
-                implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+            }
+        }
+
+        getByName("commonTest") {
+            dependencies {
+                api(project(":test-utils", ""))
             }
         }
     }

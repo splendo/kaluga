@@ -2,6 +2,7 @@
 
 "feature_alerts" = "Alerts";
 "feature_architecture" = "Architecture";
+"feature_date_time_picker"= "Date Time Picker";
 "feature_hud" = "Loading Indicator";
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
@@ -12,6 +13,12 @@
 "alert_list" = "Show Alert List";
 "show_loading_indicator_system" = "Show Loading Indicator (System)";
 "show_loading_indicator_custom" = "Show Loading Indicator (Custom)";
+
+"select_time"="Select Time";
+"select_date"="Select Date";
+"current_time"="Current Time";
+"confirm_selection"="Select";
+"cancel_selection"="Cancel";
 
 "permissions_list" = "Permissions List";
 "permissions_bluetooth" = "Bluetooth Demo";

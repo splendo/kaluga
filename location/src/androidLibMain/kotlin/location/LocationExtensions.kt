@@ -22,14 +22,14 @@ import com.google.android.gms.location.LocationResult
 
 fun android.location.Location.toKnownLocation(): Location.KnownLocation {
     return Location.KnownLocation(
-            latitude = latitude,
-            longitude = longitude,
-            altitude = altitude,
-            horizontalAccuracy = accuracy.toDouble(),
-            verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
-            speed = speed.toDouble(),
-            time = Location.Time.MeasuredTime(time)
-        )
+        latitude = latitude,
+        longitude = longitude,
+        altitude = altitude,
+        horizontalAccuracy = accuracy.toDouble(),
+        verticalAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) verticalAccuracyMeters.toDouble() else 0.0,
+        speed = speed.toDouble(),
+        time = Location.Time.MeasuredTime(time)
+    )
 }
 
 fun LocationResult.toKnownLocations(): List<Location.KnownLocation> {

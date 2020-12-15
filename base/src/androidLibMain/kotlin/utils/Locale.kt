@@ -20,8 +20,9 @@ package com.splendo.kaluga.base.utils
 import android.icu.util.LocaleData
 import android.icu.util.ULocale
 import android.os.Build
+import com.splendo.kaluga.base.text.upperCased
 
-actual data class Locale(val locale: java.util.Locale) {
+actual class Locale internal constructor(val locale: java.util.Locale) {
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(java.util.Locale(language))
         actual fun createLocale(language: String, country: String): Locale = Locale(java.util.Locale(language, country))
@@ -39,6 +40,16 @@ actual data class Locale(val locale: java.util.Locale) {
         get() = locale.script
     actual val variantCode: String
         get() = locale.variant
+    actual val unitSystem: UnitSystem
+        get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            when (LocaleData.getMeasurementSystem(ULocale.forLocale(locale))) {
+                LocaleData.MeasurementSystem.US -> UnitSystem.IMPERIAL
+                LocaleData.MeasurementSystem.UK -> UnitSystem.MIXED
+                else -> UnitSystem.METRIC
+            }
+        } else {
+            UnitSystem.withCountryCode(countryCode.upperCased(this))
+        }
 
     actual fun name(forLocale: Locale): String = locale.getDisplayName(forLocale.locale)
     actual fun countryName(forLocale: Locale): String = locale.getDisplayCountry(forLocale.locale)

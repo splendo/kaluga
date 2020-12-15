@@ -17,19 +17,20 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.flow.HotFlowable
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.properties.ObservableProperty
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
-actual abstract class Observable<T> : ReadOnlyProperty<Any?, ObservableOptional<T>> {
+actual abstract class Observable<T> : BaseObservable<T>() {
 
     private val observers = mutableListOf<(T) -> Unit>()
     protected var value: ObservableOptional<T> by Delegates.observable(ObservableOptional.Nothing()) { _, _, new ->
@@ -67,7 +68,7 @@ class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>)
 class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flow.collect {
                 value = ObservableOptional.Value(it)
             }
@@ -77,7 +78,9 @@ class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScop
 
 actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
 
-    abstract fun post(newValue: T)
+    actual open fun post(newValue: T) {
+        value = ObservableOptional.Value(newValue)
+    }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
         this.value = value
@@ -88,10 +91,6 @@ class DefaultSubject<T>(initialValue: T) : Subject<T>() {
 
     init {
         value = ObservableOptional.Value(initialValue)
-    }
-
-    override fun post(newValue: T) {
-        value = ObservableOptional.Value(newValue)
     }
 }
 
@@ -105,24 +104,44 @@ class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : 
 
     override fun post(newValue: T) {
         remoteValue = newValue
-        value = ObservableOptional.Value(newValue)
+        super.post(newValue)
     }
 }
 
-class FlowSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
 
     init {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flowable.flow().collect {
-                value = ObservableOptional.Value(it)
+                super.post(it)
             }
         }
     }
 
     override fun post(newValue: T) {
-        coroutineScope.launch(MainQueueDispatcher) {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
             flowable.set(newValue)
         }
+    }
+}
+
+/**
+ * [Subject] that synchronizes its value to a [MutableStateFlow]
+ * @param stateFlow The [MutableStateFlow] to synchronize to
+ * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
+ */
+class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
+
+    init {
+        coroutineScope.launch(Dispatchers.Main.immediate) {
+            stateFlow.collect {
+                super.post(it)
+            }
+        }
+    }
+
+    override fun post(newValue: T) {
+        stateFlow.value = newValue
     }
 }
 
@@ -134,7 +153,9 @@ actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<
 
 actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
 
-actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowSubject(this, coroutineScope)
+actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowableSubject(this, coroutineScope)
+
+actual fun <T> MutableStateFlow<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = StateFlowSubject(this, coroutineScope)
 
 actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
 

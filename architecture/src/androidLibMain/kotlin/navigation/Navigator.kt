@@ -17,12 +17,18 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
 import android.provider.Settings
-import androidx.fragment.app.FragmentManager
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.fragment.app.DialogFragment
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
+
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+    actual fun navigate(action: A)
+}
 
 /**
  * Implementation of [Navigator]. Takes a mapper function to map all [NavigationAction] to a [NavigationSpec]
@@ -30,31 +36,9 @@ import androidx.fragment.app.FragmentManager
  * Requires to be subscribed to an activity via [subscribe] to work
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) {
+class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (A) -> NavigationSpec) : Navigator<A>, LifecycleSubscribable by LifecycleSubscriber() {
 
-    private var activity: Activity? = null
-    private var fragmentManager: FragmentManager? = null
-
-    /**
-     * Subscribes the Navigator to a [Activity] and [FragmentManager]
-     * Subscription is used to determine which activity/fragmentManager is responsible for certain navigating actions
-     * @param activity The [Activity] to handle navigation
-     * @param fragmentManager The [FragmentManager] to handle fragment navigation
-     */
-    fun subscribe(activity: Activity, fragmentManager: FragmentManager) {
-        this.activity = activity
-        this.fragmentManager = fragmentManager
-    }
-
-    /**
-     * Unsubscribes the Navigator from its current [Activity] and [FragmentManager]
-     */
-    fun unsubscribe() {
-        activity = null
-        fragmentManager = null
-    }
-
-    actual fun navigate(action: A) {
+    override fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
     }
 
@@ -63,7 +47,9 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
             is NavigationSpec.Activity<*> -> navigateToActivity(spec, bundle)
             is NavigationSpec.Close -> closeActivity(spec, bundle)
             is NavigationSpec.Fragment -> navigateToFragment(spec)
+            is NavigationSpec.RemoveFragment -> removeFragment(spec)
             is NavigationSpec.Dialog -> navigateToDialog(spec)
+            is NavigationSpec.DismissDialog -> dismissDialog(spec)
             is NavigationSpec.Camera -> navigateToCamera(spec)
             is NavigationSpec.Email -> navigateToEmail(spec)
             is NavigationSpec.FileSelector -> navigateToFileSelector(spec)
@@ -75,8 +61,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToActivity(activitySpec: NavigationSpec.Activity<*>, bundle: NavigationBundle<*>?) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val intent = Intent(activity, activitySpec.activityClass).apply {
             bundle?.let {
                 putExtras(it.toBundle())
@@ -89,8 +75,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun closeActivity(closeSpec: NavigationSpec.Close, bundle: NavigationBundle<*>?) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         closeSpec.result?.let { resultCode ->
             val data = Intent().apply {
                 bundle?.let {
@@ -103,8 +89,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToFragment(fragmentSpec: NavigationSpec.Fragment) {
-        assert(this.fragmentManager != null)
-        val fragmentManager = fragmentManager ?: return
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
         val transaction = fragmentManager.beginTransaction()
 
         when (val backtrackSettings = fragmentSpec.backStackSettings) {
@@ -124,15 +110,32 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
         transaction.commit()
     }
 
+    private fun removeFragment(removeFragmentSpec: NavigationSpec.RemoveFragment) {
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
+        val fragment = fragmentManager.findFragmentByTag(removeFragmentSpec.tag) ?: return
+
+        val transaction = fragmentManager.beginTransaction()
+        transaction.remove(fragment)
+        transaction.commit()
+    }
+
     private fun navigateToDialog(dialogSpec: NavigationSpec.Dialog) {
-        assert(this.fragmentManager != null)
-        val fragmentManager = fragmentManager ?: return
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
         dialogSpec.createDialog().show(fragmentManager, dialogSpec.tag)
     }
 
+    private fun dismissDialog(spec: NavigationSpec.DismissDialog) {
+        assert(manager?.fragmentManager != null)
+        val fragmentManager = manager?.fragmentManager ?: return
+        val dialog = fragmentManager.findFragmentByTag(spec.tag) as? DialogFragment ?: return
+        dialog.dismiss()
+    }
+
     private fun navigateToCamera(cameraSpec: NavigationSpec.Camera) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val intent = when (cameraSpec.type) {
             is NavigationSpec.Camera.Type.Image -> Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             is NavigationSpec.Camera.Type.Video -> Intent(MediaStore.ACTION_VIDEO_CAPTURE)
@@ -148,8 +151,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToEmail(emailSpec: NavigationSpec.Email) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val settings = emailSpec.emailSettings
         val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
@@ -180,8 +183,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToFileSelector(fileSelectorSpec: NavigationSpec.FileSelector) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val settings = fileSelectorSpec.fileSelectorSettings
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = settings.type
@@ -195,8 +198,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToPhone(phoneSpec: NavigationSpec.Phone) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
 
         val intent = when (phoneSpec.type) {
             is NavigationSpec.Phone.Type.Dial -> Intent(Intent.ACTION_DIAL)
@@ -211,8 +214,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToSettings(settingsSpec: NavigationSpec.Settings) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val intent = when (settingsSpec.type) {
             is NavigationSpec.Settings.Type.General -> Intent(Settings.ACTION_SETTINGS)
             is NavigationSpec.Settings.Type.Wireless -> Intent(Settings.ACTION_WIRELESS_SETTINGS)
@@ -236,8 +239,8 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToMessenger(messengerSpec: NavigationSpec.TextMessenger) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
         val settings = messengerSpec.settings
         val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
@@ -261,13 +264,28 @@ actual class Navigator<A : NavigationAction<*>>(private val navigationMapper: (A
     }
 
     private fun navigateToBrowser(browserSpec: NavigationSpec.Browser) {
-        assert(this.activity != null)
-        val activity = this.activity ?: return
-        val uri = Uri.parse(browserSpec.url.toURI().toString())
-        val intent = Intent(Intent.ACTION_VIEW, uri)
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
 
-        intent.resolveActivity(activity.packageManager)?.let {
-            activity.startActivity(intent)
+        when (browserSpec.viewType) {
+            NavigationSpec.Browser.Type.CustomTab -> {
+                val builder = CustomTabsIntent.Builder()
+                val customTabsIntent = builder.build()
+                customTabsIntent.intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                customTabsIntent.launchUrl(
+                    activity,
+                    Uri.parse(browserSpec.url.toURI().toString())
+                )
+            }
+            NavigationSpec.Browser.Type.Normal -> {
+
+                val uri = Uri.parse(browserSpec.url.toURI().toString())
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+
+                intent.resolveActivity(activity.packageManager)?.let {
+                    activity.startActivity(intent)
+                }
+            }
         }
     }
 }

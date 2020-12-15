@@ -21,4 +21,4 @@ import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.awaitAll
 
-fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>):List<T> = runBlocking { awaitAll(*deferreds) }
+fun <T> awaitAllBlocking(vararg deferreds: Deferred<T>): List<T> = runBlocking { awaitAll(*deferreds) }

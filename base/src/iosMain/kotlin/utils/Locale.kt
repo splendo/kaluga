@@ -36,7 +36,7 @@ import platform.Foundation.quotationEndDelimiter
 import platform.Foundation.scriptCode
 import platform.Foundation.variantCode
 
-actual data class Locale(val nsLocale: NSLocale) {
+actual class Locale internal constructor(val nsLocale: NSLocale) {
 
     actual companion object {
         actual fun createLocale(language: String): Locale = Locale(NSLocale(language))
@@ -55,6 +55,10 @@ actual data class Locale(val nsLocale: NSLocale) {
         get() = nsLocale.scriptCode ?: ""
     actual val variantCode: String
         get() = nsLocale.variantCode ?: ""
+    actual val unitSystem: UnitSystem
+        get() = (nsLocale.objectForKey("kCFLocaleMeasurementSystemKey") as? String)?.let {
+            UnitSystem.withRawValue(it)
+        } ?: UnitSystem.METRIC
 
     actual fun name(forLocale: Locale): String = forLocale.nsLocale.localizedStringForLocaleIdentifier(nsLocale.localeIdentifier)
     actual fun countryName(forLocale: Locale): String = forLocale.nsLocale.localizedStringForCountryCode(countryCode) ?: ""

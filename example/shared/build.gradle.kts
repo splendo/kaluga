@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.3.72"
+    kotlin("plugin.serialization")
     id("jacoco")
     id("maven-publish")
     id("com.android.library")
@@ -27,6 +27,7 @@ kotlin {
                     implementation(project(":alerts", ""))
                     implementation(project(":architecture", ""))
                     implementation(project(":base", ""))
+                    implementation(project(":date-time-picker", ""))
                     implementation(project(":hud", ""))
                     implementation(project(":keyboard", ""))
                     implementation(project(":location", ""))
@@ -38,6 +39,7 @@ kotlin {
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
                     implementation("com.splendo.kaluga:architecture:$libraryVersion")
                     implementation("com.splendo.kaluga:base:$libraryVersion")
+                    implementation("com.splendo.kaluga:date-time-picker:$libraryVersion")
                     implementation("com.splendo.kaluga:hud:$libraryVersion")
                     implementation("com.splendo.kaluga:keyboard:$libraryVersion")
                     implementation("com.splendo.kaluga:location:$libraryVersion")

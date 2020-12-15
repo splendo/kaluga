@@ -1,4 +1,5 @@
 /*
+
 Copyright 2019 Splendo Consulting B.V. The Netherlands
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,24 +15,27 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
-
 package com.splendo.kaluga.keyboard
 
 import android.os.Bundle
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 
 class TestActivity : AppCompatActivity() {
 
-    lateinit var textView: TextView
+    lateinit var view: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        view = TextView(this).apply {
+            text = "keyboard"
+            id = 1337
+            setContentView(this)
+        }
+    }
 
-        val view = LinearLayout(this)
-        textView = TextView(this)
-        view.addView(textView)
-        setContentView(view)
+    fun showKeyboard() {
+        keyboardManagerBuilder().create(lifecycleScope).show(view.id)
     }
 }

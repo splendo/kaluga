@@ -1,9 +1,3 @@
-package com.splendo.kaluga.hud
-
-import android.os.Bundle
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,17 +16,18 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class TestActivity : AppCompatActivity() {
+package com.splendo.kaluga.hud
 
-    val viewModel: HudViewModel by viewModels()
+import androidx.activity.viewModels
+import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel.subscribe(this)
-    }
+class TestActivity : KalugaViewModelActivity<HudViewModel>() {
 
-    override fun onDestroy() {
-        viewModel.unsubscribe()
-        super.onDestroy()
+    override val viewModel: HudViewModel by viewModels()
+
+    suspend fun showHUD() {
+        hudBuilder().build(viewModel.coroutineScope) {
+            setTitle("Activity")
+        }.present(false)
     }
 }

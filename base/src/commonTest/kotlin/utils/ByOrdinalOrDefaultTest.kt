@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.test.utils
 
-import com.splendo.kaluga.utils.byOrdinalOrDefault
+import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -29,20 +29,32 @@ class ByOrdinalOrDefaultTest {
     @Test
     fun test() {
         assertEquals(
-            Numbers.one, Enum.byOrdinalOrDefault(0,
+            Numbers.one,
+            Enum.byOrdinalOrDefault(
+                0,
                 Numbers.two
-            ))
+            )
+        )
         assertEquals(
-            Numbers.two, Enum.byOrdinalOrDefault(1,
+            Numbers.two,
+            Enum.byOrdinalOrDefault(
+                1,
                 Numbers.one
-            ))
+            )
+        )
         assertEquals(
-            Numbers.two, Enum.byOrdinalOrDefault(-1,
+            Numbers.two,
+            Enum.byOrdinalOrDefault(
+                -1,
                 Numbers.two
-            ))
+            )
+        )
         assertEquals(
-            Numbers.one, Enum.byOrdinalOrDefault(2,
+            Numbers.one,
+            Enum.byOrdinalOrDefault(
+                2,
                 Numbers.one
-            ))
+            )
+        )
     }
 }

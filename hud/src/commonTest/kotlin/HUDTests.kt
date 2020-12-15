@@ -1,9 +1,3 @@
-package com.splendo.kaluga.hud
-
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -22,42 +16,50 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-class HUDTests {
+package com.splendo.kaluga.hud
 
-    class MockHUD(val style: HUD.Style, val title: String?) : HUD {
-        lateinit var onPresentCalled: () -> Unit
-        lateinit var onDismissCalled: () -> Unit
+import com.splendo.kaluga.hud.HUDTests.HUDTestContext
+import com.splendo.kaluga.test.UIThreadTest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
-        override val isVisible: Boolean = false
-        override fun present(animated: Boolean, completion: () -> Unit): HUD {
-            onPresentCalled()
-            return this
-        }
+abstract class HUDTests<HTC : HUDTestContext> : UIThreadTest<HTC>() {
 
-        override fun dismiss(animated: Boolean, completion: () -> Unit) {
-            onDismissCalled()
-        }
-
-        override fun dismissAfter(timeMillis: Long, animated: Boolean) = apply {
-            onDismissCalled()
-        }
-    }
-
-    class MockBuilder : HUD.Builder() {
-        override fun create(hudConfig: HudConfig) = MockHUD(hudConfig.style, hudConfig.title)
+    @Test
+    fun builderInitializer() = testOnUIThread {
+        assertNotNull(
+            builder.build(MainScope())
+        )
     }
 
     @Test
-    fun testBuilder() {
-        val builder = MockBuilder()
-        val hud1 = builder.build() as MockHUD
-        assertEquals(hud1.style, HUD.Style.SYSTEM)
+    fun builderSetStyleAndTitle() = testOnUIThread {
+        assertNotNull(
+            builder.build(MainScope()) {
+                setStyle(HUDStyle.CUSTOM)
+                setTitle("Foo")
+            }
+        )
+    }
+
+    @Test
+    fun testBuilder() = testOnUIThread {
+        val hud1 = builder.build(MainScope())
+        assertEquals(hud1.style, HUDStyle.SYSTEM)
         assertNull(hud1.title)
-        val hud2 = builder.build {
-            setStyle(HUD.Style.CUSTOM)
+        val hud2 = builder.build(MainScope()) {
+            setStyle(HUDStyle.CUSTOM)
             setTitle("Title")
-        } as MockHUD
-        assertEquals(hud2.style, HUD.Style.CUSTOM)
+        }
+        assertEquals(hud2.style, HUDStyle.CUSTOM)
         assertEquals(hud2.title, "Title")
+    }
+
+    abstract class HUDTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
+        abstract val builder: HUD.Builder
     }
 }

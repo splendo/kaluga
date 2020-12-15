@@ -17,27 +17,27 @@
 
 package com.splendo.kaluga.test
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
-class MockPermissionStateRepo<P:Permission> : PermissionStateRepo<P>() {
+class MockPermissionStateRepo<P : Permission> : PermissionStateRepo<P>() {
 
     override val permissionManager = MockPermissionManager(this)
-
 }
 
-class MockPermissionManager<P:Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
+class MockPermissionManager<P : Permission>(private val permissionRepo: PermissionStateRepo<P>) : PermissionManager<P>(permissionRepo) {
 
-    var currentState: PermissionState<P> = PermissionState.Denied.Requestable(this)
+    private val _currentState: AtomicReference<PermissionState<P>> = AtomicReference(PermissionState.Denied.Requestable())
+    var currentState: PermissionState<P>
+        get() = _currentState.get()
+        set(s) = _currentState.set(s)
 
     fun setPermissionAllowed() {
         changePermission { grantPermission() }
@@ -56,15 +56,9 @@ class MockPermissionManager<P:Permission>(private val permissionRepo: Permission
         permissionRepo.useState { currentState = it }
     }
 
-    var hasRequestedPermission = EmptyCompletableDeferred()
-    var hasStartedMonitoring = CompletableDeferred<Long>()
-    var hasStoppedMonitoring = EmptyCompletableDeferred()
-
-    fun reset() {
-        hasRequestedPermission = EmptyCompletableDeferred()
-        hasStartedMonitoring = CompletableDeferred()
-        hasStoppedMonitoring = EmptyCompletableDeferred()
-    }
+    val hasRequestedPermission = EmptyCompletableDeferred()
+    val hasStartedMonitoring = CompletableDeferred<Long>()
+    val hasStoppedMonitoring = EmptyCompletableDeferred()
 
     override suspend fun requestPermission() {
         hasRequestedPermission.complete()

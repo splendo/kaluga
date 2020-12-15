@@ -51,10 +51,12 @@ fun ByteArray.toNSData(): NSData = memScoped {
  * @return The list of all the elements in the given list that match the desired typing
  */
 inline fun <reified T : Any> List<*>.typedList(): List<T> {
-    return mapNotNull { when (it) {
-        is T -> it
-        else -> null
-    } }
+    return mapNotNull {
+        when (it) {
+            is T -> it
+            else -> null
+        }
+    }
 }
 
 /**

@@ -18,7 +18,7 @@
 package com.splendo.kaluga.base.utils
 
 // TODO Implement with proper date solution for Java Script
-actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
+actual class Date internal constructor(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual companion object {
         actual fun now(offsetInMilliseconds: Long, timeZone: TimeZone, locale: Locale): Date = Date(kotlin.js.Date(kotlin.js.Date.now() + offsetInMilliseconds))
@@ -38,6 +38,7 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
     actual var month: Int
         get() = date.getMonth()
         set(value) { }
+    actual val daysInMonth: Int = 0
     actual var weekOfYear: Int
         get() = 0
         set(value) { }
@@ -52,6 +53,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
         set(value) { }
     actual var weekDay: Int
         get() = date.getDate() + 1
+        set(value) { }
+    actual var firstWeekDay: Int
+        get() = 1
         set(value) { }
 
     actual var hour: Int
@@ -72,9 +76,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
 
     actual fun copy(): Date = Date(kotlin.js.Date(date.getMilliseconds()))
 
-    override fun equals(other: Any?): Boolean {
+    actual override fun equals(other: Any?): Boolean {
         return (other as? Date)?.let {
-            date == it.date
+            timeZone == other.timeZone && millisecondSinceEpoch == other.millisecondSinceEpoch
         } ?: false
     }
 
@@ -84,5 +88,9 @@ actual class Date(internal val date: kotlin.js.Date) : Comparable<Date> {
             date.getMilliseconds() == other.millisecond -> 0
             else -> 1
         }
+    }
+
+    actual override fun hashCode(): Int {
+        return date.hashCode()
     }
 }

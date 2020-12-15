@@ -26,16 +26,86 @@ class SomeViewModel : BaseViewModel() {
 }
 ```
 
+### Android
 On Android the AndroidX `ViewModel` serves as a base. The viewModel lifecycle matches onResume/onPause of the `Activity` or `Fragment` that created it.
-To achieve this, the View should be bound using the `KalugaViewModelLifecycleObserver.bind()` method.
-For convenience default implementations for `Activity`, `Fragment`, and `DialogFragment` exist (`KalugaViewModelActivity`, `KalugaViewModelFragment`, and `KalugaViewModelDialogFragment` respectively).
-Alternatively the user can call `didResume()` and `didPause()` on the ViewModel manually in the `onResume()` and `onPause()` methods.
+To achieve this, the View should be bound to `KalugaViewModelLifecycleObserver' using the 'bind()` method.
 
-On iOS automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
+```kotlin
+class SomeActivity : Activity {
+    private val viewModel: SomeViewModel = SomeViewModel() // create ViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.bind(this)
+    }
+}
+```
+
+For convenience default implementations for `Activity`, `Fragment`, and `DialogFragment` exist (`KalugaViewModelActivity`, `KalugaViewModelFragment`, and `KalugaViewModelDialogFragment` respectively).
+
+```kotlin
+class SomeActivity : KalugaViewModelActivity<SomeViewModel> {
+    override val viewModel: SomeViewModel = SomeViewModel // create ViewModel
+}
+```
+
+The `KalugaViewModelLifecycleObserver` will automatically update the `LifecycleSubscribable.LifecycleManager` context of all public `LifecycleSubscribable` properties of the viewModel.
+Implement this interface if a viewModel has properties that should be lifecycle or context aware.
+It can be delegated using `LifecycleSubscriber`.
+The `LifecycleManagerObserver` is a default implementation of `LifecycleSubscribable` that provides updates to the context as a `Flow`.
+
+### iOS
+On iOS the viewModel lifecycle should match 'onDidAppear'/`viewDidDisappear`.
+ViewControllers should also make sure they call `clear` on the ViewModel whenever they are done using the ViewModel, to ensure that the ViewModel coroutinescope is cleared.
+
+```swift
+class SomeViewController : UIViewController {
+
+    let viewModel: SomeViewModel = // create ViewModel
+
+    deinit {
+        viewModel.clear()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        viewModel.didResume()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        viewModel.didPause()
+    }
+
+}
+```
+
+Automatic setup can be achieved by binding an `UIViewController` to the viewModel using `addLifecycleManager`.
 When bound the viewModel lifecycle is automatically matched with the viewControllers `viewDidAppear` and `viewDidDisappear` methods.
 The resulting `LifecycleManager` should be unbound using `unbind` when no longer required. Unbinding will also `clear` the bound viewModel.
 Automatic binding is achieved by adding an invisible child `UIViewController` to the bound viewController.
-If this behaviour is not desired, the user should call `didResume()` and `didPause()` on the viewModel manually in the `viewDidAppear()` and `viewDidDisappear()` methods.
+When the Lifecycle Manager is used you should therefore not remove all child `UIViewController` from the parent.
+
+```swift
+class SomeViewController : UIViewController {
+    let viewModel: SomeViewModel = // create ViewModel
+    var lifecycleManager: LifecycleManager
+
+    deinit {
+        lifecycleManager.unbind()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in return [] }
+    }
+}
+```
+
+### Testing ViewModels
+
+See the `test-utils` module for base test classes that help setting up the ViewModel in the main thread, while still allowing `Dispatchers.Main` to function. 
 
 ## Observables
 Kaluga supports data binding using `Observables` (one way binding) and `Subjects` (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
@@ -47,18 +117,15 @@ class SomeViewModel : BaseViewModel() {
     private val flow = flowOf(1, 2, 3)
     val flowObservable = flow.toObservable(coroutineScope)
 
-    val flowable: BaseFlowable<Int> = // someFlowable
+    val flowable: BaseFlowable<Int> = SomeStateRepo() // someFlowable
     val flowableSubject = flowable.toSubject(coroutineScope)
 
     fun readValue(defaultValue: Int): Int? {
-        val currentFlowResult: ObservableOptional<Int> by flowObservable
-        val currentFlowValue: Int? by  currentFlowResult
-        return currentFlowValue
+        return flowObservable.currentOrNull
     }
 
     fun postValue(value: Int) {
-        var currentSubjectResult: ObservableOptional<Int> by flowableSubject
-        currentSubjectResult = ObservableOptional.Value(value) 
+        flowableSubject.post(value)
     }
 }
 ```
@@ -66,7 +133,8 @@ class SomeViewModel : BaseViewModel() {
 On the platform level observables can be observed. The platform specific observer will be notified of any changes to the observable.
 Observables are stateful, so any new observer will receive the last emitted value.
 
-On Android both observable and subject are easily converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
+### Android
+On Android both observable and subject can easily be converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
 
 ```kotlin
 val observable: Observable<Int>
@@ -82,21 +150,25 @@ init {
 }
 ```
 
+### iOS
 On iOS value changes can be observed using `observe(onNext: ...))`.
 Calling this returns a `Disposable` object. The caller is responsible for disposing the disposable after the object should no longer be observed using `dispose()`.
 A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.addTo()` to add a Disposable to a DisposeBag.
 DisposeBags can be emptied using `dispose()`. To post new data to the Subject the `post()` method can be called.
 
-```kotlin
-val observable: Observable<Int>
-val subject: Subject<Int>
+Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
+Observables can be mapped to Combine `Published` classes directly from Swift however.
 
-val disposeBag = DisposeBag()
+```Swift
+let observable: Observable<Int>
+let subject: Subject<Int>
+
+let disposeBag = DisposeBag()
 
 init {
-    liveData.onNext{value ->
+    observable.observe(onNext: { (value) in
         subject.post(value)
-    }.addTo(disposeBag)
+    }).addTo(disposeBag)
 
     // do Other stuff
 
@@ -105,12 +177,33 @@ init {
 ```
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
-Use this callback to start observing data that should be bound to the lifecycle and put the disposables in the provided `DisposeBag`.
+Use this callback to start observing data that should be bound to the lifecycle and return the resulting list of `Disposable`.
 At the end of a lifecycle (`viewDidDisappear`) the Observables are automatically disposed.
+
+```swift
+
+class SomeViewController : UIViewController {
+    let viewModel: SomeViewModel = // create ViewModel
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        lifecycleManager = viewModel.addLifecycleManager(parent: self, onLifecycle: { [weak self] in
+            guard let observable = self.viewModel.observable else {
+                return []
+            }
+            return [
+                observable.observe(onNext: { (value) in
+                   // Handle value
+               }
+            ] }
+    }
+```
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.
-This viewModel takes a `Navigator` object that responds to a given `NavigationAction`.
+This viewModel takes a `Navigator` interface that responds to a given `NavigationAction`.
+While a custom Navigator can be implemented, the default `ActivityNavigator` (Android) and `ViewControllerNavigator` (iOS) provide easy access to most common navigation patterns.
 The Navigation action specifies the action(s) that can navigate.
 
 ```kotlin
@@ -138,7 +231,7 @@ Multiple specs exist per platform, including all common navigation patterns with
 ```kotlin
 // Android
 val viewModel = SomeNavigatingViewModel(
-    Navigator { action ->
+    ActivityNavigator { action ->
         when (action) {
             is ActionA -> NavigationSpec.Activity(SomeActivity::class.java)
             is ActionB -> NavigationSpec.Fragment(R.id.some_fragment_container, createFragment = {SomeFragment()})
@@ -146,8 +239,8 @@ val viewModel = SomeNavigatingViewModel(
     })
 
 // iOS
-val viewModel = SomeNavigatingViewModeel(
-    Navigator(viewController) { action ->
+val viewModel = SomeNavigatingViewModel(
+    ViewControllerNavigator(viewController) { action ->
         when (action) {
             is ActionA -> NavigationSpec.Present(present = { someViewController() })
             is ActionB -> NavigationSpec.Nested(containerView = containerView, nested = {someNestedViewController()})

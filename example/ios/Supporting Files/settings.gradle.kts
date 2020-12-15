@@ -12,15 +12,15 @@ pluginManagement {
             val android_gradle_plugin_version:String by settings
             val kotlin_version:String by settings
 
-            if (requested.id.id == "kotlin-multiplatform") {
-                // The version here must be kept in sync with gradle/ext.gradle and settings.gradle in the root
-                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlin_version}")
-            }
-            if (requested.id.id == "com.android.library") {
-                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
-            }
-            if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:${android_gradle_plugin_version}")
+            when (requested.id.id) {
+                "kotlin-multiplatform" ->
+                    useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+                "org.jetbrains.kotlin.plugin.serialization" ->
+                    useModule("org.jetbrains.kotlin:kotlin-serialization-plugin:$kotlin_version")
+                "com.android.library" ->
+                    useModule("com.android.tools.build:gradle:$android_gradle_plugin_version")
+                "com.android.application" ->
+                    useModule("com.android.tools.build:gradle:$android_gradle_plugin_version")
             }
         }
     }
@@ -47,6 +47,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
 
     include(":base")
     project(":base").projectDir = file("../../../base")
+
+    include(":date-time-picker")
+    project(":date-time-picker").projectDir = file("../../../date-time-picker")
 
     include(":hud")
     project(":hud").projectDir = file("../../../hud")
