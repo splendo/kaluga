@@ -21,7 +21,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import kotlin.test.BeforeTest
 
-class AndroidStringsTest:StringsTests() {
+class AndroidStringsTest : StringsTests() {
 
     @get:Rule
     var activityRule = ActivityScenarioRule(TestActivity::class.java)

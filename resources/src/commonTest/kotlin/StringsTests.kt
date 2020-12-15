@@ -21,9 +21,9 @@ import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-abstract class StringsTests:BaseTest() {
+abstract class StringsTests : BaseTest() {
 
-    abstract val stringLoader:StringLoader
+    abstract val stringLoader: StringLoader
 
     @Test
     fun testPlurals() {
