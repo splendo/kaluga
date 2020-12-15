@@ -26,7 +26,7 @@ import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+actual interface Navigator<A : NavigationAction<*>> {
     actual fun navigate(action: A)
 }
 
