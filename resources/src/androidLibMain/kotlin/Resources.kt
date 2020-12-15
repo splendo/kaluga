@@ -39,6 +39,16 @@ actual class StringLoader(private val context: Context?) {
             defaultValue
         }
     }
+    actual fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
+        if (context == null)
+            return defaultValue
+        val id = context.resources.getIdentifier(identifier, "plurals", context.packageName)
+        return try {
+            context.resources.getQuantityString(id, quantity, quantity)
+        } catch (e: Resources.NotFoundException) {
+            defaultValue
+        }
+    }
 }
 
 actual class ColorLoader(private val context: Context?) {

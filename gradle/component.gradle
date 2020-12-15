@@ -109,14 +109,14 @@ kotlin {
         }
 
         "${gradle.ios_primary_arch}Main" {
-            kotlin.srcDirs("src/iosMain")
+            kotlin.srcDirs("src/iosMain/kotlin")
             dependencies {
                 // none for now
             }
         }
 
         "${gradle.ios_primary_arch}Test" {
-            kotlin.srcDirs("src/iosTest")
+            kotlin.srcDirs("src/iosTest/kotlin")
             dependencies {
                 implementation kotlin('test')
             }
@@ -126,19 +126,19 @@ kotlin {
         if (!gradle.ext.ios_one_sourceset) {
 
             iosarm32Main {
-                kotlin.srcDirs("src/iosMain")
+                kotlin.srcDirs("src/iosMain/kotlin")
             }
             iosarm32Test {
-                kotlin.srcDirs("src/iosTest")
+                kotlin.srcDirs("src/iosTest/kotlin")
                 dependencies {
                     implementation kotlin('test')
                 }
             }
             "${gradle.ios_secondary_arch}Main" {
-                kotlin.srcDirs("src/iosMain")
+                kotlin.srcDirs("src/iosMain/kotlin")
             }
             "${gradle.ios_secondary_arch}Test" {
-                kotlin.srcDirs("src/iosTest")
+                kotlin.srcDirs("src/iosTest/kotlin")
                 dependencies {
                     implementation kotlin('test')
                 }
@@ -217,6 +217,17 @@ android {
 task printConfigurations {
     doLast {
         configurations.each { println it }
+    }
+}
+
+task copyResources(type: Copy) {
+    from file('src/iosTest/res/.')
+    into file("$buildDir/bin/iosx64/debugTest")
+}
+
+afterEvaluate {
+    tasks.named("linkDebugTestIosx64").configure {
+        dependsOn copyResources
     }
 }
 
