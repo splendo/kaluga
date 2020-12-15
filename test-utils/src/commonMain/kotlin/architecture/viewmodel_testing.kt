@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.test.architecture
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.architecture.viewmodel.ViewModel
 import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.Dispatchers
+import com.splendo.kaluga.test.UIThreadTest
+import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
-abstract class ViewModelTest<VM : BaseViewModel> : BaseTest() {
+abstract class ViewModelTest<VM : ViewModel> : BaseTest() {
     lateinit var viewModel: VM
 
     protected abstract fun createViewModel(): VM
@@ -35,36 +35,24 @@ abstract class ViewModelTest<VM : BaseViewModel> : BaseTest() {
     }
 }
 
-abstract class SimpleUIThreadViewModelTest<VM : BaseViewModel> : UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
+abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
 
-    class SimpleViewModelTestContext<VM>(private val createViewModel: () -> VM) : ViewModelTestContext<VM>() {
-        override fun createViewModel(): VM = createViewModel.invoke()
-    }
-
-    override fun createViewModelContext(): ViewModelTestContext<VM> = SimpleViewModelTestContext(::createViewModel)
+    override fun CoroutineScope.createTestContext(): ViewModelTestContext<VM> =
+        LazyViewModelTestContext(this, ::createViewModel)
 
     abstract fun createViewModel(): VM
 }
 
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : BaseViewModel> : BaseTest() {
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel> :
+    UIThreadTest<VMC>() {
 
-    abstract class ViewModelTestContext<VM> {
-
-        val viewModel by lazy { createViewModel() }
-
-        abstract fun createViewModel(): VM
-
-        open fun dispose() {}
+    open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
+        ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
+        override val viewModel: VM by lazy { createViewModel() }
     }
 
-    abstract fun createViewModelContext(): VMC
-
-    fun testWithViewModel(block: suspend VMC.() -> Unit): Unit = runBlocking(Dispatchers.Main) {
-        val viewModelContext = createViewModelContext()
-        try {
-            block(viewModelContext)
-        } finally {
-            viewModelContext.dispose()
-        }
+    interface ViewModelTestContext<VM> : TestContext {
+        val viewModel: VM
     }
 }

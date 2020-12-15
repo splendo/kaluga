@@ -13,32 +13,43 @@ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.base.runOnMain
-import kotlinx.coroutines.MainScope
+import com.splendo.kaluga.keyboard.KeyboardManagerTests.KeyboardTestContext
+import com.splendo.kaluga.test.UIThreadTest
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.yield
 import kotlin.test.Test
 
-abstract class KeyboardManagerTests {
+abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KTC>() {
 
-    abstract val builder: KeyboardManager.Builder
-    abstract val view: KeyboardHostingView
-
-    var isUITest = false
+    abstract class KeyboardTestContext : TestContext, CoroutineScope {
+        abstract val builder: KeyboardManager.Builder
+        abstract val view: KeyboardHostingView
+    }
 
     @Test
-    fun testShow() = runOnMain {
-        if (isUITest) return@runOnMain
-        builder.create(MainScope()).show(view)
+    fun testShow() = testOnUIThread {
+        launch {
+            val manager = builder.create(this)
+            yield()
+            manager.show(view)
+            cancel()
+        }.join()
         verifyShow()
     }
 
-    abstract fun verifyShow()
+    abstract fun KTC.verifyShow()
+    abstract fun KTC.verifyDismiss()
 
     @Test
-    fun testDismiss() = runOnMain {
-        if (isUITest) return@runOnMain
-        builder.create(MainScope()).hide()
+    fun testDismiss() = testOnUIThread {
+        launch {
+            val manager = builder.create(this)
+            yield()
+            manager.hide()
+            cancel()
+        }.join()
         verifyDismiss()
     }
-
-    abstract fun verifyDismiss()
 }

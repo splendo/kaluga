@@ -152,6 +152,7 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
+                useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
                 enableLanguageFeature("InlineClasses")
             }
         }
@@ -202,6 +203,11 @@ android {
             manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
             java.srcDir 'src/androidLibAndroidTest/kotlin'
             res.srcDir 'src/androidLibAndroidTest/res'
+        }
+
+
+        test {
+            java.srcDir 'src/androidLibUnitTest/kotlin'
         }
     }
 
