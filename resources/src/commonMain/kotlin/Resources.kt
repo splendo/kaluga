@@ -32,12 +32,12 @@ expect class StringLoader() {
     /**
      * Attempts to load grammatically correct pluralization of the given string identifier.
      * If no match is found, the [defaultValue] will be returned.
-     * @param value The value to get pluralized string for.
+     * @param quantity The value to get pluralized string for.
      * @param identifier The identifier to find the format [String] resource for.
      * @param defaultValue The [String] to return if no match was found for the identifier.
      * @return The associated [String] resources or [defaultValue] if no such resource was found.
      */
-    fun loadQuantityString(identifier: String, value: Int, defaultValue: String): String
+    fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String
 }
 
 /**
@@ -90,16 +90,16 @@ fun String.localized(stringLoader: StringLoader = StringLoader(), defaultValue: 
 /**
  * Treats this string as a resource identifier for a plural string format [String] and
  * formats given value using associated format [String]
- * @param value The [Int] value to be pluralize
+ * @param quantity The [Int] value to be pluralize
  * @param stringLoader The [StringLoader] used for loading the associated [String] resource.
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
 fun String.quantity(
-    value: Int,
+    quantity: Int,
     stringLoader: StringLoader = StringLoader(),
     defaultValue: String = this
-): String = stringLoader.loadQuantityString(this, value, defaultValue)
+): String = stringLoader.loadQuantityString(this, quantity, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [Color] and grabs the associated [Color]
@@ -111,7 +111,7 @@ fun String.asColor(colorLoader: ColorLoader = ColorLoader(), defaultValue: Color
 
 /**
  * Treats this string as a resource identifier for a [Color] and grabs the associated [Image]
- * @param colorLoader The [ImageLoader] used for loading the associated [Image] resource.
+ * @param imageLoader The [ImageLoader] used for loading the associated [Image] resource.
  * @param defaultValue The [Image] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [Image] associated with the identifier represented by this String, or [defaultValue] if no such [Image] could be found.
  */

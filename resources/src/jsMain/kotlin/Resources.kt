@@ -27,9 +27,9 @@ actual class StringLoader(
     actual fun loadString(identifier: String, defaultValue: String): String = transformer(identifier) ?: defaultValue
     actual fun loadQuantityString(
         identifier: String,
-        value: Int,
+        quantity: Int,
         defaultValue: String
-    ): String = formatter(identifier, value) ?: defaultValue
+    ): String = formatter(identifier, quantity) ?: defaultValue
 }
 
 actual class ColorLoader(private val transformer: (String) -> Color?) {

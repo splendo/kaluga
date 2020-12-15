@@ -32,11 +32,11 @@ actual class StringLoader(private val bundle: NSBundle, private val table: Strin
     actual fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
     actual fun loadQuantityString(
         identifier: String,
-        value: Int,
+        quantity: Int,
         defaultValue: String
     ): String {
         val format = bundle.localizedStringForKey(identifier, defaultValue, table)
-        return NSString.localizedStringWithFormat(format, value)
+        return NSString.localizedStringWithFormat(format, quantity)
     }
 }
 

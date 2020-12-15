@@ -15,18 +15,20 @@
 
  */
 
-package kotlin
+package com.splendo.kaluga.resources
 
-import com.splendo.kaluga.resources.quantity
+import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class StringsTests {
+abstract class StringsTests:BaseTest() {
+
+    abstract val stringLoader:StringLoader
 
     @Test
     fun testPlurals() {
-        assertEquals("0 hours", "hours_value".quantity(0))
-        assertEquals("1 hour", "hours_value".quantity(1))
-        assertEquals("2 hours", "hours_value".quantity(2))
+        assertEquals("0 hours", "hours_value".quantity(0, stringLoader))
+        assertEquals("1 hour", "hours_value".quantity(1, stringLoader))
+        assertEquals("2 hours", "hours_value".quantity(2, stringLoader))
     }
 }
