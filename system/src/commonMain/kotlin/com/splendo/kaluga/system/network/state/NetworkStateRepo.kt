@@ -121,9 +121,9 @@ class NetworkStateRepo(
 }
 
 fun Flow<NetworkState>.network(): Flow<Network> {
-    return distinctUntilChanged().map { it.networkType }
+    return map { it.networkType }.distinctUntilChanged()
 }
 
 fun Flow<NetworkState>.online(): Flow<Boolean> {
-    return distinctUntilChanged().map { it is NetworkState.Available }
+    return map { it is NetworkState.Available }.distinctUntilChanged()
 }
