@@ -35,7 +35,7 @@ pluginManagement {
 
 apply("../../../gradle/ext.gradle")
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 if (!(ext["exampleAsRoot"] as Boolean)) {
 
