@@ -1,7 +1,8 @@
 buildscript {
-    val android_gradle_plugin_version:String by project
-    val kotlin_version:String by project
-    val bintray_plugin_version:String by project
+    val ext = (gradle as ExtensionAware).extra
+    val android_gradle_plugin_version: String by project
+    val kotlin_version: String by project
+    val bintray_plugin_version: String by ext
 
     repositories {
         mavenCentral()
