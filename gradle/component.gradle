@@ -147,6 +147,7 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
+                useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
