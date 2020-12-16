@@ -40,7 +40,6 @@ kotlin {
                 implementation(project(":logging", ""))
                 implementation(project(":architecture", ""))
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:${ext["serialization_version"]}")
-                api("org.jetbrains.kotlinx:kotlinx-serialization-json:${ext["serialization_version"]}")
             }
         }
         commonTest {
