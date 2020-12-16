@@ -60,7 +60,21 @@ Most of the components within this project use Kotlin coroutines and `Flow` to d
  
 ## Publishing
 
-Kaluga is published on Bintray and available in JCenter. Also it can be published to your local maven repo.
+The libraries are not published on any hosted repository yet, but can be published to your local maven repo.
+
+In same time it is available via Bintray. Here is example how to include alerts module your into project:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/splendo/kaluga")
+}
+// ...
+dependencies {
+    // ...
+    api("com.splendo.kaluga:alerts:0.1.3")
+}
+```
 
 ### Publishing process
 
