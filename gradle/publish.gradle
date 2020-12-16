@@ -76,18 +76,14 @@ afterEvaluate {
             root.appendNode('url', 'https://github.com/splendo/kaluga')
             root.children().last() + pomConfig
         }
-        boolean isPublishTask = gradle.startParameter.taskNames
-                .any  {it.startsWith("publish") || it.startsWith("bintray") }
+        boolean isPublishToMavenLocalTask = gradle.startParameter.taskNames.any { it == "publishToMavenLocal" }
         File moduleFile = new File(project.buildDir, "publications/${publication.name}/module.json")
-        if (!isPublishTask && moduleFile.exists()) {
+        if (!isPublishToMavenLocalTask && moduleFile.exists()) {
             publication.artifact(new FileBasedMavenArtifact(moduleFile) {
                 protected String getDefaultExtension() {
                     return 'module'
                 }
             })
         }
-    }
-    tasks.named("bintrayUpload").configure { task ->
-        dependsOn publishToMavenLocal
     }
 }
