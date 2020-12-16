@@ -14,25 +14,26 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.SimpleUIThreadViewModelTestTest.ViewModel
-import com.splendo.kaluga.test.architecture.SimpleUIThreadViewModelTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
+package com.splendo.kaluga.resources
 
-class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>() {
+import androidx.test.ext.junit.rules.ActivityScenarioRule
+import org.junit.Rule
+import kotlin.test.BeforeTest
 
-    class ViewModel : BaseViewModel() {
-        var v = ""
+class AndroidStringsTest : StringsTests() {
+
+    @get:Rule
+    var activityRule = ActivityScenarioRule(TestActivity::class.java)
+
+    private lateinit var activity: TestActivity
+
+    @BeforeTest
+    fun activityInit() {
+        activityRule.scenario.onActivity {
+            activity = it
+        }
     }
 
-    override fun createViewModel() = ViewModel()
-
-    @Test
-    fun test() = testOnUIThread {
-        assertEquals("", viewModel.v)
-        viewModel.v = "foo" // should not crash on native
-    }
+    override val stringLoader by lazy { StringLoader(activity) }
 }

@@ -18,6 +18,8 @@
 package com.splendo.kaluga.resources
 
 import platform.Foundation.NSBundle
+import platform.Foundation.NSString
+import platform.Foundation.localizedStringWithFormat
 import platform.UIKit.UIColor
 import platform.UIKit.UIFont
 import platform.UIKit.UIImage
@@ -28,6 +30,14 @@ import platform.UIKit.labelFontSize
 actual class StringLoader(private val bundle: NSBundle, private val table: String?) {
     actual constructor() : this(NSBundle.mainBundle, null)
     actual fun loadString(identifier: String, defaultValue: String): String = bundle.localizedStringForKey(identifier, defaultValue, table)
+    actual fun loadQuantityString(
+        identifier: String,
+        quantity: Int,
+        defaultValue: String
+    ): String {
+        val format = bundle.localizedStringForKey(identifier, defaultValue, table)
+        return NSString.localizedStringWithFormat(format, quantity)
+    }
 }
 
 actual class ColorLoader(private val bundle: NSBundle, private val traitCollection: UITraitCollection?) {

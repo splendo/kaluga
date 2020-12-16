@@ -17,9 +17,19 @@
 
 package com.splendo.kaluga.resources
 
-actual class StringLoader(private val transformer: (String) -> String?) {
-    actual constructor() : this({ it })
+import com.splendo.kaluga.base.text.format
+
+actual class StringLoader(
+    private val transformer: (String) -> String?,
+    private val formatter: (String, Int) -> String?
+) {
+    actual constructor() : this({ it }, { format, value -> format.format(value) })
     actual fun loadString(identifier: String, defaultValue: String): String = transformer(identifier) ?: defaultValue
+    actual fun loadQuantityString(
+        identifier: String,
+        quantity: Int,
+        defaultValue: String
+    ): String = formatter(identifier, quantity) ?: defaultValue
 }
 
 actual class ColorLoader(private val transformer: (String) -> Color?) {

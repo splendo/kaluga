@@ -14,25 +14,21 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.test
 
-import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.test.SimpleUIThreadViewModelTestTest.ViewModel
-import com.splendo.kaluga.test.architecture.SimpleUIThreadViewModelTest
+package com.splendo.kaluga.resources
+
+import com.splendo.kaluga.test.BaseTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>() {
+abstract class StringsTests : BaseTest() {
 
-    class ViewModel : BaseViewModel() {
-        var v = ""
-    }
-
-    override fun createViewModel() = ViewModel()
+    abstract val stringLoader: StringLoader
 
     @Test
-    fun test() = testOnUIThread {
-        assertEquals("", viewModel.v)
-        viewModel.v = "foo" // should not crash on native
+    fun testPlurals() {
+        assertEquals("0 hours", "hours_value".quantity(0, stringLoader))
+        assertEquals("1 hour", "hours_value".quantity(1, stringLoader))
+        assertEquals("2 hours", "hours_value".quantity(2, stringLoader))
     }
 }
