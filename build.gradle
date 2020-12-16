@@ -8,7 +8,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
         classpath "com.google.gms:google-services:4.3.4"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
+        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_plugin_version"
     }
 }
 
