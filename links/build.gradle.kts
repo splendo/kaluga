@@ -32,13 +32,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-    jvm {
-        val main by compilations.getting {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
     sourceSets {
         commonMain {
             dependencies {
