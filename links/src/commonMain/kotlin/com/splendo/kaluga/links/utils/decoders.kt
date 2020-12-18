@@ -77,5 +77,7 @@ class LinksDecoder(
         return index
     }
 
+    override fun decodeNotNullMark(): Boolean = decodeString() != "NULL"
+
     override fun decodeSequentially(): Boolean = true
 }
