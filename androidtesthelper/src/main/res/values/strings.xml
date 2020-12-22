@@ -17,4 +17,15 @@
 
 <resources>
     <string name="app_name">AndroidTestHelper</string>
+
+    <!--
+    ‼️ Keep these plurals in sync with values in
+    resources/src/androidLibAndroidTest ‼️
+     -->
+    <plurals name="hours_value">
+        <item quantity="zero">%d hours</item>
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+
 </resources>

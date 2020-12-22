@@ -60,8 +60,46 @@ Most of the components within this project use Kotlin coroutines and `Flow` to d
  
 ## Publishing
 
-The libraries are not published on any hosted repository yet, but can be published to your local maven repo  
- 
+The libraries are not published on any hosted repository yet, but can be published to your local maven repo.
+
+In same time it is available via Bintray. Here is example how to include alerts module your into project:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/splendo/kaluga")
+}
+// ...
+dependencies {
+    // ...
+    api("com.splendo.kaluga:alerts:0.1.3")
+}
+```
+
+### Publishing process
+
+1. Bump version at `gradle/ext.gradle`:
+
+```sh
+library_version = 'X.X.X'
+```
+
+2. Publish to local maven:
+
+```sh
+./gradlew publishToMavenLocal
+```
+
+3. Upload and publish on Bintray:
+
+```sh
+./gradlew -Pbintray_user=splendo -Pbintray_key=API_KEY -Pbintray_dry_run=false -Pbintray_publish=true bintrayUpload
+```
+
+Where `API_KEY` is Bintray's API key.
+`bintray_dry_run` flag set to `false` used to perform upload.
+And `bintray_publish` flag set to `true` used to perform publish.
+
 ## Code conventions
 
 The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.
