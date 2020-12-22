@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.subscribe
+import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
@@ -35,12 +36,21 @@ import kotlin.reflect.full.memberProperties
  * @param activity The [Activity] managing the lifecycle
  * @param fragmentManager The [FragmentManager] for this lifecycle
  */
-class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(private val viewModel: VM, private val activity: Activity?, private val lifecycleOwner: LifecycleOwner, private val fragmentManager: FragmentManager) : LifecycleObserver {
+class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
+    private val viewModel: VM,
+    private val activity: Activity?,
+    private val lifecycleOwner: LifecycleOwner,
+    private val fragmentManager: FragmentManager
+    ) : LifecycleObserver {
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
         viewModel::class.memberProperties
+            .filter { it !is KMutableProperty1 }
             .mapNotNull { it as? KProperty1<VM, Any?> }
-            .filter { it.getter.visibility == KVisibility.PUBLIC && it.getter(viewModel) is LifecycleSubscribable }
+            .filter {
+                it.getter.visibility == KVisibility.PUBLIC
+                    && it.getter(viewModel) is LifecycleSubscribable
+            }
             .map { it.getter(viewModel) as LifecycleSubscribable }
     }
 
