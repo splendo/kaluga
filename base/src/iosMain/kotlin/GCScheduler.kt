@@ -29,7 +29,7 @@ object GCScheduler {
      * Schedules the Garbage Collector only if no other garbage collection is active.
      * This is useful in case calling the Garbage collector could trigger another call to [GC.collect].
      */
-    fun schedule() {
+    fun schedule() = runOnMain {
         if (isCollecting.compareAndSet(expected = false, new = true)) {
             GC.collect()
         }
