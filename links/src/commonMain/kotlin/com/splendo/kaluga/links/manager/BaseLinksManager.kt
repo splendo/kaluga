@@ -44,15 +44,12 @@ abstract class BaseLinksManager(open val onLinksStateChange: LinksStateChange) {
 }
 
 fun String.extractValuesAsList(): List<Any> {
-    if (length == 0) {
+    if (isBlank()) {
         return emptyList()
     }
-    val list = mutableListOf<Any>()
-    split("&").filter { it.isNotEmpty() }.map {
-        val (key, value) = it.split("=")
-        list.add(value)
-    }
-    return list
+    return split("&")
+        .filter { it.isNotEmpty() }
+        .map { it.split("=").last() }
 }
 
 expect class LinksManagerBuilder
