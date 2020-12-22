@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.utils
 
+import com.splendo.kaluga.links.manager.extractValuesAsList
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -119,6 +120,27 @@ class LinksDecoderTest {
         assertFailsWith<NoSuchElementException> {
             testDataType<String>(linksDecoder.decodeValue())
         }
+    }
+
+    @Test
+    fun testExtractValuesAsList_EmptyQuery() {
+        val query = ""
+        val result = query.extractValuesAsList()
+        assertEquals(emptyList(), result)
+    }
+
+    @Test
+    fun testExtractValuesAsList_EmptyValue() {
+        val query = "country_code=&contry_name="
+        val result = query.extractValuesAsList()
+        assertEquals(result, emptyList())
+    }
+
+    @Test
+    fun testExtractValuesAsList_Success() {
+        val query = "country_code=NL&country_name=The Netherlands"
+        val result = query.extractValuesAsList()
+        assertEquals(result, emptyList())
     }
 
     private inline fun <reified T> testDataType(value: Any) {
