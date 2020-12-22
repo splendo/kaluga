@@ -127,6 +127,6 @@ class LinksDecoderTest {
             return
         }
 
-        assertTrue { value as? T != null }
+        assertTrue { value is T }
     }
 }
