@@ -49,7 +49,7 @@ fun String.extractValuesAsList(): List<Any> {
     }
     return split("&")
         .filter { it.isNotEmpty() }
-        .map { it.split("=").last() }
+        .mapNotNull { it.split("=").lastOrNull() }
 }
 
 expect class LinksManagerBuilder
