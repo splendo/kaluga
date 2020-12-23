@@ -20,20 +20,20 @@ package com.splendo.kaluga.links.state
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
-import com.splendo.kaluga.links.manager.BaseLinksManager
+import com.splendo.kaluga.links.manager.LinksManager
 import com.splendo.kaluga.state.ColdStateRepo
 import kotlinx.serialization.KSerializer
 
 class LinksStateRepo(
-    private val linksManagerBuilder: BaseLinksManager.Builder
+    private val linksManagerBuilder: LinksManager.Builder
 ) : ColdStateRepo<LinksState>() {
 
     interface Builder {
         fun create(): LinksStateRepo
     }
 
-    private val _linksManager: AtomicReference<BaseLinksManager?> = AtomicReference(null)
-    internal var linksManager: BaseLinksManager?
+    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(null)
+    internal var linksManager: LinksManager?
         get() = _linksManager.get()
         set(value) = _linksManager.set(value)
 

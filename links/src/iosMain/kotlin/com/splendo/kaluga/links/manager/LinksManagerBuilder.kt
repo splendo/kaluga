@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
-actual class LinksManagerBuilder : BaseLinksManager.Builder {
-    override fun create(onLinksStateChange: LinksStateChange): BaseLinksManager =
-        LinksManager(onLinksStateChange)
+actual class LinksManagerBuilder : LinksManager.Builder {
+    override fun create(onLinksStateChange: LinksStateChange): LinksManager =
+        DefaultLinksManager(onLinksStateChange, PlatformLinksValidator())
 }
