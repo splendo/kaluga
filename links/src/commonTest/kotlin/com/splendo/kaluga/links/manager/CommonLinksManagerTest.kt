@@ -42,8 +42,6 @@ enum class Languages {
 
 class CommonLinksManagerTest : BaseLinksTest() {
 
-    private lateinit var linksManager: BaseLinksManager
-
     @Test
     fun testHandleIncomingLinkSucceed() = testWithLinksState {
         assertInitialState(this)
@@ -74,6 +72,39 @@ class CommonLinksManagerTest : BaseLinksTest() {
 
         action {
             linksStateRepo.handleIncomingLink(query, Person.serializer())
+        }
+
+        test {
+            assertTrue { it is LinksState.Error }
+            assertEquals(expectedResult, (it as LinksState.Error).message)
+        }
+    }
+
+    @Test
+    fun testHandleOutgoingLinkSucceed() = testWithLinksState {
+        assertInitialState(this)
+
+        val url = "valid"
+
+        action {
+            linksStateRepo.handleOutgoingLink(url)
+        }
+
+        test {
+            assertTrue { it is LinksState.Open }
+            assertEquals(url, (it as LinksState.Open).url)
+        }
+    }
+
+    @Test
+    fun testHandleOutgoingLinkFailed() = testWithLinksState {
+        assertInitialState(this)
+
+        val url = "not valid"
+        val expectedResult = "URL is invalid"
+
+        action {
+            linksStateRepo.handleOutgoingLink(url)
         }
 
         test {
