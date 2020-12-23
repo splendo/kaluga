@@ -133,14 +133,15 @@ class LinksDecoderTest {
     fun testExtractValuesAsList_EmptyValue() {
         val query = "country_code=&contry_name="
         val result = query.extractValuesAsList()
-        assertEquals(result, emptyList())
+        assertEquals(emptyList(), result)
     }
 
     @Test
     fun testExtractValuesAsList_Success() {
         val query = "country_code=NL&country_name=The Netherlands"
+        val expectedResult = listOf("NL", "The Netherlands")
         val result = query.extractValuesAsList()
-        assertEquals(result, emptyList())
+        assertEquals(expectedResult, result)
     }
 
     private inline fun <reified T> testDataType(value: Any) {
