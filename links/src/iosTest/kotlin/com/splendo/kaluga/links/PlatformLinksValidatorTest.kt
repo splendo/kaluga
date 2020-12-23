@@ -26,7 +26,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class PlatformLinksManagerTest : FlowableTest<LinksState>() {
+class PlatformLinksValidatorTest : FlowableTest<LinksState>() {
     private val linksStateRepoBuilder = MockPlatformLinksStateRepoBuilder()
     private lateinit var linksStateRepo: LinksStateRepo
 

@@ -26,7 +26,7 @@ typealias LinksStateChange = (Links) -> Unit
 class DefaultLinksManager(
     private val onLinksStateChange: LinksStateChange,
     private val validator: LinksValidator
-    ) : LinksManager {
+) : LinksManager {
 
     override fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
         val list = query.extractValuesAsList()

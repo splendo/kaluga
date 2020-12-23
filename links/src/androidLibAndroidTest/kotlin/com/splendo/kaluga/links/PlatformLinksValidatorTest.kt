@@ -24,7 +24,7 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class AndroidLinksValidatorTest {
+class PlatformLinksValidatorTest {
 
     private val linksValidator = PlatformLinksValidator()
 
