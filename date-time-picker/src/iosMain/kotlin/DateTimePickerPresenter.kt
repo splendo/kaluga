@@ -20,6 +20,7 @@ package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.utils.Date
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSCalendar
@@ -39,10 +40,12 @@ import platform.UIKit.UILabel
 import platform.UIKit.UIViewController
 import platform.UIKit.addSubview
 import platform.UIKit.bottomAnchor
+import platform.UIKit.centerXAnchor
 import platform.UIKit.leadingAnchor
 import platform.UIKit.topAnchor
 import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
+import platform.UIKit.widthAnchor
 
 actual class DateTimePickerPresenter(
     private val datePicker: DateTimePicker,
@@ -80,9 +83,13 @@ actual class DateTimePickerPresenter(
                         UIDatePickerMode.UIDatePickerModeDate
                     }
                 }
-                if (IOSVersion.systemVersion >= IOSVersion(13, 4, 0)) {
-                    // TODO: When Moving to Kotlin 1.4.20 we should pass UIDatePickerStyleInline for iOS 14+
-                    preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
+                when {
+                    IOSVersion.systemVersion >= IOSVersion(14, 0, 0) -> {
+                        preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleInline
+                    }
+                    IOSVersion.systemVersion >= IOSVersion(13, 4, 0) -> {
+                        preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
+                    }
                 }
             }
             view.addSubview(datePickerView)
@@ -106,9 +113,8 @@ actual class DateTimePickerPresenter(
             datePickerView.translatesAutoresizingMaskIntoConstraints = false
             datePickerView.topAnchor.constraintEqualToAnchor(anchor, 15.0 as CGFloat).active = true
             datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0 as CGFloat).active = true
-            datePickerView.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 0.0 as CGFloat).active = true
-            datePickerView.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, 0.0 as CGFloat).active = true
-
+            datePickerView.widthAnchor.constraintEqualToConstant(view.frame.useContents { (size.width - 20.0) as CGFloat }).active = true
+            datePickerView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
             view.translatesAutoresizingMaskIntoConstraints = false
         }.run {
             parent.presentViewController(this, animated, null)
