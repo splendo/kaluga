@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.links.manager
 
-import com.splendo.kaluga.links.BaseLinksTest
-import com.splendo.kaluga.links.state.LinksState
-import com.splendo.kaluga.test.FlowTestBlock
+import com.splendo.kaluga.links.Links
 import kotlinx.serialization.Serializable
+import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -40,82 +39,75 @@ enum class Languages {
     RUSSIAN
 }
 
-class CommonLinksManagerTest : BaseLinksTest() {
+class CommonLinksManagerTest {
+
+    private val linksManager = MockLinksManagerBuilder().create {
+        linksStateChangeResult = it
+        isOnLinksStateChangeCalled = true
+    }
+
+    private var isOnLinksStateChangeCalled = false
+    private var linksStateChangeResult: Links? = null
+
+    @AfterTest
+    fun tearDown() {
+        resetMocks()
+    }
 
     @Test
-    fun testHandleIncomingLinkSucceed() = testWithLinksState {
-        assertInitialState(this)
-
+    fun testHandleIncomingLinkSucceed() {
         val query = "name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
         val expectedResult = Person(
             "Corrado",
             "Quattrocchi",
             listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH)
         )
+        linksManager.handleIncomingLink(query, Person.serializer())
 
-        action {
-            linksStateRepo.handleIncomingLink(query, Person.serializer())
-        }
-
-        test {
-            assertTrue { it is LinksState.Ready<*> }
-            assertEquals(expectedResult, (it as LinksState.Ready<Person>).data)
-        }
+        assertTrue { isOnLinksStateChangeCalled }
+        assertEquals(expectedResult, (linksStateChangeResult as Links.Incoming.Result<Person>).data)
     }
 
     @Test
-    fun testHandleIncomingLinkFailed() = testWithLinksState {
-        assertInitialState(this)
+    fun testHandleIncomingLinkFailed() {
+        // assertInitialState(this)
 
         val query = ""
         val expectedResult = "Query was empty"
 
-        action {
-            linksStateRepo.handleIncomingLink(query, Person.serializer())
-        }
+        linksManager.handleIncomingLink(query, Person.serializer())
 
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(expectedResult, (it as LinksState.Error).message)
-        }
+        assertTrue { isOnLinksStateChangeCalled }
+        assertEquals(expectedResult, (linksStateChangeResult as Links.Failure).message)
     }
 
     @Test
-    fun testHandleOutgoingLinkSucceed() = testWithLinksState {
-        assertInitialState(this)
+    fun testHandleOutgoingLinkSucceed() {
+        // assertInitialState(this)
 
         val url = "valid"
 
-        action {
-            linksStateRepo.handleOutgoingLink(url)
-        }
+        linksManager.handleOutgoingLink(url)
 
-        test {
-            assertTrue { it is LinksState.Open }
-            assertEquals(url, (it as LinksState.Open).url)
-        }
+        assertTrue { isOnLinksStateChangeCalled }
+        assertEquals(url, (linksStateChangeResult as Links.Outgoing.Link).url)
     }
 
     @Test
-    fun testHandleOutgoingLinkFailed() = testWithLinksState {
-        assertInitialState(this)
+    fun testHandleOutgoingLinkFailed() {
+        // assertInitialState(this)
 
         val url = "not valid"
         val expectedResult = "URL is invalid"
 
-        action {
-            linksStateRepo.handleOutgoingLink(url)
-        }
+        linksManager.handleOutgoingLink(url)
 
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(expectedResult, (it as LinksState.Error).message)
-        }
+        assertTrue { isOnLinksStateChangeCalled }
+        assertEquals(expectedResult, (linksStateChangeResult as Links.Failure).message)
     }
 
-    private fun testWithLinksState(block: FlowTestBlock<LinksState>) {
-        linksStateRepo = linksStateRepoBuilder.create()
-
-        testWithFlow(block)
+    private fun resetMocks() {
+        linksStateChangeResult = null
+        isOnLinksStateChangeCalled = false
     }
 }
