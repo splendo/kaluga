@@ -17,12 +17,28 @@
 
 package com.splendo.kaluga.links.manager
 
-class MockLinksManager(
-    override val onLinksStateChange: LinksStateChange
-) : BaseLinksManager(onLinksStateChange) {
-    override fun handleOutgoingLink(url: String) = Unit
+class MockLinksManagerBuilder : LinksManager.Builder {
+    override fun create(onLinksStateChange: LinksStateChange): LinksManager =
+        DefaultLinksManager(onLinksStateChange, MockLinksValidator())
 }
-class MockLinksManagerBuilder : BaseLinksManager.Builder {
-    override fun create(onLinksStateChange: LinksStateChange): BaseLinksManager =
-        MockLinksManager(onLinksStateChange)
+
+class MockLinksValidator : LinksValidator {
+    override fun isValid(url: String): Boolean {
+        return url == "valid"
+    }
+}
+
+object TestConstants {
+    val VALID_URLS = listOf(
+        "https://test.io",
+        "http://test.io",
+        "https://test.io?isValid=true",
+        "https://test.io?list_1=first&list_2=second&list_3=third"
+    )
+
+    val INVALID_URLS = listOf(
+        "notvalid.com",
+        "not valid",
+        "httpss://notvalid.com?/?isValid=false"
+    )
 }
