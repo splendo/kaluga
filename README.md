@@ -7,7 +7,7 @@ Its main goal is to provide access to common multiplatform features used in mobi
 Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
 
 ## Installing
-Kaluga is currently only available through bintray. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repossitory to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
+Kaluga is currently only available through bintray. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repository to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
 
 ```kotlin
 repositories {
@@ -17,25 +17,25 @@ repositories {
 // ...
 dependencies {
     // ...
-    api("com.splendo.kaluga:alerts:0.1.3")
+    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
 }
 ```
 
 ### Available Modules
-Module | Usage | BinTray | Latest Version
+Module | Usage | Library Name | Latest Version
 --- | --- | --- | ---
-[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | https://dl.bintray.com/kaluga/com.splendo.kaluga/alerts | 0.1.3
-[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | https://dl.bintray.com/kaluga/com.splendo.kaluga/architecture | 0.1.3
-[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | https://dl.bintray.com/kaluga/com.splendo.kaluga/base | 0.1.3
-[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | https://dl.bintray.com/kaluga/com.splendo.kaluga/date-time-picker | 0.1.3
-[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | https://dl.bintray.com/kaluga/com.splendo.kaluga/hud | 0.1.3
-[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | https://dl.bintray.com/kaluga/com.splendo.kaluga/keyboard | 0.1.3
-[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | https://dl.bintray.com/kaluga/com.splendo.kaluga/location | 0.1.3
-[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | https://dl.bintray.com/kaluga/com.splendo.kaluga/logging | 0.1.3
-[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | https://dl.bintray.com/kaluga/com.splendo.kaluga/permissions | 0.1.3
-[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | https://dl.bintray.com/kaluga/com.splendo.kaluga/resources | 0.1.3
-[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | https://dl.bintray.com/kaluga/com.splendo.kaluga/system | not yet released
-[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | https://dl.bintray.com/kaluga/com.splendo.kaluga/test-utils | 0.1.3
+[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.1.3
+[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.1.3
+[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.1.3
+[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.1.3
+[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.1.3
+[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.1.3
+[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.1.3
+[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.3
+[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.3
+[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.3
+[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | not yet released
+[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.3
 
 ## Build instructions
 
