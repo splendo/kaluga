@@ -12,6 +12,21 @@ Supported device features:
  - Notifications
  - Storage (aka Photos on iOS)
 
+ ## Installing
+ To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Permissions as follows:
+
+ ```kotlin
+ repositories {
+     // ...
+     maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+ }
+ // ...
+ dependencies {
+     // ...
+     implementation("com.splendo.kaluga:permissions:$kalugaVersion")
+ }
+ ```
+
 ### Usage
 Permissions can be requested through an instance of the `Permissions` class. This class is instantiated with a `PermissionsBuilder`, which defaults to requesting permissions for the Application Context (Android) or Main NSBundle (iOS).
 

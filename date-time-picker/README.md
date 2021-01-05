@@ -2,6 +2,21 @@
 
 A library allows you to show native date and time pickers.
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Date Time Picker as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:date-time-picker:$kalugaVersion")
+}
+```
+
 ## Usage
 
 Using DateTimePicker ts is very simple. You can show a date Picker from shared code like this:
