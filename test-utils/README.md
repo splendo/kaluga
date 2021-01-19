@@ -1,5 +1,20 @@
 # Test Utils
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Test Utils as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:test-utils:$kalugaVersion")
+}
+```
+
 ## Testing from a background thread to let `Dispatchers.Main` function properly
 
 By default Kotlin/Native tests run on the UI thread, similar to regular Swift tests.

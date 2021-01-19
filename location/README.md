@@ -2,6 +2,21 @@
 
 This library allows you to receive user's location.
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Location as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:location:$kalugaVersion")
+}
+```
+
 ### Usage
 The `LocationState` is available through a `LocationStateRepo` that will automatically detect whether the user has given permission to access Location and has Location enabled.
 Each `LocationState` contains either a `KnownLocation` or an `UnknownLocation`.
