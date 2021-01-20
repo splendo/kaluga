@@ -57,7 +57,7 @@ actual class ReviewManager(
             lifecycleManagerObserver.manager?.activity?.let {
                 reviewManager.launchReview(it, info)
             }
-        } catch (e : com.google.android.play.core.internal.ar) {
+        } catch (e: com.google.android.play.core.internal.ar) {
             com.splendo.kaluga.logging.error("Failed to retrieve review info.")
         }
     }
