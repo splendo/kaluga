@@ -47,6 +47,7 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
 import platform.UIKit.*
 import platform.UserNotifications.UNAuthorizationOptionAlert
@@ -88,6 +89,7 @@ class KNArchitectureFramework {
 
     fun createInfoViewModel(parent: UIViewController): InfoViewModel {
         return InfoViewModel(
+            ReviewManager.Builder(),
             ViewControllerNavigator(parent) { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {

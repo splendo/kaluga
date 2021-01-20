@@ -34,6 +34,7 @@ Module | Usage | Library Name | Latest Version
 [Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.3
 [Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.3
 [Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.3
+[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | not yet released
 [System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | not yet released
 [TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.3
 

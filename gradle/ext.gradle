@@ -17,6 +17,8 @@ gradle.ext {
     androidx_browser_version = "1.2.0"
 
     play_services_version = "17.1.0"
+    play_core_version = "1.9.0"
+    play_core_ktx_version = "1.8.1"
 
     androidx_appcompat_version = "1.2.0"
     androidx_fragment_version = "1.2.5"
