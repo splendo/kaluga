@@ -26,6 +26,8 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
+import com.splendo.kaluga.review.ReviewManager
+import kotlinx.coroutines.launch
 
 class DialogSpec : NavigationBundleSpec<DialogSpecRow>(setOf(DialogSpecRow.TitleRow, DialogSpecRow.MessageRow))
 
@@ -54,19 +56,24 @@ sealed class InfoNavigation<B : NavigationBundleSpecRow<*>>(bundle: NavigationBu
     class Mail(bundle: NavigationBundle<MailSpecRow<*>>) : InfoNavigation<MailSpecRow<*>>(bundle)
 }
 
-class InfoViewModel(navigator: Navigator<InfoNavigation<*>>) : NavigatingViewModel<InfoNavigation<*>>(navigator) {
+class InfoViewModel(
+    val reviewManagerBuilder: ReviewManager.Builder,
+    navigator: Navigator<InfoNavigation<*>>
+) : NavigatingViewModel<InfoNavigation<*>>(navigator) {
 
     sealed class Button(val title: String) {
         object About : Button("About")
         object Website : Button("Kaluga.io")
         object GitHub : Button("GitHub")
         object Mail : Button("Contact")
+        object Review : Button("Review")
     }
 
-    val buttons = observableOf(listOf(Button.About, Button.Website, Button.GitHub, Button.Mail))
+    val reviewManager = reviewManagerBuilder.create()
+    val buttons = observableOf(listOf(Button.About, Button.Website, Button.GitHub, Button.Review, Button.Mail))
 
     fun onButtonPressed(button: Button) {
-        navigator.navigate(when (button) {
+        when (button) {
             is Button.About -> InfoNavigation.Dialog(DialogSpec().toBundle { row ->
                 when (row) {
                     is DialogSpecRow.TitleRow -> row.convertValue("About Us")
@@ -89,6 +96,12 @@ class InfoViewModel(navigator: Navigator<InfoNavigation<*>>) : NavigatingViewMod
                     is MailSpecRow.SubjectRow -> row.convertValue("Question about Kaluga")
                 }
             })
-        })
+            is Button.Review -> {
+                coroutineScope.launch {
+                    reviewManager.attemptToRequestReview()
+                }
+                null
+            }
+        }?.let { navigator.navigate(it) }
     }
 }

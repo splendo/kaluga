@@ -60,6 +60,7 @@ import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.review.ReviewManager
 import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -99,6 +100,7 @@ val viewModelModule = module {
 
     viewModel {
         InfoViewModel(
+            ReviewManager.Builder(),
             ActivityNavigator { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {

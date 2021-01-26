@@ -34,6 +34,7 @@ kotlin {
                     implementation(project(":logging", ""))
                     implementation(project(":permissions", ""))
                     implementation(project(":resources", ""))
+                    implementation(project(":review", ""))
                 } else {
                     val libraryVersion = ext["library_version"]
                     implementation("com.splendo.kaluga:alerts:$libraryVersion")
@@ -46,6 +47,7 @@ kotlin {
                     implementation("com.splendo.kaluga:logging:$libraryVersion")
                     implementation("com.splendo.kaluga:permissions:$libraryVersion")
                     implementation("com.splendo.kaluga:resources:$libraryVersion")
+                    implementation("com.splendo.kaluga:review:$libraryVersion")
                 }
             }
         }

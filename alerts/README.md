@@ -3,6 +3,21 @@
 A library allows you to show native alerts.
 It shows `AlertDialog` on Android and `UIAlertController` on iOS.
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Alerts as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
+}
+```
+
 ## Usage
 
 Using Alerts is very simple. You can show an alert from shared code like this:

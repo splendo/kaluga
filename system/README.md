@@ -3,6 +3,21 @@
 
 This module aim to cover system APIs such as network, audio, battery etc...
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga System as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:system:$kalugaVersion")
+}
+```
+
 ## Network
 ### Usage
 The `NetworkState` is available through a `NetworkStateRepo`.
