@@ -21,104 +21,29 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
-import com.splendo.kaluga.state.ColdStateRepo
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.KSerializer
 
 class LinksStateRepo(
-    private val linksManagerBuilder: LinksManager.Builder
-) : ColdStateRepo<LinksState>() {
+    linksManagerBuilder: LinksManager.Builder
+) {
 
     interface Builder {
         fun create(): LinksStateRepo
     }
 
-    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(null)
+    private val _linksEventFlow = MutableSharedFlow<Links>()
+    val linksEventFlow = _linksEventFlow.asSharedFlow()
+
+    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(linksManagerBuilder.create(::onLinksStateChange))
     internal var linksManager: LinksManager?
         get() = _linksManager.get()
         set(value) = _linksManager.set(value)
 
-    override suspend fun initialValue(): LinksState {
-        linksManager = linksManagerBuilder.create(::onLinksStateChange)
-
-        return LinksState.Pending
-    }
-
-    override suspend fun deinitialize(state: LinksState) {
-        linksManager = null
-    }
-
     internal fun onLinksStateChange(link: Links) {
         runBlocking {
-            takeAndChangeState { state ->
-                when (state) {
-                    is LinksState.Error -> {
-                        when (link) {
-                            is Links.Incoming.Result<*> -> {
-                                { state.ready(link.data) }
-                            }
-                            is Links.Failure -> {
-                                { state.error(link.message) }
-                            }
-                            is Links.Outgoing.Link -> {
-                                { state.open(link.url) }
-                            }
-                            Links.Pending -> {
-                                { state.pending() }
-                            }
-                        }
-                    }
-                    is LinksState.Ready<*> -> {
-                        when (link) {
-                            is Links.Incoming.Result<*> -> {
-                                { state.ready(link.data) }
-                            }
-                            is Links.Failure -> {
-                                { state.error(link.message) }
-                            }
-                            is Links.Outgoing.Link -> {
-                                { state.open(link.url) }
-                            }
-                            Links.Pending -> {
-                                { state.pending() }
-                            }
-                        }
-                    }
-                    is LinksState.Pending -> {
-                        when (link) {
-                            is Links.Incoming.Result<*> -> {
-                                { state.ready(link.data) }
-                            }
-                            is Links.Failure -> {
-                                { state.error(link.message) }
-                            }
-                            is Links.Outgoing.Link -> {
-                                { state.open(link.url) }
-                            }
-                            Links.Pending -> {
-                                state.remain()
-                            }
-                        }
-                    }
-                    is LinksState.Open -> {
-                        when (link) {
-                            is Links.Incoming.Result<*> -> {
-                                { state.ready(link.data) }
-                            }
-
-                            is Links.Failure -> {
-                                { state.error(link.message) }
-                            }
-
-                            is Links.Outgoing.Link -> {
-                                { state.open(link.url) }
-                            }
-                            Links.Pending -> {
-                                { state.pending() }
-                            }
-                        }
-                    }
-                }
-            }
+            post(link)
         }
     }
 
@@ -139,5 +64,9 @@ class LinksStateRepo(
      * */
     fun handleOutgoingLink(url: String) {
         linksManager?.handleOutgoingLink(url)
+    }
+
+    private suspend fun post(link: Links) {
+        _linksEventFlow.emit(link)
     }
 }
