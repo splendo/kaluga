@@ -41,6 +41,7 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -141,8 +142,8 @@ val viewModelModule = module {
         )
     }
 
-    viewModel { (name: String, number: Int) ->
-        ArchitectureDetailsViewModel(name, number, ActivityNavigator {
+    viewModel { (initialDetail: InputDetails) ->
+        ArchitectureDetailsViewModel(initialDetail, ActivityNavigator {
             NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
         })
     }

@@ -28,6 +28,9 @@ sealed class NavigationBundleValue<T> {
 
     abstract val value: T
 
+    object UnitValue : NavigationBundleValue<Unit>() {
+        override val value: Unit = Unit
+    }
     data class BooleanValue internal constructor(override val value: Boolean) : NavigationBundleValue<Boolean>()
     data class BooleanArrayValue internal constructor(override val value: BooleanArray) : NavigationBundleValue<BooleanArray>() {
         override fun equals(other: Any?): Boolean {
@@ -195,4 +198,6 @@ class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val 
         val value = values[row] as? NavigationBundleValue<V> ?: throw NavigationBundleGetError()
         return value.value
     }
+
+    fun <V> get(type: NavigationBundleSpecType<V>) = get(SimpleNavigationSpec.Row(type))
 }

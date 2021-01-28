@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.architecture
 
-import com.splendo.kaluga.architecture.navigation.NavigationAction
-import com.splendo.kaluga.architecture.navigation.NavigationBundle
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.toBundle
+import com.splendo.kaluga.architecture.navigation.SimpleNavigationAction
 import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toObservable
@@ -33,9 +32,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class InputNavigation(bundle: NavigationBundle<DetailsSpecRow<*>>) : NavigationAction<DetailsSpecRow<*>>(bundle)
+class InputNavigation(inputDetails: InputDetails) : SimpleNavigationAction<InputDetails>(
+    inputDetails,
+    NavigationBundleSpecType.SerializedType(InputDetails.serializer())
+)
 
-class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : NavigatingViewModel<InputNavigation>(navigator) {
+class ArchitectureInputViewModel(navigator: Navigator<SimpleNavigationAction<InputDetails>>) : NavigatingViewModel<SimpleNavigationAction<InputDetails>>(navigator) {
 
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")
@@ -67,12 +69,11 @@ class ArchitectureInputViewModel(navigator: Navigator<InputNavigation>) : Naviga
         val number: String? by numberResult
         coroutineScope.launch {
             if (isValid.first()) {
-                navigator.navigate(InputNavigation(DetailsSpec().toBundle { row ->
-                    when (row) {
-                        is DetailsSpecRow.NameRow -> row.convertValue(name ?: "")
-                        is DetailsSpecRow.NumberRow -> row.convertValue(number?.toIntOrNull() ?: 0)
-                    }
-                }))
+                navigator.navigate(
+                    InputNavigation(
+                        InputDetails(name ?: "", number?.toIntOrNull() ?: 0)
+                    )
+                )
             }
         }
     }
