@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.links.state
 
-expect class LinksStateRepoBuilder : LinksStateRepo.Builder
+expect class LinksStateRepoBuilder : LinksRepo.Builder
