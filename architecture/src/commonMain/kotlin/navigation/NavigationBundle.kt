@@ -199,5 +199,11 @@ class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val 
         return value.value
     }
 
+    /**
+     * Convenience getter for a [NavigationBundle] described using a [SimpleNavigationSpec]
+     * @param type The [NavigationBundleSpecType] associated with the [SimpleNavigationSpec]
+     * @return The value stored in this bundle according to its type
+     * @throws [NavigationBundleGetError] if [spec] is note [SimpleNavigationSpec] associated with [type]
+     */
     fun <V> get(type: NavigationBundleSpecType<V>) = get(SimpleNavigationSpec.Row(type))
 }
