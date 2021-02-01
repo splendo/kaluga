@@ -27,4 +27,6 @@ sealed class Links {
     }
 
     data class Failure(val message: String) : Links()
+
+    object Pending : Links()
 }
