@@ -57,10 +57,12 @@ fun String.extractValuesAsList(): List<Any> {
     }
 
     return split("&")
-            .filter { it.isNotEmpty() }
-            .mapNotNull { it.split("=")
-            .lastOrNull()
-            .takeUnless { it.isNullOrEmpty() } }
+        .filter { it.isNotEmpty() }
+        .mapNotNull {
+            it.split("=").lastOrNull().takeUnless { nullableValue ->
+                nullableValue.isNullOrEmpty()
+            }
+        }
 }
 
 expect class LinksManagerBuilder
