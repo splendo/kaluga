@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.links.state
 
-import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
@@ -36,10 +35,7 @@ class LinksRepo(
     private val _linksEventFlow = MutableSharedFlow<Links>()
     val linksEventFlow = _linksEventFlow.asSharedFlow()
 
-    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(null)
-    internal var linksManager: LinksManager?
-        get() = _linksManager.get()
-        set(value) = _linksManager.set(value)
+    internal var linksManager: LinksManager? = null
 
     init {
         linksManager = linksManagerBuilder.create(::onLinksStateChange)
