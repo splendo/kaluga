@@ -17,207 +17,64 @@
 
 package com.splendo.kaluga.links.state
 
-import com.splendo.kaluga.flow.Flowable
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.BaseLinksTest
 import com.splendo.kaluga.links.Links
-import com.splendo.kaluga.test.FlowTest
-import com.splendo.kaluga.test.FlowTestBlock
+import com.splendo.kaluga.links.manager.Person
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class LinksStateTest : BaseLinksTest() {
 
-    override fun flowable(): Flowable<LinksState> =
-        linksStateRepo.flowable
-
     @Test
-    fun testInitialValue() = testLinksState {
-        assertInitialState(this)
-    }
-
-    @Test
-    fun testPendingStateTransaction() = testLinksState {
-        assertInitialState(this)
+    fun testErrorTransaction() {
         val errorMessage = "Error Message"
+        val expectedResult = Links.Failure(errorMessage)
 
-        action {
-            linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(errorMessage, (it as LinksState.Error).message)
-        }
-        resetStateTo<LinksState.Pending>(Links.Pending, this)
-
-        val resultMessage = "result"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Incoming.Result(resultMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Ready<*> }
-            assertEquals(resultMessage, (it as LinksState.Ready<*>).data)
-        }
-        resetStateTo<LinksState.Pending>(Links.Pending, this)
-
-        val url = "http://links.test"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Outgoing.Link(url))
-        }
-
-        test {
-            assertTrue { it is LinksState.Open }
-            assertEquals(url, (it as LinksState.Open).url)
+        runBlocking {
+            linksRepo.onLinksStateChange(Links.Failure(errorMessage))
+            launch {
+                linksRepo.linksEventFlow.collect {
+                    assertEquals(expectedResult, it)
+                    cancel()
+                }
+            }
         }
     }
 
     @Test
-    fun testErrorStateTransaction() = testLinksState {
-        assertInitialState(this)
-        val defaultError = "Error Message"
-        val resultMessage = "result"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Incoming.Result(resultMessage))
-        }
+    fun testIncomingTransaction() {
+        val person = Person.dummyPerson
+        val expectedResult = Links.Incoming.Result(person)
 
-        test {
-            assertTrue { it is LinksState.Ready<*> }
-            assertEquals(resultMessage, (it as LinksState.Ready<*>).data)
-        }
-        resetStateTo<LinksState.Error>(Links.Failure(defaultError), this)
-
-        val url = "http://links.test"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Outgoing.Link(url))
-        }
-
-        test {
-            assertTrue { it is LinksState.Open }
-            assertEquals(url, (it as LinksState.Open).url)
-        }
-        resetStateTo<LinksState.Error>(Links.Failure(defaultError), this)
-
-        action {
-            linksStateRepo.onLinksStateChange(Links.Pending)
-        }
-
-        test {
-            assertTrue { it is LinksState.Pending }
-        }
-        resetStateTo<LinksState.Error>(Links.Failure(defaultError), this)
-
-        // test if the error message change in case a Error state is incoming and
-        // the current state is Error
-        val errorMessage = "new error"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(errorMessage, (it as LinksState.Error).message)
+        runBlocking {
+            linksRepo.onLinksStateChange(Links.Incoming.Result(person))
+            launch {
+                linksRepo.linksEventFlow.collect {
+                    assertEquals(expectedResult, it)
+                    cancel()
+                }
+            }
         }
     }
 
     @Test
-    fun testOpenStateTransaction() = testLinksState {
-        assertInitialState(this)
-        val defaultLink = "http://links.test"
+    fun testOutgoingTransaction() {
+        val link = "https://kaluga-test-example.io/${Person.dummyQuery}"
+        val expectedResult = Links.Outgoing.Link(link)
 
-        val resultMessage = "result"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Incoming.Result(resultMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Ready<*> }
-            assertEquals(resultMessage, (it as LinksState.Ready<*>).data)
-        }
-        resetStateTo<LinksState.Open>(Links.Outgoing.Link(defaultLink), this)
-
-        action {
-            linksStateRepo.onLinksStateChange(Links.Pending)
-        }
-
-        test {
-            assertTrue { it is LinksState.Pending }
-        }
-        resetStateTo<LinksState.Open>(Links.Outgoing.Link(defaultLink), this)
-
-        val errorMessage = "Error Message"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(errorMessage, (it as LinksState.Error).message)
-        }
-        resetStateTo<LinksState.Open>(Links.Outgoing.Link(defaultLink), this)
-
-        val newUrl = "http://links.test?isTest=true"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Outgoing.Link(newUrl))
-        }
-
-        test {
-            assertTrue { it is LinksState.Open }
-            assertEquals(newUrl, (it as LinksState.Open).url)
+        runBlocking {
+            linksRepo.onLinksStateChange(Links.Outgoing.Link(link))
+            launch {
+                linksRepo.linksEventFlow.collect {
+                    assertEquals(expectedResult, it)
+                    cancel()
+                }
+            }
         }
     }
 
-    @Test
-    fun testReadyStateTransaction() = testLinksState {
-        assertInitialState(this)
-        val defaultData = "Default Data"
-
-        val errorMessage = "Error Message"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Failure(errorMessage))
-        }
-
-        test {
-            assertTrue { it is LinksState.Error }
-            assertEquals(errorMessage, (it as LinksState.Error).message)
-        }
-        resetStateTo<LinksState.Ready<*>>(Links.Incoming.Result(defaultData), this)
-
-        val url = "http://links.test?isTest=true"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Outgoing.Link(url))
-        }
-
-        test {
-            assertTrue { it is LinksState.Open }
-            assertEquals(url, (it as LinksState.Open).url)
-        }
-        resetStateTo<LinksState.Ready<*>>(Links.Incoming.Result(defaultData), this)
-
-        val newData = "new string value"
-        action {
-            linksStateRepo.onLinksStateChange(Links.Incoming.Result(newData))
-        }
-
-        test {
-            assertTrue { it is LinksState.Ready<*> }
-            assertEquals(newData, (it as LinksState.Ready<String>).data)
-        }
-    }
-
-    private fun testLinksState(test: FlowTestBlock<LinksState>) {
-        linksStateRepo = linksStateRepoBuilder.create()
-
-        testWithFlow(test)
-    }
-
-    private suspend inline fun <reified T> resetStateTo(link: Links, testBlock: FlowTest<LinksState>) {
-        testBlock.action {
-            linksStateRepo.onLinksStateChange(link)
-        }
-        testBlock.test {
-            assertTrue { it is T }
-        }
-    }
 }

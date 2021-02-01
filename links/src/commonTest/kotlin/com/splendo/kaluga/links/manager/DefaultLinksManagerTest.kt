@@ -29,14 +29,21 @@ data class Person(
     val name: String,
     val surname: String,
     val spokenLanguages: List<Languages> = emptyList()
-)
+) {
+    companion object {
+        val dummyQuery = "name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
+        val dummyPerson = Person(
+            "Corrado",
+            "Quattrocchi",
+            listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH)
+        )
+    }
+}
 
 enum class Languages {
     ITALIAN,
-    FRENCH,
     ENGLISH,
     DUTCH,
-    RUSSIAN
 }
 
 class CommonLinksManagerTest {
@@ -56,22 +63,14 @@ class CommonLinksManagerTest {
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        val query = "name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
-        val expectedResult = Person(
-            "Corrado",
-            "Quattrocchi",
-            listOf(Languages.ITALIAN, Languages.ENGLISH, Languages.DUTCH)
-        )
-        linksManager.handleIncomingLink(query, Person.serializer())
+        linksManager.handleIncomingLink(Person.dummyQuery, Person.serializer())
 
         assertTrue { isOnLinksStateChangeCalled }
-        assertEquals(expectedResult, (linksStateChangeResult as Links.Incoming.Result<Person>).data)
+        assertEquals(Person.dummyPerson, (linksStateChangeResult as Links.Incoming.Result<Person>).data)
     }
 
     @Test
     fun testHandleIncomingLinkFailed() {
-        // assertInitialState(this)
-
         val query = ""
         val expectedResult = "Query was empty"
 
@@ -83,11 +82,9 @@ class CommonLinksManagerTest {
 
     @Test
     fun testHandleOutgoingLinkSucceed() {
-        // assertInitialState(this)
-
         val url = "valid"
 
-        linksManager.handleOutgoingLink(url)
+        linksManager.validateLink(url)
 
         assertTrue { isOnLinksStateChangeCalled }
         assertEquals(url, (linksStateChangeResult as Links.Outgoing.Link).url)
@@ -95,12 +92,10 @@ class CommonLinksManagerTest {
 
     @Test
     fun testHandleOutgoingLinkFailed() {
-        // assertInitialState(this)
-
         val url = "not valid"
         val expectedResult = "URL is invalid"
 
-        linksManager.handleOutgoingLink(url)
+        linksManager.validateLink(url)
 
         assertTrue { isOnLinksStateChangeCalled }
         assertEquals(expectedResult, (linksStateChangeResult as Links.Failure).message)
