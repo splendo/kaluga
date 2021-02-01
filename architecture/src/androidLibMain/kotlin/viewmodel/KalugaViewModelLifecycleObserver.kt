@@ -41,15 +41,15 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
     private val activity: Activity?,
     private val lifecycleOwner: LifecycleOwner,
     private val fragmentManager: FragmentManager
-    ) : LifecycleObserver {
+) : LifecycleObserver {
 
     private val lifecycleSubscribables: List<LifecycleSubscribable> by lazy {
         viewModel::class.memberProperties
             .filter { it !is KMutableProperty1 }
             .mapNotNull { it as? KProperty1<VM, Any?> }
             .filter {
-                it.getter.visibility == KVisibility.PUBLIC
-                    && it.getter(viewModel) is LifecycleSubscribable
+                it.getter.visibility == KVisibility.PUBLIC &&
+                    it.getter(viewModel) is LifecycleSubscribable
             }
             .map { it.getter(viewModel) as LifecycleSubscribable }
     }
