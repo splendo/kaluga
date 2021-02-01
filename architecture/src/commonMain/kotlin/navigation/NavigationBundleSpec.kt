@@ -221,7 +221,7 @@ open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val row
  * A [NavigationBundleSpec] that only provides a single [NavigationBundleSpecRow]
  * @param type The [NavigationBundleSpecType] used for the [NavigationBundleSpecRow]
  */
-class SimpleNavigationSpec<T>(type: NavigationBundleSpecType<T>) : NavigationBundleSpec<SimpleNavigationSpec.Row<T>>(setOf(Row(type))) {
+class SingleValueNavigationSpec<T>(type: NavigationBundleSpecType<T>) : NavigationBundleSpec<SingleValueNavigationSpec.Row<T>>(setOf(Row(type))) {
     data class Row<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecRow<T>(type)
 }
 

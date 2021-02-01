@@ -26,15 +26,15 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
 
 /**
- * A [NavigationAction] that has a [SimpleNavigationSpec] bundle
+ * A [NavigationAction] that has a [SingleValueNavigationSpec] bundle
  * @param value The value passed by the action
  * @param type The [NavigationBundleSpecType] describing the object passed by the action
  */
-open class SimpleNavigationAction<T>(
+open class SingleValueNavigationAction<T>(
     value: T,
     val type: NavigationBundleSpecType<T>
-) : NavigationAction<SimpleNavigationSpec.Row<T>>(
-    SimpleNavigationSpec(type).toBundle {
+) : NavigationAction<SingleValueNavigationSpec.Row<T>>(
+    SingleValueNavigationSpec(type).toBundle {
         it.convertValue(value)
     }
 )

@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.SimpleNavigationAction
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.Observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.subjectOf
@@ -32,7 +32,7 @@ data class InputDetails(
     val number: Int
 )
 
-class CloseDetailsNavigation(inputDetails: InputDetails) : SimpleNavigationAction<InputDetails>(
+class CloseDetailsNavigation(inputDetails: InputDetails) : SingleValueNavigationAction<InputDetails>(
     inputDetails,
     NavigationBundleSpecType.SerializedType(InputDetails.serializer())
 )

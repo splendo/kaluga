@@ -307,21 +307,21 @@ class BundleProcessor(bundle: NavigationBundle<SomeSpecRow<*>>) {
 ```
 
 Often for navigation it is desirable to pass only a single object.
-Use the `SimpleNavigationAction` to reduce boilerplate code in these cases
+Use the `SingleValueNavigationAction` to reduce boilerplate code in these cases
 
 ```kotlin
-sealed class Navigation<T>(value: T, type: NavigationBundleSpecType<T>) : SimpleNavigationAction<T>(value, type) {
+sealed class Navigation<T>(value: T, type: NavigationBundleSpecType<T>) : SingleValueNavigationAction<T>(value, type) {
     class A(string: String) : TestNavigation<String>(string, NavigationBundleSpecType.StringType)
     object B : TestNavigation<Unit>(Unit, NavigationBundleSpecType.UnitType)
 }
 ```
 
-A `SimpleNavigationAction` has a `SimpleNavigationSpec` that consists of a single `SimpleNavigationSpec.Row`.
+A `SingleValueNavigationAction` has a `SingleValueNavigationSpec` that consists of a single `SingleValueNavigationSpec.Row`.
 Convenience getters are available for the bundle. Simply pass the `NavigationBundleSpecType` of the action to the bundle.a
 
 ```kotlin
 val type = NavigationBundleSpecType.SerializedType(SomeClass.serializer())
-val action = SimpleNavigationAction(SomeClass(), type)
+val action = SingleValueNavigationAction(SomeClass(), type)
 action.bundle?.get(type) // returns SomeClass
 ```
 
@@ -329,7 +329,7 @@ On Android a `Bundle` can be directly converted to the associated property using
 
 ```kotlin
 val type = NavigationBundleSpecType.SerializedType(SomeClass.serializer())
-val bundle = SimpleNavigationAction(SomeClass(), type)?.bundle ?: return
+val bundle = SingleValueNavigationAction(SomeClass(), type)?.bundle ?: return
 val androidBundle = bundle.toBundle()
 androidBundle.toTypedProperty(type) // returns SomeClass
 ```

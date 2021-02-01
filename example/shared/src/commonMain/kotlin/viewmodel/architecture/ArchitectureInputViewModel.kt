@@ -19,7 +19,7 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.navigation.SimpleNavigationAction
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toObservable
@@ -32,12 +32,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class InputNavigation(inputDetails: InputDetails) : SimpleNavigationAction<InputDetails>(
+class InputNavigation(inputDetails: InputDetails) : SingleValueNavigationAction<InputDetails>(
     inputDetails,
     NavigationBundleSpecType.SerializedType(InputDetails.serializer())
 )
 
-class ArchitectureInputViewModel(navigator: Navigator<SimpleNavigationAction<InputDetails>>) : NavigatingViewModel<SimpleNavigationAction<InputDetails>>(navigator) {
+class ArchitectureInputViewModel(navigator: Navigator<SingleValueNavigationAction<InputDetails>>) : NavigatingViewModel<SingleValueNavigationAction<InputDetails>>(navigator) {
 
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")

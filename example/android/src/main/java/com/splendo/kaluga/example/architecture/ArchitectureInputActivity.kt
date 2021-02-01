@@ -21,7 +21,7 @@ package com.splendo.kaluga.example.architecture
 import android.content.Intent
 import android.os.Bundle
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
-import com.splendo.kaluga.architecture.navigation.SimpleNavigationSpec
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureInputBinding
@@ -51,7 +51,7 @@ class ArchitectureInputActivity : KalugaViewModelActivity<ArchitectureInputViewM
 
         if (requestCode == ArchitectureInputActivity.requestCode && resultCode == ArchitectureDetailsActivity.resultCode) {
             val type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
-            data?.extras?.toNavigationBundle(SimpleNavigationSpec(type))?.let { bundle ->
+            data?.extras?.toNavigationBundle(SingleValueNavigationSpec(type))?.let { bundle ->
                 val inputDetails = bundle.get(type)
                 viewModel.nameInput.post(inputDetails.name)
                 viewModel.numberInput.post(inputDetails.number.toString())
