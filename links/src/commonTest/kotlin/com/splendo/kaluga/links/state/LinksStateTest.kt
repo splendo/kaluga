@@ -35,12 +35,15 @@ class LinksStateTest : BaseLinksTest() {
         val expectedResult = Links.Failure(errorMessage)
 
         runBlocking {
-            linksRepo.onLinksStateChange(Links.Failure(errorMessage))
             launch {
                 linksRepo.linksEventFlow.collect {
                     assertEquals(expectedResult, it)
                     cancel()
                 }
+            }
+
+            launch {
+                linksRepo.onLinksStateChange(Links.Failure(errorMessage))
             }
         }
     }
@@ -51,12 +54,15 @@ class LinksStateTest : BaseLinksTest() {
         val expectedResult = Links.Incoming.Result(person)
 
         runBlocking {
-            linksRepo.onLinksStateChange(Links.Incoming.Result(person))
             launch {
                 linksRepo.linksEventFlow.collect {
                     assertEquals(expectedResult, it)
                     cancel()
                 }
+            }
+
+            launch {
+                linksRepo.onLinksStateChange(Links.Incoming.Result(person))
             }
         }
     }
@@ -67,12 +73,15 @@ class LinksStateTest : BaseLinksTest() {
         val expectedResult = Links.Outgoing.Link(link)
 
         runBlocking {
-            linksRepo.onLinksStateChange(Links.Outgoing.Link(link))
             launch {
                 linksRepo.linksEventFlow.collect {
                     assertEquals(expectedResult, it)
                     cancel()
                 }
+            }
+
+            launch {
+                linksRepo.onLinksStateChange(Links.Outgoing.Link(link))
             }
         }
     }
