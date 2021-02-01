@@ -21,7 +21,6 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
-import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.KSerializer
@@ -34,10 +33,7 @@ class LinksRepo(
         fun create(): LinksRepo
     }
 
-    private val _linksEventFlow = MutableSharedFlow<Links>(
-        1,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    private val _linksEventFlow = MutableSharedFlow<Links>()
     val linksEventFlow = _linksEventFlow.asSharedFlow()
 
     private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(null)
@@ -52,7 +48,6 @@ class LinksRepo(
     internal fun onLinksStateChange(link: Links) {
         runBlocking {
             post(link)
-            _linksEventFlow.resetReplayCache()
         }
     }
 
