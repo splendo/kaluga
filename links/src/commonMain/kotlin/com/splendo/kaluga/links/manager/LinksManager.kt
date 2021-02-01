@@ -26,5 +26,5 @@ interface LinksManager {
     }
 
     fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>)
-    fun handleOutgoingLink(url: String)
+    fun validateLink(url: String)
 }
