@@ -17,24 +17,12 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.links.manager.MockLinksStateRepoBuilder
-import com.splendo.kaluga.links.state.LinksState
-import com.splendo.kaluga.links.state.LinksStateRepo
-import com.splendo.kaluga.test.FlowTest
-import com.splendo.kaluga.test.FlowableTest
-import kotlin.test.assertTrue
+import com.splendo.kaluga.links.state.LinksRepo
+import com.splendo.kaluga.test.BaseTest
 
-open class BaseLinksTest : FlowableTest<LinksState>() {
+abstract class BaseLinksTest : BaseTest() {
 
     val linksStateRepoBuilder = MockLinksStateRepoBuilder()
-    lateinit var linksStateRepo: LinksStateRepo
-
-    override fun flowable(): Flowable<LinksState> = linksStateRepo.flowable
-
-    suspend fun assertInitialState(testBlock: FlowTest<LinksState>) {
-        testBlock.test {
-            assertTrue { it is LinksState.Pending }
-        }
-    }
+    val linksRepo: LinksRepo = linksStateRepoBuilder.create()
 }
