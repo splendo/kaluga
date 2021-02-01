@@ -39,7 +39,7 @@ class DefaultLinksManager(
         onLinksStateChange(Links.Incoming.Result(deserializedObject))
     }
 
-    override fun handleOutgoingLink(url: String) {
+    override fun validateLink(url: String) {
         if (validator.isValid(url)) {
             onLinksStateChange(Links.Outgoing.Link(url))
         } else {
@@ -52,9 +52,15 @@ fun String.extractValuesAsList(): List<Any> {
     if (isBlank()) {
         return emptyList()
     }
+    if (split("&").size == 1) {
+        return emptyList()
+    }
+
     return split("&")
-        .filter { it.isNotEmpty() }
-        .mapNotNull { it.split("=").lastOrNull().takeUnless { it.isNullOrEmpty() } }
+            .filter { it.isNotEmpty() }
+            .mapNotNull { it.split("=")
+            .lastOrNull()
+            .takeUnless { it.isNullOrEmpty() } }
 }
 
 expect class LinksManagerBuilder
