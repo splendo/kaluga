@@ -21,35 +21,44 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.KSerializer
 
-class LinksStateRepo(
+class LinksRepo(
     linksManagerBuilder: LinksManager.Builder
 ) {
 
     interface Builder {
-        fun create(): LinksStateRepo
+        fun create(): LinksRepo
     }
 
-    private val _linksEventFlow = MutableSharedFlow<Links>()
+    private val _linksEventFlow = MutableSharedFlow<Links>(
+        1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val linksEventFlow = _linksEventFlow.asSharedFlow()
 
-    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(linksManagerBuilder.create(::onLinksStateChange))
+    private val _linksManager: AtomicReference<LinksManager?> = AtomicReference(null)
     internal var linksManager: LinksManager?
         get() = _linksManager.get()
         set(value) = _linksManager.set(value)
 
+    init {
+        linksManager = linksManagerBuilder.create(::onLinksStateChange)
+    }
+
     internal fun onLinksStateChange(link: Links) {
         runBlocking {
             post(link)
+            _linksEventFlow.resetReplayCache()
         }
     }
 
     /**
-     * Convert an incoming url into an object and return it wrapped in [Links.Incoming.Result].
-     * When the given Uri/NSURL is invalid, the state returns [Links.Failure].
+     * Convert an incoming url into an object and emit it as [Links.Incoming.Result].
+     * When the given Uri/NSURL is invalid, it emits [Links.Failure].
      * @param query query containing the values from the link.
      * @param serializer The needed object's serializer.
      * */
@@ -58,12 +67,12 @@ class LinksStateRepo(
     }
 
     /**
-     * Check if the url is valid and returns [Links.Outgoing.Link] with the given url. State returns [Links.Failure]
+     * Check if the url is valid and emit a [Links.Outgoing.Link] in [linksEventFlow]. It emits [Links.Failure]
      * when the url is invalid.
      * @param url Page to be visited.
      * */
-    fun handleOutgoingLink(url: String) {
-        linksManager?.handleOutgoingLink(url)
+    fun validateLink(url: String) {
+        linksManager?.validateLink(url)
     }
 
     private suspend fun post(link: Links) {
