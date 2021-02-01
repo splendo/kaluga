@@ -21,11 +21,11 @@ import com.splendo.kaluga.links.manager.DefaultLinksManager
 import com.splendo.kaluga.links.manager.LinksManager
 import com.splendo.kaluga.links.manager.LinksStateChange
 import com.splendo.kaluga.links.manager.PlatformLinksValidator
-import com.splendo.kaluga.links.state.LinksStateRepo
+import com.splendo.kaluga.links.state.LinksRepo
 
-class MockPlatformLinksStateRepoBuilder : LinksStateRepo.Builder {
-    override fun create(): LinksStateRepo =
-        LinksStateRepo(MockPlatformLinksManagerBuilder())
+class MockPlatformLinksStateRepoBuilder : LinksRepo.Builder {
+    override fun create(): LinksRepo =
+        LinksRepo(MockPlatformLinksManagerBuilder())
 }
 
 class MockPlatformLinksManagerBuilder : LinksManager.Builder {
