@@ -2,6 +2,21 @@
 
 This module provided simplified access to logging capabilities of [Kotlin Kydra Log](https://github.com/PocketByte/kotlin-kydra-log).
 
+## Installing
+To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Logging as follows:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:logging:$kalugaVersion")
+}
+```
+
 ### How to
 
 #### NOTE

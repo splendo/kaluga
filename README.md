@@ -2,9 +2,41 @@
 
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
-Its main goal is to provide access to common multiplatform features used in mobile app development, such as location, permissions, bluetooth etc.
+Its main goal is to provide access to common multiplatform features used in mobile app development, such as MVVM-Architecture, location, permissions, bluetooth etc.
 
 Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
+
+## Installing
+Kaluga is currently only available through bintray. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repository to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
+}
+```
+
+### Available Modules
+Module | Usage | Library Name | Latest Version
+--- | --- | --- | ---
+[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.1.4
+[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.1.4
+[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.1.4
+[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.1.4
+[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.1.4
+[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.1.4
+[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.1.4
+[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.4
+[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.4
+[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.4
+[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | 0.1.4
+[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | 0.1.4
+[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.4
 
 ## Build instructions
 
@@ -12,7 +44,7 @@ This project uses Android Studio. You might need a canary version at times.
 ______
 Both IDEA and Android Studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
 
-Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
+to resolve these issues, go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install the latest available plugin.
 ______
 Some components use Google Play services. For this you will need to supply your own `google-services.json` file.
 ______
@@ -59,22 +91,6 @@ The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter 
 Most of the components within this project use Kotlin coroutines and `Flow` to deliver values from the supported platforms. Backing the `Flow` (by default) is a conflated channel. This pattern (though with a different, framework lever implementation) is currently under consideration for inclusion in the `coroutinesx` library from Jetbrains. If this happens, the API will likely change slightly.
  
 ## Publishing
-
-The libraries are not published on any hosted repository yet, but can be published to your local maven repo.
-
-In same time it is available via Bintray. Here is example how to include alerts module your into project:
-
-```kotlin
-repositories {
-    // ...
-    maven("https://dl.bintray.com/splendo/kaluga")
-}
-// ...
-dependencies {
-    // ...
-    api("com.splendo.kaluga:alerts:0.1.3")
-}
-```
 
 ### Publishing process
 

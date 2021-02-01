@@ -10,13 +10,15 @@ gradle.ext {
     koin_version = '3.0.0-alpha-4'
     serialization_version = '1.0.1'
     bintray_plugin_version = '1.8.5'
-    library_version = '0.1.3'
+    library_version = '0.1.4'
     android_min_sdk_version = 21
     android_target_sdk_version = 29
     android_build_tools_version = "29.0.3"
     androidx_browser_version = "1.2.0"
 
     play_services_version = "17.1.0"
+    play_core_version = "1.9.0"
+    play_core_ktx_version = "1.8.1"
 
     androidx_appcompat_version = "1.2.0"
     androidx_fragment_version = "1.2.5"
