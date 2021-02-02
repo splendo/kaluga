@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-
 /**
  * Action that describes the intent to navigate
  * @param bundle The [NavigationBundle] containing data used to configure navigation
@@ -42,7 +40,7 @@ open class SingleValueNavigationAction<T>(
 /**
  * Class that can trigger a given [NavigationAction]
  */
-expect interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+expect interface Navigator<A : NavigationAction<*>> {
     /**
      * Triggers a given [NavigationAction]
      * @param action The [NavigationAction] to trigger
