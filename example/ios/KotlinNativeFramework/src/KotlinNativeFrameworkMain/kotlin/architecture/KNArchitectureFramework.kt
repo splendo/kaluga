@@ -17,12 +17,10 @@
 
 package architecture
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.Subject
-import com.splendo.kaluga.architecture.observable.Disposable
-import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
+import com.splendo.kaluga.architecture.observable.Disposable
+import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
@@ -31,21 +29,20 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
 import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
@@ -145,24 +142,20 @@ class KNArchitectureFramework {
         return LocationViewModel(permission, repoBuilder)
     }
 
-    fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
+    fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (InputDetails) -> UIViewController): ArchitectureInputViewModel {
         return ArchitectureInputViewModel(
             ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Present(present = {
-                    val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
-                    val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
-                    createDetailsViewController(name, number)
+                    createDetailsViewController(action.bundle?.get(action.type) ?: InputDetails("", 0))
                 })
             }
         )
     }
 
-    fun createArchitectureDetailsViewModel(parent: UIViewController, name: String, number: Int, onDismiss: (String, Int) -> Unit): ArchitectureDetailsViewModel {
-        return ArchitectureDetailsViewModel(name, number, ViewControllerNavigator(parent) { action ->
+    fun createArchitectureDetailsViewModel(parent: UIViewController, inputDetails: InputDetails, onDismiss: (InputDetails) -> Unit): ArchitectureDetailsViewModel {
+        return ArchitectureDetailsViewModel(inputDetails, ViewControllerNavigator(parent) { action ->
             NavigationSpec.Dismiss(completion = {
-                val finalName = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
-                val finalNumber = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
-                onDismiss(finalName, finalNumber)
+                onDismiss(action.bundle?.get(action.type) ?: InputDetails("", 0))
             })
         })
     }
