@@ -37,6 +37,7 @@ fun <R : NavigationBundleSpecRow<*>> NavigationBundle<R>.toBundle(): Bundle {
 
 internal fun mapValue(key: String, value: NavigationBundleValue<*>, bundle: Bundle) {
     when (value) {
+        is NavigationBundleValue.UnitValue -> {}
         is NavigationBundleValue.BooleanValue -> bundle.putBoolean(key, value.value)
         is NavigationBundleValue.BooleanArrayValue -> bundle.putBooleanArray(key, value.value)
         is NavigationBundleValue.ByteValue -> bundle.putByte(key, value.value)
@@ -82,12 +83,23 @@ fun <R : NavigationBundleSpecRow<*>> Bundle.toNavigationBundle(spec: NavigationB
 }
 
 /**
+ * Converts a [Bundle] to a property associated with a [NavigationBundleSpecType]
+ * Requires that the [Bundle] is described by a [SingleValueNavigationSpec] matching the [NavigationBundleSpecType]
+ * @return The type stored in the bundle
+ * @throws [BundleConversionError] if the [Bundle] is not associated with a [SingleValueNavigationSpec]
+ */
+fun <R> Bundle.toTypedProperty(type: NavigationBundleSpecType<R>): R {
+    return toNavigationBundle(SingleValueNavigationSpec(type)).get(type)
+}
+
+/**
  * Error indicating a [Bundle] could not be converted to a [NavigationBundle]
  */
 class BundleConversionError : Exception()
 
 internal fun Bundle.mapValue(key: String, specType: NavigationBundleSpecType<*>): NavigationBundleValue<*>? {
     return when (specType) {
+        is NavigationBundleSpecType.UnitType -> specType.convertValue(Unit)
         is NavigationBundleSpecType.BooleanType -> specType.convertValue(getBoolean(key))
         is NavigationBundleSpecType.BooleanArrayType -> getBooleanArray(key)?.let { specType.convertValue(it) }
         is NavigationBundleSpecType.ByteType -> specType.convertValue(getByte(key))

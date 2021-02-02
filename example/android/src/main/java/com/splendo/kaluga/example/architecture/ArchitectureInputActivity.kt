@@ -20,12 +20,13 @@ package com.splendo.kaluga.example.architecture
 
 import android.content.Intent
 import android.os.Bundle
+import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityArchitectureInputBinding
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpec
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArchitectureInputActivity : KalugaViewModelActivity<ArchitectureInputViewModel>() {
@@ -49,10 +50,11 @@ class ArchitectureInputActivity : KalugaViewModelActivity<ArchitectureInputViewM
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == ArchitectureInputActivity.requestCode && resultCode == ArchitectureDetailsActivity.resultCode) {
-            val spec = DetailsSpec()
-            data?.extras?.toNavigationBundle(spec)?.let { bundle ->
-                viewModel.nameInput.post(bundle.get(DetailsSpecRow.NameRow))
-                viewModel.numberInput.post(bundle.get(DetailsSpecRow.NumberRow).toString())
+            val type = NavigationBundleSpecType.SerializedType(InputDetails.serializer())
+            data?.extras?.toNavigationBundle(SingleValueNavigationSpec(type))?.let { bundle ->
+                val inputDetails = bundle.get(type)
+                viewModel.nameInput.post(inputDetails.name)
+                viewModel.numberInput.post(inputDetails.number.toString())
             }
         }
     }

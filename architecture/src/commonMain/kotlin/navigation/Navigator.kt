@@ -23,7 +23,21 @@ import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
  * Action that describes the intent to navigate
  * @param bundle The [NavigationBundle] containing data used to configure navigation
  */
-abstract class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
+open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: NavigationBundle<B>?)
+
+/**
+ * A [NavigationAction] that has a [SingleValueNavigationSpec] bundle
+ * @param value The value passed by the action
+ * @param type The [NavigationBundleSpecType] describing the object passed by the action
+ */
+open class SingleValueNavigationAction<T>(
+    value: T,
+    val type: NavigationBundleSpecType<T>
+) : NavigationAction<SingleValueNavigationSpec.Row<T>>(
+    SingleValueNavigationSpec(type).toBundle {
+        it.convertValue(value)
+    }
+)
 
 /**
  * Class that can trigger a given [NavigationAction]

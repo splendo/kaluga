@@ -21,9 +21,9 @@ class ArchitectureInputViewController: UIViewController  {
     
     @IBOutlet weak var detailsButton: UIButton!
     
-    lazy var viewModel = KNArchitectureFramework().createArchitectureInputViewModel(parent: self) { [weak self] name, number in
-        return ArchitectureDetailsViewController.create(name: name, number: number.int32Value) { [weak self] resultName, resultNumber in
-            self?.onDetailsDismissed(resultName: resultName, resultNumber: resultNumber)
+    lazy var viewModel = KNArchitectureFramework().createArchitectureInputViewModel(parent: self) { [weak self] inputDetails in
+        return ArchitectureDetailsViewController.create(inputDetails: inputDetails) { [weak self] inputDetails in
+            self?.onDetailsDismissed(inputDetails: inputDetails)
         }
     }
     private var lifecycleManager: LifecycleManager!
@@ -68,9 +68,9 @@ class ArchitectureInputViewController: UIViewController  {
         viewModel.onShowDetailsPressed()
     }
     
-    private func onDetailsDismissed(resultName: String, resultNumber: Int32) {
-        viewModel.nameInput.post(newValue: NSString(string: resultName))
-        viewModel.numberInput.post(newValue: NSString(string: "\(resultNumber)"))
+    private func onDetailsDismissed(inputDetails: InputDetails) {
+        viewModel.nameInput.post(newValue: NSString(string: inputDetails.name))
+        viewModel.numberInput.post(newValue: NSString(string: "\(inputDetails.number)"))
     }
     
 }
