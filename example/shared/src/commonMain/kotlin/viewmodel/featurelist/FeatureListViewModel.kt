@@ -32,6 +32,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object LoadingIndicator : FeatureListNavigationAction()
     object Architecture : FeatureListNavigationAction()
     object Keyboard : FeatureListNavigationAction()
+    object Links : FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
@@ -42,6 +43,7 @@ sealed class Feature(val title: String) {
     object LoadingIndicator : Feature("feature_hud".localized())
     object Location : Feature("feature_location".localized())
     object Permissions : Feature("feature_permissions".localized())
+    object Links : Feature("feature_links".localized())
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
@@ -51,6 +53,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
         Feature.Architecture,
         Feature.DateTimePicker,
         Feature.Keyboard,
+        Feature.Links,
         Feature.LoadingIndicator,
         Feature.Location,
         Feature.Permissions
@@ -62,6 +65,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             is Feature.Architecture -> FeatureListNavigationAction.Architecture
             is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
             is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
+            is Feature.Links -> FeatureListNavigationAction.Links
             is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
             is Feature.Location -> FeatureListNavigationAction.Location
             is Feature.Permissions -> FeatureListNavigationAction.Permissions

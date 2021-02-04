@@ -61,6 +61,7 @@ dependencies {
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:links:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
         implementation project(':shared')
     }
@@ -75,6 +76,7 @@ dependencies {
         implementation project(":hud")
         implementation project(":architecture")
         implementation project(":keyboard")
+        implementation project(":links")
         implementation project(":review")
     }
 

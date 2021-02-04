@@ -7,6 +7,7 @@
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
 "feature_permissions" = "Permissions";
+"feature_links" = "Links";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
@@ -40,3 +41,6 @@
 
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+
+"browser_button_text" = "Open browser";
+"incoming_link_text" = "Convert incoming link";

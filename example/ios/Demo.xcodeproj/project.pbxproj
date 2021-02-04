@@ -19,6 +19,7 @@
 		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
+		641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
 		7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74C710A1E2E41AF0F4A9FFC5 /* LocationViewController.swift */; };
 		7450B266B7AD1FE0B79C10EA /* KotlinNativeFramework.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -82,6 +83,7 @@
 		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
+		641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
 		741672C742FA38B5D4971C10 /* gradlew */ = {isa = PBXFileReference; lastKnownFileType = text; path = gradlew; sourceTree = "<group>"; };
 		741A9B938B05534BD1B508C6 /* settings.gradle.kts */ = {isa = PBXFileReference; lastKnownFileType = file.kts; path = settings.gradle.kts; sourceTree = "<group>"; };
@@ -208,6 +210,14 @@
 			path = Alerts;
 			sourceTree = "<group>";
 		};
+		641CC0D625CAC0A1001E1CD1 /* Links */ = {
+			isa = PBXGroup;
+			children = (
+				641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */,
+			);
+			path = Links;
+			sourceTree = "<group>";
+		};
 		743414FDF97167BD81A5293E /* wrapper */ = {
 			isa = PBXGroup;
 			children = (
@@ -270,6 +280,7 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				641CC0D625CAC0A1001E1CD1 /* Links */,
 				20524A22257BEA020054B57E /* DateTimePicker */,
 				205747552397C99100CDE25E /* KeyboardManager */,
 				20C7D1D6246A938A00C9A63F /* Architecture */,
@@ -444,7 +455,7 @@
 				ORGANIZATIONNAME = Splendo;
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
-						DevelopmentTeam = 2732HQPVJP;
+						DevelopmentTeam = NHQ559J67Q;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -526,6 +537,7 @@
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
 				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */,
@@ -712,11 +724,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = NHQ559J67Q;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -831,11 +843,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 2732HQPVJP;
+				DEVELOPMENT_TEAM = NHQ559J67Q;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
