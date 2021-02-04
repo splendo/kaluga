@@ -18,7 +18,7 @@
 package com.splendo.kaluga.example.shared.viewmodel.link
 
 import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.alerts.BaseAlertPresenter
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.alerts.buildAlert
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
@@ -28,13 +28,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.observable.subjectOf
-import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.state.LinksStateRepoBuilder
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +56,7 @@ sealed class BrowserSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSp
 
 class LinksViewModel(
     linkRepoBuilder: LinksStateRepoBuilder,
-    val builder: BaseAlertPresenter.Builder,
+    val builder: AlertPresenter.Builder,
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
     ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
 
