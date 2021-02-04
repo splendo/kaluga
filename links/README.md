@@ -4,11 +4,10 @@ This module is used in order to decode an object from an incoming link and in co
 
 ## Usage
 
-`Links` has 4 states:
+`Links` has 3 states:
  - `Error`: takes a `String` named `message` and it is returned only when there have been an error. 
  - `Ready`: created with a type `T` representing the decoded object, takes a parameter called `data`. Data is `T`. It is returned when an incoming link has been successfully decoded.
  - `Open`: takes a `String` parameter called `url`. It is returned in case the `url` is valid and it needs to be handled by [navigation](https://github.com/splendo/kaluga/tree/master/architecture#navigation) module, otherwise `Error` will be returned.
- - `Pending`: state that hangs until a new incoming/outgoing link has to be handled.
  
  `LinksStateRepo` has 2 methods in order to handle the links. The first called `handleIncomingLink` which takes the query extracted from the received link and the `Serializer` of the object you want to decode.
  The second methods is called `handleOutgoingLink` takes the url as `String`.
@@ -36,9 +35,6 @@ class SharedViewModel(
                     }
                     is LinksState.Ready<*> -> {
                         println("Links Ready 🔗✅: ${it.data}")
-                    }
-                    is LinksState.Pending -> {
-                        println("Links Pending 🔗⌛️: $it")
                     }
                     is LinksState.Open -> {
                         println("Links Open 🔗📖️: $it")
