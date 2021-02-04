@@ -20,6 +20,7 @@ package com.splendo.kaluga.links.state
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.serialization.KSerializer
@@ -32,7 +33,10 @@ class LinksRepo(
         fun create(): LinksRepo
     }
 
-    private val _linksEventFlow = MutableSharedFlow<Links>()
+    private val _linksEventFlow = MutableSharedFlow<Links>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val linksEventFlow = _linksEventFlow.asSharedFlow()
 
     internal var linksManager: LinksManager? = null
