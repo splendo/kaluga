@@ -8,6 +8,7 @@
     <string name="feature_keyboard">Keyboard</string>
     <string name="feature_location">Location</string>
     <string name="feature_permissions">Permissions</string>
+    <string name="feature_system">System</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
@@ -48,4 +49,6 @@
     <string name="location_background">Kaluga Background</string>
     <string name="location_enable_background">Enable Background</string>
     <string name="location_disable_background">Disable Background</string>
+
+    <string name="network_feature">Network</string>
 </resources>

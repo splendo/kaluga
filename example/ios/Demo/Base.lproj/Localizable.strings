@@ -40,3 +40,6 @@
 
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+
+"feature_system" = "System";
+"network_feature" = "Network";
