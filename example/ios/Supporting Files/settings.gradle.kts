@@ -72,6 +72,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":review")
     project(":review").projectDir = file("../../../review")
 
+    include(":system")
+    project(":system").projectDir = file("../../../system")
+
     include(":test-utils")
     project(":test-utils").projectDir = file("../../../test-utils")
 }

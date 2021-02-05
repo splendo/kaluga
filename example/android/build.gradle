@@ -62,6 +62,7 @@ dependencies {
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:system:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -76,6 +77,7 @@ dependencies {
         implementation project(":architecture")
         implementation project(":keyboard")
         implementation project(":review")
+        implementation project(":system")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
