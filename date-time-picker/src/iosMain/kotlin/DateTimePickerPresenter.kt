@@ -20,7 +20,7 @@ package com.splendo.kaluga.datetimepicker
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.utils.Date
-import kotlinx.cinterop.useContents
+import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSCalendar
@@ -28,42 +28,56 @@ import platform.Foundation.NSDate
 import platform.Foundation.NSTimeInterval
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.timeIntervalSince1970
-import platform.UIKit.UIAlertAction
-import platform.UIKit.UIAlertActionStyleCancel
-import platform.UIKit.UIAlertActionStyleDefault
-import platform.UIKit.UIAlertController
-import platform.UIKit.UIAlertControllerStyleActionSheet
+import platform.UIKit.UIButton
+import platform.UIKit.UIColor
+import platform.UIKit.UIControlEventTouchUpInside
 import platform.UIKit.UIDatePicker
 import platform.UIKit.UIDatePickerMode
 import platform.UIKit.UIDatePickerStyle
 import platform.UIKit.UILabel
+import platform.UIKit.UIModalPresentationBlurOverFullScreen
+import platform.UIKit.UIView
 import platform.UIKit.UIViewController
 import platform.UIKit.addSubview
+import platform.UIKit.backgroundColor
 import platform.UIKit.bottomAnchor
 import platform.UIKit.centerXAnchor
+import platform.UIKit.centerYAnchor
+import platform.UIKit.insertSubview
 import platform.UIKit.leadingAnchor
+import platform.UIKit.systemBackgroundColor
 import platform.UIKit.topAnchor
 import platform.UIKit.trailingAnchor
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
-import platform.UIKit.widthAnchor
+import platform.objc.sel_registerName
 
 actual class DateTimePickerPresenter(
     private val datePicker: DateTimePicker,
     private val parent: UIViewController
 ) : BaseDateTimePickerPresenter(datePicker) {
 
-    actual class Builder(private val viewController: UIViewController) : BaseDateTimePickerPresenter.Builder() {
-        actual override fun create(coroutineScope: CoroutineScope) =
-            DateTimePickerPresenter(createDateTimePicker(), viewController)
-    }
+    private inner class DateTimePickerViewController(private val datePicker: DateTimePicker, private val completion: (Date?) -> Unit) : UIViewController(null, null) {
 
-    override fun dismissDateTimePicker(animated: Boolean) {
-        parent.dismissModalViewControllerAnimated(animated)
-    }
+        private lateinit var datePickerView: UIDatePicker
 
-    override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
-        UIAlertController.alertControllerWithTitle(null, null, UIAlertControllerStyleActionSheet).apply {
-            val datePickerView = UIDatePicker().apply {
+        init {
+            this.modalPresentationStyle = UIModalPresentationBlurOverFullScreen
+        }
+
+        override fun viewDidLoad() {
+            super.viewDidLoad()
+            val containerView = UIView().apply {
+                backgroundColor = UIColor.systemBackgroundColor
+                layer.cornerRadius = 15.0 as CGFloat
+                view.addSubview(this)
+                translatesAutoresizingMaskIntoConstraints = false
+                centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
+                centerYAnchor.constraintEqualToAnchor(view.centerYAnchor).active = true
+                leadingAnchor.constraintGreaterThanOrEqualToAnchor(view.leadingAnchor, 20.0 as CGFloat).active = true
+                trailingAnchor.constraintLessThanOrEqualToAnchor(view.trailingAnchor, -20.0 as CGFloat).active = true
+            }
+
+            datePickerView = UIDatePicker().apply {
                 calendar = NSCalendar.currentCalendar.apply {
                     this.locale = datePicker.locale.nsLocale
                     this.timeZone = datePicker.selectedDate.timeZone.timeZone
@@ -91,33 +105,66 @@ actual class DateTimePickerPresenter(
                         preferredDatePickerStyle = UIDatePickerStyle.UIDatePickerStyleWheels
                     }
                 }
+
+                containerView.addSubview(this)
+                translatesAutoresizingMaskIntoConstraints = false
+                leadingAnchor.constraintEqualToAnchor(containerView.leadingAnchor, 10.0 as CGFloat).active = true
+                trailingAnchor.constraintEqualToAnchor(containerView.trailingAnchor, -10.0 as CGFloat).active = true
+                bottomAnchor.constraintEqualToAnchor(containerView.bottomAnchor, -10.0 as CGFloat).active = true
             }
-            view.addSubview(datePickerView)
-            addAction(
-                UIAlertAction.actionWithTitle(datePicker.confirmButtonTitle, UIAlertActionStyleDefault) {
-                    completion(Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
-                }
-            )
-            addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleDefault) { completion(null) })
-            val anchor = datePicker.message?.let {
-                val label = UILabel()
-                label.text = it
-                view.addSubview(label)
-                label.translatesAutoresizingMaskIntoConstraints = false
-                label.topAnchor.constraintEqualToAnchor(view.topAnchor, 15.0 as CGFloat).active = true
-                label.bottomAnchor.constraintEqualToAnchor(datePickerView.topAnchor, -15.0 as CGFloat).active = true
-                label.leadingAnchor.constraintEqualToAnchor(view.leadingAnchor, 20.0 as CGFloat).active = true
-                label.trailingAnchor.constraintEqualToAnchor(view.trailingAnchor, -20.0 as CGFloat).active = true
-                label.bottomAnchor
-            } ?: view.topAnchor
-            datePickerView.translatesAutoresizingMaskIntoConstraints = false
-            datePickerView.topAnchor.constraintEqualToAnchor(anchor, 15.0 as CGFloat).active = true
-            datePickerView.bottomAnchor.constraintEqualToAnchor(view.bottomAnchor, -120.0 as CGFloat).active = true
-            datePickerView.widthAnchor.constraintEqualToConstant(view.frame.useContents { (size.width - 20.0) as CGFloat }).active = true
-            datePickerView.centerXAnchor.constraintEqualToAnchor(view.centerXAnchor).active = true
-            view.translatesAutoresizingMaskIntoConstraints = false
-        }.run {
-            parent.presentViewController(this, animated, null)
+
+            val topAnchor = datePicker.message?.let {
+                UILabel().apply {
+                    text = it
+                    containerView.addSubview(this)
+                    translatesAutoresizingMaskIntoConstraints = false
+                    bottomAnchor.constraintEqualToAnchor(
+                        datePickerView.topAnchor,
+                        -15.0 as CGFloat
+                    ).active = true
+                    containerView.leadingAnchor.constraintEqualToAnchor(
+                        leadingAnchor,
+                        -20.0 as CGFloat
+                    ).active = true
+                    containerView.trailingAnchor.constraintEqualToAnchor(
+                        trailingAnchor,
+                        20.0 as CGFloat
+                    ).active = true
+                    bottomAnchor
+                }.topAnchor
+            } ?: datePickerView.topAnchor
+
+            topAnchor.constraintEqualToAnchor(containerView.topAnchor, 10.0 as CGFloat).active = true
+
+            UIButton().apply {
+                addTarget(this@DateTimePickerViewController, sel_registerName("onSelected"), UIControlEventTouchUpInside)
+                view.insertSubview(this, 0)
+                translatesAutoresizingMaskIntoConstraints = false
+                view.topAnchor.constraintEqualToAnchor(this.topAnchor).active = true
+                view.bottomAnchor.constraintEqualToAnchor(bottomAnchor).active = true
+                view.leadingAnchor.constraintEqualToAnchor(leadingAnchor).active = true
+                view.trailingAnchor.constraintEqualToAnchor(trailingAnchor).active = true
+            }
         }
+
+        @ObjCAction
+        private fun onSelected() {
+            completion(Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
+            dismissDateTimePicker(true)
+        }
+    }
+
+    actual class Builder(private val viewController: UIViewController) : BaseDateTimePickerPresenter.Builder() {
+        actual override fun create(coroutineScope: CoroutineScope) =
+            DateTimePickerPresenter(createDateTimePicker(), viewController)
+    }
+
+    override fun dismissDateTimePicker(animated: Boolean) {
+        parent.dismissModalViewControllerAnimated(animated)
+    }
+
+    override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
+        dismissDateTimePicker(animated)
+        parent.presentViewController(DateTimePickerViewController(datePicker, completion), animated, null)
     }
 }
