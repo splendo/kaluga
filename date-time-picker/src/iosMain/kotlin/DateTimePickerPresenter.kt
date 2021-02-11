@@ -93,12 +93,12 @@ actual class DateTimePickerPresenter(
                 }
             }
             view.addSubview(datePickerView)
-            addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleCancel) { completion(null) })
             addAction(
                 UIAlertAction.actionWithTitle(datePicker.confirmButtonTitle, UIAlertActionStyleDefault) {
                     completion(Date.epoch((datePickerView.date.timeIntervalSince1970 * 1000.0).toLong(), datePicker.selectedDate.timeZone, datePicker.locale))
                 }
             )
+            addAction(UIAlertAction.actionWithTitle(datePicker.cancelButtonTitle, UIAlertActionStyleDefault) { completion(null) })
             val anchor = datePicker.message?.let {
                 val label = UILabel()
                 label.text = it
