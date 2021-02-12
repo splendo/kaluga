@@ -92,20 +92,6 @@ class MyActivity: KalugaViewModelActivity<HudViewModel>() {
 }
 ```
 
-For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.
-
-```kotlin
-val contextObserver = UIContextObserver()
-val builder = AlertBuilder(contextObserver)
-contextObserver.subscribe(activity)
-launch {
-    builder.build(this) {
-        setStyle(HUDStyle.CUSTOM)
-        setTitle("Loading...")
-    }.present()
-}
-```
-
 Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
 
 ```xml

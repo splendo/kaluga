@@ -77,8 +77,7 @@ On iOS actions can be: `Default`, `Cancel` and `Destructive`.
 The `AlertPresenter.Builder` object should be created from the platform side.  
   
 ### Android  
-On Android this builder needs a `UIContextObserver` (see Architecture) object to provide the current context in which to display the alert.  
-For `BaseViewModel`, the `UIContextObserver` will be automatically provided with the correct context, provided the builder is **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.  
+For `BaseViewModel`, the builder is **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.  
   
 ```kotlin  
 class AlertViewModel: ViewModel() {  
@@ -95,25 +94,14 @@ class MyActivity: KalugaViewModelActivity<AlertViewModel>() {
  private val viewModel: HudViewModel by viewModels()  
  override fun onCreate(savedInstanceState: Bundle?) { super.onCreate(savedInstanceState)  
  viewModel.buildAlert() }}  
-```  
-  
-For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.  
-  
-```kotlin  
-// Android specific  
-val contextObserver = UIContextObserver()  
-val builder = AlertPresenter.Builder(contextObserver)  
-contextObserver.subscribe(activity)  
-builder.buildAlert {  
- // Alert Logic}  
-```  
+```
   
 ### iOS  
 On iOS this builder should be instantiated with `UIViewController`:  
   
 ```swift  
 // iOS specific  
-let builder = AlertPresenter.Builder(viewController)  
+let builder = AlertPresenter.Builder(viewCfontroller)  
 builder.buildAlert {  
  // Alert Logic}  
 ```  

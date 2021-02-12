@@ -66,16 +66,6 @@ class MyActivity: KalugaViewModelActivity<ReviewViewModel>() {
 }
 ```
 
-For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.
-
-```kotlin
-val contextObserver = UIContextObserver()
-val builder = ReviewManager.Builder(lifecycleManagerObserver = contextObserver)
-contextObserver.subscribe(activity)
-launch {
-    builder.create().attemptToRequestReview()
-}
-
 In addition, Android allows you to pass a ReviewManager.Type.
 For production apps this should refer to `Live`, though a `Fake` type may be passed for testing purposes.
 Note that Fake will still not show a Review dialog on apps not installed though the playstore.
