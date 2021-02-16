@@ -30,19 +30,22 @@ fun requestReview() {
 ```
 
 ### Android
-The Android ReviewManager can only be tested on apps that have been installed though the playstore.
+The Android ReviewManager can only be tested on apps that have been installed though the Playstore.
 Use an internal testing track to validate this library.
 
-On Android the `ReviewManager.Builder` needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel`.
+In addition, Android allows you to pass a ReviewManager.Type.
+For production apps this should refer to `Live`, though a `Fake` type may be passed for testing purposes.
+Note that Fake will still not show a Review dialog on apps not installed though the Playstore.
 
-You can use the `AppCompatActivity.reviewManager()` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
+On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the review manager.
+For `BaseViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
 
 ```kotlin
 class ReviewViewModel: BaseViewModel() {
 
     val builder = ReviewManager.Builder()
 
-    fun present() {
+    fun attemptToRequestReview() {
         coroutineScope.launch {
             viewModel.builder.create().attemptToRequestReview()
         }
@@ -66,6 +69,22 @@ class MyActivity: KalugaViewModelActivity<ReviewViewModel>() {
 }
 ```
 
-In addition, Android allows you to pass a ReviewManager.Type.
-For production apps this should refer to `Live`, though a `Fake` type may be passed for testing purposes.
-Note that Fake will still not show a Review dialog on apps not installed though the playstore.
+For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+
+```kotlin
+// Android specific
+MainScope().launch {
+    val builder = ReviewManager.Builder()
+    builder.subscribe(activity)
+    builder.create(coroutineScope).attemptToRequestReview()
+}
+```
+
+You can use the `AppCompatActivity.reviewManager()` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
+
+### iOS
+On iOS simply create the builder
+
+```swift
+let builder = ReviewManager.Builder()
+```

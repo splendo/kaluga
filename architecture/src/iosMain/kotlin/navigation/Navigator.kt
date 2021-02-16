@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.architecture.navigation
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
@@ -49,7 +48,7 @@ import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
 import kotlin.native.ref.WeakReference
 
-actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribable {
+actual interface Navigator<A : NavigationAction<*>> {
     actual fun navigate(action: A)
 }
 
