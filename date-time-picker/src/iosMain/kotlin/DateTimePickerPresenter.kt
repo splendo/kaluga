@@ -164,7 +164,7 @@ actual class DateTimePickerPresenter(
     }
 
     override fun showDateTimePicker(animated: Boolean, completion: (Date?) -> Unit) {
-        dismissDateTimePicker(animated)
+        dismissDateTimePicker(false)
         parent.presentViewController(DateTimePickerViewController(datePicker, completion), animated, null)
     }
 }
