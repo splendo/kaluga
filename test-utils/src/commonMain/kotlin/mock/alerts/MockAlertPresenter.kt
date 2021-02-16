@@ -21,13 +21,11 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.alerts.Alert
 import com.splendo.kaluga.alerts.BaseAlertPresenter
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import com.splendo.kaluga.test.mock.architecture.MockLifecycleSubscriber
 import kotlinx.coroutines.CoroutineScope
 
 class MockAlertPresenter(val alert: Alert) : BaseAlertPresenter(alert) {
 
-    class Builder : BaseAlertPresenter.Builder(), LifecycleSubscribable by MockLifecycleSubscriber() {
+    class Builder : BaseAlertPresenter.Builder() {
 
         val builtAlerts = mutableListOf<MockAlertPresenter>()
 

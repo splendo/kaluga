@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.test.mock.architecture
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 
-abstract class MockNavigator<A : NavigationAction<*>> : Navigator<A>, LifecycleSubscribable by MockLifecycleSubscriber()
+abstract class MockNavigator<A : NavigationAction<*>> : Navigator<A>

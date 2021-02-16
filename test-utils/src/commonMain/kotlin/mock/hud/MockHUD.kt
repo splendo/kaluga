@@ -18,15 +18,13 @@
 package com.splendo.kaluga.test.mock.hud
 
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.hud.BaseHUD
 import com.splendo.kaluga.hud.HudConfig
-import com.splendo.kaluga.test.mock.architecture.MockLifecycleSubscriber
 import kotlinx.coroutines.CoroutineScope
 
 class MockHUD(override val hudConfig: HudConfig, coroutineScope: CoroutineScope) : BaseHUD(coroutineScope) {
 
-    class Builder : BaseHUD.Builder(), LifecycleSubscribable by MockLifecycleSubscriber() {
+    class Builder : BaseHUD.Builder() {
 
         val builtHUDs = mutableListOf<MockHUD>()
 
