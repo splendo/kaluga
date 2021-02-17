@@ -22,6 +22,7 @@ import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
 import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
+import platform.Foundation.numberWithInt
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.SafariServices.SFSafariViewController
@@ -318,7 +319,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
 
     private fun openAppStore(storeInfo: NavigationSpec.ThirdParty.StoreInfo) {
         val parent = assertParent() ?: return
-        val parameters = mutableMapOf<Any?, Any>(SKStoreProductParameterITunesItemIdentifier to NSNumber(storeInfo.appId))
+        val parameters = mutableMapOf<Any?, Any>(SKStoreProductParameterITunesItemIdentifier to NSNumber.numberWithInt(storeInfo.appId))
         storeInfo.productId?.let {
             parameters[SKStoreProductParameterProductIdentifier] = it
         }

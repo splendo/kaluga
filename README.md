@@ -24,19 +24,19 @@ dependencies {
 ### Available Modules
 Module | Usage | Library Name | Latest Version
 --- | --- | --- | ---
-[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.1.5
-[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.1.5
-[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.1.5
-[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.1.5
-[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.1.5
-[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.1.5
-[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.1.5
-[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.5
-[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.5
-[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.5
-[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | 0.1.5
-[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | 0.1.5
-[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.5
+[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.1.6
+[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.1.6
+[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.1.6
+[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.1.6
+[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.1.6
+[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.1.6
+[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.1.6
+[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.6
+[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.6
+[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.6
+[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | 0.1.6
+[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | 0.1.6
+[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.6
 
 ## Build instructions
 
