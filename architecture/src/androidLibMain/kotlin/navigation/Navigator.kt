@@ -183,11 +183,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
                     settings.attachments[0]
                 )
             }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(
-                Intent.EXTRA_STREAM, ArrayList(
-                    settings.attachments
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM, ArrayList(
+                        settings.attachments
+                    )
                 )
-            ) }
+            }
         }.apply {
             data = Uri.parse("mailto:")
             type = when (settings.type) {
@@ -280,11 +282,13 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
                     settings.attachments[0]
                 )
             }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(
-                Intent.EXTRA_STREAM, ArrayList(
-                    settings.attachments
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM, ArrayList(
+                        settings.attachments
+                    )
                 )
-            ) }
+            }
         }.apply {
             val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
             data = Uri.parse("smsto:$recipients")
