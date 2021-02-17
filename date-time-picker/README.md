@@ -75,6 +75,7 @@ class DatePickerViewModel: ViewModel() {
                 }.show(true)
             }
         }
+    }
 }
 ```
 
