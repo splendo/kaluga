@@ -279,7 +279,7 @@ sealed class NavigationSpec {
     }
 
     /**
-     * Opens the a Third Party app if installed on the phone or navigates to the store if it does not exist.
+     * Opens a Third Party app if installed on the phone or navigates to the store if it does not exist.
      * @param packageName The name of the package for which to open the store
      * @param openMode The [OpenMode] used to determine how to handle whether to open the app or the PlayStore
      */
