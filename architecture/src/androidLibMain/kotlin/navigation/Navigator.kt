@@ -185,7 +185,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                 putExtra(
-                    Intent.EXTRA_STREAM, ArrayList(
+                    Intent.EXTRA_STREAM,
+                    ArrayList(
                         settings.attachments
                     )
                 )
@@ -284,7 +285,8 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             }
             else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
                 putExtra(
-                    Intent.EXTRA_STREAM, ArrayList(
+                    Intent.EXTRA_STREAM,
+                    ArrayList(
                         settings.attachments
                     )
                 )

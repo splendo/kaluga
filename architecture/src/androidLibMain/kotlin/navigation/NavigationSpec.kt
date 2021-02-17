@@ -283,7 +283,7 @@ sealed class NavigationSpec {
      * @param packageName The name of the package for which to open the store
      * @param openMode The [OpenMode] used to determine how to handle whether to open the app or the PlayStore
      */
-    data class ThirdPartyApp(val packageName: String, val openMode: OpenMode = OpenMode.FALLBACK_TO_STORE): NavigationSpec() {
+    data class ThirdPartyApp(val packageName: String, val openMode: OpenMode = OpenMode.FALLBACK_TO_STORE) : NavigationSpec() {
         enum class OpenMode {
             /**
              * Immediately opens the store
@@ -306,5 +306,5 @@ sealed class NavigationSpec {
      * Navigates according to a given [Intent]
      * @param intent The [Intent] to navigate to
      */
-    data class CustomIntent(val intent: Intent): NavigationSpec()
+    data class CustomIntent(val intent: Intent) : NavigationSpec()
 }
