@@ -291,7 +291,7 @@ sealed class NavigationSpec {
             FORCE_STORE,
 
             /**
-             * Only navigates whn the app is installed
+             * Only navigates when the app is installed
              */
             ONLY_WHEN_INSTALLED,
 

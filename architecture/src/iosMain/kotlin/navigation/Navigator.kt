@@ -56,7 +56,6 @@ import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
 import platform.darwin.NSObject
-import platform.posix.open
 import kotlin.native.ref.WeakReference
 
 actual interface Navigator<A : NavigationAction<*>> {
@@ -71,7 +70,7 @@ actual interface Navigator<A : NavigationAction<*>> {
  */
 class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) : Navigator<A> {
 
-    private inner class StoreKitDelegate: NSObject(), SKStoreProductViewControllerDelegateProtocol {
+    private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
 
         override fun productViewControllerDidFinish(viewController: SKStoreProductViewController) {
             viewController.dismissViewControllerAnimated(true, null)
