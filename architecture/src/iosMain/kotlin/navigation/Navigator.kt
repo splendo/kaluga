@@ -20,10 +20,19 @@ package com.splendo.kaluga.architecture.navigation
 import com.splendo.kaluga.base.GCScheduler
 import kotlinx.cinterop.pointed
 import platform.CoreGraphics.CGFloat
+import platform.Foundation.NSNumber
 import platform.Foundation.NSURL
 import platform.MessageUI.MFMailComposeViewController
 import platform.MessageUI.MFMessageComposeViewController
 import platform.SafariServices.SFSafariViewController
+import platform.StoreKit.SKStoreProductParameterAdvertisingPartnerToken
+import platform.StoreKit.SKStoreProductParameterAffiliateToken
+import platform.StoreKit.SKStoreProductParameterCampaignToken
+import platform.StoreKit.SKStoreProductParameterITunesItemIdentifier
+import platform.StoreKit.SKStoreProductParameterProductIdentifier
+import platform.StoreKit.SKStoreProductParameterProviderToken
+import platform.StoreKit.SKStoreProductViewController
+import platform.StoreKit.SKStoreProductViewControllerDelegateProtocol
 import platform.UIKit.NSLayoutAttributeBottom
 import platform.UIKit.NSLayoutAttributeLeading
 import platform.UIKit.NSLayoutAttributeTop
@@ -46,6 +55,8 @@ import platform.UIKit.removeFromSuperview
 import platform.UIKit.translatesAutoresizingMaskIntoConstraints
 import platform.UIKit.willMoveToParentViewController
 import platform.darwin.NSInteger
+import platform.darwin.NSObject
+import platform.posix.open
 import kotlin.native.ref.WeakReference
 
 actual interface Navigator<A : NavigationAction<*>> {
@@ -60,7 +71,15 @@ actual interface Navigator<A : NavigationAction<*>> {
  */
 class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) : Navigator<A> {
 
+    private inner class StoreKitDelegate: NSObject(), SKStoreProductViewControllerDelegateProtocol {
+
+        override fun productViewControllerDidFinish(viewController: SKStoreProductViewController) {
+            viewController.dismissViewControllerAnimated(true, null)
+        }
+    }
+
     private val parent = WeakReference(parentVC)
+    private val storeKitDelegate: StoreKitDelegate by lazy { StoreKitDelegate() }
 
     override fun navigate(action: A) {
         navigate(navigationMapper.invoke(action), action.bundle)
@@ -82,6 +101,7 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
             is NavigationSpec.Phone -> openDialer(spec)
             is NavigationSpec.Settings -> openSettings()
             is NavigationSpec.Browser -> openBrowser(spec)
+            is NavigationSpec.ThirdParty -> openThirdPartyApp(spec)
         }
         // Since navigation often references UIViewControllers they should be freed up to keep ARC working
         GCScheduler.schedule()
@@ -276,6 +296,54 @@ class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewControlle
     private fun openUrl(urlString: String) {
         NSURL.URLWithString(urlString)?.let {
             UIApplication.sharedApplication.openURL(it)
+        }
+    }
+
+    private fun openThirdPartyApp(thirdPartySpec: NavigationSpec.ThirdParty) {
+        when (val openMode = thirdPartySpec.openMode) {
+            is NavigationSpec.ThirdParty.OpenMode.AppStore -> openAppStore(openMode.storeInfo)
+            is NavigationSpec.ThirdParty.OpenMode.FallbackToAppStore -> openThirdPartyApp(openMode.urlScheme, openMode.storeInfo)
+            is NavigationSpec.ThirdParty.OpenMode.OnlyWhenInstalled -> openThirdPartyApp(openMode.url, null)
+        }
+    }
+
+    private fun openThirdPartyApp(urlScheme: NSURL, storeInfo: NavigationSpec.ThirdParty.StoreInfo?) {
+        if (UIApplication.sharedApplication.canOpenURL(urlScheme)) {
+            UIApplication.sharedApplication.openURL(urlScheme)
+        } else {
+            storeInfo?.let {
+                openAppStore(storeInfo)
+            }
+        }
+    }
+
+    private fun openAppStore(storeInfo: NavigationSpec.ThirdParty.StoreInfo) {
+        val parent = assertParent() ?: return
+        val parameters = mutableMapOf<Any?, Any>(SKStoreProductParameterITunesItemIdentifier to NSNumber(storeInfo.appId))
+        storeInfo.productId?.let {
+            parameters[SKStoreProductParameterProductIdentifier] = it
+        }
+        storeInfo.advertisingPartnerToken?.let {
+            parameters[SKStoreProductParameterAdvertisingPartnerToken] = it
+        }
+        storeInfo.affiliateToken?.let {
+            parameters[SKStoreProductParameterAffiliateToken] = it
+        }
+        storeInfo.campaignToken?.let {
+            parameters[SKStoreProductParameterCampaignToken] = it
+        }
+        storeInfo.providerToken?.let {
+            parameters[SKStoreProductParameterProviderToken] = it
+        }
+        val productViewController = SKStoreProductViewController().apply {
+            delegate = storeKitDelegate
+        }
+        productViewController.loadProductWithParameters(
+            parameters
+        ) { isLoaded, _ ->
+            if (isLoaded) {
+                parent.presentViewController(productViewController, true, null)
+            }
         }
     }
 
