@@ -25,9 +25,10 @@ import android.provider.Settings
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
-actual interface Navigator<A : NavigationAction<*>> {
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
     actual fun navigate(action: A)
 }
 
