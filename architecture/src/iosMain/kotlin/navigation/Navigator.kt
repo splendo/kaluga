@@ -69,7 +69,10 @@ actual interface Navigator<A : NavigationAction<*>> {
  * @param parent The [UIViewController] managing the navigation
  * @param navigationMapper A function mapping the [NavigationAction] to [NavigationSpec]
  */
-class ViewControllerNavigator<A : NavigationAction<*>>(parentVC: UIViewController, private val navigationMapper: (A) -> NavigationSpec) : Navigator<A> {
+class ViewControllerNavigator<A : NavigationAction<*>>(
+    parentVC: UIViewController,
+    private val navigationMapper: (A) -> NavigationSpec
+) : Navigator<A> {
 
     private inner class StoreKitDelegate : NSObject(), SKStoreProductViewControllerDelegateProtocol {
 
