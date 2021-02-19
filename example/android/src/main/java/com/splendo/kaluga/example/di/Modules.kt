@@ -101,7 +101,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
-                    FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
+                    is FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                 }
             }
         )
