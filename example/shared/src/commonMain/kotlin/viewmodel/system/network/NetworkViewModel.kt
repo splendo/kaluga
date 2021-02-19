@@ -19,11 +19,11 @@ package com.splendo.kaluga.example.shared.viewmodel.system.network
 
 import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import com.splendo.kaluga.system.network.state.network
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -33,7 +33,7 @@ class NetworkViewModel(
 
     private val networkRepo = networkStateRepoBuilder.create()
 
-    private val _networkState: HotFlowable<String?> = HotFlowable(null)
+    private val _networkState: MutableStateFlow<String?> = MutableStateFlow(null)
     val networkState = _networkState.toObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
@@ -42,21 +42,16 @@ class NetworkViewModel(
         scope.launch {
             networkRepo.flow().network().collect {
                 when(it) {
-                    is Network.Unknown.WithoutLastNetwork -> _networkState.set(
+                    is Network.Unknown.WithoutLastNetwork -> _networkState.value =
                         "Network's state is Unknown and without the last available connection."
-                    )
-                    is Network.Unknown.WithLastNetwork -> _networkState.set(
+                    is Network.Unknown.WithLastNetwork -> _networkState.value =
                         "Network's state is Unknown and with last known connection as ${it.lastKnownNetwork}."
-                    )
-                    is Network.Known.Cellular -> _networkState.set(
+                    is Network.Known.Cellular -> _networkState.value =
                         "Network's state is Available through Cellular."
-                    )
-                    is Network.Known.Wifi -> _networkState.set(
+                    is Network.Known.Wifi -> _networkState.value =
                         "Network's state is Available through WIFI."
-                    )
-                    Network.Known.Absent -> _networkState.set(
+                    is Network.Known.Absent -> _networkState.value =
                         "Network's state is Absent."
-                    )
                 }
             }
         }
