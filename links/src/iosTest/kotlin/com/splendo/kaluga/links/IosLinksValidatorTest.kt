@@ -38,7 +38,6 @@ class IosLinksValidatorTest {
     @Test
     fun testLinksValidatorFailed() {
         INVALID_URLS.forEach {
-            println("Element is $it")
             assertFalse { linksValidator.isValid(it) }
         }
     }
