@@ -43,8 +43,8 @@ object GCScheduler {
      */
     fun collectIfNotCollecting() {
         if (isCollecting.compareAndSet(expected = false, new = true)) {
-                GC.collect()
-                isCollecting.value = false
-            }
+            GC.collect()
+            isCollecting.value = false
+        }
     }
 }
