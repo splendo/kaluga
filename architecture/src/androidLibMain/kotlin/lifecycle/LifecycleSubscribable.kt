@@ -28,7 +28,9 @@ import com.splendo.kaluga.architecture.viewmodel.ViewModel
 /**
  * Implementing this interface as a public property of a [ViewModel] allows for automatic binding to a [KalugaViewModelLifecycleObserver].
  */
-interface LifecycleSubscribable {
+interface LifecycleSubscribableMarker
+
+interface LifecycleSubscribable : LifecycleSubscribableMarker {
 
     data class LifecycleManager(
         val activity: Activity?,
