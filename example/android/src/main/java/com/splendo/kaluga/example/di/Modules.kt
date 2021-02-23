@@ -21,6 +21,7 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -54,6 +55,11 @@ import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
+import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
+import com.splendo.kaluga.example.system.SystemActivity
+import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
 import com.splendo.kaluga.keyboard.KeyboardManager
@@ -62,6 +68,7 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.review.ReviewManager
+import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -94,6 +101,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
+                    is FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                 }
             }
         )
@@ -162,5 +170,22 @@ val viewModelModule = module {
 
     viewModel { (keyboardHostingView: KeyboardHostingView) ->
         KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
+    }
+
+    viewModel {
+        SystemViewModel(
+            ActivityNavigator {
+                when(it) {
+                    is SystemNavigationActions.Network -> NavigationSpec.Fragment(
+                        R.id.system_features_fragment,
+                        createFragment = { NetworkFragment() }
+                    )
+                }
+            }
+        )
+    }
+
+    viewModel {
+        NetworkViewModel(NetworkStateRepoBuilder(get()))
     }
 }
