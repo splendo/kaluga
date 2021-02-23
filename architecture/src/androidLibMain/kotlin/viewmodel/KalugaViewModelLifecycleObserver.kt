@@ -54,7 +54,7 @@ class KalugaViewModelLifecycleObserver<VM : BaseViewModel> internal constructor(
                 it.getter.visibility == KVisibility.PUBLIC &&
                     it.getter.returnType.isSubtypeOf(LifecycleSubscribableMarker::class.starProjectedType)
             }
-            .map { it.getter(viewModel) as LifecycleSubscribable }
+            .mapNotNull { it.getter(viewModel) as? LifecycleSubscribable }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
