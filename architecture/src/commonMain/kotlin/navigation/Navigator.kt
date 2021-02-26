@@ -29,7 +29,7 @@ open class NavigationAction<B : NavigationBundleSpecRow<*>>(val bundle: Navigati
  * @param type The [NavigationBundleSpecType] describing the object passed by the action
  */
 open class SingleValueNavigationAction<T>(
-    value: T,
+    val value: T,
     val type: NavigationBundleSpecType<T>
 ) : NavigationAction<SingleValueNavigationSpec.Row<T>>(
     SingleValueNavigationSpec(type).toBundle {

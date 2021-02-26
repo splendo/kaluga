@@ -20,7 +20,6 @@ package com.splendo.kaluga.datetimepicker
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Date.Companion.epoch
 import com.splendo.kaluga.base.utils.Locale
@@ -100,7 +99,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
      *
      * @see [DateTimePickerPresenter.Builder]
      */
-    abstract class Builder : LifecycleSubscribable {
+    abstract class Builder {
 
         private var message: String? = null
         private var cancelButtonTitle: String = ""

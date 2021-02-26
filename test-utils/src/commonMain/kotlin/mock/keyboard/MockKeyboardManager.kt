@@ -17,15 +17,13 @@
 
 package com.splendo.kaluga.test.mock.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.test.mock.architecture.MockLifecycleSubscriber
 import kotlinx.coroutines.CoroutineScope
 
 class MockKeyboardManager : BaseKeyboardManager {
 
-    class Builder : BaseKeyboardManager.Builder, LifecycleSubscribable by MockLifecycleSubscriber() {
+    class Builder : BaseKeyboardManager.Builder {
 
         val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
 

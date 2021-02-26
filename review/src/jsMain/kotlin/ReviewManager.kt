@@ -17,11 +17,9 @@
 
 package com.splendo.kaluga.review
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-
 actual class ReviewManager {
 
-    actual class Builder : LifecycleSubscribable {
+    actual class Builder {
         actual fun create() = ReviewManager()
     }
 

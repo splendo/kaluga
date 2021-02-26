@@ -18,21 +18,33 @@
 package com.splendo.kaluga.base
 
 import co.touchlab.stately.concurrency.AtomicBoolean
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlin.native.concurrent.ThreadLocal
 import kotlin.native.internal.GC
 
+@SharedImmutable
+private val isCollecting: AtomicBoolean = AtomicBoolean(false)
+
 @ThreadLocal
 object GCScheduler {
-    private val isCollecting: AtomicBoolean = AtomicBoolean(false)
 
     /**
      * Schedules the Garbage Collector only if no other garbage collection is active.
      * This is useful in case calling the Garbage collector could trigger another call to [GC.collect].
      */
     fun schedule() {
+        MainScope().launch { collectIfNotCollecting() }
+    }
+
+    /**
+     * Runs the Garbage Collector only if no other garbage collection is active.
+     * This is useful in case calling the Garbage collector could trigger another call to [GC.collect].
+     */
+    fun collectIfNotCollecting() {
         if (isCollecting.compareAndSet(expected = false, new = true)) {
             GC.collect()
+            isCollecting.value = false
         }
-        isCollecting.value = false
     }
 }

@@ -18,7 +18,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -36,7 +35,7 @@ interface BaseKeyboardManager {
      *
      * @see KeyboardManager
      */
-    interface Builder : LifecycleSubscribable {
+    interface Builder {
 
         /**
          * Creates KeyboardManager object

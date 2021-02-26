@@ -22,7 +22,7 @@ dependencies {
 Show default HUD:
 
 ```kotlin
-launch {
+MainScope().launch {
     val hud = builder.build(this)
     hud.present()
     // do Stuff
@@ -36,7 +36,7 @@ launch {
 Custom HUD with title:
 
 ```kotlin
-launch {
+MainScope().launch {
     val hud = builder.build(this) {
         setStyle(HUDStyle.CUSTOM)
         setTitle("Loading...")
@@ -56,9 +56,8 @@ The `HUD` has methods to show and dismiss a loading indicator view:
 The `HUD.Builder` class can be used to build HUDs.
 
 ### Android
-On Android this builder needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel` 
-
-You can use the `AppCompatActivity.hudBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
+On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the HUD.
+For `BaseViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
 
 ```kotlin
 class HudViewModel: BaseViewModel() {
@@ -92,19 +91,20 @@ class MyActivity: KalugaViewModelActivity<HudViewModel>() {
 }
 ```
 
-For other usages, make sure to call `UIContextObserver.subscribe` and `UIContextObserver.unsubscribe` to manage the lifecycle manually.
+For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
 
 ```kotlin
-val contextObserver = UIContextObserver()
-val builder = AlertBuilder(contextObserver)
-contextObserver.subscribe(activity)
-launch {
-    builder.build(this) {
-        setStyle(HUDStyle.CUSTOM)
-        setTitle("Loading...")
+// Android specific
+MainScope().launch {
+    val builder = HUD.Builder()
+    builder.subscribe(activity)
+    builder.build(coroutineScope) {
+        // HUD Logic
     }.present()
 }
 ```
+
+You can use the `AppCompatActivity.hudBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
 Define your custom colors inside `colors.xml` if using `.CUSTOM` style:
 
