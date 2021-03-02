@@ -19,82 +19,9 @@ package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.GCScheduler
 
-typealias DisposeHandler = () -> Unit
+actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose) {
 
-/**
- * Reference to an object that should be disposed in time
- */
-interface Disposable {
-    /**
-     * Disposes the associated object
-     */
-    fun dispose()
-
-    /**
-     * Adds this disposable to a [DisposeBag]
-     */
-    fun addTo(disposeBag: DisposeBag)
-}
-
-/**
- * PLain [Disposable] to an object that should be disposed in time
- * @param onDispose Function to call when disposing the object
- */
-class SimpleDisposable(onDispose: DisposeHandler) : Disposable {
-
-    private var disposeHandler: DisposeHandler? = onDispose
-
-    /**
-     * Disposes the associated object
-     */
-    override fun dispose() {
-        disposeHandler?.invoke()
-        disposeHandler = null
+    override fun afterDispose() {
         GCScheduler.schedule()
-    }
-
-    /**
-     * Adds this disposable to a [DisposeBag]
-     */
-    override fun addTo(disposeBag: DisposeBag) {
-        disposeBag.add(this)
-    }
-}
-
-/**
- * Container for multiple [Disposable]. Allows nested [DisposeBag]
- */
-class DisposeBag : Disposable {
-
-    private val disposables = mutableListOf<Disposable>()
-    private val nestedBags = mutableListOf<DisposeBag>()
-
-    /**
-     * Adds a nested [DisposeBag]
-     */
-    fun add(disposeBag: DisposeBag) {
-        nestedBags.add(disposeBag)
-    }
-
-    /**
-     * Adds a [Disposable] to this [DisposeBag]
-     */
-    fun add(disposable: Disposable) {
-        disposables.add(disposable)
-    }
-
-    override fun addTo(disposeBag: DisposeBag) {
-        disposeBag.add(this)
-    }
-
-    /**
-     * Disposes all [Disposable]s and nested [DisposeBag]s added to this [DisposeBag].
-     * Added elements can only be disposed once
-     */
-    override fun dispose() {
-        disposables.forEach { it.dispose() }
-        disposables.clear()
-        nestedBags.forEach { it.dispose() }
-        nestedBags.clear()
     }
 }

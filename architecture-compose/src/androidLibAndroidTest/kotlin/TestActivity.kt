@@ -14,20 +14,8 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.architecture.compose
 
-package com.splendo.kaluga.test.utils
+import androidx.appcompat.app.AppCompatActivity
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.ObservableOptional
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withTimeout
-
-actual suspend fun <T> Observable<T>.awaitCurrentValue(
-    timeOut: Long
-): T = withTimeout(timeOut) {
-    val value by this@awaitCurrentValue
-    while (value is ObservableOptional.Nothing) {
-        delay(100)
-    }
-    (value as ObservableOptional.Value).value
-}
+class TestActivity : AppCompatActivity()
