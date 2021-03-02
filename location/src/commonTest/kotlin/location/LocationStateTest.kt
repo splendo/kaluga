@@ -20,7 +20,6 @@ package com.splendo.kaluga.location
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -516,8 +515,8 @@ class LocationStateTest : FlowableTest<LocationState>() {
         testWithFlow(test)
     }
 
-    override fun flowable(): Flowable<LocationState> {
-        return locationStateRepo.flowable
+    override fun mutableSharedFlow(): MutableSharedFlow<LocationState> {
+        return locationStateRepo.mutableFlow
     }
 }
 

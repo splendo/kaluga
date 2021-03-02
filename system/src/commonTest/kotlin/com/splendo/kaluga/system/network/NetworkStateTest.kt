@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.FlowTest
@@ -33,7 +32,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
 
     lateinit var networkStateRepo: NetworkStateRepo
 
-    override fun flowable(): Flowable<NetworkState> = networkStateRepo.flowable
+    override fun mutableSharedFlow() = networkStateRepo.mutableFlow
 
     private fun testNetworkState(test: FlowTestBlock<NetworkState>) {
         networkStateRepo = networkStateRepoBuilder.create()

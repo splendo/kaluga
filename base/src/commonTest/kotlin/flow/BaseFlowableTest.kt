@@ -17,66 +17,35 @@
 
 package com.splendo.kaluga.base.test.flow
 
-import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.flow.Flowable
+import com.splendo.kaluga.base.flow.takeUntilLast
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.test.Ignore
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
 class BaseFlowableTest : FlowableTest<String>() {
 
-    // doesn't test BaseFlowable directly, but shows some the working of some coroutine principles used in the class
-    // unignore if you want to experiment more
-    @Ignore
-    @Test
-    fun testConflatedFlow() = runBlocking {
-        val c = ConflatedBroadcastChannel<String>()
-        c.send("Foo")
-        var r: String? = null
-        var flow: Flow<String>?
-        MainScope().launch {
-            flow = c.asFlow()
-            flow!!.collect {
-                r = it
-            }
-            delay(500)
-            r = "FooBar"
-        }
-        delay(200)
-        assertEquals("Foo", r)
-        c.send("Bar")
-        delay(200)
-        assertEquals("Bar", r)
-        delay(200)
-        c.cancel()
-        delay(1000)
-        assertEquals("FooBar", r)
-    }
-
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
-        flowable().set("foo")
+        flow().emit("foo")
         test {
-            assertEquals("foo", it, "Conflation inside the flowable should preserve the set value")
+            assertEquals("foo", it, "Conflation inside the flow should preserve the set value")
         }
     }
 
     @Test
     fun testExceptionBeingThrown() = testWithFlow {
         action {
-            flowable().set("Test")
+            flow().emit("Test")
         }
         try {
             test {
@@ -94,21 +63,20 @@ class BaseFlowableTest : FlowableTest<String>() {
 
     @Test
     fun testStopFlow() = testWithFlow {
+
         val scope = MainScope()
-        val flow = flowable().flow()
+        val flow = flow()
         val collectionJob = scope.async {
             flow.collect { }
         }
 
-        delay(500) // TODO instead listen to flow subscriber count, which we can do once we use SharedFlow instead of BroadcastChannel
-
-        flowable().cancelFlows()
-
-        collectionJob.await()
+        flow.subscriptionCount.filter { it == 1 }.first()
+        collectionJob.cancel()
+        flow.subscriptionCount.filter { it == 0 }.first()
     }
 
-    val flow = HotFlowable("")
-    override fun flowable(): Flowable<String> {
+    private val flow = MutableStateFlow("")
+    override fun mutableSharedFlow(): MutableSharedFlow<String> {
         return flow
     }
 }

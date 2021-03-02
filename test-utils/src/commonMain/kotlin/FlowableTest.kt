@@ -22,7 +22,6 @@ import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.e
 import com.splendo.kaluga.logging.warn
@@ -32,6 +31,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -44,13 +44,17 @@ typealias FlowTestBlock<T> = suspend FlowTest<T>.() -> Unit
 abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T>) = runBlocking {
-        FlowTest(this, ::flowable).testWithFlow(block)
+        FlowTest(this, ::mutableSharedFlow).testWithFlow(block)
     }
 
-    abstract fun flowable(): Flowable<T>
+    abstract fun mutableSharedFlow(): MutableSharedFlow<T>
 }
 
-open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable: () -> Flowable<T>) : CoroutineScope by scope {
+open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> MutableSharedFlow<T>) : CoroutineScope by scope {
+
+    @Deprecated("use flow() instead", ReplaceWith("flow"))
+    val flowable: () -> MutableSharedFlow<T>
+        get() = flow
 
     open var filter: suspend(T) -> Boolean = { true }
 
@@ -105,7 +109,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable: () -> 
     private suspend fun startFlow() {
         this.ensureNeverFrozen()
 
-        val flowable = flowable()
+        val flowable = flow()
         val testChannel = testChannel
         val filter = filter
 
@@ -115,7 +119,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flowable: () -> 
             job = launch(Dispatchers.Main) {
                 started.complete()
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-                flowable.flow().filter(filter).collect { value ->
+                flowable.filter(filter).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
                     val test = testChannel.receive()
                     debug("received test block $test")

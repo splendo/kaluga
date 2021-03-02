@@ -20,12 +20,12 @@ package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.yield
 import kotlin.test.Test
@@ -108,8 +108,8 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
 
     private val trafficLight = TrafficLight()
 
-    override fun flowable(): Flowable<TrafficLightState> {
-        return trafficLight.flowable
+    override fun mutableSharedFlow(): MutableSharedFlow<TrafficLightState> {
+        return trafficLight.mutableFlow
     }
 
     @Test
@@ -228,7 +228,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
 
     @Test
     fun testMultipleObservers() = testWithFlow {
-        val greenState = flowable().flow().first()
+        val greenState = flow().first()
         assertTrue(greenState is TrafficLightState.GreenLight)
         trafficLight.takeAndChangeState {
             when (val state = it) {
@@ -236,7 +236,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
                 else -> state.remain()
             }
         }
-        val yellowState = flowable().flow().first()
+        val yellowState = flow().first()
         assertTrue(yellowState is TrafficLightState.YellowLight)
     }
 
@@ -279,7 +279,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
             }
 
             transitionsCompleted.await()
-            val redState = flowable().flow().first()
+            val redState = flow().first()
             assertTrue(redState is TrafficLightState.RedLight)
         }
     }

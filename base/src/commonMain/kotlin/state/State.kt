@@ -17,23 +17,30 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 */
 package com.splendo.kaluga.state
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.flow.ColdFlowable
-import com.splendo.kaluga.base.flow.HotFlowable
+import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.FirstCollection
+import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
+import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
+import com.splendo.kaluga.base.flow.onCollectionEvent
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.flow.BaseFlowable
-import com.splendo.kaluga.flow.FlowConfig
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.SharedImmutable
 
@@ -58,7 +65,7 @@ open class State {
     open suspend fun initialState() {}
 
     /**
-     * Called when this state is the final state of the state machine
+     * Called when this state is the final state of the state machine, until a new initialState is made
      */
     open suspend fun finalState() {}
 }
@@ -115,13 +122,14 @@ interface HandleAfterOldStateIsRemoved<S : State> {
  * @param S the [State] represented by this repo.
  * @param coroutineContext the [CoroutineContext] used to create a coroutine scope for this state machine. Make sure that if you pass a coroutine context that has sequential execution if you do not want simultaneous state changes. The default Main dispatcher meets these criteria.
  */
-abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
+abstract class StateRepo<S : State, F:MutableSharedFlow<S>>(coroutineContext: CoroutineContext = Dispatchers.Main) : CoroutineScope by CoroutineScope(coroutineContext + CoroutineName("State Repo")) {
 
-    private val stateMutex = Semaphore(1)
-    // TODO: currently Mutex cannot be frozen on native, this will be fixed in a future release of kotlinx.coroutines
-    // private val stateMutex = Mutex()
+    private val stateMutex = Mutex()
 
-    abstract val flowable: BaseFlowable<S>
+    abstract val mutableFlow: F
+    val subscriptionCount
+        get() =  mutableFlow.subscriptionCount
+
     private val _changedState = AtomicReference<S?>(null)
     internal var changedState
         get() = _changedState.get()
@@ -129,22 +137,21 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
 
     private suspend fun setChangedState(value: S) {
         changedState = value
-        flowable.set(value)
+        mutableFlow.emit(value)
     }
 
     /**
      * Provides a [Flow] of the [State] of this repo.
      *
-     * @param flowConfig the [FlowConfig] to apply to the returned [Flow]
-     * @return a [Flow] of the [State] of this repo
+     * @return The [Flow]
      */
-    fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<S> {
-        return flowable.flow(flowConfig)
+    fun flow(): Flow<S> {
+        return mutableFlow
     }
 
-    internal suspend fun initialize(): S = stateMutex.withPermit {
-        val value = initialValue()
-        changedState = value
+    internal open suspend fun initialize(initialValue:S? = null): S = stateMutex.withLock {
+        val value = initialValue ?: initialValue()
+        setChangedState(value)
         value
     }.also {
         it.initialState() // let the state initialize outside of the mutex to avoid deadlocks
@@ -181,7 +188,7 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
      * @param action the function for which will [State] receive the state, guaranteed to be unchanged for the duration of the function.
      */
     suspend fun useState(action: suspend (S) -> Unit) = coroutineScope {
-        stateMutex.withPermit {
+        stateMutex.withLock {
             val result = EmptyCompletableDeferred()
             launch {
                 try {
@@ -207,7 +214,7 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
      * @param action Function to determine the [State] to be transitioned to from the current [State]. If no state transition should occur, return [State.remain]
      */
     suspend fun takeAndChangeState(action: suspend(S) -> suspend () -> S): S = coroutineScope { // scope around the mutex so asynchronously scheduled coroutines that also use this method can run before the scope completed without deadlocks
-        stateMutex.withPermit {
+        stateMutex.withLock {
             val result = CompletableDeferred<S>()
             launch {
                 try {
@@ -234,31 +241,113 @@ abstract class StateRepo<S : State>(coroutineContext: CoroutineContext = Dispatc
     }
 }
 
+@Suppress("NOTHING_TO_INLINE")
+// Somewhat similar to a ConflatedBroadcastChannel, which was used in the previous implementation
+inline fun <S> defaultLazySharedFlow():Lazy<MutableSharedFlow<S>> = lazy { MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) }
+
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
-abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<S>(coroutineContext) {
+abstract class HotStateRepo<S : State>(
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    private val lazyMutableSharedFlow: Lazy<MutableSharedFlow<S>> = defaultLazySharedFlow()
+) : StateRepo<S, MutableSharedFlow<S>>(coroutineContext) {
 
-    private val hotFlowable = lazy {
-        HotFlowable(runBlocking { initialize() })
+    // guards once only initialization across threads
+    private val initialized = AtomicBoolean(false)
+
+    override val mutableFlow: MutableSharedFlow<S>
+    get() {
+        val isInitialized = lazyMutableSharedFlow.isInitialized()
+        val flow = lazyMutableSharedFlow.value
+        if (!isInitialized && initialized.compareAndSet(expected = false, new = true))
+            launch(coroutineContext) {
+                mutableFlow.subscriptionCount.filter { it < 1 }.first()
+                initialize()
+            }
+        return flow
     }
-    override val flowable: BaseFlowable<S> get() = hotFlowable.value
 }
+
+abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
+    context: CoroutineContext = Dispatchers.Main.immediate
+) : StateRepo<S, F>(context) {
+
+    abstract val lazyMutableFlow: Lazy<F>
+
+    override val mutableFlow: F by lazy {
+        val flow by lazyMutableFlow
+        launch(coroutineContext) {
+            flow.onCollectionEvent {
+                when (it) {
+                    NoMoreCollections -> deinitialize(state())
+                    FirstCollection -> firstInitialization()
+                    LaterCollections -> laterInitializations()
+                }
+            }
+        }
+        flow
+    }
+
+    abstract suspend fun firstInitialization()
+
+    abstract suspend fun laterInitializations()
+
+    abstract suspend fun deinitialize(state: S)
+}
+
+open class ColdStateFlowRepo<S:State>(
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    val init: suspend () -> S,
+    val deinit: suspend (S) -> Unit
+) : BaseColdStateRepo<S, MutableStateFlow<S>>(
+    context = coroutineContext,
+) {
+    val stateflow: StateFlow<S>
+        get() = mutableFlow
+
+    // the first initialization is done in the lazy block below since StateFlow requires an initial value
+    override suspend fun initialValue(): S = init()
+
+    override suspend fun deinitialize(state: S) {
+        deinit(state)
+    }
+
+    override val lazyMutableFlow: Lazy<MutableStateFlow<S>> =
+        lazy {
+            runBlocking(this.coroutineContext) {
+                MutableStateFlow(
+                    init()
+                )
+            }
+        }
+
+    override suspend fun firstInitialization() {
+        initialize(stateflow.value)
+    }
+
+    override suspend fun laterInitializations() {
+        initialize()
+    }
+}
+
 
 /**
  * A [StateRepo] that represents its [State] as a Cold flow. Data will only be set when the State repo is observed
+ * *
+ * This implementation uses a [SharedFlow]. If you want to use a cold state repo based on StateFlow,
+ * consider [ColdStateFlowRepo] or extending [BaseColdStateRepo]
  */
-abstract class ColdStateRepo<S : State>(coroutineContext: CoroutineContext = Dispatchers.Main) : StateRepo<S>(coroutineContext) {
+abstract class ColdStateRepo<S : State>(
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    override val lazyMutableFlow: Lazy<MutableSharedFlow<S>> = defaultLazySharedFlow()
+) : BaseColdStateRepo<S, MutableSharedFlow<S>>(coroutineContext) {
 
-    override val flowable: ColdFlowable<S> = ColdFlowable(
-        {
-            initialize()
-        },
-        { state ->
-            state.finalState()
-            deinitialize(state)
-        }
-    )
+    override suspend fun firstInitialization() {
+        initialize()
+    }
 
-    abstract suspend fun deinitialize(state: S)
+    override suspend fun laterInitializations() {
+        initialize()
+    }
 }

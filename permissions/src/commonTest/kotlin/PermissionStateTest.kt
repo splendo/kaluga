@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.test.FlowableTest
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.test.BeforeTest
@@ -35,8 +36,8 @@ class PermissionStateTest : FlowableTest<PermissionState<Permission.Microphone>>
 
     private lateinit var permissionStateRepo: MockPermissionStateRepo
 
-    override fun flowable(): Flowable<PermissionState<Permission.Microphone>> {
-        return permissionStateRepo.flowable
+    override fun mutableSharedFlow(): MutableSharedFlow<PermissionState<Permission.Microphone>> {
+        return permissionStateRepo.mutableFlow
     }
 
     @BeforeTest

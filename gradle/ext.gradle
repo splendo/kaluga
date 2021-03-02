@@ -5,16 +5,15 @@ enableFeaturePreview("GRADLE_METADATA")
 gradle.ext {
     kotlin_version = kotlin_version
     kotlinx_coroutines_version = '1.4.2-native-mt'
-    stately_version = '1.1.1'
-    stately_isolate_version = '1.1.1-a1'
+    stately_version = '1.1.4'
+    stately_isolate_version = '1.1.4-a1'
     koin_version = '3.0.0-alpha-4'
-    serialization_version = '1.0.1'
+    serialization_version = '1.1.0'
     bintray_plugin_version = '1.8.5'
-    library_version = '0.1.8'
+    library_version = '0.2.0'
     android_min_sdk_version = 21
-    android_target_sdk_version = 29
-    android_build_tools_version = "29.0.3"
-    androidx_browser_version = "1.2.0"
+    android_target_sdk_version = 30
+    android_build_tools_version = "30.0.3"
 
     play_services_version = "17.1.0"
     play_core_version = "1.9.0"
