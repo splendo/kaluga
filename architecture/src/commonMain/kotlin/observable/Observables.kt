@@ -94,9 +94,7 @@ class MutableFlowSubjectHelper<R:T, T, OO:ObservableOptional<R>>(
     ):SuspendableSetter<T> {
 
     init {
-        observation.onFirstObservation = {
-            observeFlow(observation, coroutineScope, context, flow())
-        }
+        observeFlow(observation, coroutineScope, context, flow())
     }
 
     override suspend fun set(newValue: T) = setter(newValue)
@@ -168,6 +166,28 @@ open class StateFlowDefaultSubject<R:T?, T>(
     observation.initialValue,
     observation),
     SuspendableSetter<T?> by MutableFlowSubjectHelper(
+        coroutineScope,
+        context,
+        { observedStateFlow },
+        { observedStateFlow.value = it },
+        { observedStateFlow.value = it},
+        observation
+    )
+
+/**
+ * [Subject] that synchronizes its value to a [MutableStateFlow]
+ * @param observedStateFlow The [MutableStateFlow] to synchronize to
+ * @param coroutineScope The [CoroutineScope] on which to observe changes to the [StateFlow]
+ */
+open class StateFlowInitializedSubject<T>(
+    val coroutineScope: CoroutineScope,
+    val context:CoroutineContext = Dispatchers.Main.immediate,
+    private val observedStateFlow: MutableStateFlow<T>,
+    observation: ObservationInitialized<T> = ObservationInitialized(Value(observedStateFlow.value)),
+) : BaseInitializedSubject<T>(
+    observation.initialValue,
+    observation),
+    SuspendableSetter<T> by MutableFlowSubjectHelper(
         coroutineScope,
         context,
         { observedStateFlow },
@@ -377,6 +397,13 @@ fun <R:T, T> MutableStateFlow<T?>.toDefaultSubject(
     context: CoroutineContext = Dispatchers.Main.immediate
 ): DefaultSubject<R,T?> =
     StateFlowDefaultSubject(defaultValue, coroutineScope, context, this)
+
+fun <T> MutableStateFlow<T>.toInitializedSubject(
+    coroutineScope: CoroutineScope,
+    context: CoroutineContext = Dispatchers.Main.immediate
+): InitializedSubject<T> =
+    StateFlowInitializedSubject(coroutineScope, context, this)
+
 
 fun <T> MutableSharedFlow<T>.toUninitializedSubject(
     coroutineScope: CoroutineScope,

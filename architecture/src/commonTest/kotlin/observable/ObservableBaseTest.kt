@@ -173,11 +173,11 @@ abstract class ObservableBaseTest:BaseTest() {
         if (observable is Initialized<*, *>) {
             assertTrue(initialExpected is Value<*>)
             observableOptional.let {
-                println("--> $it")
                 assertTrue(it is Value<*>)
                 assertEquals(initialExpected.value, it.value)
             }
             assertEquals(initialExpected.value, observable.current)
+            assertEquals(initialExpected.value, observable.stateFlow.value)
         }
 
         if (observable is Uninitialized<*>) {
@@ -199,7 +199,6 @@ abstract class ObservableBaseTest:BaseTest() {
             observedInitializedValue = AtomicReference(unusedValue)
             disposableInitialized = (observable as Initialized<R, T>).observeInitialized { observedInitializedValue.set(it) }
         }
-
 
         when (initialExpected) {
             is Nothing<*> -> assertEquals(null, observedValue.get())
@@ -229,6 +228,7 @@ abstract class ObservableBaseTest:BaseTest() {
 
             assertEquals(expected, observableOptional)
             assertEquals(expected.valueOrNull, observable.currentOrNull)
+            assertEquals(expected.valueOrNull, observable.stateFlow.value)
 
             if (observable is DefaultObservable<*, *>) {
                 assertTrue ( expected is Value<*> )
