@@ -310,14 +310,6 @@ interface UninitializedSubject<T>:BasicSubject<T, T, ObservableOptional<T>>, Uni
 
 interface InitializedSubject<T>:BasicSubject<T, T, Value<T>>, Initialized<T, T>
 
-// interface SuspendableInitializedSubject<T>:InitializedSubject<T>, SuspendableSetter<T>
-//
-// interface SuspendableUninitializedSubject<T>:UninitializedSubject<T>, SuspendableSetter<T>
-//
-// interface SuspendableSubject<T>:InitializedSubject<T>, SuspendableSetter<T>
-//
-// interface SuspendableDefaultSubject<R:T, T>:DefaultSubject<R, T>, SuspendableSetter<T>
-
 interface DefaultObservable<R:T?, T>:BasicObservable<R, T?, Value<R>>, DefaultInitialized<R, T?> {
     val propertyDelegate:ReadWriteProperty<Any?, R>
 }
@@ -341,7 +333,7 @@ interface Initialized<R:T, T>:Initial<R, T> {
 
 interface Initial<R:T, T> {
     val initialValue:ObservableOptional<T>
-    val stateFlow: StateFlow<T?>
+    val stateFlow: StateFlow<R?>
     val currentOrNull:T?
     fun observe(onNext: (R?) -> Unit): Disposable
 }
