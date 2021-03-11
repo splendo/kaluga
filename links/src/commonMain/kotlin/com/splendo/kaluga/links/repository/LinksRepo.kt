@@ -55,7 +55,7 @@ class LinksRepo(
      * Convert an incoming url into an object and emit it as [Links.Incoming.Result].
      * When the given Uri/NSURL is invalid, it emits [Links.Failure].
      * @param query query containing the values from the link.
-     * @param serializer The needed object's serializer.
+     * @param serializer data serializer.
      * */
     fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
         linksManager?.handleIncomingLink(query, serializer)
