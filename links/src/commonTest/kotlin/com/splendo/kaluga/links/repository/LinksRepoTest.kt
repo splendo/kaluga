@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LinksStateTest : BaseLinksTest() {
+class LinksRepoTest : BaseLinksTest() {
 
     @Test
     fun testErrorTransaction() {
