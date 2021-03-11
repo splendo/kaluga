@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.manager.MockLinksStateRepoBuilder
+import com.splendo.kaluga.links.manager.MockLinksRepoBuilder
 import com.splendo.kaluga.links.repository.LinksRepo
 import com.splendo.kaluga.test.BaseTest
 
 abstract class BaseLinksTest : BaseTest() {
 
-    val linksStateRepoBuilder = MockLinksStateRepoBuilder()
-    val linksRepo: LinksRepo = linksStateRepoBuilder.create()
+    val linksRepoBuilder = MockLinksRepoBuilder()
+    val linksRepo: LinksRepo = linksRepoBuilder.create()
 }

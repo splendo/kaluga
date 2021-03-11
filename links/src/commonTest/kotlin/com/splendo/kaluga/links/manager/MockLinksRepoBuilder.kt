@@ -19,7 +19,7 @@ package com.splendo.kaluga.links.manager
 
 import com.splendo.kaluga.links.repository.LinksRepo
 
-class MockLinksStateRepoBuilder : LinksRepo.Builder {
+class MockLinksRepoBuilder : LinksRepo.Builder {
     override fun create(): LinksRepo =
         LinksRepo(MockLinksManagerBuilder())
 }
