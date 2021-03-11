@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.provider.MediaStore
@@ -24,9 +25,10 @@ import android.provider.Settings
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.DialogFragment
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 
-actual interface Navigator<A : NavigationAction<*>> {
+actual interface Navigator<A : NavigationAction<*>> : LifecycleSubscribableMarker {
     actual fun navigate(action: A)
 }
 
@@ -57,10 +59,15 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Settings -> navigateToSettings(spec)
             is NavigationSpec.TextMessenger -> navigateToMessenger(spec)
             is NavigationSpec.Browser -> navigateToBrowser(spec)
+            is NavigationSpec.ThirdPartyApp -> navigateToThirdPartyApp(spec)
+            is NavigationSpec.CustomIntent -> navigateToIntent(spec)
         }
     }
 
-    private fun navigateToActivity(activitySpec: NavigationSpec.Activity<*>, bundle: NavigationBundle<*>?) {
+    private fun navigateToActivity(
+        activitySpec: NavigationSpec.Activity<*>,
+        bundle: NavigationBundle<*>?
+    ) {
         assert(manager?.activity != null)
         val activity = manager?.activity ?: return
         val intent = Intent(activity, activitySpec.activityClass).apply {
@@ -94,17 +101,32 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         val transaction = fragmentManager.beginTransaction()
 
         when (val backtrackSettings = fragmentSpec.backStackSettings) {
-            is NavigationSpec.Fragment.BackStackSettings.Add -> transaction.addToBackStack(backtrackSettings.name)
+            is NavigationSpec.Fragment.BackStackSettings.Add -> transaction.addToBackStack(
+                backtrackSettings.name
+            )
         }
 
         fragmentSpec.animationSettings?.let { animationSettings ->
-            transaction.setCustomAnimations(animationSettings.enter, animationSettings.exit, animationSettings.popEnter, animationSettings.popExit)
+            transaction.setCustomAnimations(
+                animationSettings.enter,
+                animationSettings.exit,
+                animationSettings.popEnter,
+                animationSettings.popExit
+            )
         }
 
         val fragment = fragmentSpec.createFragment()
         when (fragmentSpec.type) {
-            is NavigationSpec.Fragment.Type.Add -> transaction.add(fragmentSpec.containerId, fragment, fragmentSpec.tag)
-            is NavigationSpec.Fragment.Type.Replace -> transaction.replace(fragmentSpec.containerId, fragment, fragmentSpec.tag)
+            is NavigationSpec.Fragment.Type.Add -> transaction.add(
+                fragmentSpec.containerId,
+                fragment,
+                fragmentSpec.tag
+            )
+            is NavigationSpec.Fragment.Type.Replace -> transaction.replace(
+                fragmentSpec.containerId,
+                fragment,
+                fragmentSpec.tag
+            )
         }
 
         transaction.commit()
@@ -156,8 +178,20 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         val settings = emailSpec.emailSettings
         val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
-            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
+            1 -> Intent(Intent.ACTION_SEND).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM,
+                    settings.attachments[0]
+                )
+            }
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM,
+                    ArrayList(
+                        settings.attachments
+                    )
+                )
+            }
         }.apply {
             data = Uri.parse("mailto:")
             type = when (settings.type) {
@@ -244,8 +278,20 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
         val settings = messengerSpec.settings
         val intent = when (settings.attachments.size) {
             0 -> Intent(Intent.ACTION_SEND)
-            1 -> Intent(Intent.ACTION_SEND).apply { putExtra(Intent.EXTRA_STREAM, settings.attachments[0]) }
-            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply { putExtra(Intent.EXTRA_STREAM, ArrayList(settings.attachments)) }
+            1 -> Intent(Intent.ACTION_SEND).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM,
+                    settings.attachments[0]
+                )
+            }
+            else -> Intent(Intent.ACTION_SEND_MULTIPLE).apply {
+                putExtra(
+                    Intent.EXTRA_STREAM,
+                    ArrayList(
+                        settings.attachments
+                    )
+                )
+            }
         }.apply {
             val recipients = settings.recipients.fold("") { acc, recipient -> if (acc.isNotEmpty()) "$acc;$recipient" else recipient }
             data = Uri.parse("smsto:$recipients")
@@ -287,5 +333,62 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
                 }
             }
         }
+    }
+
+    private fun navigateToThirdPartyApp(thirdPartyAppSpec: NavigationSpec.ThirdPartyApp) {
+        when (thirdPartyAppSpec.openMode) {
+            NavigationSpec.ThirdPartyApp.OpenMode.ONLY_WHEN_INSTALLED -> navigateToThirdPartyApp(
+                thirdPartyAppSpec.packageName
+            )
+            NavigationSpec.ThirdPartyApp.OpenMode.FORCE_STORE -> navigateToPlayStore(
+                thirdPartyAppSpec.packageName
+            )
+            NavigationSpec.ThirdPartyApp.OpenMode.FALLBACK_TO_STORE -> {
+                if (!navigateToThirdPartyApp(thirdPartyAppSpec.packageName)) {
+                    navigateToPlayStore(thirdPartyAppSpec.packageName)
+                }
+            }
+        }
+    }
+
+    private fun navigateToThirdPartyApp(packageName: String): Boolean {
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return false
+
+        val intent = activity.packageManager.getLaunchIntentForPackage(packageName) ?: return false
+        return try {
+            activity.startActivity(intent)
+            true
+        } catch (e: ActivityNotFoundException) {
+            false
+        }
+    }
+
+    private fun navigateToPlayStore(packageName: String) {
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
+
+        try {
+            activity.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("market://details?id=$packageName")
+                )
+            )
+        } catch (e: ActivityNotFoundException) {
+            activity.startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+                )
+            )
+        }
+    }
+
+    private fun navigateToIntent(intentSpec: NavigationSpec.CustomIntent) {
+        assert(manager?.activity != null)
+        val activity = manager?.activity ?: return
+
+        activity.startActivity(intentSpec.intent)
     }
 }

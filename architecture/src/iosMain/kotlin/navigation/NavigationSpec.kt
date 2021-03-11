@@ -363,4 +363,61 @@ sealed class NavigationSpec {
             object Normal : Type()
         }
     }
+
+    /**
+     * Opens the AppStore for a given productId
+     * @param openMode The [OpenMode] used for opening the third party app
+     */
+    data class ThirdParty(val openMode: OpenMode) : NavigationSpec() {
+        sealed class OpenMode {
+            /**
+             * Tries to open the app or navigates to the store if it does not exist
+             * @param urlScheme The [NSURL] scheme for opening the app
+             * @param storeInfo The [StoreInfo] used for opening the app store
+             */
+            data class FallbackToAppStore(val urlScheme: NSURL, val storeInfo: StoreInfo) : OpenMode()
+
+            /**
+             * Only navigates whn the app is installed
+             * @param urlScheme The [NSURL] scheme for opening the app
+             */
+            data class OnlyWhenInstalled(val url: NSURL) : OpenMode()
+
+            /**
+             * Opens the AppStore
+             * @param storeInfo The [StoreInfo] used for opening the app store
+             */
+            data class AppStore(val storeInfo: StoreInfo) : OpenMode()
+        }
+
+        /**
+         * Information to specify how the appstore should be opened
+         */
+        data class StoreInfo(
+            /**
+             * Identifier of the AppStore page
+             */
+            val appId: Int,
+            /**
+             * Identifier of the product to promote at the top of the app store
+             */
+            val productId: String? = null,
+            /**
+             *  The token of the advertising partner you wish to use for any purchase made in the app store
+             */
+            val advertisingPartnerToken: String? = null,
+            /**
+             *  The token of the affiliate you wish to use for any purchase made in the app store
+             */
+            val affiliateToken: String? = null,
+            /**
+             * The token for the App Analytics campaign
+             */
+            val campaignToken: String? = null,
+            /**
+             * The provider token for the developer that created the app
+             */
+            val providerToken: String? = null
+        )
+    }
 }

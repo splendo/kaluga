@@ -277,4 +277,34 @@ sealed class NavigationSpec {
             object Normal : Type()
         }
     }
+
+    /**
+     * Opens a Third Party app if installed on the phone or navigates to the store if it does not exist.
+     * @param packageName The name of the package for which to open the store
+     * @param openMode The [OpenMode] used to determine how to handle whether to open the app or the PlayStore
+     */
+    data class ThirdPartyApp(val packageName: String, val openMode: OpenMode = OpenMode.FALLBACK_TO_STORE) : NavigationSpec() {
+        enum class OpenMode {
+            /**
+             * Immediately opens the store
+             */
+            FORCE_STORE,
+
+            /**
+             * Only navigates when the app is installed
+             */
+            ONLY_WHEN_INSTALLED,
+
+            /**
+             * Opens the PlayStore if the app is not installed
+             */
+            FALLBACK_TO_STORE
+        }
+    }
+
+    /**
+     * Navigates according to a given [Intent]
+     * @param intent The [Intent] to navigate to
+     */
+    data class CustomIntent(val intent: Intent) : NavigationSpec()
 }

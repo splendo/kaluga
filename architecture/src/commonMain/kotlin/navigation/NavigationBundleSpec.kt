@@ -203,7 +203,7 @@ sealed class NavigationBundleSpecType<T> {
         }
     }
 
-    class OptionalType<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
+    data class OptionalType<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
         override fun convertValue(value: T?): NavigationBundleValue<T?> {
             return value?.let {
                 NavigationBundleValue.OptionalValue(type.convertValue(it))

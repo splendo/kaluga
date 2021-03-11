@@ -43,12 +43,16 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.state.LinksStateRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
 import platform.UIKit.*
@@ -85,7 +89,8 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
-                        FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.System -> "showSystem"
                     })
             })
     }
@@ -170,6 +175,17 @@ class KNArchitectureFramework {
         return KeyboardViewModel(KeyboardManager.Builder(), textField)
     }
 
+    fun createSystemViewModel(parent: UIViewController): SystemViewModel {
+        return SystemViewModel(
+            ViewControllerNavigator(parent) { action ->
+                when(action) {
+                    SystemNavigationActions.Network ->
+                        NavigationSpec.Segue("showNetwork")
+                }
+            }
+        )
+    }
+
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
@@ -216,6 +232,12 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton
         }
     })
 }
+
+fun SystemViewModel.observeModules(onModuleChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable =
+    modules.observe { modules ->
+        val moduleName = modules.map { it.name }
+        onModuleChanged(moduleName) { onButtonTapped(modules[it]) }
+    }
 
 fun FeatureListViewModel.observeFeatures(onFeaturesChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
     return feature.observe { features ->

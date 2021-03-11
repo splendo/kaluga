@@ -61,7 +61,49 @@ The can be shown using either `suspend fun show(animated: Boolean = true): Date?
 Both methods for showing return the initial selectedDate passed through the builder, modified by the selected date, or null if the date selection was cancelled.
 
 ### Android
-On Android this builder needs to be given a `LifecycleManagerObserver` unless it is a member of a `ViewModel`
+On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the date/time picker.
+For `BaseViewModel`, the builder should be made **publicly** visible and bound to a `KalugaViewModelLifecycleObserver`.
+
+```kotlin
+class DatePickerViewModel: ViewModel() {
+
+    val builder = DateTimePickerPresenter.Builder()
+    fun show() {
+            coroutineScope.launch {
+                val time = builder.buildTimePicker(this) {
+                  // Presentation logic
+                }.show(true)
+            }
+        }
+    }
+}
+```
+
+And then in your `Activity`:
+
+```kotlin
+class MyActivity: KalugaViewModelActivity<DatePickerViewModel>() {
+
+    private val viewModel: DatePickerViewModel by viewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel.show()
+    }
+ }
+```
+
+For other usages, make sure to call `LifecycleSubscriber.subscribe` and `LifecycleSubscriber.unsubscribe` to manage the lifecycle manually.
+
+```kotlin
+// Android specific
+MainScope().launch {
+    val builder = DateTimePickerPresenter.Builder()
+    builder.subscribe(activity)
+    val time = builder.buildTimePicker(this) {
+        // Presentation logic
+    }.show(true)
+}
+```
 
 You can use the `AppCompatActivity.datePickerPresenterBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
 
@@ -69,6 +111,10 @@ The Date/Time Picker shown will use the default theme automatically. Pass the Th
 
 ### iOS
 On iOS the builder should be passed the `UIViewController` responsible for displaying the DateTimePicker.
+
+```swift
+let builder = DateTimePickerPresenter.Builder(viewController)
+```
 
 ### Build Date Picker
 To create `DateTimePickerPresenter` that selects a Date, thread-safe, use.

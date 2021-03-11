@@ -44,3 +44,6 @@
 
 "browser_button_text" = "Open browser";
 "incoming_link_text" = "Convert incoming link";
+
+"feature_system" = "System";
+"network_feature" = "Network";
