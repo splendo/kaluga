@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.links.state
+package com.splendo.kaluga.links.repository
 
 import com.splendo.kaluga.links.repository.LinksRepo
 
