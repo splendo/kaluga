@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.links.state
 
+import com.splendo.kaluga.links.repository.LinksRepo
+
 actual class LinksRepoBuilder : LinksRepo.Builder {
     override fun create(): LinksRepo {
         TODO("Not yet implemented")

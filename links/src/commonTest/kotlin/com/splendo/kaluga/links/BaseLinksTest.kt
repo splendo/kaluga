@@ -18,7 +18,7 @@
 package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.MockLinksStateRepoBuilder
-import com.splendo.kaluga.links.state.LinksRepo
+import com.splendo.kaluga.links.repository.LinksRepo
 import com.splendo.kaluga.test.BaseTest
 
 abstract class BaseLinksTest : BaseTest() {

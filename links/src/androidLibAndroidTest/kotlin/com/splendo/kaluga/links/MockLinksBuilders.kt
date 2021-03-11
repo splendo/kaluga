@@ -21,7 +21,7 @@ import com.splendo.kaluga.links.manager.DefaultLinksManager
 import com.splendo.kaluga.links.manager.LinksManager
 import com.splendo.kaluga.links.manager.LinksStateChange
 import com.splendo.kaluga.links.manager.PlatformLinksValidator
-import com.splendo.kaluga.links.state.LinksRepo
+import com.splendo.kaluga.links.repository.LinksRepo
 
 class MockPlatformLinksStateRepoBuilder : LinksRepo.Builder {
     override fun create(): LinksRepo =
