@@ -30,7 +30,7 @@ import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.links.Links
-import com.splendo.kaluga.links.state.LinksStateRepoBuilder
+import com.splendo.kaluga.links.repository.LinksRepoBuilder
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +55,7 @@ sealed class BrowserSpecRow : NavigationBundleSpecRow<String>(NavigationBundleSp
 }
 
 class LinksViewModel(
-    linkRepoBuilder: LinksStateRepoBuilder,
+    linkRepoBuilder: LinksRepoBuilder,
     val builder: AlertPresenter.Builder,
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
     ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {

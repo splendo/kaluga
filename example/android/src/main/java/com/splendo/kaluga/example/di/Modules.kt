@@ -68,7 +68,7 @@ import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
 import com.splendo.kaluga.keyboard.KeyboardManager
-import com.splendo.kaluga.links.state.LinksStateRepoBuilder
+import com.splendo.kaluga.links.repository.LinksRepoBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -181,7 +181,7 @@ val viewModelModule = module {
 
     viewModel {
         LinksViewModel(
-            LinksStateRepoBuilder(),
+            LinksRepoBuilder(),
             AlertPresenter.Builder(),
             ActivityNavigator {
                 when (it) {
