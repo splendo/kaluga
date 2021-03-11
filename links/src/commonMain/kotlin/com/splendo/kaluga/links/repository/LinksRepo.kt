@@ -42,10 +42,10 @@ class LinksRepo(
     internal var linksManager: LinksManager? = null
 
     init {
-        linksManager = linksManagerBuilder.create(::onLinksStateChange)
+        linksManager = linksManagerBuilder.create(::onLinksChange)
     }
 
-    internal fun onLinksStateChange(link: Links) {
+    internal fun onLinksChange(link: Links) {
         runBlocking {
             post(link)
         }

@@ -21,29 +21,29 @@ import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.utils.decodeFromList
 import kotlinx.serialization.KSerializer
 
-typealias LinksStateChange = (Links) -> Unit
+typealias OnLinksChange = (Links) -> Unit
 
 class DefaultLinksManager(
-    private val onLinksStateChange: LinksStateChange,
+    private val onLinksChange: OnLinksChange,
     private val validator: LinksValidator
 ) : LinksManager {
 
     override fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
         val list = query.extractValuesAsList()
         if (list.isEmpty()) {
-            onLinksStateChange(Links.Failure("Query was empty"))
+            onLinksChange(Links.Failure("Query was empty"))
             return
         }
         val deserializedObject = decodeFromList(list, serializer)
 
-        onLinksStateChange(Links.Incoming.Result(deserializedObject))
+        onLinksChange(Links.Incoming.Result(deserializedObject))
     }
 
     override fun validateLink(url: String) {
         if (validator.isValid(url)) {
-            onLinksStateChange(Links.Outgoing.Link(url))
+            onLinksChange(Links.Outgoing.Link(url))
         } else {
-            onLinksStateChange(Links.Failure("URL is invalid"))
+            onLinksChange(Links.Failure("URL is invalid"))
         }
     }
 }

@@ -18,8 +18,8 @@
 package com.splendo.kaluga.links.manager
 
 class MockLinksManagerBuilder : LinksManager.Builder {
-    override fun create(onLinksStateChange: LinksStateChange): LinksManager =
-        DefaultLinksManager(onLinksStateChange, MockLinksValidator())
+    override fun create(onLinksChange: OnLinksChange): LinksManager =
+        DefaultLinksManager(onLinksChange, MockLinksValidator())
 }
 
 class MockLinksValidator : LinksValidator {

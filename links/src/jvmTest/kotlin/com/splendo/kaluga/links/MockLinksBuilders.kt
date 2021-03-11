@@ -18,7 +18,7 @@
 package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.LinksManager
-import com.splendo.kaluga.links.manager.LinksStateChange
+import com.splendo.kaluga.links.manager.OnLinksChange
 import com.splendo.kaluga.links.repository.LinksRepo
 
 class MockPlatformLinksStateRepoBuilder : LinksRepo.Builder {
@@ -28,7 +28,7 @@ class MockPlatformLinksStateRepoBuilder : LinksRepo.Builder {
 }
 
 class MockPlatformLinksManagerBuilder : LinksManager.Builder {
-    override fun create(onLinksStateChange: LinksStateChange): LinksManager {
+    override fun create(onLinksChange: OnLinksChange): LinksManager {
         TODO("Not yet implemented")
     }
 }

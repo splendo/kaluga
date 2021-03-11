@@ -43,7 +43,7 @@ class LinksStateTest : BaseLinksTest() {
             }
 
             launch {
-                linksRepo.onLinksStateChange(Links.Failure(errorMessage))
+                linksRepo.onLinksChange(Links.Failure(errorMessage))
             }
         }
     }
@@ -62,7 +62,7 @@ class LinksStateTest : BaseLinksTest() {
             }
 
             launch {
-                linksRepo.onLinksStateChange(Links.Incoming.Result(person))
+                linksRepo.onLinksChange(Links.Incoming.Result(person))
             }
         }
     }
@@ -81,7 +81,7 @@ class LinksStateTest : BaseLinksTest() {
             }
 
             launch {
-                linksRepo.onLinksStateChange(Links.Outgoing.Link(link))
+                linksRepo.onLinksChange(Links.Outgoing.Link(link))
             }
         }
     }

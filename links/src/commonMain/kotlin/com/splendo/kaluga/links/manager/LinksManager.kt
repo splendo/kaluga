@@ -22,7 +22,7 @@ import kotlinx.serialization.KSerializer
 interface LinksManager {
 
     interface Builder {
-        fun create(onLinksStateChange: LinksStateChange): LinksManager
+        fun create(onLinksChange: OnLinksChange): LinksManager
     }
 
     fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>)
