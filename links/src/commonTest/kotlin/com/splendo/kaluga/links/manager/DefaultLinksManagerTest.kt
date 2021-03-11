@@ -49,12 +49,12 @@ enum class Languages {
 class CommonLinksManagerTest {
 
     private val linksManager = MockLinksManagerBuilder().create {
-        linksStateChangeResult = it
-        isOnLinksStateChangeCalled = true
+        linksChangeResult = it
+        isOnLinksChangeCalled = true
     }
 
-    private var isOnLinksStateChangeCalled = false
-    private var linksStateChangeResult: Links? = null
+    private var isOnLinksChangeCalled = false
+    private var linksChangeResult: Links? = null
 
     @AfterTest
     fun tearDown() {
@@ -65,8 +65,8 @@ class CommonLinksManagerTest {
     fun testHandleIncomingLinkSucceed() {
         linksManager.handleIncomingLink(Person.dummyQuery, Person.serializer())
 
-        assertTrue { isOnLinksStateChangeCalled }
-        assertEquals(Person.dummyPerson, (linksStateChangeResult as Links.Incoming.Result<Person>).data)
+        assertTrue { isOnLinksChangeCalled }
+        assertEquals(Person.dummyPerson, (linksChangeResult as Links.Incoming.Result<Person>).data)
     }
 
     @Test
@@ -76,8 +76,8 @@ class CommonLinksManagerTest {
 
         linksManager.handleIncomingLink(query, Person.serializer())
 
-        assertTrue { isOnLinksStateChangeCalled }
-        assertEquals(expectedResult, (linksStateChangeResult as Links.Failure).message)
+        assertTrue { isOnLinksChangeCalled }
+        assertEquals(expectedResult, (linksChangeResult as Links.Failure).message)
     }
 
     @Test
@@ -86,8 +86,8 @@ class CommonLinksManagerTest {
 
         linksManager.validateLink(url)
 
-        assertTrue { isOnLinksStateChangeCalled }
-        assertEquals(url, (linksStateChangeResult as Links.Outgoing.Link).url)
+        assertTrue { isOnLinksChangeCalled }
+        assertEquals(url, (linksChangeResult as Links.Outgoing.Link).url)
     }
 
     @Test
@@ -97,12 +97,12 @@ class CommonLinksManagerTest {
 
         linksManager.validateLink(url)
 
-        assertTrue { isOnLinksStateChangeCalled }
-        assertEquals(expectedResult, (linksStateChangeResult as Links.Failure).message)
+        assertTrue { isOnLinksChangeCalled }
+        assertEquals(expectedResult, (linksChangeResult as Links.Failure).message)
     }
 
     private fun resetMocks() {
-        linksStateChangeResult = null
-        isOnLinksStateChangeCalled = false
+        linksChangeResult = null
+        isOnLinksChangeCalled = false
     }
 }
