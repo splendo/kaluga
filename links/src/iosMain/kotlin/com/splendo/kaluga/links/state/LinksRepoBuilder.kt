@@ -19,7 +19,7 @@ package com.splendo.kaluga.links.state
 
 import com.splendo.kaluga.links.manager.LinksManagerBuilder
 
-actual class LinksStateRepoBuilder : LinksRepo.Builder {
+actual class LinksRepoBuilder : LinksRepo.Builder {
     override fun create(): LinksRepo =
         LinksRepo(LinksManagerBuilder())
 }
