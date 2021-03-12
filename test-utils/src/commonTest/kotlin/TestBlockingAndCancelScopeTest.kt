@@ -27,7 +27,7 @@ import kotlin.time.seconds
 class TestBlockingAndCancelScopeTest {
 
     @Test
-    fun testCanceling():Unit = testBlockingAndCancelScope {
+    fun testCanceling(): Unit = testBlockingAndCancelScope {
         launch {
             // normally this would hang the test
             while (true)

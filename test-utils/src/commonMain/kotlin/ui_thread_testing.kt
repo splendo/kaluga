@@ -68,7 +68,7 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
      */
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
         try {
-            val test:suspend (CoroutineScope) -> Unit = { scope ->
+            val test: suspend (CoroutineScope) -> Unit = { scope ->
                 val testContext = scope.createTestContext()
                 yield()
                 try {

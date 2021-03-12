@@ -24,14 +24,18 @@ import kotlinx.coroutines.cancel
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-class DeliberateCancellationException(val result: Any?, freeze:Boolean)
-    : kotlinx.coroutines.CancellationException("Scope canceled deliberately by testAndCancelScope") {
+class DeliberateCancellationException(val result: Any?, freeze: Boolean) :
+    kotlinx.coroutines.CancellationException("Scope canceled deliberately by testAndCancelScope") {
     init {
         if (freeze) freeze()
     }
 }
 
-inline fun <reified T> testBlockingAndCancelScope(context: CoroutineContext = EmptyCoroutineContext, freezeResult:Boolean = true, crossinline block: suspend CoroutineScope.() -> T): T {
+inline fun <reified T> testBlockingAndCancelScope(
+    context: CoroutineContext = EmptyCoroutineContext,
+    freezeResult: Boolean = true,
+    crossinline block: suspend CoroutineScope.() -> T
+): T {
 
     try {
         return runBlocking(context) {
