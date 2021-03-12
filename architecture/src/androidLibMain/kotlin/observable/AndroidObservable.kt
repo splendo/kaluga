@@ -17,4 +17,17 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
+
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)
+
+val <T>Uninitialized<T>.liveData:LiveData<T?>
+    get() = stateFlow.asLiveData()
+
+val <R:T, T>Initialized<R, T>.liveData:LiveData<R>
+    get() = stateFlow.asLiveData()
+
+val <R:T, T, OO:ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
+    get() = Observer<T> { this.post(it) }
