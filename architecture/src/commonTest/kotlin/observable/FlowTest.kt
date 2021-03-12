@@ -20,7 +20,6 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -29,7 +28,7 @@ import kotlin.test.Test
 class FlowTest: ObservableBaseTest() {
 
     private fun <V:String?>flowOfWithDelays(vararg values:V) =
-        flowOf(*values).onStart { delay(DELAY_MS / 2) }.onEach { delay(DELAY_MS) }
+        flowOf(*values).onStart { waitForUpdate() }.onEach { waitForUpdate() }
 
     private fun <V:String?>testUninitializedFlow(
         observable:UninitializedObservable<V>,

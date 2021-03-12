@@ -18,11 +18,13 @@
 package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -100,26 +102,25 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    fun <V:String?, OO:ObservableOptional<V>, O:BasicObservable<V, V, OO>> testStringObservable(
+    fun <R:T, T:String?, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>> testStringObservable(
         observable:O,
-        initialExpected:V,
+        initialExpected:T,
         shortDelayAfterUpdate:Boolean = false,
-        vararg updates: (O) -> ObservableOptional<V>
+        vararg updates: (O) -> ObservableOptional<R>
     ) = testObservable(
         observable,
-        "unused" as V,
+        "unused" as R,
         Value(initialExpected) as OO,
         shortDelayAfterUpdate,
         *updates
     )
 
-    fun <O:DefaultObservable<String, String?>> Pair<String?, String>.asNullableUpdate(useSetter:Boolean):(O) -> String = {
+    fun <O:BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter:Boolean):(O) -> Value<String> = {
         if (useSetter)
             (it as? SuspendableSetter<String?>)?.let { runBlocking { it.set(this@asNullableUpdate.first) } } ?: throw Exception("Could not set value")
         else
             (it as? Postable<String?>)?.post(this.first) ?: throw Exception("Could not post value")
-
-        this.second
+        Value(this.second)
     }
 
     fun <V:String?, OO:ObservableOptional<V>,O:BasicObservable<V, V, OO>> Pair<V, V>.asUpdate(useSetter:Boolean):(O) -> Value<V> = {
@@ -131,14 +132,14 @@ abstract class ObservableBaseTest:BaseTest() {
         Value(this.second)
     }
 
-    fun <S:DefaultSubject<String, String?>> testStringDefaultSubject(
+    fun <S:DefaultSubject<String, String?>>testStringDefaultSubject(
         subject: S,
         initialExpected:String,
         shortDelayAfterUpdate:Boolean = false,
         useSuspendableSetter: Boolean = false,
         vararg updates: Pair<String?, String>
 
-    ) = testStringDefaultObservable(
+    ) = testStringObservable(
         subject,
         initialExpected,
         shortDelayAfterUpdate,
@@ -158,6 +159,11 @@ abstract class ObservableBaseTest:BaseTest() {
             *updates.map { it.asUpdate() }.toTypedArray()
         )
 
+    private lateinit var updateSemaphore:Semaphore
+    suspend fun waitForUpdate() {
+        updateSemaphore.acquire()
+    }
+
     fun <R:T,T, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>>testObservable(
         observable:O,
         unusedValue: R,
@@ -165,6 +171,9 @@ abstract class ObservableBaseTest:BaseTest() {
         shortDelayAfterUpdate:Boolean = false,
         vararg updates: (O) -> ObservableOptional<R>
     ) = runBlocking {
+        val permits = updates.size + 1 // +1 for initial state
+        updateSemaphore = Semaphore(permits).freeze()
+        repeat(permits) { updateSemaphore.acquire() }
 
         val observableOptional by observable
 
@@ -185,7 +194,7 @@ abstract class ObservableBaseTest:BaseTest() {
         }
 
         if (observable is DefaultObservable<*, *>) {
-            val property by observable.propertyDelegate
+            val property by observable.valueDelegate
             assertTrue(initialExpected is Value<*>)
             assertEquals(initialExpected.value, property)
         }
@@ -210,6 +219,8 @@ abstract class ObservableBaseTest:BaseTest() {
             assertEquals(initialExpected.value as R, observedInitializedValue.get())
         }
 
+        updateSemaphore.release()
+
         updates.forEachIndexed { count, update ->
 
             val lastUpdate = count == updates.size -1
@@ -223,16 +234,14 @@ abstract class ObservableBaseTest:BaseTest() {
 
             val expected = update(observable)
 
-            if (shortDelayAfterUpdate)
-                delay(DELAY_MS)
 
             assertEquals(expected, observableOptional)
             assertEquals(expected.valueOrNull, observable.currentOrNull)
-            assertEquals(expected.valueOrNull, observable.stateFlow.value)
+            assertEquals(expected.valueOrNull, (observable as? WithState<R>)?.stateFlow?.value)
 
             if (observable is DefaultObservable<*, *>) {
                 assertTrue ( expected is Value<*> )
-                val property by observable.propertyDelegate
+                val property by observable.valueDelegate
                 assertEquals(expected.value, property)
             }
 
@@ -248,6 +257,13 @@ abstract class ObservableBaseTest:BaseTest() {
             else if (observedInitializedValue != null) {
                 assertEquals(observedBefore, observedInitializedValue.get())
             }
+
+            updateSemaphore.release()
+
+            if (shortDelayAfterUpdate) {
+                delay(DELAY_MS)
+            }
+
         }
     }
 }
