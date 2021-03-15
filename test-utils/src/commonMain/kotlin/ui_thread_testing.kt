@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.yield
 
 open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContext>() {
@@ -69,18 +68,20 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
      */
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
         try {
-            runBlocking(Dispatchers.Main) {
-                val testContext = createTestContext()
+            val test: suspend (CoroutineScope) -> Unit = { scope ->
+                val testContext = scope.createTestContext()
                 yield()
-
                 try {
                     block(testContext)
                 } finally {
                     testContext.dispose()
                 }
-                if (cancelScopeAfterTest)
-                    cancel(cancellationException)
             }
+
+            if (cancelScopeAfterTest)
+                testBlockingAndCancelScope(Dispatchers.Main) { test(this) }
+            else
+                runBlocking(Dispatchers.Main) { test(this) }
         } catch (c: CancellationException) {
             if (!cancelScopeAfterTest || c !== cancellationException)
                 throw c
