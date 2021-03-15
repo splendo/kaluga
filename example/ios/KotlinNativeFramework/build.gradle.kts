@@ -1,3 +1,12 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+}
+
 plugins {
     kotlin("multiplatform")
     kotlin("xcode-compat") version "0.2.5"
