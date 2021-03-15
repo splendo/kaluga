@@ -62,5 +62,6 @@ android {
     dependencies {
         val ext = (gradle as ExtensionAware).extra
         api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${ext["kotlinx_coroutines_version"]}")
     }
 }
