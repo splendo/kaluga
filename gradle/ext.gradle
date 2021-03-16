@@ -1,6 +1,5 @@
 println "tasks: $gradle.startParameter.taskNames"
 
-enableFeaturePreview("GRADLE_METADATA")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlin_version
@@ -34,7 +33,7 @@ gradle.ext {
     androidx_test_espresso_version = "3.3.0$androidx_test_version_postfix"
     androidx_test_junit_version = "1.1.2$androidx_test_version_postfix"
 
-    androidx_compose_version = "1.0.0-alpha08"
+    androidx_compose_version = "1.0.0-beta02"
     use_ir_android_default = false
     // used/modified at runtime.
     use_ir_android = use_ir_android_default

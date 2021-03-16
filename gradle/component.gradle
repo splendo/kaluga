@@ -10,15 +10,6 @@ kotlin {
 
     targets {
         configure([]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
-            }
-        }
-    }
-
-    targets {
-        configure([]) {
             tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
                 freeCompilerArgs += ['-XXLanguage:+InlineClasses']
@@ -28,8 +19,8 @@ kotlin {
 
 
     android("androidLib") {
-        publishAllLibraryVariants()
 
+        publishAllLibraryVariants()
     }
 
     if (gradle.ios_primary_arch == "iosx64")
@@ -165,9 +156,23 @@ kotlin {
 
 android {
 
+    // workaround for https://youtrack.jetbrains.com/issue/KT-43944
+    configurations {
+        androidTestApi {}
+        androidTestDebugApi {}
+        androidTestReleaseApi {}
+        testApi {}
+        testDebugApi {}
+        testReleaseApi {}
+    }
+
+android {
+
     kotlinOptions {
         kotlinOptions {
             jvmTarget = "1.8"
+            logger.lifecycle("use IR: $gradle.ext.use_ir_android")
+            useIR = gradle.ext.use_ir_android
         }
     }
 

@@ -37,6 +37,7 @@ rootProject.name = "Kaluga"
 
 include(":base")
 include(":architecture")
+include(":architecture-compose")
 include(":test-utils")
 include(":alerts")
 include(":date-time-picker")
