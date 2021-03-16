@@ -7,7 +7,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     google()
-    jcenter()
 }
 
 //noinspection UnnecessaryQualifiedReference
@@ -85,10 +84,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    def koin_version = "2.1.5"
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    implementation "org.koin:koin-androidx-fragment:$koin_version"
+    def koin_version = "3.0.1-beta-1"
+    implementation "io.insert-koin:koin-android:$koin_version"
     implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
 }

@@ -13,12 +13,6 @@ apply(from = "../gradle/publishable_component.gradle")
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
-repositories {
-    google()
-    jcenter()
-    mavenCentral()
-}
-
 dependencies {
     val ext = (gradle as ExtensionAware).extra
     val play_core_version: String by ext

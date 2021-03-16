@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
@@ -14,8 +14,8 @@ buildscript {
 
 plugins {
     id 'maven-publish'
-    id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.4.1'
+    id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
+    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.0.0'
 }
 
 apply plugin: "com.jfrog.bintray"
@@ -23,7 +23,7 @@ apply plugin: "com.jfrog.bintray"
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         mavenLocal()
     }
 
