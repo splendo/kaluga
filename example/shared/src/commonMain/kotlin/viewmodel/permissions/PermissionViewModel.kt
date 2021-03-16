@@ -17,21 +17,22 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.permissions
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.InitializedObservable
+import com.splendo.kaluga.architecture.observable.UninitializedObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.request
 import com.splendo.kaluga.resources.localized
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class PermissionViewModel(private val permissions: Permissions, private val permission: Permission) : BaseViewModel() {
 
-    val permissionStateMessage: Observable<String> = permissions[permission]
+    val permissionStateMessage: UninitializedObservable<String> = permissions[permission]
         .map { permissionState ->
             when (permissionState) {
                 is PermissionState.Allowed -> "permission_allowed".localized()
@@ -39,19 +40,19 @@ class PermissionViewModel(private val permissions: Permissions, private val perm
                 is PermissionState.Denied.Locked -> "permission_denied".localized()
             }
         }
-        .toObservable(coroutineScope)
+        .toUninitializedObservable(coroutineScope)
 
-    val showPermissionButton: Observable<Boolean> = permissions[permission]
+    val showPermissionButton: UninitializedObservable<Boolean> = permissions[permission]
         .map { permissionState -> permissionState is PermissionState.Denied.Requestable }
-        .toObservable(coroutineScope)
+        .toUninitializedObservable(coroutineScope)
 
-    private val _requestMessage = HotFlowable<String?>(null)
-    val requestMessage: Observable<String?> = _requestMessage.toObservable(coroutineScope)
+    private val _requestMessage = MutableSharedFlow<String?>(0)
+    val requestMessage: InitializedObservable<String?> = _requestMessage.toInitializedObservable(null, coroutineScope)
 
     fun requestPermission() {
         coroutineScope.launch {
-            _requestMessage.set((if (permissions.request(permission)) "permission_request_success" else "permission_request_failed").localized())
-            _requestMessage.set(null)
+            _requestMessage.emit((if (permissions.request(permission)) "permission_request_success" else "permission_request_failed").localized())
+            _requestMessage.emit(null)
         }
     }
 }

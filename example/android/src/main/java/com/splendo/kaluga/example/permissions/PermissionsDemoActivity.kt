@@ -17,10 +17,12 @@
 
 package com.splendo.kaluga.example.permissions
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.Observer
+import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
@@ -29,7 +31,6 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.permissions.Permission
-import kotlinx.android.synthetic.main.activity_permissions_demo.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -60,20 +61,18 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
             supportActionBar?.title = bundle.get(PermissionNavigationBundleSpecRow).title
         }
 
-        viewModel.permissionStateMessage.observe(this, Observer {
-            permissions_message.text = it
-        })
+        viewModel.permissionStateMessage.observe {
+            findViewById<TextView>(R.id.permissions_message).text = it
+        }
 
-        viewModel.showPermissionButton.observe(this, Observer {
-            btn_permissions_bluetooth_request_permissions.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        viewModel.showPermissionButton.observe {
+            findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).visibility = if (it == true) View.VISIBLE else View.GONE
+        }
 
-        btn_permissions_bluetooth_request_permissions.setOnClickListener { viewModel.requestPermission() }
+        findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).setOnClickListener { viewModel.requestPermission() }
 
-        viewModel.requestMessage.observe(this, Observer { message ->
-            message?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
-        })
+        viewModel.requestMessage.observeInitialized{ message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
     }
 }

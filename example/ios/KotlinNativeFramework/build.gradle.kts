@@ -18,13 +18,16 @@ repositories {
     maven(url="https://kotlin.bintray.com/kotlinx")
 }
 
+task("cleanKotlinNativeFrameworkTest")
+
 kotlin {
 
     xcode {
         setupFramework("KotlinNativeFramework") {
+
             export(project(":shared"))
+
             transitiveExport = true
-            freeCompilerArgs += "-Xobjc-generics"
         }
     }
 

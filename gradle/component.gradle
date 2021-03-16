@@ -17,9 +17,7 @@ kotlin {
         }
     }
 
-
     android("androidLib") {
-
         publishAllLibraryVariants()
     }
 
@@ -156,7 +154,7 @@ kotlin {
 
 android {
 
-    // workaround for https://youtrack.jetbrains.com/issue/KT-43944
+//     workaround for https://youtrack.jetbrains.com/issue/KT-43944
     configurations {
         androidTestApi {}
         androidTestDebugApi {}
@@ -165,6 +163,7 @@ android {
         testDebugApi {}
         testReleaseApi {}
     }
+}
 
 android {
 

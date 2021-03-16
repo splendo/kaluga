@@ -188,7 +188,7 @@ class KNArchitectureFramework {
 
 fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton, () -> Unit) -> Unit): List<Disposable> {
     val selectedButtonDisposeBag = DisposeBag()
-    return listOf(tabs.observe { tabs ->
+    return listOf(tabs.observeInitialized { tabs ->
         selectedButtonDisposeBag.dispose()
         stackView.arrangedSubviews.forEach { subView -> (subView as UIView).removeFromSuperview() }
         tabs.forEach { tab ->
@@ -209,27 +209,27 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton
 }
 
 fun SystemViewModel.observeModules(onModuleChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable =
-    modules.observe { modules ->
+    modules.observeInitialized { modules ->
         val moduleName = modules.map { it.name }
         onModuleChanged(moduleName) { onButtonTapped(modules[it]) }
     }
 
 fun FeatureListViewModel.observeFeatures(onFeaturesChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
-    return feature.observe { features ->
+    return feature.observeInitialized { features ->
         val titles = features.map { feature -> feature.title }
         onFeaturesChanged(titles) { index -> this.onFeaturePressed(features[index]) }
     }
 }
 
 fun InfoViewModel.observeButtons(onInfoButtonsChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
-    return buttons.observe { buttons ->
+    return buttons.observeInitialized { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
     }
 }
 
 fun PermissionsListViewModel.observePermissions(onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit): Disposable {
-    return permissions.observe { permissions ->
+    return permissions.observeInitialized { permissions ->
         onPermissionsChanged(permissions) { index -> this.onPermissionPressed(permissions[index]) }
     }
 }
