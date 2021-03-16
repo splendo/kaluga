@@ -15,7 +15,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
         classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlin_version")
         classpath("com.google.gms:google-services:4.3.3")
-        classpath("org.jlleitschuh.gradle:ktlint-gradle:9.2.1")
+        classpath("org.jlleitschuh.gradle:ktlint-gradle:10.0.0")
         classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_plugin_version")
     }
