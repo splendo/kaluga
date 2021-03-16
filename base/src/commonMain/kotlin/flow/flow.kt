@@ -43,12 +43,12 @@ enum class SharedFlowCollectionEvent {
  * If a flow already exists on this [MutableSharedFlow] the [FirstCollection] event is immediately raised.
  * If no subscriptions exist
  *
- * Note that is this [MutableSharedFlow] was subscribed and unsubscribed before this method was called,
+ * Note that if this [MutableSharedFlow] was subscribed and unsubscribed before this method was called,
  * a new subscription will still raise the [FirstCollection] event
  */
 suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableSharedFlow<T>.(SharedFlowCollectionEvent) -> Unit): Unit =
     subscriptionCount
-        .map { it > 0 } // simplify to zero or more-than-one
+        .map { it > 0 } // simplify to zero (false) or one-or-more (true)
         .dropWhile { !it } // do not report until the first collection
         .distinctUntilChanged() // report as state not an event
         .withIndex() // add an index so we distinguish the first event
@@ -71,7 +71,7 @@ sealed class SpecialFlowValue { // TODO: this can be a sealed interface one day
 
     /**
      * Indicates this value is the last in a series.
-     * This is useful in particular to terminimate collection from endless flows such as SharedFlow and StateFlow.
+     * This is useful in particular to terminate collection from endless flows such as SharedFlow and StateFlow.
      */
     interface Last
 
