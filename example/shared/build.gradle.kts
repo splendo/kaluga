@@ -11,7 +11,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     google()
-    jcenter()
 }
 
 apply(from = "../../gradle/component.gradle")
