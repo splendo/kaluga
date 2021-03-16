@@ -48,7 +48,7 @@ class SpecialFlowValueTest: BaseTest() {
     private fun flow() = flowOf(Normal, NotImportant, Last, More)
 
     @Test
-    fun testSpecialValues() = runBlocking<Unit> {
+    fun testSpecialValues() = runBlocking {
         assertEquals(
             expected = listOf(Normal, NotImportant, Last, More),
             actual = flow().toList()

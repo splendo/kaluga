@@ -48,7 +48,7 @@ enum class SharedFlowCollectionEvent {
  */
 suspend fun <T> MutableSharedFlow<T>.onCollectionEvent(onEvent: suspend MutableSharedFlow<T>.(SharedFlowCollectionEvent) -> Unit): Unit =
     subscriptionCount
-        .map { it > 0 } // simplify to zero or more-than-one
+        .map { it > 0 } // simplify to zero (false) or one-or-more (true)
         .dropWhile { !it } // do not report until the first collection
         .distinctUntilChanged() // report as state not an event
         .withIndex() // add an index so we distinguish the first event
