@@ -7,7 +7,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     google()
-    jcenter()
 }
 
 //noinspection UnnecessaryQualifiedReference
