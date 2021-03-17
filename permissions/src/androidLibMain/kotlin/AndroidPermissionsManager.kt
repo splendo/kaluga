@@ -197,6 +197,12 @@ class AndroidPermissionsManager<P : Permission> constructor(
         permissions.forEach {
             val oldPermissionState = permissionsStates[it]
             val newPermissionState = AndroidPermissionState.get(context, it)
+            /**
+             * Since [AndroidPermissionState.get] doesn't distinguish between
+             * [AndroidPermissionState.DENIED] and [AndroidPermissionState.DENIED_DO_NOT_ASK] states,
+             * we need to prevent [updatePermissionsStates] from over-writing
+             * current [AndroidPermissionState.DENIED_DO_NOT_ASK] state.
+             */
             if (oldPermissionState == AndroidPermissionState.DENIED_DO_NOT_ASK
                 && newPermissionState == AndroidPermissionState.DENIED) {
                 return
