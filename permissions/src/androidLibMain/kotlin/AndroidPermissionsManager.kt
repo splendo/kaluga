@@ -68,9 +68,7 @@ internal enum class AndroidPermissionState {
 
             return if (permissionState == PackageManager.PERMISSION_GRANTED) GRANTED else DENIED
         }
-
     }
-
 }
 
 /**
@@ -203,13 +201,13 @@ class AndroidPermissionsManager<P : Permission> constructor(
              * we need to prevent [updatePermissionsStates] from over-writing
              * current [AndroidPermissionState.DENIED_DO_NOT_ASK] state.
              */
-            if (oldPermissionState == AndroidPermissionState.DENIED_DO_NOT_ASK
-                && newPermissionState == AndroidPermissionState.DENIED) {
+            if (oldPermissionState == AndroidPermissionState.DENIED_DO_NOT_ASK &&
+                newPermissionState == AndroidPermissionState.DENIED
+            ) {
                 return
             }
 
             permissionsStates[it] = newPermissionState
         }
     }
-
 }
