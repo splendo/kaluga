@@ -101,7 +101,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
 
         androidPermissionsManager.startMonitoring(50)
         permissions.forEach {
-            assertEquals(PackageManager.PERMISSION_DENIED, AndroidPermissionsManager.lastPermission[it])
+            assertEquals(PackageManager.PERMISSION_DENIED, AndroidPermissionsManager.permissionsStates[it])
         }
         delay(50)
         verify(permissionsManager, never()).grantPermission()

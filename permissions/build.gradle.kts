@@ -15,16 +15,21 @@ version = ext["library_version"]!!
 val kotlinx_coroutines_version = ext["kotlinx_coroutines_version"]!!
 
 dependencies {
-    val play_services_version = (gradle as ExtensionAware).extra["play_services_version"]
+    val ext = (gradle as ExtensionAware).extra
+    val play_services_version: String by ext
+    val kotlin_version: String by ext
     implementation("com.google.android.gms:play-services-location:$play_services_version")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
 }
 
 kotlin {
-
     sourceSets {
+        getByName("androidLibMain") {
+            dependencies {
+                implementation(kotlin("reflect"))
+            }
+        }
         getByName("commonMain") {
-            val ext = (gradle as ExtensionAware).extra
-
             dependencies {
                 implementation(project(":logging", ""))
                 api(project(":base", ""))
