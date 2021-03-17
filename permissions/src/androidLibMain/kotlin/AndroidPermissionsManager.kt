@@ -18,9 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
@@ -30,37 +32,41 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
-import kotlin.reflect.KCallable
-import kotlin.reflect.full.createType
-import kotlin.reflect.full.isSubtypeOf
 
-enum class AndroidPermissionState {
+internal enum class AndroidPermissionState {
     GRANTED,
     DENIED,
     DENIED_DO_NOT_ASK;
 
     companion object {
 
-        fun get(context: Context, permission: String): AndroidPermissionState {
-            val permissionState = ContextCompat.checkSelfPermission(context, permission)
+        /**
+         * According to my understanding shouldShowRationalePermissionRationale() method
+         * returns false in three cases:
+         * 1. If we call this method very first time before asking permission.
+         * 2. If user selects "Don't ask again" and deny permission.
+         * 3. If the device policy prohibits the app from having that permission.
+         *
+         * That's the reason we utilize shouldShowRationalePermissionRationale()
+         * only from [Activity.onRequestPermissionsResult].
+         */
+        fun get(activity: Activity, permission: String): AndroidPermissionState {
+            val permissionState = ContextCompat.checkSelfPermission(activity, permission)
             if (permissionState == PackageManager.PERMISSION_GRANTED) {
                 return GRANTED
             }
 
-            return shouldShowRequestPermissionRationaleMethod?.let {
-                if (it.call(context.packageManager, permission)) DENIED else DENIED_DO_NOT_ASK
-            } ?: DENIED
+            return if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+                DENIED
+            } else {
+                DENIED_DO_NOT_ASK
+            }
         }
 
-        private val shouldShowRequestPermissionRationaleMethod: KCallable<Boolean>? by lazy {
-            val context = ApplicationHolder.applicationContext
-            val packageManager = context.packageManager
-            packageManager::class
-                .members
-                .find {
-                    it.name == "shouldShowRequestPermissionRationale"
-                            && it.returnType.isSubtypeOf(Boolean::class.createType())
-                } as KCallable<Boolean>?
+        fun get(context: Context, permission: String): AndroidPermissionState {
+            val permissionState = ContextCompat.checkSelfPermission(context, permission)
+
+            return if (permissionState == PackageManager.PERMISSION_GRANTED) GRANTED else DENIED
         }
 
     }
@@ -81,7 +87,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     coroutineScope: CoroutineScope = permissionManager
 ) : CoroutineScope by coroutineScope {
 
-    companion object {
+    internal companion object {
         const val TAG = "Permissions"
 
         val permissionsStates: MutableMap<String, AndroidPermissionState> = mutableMapOf()
@@ -145,7 +151,8 @@ class AndroidPermissionsManager<P : Permission> constructor(
 
     /**
      * Starts monitoring for changes to the permission.
-     * Calls [PermissionManager.grantPermission] if the permission became granted and [PermissionManager.revokePermission] if it became denied.
+     * Calls [PermissionManager.grantPermission] if the permission became granted
+     * and [PermissionManager.revokePermission] if it became denied.
      * @param interval The interval in milliseconds between checks in changes to the permission state.
      */
     fun startMonitoring(interval: Long) {
@@ -157,7 +164,9 @@ class AndroidPermissionsManager<P : Permission> constructor(
             if (hasPermissions) {
                 permissionManager.grantPermission()
             } else {
-                val locked = filteredPermissionsStates.any { it.value == AndroidPermissionState.DENIED_DO_NOT_ASK }
+                val locked = filteredPermissionsStates.any {
+                    it.value == AndroidPermissionState.DENIED_DO_NOT_ASK
+                }
                 permissionManager.revokePermission(locked)
             }
         }
@@ -186,7 +195,14 @@ class AndroidPermissionsManager<P : Permission> constructor(
 
     private fun updatePermissionsStates() {
         permissions.forEach {
-            permissionsStates[it] = AndroidPermissionState.get(context, it)
+            val oldPermissionState = permissionsStates[it]
+            val newPermissionState = AndroidPermissionState.get(context, it)
+            if (oldPermissionState == AndroidPermissionState.DENIED_DO_NOT_ASK
+                && newPermissionState == AndroidPermissionState.DENIED) {
+                return
+            }
+
+            permissionsStates[it] = newPermissionState
         }
     }
 

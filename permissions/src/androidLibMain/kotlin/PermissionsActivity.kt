@@ -24,7 +24,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.splendo.kaluga.logging.info
 
 /**
@@ -54,8 +53,9 @@ class PermissionsActivity : AppCompatActivity() {
             permissions.forEach { permission ->
                 AndroidPermissionsManager.waitingPermissions.remove(permission)
 
-                val permissionStatus = ContextCompat.checkSelfPermission(this, permission)
-                info(TAG, "$permission was $permissionStatus")
+                val permissionState = AndroidPermissionState.get(this, permission)
+                AndroidPermissionsManager.permissionsStates[permission] = permissionState
+                info(TAG, "$permission was $permissionState")
             }
         }
 
