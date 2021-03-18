@@ -181,15 +181,8 @@ class AndroidPermissionsManager<P : Permission> constructor(
     /**
      * `true` if the permission has been granted.
      */
-    internal val hasPermissions: Boolean get() {
-        return filteredPermissionsStates.values.fold(true) { previous, permissionState ->
-            when (permissionState) {
-                AndroidPermissionState.GRANTED -> true
-                AndroidPermissionState.DENIED -> false
-                AndroidPermissionState.DENIED_DO_NOT_ASK -> false
-            } && previous
-        }
-    }
+    internal val hasPermissions: Boolean
+        get() = filteredPermissionsStates.values.all { it == AndroidPermissionState.GRANTED }
 
     private fun updatePermissionsStates() {
         permissions.forEach {
