@@ -89,7 +89,6 @@ class AndroidPermissionsManager<P : Permission> constructor(
         const val TAG = "Permissions"
 
         val permissionsStates: MutableMap<String, AndroidPermissionState> = mutableMapOf()
-        val waitingPermissions: MutableSet<String> = mutableSetOf()
     }
 
     private val filteredPermissionsStates: Map<String, AndroidPermissionState>
@@ -104,9 +103,6 @@ class AndroidPermissionsManager<P : Permission> constructor(
     fun requestPermissions() {
         if (missingPermissionsInManifest().isEmpty()) {
             launch {
-                permissions.forEach {
-                    waitingPermissions.add(it)
-                }
                 val intent = PermissionsActivity.intent(context, *permissions)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(intent)
@@ -158,15 +154,19 @@ class AndroidPermissionsManager<P : Permission> constructor(
         if (timer != null) return
         // TODO use a coroutine bases timer as in iOS
         timer = fixedRateTimer(period = interval) {
-            updatePermissionsStates()
-            if (hasPermissions) {
-                permissionManager.grantPermission()
-            } else {
-                val locked = filteredPermissionsStates.any {
-                    it.value == AndroidPermissionState.DENIED_DO_NOT_ASK
-                }
-                permissionManager.revokePermission(locked)
+            monitor()
+        }
+    }
+
+    internal fun monitor() {
+        updatePermissionsStates()
+        if (hasPermissions) {
+            permissionManager.grantPermission()
+        } else {
+            val locked = filteredPermissionsStates.any {
+                it.value == AndroidPermissionState.DENIED_DO_NOT_ASK
             }
+            permissionManager.revokePermission(locked)
         }
     }
 

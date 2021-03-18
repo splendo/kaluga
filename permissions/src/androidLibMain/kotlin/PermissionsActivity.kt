@@ -51,8 +51,6 @@ class PermissionsActivity : AppCompatActivity() {
 
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             permissions.forEach { permission ->
-                AndroidPermissionsManager.waitingPermissions.remove(permission)
-
                 val permissionState = AndroidPermissionState.get(this, permission)
                 AndroidPermissionsManager.permissionsStates[permission] = permissionState
                 info(TAG, "$permission was $permissionState")
