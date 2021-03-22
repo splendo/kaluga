@@ -392,8 +392,14 @@ fun <R:T, T> ReadWriteProperty<Any?, T?>.toDefaultSubject(defaultValue: R): Defa
 fun <T> Flow<T>.toUninitializedObservable(
     coroutineScope: CoroutineScope,
     context: CoroutineContext = Dispatchers.Main.immediate
-): BaseUninitializedObservable<T> =
+): UninitializedObservable<T> =
     FlowObservable(coroutineScope, context, this)
+
+fun <T> MutableStateFlow<T>.toInitializedObservable(
+    coroutineScope: CoroutineScope,
+    context: CoroutineContext = Dispatchers.Main.immediate
+): InitializedObservable<T> =
+    FlowInitializedObservable(this.value, coroutineScope, context, this)
 
 fun <T> Flow<T>.toInitializedObservable(
     initialValue: T,
