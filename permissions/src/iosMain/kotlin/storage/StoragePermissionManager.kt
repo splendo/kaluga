@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
