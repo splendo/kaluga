@@ -56,7 +56,7 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         delay(60)
         assertTrue(permissionsManager.didGrantPermission.isCompleted)
 
-        timerHelper.isWaiting = AtomicBoolean(true)
+        timerHelper.isWaiting.set(true)
         authorization = IOSPermissionsHelper.AuthorizationStatus.Denied
         permissionsManager.reset()
         delay(60)
