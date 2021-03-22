@@ -23,7 +23,7 @@ override fun onNewIntent(intent: Intent?) {
 ```
 
 ```
-// AppDelegate.
+// AppDelegate.swift
 func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]) -> Void) -> Bool {
     // Get URL components from the incoming user activity.
     guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
