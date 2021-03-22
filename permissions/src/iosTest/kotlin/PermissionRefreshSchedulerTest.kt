@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -55,14 +56,14 @@ class PermissionRefreshSchedulerTest : BaseTest() {
         delay(60)
         assertTrue(permissionsManager.didGrantPermission.isCompleted)
 
-        timerHelper.isWaiting = true
+        timerHelper.isWaiting = AtomicBoolean(true)
         authorization = IOSPermissionsHelper.AuthorizationStatus.Denied
         permissionsManager.reset()
         delay(60)
         assertFalse(permissionsManager.didGrantPermission.isCompleted)
         assertFalse(permissionsManager.didRevokePermission.isCompleted)
 
-        timerHelper.isWaiting = false
+        timerHelper.isWaiting = AtomicBoolean(false)
         delay(50)
         assertTrue(permissionsManager.didRevokePermission.await())
 
