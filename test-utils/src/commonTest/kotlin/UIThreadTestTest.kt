@@ -28,7 +28,6 @@ import kotlinx.coroutines.withTimeout
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.time.minutes
 import kotlin.time.seconds
 
 class SimpleUIThreadTestTest : SimpleUIThreadTest() {
@@ -63,7 +62,7 @@ class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
         launch {
             // normally this would hang the test
             while (true)
-                delay(2.minutes)
+                delay(2.seconds)
         }
     }
 

@@ -239,6 +239,7 @@ sealed class NavigationSpec {
             object LocationSource : Type()
             object InternalStorage : Type()
             object MemoryCard : Type()
+            object AppDetails : Type()
         }
     }
 

@@ -265,6 +265,10 @@ class ActivityNavigator<A : NavigationAction<*>>(private val navigationMapper: (
             is NavigationSpec.Settings.Type.LocationSource -> Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             is NavigationSpec.Settings.Type.InternalStorage -> Intent(Settings.ACTION_INTERNAL_STORAGE_SETTINGS)
             is NavigationSpec.Settings.Type.MemoryCard -> Intent(Settings.ACTION_MEMORY_CARD_SETTINGS)
+            is NavigationSpec.Settings.Type.AppDetails -> {
+                val uri = Uri.fromParts("package", activity.packageName, null)
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
+            }
         }
 
         intent.resolveActivity(activity.packageManager)?.let {
