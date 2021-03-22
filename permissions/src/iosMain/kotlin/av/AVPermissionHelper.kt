@@ -65,7 +65,7 @@ internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, 
     private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
+    private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
 
     internal fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
