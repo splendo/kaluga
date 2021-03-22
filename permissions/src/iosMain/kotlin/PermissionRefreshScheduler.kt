@@ -55,10 +55,10 @@ class PermissionRefreshScheduler<P : Permission>(
         }
     }
 
-    private var lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
+    private val lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
     val isWaiting = AtomicBoolean(false)
-    private var timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
-    private var timerLock = Mutex()
+    private val timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
+    private val timerLock = Mutex()
 
     /**
      * Starts monitoring for changes to the permission
