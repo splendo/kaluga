@@ -37,12 +37,12 @@ class PermissionRefreshScheduler<P : Permission>(
     coroutineScope: CoroutineScope = permissionManager
 ) : CoroutineScope by coroutineScope {
 
-    private sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
-        class TimerNotRunning(coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
-            fun startTimer(interval: Long, block: suspend () -> Unit) = TimerRunning(interval, block, coroutineScope)
+    private sealed class TimerJobState() {
+        object TimerNotRunning : TimerJobState() {
+            fun startTimer(interval: Long, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
         }
 
-        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
+        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState() {
             private val timerLoop = coroutineScope.launch {
                 while (isActive) {
                     delay(interval)
