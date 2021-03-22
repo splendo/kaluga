@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -54,8 +55,8 @@ class PermissionRefreshScheduler<P : Permission>(
     }
 
     private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
-    var isWaiting: Boolean = false
     private var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
+    var isWaiting = AtomicBoolean(false)
     private var timerLock = Mutex()
 
     /**
