@@ -51,7 +51,7 @@ class PermissionRefreshScheduler<P : Permission>(
                 }
             }
 
-            fun stopTimer() = TimerNotRunning(coroutineScope).also { timerLoop.cancel() }
+            fun stopTimer() = TimerNotRunning.also { timerLoop.cancel() }
         }
     }
 
@@ -73,13 +73,18 @@ class PermissionRefreshScheduler<P : Permission>(
         timerLock.withLock {
             val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerNotRunning) {
-                this.timerState = timerJobState.startTimer(interval) {
-                    val status = authorizationStatus()
-                        updateLastPermission()
-                        IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                this.timerState.set(
+                    timerJobState.startTimer(interval, this) {
+                        val status = authorizationStatus()
                         if (isWaiting.value && lastPermission.get() != status) {
+                            updateLastPermission()
+                            IOSPermissionsHelper.handleAuthorizationStatus(
+                                status,
+                                permissionManager
+                            )
+                        }
                     }
-                }
+                )
             }
         }
     }
