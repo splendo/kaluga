@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -54,9 +55,9 @@ class PermissionRefreshScheduler<P : Permission>(
         }
     }
 
-    private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
-    private var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
+    private var lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
     var isWaiting = AtomicBoolean(false)
+    private var timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
     private var timerLock = Mutex()
 
     /**
@@ -70,13 +71,13 @@ class PermissionRefreshScheduler<P : Permission>(
 
     private suspend fun launchTimerJob(interval: Long) {
         timerLock.withLock {
-            val timerJobState = timerState
+            val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerNotRunning) {
                 this.timerState = timerJobState.startTimer(interval) {
                     val status = authorizationStatus()
-                    if (!isWaiting && lastPermission != status) {
                         updateLastPermission()
                         IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                        if (isWaiting.value && lastPermission.get() != status) {
                     }
                 }
             }
@@ -88,14 +89,14 @@ class PermissionRefreshScheduler<P : Permission>(
      */
     suspend fun stopMonitoring() {
         timerLock.withLock {
-            val timerJobState = timerState
+            val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerRunning) {
-                this.timerState = timerJobState.stopTimer()
+                this.timerState.set(timerJobState.stopTimer())
             }
         }
     }
 
     private suspend fun updateLastPermission() {
-        lastPermission = authorizationStatus()
+        lastPermission.set(authorizationStatus())
     }
 }
