@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
@@ -43,7 +45,7 @@ actual class StoragePermissionManager(
     private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
+    private var timerHelper: PermissionRefreshScheduler<Permission.Storage> = PermissionRefreshScheduler(this, authorizationStatus)
 
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.av
 
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
@@ -62,10 +64,10 @@ internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, 
             override val declarationName = NSMicrophoneUsageDescription
         }
     }
-    private val authorizationStatus = suspend {
+    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
-    private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
+    private var timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
 
     internal fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
