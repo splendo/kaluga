@@ -56,7 +56,7 @@ class PermissionRefreshScheduler<P : Permission>(
     }
 
     private var lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
-    var isWaiting = AtomicBoolean(false)
+    val isWaiting = AtomicBoolean(false)
     private var timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
     private var timerLock = Mutex()
 
