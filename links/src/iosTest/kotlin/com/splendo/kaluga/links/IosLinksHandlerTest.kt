@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class IosLinksValidatorTest {
+class IosLinksHandlerTest {
 
     private val linksValidator = PlatformLinksHandler()
 
