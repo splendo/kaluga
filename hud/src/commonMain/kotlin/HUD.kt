@@ -44,7 +44,7 @@ abstract class BaseHUD(coroutineScope: CoroutineScope) : CoroutineScope by corou
     /**
      * Builder class for creating a [BaseHUD]
      */
-    abstract class Builder: LifecycleSubscribableMarker {
+    abstract class Builder : LifecycleSubscribableMarker {
 
         internal val lock = Lock()
 

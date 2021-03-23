@@ -114,7 +114,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
      *
      * @see [AlertPresenter.Builder]
      */
-    abstract class Builder: LifecycleSubscribableMarker {
+    abstract class Builder : LifecycleSubscribableMarker {
 
         private var title: String? = null
         private var message: String? = null

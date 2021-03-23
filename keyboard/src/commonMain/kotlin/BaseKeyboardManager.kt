@@ -36,7 +36,7 @@ interface BaseKeyboardManager {
      *
      * @see KeyboardManager
      */
-    interface Builder: LifecycleSubscribableMarker {
+    interface Builder : LifecycleSubscribableMarker {
 
         /**
          * Creates KeyboardManager object
