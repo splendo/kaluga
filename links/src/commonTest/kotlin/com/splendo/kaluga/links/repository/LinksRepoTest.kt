@@ -69,19 +69,38 @@ class LinksRepoTest : BaseLinksTest() {
 
     @Test
     fun testOutgoingTransaction() {
-        val link = "https://kaluga-test-example.io/${Person.dummyQuery}"
+        val link = "https://kaluga-test-example.io/${Person.dummyUrl}"
         val expectedResult = Links.Outgoing.Link(link)
 
         runBlocking {
             launch {
-                linksRepo.linksEventFlow.collect {
+                linksRepo.validateEventFlow.collect {
                     assertEquals(expectedResult, it)
                     cancel()
                 }
             }
 
             launch {
-                linksRepo.onLinksChange(Links.Outgoing.Link(link))
+                linksRepo.onLinkValidated(Links.Outgoing.Link(link))
+            }
+        }
+    }
+
+    @Test
+    fun testOutgoingTransactionError() {
+        val errorMessage = "Error Message"
+        val expectedResult = Links.Failure(errorMessage)
+
+        runBlocking {
+            launch {
+                linksRepo.validateEventFlow.collect {
+                    assertEquals(expectedResult, it)
+                    cancel()
+                }
+            }
+
+            launch {
+                linksRepo.onLinkValidated(Links.Failure(errorMessage))
             }
         }
     }

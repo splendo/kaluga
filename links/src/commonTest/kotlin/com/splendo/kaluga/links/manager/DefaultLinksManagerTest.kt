@@ -31,7 +31,7 @@ data class Person(
     val spokenLanguages: List<Languages> = emptyList()
 ) {
     companion object {
-        val dummyQuery = "name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
+        val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
         val dummyPerson = Person(
             "Corrado",
             "Quattrocchi",
@@ -48,13 +48,22 @@ enum class Languages {
 
 class CommonLinksManagerTest {
 
-    private val linksManager = MockLinksManagerBuilder().create {
-        linksChangeResult = it
-        isOnLinksChangeCalled = true
-    }
+    private val linksManager = MockLinksManagerBuilder().create(
+        {
+            incomingLinksChangeResult = it
+            isOnLinksChangeCalled = true
+        },
+        {
+            outgoingLinksResult = it
+            isOnLinkValidatedCalled = true
+        }
+    )
 
     private var isOnLinksChangeCalled = false
-    private var linksChangeResult: Links? = null
+    private var incomingLinksChangeResult: Links? = null
+
+    private var isOnLinkValidatedCalled = false
+    private var outgoingLinksResult: Links? = null
 
     @AfterTest
     fun tearDown() {
@@ -63,10 +72,10 @@ class CommonLinksManagerTest {
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        linksManager.handleIncomingLink(Person.dummyQuery, Person.serializer())
+        linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
 
         assertTrue { isOnLinksChangeCalled }
-        assertEquals(Person.dummyPerson, (linksChangeResult as Links.Incoming.Result<Person>).data)
+        assertEquals(Person.dummyPerson, (incomingLinksChangeResult as Links.Incoming.Result<Person>).data)
     }
 
     @Test
@@ -77,17 +86,17 @@ class CommonLinksManagerTest {
         linksManager.handleIncomingLink(query, Person.serializer())
 
         assertTrue { isOnLinksChangeCalled }
-        assertEquals(expectedResult, (linksChangeResult as Links.Failure).message)
+        assertEquals(expectedResult, (incomingLinksChangeResult as Links.Failure).message)
     }
 
     @Test
     fun testHandleOutgoingLinkSucceed() {
-        val url = "valid"
+        val url = "http://valid-link?parameter=1"
 
         linksManager.validateLink(url)
 
-        assertTrue { isOnLinksChangeCalled }
-        assertEquals(url, (linksChangeResult as Links.Outgoing.Link).url)
+        assertTrue { isOnLinkValidatedCalled }
+        assertEquals(url, (outgoingLinksResult as Links.Outgoing.Link).url)
     }
 
     @Test
@@ -97,12 +106,15 @@ class CommonLinksManagerTest {
 
         linksManager.validateLink(url)
 
-        assertTrue { isOnLinksChangeCalled }
-        assertEquals(expectedResult, (linksChangeResult as Links.Failure).message)
+        assertTrue { isOnLinkValidatedCalled }
+        assertEquals(expectedResult, (outgoingLinksResult as Links.Failure).message)
     }
 
     private fun resetMocks() {
-        linksChangeResult = null
+        incomingLinksChangeResult = null
         isOnLinksChangeCalled = false
+
+        outgoingLinksResult = null
+        isOnLinkValidatedCalled = false
     }
 }
