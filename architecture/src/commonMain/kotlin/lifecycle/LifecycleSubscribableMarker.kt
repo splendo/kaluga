@@ -15,23 +15,14 @@
 
  */
 
-package com.splendo.kaluga.review
+package com.splendo.kaluga.architecture.lifecycle
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
+import com.splendo.kaluga.architecture.viewmodel.ViewModel
 
 /**
- * Manager for requesting the system to show a Review Dialog.
- * This library does not guarantee such a dialog will be shown, as the OS may block such an action.
+ * Implementing this interface as a public property of a [ViewModel] allows for automatic binding to platform specific lifecycle aware manager.
+ *
+ * Be aware that classes implementing this interface that reside on a ViewModel as a property will have their getter invoked on instantiating the ViewModel to check if the instance is lifecycle aware (if the platform supports this).
+ * This means, for example, that `lazy` delegation will have little effect.
  */
-expect class ReviewManager {
-
-    class Builder : LifecycleSubscribableMarker {
-        fun create(): ReviewManager
-    }
-
-    /**
-     * Attemps to show a dialog that asks the user to submit a review of the app.
-     * This method does not guarantee such a dialog will be shown as the OS may block it.
-     */
-    suspend fun attemptToRequestReview()
-}
+interface LifecycleSubscribableMarker
