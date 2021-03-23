@@ -329,13 +329,13 @@ interface BasicSubject<R:T, T, OO : ObservableOptional<R>>:BasicObservable<R, T,
     fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
 
-interface UninitializedSubject<T>:BasicSubject<T, T, ObservableOptional<T>>, MutableUninitialized<T>
+interface UninitializedSubject<T>:BasicSubject<T, T, ObservableOptional<T>>, UninitializedObservable<T>, MutableUninitialized<T>
 
-interface InitializedSubject<T>:BasicSubject<T, T, Value<T>>, MutableInitialized<T, T>
+interface InitializedSubject<T>:BasicSubject<T, T, Value<T>>, InitializedObservable<T>, MutableInitialized<T, T>
 
 interface DefaultObservable<R:T?, T>:BasicObservable<R, T?, Value<R>>, DefaultInitialized<R, T?>
 
-interface DefaultSubject<R:T?, T>:BasicSubject<R, T?, Value<R>>, MutableDefaultInitialized<R, T?>
+interface DefaultSubject<R:T?, T>:BasicSubject<R, T?, Value<R>>, DefaultObservable<R, T>, MutableDefaultInitialized<R, T?>
 
 interface WithState<T> {
     val stateFlow:StateFlow<T>
