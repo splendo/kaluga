@@ -38,7 +38,7 @@ class PermissionRefreshScheduler<P : Permission>(
     coroutineScope: CoroutineScope = permissionManager
 ) : CoroutineScope by coroutineScope {
 
-    private sealed class TimerJobState() {
+    private sealed class TimerJobState {
         object TimerNotRunning : TimerJobState() {
             fun startTimer(interval: Long, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
         }
@@ -76,7 +76,7 @@ class PermissionRefreshScheduler<P : Permission>(
                 this.timerState.set(
                     timerJobState.startTimer(interval, this) {
                         val status = authorizationStatus()
-                        if (isWaiting.value && lastPermission.get() != status) {
+                        if (!isWaiting.value && lastPermission.get() != status) {
                             updateLastPermission()
                             IOSPermissionsHelper.handleAuthorizationStatus(
                                 status,
