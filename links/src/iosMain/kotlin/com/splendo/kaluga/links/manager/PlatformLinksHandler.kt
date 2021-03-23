@@ -18,12 +18,21 @@
 package com.splendo.kaluga.links.manager
 
 import platform.Foundation.NSURL
+import platform.Foundation.NSURLComponents
 import platform.Foundation.NSURLConnection
+import platform.Foundation.NSURLQueryItem
 import platform.Foundation.NSURLRequest
 
-actual class PlatformLinksValidator : LinksValidator {
+actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean {
         val _url = NSURL.URLWithString(url) ?: return false
         return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(_url))
+    }
+
+    override fun extractQueryAsList(query: String): List<Any> {
+        val url = NSURLComponents(query)
+        val queryItems = url.queryItems as List<NSURLQueryItem>? ?: return emptyList()
+
+        return queryItems.mapNotNull { it.value }
     }
 }

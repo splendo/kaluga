@@ -17,8 +17,15 @@
 
 package com.splendo.kaluga.links.manager
 
+import android.net.UrlQuerySanitizer
 import android.webkit.URLUtil
 
-actual class PlatformLinksValidator : LinksValidator {
+actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
+
+    override fun extractQueryAsList(url: String): List<Any> {
+        val params = UrlQuerySanitizer(url)
+
+        return params.parameterList.map { it.mValue }
+    }
 }

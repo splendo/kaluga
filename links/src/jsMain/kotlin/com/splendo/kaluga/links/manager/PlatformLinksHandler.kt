@@ -17,8 +17,12 @@
 
 package com.splendo.kaluga.links.manager
 
-actual class PlatformLinksValidator : LinksValidator {
+actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun extractQueryAsList(query: String): List<Any> {
         TODO("Not yet implemented")
     }
 }

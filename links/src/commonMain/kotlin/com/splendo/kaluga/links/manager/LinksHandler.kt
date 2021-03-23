@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
-interface LinksValidator {
+interface LinksHandler {
     fun isValid(url: String): Boolean
+    fun extractQueryAsList(query: String): List<Any>
 }
