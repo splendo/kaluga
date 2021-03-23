@@ -18,14 +18,8 @@
 package com.splendo.kaluga.links.manager
 
 class MockLinksManagerBuilder : LinksManager.Builder {
-    override fun create(onLinksChange: OnLinksChange): LinksManager =
-        DefaultLinksManager(onLinksChange, MockLinksValidator())
-}
-
-class MockLinksValidator : LinksValidator {
-    override fun isValid(url: String): Boolean {
-        return url == "valid"
-    }
+    override fun create(onLinksChange: OnLinksChange, onLinkValidated: OnLinksChange): LinksManager =
+        DefaultLinksManager(onLinksChange, onLinkValidated, PlatformLinksHandler())
 }
 
 object TestConstants {
