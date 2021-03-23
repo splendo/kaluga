@@ -39,15 +39,28 @@ class LinksRepo(
     )
     val linksEventFlow = _linksEventFlow.asSharedFlow()
 
+    private val _validateEventFlow = MutableSharedFlow<Links>(
+        extraBufferCapacity = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
+    val validateEventFlow = _validateEventFlow.asSharedFlow()
+
     internal var linksManager: LinksManager? = null
 
     init {
-        linksManager = linksManagerBuilder.create(::onLinksChange)
+        linksManager = linksManagerBuilder.create(::onLinksChange, ::onLinkValidated)
     }
+
+    internal fun onLinkValidated(link: Links) {
+        runBlocking {
+            postValidatedLink(link)
+        }
+    }
+
 
     internal fun onLinksChange(link: Links) {
         runBlocking {
-            post(link)
+            postIncomingLink(link)
         }
     }
 
@@ -70,7 +83,7 @@ class LinksRepo(
         linksManager?.validateLink(url)
     }
 
-    private suspend fun post(link: Links) {
-        _linksEventFlow.emit(link)
-    }
+    private suspend fun postIncomingLink(link: Links) = _linksEventFlow.emit(link)
+
+    private suspend fun postValidatedLink(link: Links) = _validateEventFlow.emit(link)
 }
