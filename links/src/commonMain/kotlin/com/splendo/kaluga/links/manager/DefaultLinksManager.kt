@@ -25,45 +25,28 @@ typealias OnLinksChange = (Links) -> Unit
 
 class DefaultLinksManager(
     private val onLinksChange: OnLinksChange,
-    private val validator: LinksValidator
+    private val onLinkValidated: OnLinksChange,
+    private val linksHandler: LinksHandler
 ) : LinksManager {
 
     override fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
-        val list = query.extractValuesAsList()
+        val list = linksHandler.extractQueryAsList(query)
         if (list.isEmpty()) {
             onLinksChange(Links.Failure("Query was empty"))
             return
         }
         val deserializedObject = decodeFromList(list, serializer)
-
         onLinksChange(Links.Incoming.Result(deserializedObject))
     }
 
     override fun validateLink(url: String) {
-        if (validator.isValid(url)) {
-            onLinksChange(Links.Outgoing.Link(url))
+        if (linksHandler.isValid(url)) {
+            onLinkValidated(Links.Outgoing.Link(url))
         } else {
-            onLinksChange(Links.Failure("URL is invalid"))
+            onLinkValidated(Links.Failure("URL is invalid"))
         }
     }
-}
-
-fun String.extractValuesAsList(): List<Any> {
-    if (isBlank()) {
-        return emptyList()
-    }
-    if (split("&").size == 1) {
-        return emptyList()
-    }
-
-    return split("&")
-        .filter { it.isNotEmpty() }
-        .mapNotNull {
-            it.split("=").lastOrNull().takeUnless { nullableValue ->
-                nullableValue.isNullOrEmpty()
-            }
-        }
 }
 
 expect class LinksManagerBuilder
-expect class PlatformLinksValidator : LinksValidator
+expect class PlatformLinksHandler : LinksHandler
