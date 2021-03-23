@@ -17,16 +17,17 @@
 
 package com.splendo.kaluga.links
 
-import com.splendo.kaluga.links.manager.PlatformLinksValidator
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
 import com.splendo.kaluga.links.manager.TestConstants.INVALID_URLS
 import com.splendo.kaluga.links.manager.TestConstants.VALID_URLS
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class IosLinksValidatorTest {
 
-    private val linksValidator = PlatformLinksValidator()
+    private val linksValidator = PlatformLinksHandler()
 
     @Test
     fun testLinksValidatorSucceed() {
@@ -40,5 +41,19 @@ class IosLinksValidatorTest {
         INVALID_URLS.forEach {
             assertFalse { linksValidator.isValid(it) }
         }
+    }
+
+    @Test
+    fun testQueryExtractorSucceed() {
+        val url = "https://test.io?list_1=first&list_2=second&list_3=third"
+
+        assertEquals(listOf("first", "second", "third"), linksValidator.extractQueryAsList(url))
+    }
+
+    @Test
+    fun testQueryExtractorEmptyQuery() {
+        val url = "https://test.io"
+
+        assertEquals(emptyList(), linksValidator.extractQueryAsList(url))
     }
 }
