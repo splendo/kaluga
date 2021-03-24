@@ -67,11 +67,11 @@ class LinksRepo(
     /**
      * Convert an incoming url into an object and emit it as [Links.Incoming.Result].
      * When the given Uri/NSURL is invalid, it emits [Links.Failure].
-     * @param query query containing the values from the link.
+     * @param url url containing the query to convert.
      * @param serializer data serializer.
      * */
-    fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
-        linksManager?.handleIncomingLink(query, serializer)
+    fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>) {
+        linksManager?.handleIncomingLink(url, serializer)
     }
 
     /**

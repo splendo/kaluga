@@ -25,6 +25,6 @@ interface LinksManager {
         fun create(onLinksChange: OnLinksChange, onLinkValidated: OnLinksChange): LinksManager
     }
 
-    fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>)
+    fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>)
     fun validateLink(url: String)
 }

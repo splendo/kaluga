@@ -29,8 +29,8 @@ class DefaultLinksManager(
     private val linksHandler: LinksHandler
 ) : LinksManager {
 
-    override fun <T> handleIncomingLink(query: String, serializer: KSerializer<T>) {
-        val list = linksHandler.extractQueryAsList(query)
+    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>) {
+        val list = linksHandler.extractQueryAsList(url)
         if (list.isEmpty()) {
             onLinksChange(Links.Failure("Query was empty"))
             return
