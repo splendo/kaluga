@@ -65,7 +65,7 @@ class LinksRepo(
     }
 
     /**
-     * Convert an incoming url into an object and emit it as [Links.Incoming.Result].
+     * Convert an incoming url's query into an object and emit it as [Links.Incoming.Result].
      * When the given Uri/NSURL is invalid, it emits [Links.Failure].
      * @param url url containing the query to convert.
      * @param serializer data serializer.
