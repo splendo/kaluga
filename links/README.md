@@ -23,7 +23,7 @@ override fun onNewIntent(intent: Intent?) {
     val appLinkData: Uri? = intent?.data
 		appLinkData?.let {
 		    val url = URL(it.path)
-		    sharedViewModel.handleIncomingLink(url, Person.serializer())
+		    sharedViewModel.handleIncomingData(url, Person.serializer())
 		}	
 }
 ```
@@ -37,7 +37,7 @@ func application(_ application: NSApplication, continue userActivity: NSUserActi
         return false
     }
     
-    viewController.viewModel.handleIncomingLinks(incomingUrl, Person.Companion.serializer())
+    viewController.viewModel.handleIncomingData(incomingUrl, Person.Companion.serializer())
 }
 ```
 
