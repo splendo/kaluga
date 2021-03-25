@@ -52,7 +52,6 @@
     <string name="location_disable_background">Disable Background</string>
 
     <string name="browser_button_text">Open browser</string>
-    <string name="incoming_link_text">Convert incoming link</string>
 
     <string name="network_feature">Network</string>
 </resources>
