@@ -57,11 +57,11 @@ actual class NotificationsPermissionManager(
     private val timerHelper = PermissionRefreshScheduler(this, authorization)
 
     override suspend fun requestPermission() {
-        timerHelper.isWaiting = true
+        timerHelper.isWaiting.value = true
         notificationCenter.requestAuthorizationWithOptions(
             notifications.options?.options ?: UNAuthorizationOptionNone,
             mainContinuation { authorization, error ->
-                timerHelper.isWaiting = false
+                timerHelper.isWaiting.value = false
                 error?.let {
                     revokePermission(true)
                 } ?: run {
