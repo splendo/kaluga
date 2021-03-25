@@ -187,7 +187,7 @@ val viewModelModule = module {
                 when (it) {
                     is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
                         URL(it.bundle!!.get(BrowserSpecRow.UrlSpecRow)),
-                        NavigationSpec.Browser.Type.CustomTab
+                        NavigationSpec.Browser.Type.Normal
                     )
                 }
             }
