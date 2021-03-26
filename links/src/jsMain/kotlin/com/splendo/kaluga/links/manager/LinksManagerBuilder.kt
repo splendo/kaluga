@@ -17,4 +17,8 @@
 
 package com.splendo.kaluga.links.manager
 
-actual class LinksManagerBuilder
+actual class LinksManagerBuilder : LinksManager.Builder {
+    override fun create(): LinksManager {
+        TODO("Not yet implemented")
+    }
+}
