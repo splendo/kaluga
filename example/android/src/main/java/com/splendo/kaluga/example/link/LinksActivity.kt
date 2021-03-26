@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.example.link
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.databinding.DataBindingUtil
@@ -32,6 +33,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.net.URL
 
 class LinksActivity : KalugaViewModelActivity<LinksViewModel>(R.layout.activity_link) {
 
@@ -41,6 +43,24 @@ class LinksActivity : KalugaViewModelActivity<LinksViewModel>(R.layout.activity_
         super.onCreate(savedInstanceState)
 
         setupBindings()
+
+        handleAppLinks(intent)
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            handleAppLinks(it)
+        }
+    }
+
+    private fun handleAppLinks(intent: Intent) {
+        intent.let { i ->
+            i.data?.let { uri ->
+                val url = URL(uri.scheme, uri.host, uri.path)
+                viewModel.handleIncomingLink("$url?${uri.encodedQuery}")
+            }
+        }
     }
 
     private fun setupBindings() {

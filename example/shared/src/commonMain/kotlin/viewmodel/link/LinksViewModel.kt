@@ -61,43 +61,9 @@ class LinksViewModel(
     ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
-    val incomingLinkButtonText = observableOf("incoming_link_text".localized())
+    val linksInstructions = observableOf("links_instructions".localized())
 
     private val linksRepo = linkRepoBuilder.create()
-
-    override fun onResume(scope: CoroutineScope) {
-        super.onResume(scope)
-        scope.launch(Dispatchers.Main) {
-            linksRepo.linksEventFlow.collect {
-                when (it) {
-                    is Links.Incoming.Result<*> -> {
-                        val result = (it.data as Repository)
-                        showAlert(
-                            result.name,
-                            result.type,
-                            Alert.Action.Style.POSITIVE
-                        )
-                    }
-                    is Links.Outgoing.Link ->
-                        navigator.navigate(
-                            BrowserNavigationActions.OpenWebView(
-                                BrowserSpec().toBundle { row ->
-                                    when (row) {
-                                        is BrowserSpecRow.UrlSpecRow -> row.convertValue(it.url)
-                                    }
-                                }
-                            )
-                        )
-                    is Links.Failure ->
-                        showAlert(
-                            "Error",
-                            it.message,
-                            Alert.Action.Style.NEGATIVE
-                        )
-                }
-            }
-        }
-    }
 
     fun showAlert(title: String, message: String, style: Alert.Action.Style) {
         coroutineScope.launch {
@@ -112,12 +78,42 @@ class LinksViewModel(
     }
 
     fun openWebPage() {
-        linksRepo.validateLink("https://github.com/splendo/kaluga")
+        val result = linksRepo.validateLink("https://kaluga-links.web.app")
+        if (result != null) {
+            navigator.navigate(
+                BrowserNavigationActions.OpenWebView(
+                    BrowserSpec().toBundle { row ->
+                        when (row) {
+                            is BrowserSpecRow.UrlSpecRow -> row.convertValue(
+                                result
+                            )
+                        }
+                    }
+                )
+            )
+        }else {
+            showAlert(
+                "Error Alert",
+                "URL is invalid.",
+                Alert.Action.Style.NEGATIVE
+            )
+        }
     }
 
-    fun handleIncomingLink() {
-        val query = "name=Kaluga&type=Multiplatform library"
-        linksRepo.handleIncomingLink(query, Repository.serializer())
+    fun handleIncomingLink(url: String) {
+        val result = linksRepo.handleIncomingLink(url, Repository.serializer())
+        if (result != null) {
+            showAlert(
+                "Alert",
+                result.toString(),
+                Alert.Action.Style.POSITIVE
+            )
+        } else {
+            showAlert(
+                "Error Alert",
+                "Query is invalid or empty.",
+                Alert.Action.Style.NEGATIVE
+            )
+        }
     }
-
 }

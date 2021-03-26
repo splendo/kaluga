@@ -13,7 +13,7 @@ import KotlinNativeFramework
 class LinksViewController : UIViewController {
     
     @IBOutlet weak var browserButton: UIButton!
-    @IBOutlet weak var incomingLinkButton: UIButton!
+    @IBOutlet weak var instructionsText: UILabel!
     
     private let knArchitectureFramework = KNArchitectureFramework()
     private lazy var viewModel: LinksViewModel = {
@@ -29,8 +29,8 @@ class LinksViewController : UIViewController {
                 self.viewModel.browserButtonText.observe { buttonText in
                     self.browserButton.setTitle(buttonText as String?, for: .normal)
                 },
-                self.viewModel.incomingLinkButtonText.observe { buttonText in
-                    self.incomingLinkButton.setTitle(buttonText as String?, for: .normal)
+                self.viewModel.linksInstructions.observe { text in
+                    self.instructionsText.text = text as String?
                 }
             ]
         }
@@ -40,10 +40,7 @@ class LinksViewController : UIViewController {
         self.viewModel.openWebPage()
     }
     
-    @IBAction func onIncomingLinkButtonTapped(_ sender: UIButton) {
-        print("calling handleIncomingLink")
-        
-        self.viewModel.handleIncomingLink()
+    func handleIncomingLink(url: String) {
+        self.viewModel.handleIncomingLink(url: url)
     }
-    
 }

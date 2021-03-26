@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.splendo.kaluga.example">
+
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -53,7 +54,19 @@
             android:label="Loading Indicator"/>
         <activity android:name=".keyboard.KeyboardManagerActivity"
             android:label="@string/keyboard_manager"/>
-        <activity android:name=".link.LinksActivity" android:label="@string/feature_links"/>
+        <activity android:name=".link.LinksActivity"
+            android:label="@string/feature_links"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="https"
+                    android:host="kaluga-links.web.app"
+                    android:pathPrefix="/kalugaexample"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".architecture.ArchitectureInputActivity"
             android:label="Architecture"/>
         <activity android:name=".architecture.ArchitectureDetailsActivity"
