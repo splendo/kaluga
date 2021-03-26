@@ -17,12 +17,40 @@
 
 package com.splendo.kaluga.links.manager
 
+import com.splendo.kaluga.links.repository.LinksRepo
+import kotlinx.serialization.KSerializer
+
+class MockLinksManager : LinksManager {
+    override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
+        return when (url) {
+            Person.dummyUrl -> Person.dummyPerson as T
+            else -> null
+        }
+    }
+
+    override fun validateLink(url: String): String? {
+        return if (TestConstants.VALID_URLS.contains(url)) {
+            url
+        } else {
+            null
+        }
+    }
+}
+
 class MockLinksManagerBuilder : LinksManager.Builder {
-    override fun create(onLinksChange: OnLinksChange, onLinkValidated: OnLinksChange): LinksManager =
-        DefaultLinksManager(onLinksChange, onLinkValidated, PlatformLinksHandler())
+    override fun create(): LinksManager {
+        return MockLinksManager()
+    }
+}
+
+class MockLinksRepoBuilder : LinksRepo.Builder {
+    override fun create(): LinksRepo {
+        return LinksRepo(MockLinksManagerBuilder())
+    }
 }
 
 object TestConstants {
+
     val VALID_URLS = listOf(
         "https://test.io",
         "http://test.io",

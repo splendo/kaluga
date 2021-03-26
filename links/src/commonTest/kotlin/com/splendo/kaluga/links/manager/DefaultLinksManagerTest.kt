@@ -17,12 +17,9 @@
 
 package com.splendo.kaluga.links.manager
 
-import com.splendo.kaluga.links.Links
 import kotlinx.serialization.Serializable
-import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @Serializable
 data class Person(
@@ -46,75 +43,38 @@ enum class Languages {
     DUTCH,
 }
 
-class CommonLinksManagerTest {
+class LinksManagerTest {
 
-    private val linksManager = MockLinksManagerBuilder().create(
-        {
-            incomingLinksChangeResult = it
-            isOnLinksChangeCalled = true
-        },
-        {
-            outgoingLinksResult = it
-            isOnLinkValidatedCalled = true
-        }
-    )
-
-    private var isOnLinksChangeCalled = false
-    private var incomingLinksChangeResult: Links? = null
-
-    private var isOnLinkValidatedCalled = false
-    private var outgoingLinksResult: Links? = null
-
-    @AfterTest
-    fun tearDown() {
-        resetMocks()
-    }
+    private val linksManager = LinksManagerBuilder().create()
 
     @Test
     fun testHandleIncomingLinkSucceed() {
-        linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
+        val result = linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
 
-        assertTrue { isOnLinksChangeCalled }
-        assertEquals(Person.dummyPerson, (incomingLinksChangeResult as Links.Incoming.Result<Person>).data)
+        assertEquals(Person.dummyPerson, result)
     }
 
     @Test
     fun testHandleIncomingLinkFailed() {
         val query = ""
-        val expectedResult = "Query was empty"
 
-        linksManager.handleIncomingLink(query, Person.serializer())
-
-        assertTrue { isOnLinksChangeCalled }
-        assertEquals(expectedResult, (incomingLinksChangeResult as Links.Failure).message)
+        val result = linksManager.handleIncomingLink(query, Person.serializer())
+        assertEquals(null, result)
     }
 
     @Test
     fun testHandleOutgoingLinkSucceed() {
         val url = "http://valid-link?parameter=1"
 
-        linksManager.validateLink(url)
-
-        assertTrue { isOnLinkValidatedCalled }
-        assertEquals(url, (outgoingLinksResult as Links.Outgoing.Link).url)
+        val result = linksManager.validateLink(url)
+        assertEquals(url, result)
     }
 
     @Test
     fun testHandleOutgoingLinkFailed() {
         val url = "not valid"
-        val expectedResult = "URL is invalid"
 
-        linksManager.validateLink(url)
-
-        assertTrue { isOnLinkValidatedCalled }
-        assertEquals(expectedResult, (outgoingLinksResult as Links.Failure).message)
-    }
-
-    private fun resetMocks() {
-        incomingLinksChangeResult = null
-        isOnLinksChangeCalled = false
-
-        outgoingLinksResult = null
-        isOnLinkValidatedCalled = false
+        val result = linksManager.validateLink(url)
+        assertEquals(null, result)
     }
 }

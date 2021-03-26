@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.links.utils
 
-import com.splendo.kaluga.links.manager.LinksHandler
-import com.splendo.kaluga.links.manager.PlatformLinksHandler
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -47,7 +45,6 @@ data class DataTypesValues(
 
 class LinksDecoderTest {
 
-    private val linksHandler: LinksHandler = PlatformLinksHandler()
     companion object {
         private const val byteValue: Byte = 1
         private val queryValues = listOf<Any>(
@@ -122,28 +119,6 @@ class LinksDecoderTest {
         assertFailsWith<NoSuchElementException> {
             testDataType<String>(linksDecoder.decodeValue())
         }
-    }
-
-    @Test
-    fun testExtractValuesAsList_EmptyQuery() {
-        val url = ""
-        val result = linksHandler.extractQueryAsList(url)
-        assertEquals(emptyList(), result)
-    }
-
-    @Test
-    fun testExtractValuesAsList_EmptyValue() {
-        val url = "http://valid-url.com?country_code=&contry_name="
-        val result = linksHandler.extractQueryAsList(url)
-        assertEquals(listOf("", ""), result)
-    }
-
-    @Test
-    fun testExtractValuesAsList_Success() {
-        val url = "http://valid.com?country_code=NL&country_name=The%20Netherlands"
-        val expectedResult = listOf("NL", "The Netherlands")
-        val result = linksHandler.extractQueryAsList(url)
-        assertEquals(expectedResult, result)
     }
 
     private inline fun <reified T> testDataType(value: Any) {

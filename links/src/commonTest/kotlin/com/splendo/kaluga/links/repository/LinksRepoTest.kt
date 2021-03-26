@@ -17,91 +17,42 @@
 
 package com.splendo.kaluga.links.repository
 
-import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.links.BaseLinksTest
-import com.splendo.kaluga.links.Links
+import com.splendo.kaluga.links.manager.MockLinksRepoBuilder
 import com.splendo.kaluga.links.manager.Person
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import com.splendo.kaluga.links.manager.TestConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LinksRepoTest : BaseLinksTest() {
+class LinksRepoTest {
+
+    private val linksRepoBuilder = MockLinksRepoBuilder()
+    private val linksRepo: LinksRepo = linksRepoBuilder.create()
 
     @Test
-    fun testErrorTransaction() {
-        val errorMessage = "Error Message"
-        val expectedResult = Links.Failure(errorMessage)
-
-        runBlocking {
-            launch {
-                linksRepo.linksEventFlow.collect {
-                    assertEquals(expectedResult, it)
-                    cancel()
-                }
-            }
-
-            launch {
-                linksRepo.onLinksChange(Links.Failure(errorMessage))
-            }
-        }
+    fun testIncomingLinkErrorTransaction() {
+        val result = linksRepo.handleIncomingLink("http://invalid.com", Person.serializer())
+        assertEquals(null, result)
     }
 
     @Test
     fun testIncomingTransaction() {
-        val person = Person.dummyPerson
-        val expectedResult = Links.Incoming.Result(person)
-
-        runBlocking {
-            launch {
-                linksRepo.linksEventFlow.collect {
-                    assertEquals(expectedResult, it)
-                    cancel()
-                }
-            }
-
-            launch {
-                linksRepo.onLinksChange(Links.Incoming.Result(person))
-            }
-        }
+        val result = linksRepo.handleIncomingLink(Person.dummyUrl, Person.serializer())
+        assertEquals(Person.dummyPerson, result)
     }
 
     @Test
     fun testOutgoingTransaction() {
-        val link = "https://kaluga-test-example.io/${Person.dummyUrl}"
-        val expectedResult = Links.Outgoing.Link(link)
-
-        runBlocking {
-            launch {
-                linksRepo.validateEventFlow.collect {
-                    assertEquals(expectedResult, it)
-                    cancel()
-                }
-            }
-
-            launch {
-                linksRepo.onLinkValidated(Links.Outgoing.Link(link))
-            }
+        TestConstants.VALID_URLS.forEach {
+            val result = linksRepo.validateLink(it)
+            assertEquals(it, result)
         }
     }
 
     @Test
     fun testOutgoingTransactionError() {
-        val errorMessage = "Error Message"
-        val expectedResult = Links.Failure(errorMessage)
-
-        runBlocking {
-            launch {
-                linksRepo.validateEventFlow.collect {
-                    assertEquals(expectedResult, it)
-                    cancel()
-                }
-            }
-
-            launch {
-                linksRepo.onLinkValidated(Links.Failure(errorMessage))
-            }
+        TestConstants.INVALID_URLS.forEach {
+            val result = linksRepo.validateLink(it)
+            assertEquals(null, result)
         }
     }
 }
