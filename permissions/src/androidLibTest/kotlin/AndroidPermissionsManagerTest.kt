@@ -24,21 +24,16 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
-import org.mockito.Mockito.never
-import org.mockito.Mockito.reset
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class AndroidPermissionsManagerTest : BaseTest() {
 
@@ -66,6 +61,7 @@ class AndroidPermissionsManagerTest : BaseTest() {
         `when`(context.packageManager).thenReturn(packageManager)
         `when`(context.packageName).thenReturn(packageName)
         `when`(packageManager.getPackageInfo(eq(packageName), eq(PackageManager.GET_PERMISSIONS))).thenReturn(packageInfo)
+        AndroidPermissionsManager.permissionsStates.clear()
     }
 
     @AfterTest
@@ -87,55 +83,43 @@ class AndroidPermissionsManagerTest : BaseTest() {
         androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
         packageInfo.requestedPermissions = permissions
         androidPermissionsManager.requestPermissions()
-        assertTrue(AndroidPermissionsManager.waitingPermissions.containsAll(permissions.toList()))
         verify(context).startActivity(ArgumentMatchers.any(Intent::class.java))
     }
 
     @Test
-    fun testStartMonitoring() = runBlocking {
+    fun test_monitor_permissionsGranted() = runBlocking {
         androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
-        packageInfo.requestedPermissions = permissions
-        permissions.forEach {
-            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
-        }
-
-        androidPermissionsManager.startMonitoring(50)
-        permissions.forEach {
-            assertEquals(PackageManager.PERMISSION_DENIED, AndroidPermissionsManager.lastPermission[it])
-        }
-        delay(50)
-        verify(permissionsManager, never()).grantPermission()
-        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
-
         permissions.forEach {
             `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
         }
-        reset(permissionsManager)
-        delay(50)
+
+        androidPermissionsManager.monitor()
+
         verify(permissionsManager).grantPermission()
+    }
 
+    @Test
+    fun test_monitor_permissionsDenied() = runBlocking {
+        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
         permissions.forEach {
-            AndroidPermissionsManager.waitingPermissions.add(it)
             `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         }
-        reset(permissionsManager)
-        delay(50)
-        verify(permissionsManager, never()).grantPermission()
-        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
 
+        androidPermissionsManager.monitor()
+
+        verify(permissionsManager).revokePermission(false)
+    }
+
+    @Test
+    fun test_monitor_permissionsDeniedDoNotAsk() = runBlocking {
+        androidPermissionsManager = AndroidPermissionsManager(context, permissionsManager, permissions, this)
         permissions.forEach {
-            AndroidPermissionsManager.waitingPermissions.remove(it)
+            AndroidPermissionsManager.permissionsStates[it] = AndroidPermissionState.DENIED_DO_NOT_ASK
+            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_DENIED)
         }
-        delay(50)
+
+        androidPermissionsManager.monitor()
+
         verify(permissionsManager).revokePermission(true)
-
-        permissions.forEach {
-            `when`(context.checkPermission(eq(it), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED)
-        }
-        reset(permissionsManager)
-        androidPermissionsManager.stopMonitoring()
-        delay(50)
-        verify(permissionsManager, never()).grantPermission()
-        verify(permissionsManager, never()).revokePermission(ArgumentMatchers.anyBoolean())
     }
 }
