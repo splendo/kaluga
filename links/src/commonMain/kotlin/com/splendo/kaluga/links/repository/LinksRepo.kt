@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.links.repository
 
-import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.manager.LinksManager
 import kotlinx.serialization.KSerializer
 
@@ -32,20 +31,20 @@ class LinksRepo(
     internal var linksManager: LinksManager = linksManagerBuilder.create()
 
     /**
-     * Convert an incoming url's query into an object and emit it as [Links.Incoming.Result].
-     * When the given url is invalid, it emits [Links.Failure].
+     * Convert an incoming url's query into [T] and return it.
+     * When the given url is invalid, it returns null.
+     *
      * @param url the whole url containing the query with values.
      * @param serializer serializer of type [T].
-     * */
+     **/
     fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
         return linksManager.handleIncomingLink(url, serializer)
     }
 
     /**
-     * Check if the url is valid and emit a [Links.Outgoing.Link] in [linksEventFlow]. It emits [Links.Failure]
-     * when the url is invalid.
+     * Check the url and returns it if valid, otherwise it returns null.
      * @param url url to validate.
-     * */
+     **/
     fun validateLink(url: String): String? {
         return linksManager.validateLink(url)
     }
