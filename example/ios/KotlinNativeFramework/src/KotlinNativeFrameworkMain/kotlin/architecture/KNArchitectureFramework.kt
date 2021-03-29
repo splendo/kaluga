@@ -197,7 +197,7 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton
             button.setTitleColor(UIColor.systemBlueColor, UIControlStateSelected)
             button.setTitleColor(UIColor.systemBlueColor, UIControlStateHighlighted)
             button.setTitleColor(UIColor.grayColor, UIControlStateNormal)
-            this.tab.observe { selectedTab ->
+            this.tab.observeInitialized { selectedTab ->
                 button.setSelected(selectedTab == tab)
             }.addTo(selectedButtonDisposeBag)
             addOnPressed(button) {

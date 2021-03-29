@@ -20,3 +20,11 @@ buildscript {
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_plugin_version")
     }
 }
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        mavenLocal()
+    }
+}

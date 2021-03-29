@@ -50,10 +50,10 @@ class ArchitectureDetailsViewController: UIViewController {
             
             return [
                 viewModel.name.observe { name in
-                    self?.nameLabel.text = name as String?
+                    self?.nameLabel.text = name as? String ?? ""
                 },
                 viewModel.number.observe { number in
-                    self?.numberLabel.text = number as String?
+                    self?.numberLabel.text = number as? String ?? ""
                 }
             ]
         }

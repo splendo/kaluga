@@ -55,6 +55,10 @@
             android:label="@string/keyboard_manager"/>
         <activity android:name=".architecture.ArchitectureInputActivity"
             android:label="Architecture"/>
+
+        <activity android:name=".compose.ComposeArchitectureInputActivity"
+            android:label="Compose"/>
+
         <activity android:name=".architecture.ArchitectureDetailsActivity"
             android:label="Architecture"/>
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>

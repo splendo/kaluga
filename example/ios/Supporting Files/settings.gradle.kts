@@ -44,6 +44,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":architecture")
     project(":architecture").projectDir = file("../../../architecture")
 
+    include(":architecture-compose")
+    project(":architecture-compose").projectDir = file("../../../architecture-compose")
+
     include(":base")
     project(":base").projectDir = file("../../../base")
 
