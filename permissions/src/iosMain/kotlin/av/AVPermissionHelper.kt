@@ -62,18 +62,18 @@ internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, 
             override val declarationName = NSMicrophoneUsageDescription
         }
     }
-    private val authorizationStatus = suspend {
+    private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
     private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
 
     internal fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
-            timerHelper.isWaiting = true
+            timerHelper.isWaiting.value = true
             AVCaptureDevice.requestAccessForMediaType(
                 type.avMediaType,
                 mainContinuation { allowed ->
-                    timerHelper.isWaiting = false
+                    timerHelper.isWaiting.value = false
                     if (allowed) {
                         type.permissionManager.grantPermission()
                     } else {

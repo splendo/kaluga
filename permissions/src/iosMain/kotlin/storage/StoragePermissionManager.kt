@@ -43,14 +43,14 @@ actual class StoragePermissionManager(
     private val authorizationStatus = suspend {
         PHPhotoLibrary.authorizationStatus().toAuthorizationStatus()
     }
-    private var timerHelper = PermissionRefreshScheduler(this, authorizationStatus)
+    private var timerHelper: PermissionRefreshScheduler<Permission.Storage> = PermissionRefreshScheduler(this, authorizationStatus)
 
     override suspend fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, NSPhotoLibraryUsageDescription).isEmpty()) {
-            timerHelper.isWaiting = true
+            timerHelper.isWaiting.value = true
             PHPhotoLibrary.requestAuthorization(
                 mainContinuation { status ->
-                    timerHelper.isWaiting = false
+                    timerHelper.isWaiting.value = false
                     IOSPermissionsHelper.handleAuthorizationStatus(status.toAuthorizationStatus(), this)
                 }
             )

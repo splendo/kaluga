@@ -20,6 +20,7 @@ package com.splendo.kaluga.datetimepicker
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.base.utils.Date.Companion.epoch
 import com.splendo.kaluga.base.utils.Locale
@@ -99,7 +100,7 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
      *
      * @see [DateTimePickerPresenter.Builder]
      */
-    abstract class Builder {
+    abstract class Builder : LifecycleSubscribableMarker {
 
         private var message: String? = null
         private var cancelButtonTitle: String = ""
@@ -153,10 +154,10 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         }
 
         /**
-         * Creates an alert based on [title], [message] and [actions] properties
+         * Creates a DataTimePicker
          *
-         * @return The alert object
-         * @throws IllegalArgumentException in case missing title and/or message or actions
+         * @return The DateTimePicker object
+         * @throws IllegalArgumentException in case missing cancel or confirm titles
          */
         protected fun createDateTimePicker(): DateTimePicker {
             require(cancelButtonTitle.isNotEmpty() && confirmButtonTitle.isNotEmpty()) { "Please set Cancel and Confirm Titles" }
@@ -165,10 +166,10 @@ abstract class BaseDateTimePickerPresenter(private val dateTimePicker: DateTimeP
         }
 
         /**
-         * Creates the [BaseDateTimePicker] described by this builder.
+         * Creates the [BaseDateTimePickerPresenter] described by this builder.
          *
          * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
-         * @return The [BaseDateTimePicker] described by this builder.
+         * @return The [BaseDateTimePickerPresenter] described by this builder.
          */
         abstract fun create(coroutineScope: CoroutineScope): BaseDateTimePickerPresenter
     }
