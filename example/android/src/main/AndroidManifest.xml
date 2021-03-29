@@ -57,7 +57,7 @@
         <activity android:name=".link.LinksActivity"
             android:label="@string/feature_links"
             android:launchMode="singleTask">
-            <intent-filter>
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
