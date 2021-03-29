@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.utils.TimeZone
 import com.splendo.kaluga.base.utils.enUsPosix
 import com.splendo.kaluga.base.utils.nowUtc
 import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.toStartOfDay
 import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -112,5 +113,33 @@ class DateTest {
 
         assertEquals(2, frenchNow.firstWeekDay)
         assertEquals(1, usNow.firstWeekDay)
+    }
+
+    @Test
+    fun testDaylightSavings() {
+        val date = Date.epoch(1616828400000, locale = Locale.createLocale("nl", "NL"), timeZone = TimeZone.get("Europe/Amsterdam")!!)
+        val startOfDate = date.toStartOfDay()
+        assertEquals(0, startOfDate.hour)
+        assertEquals(27, startOfDate.day)
+        val nextDay = date.copy().apply {
+            day += 1
+        }
+        assertEquals(8, nextDay.hour)
+        assertEquals(28, nextDay.day)
+        val startOfNextDay = date.copy().apply {
+            day += 1
+        }.toStartOfDay()
+        assertEquals(0, startOfNextDay.hour)
+        assertEquals(28, startOfNextDay.day)
+        val dayAfterNextDay = date.copy().apply {
+            day += 2
+        }
+        assertEquals(8, dayAfterNextDay.hour)
+        assertEquals(29, dayAfterNextDay.day)
+        val startOfDayAfterNextDay = date.copy().apply {
+            day += 2
+        }.toStartOfDay()
+        assertEquals(0, startOfDayAfterNextDay.hour)
+        assertEquals(29, startOfDayAfterNextDay.day)
     }
 }

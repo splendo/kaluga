@@ -69,7 +69,6 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     actual var timeZone: TimeZone
         get() = TimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
-
     actual var era: Int
         get() = calendar.component(NSCalendarUnitEra, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitEra, value) }
@@ -137,8 +136,18 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
         val previousValue = calendar.component(component, this.date)
-        calendar.dateByAddingUnit(component, (value - previousValue).toLong() as NSInteger, date, 0.toULong() as NSCalendarOptions)?.let {
-            date = it
+        val calendarOptions = 0.toULong() as NSCalendarOptions
+        calendar.dateByAddingUnit(component, (value - previousValue).toLong() as NSInteger, date, calendarOptions)?.let { dateWithoutDaylightSavingsCorrection ->
+            when {
+                component != NSCalendarUnitHour -> dateWithoutDaylightSavingsCorrection
+                timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) && !timeZone.timeZone.isDaylightSavingTimeForDate(date) -> calendar.dateByAddingUnit(
+                    NSCalendarUnitHour, -1L as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
+                timeZone.timeZone.isDaylightSavingTimeForDate(date) && !timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) -> calendar.dateByAddingUnit(
+                    NSCalendarUnitHour, 1L as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
+                else -> dateWithoutDaylightSavingsCorrection
+            }?.let {
+                date = it
+            }
         }
     }
 
