@@ -138,6 +138,11 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     override fun compareTo(other: Date): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
+        // Check whether this component update can use dateBySettingUnit.
+        // This doesn't work properly when going out of bounds for a component (e.g. setting hour to 26)
+        // Therefore we must ensure that the value is within bounds.
+        // This is especially important for Minutes and Hours due to daylight savings,
+        // as using dateByAddingUnit will be incorrect if changing between a date that has DLS and one that hasn't.
         val canSetComponent = when (component) {
             NSCalendarUnitMinute -> {
                 calendar.rangeOfUnit(NSCalendarUnitMinute, NSCalendarUnitHour, date).useContents {
@@ -154,6 +159,7 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
             }
         }
         if (canSetComponent) {
+            // If the new value is lower than the old one, make sure we go backwards as otherwise the next highest component will increase
             val calendarOptions = if (value.toLong() < calendar.component(component, date))
                 NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
             else
