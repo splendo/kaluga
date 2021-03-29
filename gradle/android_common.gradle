@@ -16,6 +16,8 @@
  */
 
 repositories {
+    mavenCentral()
+
     jcenter {
         content {
             // https://youtrack.jetbrains.com/issue/IDEA-261387
@@ -26,10 +28,84 @@ repositories {
 }
 
 android {
+//     workaround for https://youtrack.jetbrains.com/issue/KT-43944
+    configurations {
+        androidTestApi {}
+        androidTestDebugApi {}
+        androidTestReleaseApi {}
+        testApi {}
+        testDebugApi {}
+        testReleaseApi {}
+    }
+
+    compileSdkVersion gradle.android_target_sdk_version
+    buildToolsVersion gradle.android_build_tools_version
+
+
+    defaultConfig {
+        minSdkVersion gradle.android_min_sdk_version
+        targetSdkVersion gradle.android_target_sdk_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    defaultPublishConfig = "debug"
+
+    if (!gradle.ext.component_type.toLowerCase().contains("app")) {
+        logger.lifecycle("Android library sourcesets")
+        sourceSets {
+            main {
+                manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+                res.srcDir 'src/androidLibMain/res'
+                java.srcDir 'src/androidLibMain/kotlin'
+            }
+            androidTest {
+                manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+                java.srcDir 'src/androidLibAndroidTest/kotlin'
+                res.srcDir 'src/androidLibAndroidTest/res'
+            }
+
+
+            test {
+                java.srcDir 'src/androidLibUnitTest/kotlin'
+            }
+
+        }
+    } else {
+        logger.lifecycle("Default Android application sourcesets")
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    if (gradle.component_type.contains("compose")) {
+        logger.lifecycle("IR/Compose module")
+        // can enable Compose if we do IR
+        buildFeatures {
+            compose = true
+        }
+        composeOptions {
+            kotlinCompilerExtensionVersion = "$gradle.androidx_compose_version"
+        }
+        kotlinOptions {
+            jvmTarget = "1.8"
+            useIR = true
+        }
+    } else {
+        logger.lifecycle("Not an IR/Compose module")
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+
 }
 
 dependencies {

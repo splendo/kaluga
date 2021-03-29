@@ -16,28 +16,33 @@
  */
 
 plugins {
-    kotlin("multiplatform")
-    id("jacoco")
     id("com.android.library")
+    id("kotlin-android")
+    id("jacoco")
     id("maven-publish")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
 val ext = (gradle as ExtensionAware).extra
+ext["component_type"] = ext["component_type_compose"]
 
-// val original = ext["android_use_ir"]
-ext["use_ir_android"] = true
-apply(from = "../gradle/publishable_component.gradle")
-ext["use_ir_android"] = ext["use_ir_android_default"]
+// if the include is made from the example project shared module we need to go up one more directory
+val path_prefix = if (file("../gradle/componentskt.gradle.kts").exists())
+    ".." else "../.."
+
+apply(from = "$path_prefix/gradle/android_compose.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
+ext["component_type"] = ext["component_type_default"]
+
 dependencies {
-    val ext = (gradle as ExtensionAware).extra
-    val composeVersion = ext["androidx_compose_version"]
-
-    implementation("androidx.compose.runtime:runtime:$composeVersion")
-
     api(project(":architecture"))
+    val ext = (gradle as ExtensionAware).extra
+    implementation("androidx.compose.foundation:foundation:"+ext["androidx_compose_version"])
+    implementation("androidx.compose.ui:ui:"+ext["androidx_compose_version"])
+    implementation("androidx.compose.ui:ui-tooling:"+ext["androidx_compose_version"])
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:"+ext["androidx_lifecycle_viewmodel_compose_version"])
+    implementation("androidx.activity:activity-compose:"+ext["androidx_activity_compose_version"])
 }

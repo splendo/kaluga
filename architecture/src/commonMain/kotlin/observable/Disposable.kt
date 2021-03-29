@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import co.touchlab.stately.collections.sharedMutableListOf
+
 typealias DisposeHandler = () -> Unit
 
 /**
@@ -49,7 +51,10 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
      */
     override fun dispose() {
         disposeHandler?.invoke()
-        disposeHandler = null
+
+        // TODO could be frozen:
+        //     disposeHandler = null
+        afterDispose()
     }
 
     protected open fun afterDispose() {}
@@ -67,8 +72,8 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
  */
 class DisposeBag : Disposable {
 
-    private val disposables = mutableListOf<Disposable>()
-    private val nestedBags = mutableListOf<DisposeBag>()
+    private val disposables = sharedMutableListOf<Disposable>()
+    private val nestedBags = sharedMutableListOf<DisposeBag>()
 
     /**
      * Adds a nested [DisposeBag]

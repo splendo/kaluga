@@ -24,6 +24,7 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.testing.FakeReviewManager
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
 import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.base.ApplicationHolder
@@ -47,7 +48,7 @@ actual class ReviewManager(
         private val type: Type = Type.Live,
         private val context: Context = ApplicationHolder.applicationContext,
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
-    ) : LifecycleSubscribable by lifecycleManagerObserver {
+    ) : LifecycleSubscribableMarker, LifecycleSubscribable by lifecycleManagerObserver {
         actual fun create(): ReviewManager = ReviewManager(type.reviewManager(context), lifecycleManagerObserver)
     }
 
