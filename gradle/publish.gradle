@@ -1,11 +1,34 @@
 import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 
-publishing {
-    publications {
-        kotlinMultiplatform { publication ->
-            artifactId = module.name
-            groupId = "com.splendo.kaluga"
-            version = gradle.ext.library_version
+String type = gradle.ext.component_type
+
+afterEvaluate {
+    publishing {
+        publications {
+            logger.lifecycle("publish type: $gradle.ext.component_type")
+            if (type.contains("compose")) {
+                release(MavenPublication) {
+                    from components.release
+
+                    artifactId = module.name
+                    groupId = "com.splendo.kaluga"
+                    version = gradle.ext.library_version
+                }
+                // Creates a Maven publication called “debug”.
+                debug(MavenPublication) {
+                    from components.debug
+
+                    artifactId = module.name
+                    groupId = "com.splendo.kaluga"
+                    version = gradle.ext.library_version
+                }
+            } else {
+                kotlinMultiplatform { publication ->
+                    artifactId = module.name
+                    groupId = "com.splendo.kaluga"
+                    version = gradle.ext.library_version
+                }
+            }
         }
     }
 }
