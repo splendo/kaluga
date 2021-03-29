@@ -36,6 +36,7 @@ import platform.Foundation.NSDate
 import platform.Foundation.compare
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
+import platform.Foundation.daylightSavingTimeOffset
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
@@ -141,9 +142,9 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
             when {
                 component != NSCalendarUnitHour -> dateWithoutDaylightSavingsCorrection
                 timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) && !timeZone.timeZone.isDaylightSavingTimeForDate(date) -> calendar.dateByAddingUnit(
-                    NSCalendarUnitHour, -1L as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
+                    NSCalendarUnitSecond, -timeZone.timeZone.daylightSavingTimeOffset.toLong() as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
                 timeZone.timeZone.isDaylightSavingTimeForDate(date) && !timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) -> calendar.dateByAddingUnit(
-                    NSCalendarUnitHour, 1L as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
+                    NSCalendarUnitSecond, timeZone.timeZone.daylightSavingTimeOffset.toLong() as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
                 else -> dateWithoutDaylightSavingsCorrection
             }?.let {
                 date = it
