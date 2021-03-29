@@ -1,0 +1,39 @@
+{
+  "emulators": {
+      "hosting": {
+        "host": "192.168.1.140"
+      }
+  },
+  "hosting": [
+    {
+      "target": "kaluga-links-example",
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "kaluga-links",
+      "public": "links",
+      "headers": [
+        {
+          "source": ".well-known/assetlinks.json",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
