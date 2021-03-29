@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions
 
+import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -36,12 +38,12 @@ class PermissionRefreshScheduler<P : Permission>(
     coroutineScope: CoroutineScope = permissionManager
 ) : CoroutineScope by coroutineScope {
 
-    private sealed class TimerJobState(internal val coroutineScope: CoroutineScope) {
-        class TimerNotRunning(coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
-            fun startTimer(interval: Long, block: suspend () -> Unit) = TimerRunning(interval, block, coroutineScope)
+    private sealed class TimerJobState {
+        object TimerNotRunning : TimerJobState() {
+            fun startTimer(interval: Long, coroutineScope: CoroutineScope, block: suspend () -> Unit): TimerJobState = TimerRunning(interval, block, coroutineScope)
         }
 
-        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState(coroutineScope) {
+        class TimerRunning(val interval: Long, val block: suspend () -> Unit, coroutineScope: CoroutineScope) : TimerJobState() {
             private val timerLoop = coroutineScope.launch {
                 while (isActive) {
                     delay(interval)
@@ -49,14 +51,14 @@ class PermissionRefreshScheduler<P : Permission>(
                 }
             }
 
-            fun stopTimer() = TimerNotRunning(coroutineScope).also { timerLoop.cancel() }
+            fun stopTimer() = TimerNotRunning.also { timerLoop.cancel() }
         }
     }
 
-    private var lastPermission: IOSPermissionsHelper.AuthorizationStatus? = null
-    var isWaiting: Boolean = false
-    private var timerState: TimerJobState = TimerJobState.TimerNotRunning(this)
-    private var timerLock = Mutex()
+    private val lastPermission: AtomicReference<IOSPermissionsHelper.AuthorizationStatus?> = AtomicReference(null)
+    val isWaiting = AtomicBoolean(false)
+    private val timerState: AtomicReference<TimerJobState> = AtomicReference(TimerJobState.TimerNotRunning)
+    private val timerLock = Mutex()
 
     /**
      * Starts monitoring for changes to the permission
@@ -69,15 +71,20 @@ class PermissionRefreshScheduler<P : Permission>(
 
     private suspend fun launchTimerJob(interval: Long) {
         timerLock.withLock {
-            val timerJobState = timerState
+            val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerNotRunning) {
-                this.timerState = timerJobState.startTimer(interval) {
-                    val status = authorizationStatus()
-                    if (!isWaiting && lastPermission != status) {
-                        updateLastPermission()
-                        IOSPermissionsHelper.handleAuthorizationStatus(status, permissionManager)
+                this.timerState.set(
+                    timerJobState.startTimer(interval, this) {
+                        val status = authorizationStatus()
+                        if (!isWaiting.value && lastPermission.get() != status) {
+                            updateLastPermission()
+                            IOSPermissionsHelper.handleAuthorizationStatus(
+                                status,
+                                permissionManager
+                            )
+                        }
                     }
-                }
+                )
             }
         }
     }
@@ -87,14 +94,14 @@ class PermissionRefreshScheduler<P : Permission>(
      */
     suspend fun stopMonitoring() {
         timerLock.withLock {
-            val timerJobState = timerState
+            val timerJobState = timerState.get()
             if (timerJobState is TimerJobState.TimerRunning) {
-                this.timerState = timerJobState.stopTimer()
+                this.timerState.set(timerJobState.stopTimer())
             }
         }
     }
 
     private suspend fun updateLastPermission() {
-        lastPermission = authorizationStatus()
+        lastPermission.set(authorizationStatus())
     }
 }

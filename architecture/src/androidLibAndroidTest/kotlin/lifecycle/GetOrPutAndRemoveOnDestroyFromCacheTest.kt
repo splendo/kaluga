@@ -24,6 +24,8 @@ import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.junit.Rule
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -44,7 +46,7 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
     }
 
     @Test
-    fun testGetOrPutAndRemoveOnDestroyFromCache() = runBlocking<Unit> {
+    fun testGetOrPutAndRemoveOnDestroyFromCache() = runBlocking(Dispatchers.Main) {
 
         val onCreated = EmptyCompletableDeferred()
         val onDestroyed = EmptyCompletableDeferred()
@@ -70,9 +72,10 @@ class GetOrPutAndRemoveOnDestroyFromCacheTest : BaseTest() {
         assertSame(returnedFirstTime, returnedSecondTime)
         assertFalse(defaultValueSecondTime.isCompleted)
 
-        activityRule.scenario.moveToState(Lifecycle.State.DESTROYED)
-
-        onDestroyed.await()
+        withContext(Dispatchers.Default) {
+            activityRule.scenario.moveToState(Lifecycle.State.DESTROYED)
+            onDestroyed.await()
+        }
 
         // normally you should not use this method after onDestroy, but this way we can test if the previous object was cleaned up
         val returnedThirdTime = activity?.getOrPutAndRemoveOnDestroyFromCache { defaultValueSecondTime.complete(); mutableListOf("third") }

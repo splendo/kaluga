@@ -17,11 +17,12 @@
 
 package com.splendo.kaluga.review
 
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import platform.StoreKit.SKStoreReviewController
 
 actual class ReviewManager {
 
-    actual class Builder {
+    actual class Builder : LifecycleSubscribableMarker {
         actual fun create() = ReviewManager()
     }
 
