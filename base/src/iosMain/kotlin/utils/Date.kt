@@ -19,7 +19,10 @@ package com.splendo.kaluga.base.utils
 
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSCalendar
+import platform.Foundation.NSCalendarMatchNextTimePreservingSmallerUnits
+import platform.Foundation.NSCalendarMatchPreviousTimePreservingSmallerUnits
 import platform.Foundation.NSCalendarOptions
+import platform.Foundation.NSCalendarSearchBackwards
 import platform.Foundation.NSCalendarUnit
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitEra
@@ -36,7 +39,6 @@ import platform.Foundation.NSDate
 import platform.Foundation.compare
 import platform.Foundation.dateWithTimeIntervalSince1970
 import platform.Foundation.dateWithTimeIntervalSinceNow
-import platform.Foundation.daylightSavingTimeOffset
 import platform.Foundation.timeIntervalSince1970
 import platform.darwin.NSInteger
 import platform.darwin.NSUInteger
@@ -136,19 +138,37 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     override fun compareTo(other: Date): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
-        val previousValue = calendar.component(component, this.date)
-        val calendarOptions = 0.toULong() as NSCalendarOptions
-        calendar.dateByAddingUnit(component, (value - previousValue).toLong() as NSInteger, date, calendarOptions)?.let { dateWithoutDaylightSavingsCorrection ->
-            when {
-                component != NSCalendarUnitHour -> dateWithoutDaylightSavingsCorrection
-                timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) && !timeZone.timeZone.isDaylightSavingTimeForDate(date) -> calendar.dateByAddingUnit(
-                    NSCalendarUnitSecond, -timeZone.timeZone.daylightSavingTimeOffset.toLong() as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
-                timeZone.timeZone.isDaylightSavingTimeForDate(date) && !timeZone.timeZone.isDaylightSavingTimeForDate(dateWithoutDaylightSavingsCorrection) -> calendar.dateByAddingUnit(
-                    NSCalendarUnitSecond, timeZone.timeZone.daylightSavingTimeOffset.toLong() as NSInteger, dateWithoutDaylightSavingsCorrection, calendarOptions)
-                else -> dateWithoutDaylightSavingsCorrection
-            }?.let {
-                date = it
+        val canSetComponent = when (component) {
+            NSCalendarUnitMinute -> {
+                calendar.rangeOfUnit(NSCalendarUnitMinute, NSCalendarUnitHour, date).useContents {
+                    value >= location.toInt() && value < (location + length).toInt()
+                }
             }
+            NSCalendarUnitHour -> {
+                calendar.rangeOfUnit(NSCalendarUnitHour, NSCalendarUnitDay, date).useContents {
+                    value >= location.toInt() && value < (location + length).toInt()
+                }
+            }
+            else -> {
+                false
+            }
+        }
+        if (canSetComponent) {
+            val calendarOptions = if (value.toLong() < calendar.component(component, date))
+                NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
+            else
+                NSCalendarMatchNextTimePreservingSmallerUnits
+            calendar.dateBySettingUnit(component, value.toLong() as NSInteger, date, calendarOptions)
+        } else {
+            val previousValue = calendar.component(component, this.date)
+            calendar.dateByAddingUnit(
+                component,
+                (value - previousValue).toLong() as NSInteger,
+                date,
+                0UL as NSCalendarOptions
+            )
+        }?.let {
+            date = it
         }
     }
 

@@ -117,29 +117,35 @@ class DateTest {
 
     @Test
     fun testDaylightSavings() {
-        val date = Date.epoch(1616828400000, locale = Locale.createLocale("nl", "NL"), timeZone = TimeZone.get("Europe/Amsterdam")!!)
-        val startOfDate = date.toStartOfDay()
-        assertEquals(0, startOfDate.hour)
-        assertEquals(27, startOfDate.day)
-        val nextDay = date.copy().apply {
+        val dayBeforeDLS = Date.epoch(1616828400000, locale = Locale.createLocale("nl", "NL"), timeZone = TimeZone.get("Europe/Amsterdam")!!)
+        val startOfDayBeforeDLS = dayBeforeDLS.toStartOfDay()
+        assertEquals(0, startOfDayBeforeDLS.hour)
+        assertEquals(27, startOfDayBeforeDLS.day)
+        val dlsDay = dayBeforeDLS.copy().apply {
             day += 1
         }
-        assertEquals(8, nextDay.hour)
-        assertEquals(28, nextDay.day)
-        val startOfNextDay = date.copy().apply {
+        assertEquals(8, dlsDay.hour)
+        assertEquals(28, dlsDay.day)
+        val startOfDLSDay = dayBeforeDLS.copy().apply {
             day += 1
         }.toStartOfDay()
-        assertEquals(0, startOfNextDay.hour)
-        assertEquals(28, startOfNextDay.day)
-        val dayAfterNextDay = date.copy().apply {
+        assertEquals(0, startOfDLSDay.hour)
+        assertEquals(28, startOfDLSDay.day)
+        val timeInDLSJump = startOfDLSDay.copy().apply {
+            hour = 2
+            minute = 30
+        }
+        assertEquals(3, timeInDLSJump.hour)
+        assertEquals(30, timeInDLSJump.minute)
+        val dayAfterDLS = dayBeforeDLS.copy().apply {
             day += 2
         }
-        assertEquals(8, dayAfterNextDay.hour)
-        assertEquals(29, dayAfterNextDay.day)
-        val startOfDayAfterNextDay = date.copy().apply {
+        assertEquals(8, dayAfterDLS.hour)
+        assertEquals(29, dayAfterDLS.day)
+        val startOfDayAfterDLS = dayBeforeDLS.copy().apply {
             day += 2
         }.toStartOfDay()
-        assertEquals(0, startOfDayAfterNextDay.hour)
-        assertEquals(29, startOfDayAfterNextDay.day)
+        assertEquals(0, startOfDayAfterDLS.hour)
+        assertEquals(29, startOfDayAfterDLS.day)
     }
 }
