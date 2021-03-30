@@ -29,7 +29,6 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.toBundle
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.links.Links
 import com.splendo.kaluga.links.repository.LinksRepoBuilder
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
