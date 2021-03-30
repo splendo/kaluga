@@ -32,7 +32,7 @@ actual class BluetoothPermissionManager(
     stateRepo: BluetoothPermissionStateRepo
 ) : PermissionManager<Permission.Bluetooth>(stateRepo) {
 
-    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN))
+    private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN, Manifest.permission.ACCESS_FINE_LOCATION))
     private val supported: Boolean = bluetoothAdapter != null
 
     override suspend fun requestPermission() {

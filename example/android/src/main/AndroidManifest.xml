@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.splendo.kaluga.example">
+          xmlns:tools="http://schemas.android.com/tools"
+          package="com.splendo.kaluga.example">
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
@@ -33,7 +33,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name="com.splendo.kaluga.example.ExampleActivity"
-            android:label="Features list">
+                  android:label="Features list">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -41,25 +41,30 @@
             </intent-filter>
         </activity>
         <activity android:name=".location.LocationActivity"
-            android:label="Location"/>
+                  android:label="@string/feature_location"/>
         <activity android:name=".permissions.PermissionsDemoListActivity"
-            android:label="@string/permissions_list"/>
+                  android:label="@string/permissions_list"/>
         <activity android:name=".permissions.PermissionsDemoActivity" android:label="Permissions"/>
         <activity android:name=".alerts.AlertsActivity"
-            android:label="Alerts"/>
+            android:label="@string/feature_alerts"/>
         <activity android:name=".datetimepicker.DateTimePickerActivity"
             android:label="@string/feature_date_time_picker"/>
         <activity android:name=".loading.LoadingActivity"
-            android:label="Loading Indicator"/>
+            android:label="@string/feature_hud"/>
         <activity android:name=".keyboard.KeyboardManagerActivity"
             android:label="@string/keyboard_manager"/>
         <activity android:name=".architecture.ArchitectureInputActivity"
-            android:label="Architecture"/>
+            android:label="@string/feature_architecture"/>
 
         <activity android:name=".compose.ComposeArchitectureInputActivity"
             android:label="Compose"/>
 
         <activity android:name=".architecture.ArchitectureDetailsActivity"
+            android:label="@string/feature_architecture"/>
+        <activity android:name=".bluetooth.BluetoothActivity"
+            android:label="@string/feature_bluetooth"/>
+        <activity android:name=".bluetooth.BluetoothMoreActivity"
+            android:label="@string/feature_bluetooth"/>
             android:label="Architecture"/>
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
 

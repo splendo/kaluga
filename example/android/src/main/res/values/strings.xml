@@ -4,6 +4,7 @@
     <string name="feature_alerts">Alerts</string>
     <string name="feature_architecture">Architecture</string>
     <string name="feature_date_time_picker">Date Time Picker</string>
+    <string name="feature_bluetooth">Bluetooth</string>
     <string name="feature_hud">Loading Indicator</string>
     <string name="feature_keyboard">Keyboard</string>
     <string name="feature_location">Location</string>
@@ -51,4 +52,38 @@
     <string name="location_disable_background">Disable Background</string>
 
     <string name="network_feature">Network</string>
+    <string name="bluetooth_start_scanning">Start Scanning</string>
+    <string name="bluetooth_stop_scanning">Stop Scanning</string>
+    <string name="bluetooth_no_name">Unnamed Bluetooth Device</string>
+
+    <string name="rssi">%d dBm</string>
+    <string name="txPower">%s dBm</string>
+    <string name="distance">%.2f m</string>
+
+    <string name="bluetooth_connect">Connect</string>
+    <string name="bluetooth_disconnect">Disconnect</string>
+
+    <string name="bluetooth_connected">Connected</string>
+    <string name="bluetooth_connecting">Connecting</string>
+    <string name="bluetooth_disconnected">Disconnected</string>
+    <string name="bluetooth_disconneting">Disconnecting</string>
+    <string name="bluetooth_reconnecting">Reconnecting</string>
+    <string name="bluetooth_discovering">Discovering</string>
+
+    <string name="bluetooth_service_uuids">Service UUIDs: %s</string>
+    <string name="bluetooth_service_data">Service Data: %s</string>
+    <string name="bluetooth_manufacturer_id">Manufacturer Id: %d</string>
+    <string name="bluetooth_manufacturer_data">Manufacturer Data: %s</string>
+
+    <string name="bluetooth_more">More</string>
+
+    <string name="bluetooth_services_header">Services</string>
+    <string name="bluetooth_service">Service</string>
+    <string name="bluetooth_characteristics">Characteristics</string>
+    <string name="bluetooth_descriptors">Descriptors</string>
+    <string name="bluetooth_permissions_read">Read</string>
+    <string name="bluetooth_permissions_write">Write</string>
+    <string name="bluetooth_permissions_read_encrypted">Read Encrypted</string>
+    <string name="bluetooth_permissions_write_encrypted">Write Encrypted</string>
+
 </resources>

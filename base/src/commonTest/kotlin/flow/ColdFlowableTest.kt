@@ -40,7 +40,7 @@ class ColdFlowableTest : BaseTest() {
 
     lateinit var flowable: ColdFlowable<Int>
     lateinit var initialized: EmptyCompletableDeferred
-    lateinit var deinitialized: CompletableDeferred<Int>
+    private lateinit var deinitialized: CompletableDeferred<Int>
     lateinit var broadcastChannel: BroadcastChannel<Int>
 
     @BeforeTest

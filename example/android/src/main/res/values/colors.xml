@@ -5,4 +5,26 @@
     <color name="colorAccent">#D81B60</color>
     <color name="li_colorBackground">@color/colorPrimaryDark</color>
     <color name="li_colorAccent">@color/colorAccent</color>
+
+    <color name="black_100">#FF000000</color>
+    <color name="black_87">#DE000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_54">#8A000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_38">#61000000</color>
+    <color name="black_12">#1F000000</color>
+
+    <color name="white_100">#FFFFFFFF</color>
+    <color name="white_87">#DEFFFFFF</color>
+    <color name="white_70">#B3FFFFFF</color>
+    <color name="white_54">#8AFFFFFF</color>
+    <color name="white_50">#80FFFFFF</color>
+    <color name="white_38">#61FFFFFF</color>
+    <color name="white_12">#1FFFFFFF</color>
+
+    <color name="text_primary">@color/black_87</color>
+    <color name="text_secondary">@color/black_54</color>
+    <color name="text_disabled">@color/black_38</color>
+    <color name="background_card">@color/white_38</color>
+
 </resources>
