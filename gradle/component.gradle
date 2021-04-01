@@ -197,7 +197,7 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-            res.srcDir 'src/androidLibMain/resources'
+            res.srcDir 'src/androidLibMain/res'
         }
         androidTest {
             manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'

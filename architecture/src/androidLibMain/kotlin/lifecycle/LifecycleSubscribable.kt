@@ -22,13 +22,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelLifecycleObserver
-import com.splendo.kaluga.architecture.viewmodel.ViewModel
-
-/**
- * Implementing this interface as a public property of a [ViewModel] allows for automatic binding to a [KalugaViewModelLifecycleObserver].
- */
-interface LifecycleSubscribableMarker
 
 interface LifecycleSubscribable : LifecycleSubscribableMarker {
 
