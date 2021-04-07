@@ -39,9 +39,12 @@ actual class AlertPresenter(
 
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
-            Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> UIAlertActionStyleDefault
-            Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDestructive
-            Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
+            Alert.Action.Style.DEFAULT,
+            Alert.Action.Style.POSITIVE,
+            Alert.Action.Style.NEUTRAL -> UIAlertActionStyleDefault
+            Alert.Action.Style.DESTRUCTIVE -> UIAlertActionStyleDestructive
+            Alert.Action.Style.CANCEL,
+            Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
         }
         fun transform(style: Alert.Style): UIAlertControllerStyle = when (style) {
             Alert.Style.ALERT -> UIAlertControllerStyleAlert
