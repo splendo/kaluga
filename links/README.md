@@ -99,6 +99,8 @@ class SharedViewModel(
 }
 ```
 
-
+### Android
+Android `PlatformLinksHandler` implementation uses `UrlQuerySanitizer` in order to extract the full query from a url. Keep in mind that `UrlQuerySanitizer`
+will convert space characters into underscore character. Instead use `+` character between 2 words if you want to represent a space.
 
 Follow [navigation](https://github.com/splendo/kaluga/tree/master/architecture#navigation) in order to create a `Navigator`.
