@@ -26,6 +26,9 @@ actual class PlatformLinksHandler : LinksHandler {
     override fun extractQueryAsList(url: String): List<Any> {
         val params = UrlQuerySanitizer(url)
 
+        if (params.parameterList == null) {
+            return emptyList()
+        }
         return params.parameterList.map { it.mValue }
     }
 }
