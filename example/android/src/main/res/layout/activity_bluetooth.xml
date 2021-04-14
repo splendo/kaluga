@@ -6,7 +6,6 @@
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel" />
 
-        <import type="com.splendo.kaluga.architecture.observable.ObservableKt" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:devices="@{viewModel.devices.liveData}"
+            app:devices="@{viewModel.devices.stateFlow}"
             tools:listitem="@layout/bluetooth_item">
 
         </androidx.recyclerview.widget.RecyclerView>

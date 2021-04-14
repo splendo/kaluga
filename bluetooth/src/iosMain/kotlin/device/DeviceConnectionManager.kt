@@ -17,15 +17,12 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCharacteristic
@@ -37,19 +34,29 @@ import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
+import kotlin.coroutines.CoroutineContext
 
 internal actual class DeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
     connectionSettings: ConnectionSettings,
     deviceHolder: DeviceHolder,
-    stateRepo: StateRepo<DeviceState>,
-    coroutineScope: CoroutineScope
-) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope) {
+    stateRepo: DeviceStateFlowRepo,     
+) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(cbCentralManager, peripheral, connectionSettings, deviceHolder, stateRepo, coroutineScope)
+        override fun create(
+            connectionSettings: ConnectionSettings,
+            deviceHolder: DeviceHolder,
+            stateRepo: DeviceStateFlowRepo
+        ): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(
+                cbCentralManager,
+                peripheral,
+                connectionSettings,
+                deviceHolder,
+                stateRepo
+            )
         }
     }
 
@@ -73,7 +80,7 @@ internal actual class DeviceConnectionManager(
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
-                        launch(MainQueueDispatcher) {
+                        launch {
                             handleCurrentActionCompleted()
                         }
                     }
@@ -113,7 +120,7 @@ internal actual class DeviceConnectionManager(
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
             info(TAG, "Did Read RSSI for Peripheral ${peripheral.identifier.UUIDString}")
-            launch(MainQueueDispatcher) {
+            launch {
                 handleNewRssi(didReadRSSI.intValue)
             }
         }
@@ -172,13 +179,13 @@ internal actual class DeviceConnectionManager(
     }
 
     private fun updateCharacteristic(characteristic: CBCharacteristic) {
-        launch(MainQueueDispatcher) {
+        launch {
             handleUpdatedCharacteristic(characteristic.UUID)
         }
     }
 
     private fun updateDescriptor(descriptor: CBDescriptor) {
-        launch(MainQueueDispatcher) {
+        launch {
             handleUpdatedDescriptor(descriptor.UUID)
         }
     }
@@ -208,7 +215,7 @@ internal actual class DeviceConnectionManager(
 
     private fun checkScanComplete() {
         if (discoveringServices.isEmpty() && discoveringCharacteristics.isEmpty()) {
-            launch(MainQueueDispatcher) {
+            launch {
                 val services = peripheral.services?.typedList<CBService>()?.map { Service(DefaultServiceWrapper(it), stateRepo) } ?: emptyList()
                 handleScanCompleted(services)
             }

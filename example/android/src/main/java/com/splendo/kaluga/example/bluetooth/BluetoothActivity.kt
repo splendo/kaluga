@@ -21,25 +21,21 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.forEach
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityBluetoothBinding
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalStdlibApi
 class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
 
     override val viewModel: BluetoothListViewModel by viewModel()
 
     private lateinit var adapter: BluetoothAdapter
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,9 +47,9 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         binding.devicesList.adapter = adapter
         binding.devicesList.addItemDecoration(DividerItemDecoration(this, LinearLayoutManager.VERTICAL))
 
-        viewModel.isScanning.observe(this, Observer {
+        viewModel.isScanning.observe {
             invalidateOptionsMenu()
-        })
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -62,7 +58,7 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean = runBlocking {
-        val scanning = viewModel.isScanning.liveData.value ?: false
+        val scanning = viewModel.isScanning.current
         menu?.forEach { item ->
             when (item.itemId) {
                 R.id.start_scanning -> item.isVisible = !scanning
@@ -83,3 +79,5 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         }
     }
 }
+
+

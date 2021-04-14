@@ -20,9 +20,11 @@ package com.splendo.kaluga.bluetooth
 import android.bluetooth.BluetoothGattDescriptor
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-actual open class Descriptor(val descriptor: DescriptorWrapper, stateRepoAccessor: StateRepo<DeviceState>) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
+actual open class Descriptor(val descriptor: DescriptorWrapper, stateRepoAccessor: DeviceStateFlowRepo) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
 
     override val uuid = descriptor.uuid
 

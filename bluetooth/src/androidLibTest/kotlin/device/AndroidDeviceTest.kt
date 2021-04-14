@@ -26,7 +26,6 @@ import com.splendo.kaluga.bluetooth.mock.MockCharacteristicWrapper
 import com.splendo.kaluga.bluetooth.mock.MockDescriptor
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
-import com.splendo.kaluga.state.StateRepo
 import java.util.UUID
 
 class AndroidDeviceTest : DeviceTest() {
@@ -45,18 +44,18 @@ class AndroidDeviceTest : DeviceTest() {
         return DeviceHolder(MockDeviceWrapper(deviceName, address, deviceState))
     }
 
-    override fun createServices(stateRepo: StateRepo<DeviceState>): List<Service> {
+    override fun createServices(stateRepo: DeviceStateFlowRepo): List<Service> {
         gattServiceWrapper = MockServiceWrapper(UUID.randomUUID(), listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
         return listOf(Service(gattServiceWrapper, stateRepo))
     }
 
-    override fun createCharacteristic(stateRepo: StateRepo<DeviceState>): Characteristic {
+    override fun createCharacteristic(stateRepo: DeviceStateFlowRepo): Characteristic {
         val characteristicWrapper = gattServiceWrapper.characteristics.first() as MockCharacteristicWrapper
         characteristic = MockCharacteristic(characteristicWrapper, stateRepo)
         return characteristic
     }
 
-    override fun createDescriptor(stateRepo: StateRepo<DeviceState>): Descriptor {
+    override fun createDescriptor(stateRepo: DeviceStateFlowRepo): Descriptor {
         val descriptorWrapper = characteristic.characteristic.descriptors.first()
         descriptor = MockDescriptor(descriptorWrapper, stateRepo)
         return descriptor

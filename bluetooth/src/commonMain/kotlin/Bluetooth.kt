@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
@@ -28,15 +27,16 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.logging.d
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import kotlin.jvm.JvmName
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
 
@@ -72,68 +73,94 @@ class Bluetooth internal constructor(
 
     internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineScope)
 
-    private val scanFilter = ConflatedBroadcastChannel<Set<UUID>?>(null)
+    sealed class ScanMode {
+        object Stopped:ScanMode()
+        class Scan(val filter: Set<UUID>):ScanMode()
+    }
 
-    @ExperimentalCoroutinesApi
+    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
+
+    fun collectRepo(it:Any) {
+        println(it)
+
+    }
+
     fun devices(): Flow<List<Device>> {
-            return combine(scanningStateRepo.flow(), scanFilter.asFlow()) { scanState, filter ->
+
+        launch {
+            scanningStateRepo.collect {
+                collectRepo(it)
+            }
+        }
+
+            return combine(scanningStateRepo, scanMode) { scanState, scanMode ->
                 when (scanState) {
-                    is ScanningState.Enabled.Idle -> {
-                        filter?.let { f ->
-                            scanningStateRepo.takeAndChangeState { state ->
-                                when (state) {
-                                    is ScanningState.Enabled.Idle -> state.startScanning(f)
-                                    else -> state.remain
+                    is ScanningState.Initialized.Enabled.Idle -> {
+                        when(scanMode) {
+                            is ScanMode.Stopped -> emptyList()
+                            is ScanMode.Scan -> {
+                                scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
+                                    it.startScanning(scanMode.filter)
                                 }
+                                if (scanState.discovered.filter == scanMode.filter)
+                                    scanState.discovered.devices
+                                else
+                                    emptyList()
+
                             }
-                            if (scanState.oldFilter == f) scanState.discoveredDevices else emptyList()
-                        } ?: scanState.discoveredDevices
-                    }
-                    is ScanningState.Enabled.Scanning -> {
-                        filter?.let { f ->
-                            if (scanState.filter == f) scanState.discoveredDevices else {
-                                scanningStateRepo.takeAndChangeState { state ->
-                                    when (state) {
-                                        is ScanningState.Enabled.Scanning -> state.stopScanning
-                                        else -> state.remain
-                                    }
-                                }
-                                emptyList()
-                            }
-                        } ?: run {
-                            scanningStateRepo.takeAndChangeState { state ->
-                                when (state) {
-                                    is ScanningState.Enabled.Scanning -> state.stopScanning
-                                    else -> state.remain
-                                }
-                            }
-                            scanState.discoveredDevices
                         }
                     }
-                    is ScanningState.NoBluetoothState -> {
+                    is ScanningState.Initialized.Enabled.Scanning -> {
+
+                        when (scanMode) {
+                            is ScanMode.Scan -> {
+                                d("devices: ${scanState.discovered}")
+                                if (scanState.discovered.filter == scanMode.filter)
+                                    scanState.discovered.devices
+                                else {
+                                    scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                                        state.stopScanning
+                                    }
+                                    emptyList()
+                                }
+                            }
+                            else -> {
+                                scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                                    state.stopScanning
+                                }
+                                scanState.discovered.devices
+                            }
+                        }
+                    }
+
+                    is ScanningState.Initialized.NoBluetooth -> {
                         emptyList()
                     }
+
+                    is ScanningState.NotInitialized -> {
+                        scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
+                            state.initialize(scanningStateRepo)
+                        }
+                        emptyList()
+                    }
+
                 }
             }
     }
 
     fun startScanning(filter: Set<UUID> = emptySet()) {
-        launch(MainQueueDispatcher) {
-            scanFilter.send(filter)
-        }
+        scanMode.value = ScanMode.Scan(filter)
     }
 
     fun stopScanning() {
-        launch(MainQueueDispatcher) {
-            info(LOG_TAG, "Stop Scanning")
-            scanFilter.send(null)
-        }
+        info(LOG_TAG, "Stop Scanning")
+        scanMode.value = ScanMode.Stopped
     }
 
-    fun isScanning(): Flow<Boolean> {
-        return scanningStateRepo.flow().combine(scanFilter.asFlow()) { scanState, filter ->
-            filter != null && scanState is ScanningState.Enabled.Scanning
-        }.distinctUntilChanged()
+    suspend fun isScanning(): StateFlow<Boolean> {
+        return scanningStateRepo.combine(scanMode) { scanState, filter ->
+            filter is ScanMode.Scan && scanState is ScanningState.Initialized.Enabled.Scanning
+        }.stateIn(this)
     }
 }
 
@@ -147,7 +174,7 @@ operator fun Flow<List<Device>>.get(identifier: Identifier): Flow<Device?> {
 
 fun Flow<Device?>.state(): Flow<DeviceState> {
     return this.flatMapLatest { device ->
-        device?.flow() ?: emptyFlow()
+        device ?: emptyFlow()
     }
 }
 
@@ -264,6 +291,6 @@ operator fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write
 
 fun <T : Attribute<R, W>, R : DeviceAction.Read, W : DeviceAction.Write> Flow<T?>.value(): Flow<ByteArray?> {
     return this.flatMapLatest { attribute ->
-        attribute?.flow() ?: flowOf(null)
-    }.distinctUntilChanged()
+        attribute ?: flowOf(null)
+    } // TODO: we probably want to read duplicate values so this is for now disabled: .distinctUntilChanged()
 }

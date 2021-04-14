@@ -34,7 +34,7 @@ class IOSBluetoothTest : BluetoothTest() {
         return DeviceHolder(MockCBPeripheralWrapper())
     }
 
-    override fun createService(stateRepo: StateRepo<DeviceState>): Service {
+    override fun createService(stateRepo: DeviceStateRepo): Service {
         return Service(MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID())))), stateRepo)
     }
 }

@@ -28,7 +28,7 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: StateRepo<DeviceState>) : Descriptor(descriptorWrapper, stateRepo) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: DeviceStateRepo) : Descriptor(descriptorWrapper, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 

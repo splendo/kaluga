@@ -21,7 +21,6 @@ package com.splendo.kaluga.example.di
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -30,6 +29,8 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.bluetooth.BluetoothActivity
+import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
@@ -42,6 +43,8 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
@@ -72,20 +75,31 @@ import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
+import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
+
+//import com.splendo.kaluga.bluetooth.device.*
 
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
     single { LocationStateRepoBuilder() }
+    single { BluetoothBuilder().create() }
 }
 
 val viewModelModule = module {
     viewModel {
         ExampleViewModel(
             ActivityNavigator { action ->
-                when (action) {
-                    is ExampleTabNavigation.FeatureList -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { FeaturesListFragment() })
-                    is ExampleTabNavigation.Info -> NavigationSpec.Fragment(R.id.example_fragment, createFragment = { InfoFragment() })
+                val navigationSpec: NavigationSpec = when (action) {
+                    FeatureList -> NavigationSpec.Fragment(
+                        R.id.example_fragment,
+                        createFragment = { FeaturesListFragment() })
+                    Info -> NavigationSpec.Fragment(
+                        R.id.example_fragment,
+                        createFragment = { InfoFragment() })
                 }
+                navigationSpec
             }
         )
     }
@@ -94,14 +108,15 @@ val viewModelModule = module {
         FeatureListViewModel(
             ActivityNavigator { action ->
                 when (action) {
-                    is FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
-                    is FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
-                    is FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
-                    is FeatureListNavigationAction.DateTimePicker -> NavigationSpec.Activity(DateTimePickerActivity::class.java)
-                    is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
-                    is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
-                    is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
-                    is FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
+                    FeatureListNavigationAction.Location -> NavigationSpec.Activity(LocationActivity::class.java)
+                    FeatureListNavigationAction.Permissions -> NavigationSpec.Activity(PermissionsDemoListActivity::class.java)
+                    FeatureListNavigationAction.Alerts -> NavigationSpec.Activity(AlertsActivity::class.java)
+                    FeatureListNavigationAction.DateTimePicker -> NavigationSpec.Activity(DateTimePickerActivity::class.java)
+                    FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
+                    FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
+                    FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
+                    FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
+                    FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                 }
             }
         )
@@ -176,7 +191,7 @@ val viewModelModule = module {
         SystemViewModel(
             ActivityNavigator {
                 when(it) {
-                    is SystemNavigationActions.Network -> NavigationSpec.Fragment(
+                    SystemNavigationActions.Network -> NavigationSpec.Fragment(
                         R.id.system_features_fragment,
                         createFragment = { NetworkFragment() }
                     )
@@ -188,4 +203,16 @@ val viewModelModule = module {
     viewModel {
         NetworkViewModel(NetworkStateRepoBuilder(get()))
     }
+
+    viewModel {
+
+        BluetoothListViewModel(get(), ActivityNavigator {
+            NavigationSpec.Activity(BluetoothMoreActivity::class.java)
+        })
+    }
+
+    viewModel { (identifier:  com.splendo.kaluga.bluetooth.device.Identifier) ->
+        BluetoothDeviceDetailViewModel(get(), identifier)
+    }
+
 }

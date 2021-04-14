@@ -31,19 +31,21 @@ class BluetoothViewController : UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
-            guard let viewModel = self?.viewModel else { return }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
+            guard let viewModel = self?.viewModel else { return [] }
             
-            viewModel.isScanning.observe { isScanning in
-                self?.updateNavigationItem(isScanning: isScanning as? Bool ?? false)
-            }.addTo(disposeBag: disposeBag)
-            
-            viewModel.devices.observe { devices in
-                self?.devices = devices as? [BluetoothListDeviceViewModel] ?? []
-                self?.collectionView?.reloadData()
-                self?.collectionView.layoutIfNeeded()
-            }.addTo(disposeBag: disposeBag)
-        }
+            return [
+                viewModel.isScanning.observe { isScanning in
+                    self?.updateNavigationItem(isScanning: isScanning as? Bool ?? false)
+                }
+            ,
+                viewModel.devices.observe { devices in
+                    self?.devices = devices as? [BluetoothListDeviceViewModel] ?? []
+                    self?.collectionView?.reloadData()
+                    self?.collectionView.layoutIfNeeded()
+                }
+            ]
+        })
     }
     
     private func updateNavigationItem(isScanning: Bool) {

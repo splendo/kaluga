@@ -20,8 +20,7 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
@@ -31,7 +30,7 @@ import platform.Foundation.NSData
 
 actual open class Characteristic(
     val characteristic: CharacteristicWrapper,
-    stateRepo: StateRepo<DeviceState>
+    stateRepo: DeviceStateFlowRepo
 ) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
 
     override val uuid = characteristic.UUID

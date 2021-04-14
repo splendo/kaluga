@@ -7,7 +7,6 @@
             type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel" />
 
         <import type="android.view.View"/>
-        <import type="com.splendo.kaluga.architecture.observable.ObservableKt" />
         <import type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel.ConnectButtonState"/>
     </data>
 
@@ -23,7 +22,7 @@
         <TextView
             android:id="@+id/name"
             style="@style/ListTitle"
-            android:text="@{viewModel.name.liveData}"
+            android:text="@{viewModel.name.stateFlow}"
             tools:text="@string/bluetooth_no_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,7 +50,7 @@
             <TextView
                 android:id="@+id/rssi"
                 style="@style/ListSubTitle"
-                android:text="@{viewModel.rssi.liveData}"
+                android:text="@{viewModel.rssi.stateFlow}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -59,11 +58,11 @@
             <TextView
                 android:id="@+id/txPower"
                 style="@style/ListSubTitle"
-                android:text="@{viewModel.txPower.liveData}"
+                android:text="@{viewModel.txPower.stateFlow}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:visibility="@{viewModel.isTxPowerVisible().liveData ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.isTxPowerVisible().stateFlow ? View.VISIBLE : View.GONE}"/>
 
         </LinearLayout>
 
@@ -76,7 +75,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/name"
             app:layout_constraintTop_toTopOf="@id/name"
-            android:visibility="@{viewModel.isConnectButtonVisible().liveData ? View.VISIBLE : View.GONE}">
+            android:visibility="@{viewModel.isConnectButtonVisible().stateFlow ? View.VISIBLE : View.GONE}">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/connect_button"
@@ -84,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bluetooth_connect"
                 android:onClick="@{view -> viewModel.onConnectPressed()}"
-                android:visibility="@{viewModel.connectButtonState.liveData == ConnectButtonState.Connect ? View.VISIBLE : View.GONE}"/>
+                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Connect ? View.VISIBLE : View.GONE}"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/disconnect_button"
@@ -92,14 +91,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bluetooth_disconnect"
                 android:onClick="@{view -> viewModel.onDisconnectPressed()}"
-                android:visibility="@{viewModel.connectButtonState.liveData == ConnectButtonState.Disconnect ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Disconnect ? View.VISIBLE : View.GONE}" />
 
         </LinearLayout>
 
         <TextView
             android:id="@+id/status"
             style="@style/ListContent"
-            android:text="@{viewModel.status.liveData}"
+            android:text="@{viewModel.status.stateFlow}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/info_row"
@@ -115,33 +114,33 @@
             android:orientation="vertical"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
-            android:visibility="@{viewModel.isFoldedOut().liveData ? View.VISIBLE : View.GONE}">
+            android:visibility="@{viewModel.isFoldedOut().stateFlow ? View.VISIBLE : View.GONE}">
 
             <TextView
                 android:id="@+id/service_uuids"
                 style="@style/ListContent"
-                android:text="@{viewModel.serviceUUIDs.liveData}"
+                android:text="@{viewModel.serviceUUIDs.stateFlow}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/service_data"
                 style="@style/ListContent"
-                android:text="@{viewModel.serviceData.liveData}"
+                android:text="@{viewModel.serviceData.stateFlow}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/manufacturer_id"
                 style="@style/ListContent"
-                android:text="@{viewModel.manufacturerId.liveData}"
+                android:text="@{viewModel.manufacturerId.stateFlow}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/manufacturer_data"
                 style="@style/ListContent"
-                android:text="@{viewModel.manufacturerData.liveData}"
+                android:text="@{viewModel.manufacturerData.stateFlow}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -151,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:text="@string/bluetooth_more"
-                android:visibility="@{viewModel.isMoreButtonVisible().liveData ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewModel.isMoreButtonVisible().stateFlow ? View.VISIBLE : View.GONE}"
                 android:onClick="@{view -> viewModel.onMorePressed()}"/>
 
         </LinearLayout>

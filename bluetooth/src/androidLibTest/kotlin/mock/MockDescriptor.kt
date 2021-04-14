@@ -26,7 +26,7 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import java.util.UUID
 
-class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: StateRepo<DeviceState>) : Descriptor(descriptorWrapper, stateRepo) {
+class MockDescriptor(descriptorWrapper: DescriptorWrapper, stateRepo: DeviceStateRepo) : Descriptor(descriptorWrapper, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 

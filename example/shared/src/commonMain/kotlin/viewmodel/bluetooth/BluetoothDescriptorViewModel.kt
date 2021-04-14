@@ -17,7 +17,8 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
@@ -44,7 +45,7 @@ class BluetoothDescriptorViewModel(private val bluetooth: Bluetooth, private val
     private val descriptor: Flow<Descriptor?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID].descriptors()[descriptorUUID]
 
     val uuid = descriptorUUID.uuidString
-    val value = descriptor.value().map { it?.toHexString() ?: "" }.toObservable(coroutineScope)
+    val value = descriptor.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)

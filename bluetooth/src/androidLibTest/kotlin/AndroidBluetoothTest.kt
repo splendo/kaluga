@@ -19,10 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.AndroidDeviceTest
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
-import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.mock.MockDeviceWrapper
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
-import com.splendo.kaluga.state.StateRepo
 
 class AndroidBluetoothTest : BluetoothTest() {
 
@@ -34,7 +33,7 @@ class AndroidBluetoothTest : BluetoothTest() {
         return DeviceHolder(MockDeviceWrapper(AndroidDeviceTest.deviceName, AndroidDeviceTest.address, AndroidDeviceTest.deviceState))
     }
 
-    override fun createService(stateRepo: StateRepo<DeviceState>): Service {
+    override fun createService(stateRepo: DeviceStateFlowRepo): Service {
         val uuid = UUID.randomUUID()
         val serviceWrapper = MockServiceWrapper(uuid, listOf(Pair(UUID.randomUUID(), listOf(UUID.randomUUID()))))
         return Service(serviceWrapper, stateRepo)

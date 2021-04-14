@@ -23,18 +23,41 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlin.native.concurrent.SharedImmutable
 
-sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningState>() {
+typealias Filter = Set<UUID>
+
+sealed class ScanningState : State() {
+
+    data class Discovered (
+        val devices: List<Device>,
+        internal val filter: Filter,
+    ) {
+        constructor(filter: Filter) : this(emptyList(), filter)
+
+        fun copyAndAdd(device: Device): Discovered =
+            Discovered(listOf(*devices.toTypedArray(), device), filter)
+
+        fun discoveredForFilter(filter:Filter) =
+            if (this.filter == filter)
+                this
+            else
+                Discovered(filter)
+    }
 
     companion object {
+        val nothingDiscovered = Discovered(emptySet())
         const val TAG = "BluetoothManager"
     }
 
@@ -42,203 +65,211 @@ sealed class ScanningState(private val scanner: BaseScanner) : State<ScanningSta
         error.message?.let { com.splendo.kaluga.logging.error(TAG, it) }
     }
 
-    @InternalCoroutinesApi
-    override suspend fun initialState() {
-        scanner.startMonitoringPermissions()
-    }
-
-    override suspend fun finalState() {
-        scanner.stopMonitoringPermissions()
-    }
-
-    interface Permitted : HandleBeforeOldStateIsRemoved<ScanningState>, HandleAfterNewStateIsSet<ScanningState> {
-        val revokePermission: suspend () -> NoBluetoothState.MissingPermissions
-        suspend fun initialState()
-        suspend fun finalState()
-    }
-
-    class PermittedHandler(private val scanner: BaseScanner) : Permitted {
-
-        override val revokePermission: suspend () -> NoBluetoothState.MissingPermissions = {
-            NoBluetoothState.MissingPermissions(scanner)
-        }
-
-        override suspend fun afterNewStateIsSet(newState: ScanningState) {
-            when (newState) {
-                is NoBluetoothState.MissingPermissions -> scanner.stopMonitoringBluetooth()
-                else -> {}
-            }
-        }
-
-        override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
-            when (oldState) {
-                is NoBluetoothState.MissingPermissions -> scanner.startMonitoringBluetooth()
-                else -> {}
-            }
-        }
+    sealed class Initialized(private val scanner: BaseScanner):ScanningState() {
 
         override suspend fun initialState() {
-            scanner.startMonitoringBluetooth()
+            scanner.startMonitoringPermissions()
         }
 
         override suspend fun finalState() {
-            scanner.stopMonitoringBluetooth()
-        }
-    }
-
-    sealed class Enabled(val discoveredDevices: List<Device>, private val scanner: BaseScanner) : ScanningState(scanner), Permitted {
-
-        private val permittedHandler = PermittedHandler(scanner)
-
-        override val revokePermission: suspend () -> NoBluetoothState.MissingPermissions = permittedHandler.revokePermission
-
-        val disable = suspend {
-            NoBluetoothState.Disabled(scanner)
+            scanner.stopMonitoringPermissions()
         }
 
-        @InternalCoroutinesApi
-        override suspend fun initialState() {
-            super.initialState()
+        val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner)}
 
-            permittedHandler.initialState()
-        }
+//        interface Permitted : HandleBeforeOldStateIsRemoved<ScanningState>,
+//            HandleAfterNewStateIsSet<ScanningState> {
+//            suspend fun initialState()
+//            suspend fun finalState()
+//        }
 
-        override suspend fun finalState() {
-            super.finalState()
+//        class PermittedHandler(private val scanner: BaseScanner) : Permitted {
 
-            permittedHandler.finalState()
-        }
+//            override val revokePermission: suspend () -> NoBluetooth.MissingPermissions = {
+//                NoBluetooth.MissingPermissions(scanner)
+//            }
 
-        override suspend fun afterNewStateIsSet(newState: ScanningState) {
-            permittedHandler.afterNewStateIsSet(newState)
-        }
+//            override suspend fun afterNewStateIsSet(newState: ScanningState) {
+//                when (newState) {
+//                    // TODO: only Missing Permissions? Can't this be on that state?
+//                    is NoBluetooth.MissingPermissions -> scanner.stopMonitoringBluetooth()
+//                    else -> {
+//                    }
+//                }
+//            }
+//
+//            override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
+//                when (oldState) {
+//                    is NoBluetooth.MissingPermissions -> scanner.startMonitoringBluetooth()
+//                    else -> {
+//                    }
+//                }
+//            }
 
-        override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
-            permittedHandler.beforeOldStateIsRemoved(oldState)
-        }
+//            override suspend fun initialState() {
+//                scanner.startMonitoringBluetooth()
+//            }
+//
+//            override suspend fun finalState() {
+//                scanner.stopMonitoringBluetooth()
+//            }
+//        }
 
-        class Idle internal constructor(
-            discoveredDevices: List<Device>,
-            internal val oldFilter: Set<UUID>,
-            private val scanner: BaseScanner
-        ) : Enabled(discoveredDevices, scanner) {
+        sealed class Enabled(
+            val discovered: Discovered,
+            protected val scanner: BaseScanner
+        ) : Initialized(scanner) {
 
-            fun startScanning(filter: Set<UUID>): suspend () -> Scanning {
-                return {
-                    val devices = if (filter == oldFilter)
-                        discoveredDevices
-                    else
-                        emptyList()
-                    Scanning(devices, filter, scanner)
+
+
+//            override val revokePermission: suspend () -> NoBluetooth.MissingPermissions =
+//                permittedHandler.revokePermission
+
+            val disable = suspend {
+                NoBluetooth.Disabled(scanner)
+            }
+
+//            override suspend fun initialState() {
+//                super.initialState()
+//
+//                permittedHandler.initialState()
+//            }
+
+//            override suspend fun finalState() {
+//                super.finalState()
+//
+//                permittedHandler.finalState()
+//            }
+
+//            override suspend fun afterNewStateIsSet(newState: ScanningState) {
+//                permittedHandler.afterNewStateIsSet(newState)
+//            }
+//
+//            override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
+//                permittedHandler.beforeOldStateIsRemoved(oldState)
+//            }
+
+            class Idle internal constructor(
+                previouslyDiscovered:Discovered,
+                scanner: BaseScanner
+            ) : Enabled(previouslyDiscovered, scanner) {
+
+                fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
+                    Scanning(
+                        discovered.discoveredForFilter(filter),
+                        scanner
+                    )
                 }
             }
-        }
 
-        class Scanning internal constructor(
-            discoveredDevices: List<Device>,
-            internal val filter: Set<UUID>,
-            private val scanner: BaseScanner
-        ) : Enabled(discoveredDevices, scanner), HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
-
-            suspend fun discoverDevice(identifier: Identifier, rssi: Int, advertisementData: BaseAdvertisementData, deviceCreator: () -> Device): suspend () -> ScanningState {
-                return discoveredDevices.firstOrNull { it.identifier == identifier }?.let { knownDevice ->
-                    knownDevice.flowable
-                    knownDevice.takeAndChangeState { state ->
-                        state.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
-                    }
-                    remain
-                } ?: run {
-                    suspend {
-                        val newDevices = listOf(*discoveredDevices.toTypedArray(), deviceCreator())
-                        Scanning(newDevices, filter, scanner)
-                    }
-                }
-            }
-
-            val stopScanning = suspend {
-                Idle(discoveredDevices, filter, scanner)
-            }
+            class Scanning internal constructor(
+                discovered:Discovered,
+                scanner: BaseScanner
+            ) : Enabled(discovered, scanner),
+                HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
 
             override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                super.afterNewStateIsSet(oldState)
-                when (oldState) {
-                    !is Scanning -> scanner.scanForDevices(filter)
-                    else -> {}
-                }
+                if (oldState !is Scanning)
+                    scanner.scanForDevices(discovered.filter)
             }
 
-            override suspend fun afterCreatingNewState(newState: ScanningState) {
-                when (newState) {
-                    !is Scanning -> {
-                        scanner.stopScanning()
+            suspend fun discoverDevice(
+                identifier: Identifier,
+                rssi: Int,
+                advertisementData: BaseAdvertisementData,
+                deviceCreator: () -> Device
+            ): suspend () -> ScanningState {
+
+                return discovered.devices.find { it.identifier == identifier }
+                    ?.let { knownDevice ->
+                        knownDevice.takeAndChangeState { state ->
+                            state.advertisementDataAndRssiDidUpdate(advertisementData, rssi)
+                        }
+                        // TODO our contents have technically changed yet we remain()
+                        // not storing Devices as repos, but rather storing their _state_
+                        // would be better.
+                        remain()
+                    } ?: suspend {
+                        Scanning(discovered.copyAndAdd(deviceCreator()), scanner)
                     }
-                    else -> {}
+                }
+
+                val stopScanning = suspend {
+                    Idle(discovered, scanner)
+                }
+
+                override suspend fun afterCreatingNewState(newState: ScanningState) {
+                    if (newState !is Scanning)
+                        scanner.stopScanning()
+                }
+            }
+        }
+
+        sealed class NoBluetooth constructor(scanner: BaseScanner) : Initialized(scanner) {
+
+            class Disabled internal constructor(private val scanner: BaseScanner) :
+                NoBluetooth(scanner), HandleAfterOldStateIsRemoved<ScanningState> {
+
+                val enable: suspend () -> Enabled = {
+                    Enabled.Idle(nothingDiscovered, scanner)
+                }
+
+                override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
+                   if (oldState !is Disabled  && scanner.autoEnableBluetooth)
+                       scanner.requestBluetoothEnable()
                 }
             }
 
-            @InternalCoroutinesApi
-            override suspend fun initialState() {
-                super.initialState()
+            class MissingPermissions internal constructor(private val scanner: BaseScanner) :
+                NoBluetooth(scanner), HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
 
-                scanner.scanForDevices(filter)
-            }
+                fun permit(enabled: Boolean): suspend () -> ScanningState = {
+                    if (enabled)
+                        Enabled.Idle(nothingDiscovered, scanner)
+                    else Disabled(scanner)
+                }
 
-            override suspend fun finalState() {
-                super.finalState()
+                override suspend fun afterCreatingNewState(newState: ScanningState) {
+                    scanner.stopMonitoringBluetooth()
+                }
 
-                scanner.stopScanning()
+                override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
+                    scanner.startMonitoringBluetooth()
+                }
             }
         }
     }
 
-    sealed class NoBluetoothState constructor(scanner: BaseScanner) : ScanningState(scanner) {
+    class NotInitialized(
+        val permissions: Permissions,
+        val connectionSettings: ConnectionSettings,
+        val autoRequestPermission: Boolean,
+        val autoEnableBluetooth: Boolean,
+        val builder: BaseScanner.Builder
+        ):ScanningState() {
 
-        class Disabled internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner), Permitted {
-
-            val enable: suspend () -> Enabled = {
-                Enabled.Idle(emptyList(), emptySet(), scanner)
-            }
-
-            private val permittedHandler = PermittedHandler(scanner)
-
-            override val revokePermission: suspend () -> MissingPermissions = permittedHandler.revokePermission
-
-            @InternalCoroutinesApi
-            override suspend fun initialState() {
-                super.initialState()
-
-                permittedHandler.initialState()
-                if (scanner.autoEnableBluetooth)
-                    scanner.requestBluetoothEnable()
-            }
-
-            override suspend fun finalState() {
-                super.finalState()
-
-                permittedHandler.finalState()
-            }
-
-            override suspend fun afterNewStateIsSet(newState: ScanningState) {
-                permittedHandler.afterNewStateIsSet(newState)
-            }
-
-            override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
-                permittedHandler.beforeOldStateIsRemoved(oldState)
-                when (oldState) {
-                    !is Disabled -> if (scanner.autoEnableBluetooth) scanner.requestBluetoothEnable()
-                    else -> {}
-                }
-            }
-        }
-
-        class MissingPermissions internal constructor(private val scanner: BaseScanner) : NoBluetoothState(scanner) {
-
-            fun permit(enabled: Boolean): suspend () -> ScanningState = {
-                if (enabled) Enabled.Idle(emptyList(), emptySet(), scanner) else Disabled(scanner)
+        suspend fun initialize(
+            repo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>
+        ):suspend ()->Initialized {
+            val scanner = builder.create(
+                permissions,
+                connectionSettings,
+                autoRequestPermission,
+                autoEnableBluetooth,
+                scanningStateRepo = repo
+            )
+            return if (!scanner.isPermitted()) {
+                { Initialized.NoBluetooth.MissingPermissions(scanner) }
+            } else if (!scanner.isBluetoothEnabled()) {
+                { Initialized.NoBluetooth.Disabled(scanner) }
+            } else {
+                { Initialized.Enabled.Idle(nothingDiscovered, scanner) }
             }
         }
     }
 }
+
+typealias ScanningStateFlowRepo = StateRepo<ScanningState, MutableStateFlow<ScanningState>>
 
 class ScanningStateRepo(
     permissions: Permissions,
@@ -247,36 +278,24 @@ class ScanningStateRepo(
     autoEnableBluetooth: Boolean,
     builder: BaseScanner.Builder,
     coroutineScope: CoroutineScope
-) : ColdStateRepo<ScanningState>(coroutineContext = coroutineScope.coroutineContext) {
-
-    private val scanner = builder.create(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, this, coroutineScope)
+) : ColdStateFlowRepo<ScanningState>(
+    coroutineContext = coroutineScope.coroutineContext,
+    init = {
+        ScanningState.NotInitialized(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, builder)
+    },
+    deinit = { _,_ -> }
+) {
 
     private var lastDevices: List<Device> = emptyList()
     private var lastFilter: Set<UUID> = emptySet()
 
-    override suspend fun initialValue(): ScanningState {
-        val state: ScanningState = if (!scanner.isPermitted()) {
-            ScanningState.NoBluetoothState.MissingPermissions(scanner)
-        } else if (!scanner.isBluetoothEnabled()) {
-            ScanningState.NoBluetoothState.Disabled(scanner)
-        } else {
-            ScanningState.Enabled.Idle(lastDevices, lastFilter, scanner)
-        }
-        lastDevices = emptyList()
-        lastFilter = emptySet()
-        return state
-    }
-
     override suspend fun deinitialize(state: ScanningState) {
-        when (state) {
-            is ScanningState.Enabled -> {
-                lastDevices = state.discoveredDevices
-                lastFilter = when (state) {
-                    is ScanningState.Enabled.Idle -> state.oldFilter
-                    is ScanningState.Enabled.Scanning -> state.filter
-                }
+        if (state is ScanningState.Initialized.Enabled) {
+            lastDevices = state.discovered.devices
+            lastFilter = when (state) {
+                is ScanningState.Initialized.Enabled.Idle,
+                is ScanningState.Initialized.Enabled.Scanning -> state.discovered.filter
             }
-            else -> {}
         }
     }
 }

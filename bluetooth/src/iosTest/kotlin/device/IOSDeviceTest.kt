@@ -24,7 +24,6 @@ import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.mock.MockCharacteristic
 import com.splendo.kaluga.bluetooth.mock.MockDescriptor
 import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
-import com.splendo.kaluga.state.StateRepo
 import platform.CoreBluetooth.CBUUID
 
 class IOSDeviceTest : DeviceTest() {
@@ -36,17 +35,17 @@ class IOSDeviceTest : DeviceTest() {
     override val deviceHolder: DeviceHolder
         get() = DeviceHolder(MockCBPeripheralWrapper())
 
-    override fun createServices(stateRepo: StateRepo<DeviceState>): List<Service> {
+    override fun createServices(stateRepo: DeviceStateFlowRepo): List<Service> {
         service = MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID()))))
         return listOf(Service(service, stateRepo))
     }
 
-    override fun createCharacteristic(stateRepo: StateRepo<DeviceState>): Characteristic {
+    override fun createCharacteristic(stateRepo: DeviceStateFlowRepo): Characteristic {
         characteristic = MockCharacteristic(service.characteristics.first(), stateRepo)
         return characteristic
     }
 
-    override fun createDescriptor(stateRepo: StateRepo<DeviceState>): Descriptor {
+    override fun createDescriptor(stateRepo: DeviceStateFlowRepo): Descriptor {
         descriptor = MockDescriptor(characteristic.characteristic.descriptors!!.first(), stateRepo)
         return descriptor
     }

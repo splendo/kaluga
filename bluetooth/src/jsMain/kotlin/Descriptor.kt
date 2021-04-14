@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
 
-actual class Descriptor(override val uuid: UUID, initialValue: ByteArray?, stateRepo: StateRepo<DeviceState>) : BaseDescriptor(initialValue, stateRepo) {
+actual class Descriptor(override val uuid: UUID, initialValue: ByteArray?, stateRepo: DeviceStateRepo) : BaseDescriptor(initialValue, stateRepo) {
 
     private val value = AtomicReference(initialValue)
 

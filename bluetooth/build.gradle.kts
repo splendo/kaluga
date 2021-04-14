@@ -25,6 +25,7 @@ kotlin {
                 val ext = (gradle as ExtensionAware).extra
                 implementation(project(":permissions", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":base", ""))
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")
             }
         }

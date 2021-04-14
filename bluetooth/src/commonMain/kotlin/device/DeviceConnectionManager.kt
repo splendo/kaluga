@@ -22,18 +22,20 @@ import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 
 internal abstract class BaseDeviceConnectionManager(
     internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
     internal val deviceHolder: DeviceHolder,
-    internal val stateRepo: StateRepo<DeviceState>,
-    coroutineScope: CoroutineScope
-) : CoroutineScope by coroutineScope {
+    internal val stateRepo: DeviceStateFlowRepo
+) : CoroutineScope by stateRepo {
 
     interface Builder {
-        fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager
+        fun create(
+            connectionSettings: ConnectionSettings,
+            deviceHolder: DeviceHolder,
+            stateRepo: DeviceStateFlowRepo
+        ): BaseDeviceConnectionManager
     }
 
     protected var currentAction: DeviceAction? = null
@@ -56,12 +58,12 @@ internal abstract class BaseDeviceConnectionManager(
             when (state) {
                 is DeviceState.Connecting -> state.didConnect
                 is DeviceState.Reconnecting -> state.didConnect
-                is DeviceState.Connected -> state.remain
+                is DeviceState.Connected -> state.remain()
                 else -> {
                     currentAction = null
                     notifyingCharacteristics.clear()
                     disconnect()
-                    state.remain
+                    state.remain()
                 }
             }
         }
@@ -96,7 +98,7 @@ internal abstract class BaseDeviceConnectionManager(
                         }
                     }
                 }
-                is DeviceState.Disconnected -> state.remain
+                is DeviceState.Disconnected -> state.remain()
                 else -> {
                     clean()
                     state.didDisconnect
@@ -109,7 +111,7 @@ internal abstract class BaseDeviceConnectionManager(
         stateRepo.takeAndChangeState { state ->
             when (state) {
                 is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
-                else -> state.remain
+                else -> state.remain()
             }
         }
     }
@@ -121,10 +123,10 @@ internal abstract class BaseDeviceConnectionManager(
                     if (state.action == currentAction) {
                         state.actionCompleted
                     } else {
-                        state.remain
+                        state.remain()
                     }
                 }
-                else -> state.remain
+                else -> state.remain()
             }
             currentAction = null
             newState

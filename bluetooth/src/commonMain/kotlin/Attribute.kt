@@ -17,13 +17,22 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.state.StateRepo
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.MutableSharedFlow
 
-abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: StateRepo<DeviceState>) : HotFlowable<ByteArray?>(initialValue) {
+abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialValue: ByteArray? = null, protected val stateRepo: DeviceStateFlowRepo) : Flow<ByteArray?> {
     abstract val uuid: UUID
+
+    override suspend fun collect(collector: FlowCollector<ByteArray?>) =
+        sharedFlow.collect(collector)
+
+    // TODO make configurable
+    private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
 
     suspend fun readValue() {
         addAction(createReadAction())
@@ -39,7 +48,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
 
     open suspend fun updateValue() {
         val nextValue = getUpdatedValue()
-        set(nextValue)
+        sharedFlow.emit(nextValue)
     }
 
     internal abstract fun getUpdatedValue(): ByteArray?
@@ -54,7 +63,7 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
                     state.addAction(action)
                 }
                 else -> {
-                    state.remain
+                    state.remain()
                 }
             }
         }

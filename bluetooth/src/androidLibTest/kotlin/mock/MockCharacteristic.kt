@@ -27,7 +27,7 @@ import com.splendo.kaluga.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.utils.complete
 import java.util.UUID
 
-class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : Characteristic(characteristicWrapper, stateRepo) {
+class MockCharacteristic(characteristicWrapper: MockCharacteristicWrapper, stateRepo: DeviceStateRepo) : Characteristic(characteristicWrapper, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 

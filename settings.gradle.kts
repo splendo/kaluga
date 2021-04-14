@@ -36,6 +36,7 @@ apply("gradle/ext.gradle")
 rootProject.name = "Kaluga"
 
 include(":base")
+include(":bluetooth")
 include(":architecture")
 include(":architecture-compose")
 include(":test-utils")

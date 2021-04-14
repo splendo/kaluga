@@ -5,8 +5,6 @@
         <variable
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel" />
-
-        <import type="com.splendo.kaluga.architecture.observable.ObservableKt"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,7 +18,7 @@
         <TextView
             android:id="@+id/name"
             style="@style/ListTitle"
-            android:text="@{viewModel.name.liveData}"
+            android:text="@{viewModel.name.stateFlow}"
             tools:text="@string/bluetooth_no_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -48,7 +46,7 @@
             <TextView
                 android:id="@+id/rssi"
                 style="@style/ListSubTitle"
-                android:text="@{viewModel.rssi.liveData}"
+                android:text="@{viewModel.rssi.stateFlow}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -56,7 +54,7 @@
             <TextView
                 android:id="@+id/distance_field"
                 style="@style/ListSubTitle"
-                android:text="@{viewModel.distance.liveData}"
+                android:text="@{viewModel.distance.stateFlow}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
@@ -66,7 +64,7 @@
         <TextView
             android:id="@+id/status"
             style="@style/ListContent"
-            android:text="@{viewModel.state.liveData}"
+            android:text="@{viewModel.state.stateFlow}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/info_row"
@@ -87,7 +85,7 @@
             app:layout_constraintTop_toBottomOf="@id/services_header"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:services="@{viewModel.services.liveData}"
+            app:services="@{viewModel.services.stateFlow}"
             tools:listitem="@layout/bluetooth_service_item"
             />
 

@@ -20,7 +20,8 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpec
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecRow
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
 import com.splendo.kaluga.bluetooth.Bluetooth
@@ -38,6 +39,7 @@ import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -48,7 +50,6 @@ sealed class DeviceDetailsSpecRow<V>(associatedType: NavigationBundleSpecType<V>
     object UUIDRow : DeviceDetailsSpecRow<String>(NavigationBundleSpecType.StringType)
 }
 
-@ExperimentalStdlibApi
 class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private val identifier: Identifier) : BaseViewModel() {
 
     companion object {
@@ -57,10 +58,10 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
 
     private val device = bluetooth.devices()[identifier]
 
-    val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toObservable(coroutineScope)
+    val name = device.info().map { it.name ?: "bluetooth_no_name".localized() }.toUninitializedObservable(coroutineScope)
     val identifierString = identifier.stringValue
-    val rssi = device.rssi().map { "rssi".localized().format(it) }.toObservable(coroutineScope)
-    val distance = device.distance().map { "distance".localized().format(it) }.toObservable(coroutineScope)
+    val rssi = device.rssi().map { "rssi".localized().format(it) }.toUninitializedObservable(coroutineScope)
+    val distance = device.distance().map { "distance".localized().format(it) }.toUninitializedObservable(coroutineScope)
     val state = device.state().map { deviceState ->
         when (deviceState) {
             is DeviceState.Disconnecting -> "bluetooth_disconneting"
@@ -70,9 +71,11 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
             is DeviceState.Connecting -> "bluetooth_connecting"
             is DeviceState.Reconnecting -> "bluetooth_reconnecting"
         }.localized()
-    }.toObservable(coroutineScope)
-    val _services = ConflatedBroadcastChannel<List<BluetoothServiceViewModel>>()
-    val services = _services.toObservable(coroutineScope)
+    }.toUninitializedObservable(coroutineScope)
+    private val _services = MutableStateFlow(
+        emptyList<BluetoothServiceViewModel>()
+    )
+    val services = _services.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
@@ -80,7 +83,7 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
         scope.launch {
             device.services().map { services -> services.map { BluetoothServiceViewModel(bluetooth, identifier, it.uuid) } }.collect {
                 cleanServices()
-                _services.send(it)
+                _services.value = it
             }
         }
 
@@ -98,6 +101,6 @@ class BluetoothDeviceDetailViewModel(private val bluetooth: Bluetooth, private v
     }
 
     private fun cleanServices() {
-        _services.valueOrNull?.forEach { it.onCleared() }
+        _services.value.forEach { it.onCleared() }
     }
 }

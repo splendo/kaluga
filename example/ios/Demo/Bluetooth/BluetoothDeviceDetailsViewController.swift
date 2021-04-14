@@ -56,30 +56,34 @@ class BluetoothDeviceDetailsViewController : UIViewController, UICollectionViewD
         flowLayout.minimumLineSpacing = 4
         servicesList.collectionViewLayout = flowLayout
 
-        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] (disposeBag) in
-        guard let viewModel = self?.viewModel else { return }
+        lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self, onLifecycleChanges: { [weak self] in
+            
+            guard let viewModel = self?.viewModel else { return []}
+            
+            return [
             viewModel.name.observe { name in
                 self?.deviceName.text = name as? String
-            }.addTo(disposeBag: disposeBag)
-            
+            }
+            ,
             viewModel.rssi.observe { rssiValue in
                 self?.rssi.text = rssiValue as? String
-            }.addTo(disposeBag: disposeBag)
-            
+            }
+            ,
             viewModel.distance.observe { distanceValue in
                 self?.distance.text = distanceValue as? String
-            }.addTo(disposeBag: disposeBag)
-            
+            }
+            ,
             viewModel.state.observe { state in
                 self?.connectionStatus.text = state as? String
-            }.addTo(disposeBag: disposeBag)
-            
+            }
+            ,
             viewModel.services.observe { servicesList in
                 self?.services = servicesList as? [BluetoothServiceViewModel] ?? []
                 self?.servicesList.reloadData()
                 self?.servicesList.layoutIfNeeded()
             }
-        }
+            ]
+        })
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

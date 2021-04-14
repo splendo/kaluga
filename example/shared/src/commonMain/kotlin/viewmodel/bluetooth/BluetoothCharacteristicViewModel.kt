@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
+import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Characteristic
@@ -31,8 +33,8 @@ import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.bluetooth.value
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
@@ -46,10 +48,10 @@ class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private
     private val characteristic: Flow<Characteristic?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID].characteristics()[characteristicUUID]
 
     val uuid = characteristicUUID.uuidString
-    val value = characteristic.value().map { it?.toHexString() ?: "" }.toObservable(coroutineScope)
+    val value = characteristic.value().map { it?.toHexString() ?: "" }.toUninitializedObservable(coroutineScope)
 
-    private val _descriptors = ConflatedBroadcastChannel<List<BluetoothDescriptorViewModel>>()
-    val descriptors = _descriptors.toObservable(coroutineScope)
+    private val _descriptors = MutableStateFlow(emptyList<BluetoothDescriptorViewModel>())
+    val descriptors = _descriptors.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
@@ -58,7 +60,7 @@ class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private
         scope.launch {
             characteristic.descriptors().map { descriptors -> descriptors.map { BluetoothDescriptorViewModel(bluetooth, deviceIdentifier, serviceUUID, characteristicUUID, it.uuid) } }.collect {
                 clearDescriptors()
-                _descriptors.send(it)
+                _descriptors.value = it
             }
         }
     }
@@ -69,6 +71,6 @@ class BluetoothCharacteristicViewModel(private val bluetooth: Bluetooth, private
     }
 
     private fun clearDescriptors() {
-        _descriptors.valueOrNull?.forEach { it.onCleared() }
+        _descriptors.value.forEach { it.onCleared() }
     }
 }

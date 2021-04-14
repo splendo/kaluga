@@ -25,6 +25,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.device.MockDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -37,9 +38,9 @@ import com.splendo.kaluga.state.StateRepo
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.permissions.MockPermissionsBuilder
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
+import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -71,7 +72,7 @@ abstract class BluetoothTest : BaseTest() {
 
     abstract fun createFilter(): Set<UUID>
     abstract fun createDeviceHolder(): DeviceHolder
-    abstract fun createService(stateRepo: StateRepo<DeviceState>): Service
+    abstract fun createService(stateRepo: DeviceStateFlowRepo): Service
 
     @Test
     fun testIsScanning() = runBlocking {
@@ -738,7 +739,7 @@ abstract class BluetoothTest : BaseTest() {
     private fun createDevice(deviceHolder: DeviceHolder, rssi: Int = initialRssi, advertisementData: BaseAdvertisementData = initialAdvertisementData, coroutineScope: CoroutineScope): Device {
         return Device(ConnectionSettings(), DeviceInfoImpl(deviceHolder, rssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
 
-            override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
+            override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: DeviceStateRepo, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
                 return MockDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope)
             }
         }, coroutineScope)

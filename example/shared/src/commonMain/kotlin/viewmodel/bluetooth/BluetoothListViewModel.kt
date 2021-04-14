@@ -20,38 +20,37 @@ package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>) : NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
 
-@ExperimentalStdlibApi
 class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
-    private val _isScanning = ConflatedBroadcastChannel<Boolean>()
-    val isScanning = _isScanning.toObservable(coroutineScope)
+    private val _isScanning = MutableStateFlow(false)
+    val isScanning = _isScanning.toInitializedObservable(coroutineScope)
 
-    private val _devices = ConflatedBroadcastChannel<List<BluetoothListDeviceViewModel>>()
-    val devices = _devices.toObservable(coroutineScope)
+    private val _devices = MutableStateFlow(emptyList<BluetoothListDeviceViewModel>())
+    val devices = _devices.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        scope.launch { bluetooth.isScanning().collect { _isScanning.send(it) } }
+        scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
         scope.launch { bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
             cleanDevices()
-            _devices.send(devices)
+            _devices.value = devices
         } }
     }
 
     fun onScanPressed() {
-        if (_isScanning.valueOrNull == true) {
+        if (_isScanning.value) {
             bluetooth.stopScanning()
         } else {
             bluetooth.startScanning()
@@ -64,6 +63,6 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Naviga
     }
 
     private fun cleanDevices() {
-        _devices.valueOrNull?.forEach { it.onCleared() }
+        _devices.value.forEach { it.onCleared() }
     }
 }

@@ -27,7 +27,6 @@ import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRo
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-@ExperimentalStdlibApi
 class BluetoothMoreActivity : KalugaViewModelActivity<BluetoothDeviceDetailViewModel>() {
 
     override val viewModel: BluetoothDeviceDetailViewModel by viewModel {

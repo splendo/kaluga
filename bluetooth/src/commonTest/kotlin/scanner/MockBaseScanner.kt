@@ -17,21 +17,21 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
-import com.splendo.kaluga.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 
-class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState>, coroutineScope: CoroutineScope) : BaseScanner(permissions,
+class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>, coroutineScope: CoroutineScope) : BaseScanner(permissions,
     connectionSettings,
     autoRequestPermissions,
     autoEnableBluetooth,
-    stateRepo,
-    coroutineScope) {
+    stateRepo) {
 
     lateinit var scanForDevicesCompleted: CompletableDeferred<Set<UUID>>
     lateinit var stopScanningCompleted: EmptyCompletableDeferred

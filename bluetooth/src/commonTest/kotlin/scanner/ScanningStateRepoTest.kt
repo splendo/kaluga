@@ -452,7 +452,7 @@ abstract class ScanningStateRepoTest : FlowableTest<ScanningState>() {
     private fun createDevice(deviceHolder: DeviceHolder, advertisementData: BaseAdvertisementData, coroutineScope: CoroutineScope): Device {
         return Device(ConnectionSettings(), DeviceInfoImpl(deviceHolder, 0, advertisementData), object : BaseDeviceConnectionManager.Builder {
 
-            override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
+            override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, stateRepo: DeviceStateRepo, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
                 return MockDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope)
             }
         }, coroutineScope)

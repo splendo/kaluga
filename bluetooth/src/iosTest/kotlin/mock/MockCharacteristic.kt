@@ -29,7 +29,7 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class MockCharacteristic(characteristic: CharacteristicWrapper, stateRepo: StateRepo<DeviceState>) : Characteristic(characteristic, stateRepo) {
+class MockCharacteristic(characteristic: CharacteristicWrapper, stateRepo: DeviceStateRepo) : Characteristic(characteristic, stateRepo) {
 
     val didUpdate = EmptyCompletableDeferred()
 

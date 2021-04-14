@@ -27,7 +27,6 @@ import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDevice
 
 object DevicesBinding {
 
-    @ExperimentalStdlibApi
     @BindingAdapter("devices")
     @JvmStatic
     fun bindDevices(view: RecyclerView, devices: List<BluetoothListDeviceViewModel>?) {
@@ -37,7 +36,6 @@ object DevicesBinding {
     }
 }
 
-@ExperimentalStdlibApi
 class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BluetoothAdapter.BluetoothItemViewHolder>() {
 
     class BluetoothItemViewHolder(val binding: BluetoothItemBinding) : RecyclerView.ViewHolder(binding.root)
@@ -64,7 +62,6 @@ class BluetoothAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerVie
         holder.binding.viewModel = viewModel
     }
 
-    @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 

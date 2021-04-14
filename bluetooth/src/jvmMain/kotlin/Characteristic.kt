@@ -22,7 +22,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.state.StateRepo
 import java.util.concurrent.atomic.AtomicReference
 
-actual open class Characteristic(override val uuid: UUID, override val descriptors: List<Descriptor>, initialValue: ByteArray?, stateRepo: StateRepo<DeviceState>) : BaseCharacteristic(initialValue, stateRepo) {
+actual open class Characteristic(override val uuid: UUID, override val descriptors: List<Descriptor>, initialValue: ByteArray?, stateRepo: DeviceStateRepo) : BaseCharacteristic(initialValue, stateRepo) {
 
     private var value = AtomicReference(initialValue)
 

@@ -17,13 +17,16 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
+import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
     sealed class Read : DeviceAction() {
@@ -38,10 +41,12 @@ sealed class DeviceAction {
     data class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic, val enable: Boolean) : DeviceAction()
 }
 
+typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceState>>
+
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
     internal open val connectionManager: BaseDeviceConnectionManager
-) : State<DeviceState>(), DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
+) : State(), DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
 
     sealed class Connected(
         deviceInfo: DeviceInfoImpl,
@@ -54,12 +59,12 @@ sealed class DeviceState(
         ) : Connected(deviceInfo, connectionManager) {
 
             fun startDiscovering() {
-                launch(MainQueueDispatcher) {
+                launch(coroutineContext) {
                     connectionManager.stateRepo.takeAndChangeState { deviceState ->
                         if (deviceState is NoServices)
                             discoverServices
                         else
-                            deviceState.remain
+                            deviceState.remain()
                     }
                 }
             }
@@ -142,12 +147,12 @@ sealed class DeviceState(
         }
 
         fun startDisconnected() {
-            launch(MainQueueDispatcher) {
+            launch(coroutineContext) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Connected)
                         disconnecting
                     else
-                        deviceState.remain
+                        deviceState.remain()
                 }
             }
         }
@@ -179,12 +184,12 @@ sealed class DeviceState(
         val cancelConnection = disconnecting
 
         fun handleCancel() {
-            launch(MainQueueDispatcher) {
+            launch(coroutineContext) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Connecting) {
                         cancelConnection
                     } else {
-                        deviceState.remain
+                        deviceState.remain()
                     }
                 }
             }
@@ -211,7 +216,7 @@ sealed class DeviceState(
 
         fun retry(): suspend () -> DeviceState {
             return when (val reconnectionSetting = connectionManager.connectionSettings.reconnectionSettings) {
-                is ConnectionSettings.ReconnectionSettings.Always -> remain
+                is ConnectionSettings.ReconnectionSettings.Always -> remain()
                 is ConnectionSettings.ReconnectionSettings.Never -> didDisconnect
                 is ConnectionSettings.ReconnectionSettings.Limited -> {
                     val nextAttempt = attempt + 1
@@ -225,12 +230,12 @@ sealed class DeviceState(
         }
 
         fun handleCancel() {
-            launch(MainQueueDispatcher) {
+            launch(coroutineContext) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Reconnecting)
                         cancelConnection
                     else
-                        deviceState.remain
+                        deviceState.remain()
                 }
             }
         }
@@ -255,12 +260,12 @@ sealed class DeviceState(
     ) : DeviceState(deviceInfo, connectionManager) {
 
         fun startConnecting() {
-            launch(MainQueueDispatcher) {
+            launch(coroutineContext) {
                 connectionManager.stateRepo.takeAndChangeState { deviceState ->
                     if (deviceState is Disconnected) {
                         connect(deviceState)
                     } else {
-                        deviceState.remain
+                        deviceState.remain()
                     }
                 }
             }
@@ -272,7 +277,7 @@ sealed class DeviceState(
                     Connecting(deviceInfo, connectionManager)
                 }
             } else {
-                deviceState.remain
+                deviceState.remain()
             }
         }
     }
@@ -326,13 +331,14 @@ class Device internal constructor(
     connectionSettings: ConnectionSettings,
     private val initialDeviceInfo: DeviceInfoImpl,
     connectionBuilder: BaseDeviceConnectionManager.Builder,
-    coroutineScope: CoroutineScope
-) : HotStateRepo<DeviceState>(coroutineContext = coroutineScope.coroutineContext) {
-
-    val identifier: Identifier = initialDeviceInfo.identifier
-    internal val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, this, coroutineScope)
-
-    override suspend fun initialValue(): DeviceState {
-        return DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
+    coroutineContext: CoroutineContext
+) : HotStateFlowRepo<DeviceState>(
+    coroutineContext = coroutineContext,
+    initialState = {
+        val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, it)
+        DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
     }
+) {
+    val identifier: Identifier
+        get() = initialDeviceInfo.identifier
 }

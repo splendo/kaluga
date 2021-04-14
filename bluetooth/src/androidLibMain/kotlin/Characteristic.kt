@@ -20,9 +20,12 @@ package com.splendo.kaluga.bluetooth
 import android.bluetooth.BluetoothGattCharacteristic
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 
-actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: StateRepo<DeviceState>) :
+actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: DeviceStateFlowRepo) :
     BaseCharacteristic(characteristic.value, stateRepo) {
 
     override val uuid = characteristic.uuid

@@ -29,7 +29,6 @@ import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -38,13 +37,16 @@ internal actual class DeviceConnectionManager(
     private val context: Context,
     connectionSettings: ConnectionSettings,
     deviceHolder: DeviceHolder,
-    stateRepo: StateRepo<DeviceState>,
-    coroutineScope: CoroutineScope
-) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo, coroutineScope), CoroutineScope by coroutineScope {
+    stateRepo: DeviceStateFlowRepo
+) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo), CoroutineScope by stateRepo {
 
     class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseDeviceConnectionManager.Builder {
-        override fun create(connectionSettings: ConnectionSettings, deviceHolder: DeviceHolder, repoAccessor: StateRepo<DeviceState>, coroutineScope: CoroutineScope): BaseDeviceConnectionManager {
-            return DeviceConnectionManager(context, connectionSettings, deviceHolder, repoAccessor, coroutineScope)
+        override fun create(
+            connectionSettings: ConnectionSettings,
+            deviceHolder: DeviceHolder,
+            stateRepo: DeviceStateFlowRepo,
+        ): BaseDeviceConnectionManager {
+            return DeviceConnectionManager(context, connectionSettings, deviceHolder, stateRepo)
         }
     }
 

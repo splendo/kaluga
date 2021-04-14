@@ -25,11 +25,16 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
+import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
@@ -50,6 +55,7 @@ import com.splendo.kaluga.permissions.notifications.*
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
+import platform.Foundation.NSUUID
 import platform.UIKit.*
 import platform.UserNotifications.UNAuthorizationOptionAlert
 import platform.UserNotifications.UNAuthorizationOptionSound
@@ -85,6 +91,8 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
                         FeatureListNavigationAction.System -> "showSystem"
+                        FeatureListNavigationAction.Bluetooth -> "showBluetooth"
+
                     })
             })
     }
@@ -112,6 +120,20 @@ class KNArchitectureFramework {
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
             })
+    }
+
+    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
+        return BluetoothListViewModel(bluetooth, ViewControllerNavigator(parent) { action ->
+            NavigationSpec.Push(push = {
+                val bundle = action.bundle ?: return@Push UIViewController()
+                val identifier = NSUUID(uUIDString = bundle.get(DeviceDetailsSpecRow.UUIDRow))
+                createDeviceDetailsViewController(identifier, bluetooth)
+            })
+        })
+    }
+
+    fun createBluetoothDeviceDetailsViewModel(identifier: Identifier, bluetooth: Bluetooth): BluetoothDeviceDetailViewModel {
+        return BluetoothDeviceDetailViewModel(bluetooth, identifier)
     }
 
     fun createPermissionListViewModel(parent: UIViewController, createPermissionViewController: (Permission) -> UIViewController): PermissionsListViewModel {

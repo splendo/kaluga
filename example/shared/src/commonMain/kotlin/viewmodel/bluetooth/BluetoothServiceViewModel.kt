@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.Service
@@ -28,8 +28,8 @@ import com.splendo.kaluga.bluetooth.get
 import com.splendo.kaluga.bluetooth.services
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -39,8 +39,8 @@ class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val de
     private val service: Flow<Service?> get() = bluetooth.devices()[deviceIdentifier].services()[serviceUUID]
 
     val uuid = serviceUUID.uuidString
-    private val _characteristics = ConflatedBroadcastChannel<List<BluetoothCharacteristicViewModel>>()
-    val characteristics = _characteristics.toObservable(coroutineScope)
+    private val _characteristics = MutableStateFlow(emptyList<BluetoothCharacteristicViewModel>())
+    val characteristics = _characteristics.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
@@ -48,7 +48,7 @@ class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val de
         scope.launch {
             service.characteristics().map { characteristics -> characteristics.map { BluetoothCharacteristicViewModel(bluetooth, deviceIdentifier, serviceUUID, it.uuid) } }.collect {
                 cleanCharacteristics()
-                _characteristics.send(it)
+                _characteristics.value = it
             }
         }
     }
@@ -59,6 +59,6 @@ class BluetoothServiceViewModel(private val bluetooth: Bluetooth, private val de
     }
 
     private fun cleanCharacteristics() {
-        _characteristics.valueOrNull?.forEach { it.onCleared() }
+        _characteristics.value.forEach { it.onCleared() }
     }
 }
