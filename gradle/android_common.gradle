@@ -98,11 +98,13 @@ android {
         kotlinOptions {
             jvmTarget = "1.8"
             useIR = true
+            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
         }
     } else {
         logger.lifecycle("Not an IR/Compose module")
         kotlinOptions {
             jvmTarget = "1.8"
+            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
         }
     }
 
