@@ -21,6 +21,7 @@ package com.splendo.kaluga.example.location
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatTextView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
@@ -50,7 +51,7 @@ class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.act
         }
 
         viewModel.location.observeInitialized {
-            val info = findViewById<AppCompatButton>(R.id.info)
+            val info = findViewById<AppCompatTextView>(R.id.info)
             info.text = it
             info.animate().withEndAction {
                 info.animate().setDuration(10000).alpha(0.12f).start()

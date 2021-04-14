@@ -18,7 +18,6 @@ repositories {
     maven(url="https://kotlin.bintray.com/kotlinx")
 }
 
-task("cleanKotlinNativeFrameworkTest")
 
 kotlin {
 
@@ -42,4 +41,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.create<Delete>("cleanKotlinNativeFrameworkTest") {
+    delete = setOf (
+        "build"
+    )
 }
