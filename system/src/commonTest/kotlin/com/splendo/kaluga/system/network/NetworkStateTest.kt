@@ -72,7 +72,7 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
     }
 
     @Test
-    fun testAvailabletransition() = testNetworkState { networkStateRepo ->
+    fun testAvailableTransition() = testNetworkState { networkStateRepo ->
         assertInitialValue(this)
 
         action {
