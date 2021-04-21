@@ -23,12 +23,16 @@ import com.splendo.kaluga.logging.LogLevel
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.logger
 import com.splendo.kaluga.logging.resetLogger
+import com.splendo.kaluga.logging.w
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.debug.DebugProbes
-import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
@@ -38,7 +42,17 @@ actual open class BaseTest {
     // @Rule @JvmField
     // val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val mainDispatcher: ExecutorCoroutineDispatcher by lazy { newSingleThreadContext("synthetic UI thread") }
+    private val mainDispatcher: ExecutorCoroutineDispatcher by lazy {
+        val factory = ThreadFactory { r ->
+            Thread(r, "synthetic UI thread").also {
+                it.uncaughtExceptionHandler =
+                    Thread.UncaughtExceptionHandler { _, e -> w(throwable = e) { "error in synthetic main thread: $e" } }
+            }
+        }
+
+        val executor: ExecutorService = Executors.newSingleThreadExecutor(factory)
+        executor.asCoroutineDispatcher()
+    }
 
     protected val isUnitTest: Boolean
         get() = Build.MODEL == null
@@ -68,6 +82,7 @@ actual open class BaseTest {
     @AfterTest
     actual open fun afterTest() {
         if (isUnitTest) {
+            Thread.sleep(50) // closing the main dispatcher too early can lead to strange issues
             mainDispatcher.close()
             Dispatchers.resetMain()
             resetLogger()

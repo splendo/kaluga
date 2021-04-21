@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.Dispatchers
@@ -76,26 +77,29 @@ sealed class PermissionState<P : Permission> : State() {
 
 /**
  * State machine for managing a given [Permission].
- * Since this is a [ColdStateRepo], it will only monitor for changes to permissions while being observed.
+ * Since this is a [ColdStateFlowRepo], it will only monitor for changes to permissions while being observed.
  * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
  */
 abstract class PermissionStateRepo<P : Permission>(
     private val monitoringInterval: Long = defaultMonitoringInterval,
-    coroutineContext: CoroutineContext = Dispatchers.Main
-) : ColdStateRepo<PermissionState<P>>(coroutineContext) {
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+) : ColdStateFlowRepo<PermissionState<P>>(
+    coroutineContext,
+    init = {
+        val pm = (it as PermissionStateRepo).permissionManager
+        pm.startMonitoring(monitoringInterval)
+        pm.initializeState()
+    }   ,
+    deinit = { _, it ->
+        (it as PermissionStateRepo).permissionManager.stopMonitoring()
+    }
+) {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000
     }
 
+    // TODO move to constructor, so no explicit cast is needed in init block
     abstract val permissionManager: PermissionManager<P>
 
-    override suspend fun initialValue(): PermissionState<P> {
-        permissionManager.startMonitoring(monitoringInterval)
-        return permissionManager.initializeState()
-    }
-
-    override suspend fun deinitialize(state: PermissionState<P>) {
-        permissionManager.stopMonitoring()
-    }
 }

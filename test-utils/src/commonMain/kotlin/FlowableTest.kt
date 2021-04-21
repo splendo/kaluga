@@ -31,6 +31,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
@@ -39,21 +40,28 @@ import kotlinx.coroutines.withTimeout
 
 typealias TestBlock<T> = suspend(T) -> Unit
 typealias ActionBlock = suspend() -> Unit
-typealias FlowTestBlock<T> = suspend FlowTest<T>.() -> Unit
+typealias FlowTestBlock<T, F> = suspend FlowTest<T, F>.(F) -> Unit
 
 abstract class FlowableTest<T> : BaseTest() {
 
-    fun testWithFlow(block: FlowTestBlock<T>) = runBlocking {
-        FlowTest(this, ::mutableSharedFlow).testWithFlow(block)
+    fun testWithFlow(block: FlowTestBlock<T, MutableSharedFlow<T>>) = runBlocking {
+       object:FlowTest<T, MutableSharedFlow<T>>(this) {
+           override val flow: () -> MutableSharedFlow<T>
+               get() =  ::mutableSharedFlow
+       }.testWithFlow(block)
     }
 
     abstract fun mutableSharedFlow(): MutableSharedFlow<T>
+
 }
 
-open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> MutableSharedFlow<T>) : CoroutineScope by scope {
+abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseTest(), CoroutineScope by scope {
+
+    abstract val flow: () -> F
+    private val _flow by lazy { flow() }
 
     @Deprecated("use flow() instead", ReplaceWith("flow"))
-    val flowable: () -> MutableSharedFlow<T>
+    val flowable: ()->F
         get() = flow
 
     open var filter: suspend(T) -> Boolean = { true }
@@ -66,6 +74,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
 
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
+        println("job: $job")
         job?.cancel()
         debug("Ending flow, job canceled")
 
@@ -81,6 +90,9 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
     protected val waitForTestToSucceed = 6000L * 10
 
     private suspend fun awaitTestBlocks() {
+
+        tests.removeAll { !it.isActive }
+
         if (tests.size == 0) {
             println("await all test blocks, but none found")
             return
@@ -96,11 +108,11 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
         }
     }
 
-    fun testWithFlow(block: FlowTestBlock<T>) {
+    fun testWithFlow(block: FlowTestBlock<T, F>) {
         runBlocking {
             testChannel = Channel(Channel.UNLIMITED)
             // startFlow is only called when the first test block is offered
-            block()
+            block(this@FlowTest, _flow)
             resetFlow()
         }
     }
@@ -109,17 +121,17 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
     private suspend fun startFlow() {
         this.ensureNeverFrozen()
 
-        val flowable = flow()
+        val flow = _flow
         val testChannel = testChannel
         val filter = filter
 
         debug("launch flow scope...")
         val started = EmptyCompletableDeferred()
         try {
-            job = launch(Dispatchers.Main) {
+            job = launch(Dispatchers.Main.immediate) {
                 started.complete()
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-                flowable.filter(filter).collect { value ->
+                flow.filter(filter).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
                     val test = testChannel.receive()
                     debug("received test block $test")
@@ -127,10 +139,12 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
                         test.first(value)
                         debug("ran test block $test")
                         test.second.complete(Unit)
+                        debug("completed $test")
                     } catch (t: Throwable) {
                         warn(throwable = t) { "Exception when testing... $t cause: ${t.cause}" }
                         try {
                             test.second.completeExceptionally(t)
+                            debug("completed exceptionally $test")
                         } catch (t: Throwable) {
                             e(throwable = t) { "exception in completing completable" }
                         }
@@ -149,6 +163,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
     }
 
     suspend fun action(action: ActionBlock) {
+        debug("start action")
         awaitTestBlocks()
         action()
         debug("did action")
@@ -167,6 +182,7 @@ open class FlowTest<T>(scope: CoroutineScope = MainScope(), val flow: () -> Muta
         }
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
+        debug("${tests.size} in collection, offering")
         testChannel.offer(Pair(test, completable))
     }
 }
