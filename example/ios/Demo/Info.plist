@@ -22,7 +22,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.splendo.kaluga.example.links</string>
+			<string>com.splendo.kaluga.example</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>kalugaexample</string>
