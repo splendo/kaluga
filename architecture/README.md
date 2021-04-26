@@ -124,7 +124,7 @@ See the `test-utils` module for base test classes that help setting up the ViewM
 
 ## Observables (and Subjects)
 
-Kaluga supports data binding using `Observable`s (one way binding) and `Subject`s (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `SharedFlow` or `StateFlow` (allowing both the Flow and the owner of BaseFlowable to modify the observer. Subjects can be created using either a `ReadWritePropery` or `MutableSharedFlow` or `MutableStateFlow`. 
+Kaluga supports data binding using `Observable`s (one way binding) and `Subject`s (two way binding). An observable can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observeable), or a `SharedFlow` or `StateFlow` (allowing both the Flow and the owner of BaseFlowable to modify the observer. Subjects can be created using either a `ReadWritePropery` or `MutableSharedFlow` or `MutableStateFlow`. It's also possible to use the `observableOf` and `subjectOf` methods for any value.
 
 ### Goals and design
 
@@ -132,7 +132,7 @@ Kaluga observables are not meant as a replacement for fully reactive frameworks.
 
 In order to smoothly interact with observables from viewmodels, the following methods of observation are supported as much as possible:
 - Delegation through the `by` operator. This lets you use your observables as normal variables.
-- Observing value changes through `StateFlow` (which can also be used as a `LiveData`), this is useful especially for Android, e.g. to observe in Compose, or a bind it using data binding. 
+- Observing value changes through `StateFlow` (which can also be used as a `LiveData`), this is useful especially for Android, e.g. to observe in Compose, or bind it using data binding. 
 - Simple disposable listeners, for example for observing directly in iOS or integrating with another framework there (such as Combine).
 - Asynchronously `post`ing value changes (also from background threads) to subjects.
 - A suspended `set` method for subjects (which will suspend until the value has reached the underlying object).
@@ -202,7 +202,7 @@ i = 3
 assertEquals(3, observable.current)
 ```
 
-Another method is using the extension methods provided on many types of classes, `as*Observable()` or `as*Subject()`.
+Another method is using the extension methods provided on many types of classes, `to*Observable()` or `to*Subject()`.
 
 For example on a `StateFlow`:
 ```kotlin
