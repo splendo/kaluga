@@ -39,7 +39,7 @@ interface Disposable {
 expect class SimpleDisposable(onDispose: DisposeHandler):BaseSimpleDisposable
 
 /**
- * PLain [Disposable] to an object that should be disposed in time
+ * Plain [Disposable] to an object that should be disposed in time
  * @param onDispose Function to call when disposing the object
  */
 abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {

@@ -21,4 +21,5 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
+@Deprecated("Use Dispatchers.Main")
 actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main

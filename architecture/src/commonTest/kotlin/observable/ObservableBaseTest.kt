@@ -159,9 +159,9 @@ abstract class ObservableBaseTest:BaseTest() {
             *updates.map { it.asUpdate() }.toTypedArray()
         )
 
-    private lateinit var updateSemaphore:Semaphore
+    private val updateSemaphore=AtomicReference<Semaphore?>(null)
     suspend fun waitForUpdate() {
-        updateSemaphore.acquire()
+        updateSemaphore.get()?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
     }
 
     fun <R:T,T, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>>testObservable(
@@ -172,8 +172,9 @@ abstract class ObservableBaseTest:BaseTest() {
         vararg updates: (O) -> ObservableOptional<R>
     ) = runBlocking {
         val permits = updates.size + 1 // +1 for initial state
-        updateSemaphore = Semaphore(permits).freeze()
-        repeat(permits) { updateSemaphore.acquire() }
+        val semaphore = Semaphore(permits).freeze()
+        updateSemaphore.set(semaphore)
+        repeat(permits) { semaphore.acquire() }
 
         val observableOptional by observable
 
@@ -219,7 +220,7 @@ abstract class ObservableBaseTest:BaseTest() {
             assertEquals(initialExpected.value as R, observedInitializedValue.get())
         }
 
-        updateSemaphore.release()
+        semaphore.release()
 
         updates.forEachIndexed { count, update ->
 
@@ -233,7 +234,6 @@ abstract class ObservableBaseTest:BaseTest() {
             }
 
             val expected = update(observable)
-
 
             assertEquals(expected, observableOptional)
             assertEquals(expected.valueOrNull, observable.currentOrNull)
@@ -258,12 +258,10 @@ abstract class ObservableBaseTest:BaseTest() {
                 assertEquals(observedBefore, observedInitializedValue.get())
             }
 
-            updateSemaphore.release()
+            semaphore.release()
 
             if (shortDelayAfterUpdate) {
                 delay(DELAY_MS)
             }
-
         }
-    }
-}
+    }}

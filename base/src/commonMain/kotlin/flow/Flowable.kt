@@ -57,6 +57,6 @@ interface Flowable<T> {
     /**
      * Applies [set] in a blocking coroutine
      */
-    fun setBlocking(value: T, context: CoroutineContext = EmptyCoroutineContext) = runBlocking { set(value) }
+    fun setBlocking(value: T) = runBlocking { set(value) }
 
 }
