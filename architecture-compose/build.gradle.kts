@@ -45,4 +45,5 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:"+ext["androidx_compose_version"])
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:"+ext["androidx_lifecycle_viewmodel_compose_version"])
     implementation("androidx.activity:activity-compose:"+ext["androidx_activity_compose_version"])
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")
 }

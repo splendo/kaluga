@@ -38,7 +38,7 @@ kotlin {
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":permissions", ""))
-                implementation("org.koin:koin-core:" + ext["koin_version"])
+                implementation("io.insert-koin:koin-core:" + ext["koin_version"])
             }
         }
 
