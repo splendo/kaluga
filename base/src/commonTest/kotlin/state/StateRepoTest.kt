@@ -20,8 +20,7 @@ package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.flow.Flowable
-import com.splendo.kaluga.test.FlowableTest
+import com.splendo.kaluga.test.FlowTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -104,16 +103,10 @@ class TrafficLight : HotStateRepo<TrafficLightState>() {
     }
 }
 
-class StateRepoTest : FlowableTest<TrafficLightState>() {
-
-    private val trafficLight = TrafficLight()
-
-    override fun flowable(): Flowable<TrafficLightState> {
-        return trafficLight.flowable
-    }
+class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
 
     @Test
-    fun testChangeState() = testWithFlow {
+    fun testChangeState() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
@@ -166,7 +159,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun testChangeStateDouble() = testWithFlow {
+    fun testChangeStateDouble() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
@@ -192,7 +185,7 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun testChangeStateDoubleConcurrent() = testWithFlow {
+    fun testChangeStateDoubleConcurrent() = testWithFlow { trafficLight ->
         val greenStateDeferred = CompletableDeferred<TrafficLightState.GreenLight>()
         test {
             assertTrue(it is TrafficLightState.GreenLight)
@@ -227,8 +220,8 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
     }
 
     @Test
-    fun testMultipleObservers() = testWithFlow {
-        val greenState = flowable().flow().first()
+    fun testMultipleObservers() = testWithFlow { trafficLight ->
+        val greenState = trafficLight.first()
         assertTrue(greenState is TrafficLightState.GreenLight)
         trafficLight.takeAndChangeState {
             when (val state = it) {
@@ -236,12 +229,12 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
                 else -> state.remain()
             }
         }
-        val yellowState = flowable().flow().first()
+        val yellowState = trafficLight.first()
         assertTrue(yellowState is TrafficLightState.YellowLight)
     }
 
     @Test
-    fun changeStateInsideChangeState() = testWithFlow {
+    fun changeStateInsideChangeState() = testWithFlow { trafficLight ->
 
         test {} // trigger start of flow
 
@@ -279,8 +272,10 @@ class StateRepoTest : FlowableTest<TrafficLightState>() {
             }
 
             transitionsCompleted.await()
-            val redState = flowable().flow().first()
+            val redState = trafficLight.first()
             assertTrue(redState is TrafficLightState.RedLight)
         }
     }
+
+    override val flow: () -> TrafficLight = { TrafficLight() }
 }

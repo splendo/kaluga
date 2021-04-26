@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="[test-utils] testDebugUnitTest" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="[architecture] iosTest " type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
-      <option name="externalProjectPath" value="$PROJECT_DIR$/test-utils" />
+      <option name="externalProjectPath" value="$PROJECT_DIR$/architecture" />
       <option name="externalSystemIdString" value="GRADLE" />
       <option name="scriptParameters" value="--tests **" />
       <option name="taskDescriptions">
@@ -10,12 +10,13 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="testDebugUnitTest" />
+          <option value="cleanIosx64Test" />
+          <option value="iosx64Test" />
         </list>
       </option>
       <option name="vmOptions" value="" />
     </ExternalSystemSettings>
-    <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+    <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
     <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
     <DebugAllEnabled>false</DebugAllEnabled>
     <method v="2" />
