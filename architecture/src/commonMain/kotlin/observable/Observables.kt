@@ -66,7 +66,7 @@ class FlowObservable<T>(
     val coroutineScope: CoroutineScope,
     context: CoroutineContext = Dispatchers.Main.immediate,
     val flow: Flow<T>,
-    observation: ObservationUnInitialized<T> = ObservationUnInitialized(context)
+    observation: ObservationUninitialized<T> = ObservationUninitialized(context)
 ) : BaseUninitializedObservable<T>(observation) {
     init {
         observeFlow(observation, coroutineScope, context, flow)
@@ -245,7 +245,7 @@ open class SharedFlowSubject<T>(
     context:CoroutineContext = Dispatchers.Main.immediate,
     sharedFlow: MutableSharedFlow<T>,
     autoBind:Boolean = true,
-    observation:ObservationUnInitialized<T> = ObservationUnInitialized(context)
+    observation:ObservationUninitialized<T> = ObservationUninitialized(context)
 ) : BaseUninitializedSubject<T> (
     observation
 ) , SuspendableSetter<T> by MutableFlowSubjectHelper(

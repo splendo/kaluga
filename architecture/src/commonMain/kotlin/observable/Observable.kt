@@ -125,7 +125,7 @@ open class ObservationDefault<R:T?, T>(
     }
 }
 
-class ObservationUnInitialized<T>(coroutineContext: CoroutineContext): Observation<T, T, ObservableOptional<T>>(Nothing(), coroutineContext), MutableUninitialized<T>, ReadWriteProperty<Any?, T?> {
+class ObservationUninitialized<T>(coroutineContext: CoroutineContext): Observation<T, T, ObservableOptional<T>>(Nothing(), coroutineContext), MutableUninitialized<T>, ReadWriteProperty<Any?, T?> {
 
     override val initialValue: Nothing<T> = Nothing()
 
@@ -489,7 +489,7 @@ abstract class BaseInitializedSubject<T>(override val observation: ObservationIn
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedSubject<T>(
-    override val observation: ObservationUnInitialized<T>
+    override val observation: ObservationUninitialized<T>
 ) : BaseSubject<T, T, ObservableOptional<T>> (
     observation,
     { observation.stateFlow }
@@ -503,7 +503,7 @@ abstract class BaseUninitializedSubject<T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedObservable<T>(
-    override val observation: ObservationUnInitialized<T>
+    override val observation: ObservationUninitialized<T>
 ) :BaseObservable<T, T, ObservableOptional<T>> (
     observation
 ),  UninitializedObservable<T>,
