@@ -318,13 +318,11 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
 /**
  * An observable value.
  *
- * The value that van be observed is of the type [ObservableOptional].
+ * The value that can be observed is of the type [ObservableOptional].
  * This is used to distinguish between "no value" [ObservableOptional.Nothing] and Value [ObservableOptional.Value] (which could be null).
  *
  * An [initialValue] value can be set, which will remain until an actual value is observed.
- * The actual implementation of holding the observed value is done by [observation],
- * by default this is implemented by a [Observation] which can contain platform specific method of
- * observing (e.g LiveData on Android).
+ * The actual implementation of holding the observed value is done by [Observation].
  *
  * Observable also implements [ReadOnlyProperty] so it can act as a delegate for an [ObservableOptional] val
  */
