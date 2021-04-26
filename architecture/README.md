@@ -228,12 +228,14 @@ Calling this returns a `Disposable` object. The caller is responsible for dispos
 A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.addTo()` to add a Disposable to a DisposeBag.
 DisposeBags can be emptied using `dispose()`. To post new data to the Subject the `post()` method can be called.
 
+#### SwiftUI and Combine
+
 Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
 Observables can be mapped to Combine `Published` classes directly from Swift however.
 
 ```Swift
 let observable: InitializedObservable<Int>
-let subject: InitializedSubject<Int>
+let subject: Subject<Int>
 
 let disposeBag = DisposeBag()
 
@@ -247,6 +249,7 @@ init {
     disposeBag.dispose()
 }
 ```
+#### Usage from ViewController
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
 Use this callback to start observing data that should be bound to the lifecycle and return the resulting list of `Disposable`.
@@ -271,6 +274,15 @@ class SomeViewController : UIViewController {
             ] }
     }
 ```
+
+#### Kotlin/Native freezing and memory management
+
+By default observables do not freeze themselves or their values. The internally stored value for the current observation is held in a regular `var`, and it is mutated only from the supplied `CoroutineContext` (`Dispatchers.Main.immidiate` by default).
+Once access is done from another thread than that of the context this `var` gets frozen (due to the context switch), and future updates frozen and stored in an `AtomicReference`. This mean the value in memory at the time of freezing will be held in memory with the Observable.
+
+In practise, when operating in a ViewModel this should suffice. A caveat is that when the `stateFlow` field of an observable is used (which internally is lazily initialized) it will also hold the value and `StateFlow`s always freeze their values regardless of thread access.
+
+Subjects which require a `CoroutineScope` to be created usually `bind` the StateFlow automatically (which will cause it to be initialized, freezing values). This behaviour can be turned off with the `autoBind` paramater. 
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.
