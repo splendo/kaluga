@@ -142,12 +142,6 @@ class HotFlowableInitializedSubject<T>(
     }
 }
 
-
-/**
- * [BaseSubject] that synchronizes its value to a [MutableStateFlow]
- * @param observedStateFlow The [MutableStateFlow] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [StateFlow]
- */
 open class StateFlowSubject<T>(
     val coroutineScope: CoroutineScope,
     val context:CoroutineContext = Dispatchers.Main.immediate,
@@ -167,11 +161,6 @@ open class StateFlowSubject<T>(
     }
 }
 
-/**
- * [BaseSubject] that synchronizes its value to a [MutableStateFlow]
- * @param observedStateFlow The [MutableStateFlow] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [StateFlow]
- */
 open class StateFlowDefaultSubject<R:T?, T>(
     defaultValue: R,
     val coroutineScope: CoroutineScope,
@@ -352,9 +341,9 @@ class ReadWritePropertyObservableHelper<R:T, T>(
 
 
 /**
- * [BaseSubject] that matches its value to a [ReadWriteProperty].
+ * [Initialized] subject that matches its value to a [ReadWriteProperty].
  * While the subject updated the [ReadWriteProperty], changes to the property are not immediately delegated back to the subject.
- * Use a [Flow] based `Subject` if synchronized values are required
+ * Use a [Flow] based subject if synchronized values are required
  */
 class ReadWritePropertyInitializedSubject<T>(
     readWriteProperty: ReadWriteProperty<Any?, T>,
