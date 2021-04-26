@@ -17,17 +17,3 @@
 
 package com.splendo.kaluga.test.utils
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.ObservableOptional
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withTimeout
-
-actual suspend fun <T> Observable<T>.awaitCurrentValue(
-    timeOut: Long
-): T = withTimeout(timeOut) {
-    val value by this@awaitCurrentValue
-    while (value is ObservableOptional.Nothing) {
-        delay(100)
-    }
-    (value as ObservableOptional.Value).value
-}
