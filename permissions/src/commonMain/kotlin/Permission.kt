@@ -127,7 +127,7 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
     operator fun <P : Permission> get(permission: P): Flow<PermissionState<out Permission>> {
-        return permissionStateRepo(permission).flow()
+        return permissionStateRepo(permission)
     }
 
     /**
