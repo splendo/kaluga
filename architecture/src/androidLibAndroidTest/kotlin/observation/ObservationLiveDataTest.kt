@@ -20,7 +20,8 @@ package com.splendo.kaluga.architecture.observation
 import androidx.lifecycle.MutableLiveData
 import com.splendo.kaluga.architecture.observable.liveData
 import com.splendo.kaluga.architecture.observable.liveDataObserver
-import com.splendo.kaluga.architecture.observable.toDefaultSubject
+import com.splendo.kaluga.architecture.observable.toDefaultObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.testBlockingAndCancelScope
@@ -58,11 +59,11 @@ class ObservationLiveDataTest: BaseTest() {
     fun testLiveDataWithNull() = testBlockingAndCancelScope {
 
         val flow = MutableStateFlow<String?>(null)
-        val subject = flow.toInitializedSubject(this)
+        val observable = flow.toInitializedObservable(this)
         val channel = Channel<String?>(4)
 
         launch(Dispatchers.Main) {
-            subject.liveData.observeForever {
+            observable.liveData.observeForever {
                 channel.offer(it)
             }
         }
@@ -81,11 +82,11 @@ class ObservationLiveDataTest: BaseTest() {
     fun testLiveDataWithNullAndDefault() = testBlockingAndCancelScope {
 
         val flow = MutableStateFlow<String?>(null)
-        val subject = flow.toDefaultSubject("default", this)
+        val observable = flow.toDefaultObservable("default", coroutineScope = this)
         val channel = Channel<String?>(4)
 
         launch(Dispatchers.Main) {
-            subject.liveData.observeForever {
+            observable.liveData.observeForever {
                 channel.offer(it)
             }
         }
