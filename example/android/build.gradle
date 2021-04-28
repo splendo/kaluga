@@ -93,5 +93,6 @@ dependencies {
 
     implementation "io.insert-koin:koin-android:$gradle.koin_version"
     implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_coroutines_version!!"
 
 }
