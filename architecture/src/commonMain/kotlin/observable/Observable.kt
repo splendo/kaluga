@@ -20,13 +20,17 @@ package com.splendo.kaluga.architecture.observable
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
 import kotlin.properties.ReadWriteProperty
@@ -89,15 +93,17 @@ sealed class ObservableOptional<T> : ReadOnlyProperty<Any?, T?> {
 
 open class ObservationDefault<R:T?, T>(
     override val defaultValue: Value<R>,
-    override val initialValue: Value<T?>
-) : Observation<R, T?, Value<R>>(initialValue),
+    override val initialValue: Value<T?>,
+    coroutineContext: CoroutineContext
+) : Observation<R, T?, Value<R>>(initialValue, coroutineContext),
     ReadWriteProperty<Any?, R>,
     MutableDefaultInitialized<R, T?>
 {
     constructor(
         defaultValue: R,
-        initialValue: Value<T?>
-    ) : this(Value(defaultValue), initialValue)
+        initialValue: Value<T?>,
+        coroutineContext:CoroutineContext
+    ) : this(Value(defaultValue), initialValue, coroutineContext)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): R = current
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) { observedValue = Value(value) }
@@ -119,7 +125,7 @@ open class ObservationDefault<R:T?, T>(
     }
 }
 
-class ObservationUnInitialized<T>: Observation<T, T, ObservableOptional<T>>(Nothing()), MutableUninitialized<T>, ReadWriteProperty<Any?, T?> {
+class ObservationUninitialized<T>(coroutineContext: CoroutineContext): Observation<T, T, ObservableOptional<T>>(Nothing(), coroutineContext), MutableUninitialized<T>, ReadWriteProperty<Any?, T?> {
 
     override val initialValue: Nothing<T> = Nothing()
 
@@ -140,12 +146,13 @@ class ObservationUnInitialized<T>: Observation<T, T, ObservableOptional<T>>(Noth
 }
 
 open class ObservationInitialized<T> (
-    override val initialValue: Value<T>
-) : Observation<T, T, Value<T>>(initialValue),
+    override val initialValue: Value<T>,
+    coroutineContext: CoroutineContext
+) : Observation<T, T, Value<T>>(initialValue, coroutineContext),
     ReadWriteProperty<Any?, T>,
     MutableInitialized<T, T> {
 
-    constructor(initialValue: T) : this(Value(initialValue))
+    constructor(initialValue: T, coroutineContext:CoroutineContext) : this(Value(initialValue), coroutineContext)
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
         observedValue = Value(value)
@@ -170,7 +177,8 @@ open class ObservationInitialized<T> (
 }
 
 open class Observation<R:T, T, OO:ObservableOptional<R>> (
-    override val initialValue: ObservableOptional<T>
+    override val initialValue: ObservableOptional<T>,
+    val coroutineContext:CoroutineContext
 ) : Initial<R, T> {
 
     open val defaultValue: Value<R>? = null
@@ -191,43 +199,71 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
 
     var beforeObservedValueGet: ((OO) -> ObservableOptional<T>)? = null
 
-
     private val observers by lazy {
         mutableObserverList
     }
 
     internal val observable:ReadWriteProperty<Any?, OO> by lazy {
-        val initialValue = this.initialValue
+        // everything is initialized within the local scope
+        val initialValue = this@Observation.initialValue
 
         @Suppress("SENSELESS_COMPARISON") // in case of incorrect initialization this can still be null
         if (initialValue == null)
             throw RuntimeException("Observing before class is initialized. Are you observing from the constructor of your observable?")
 
-        object : ReadWriteProperty<Any?, OO> {
+        val initialValueResult = initialValue.asResult(defaultValue)
 
-            val ref = AtomicReference(initialValue.asResult(defaultValue))
+        runBlocking {
+            withContext(coroutineContext) {
 
-            fun refValue() = ref.get()
+                object : ReadWriteProperty<Any?, OO> {
 
-            override fun setValue(thisRef: Any?, property: KProperty<*>, value: OO) {
-                val oldValue = refValue()
+                    // alternate implementation with freezing references
 
-                val newValue:OO = value.asResult(defaultValue) as OO
+                    // This implementation's withContext below should freeze this reference if it's accessed from another thread
+                    // but if all access is from the main thread it should not be frozen.
+                    // if it does get frozen, instead the atomic reference is used to update into.
+                    private var backingInternalValue:ObservableOptional<R> = initialValueResult
+                    val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
 
-                if (oldValue != newValue) { // propagate state, not assignment
-                    ref.set(newValue)
-                    // @Suppress("UNCHECKED_CAST") // OO should always be R
-                    val result = (newValue as? Value<*>)?.value as R
+                    var internalValue: ObservableOptional<R>
+                        get() =
+                            runBlocking {
+                                withContext(coroutineContext) {
+                                    // we favour the frozen reference, since it should only filled if an update is done after freeze
+                                    backingAtomicReference.get() ?: backingInternalValue
+                                }
+                            }
+                        set(value) = runBlocking {
+                            withContext(coroutineContext) {
+                                if (backingInternalValue.isFrozen)
+                                    backingAtomicReference.set(value)
+                                else
+                                    backingInternalValue = value
+                            }
+                        }
 
-                    observers.forEach { it(result) }
+                    override fun setValue(thisRef: Any?, property: KProperty<*>, value: OO) {
+                        val oldValue = internalValue
+
+                        val newValue: OO = value.asResult(defaultValue) as OO
+
+                        if (oldValue != newValue) { // propagate state, not assignment
+                            internalValue = newValue
+                            // @Suppress("UNCHECKED_CAST") // OO should always be R
+                            val result = (newValue as? Value<*>)?.value as R
+
+                            observers.forEach { it(result) }
+                        }
+                    }
+
+                    override fun getValue(thisRef: Any?, property: KProperty<*>): OO {
+                        if (firstObservation.compareAndSet(expected = false, new = true)) {
+                            onFirstObservation?.invoke()
+                        }
+                        return internalValue as OO
+                    }
                 }
-            }
-
-            override fun getValue(thisRef: Any?, property: KProperty<*>): OO {
-                if (firstObservation.compareAndSet(expected = false, new = true)) {
-                    onFirstObservation?.invoke()
-                }
-                return refValue() as OO
             }
         }
     }
@@ -260,7 +296,6 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
                 @Suppress("UNUSED_VALUE") // changing delegated value will have actual side effects
                 if (new != current) { // state not events
                     observable = new.asResult(defaultValue) as OO
-                    println("obs now: $observable")
                 }
                 @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
                 return observable as ObservableOptional<T>
@@ -283,23 +318,23 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
 /**
  * An observable value.
  *
- * The value that van be observed is of the type [ObservableOptional].
+ * The value that can be observed is of the type [ObservableOptional].
  * This is used to distinguish between "no value" [ObservableOptional.Nothing] and Value [ObservableOptional.Value] (which could be null).
  *
  * An [initialValue] value can be set, which will remain until an actual value is observed.
- * The actual implementation of holding the observed value is done by [observation],
- * by default this is implemented by a [Observation] which can contain platform specific method of
- * observing (e.g LiveData on Android).
+ * The actual implementation of holding the observed value is done by [Observation].
  *
  * Observable also implements [ReadOnlyProperty] so it can act as a delegate for an [ObservableOptional] val
  */
 abstract class BaseObservable<R:T, T, OO : ObservableOptional<R>>(
-    initialValue: ObservableOptional<T>,
-    protected open val observation: Observation<R, T, OO> = Observation(initialValue)
+    protected open val observation: Observation<R, T, OO>
 ) : BasicObservable<R, T, OO>,
     Initial<R, T> by observation
 {
-    constructor(observation: Observation<R, T, OO>) : this (observation.initialValue, observation)
+    constructor(
+        initialValue: ObservableOptional<T>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    ) : this(Observation(initialValue, coroutineContext))
 }
 
 class SimpleInitializedObservable<T>(
@@ -308,15 +343,19 @@ class SimpleInitializedObservable<T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseInitializedObservable<T>(
-    override val initialValue: Value<T>,
-    override val observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
+    observation: ObservationInitialized<T>
 ) : BaseObservable<T, T, Value<T>>(observation),
     InitializedObservable<T>,
     Initialized<T, T> by observation
     {
-    constructor(observation: ObservationInitialized<T>): this (observation.initialValue, observation)
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> = observation.currentObserved
+
+    constructor(
+        initialValue: Value<T>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    ) : this(ObservationInitialized(initialValue, coroutineContext))
+
 }
 
 interface BasicObservable<R:T, T, OO : ObservableOptional<R>>: ReadOnlyProperty<Any?, OO>, Initial<R, T>
@@ -326,6 +365,7 @@ interface InitializedObservable<T>:BasicObservable<T, T, Value<T>>, Initialized<
 interface UninitializedObservable<T>:BasicObservable<T, T, ObservableOptional<T>>, Uninitialized<T>
 
 interface BasicSubject<R:T, T, OO : ObservableOptional<R>>:BasicObservable<R, T, OO>, SuspendableSetter<T> {
+    fun bind(coroutineScope: CoroutineScope)
     fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
 
@@ -394,15 +434,18 @@ interface Postable<T> {
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // we want our delegate to override
 abstract class BaseDefaultObservable<R:T?, T>(
-    defaultValue: R,
-    override val initialValue: Value<T?>,
-    override val observation: ObservationDefault<R, T?> = ObservationDefault(Value(defaultValue), initialValue)
+    override val observation: ObservationDefault<R, T?>
 ) :
-    BaseObservable<R, T?, Value<R>>(observation.initialValue, observation),
+    BaseObservable<R, T?, Value<R>>(observation),
     DefaultObservable<R, T?>,
     DefaultInitialized<R, T?> by observation
 {
-    constructor(observation: ObservationDefault<R, T?>): this(observation.defaultValue.value, observation.initialValue, observation)
+    constructor(
+        defaultValue: R,
+        initialValue: Value<T?>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+
+    ) : this (ObservationDefault<R, T?>(Value(defaultValue), initialValue, coroutineContext))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
@@ -412,32 +455,31 @@ abstract class BaseDefaultObservable<R:T?, T>(
  * A Subject is an [BaseObservable] with a value that can be changed using the [post] method from the [Postable] interface
  */
 abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>>(
-    initialValue: ObservableOptional<T>,
     observation: Observation<R, T, OO>,
-    private val stateFlowToBind:StateFlow<R?>)
-    : BaseObservable<R, T, OO>(initialValue, observation), BasicSubject<R, T, OO> {
+    private val stateFlowToBind:()->StateFlow<R?>)
+    : BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
+    final override fun bind(coroutineScope: CoroutineScope) = bind(coroutineScope, observation.coroutineContext)
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
-            stateFlowToBind.collect { set(it as T) }
+            stateFlowToBind().collect { set(it as T) }
         }
     }
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class BaseInitializedSubject<T>(
-    initialValue: Value<T>,
-    override val observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
-) : BaseSubject<T, T, Value<T>>(
-        observation.initialValue,
+abstract class BaseInitializedSubject<T>(override val observation: ObservationInitialized<T>)
+    : BaseSubject<T, T, Value<T>>(
         observation,
-        observation.stateFlow
+        { observation.stateFlow }
     ),
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
 
-    constructor(initialValue: T, observation: ObservationInitialized<T> = ObservationInitialized(Value(initialValue))): this(observation)
-    constructor(observation: ObservationInitialized<T>): this(observation.initialValue, observation)
+    constructor(
+        initialValue: Value<T>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    ): this (ObservationInitialized(initialValue, coroutineContext))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
         observation.currentObserved
@@ -445,12 +487,11 @@ abstract class BaseInitializedSubject<T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedSubject<T>(
-    override val observation: ObservationUnInitialized<T>
+    override val observation: ObservationUninitialized<T>
 ) : BaseSubject<T, T, ObservableOptional<T>> (
-    Nothing(),
     observation,
-    observation.stateFlow
-),  UninitializedSubject<T>,
+    { observation.stateFlow }
+), UninitializedSubject<T>,
     MutableUninitialized<T> by observation
 {
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
@@ -460,9 +501,8 @@ abstract class BaseUninitializedSubject<T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedObservable<T>(
-    override val observation: ObservationUnInitialized<T>
+    override val observation: ObservationUninitialized<T>
 ) :BaseObservable<T, T, ObservableOptional<T>> (
-    Nothing(),
     observation
 ),  UninitializedObservable<T>,
     Uninitialized<T> by observation {
@@ -473,17 +513,16 @@ abstract class BaseUninitializedObservable<T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class SimpleInitializedSubject<T>(
-    override val initialValue: Value<T>,
-    override val observation: ObservationInitialized<T> = ObservationInitialized(initialValue)
+    override val observation: ObservationInitialized<T>
 ) : BaseSubject<T, T, Value<T>>(
-        initialValue,
-        observation,
-        observation.stateFlow
-    ),
+    observation,
+    { observation.stateFlow }
+),
     InitializedSubject<T>,
     MutableInitialized<T, T> by observation {
 
-    constructor(initialValue: T):this(Value(initialValue))
+    constructor(initialValue: T, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(Value(initialValue), coroutineContext)
+    constructor(initialValue: Value<T>, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(ObservationInitialized(initialValue, coroutineContext))
 
     override suspend fun set(newValue: T) = post(newValue)
 
@@ -498,10 +537,12 @@ class SimpleInitializedSubject<T>(
 class SimpleDefaultSubject<R:T?, T>(
     defaultValue: R,
     initialValue: T? = defaultValue,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
     ) :
     BaseDefaultSubject<R, T?> (
         Value(defaultValue),
-        Value(initialValue)) {
+        Value(initialValue),
+        coroutineContext) {
 
     override fun post(newValue: T?) {
         observation.observedValue = Value(newValue)
@@ -513,20 +554,19 @@ class SimpleDefaultSubject<R:T?, T>(
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
 abstract class BaseDefaultSubject<R:T?, T>(
-    override val defaultValue: Value<R>,
-    override val initialValue: Value<T?>,
-    override val observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, initialValue)
-) :
-    BaseSubject<R, T?, Value<R>>(
-        observation.initialValue,
-        observation,
-        observation.stateFlow
-    ),
+    override val observation: ObservationDefault<R, T?>
+) : BaseSubject<R, T?, Value<R>>(
+    observation,
+    { observation.stateFlow }
+),
     DefaultSubject<R, T>,
     MutableDefaultInitialized<R, T?> by observation
 {
-
-    constructor(observation: ObservationDefault<R, T?>) : this (observation.defaultValue, observation.initialValue, observation)
+    constructor(
+        defaultValue: Value<R>,
+        initialValue: Value<T?>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue, coroutineContext))
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved

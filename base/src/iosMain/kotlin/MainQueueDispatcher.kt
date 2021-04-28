@@ -31,6 +31,7 @@ import kotlin.native.concurrent.callContinuation0
 import kotlin.native.concurrent.callContinuation1
 import kotlin.native.concurrent.callContinuation2
 
+@Deprecated("Use Dispatchers.Main")
 actual val MainQueueDispatcher: CoroutineDispatcher = Dispatchers.Main
 
 inline fun mainContinuation(singleShot: Boolean = true, noinline block: () -> Unit) = Continuation0(

@@ -71,8 +71,8 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
 
         findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).setOnClickListener { viewModel.requestPermission() }
 
-        viewModel.requestMessage.observeInitialized{ message ->
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        viewModel.requestMessage.observeInitialized { message ->
+            if (message != null) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
         }
     }
 }

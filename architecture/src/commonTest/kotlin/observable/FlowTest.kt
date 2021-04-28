@@ -20,9 +20,11 @@ package com.splendo.kaluga.architecture.observable
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Nothing
 import com.splendo.kaluga.architecture.observable.ObservableOptional.Value
 import com.splendo.kaluga.base.runBlocking
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.withContext
 import kotlin.test.Test
 
 class FlowTest: ObservableBaseTest() {
@@ -30,7 +32,7 @@ class FlowTest: ObservableBaseTest() {
     private fun <V:String?>flowOfWithDelays(vararg values:V) =
         flowOf(*values).onStart { waitForUpdate() }.onEach { waitForUpdate() }
 
-    private fun <V:String?>testUninitializedFlow(
+    private suspend fun <V:String?>testUninitializedFlow(
         observable:UninitializedObservable<V>,
         vararg furtherUpdates: ObservableOptional<V>
     ) = testUninitializedStringObservable(
@@ -39,7 +41,7 @@ class FlowTest: ObservableBaseTest() {
             *furtherUpdates.map { { _:UninitializedObservable<V> -> it } }.toTypedArray()
         )
 
-    private fun testDefaultFlow(
+    private suspend fun testDefaultFlow(
         observable:DefaultObservable<String, String?>,
         initialExcepted:String,
         vararg furtherUpdates: String
@@ -50,7 +52,7 @@ class FlowTest: ObservableBaseTest() {
         *furtherUpdates.map { { _:DefaultObservable<String, String?> -> it } }.toTypedArray()
     )
 
-    private fun <V:String?>testInitializedFlow(
+    private suspend fun <V:String?>testInitializedFlow(
         observable:InitializedObservable<V>,
         initialExcepted:V,
         vararg furtherUpdates: V
@@ -63,21 +65,22 @@ class FlowTest: ObservableBaseTest() {
 
     @Test
     fun testFlow() = runBlocking {
+        withContext(Dispatchers.Main.immediate) {
+            val flow = flowOfWithDelays("1", "2", "3")
+            val o = flow.toUninitializedObservable(this)
 
-        val flow = flowOfWithDelays("1", "2", "3")
-        val o = flow.toUninitializedObservable(this)
-
-        testUninitializedFlow(
-            o,
-            Nothing(),
-            Value("1"),
-            Value("2"),
-            Value("3")
-        )
+            testUninitializedFlow(
+                o,
+                Nothing(),
+                Value("1"),
+                Value("2"),
+                Value("3")
+            )
+        }
     }
 
     @Test
-    fun testInitializedFlow() = runBlocking {
+    fun testInitializedFlow() = runBlocking(Dispatchers.Default) {
 
         val flow = flowOfWithDelays("1", "2", "3")
         val o = flow.toInitializedObservable("initial", this)
