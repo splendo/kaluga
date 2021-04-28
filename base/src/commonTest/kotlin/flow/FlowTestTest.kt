@@ -17,13 +17,10 @@
 
 package com.splendo.kaluga.base.test.flow
 
-import com.splendo.kaluga.base.flow.takeUntilLast
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.test.FlowableTest
+import com.splendo.kaluga.test.FlowTest
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
@@ -32,11 +29,11 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.fail
 
-class BaseFlowableTest : FlowableTest<String>() {
+class FlowTestTest : FlowTest<String, MutableStateFlow<String>>() {
 
     @Test
     fun testKnownValueBeforeAction() = testWithFlow {
-        flow().emit("foo")
+        it.emit("foo")
         test {
             assertEquals("foo", it, "Conflation inside the flow should preserve the set value")
         }
@@ -45,7 +42,7 @@ class BaseFlowableTest : FlowableTest<String>() {
     @Test
     fun testExceptionBeingThrown() = testWithFlow {
         action {
-            flow().emit("Test")
+            it.emit("Test")
         }
         try {
             test {
@@ -65,18 +62,14 @@ class BaseFlowableTest : FlowableTest<String>() {
     fun testStopFlow() = testWithFlow {
 
         val scope = MainScope()
-        val flow = flow()
         val collectionJob = scope.async {
-            flow.collect { }
+            it.collect {  }
         }
 
-        flow.subscriptionCount.filter { it == 1 }.first()
+        it.subscriptionCount.filter { it == 1 }.first()
         collectionJob.cancel()
-        flow.subscriptionCount.filter { it == 0 }.first()
+        it.subscriptionCount.filter { it == 0 }.first()
     }
 
-    private val flow = MutableStateFlow("")
-    override fun mutableSharedFlow(): MutableSharedFlow<String> {
-        return flow
-    }
+    override val flow: () -> MutableStateFlow<String> = { MutableStateFlow("") }
 }

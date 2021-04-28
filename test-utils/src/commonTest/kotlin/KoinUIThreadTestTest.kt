@@ -18,7 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.inject
+import org.koin.core.component.inject
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
