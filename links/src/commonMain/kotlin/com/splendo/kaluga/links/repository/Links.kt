@@ -20,12 +20,12 @@ package com.splendo.kaluga.links.repository
 import com.splendo.kaluga.links.manager.LinksManager
 import kotlinx.serialization.KSerializer
 
-class LinksRepo(
+class Links(
     linksManagerBuilder: LinksManager.Builder
 ) {
 
     interface Builder {
-        fun create(): LinksRepo
+        fun create(): Links
     }
 
     internal var linksManager: LinksManager = linksManagerBuilder.create()

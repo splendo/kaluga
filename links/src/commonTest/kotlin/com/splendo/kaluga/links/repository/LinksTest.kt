@@ -17,33 +17,33 @@
 
 package com.splendo.kaluga.links.repository
 
-import com.splendo.kaluga.links.manager.MockLinksRepoBuilder
+import com.splendo.kaluga.links.manager.MockLinksBuilder
 import com.splendo.kaluga.links.manager.Person
 import com.splendo.kaluga.links.manager.TestConstants
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class LinksRepoTest {
+class LinksTest {
 
-    private val linksRepoBuilder = MockLinksRepoBuilder()
-    private val linksRepo: LinksRepo = linksRepoBuilder.create()
+    private val linksBuilder = MockLinksBuilder()
+    private val links: Links = linksBuilder.create()
 
     @Test
     fun testIncomingLinkErrorTransaction() {
-        val result = linksRepo.handleIncomingLink("http://invalid.com", Person.serializer())
+        val result = links.handleIncomingLink("http://invalid.com", Person.serializer())
         assertEquals(null, result)
     }
 
     @Test
     fun testIncomingTransaction() {
-        val result = linksRepo.handleIncomingLink(Person.dummyUrl, Person.serializer())
+        val result = links.handleIncomingLink(Person.dummyUrl, Person.serializer())
         assertEquals(Person.dummyPerson, result)
     }
 
     @Test
     fun testOutgoingTransaction() {
         TestConstants.VALID_URLS.forEach {
-            val result = linksRepo.validateLink(it)
+            val result = links.validateLink(it)
             assertEquals(it, result)
         }
     }
@@ -51,7 +51,7 @@ class LinksRepoTest {
     @Test
     fun testOutgoingTransactionError() {
         TestConstants.INVALID_URLS.forEach {
-            val result = linksRepo.validateLink(it)
+            val result = links.validateLink(it)
             assertEquals(null, result)
         }
     }

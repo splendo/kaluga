@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.links.repository
 
-expect class LinksRepoBuilder : Links.Builder
+expect class LinksBuilder : Links.Builder

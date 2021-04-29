@@ -61,17 +61,17 @@ data class Person(val name: String, val surname: String)
 
 // ExampleSharedViewModel
 class SharedViewModel(
-    linksStateRepoBuilder: LinksStateRepoBuilder,
+    linksBuilder: LinksBuilder,
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
 ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
-    private val linksStateRepo = linksStateRepoBuilder.create()
+    private val links = linksBuilder.create()
     
     fun <T> handleIncomingData(url: String, serializer: KSerializer<T>) {
-        linksStateRepo.handleIncomingLink(url, serializer)
+        links.handleIncomingLink(url, serializer)
     }
     
     fun handleOutgoingLink(url: String) {
-        linksStateRepo.validateLink(url)
+        links.validateLink(url)
     }
 }
 ```
