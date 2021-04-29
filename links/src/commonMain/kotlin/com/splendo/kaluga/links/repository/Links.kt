@@ -49,3 +49,5 @@ class Links(
         return linksManager.validateLink(url)
     }
 }
+
+expect class LinksBuilder : Links.Builder
