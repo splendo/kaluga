@@ -42,5 +42,9 @@ class DefaultLinksManager(
     }
 }
 
-expect class LinksManagerBuilder
+class LinksManagerBuilder : LinksManager.Builder {
+    override fun create(): LinksManager =
+        DefaultLinksManager(PlatformLinksHandler())
+}
+
 expect class PlatformLinksHandler : LinksHandler
