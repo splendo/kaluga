@@ -1,19 +1,30 @@
 # Links
 
-This module is used in order to decode an object from either an App Link, Universal Link or Deep Link's query. It also uses [kaluga-architecture](https://github.com/splendo/kaluga/tree/master/architecture) to open links in the Browser.
+Module used to decode an object from either an App Link, Universal Link or Deep Link's query. It also uses [kaluga-architecture](https://github.com/splendo/kaluga/tree/master/architecture) to open links in the Browser.
 
 ## Deserializer
-`LinksDecoder` is used to convert query values into an object and it takes a list of values and a serializer. **Is important that the list of values passed to `LinksDecoder` are ordered in the order they are declared in the data class**.
-When `decodeFromList` is called, a `LinksDecoder` is created and it goes through the passed `List<Any>` one per one referring to the passed `serializer` in order to know the parameter's type.
+`LinksDecoder` is used to convert query values into an object and it takes a list of values and a serializer. **It is important that the values passed to `LinksDecoder` are ordered in the same way they are declared in the data class**.
+When `decodeFromList` is called, a `LinksDecoder` is created and it goes through the passed `List<Any>` one per one referring to the passed `serializer` in order to know the parameter's type and finally convert it.
+### Special usages
+- Query contains an array of values: In this case the query will have to contain a parameter (put just before the list of values) that identifies the size of that array. 
+``` kotlin
+@Serializable 
+data class Aliment(val name: String)
+
+@Serializable 
+data class Recipe(val name: String, val ingredients: List<Aliment>)
+
+// Somewhere in the code
+val query = "name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+```
+The list size's parameter name is not important and is not included in the data class parameters, but it is requested by the decoder.
 
 
 ## Usage
 
-`Links` is made by 3 events
+The entry point for universal links or dynamic links in Android or iOS are `MainActivity.kt` and `AppDelegate.swift`. 
+Said so `MainActivity.kt` will have to override `onNewIntent` and call `handleIncomingLink`, while on iOS you should override the `application` method that receives a `NSUserActivity`.
 
-- `Incoming`: fired when `handleIncomingLink` method is called. When the app intercept an [App Link](https://developer.android.com/training/app-links)/[Universal Link](https://developer.apple.com/ios/universal-links/)/[Deep Link](https://firebase.google.com/products/dynamic-links#:~:text=Dynamic%20Links%20are%20smart%20URLs,free%20forever%2C%20for%20any%20scale.) call `handleIncomingLink` passing the arrived url and the `Class.serializer()`. If the url's query is invalid, the `Failure` event will be fired with an error message, otherwise the flow will collect a `Links.Incoming.Result` that contains the data deserialized into an object. Collect this flow from `linksEventFlow`.
-- `Outgoing`: fired when `validateLink` is called. The method `validateLink` takes a parameter `url` and validate using native libraries. If the passed `url` is invalid then `Links.Failure` will be fired. Collect the result from `validateEventFlow`.
-- `Failure`: fired when `url` passed in `validateLink` or `handleIncomingLink` is invalid.
 
 ``` kotlin
 // MainActivity.kt
@@ -54,40 +65,6 @@ class SharedViewModel(
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
 ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
     private val linksStateRepo = linksStateRepoBuilder.create()
-
-    fun bar() {
-        scope.launch {
-            linksStateRepo.linksEventFlow.collect { it: LinksState ->
-                when(it) {
-                    is Links.Failure -> {
-                        println("Links Error 🔗❌: ${it.error}")
-                    }
-                    is Links.Incoming.Result<*> -> {
-                        println("Links Ready 🔗✅: ${it.data}")
-                    }
-                } 
-            }
-            
-            linksStateRepo.validateEventFlow.collect {
-                is Links.Failure -> {
-                    println("Links Error 🔗❌: ${it.error}")
-                }
-                is Links.Outgoing.Link -> {
-                    println("Links Open 🔗📖️: $it")
-                    navigator.navigate(
-                        BrowserNavigationActions.OpenWebView(
-                            BrowserSpec().toBundle { row ->
-                                when (row) {
-                                    is BrowserSpecRow.UrlSpecRow -> row.convertValue(it.url)
-                                }
-                            }
-                        )
-                   )
-                }
-            }
-            
-        }
-    }
     
     fun <T> handleIncomingData(url: String, serializer: KSerializer<T>) {
         linksStateRepo.handleIncomingLink(url, serializer)
