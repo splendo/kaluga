@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.links.manager
 
-import com.splendo.kaluga.links.repository.Links
+import com.splendo.kaluga.links.Links
 import kotlinx.serialization.KSerializer
 
 class MockLinksManager : LinksManager {

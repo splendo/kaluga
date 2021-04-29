@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.links.repository
+package com.splendo.kaluga.links
 
 import com.splendo.kaluga.links.manager.MockLinksBuilder
 import com.splendo.kaluga.links.manager.Person

@@ -47,7 +47,7 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.KeyboardManager
-import com.splendo.kaluga.links.repository.LinksRepoBuilder
+import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -196,7 +196,7 @@ class KNArchitectureFramework {
         completion: (() -> Unit)? = null
     ): LinksViewModel {
         return LinksViewModel(
-            LinksRepoBuilder(),
+            LinksBuilder(),
             AlertPresenter.Builder(parent),
             ViewControllerNavigator(parent) { action ->
                 when (action) {
