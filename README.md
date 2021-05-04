@@ -106,15 +106,16 @@ library_version = 'X.X.X'
 ./gradlew publishToMavenLocal
 ```
 
-3. Upload and publish on Bintray:
+3. Upload and publish on Maven Central:
 
 ```sh
-./gradlew -Pbintray_user=splendo -Pbintray_key=API_KEY -Pbintray_dry_run=false -Pbintray_publish=true bintrayUpload
+./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
 ```
 
-Where `API_KEY` is Bintray's API key.
-`bintray_dry_run` flag set to `false` used to perform upload.
-And `bintray_publish` flag set to `true` used to perform publish.
+Where `SIGNING_KEY_ID` is the key id associated with the signing key,
+`SIGNING_KEY_PASSWORD` is the password for the signing key,
+`OSSRH_USERNAME` is the Sonatype user name to upload the repository to,
+and `OSSRH_PASSWORD` is the password for the Sonatype account to upload the repository to.
 
 ## Code conventions
 
