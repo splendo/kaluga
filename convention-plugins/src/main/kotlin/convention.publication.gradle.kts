@@ -27,15 +27,24 @@ plugins {
 
 val signingKeyId: String? by project
 val signingPassword: String? by project
+val signingSecretKeyRingFile: String? by project
 val ossrhUsername: String? by project
 val ossrhPassword: String? by project
 
 // Stub secrets to let the project sync and build without the publication values set up
 ext["signing.keyId"] = signingKeyId
 ext["signing.password"] = signingPassword
-ext["signing.secretKeyRingFile"] = "${rootProject.projectDir}/convention-plugins/keys/secret-keys.gpg"
+ext["signing.secretKeyRingFile"] = signingSecretKeyRingFile
 ext["ossrhUsername"] = ossrhUsername
 ext["ossrhPassword"] = ossrhPassword
+
+signing {
+    setRequired(
+        {
+            gradle.taskGraph.hasTask("publish") && signingSecretKeyRingFile != null
+        }
+    )
+}
 
 val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
@@ -64,6 +73,10 @@ publishing {
 
         // Provide artifacts information requited by Maven Central
         pom {
+            name.set(project.name)
+            description.set("Collection of Kotlin Flow based libraries")
+            url.set("https://github.com/splendo/kaluga")
+
             licenses {
                 license {
                     name.set("The Apache Software License, Version 2.0")

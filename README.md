@@ -109,11 +109,12 @@ library_version = 'X.X.X'
 3. Upload and publish on Maven Central:
 
 ```sh
-./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
+./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
 ```
 
 Where `SIGNING_KEY_ID` is the key id associated with the signing key,
 `SIGNING_KEY_PASSWORD` is the password for the signing key,
+`SIGNING_KEY_PASSWORD` is the gpg file used for signing,
 `OSSRH_USERNAME` is the Sonatype user name to upload the repository to,
 and `OSSRH_PASSWORD` is the password for the Sonatype account to upload the repository to.
 
