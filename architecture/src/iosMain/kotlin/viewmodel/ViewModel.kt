@@ -21,8 +21,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
+import kotlin.native.concurrent.ensureNeverFrozen
 
-actual open class ViewModel internal actual constructor() {
+actual open class ViewModel internal actual constructor(val allowFreezing:Boolean) {
+
+    init {
+        if (!allowFreezing)
+            ensureNeverFrozen()
+    }
 
     private val lifecycleJob = SupervisorJob()
 

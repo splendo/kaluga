@@ -74,7 +74,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
 
     suspend fun resetFlow() {
         awaitTestBlocks() // get the final test blocks that were executed and check for exceptions
-        println("job: $job")
+        debug("job: $job")
         job?.cancel()
         debug("Ending flow, job canceled")
 
@@ -94,7 +94,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
         tests.removeAll { !it.isActive }
 
         if (tests.size == 0) {
-            println("await all test blocks, but none found")
+            debug("await all test blocks, but none found, skip waiting")
             return
         }
 
