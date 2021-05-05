@@ -1,6 +1,5 @@
 println "tasks: $gradle.startParameter.taskNames"
 
-enableFeaturePreview("GRADLE_METADATA")
 // set some global variables
 gradle.ext {
     kotlin_version = kotlin_version
