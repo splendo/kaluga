@@ -514,12 +514,9 @@ abstract class BaseUninitializedObservable<T>(
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 class SimpleInitializedSubject<T>(
     override val observation: ObservationInitialized<T>
-) : BaseSubject<T, T, Value<T>>(
-    observation,
-    { observation.stateFlow }
-),
-    InitializedSubject<T>,
-    MutableInitialized<T, T> by observation {
+) : BaseInitializedSubject<T>(
+    observation
+) {
 
     constructor(initialValue: T, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(Value(initialValue), coroutineContext)
     constructor(initialValue: Value<T>, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(ObservationInitialized(initialValue, coroutineContext))
@@ -530,8 +527,6 @@ class SimpleInitializedSubject<T>(
         observation.observedValue = Value(newValue)
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): Value<T> =
-        observation.currentObserved
 }
 
 class SimpleDefaultSubject<R:T?, T>(
@@ -570,5 +565,4 @@ abstract class BaseDefaultSubject<R:T?, T>(
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
-
 }
