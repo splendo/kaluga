@@ -18,6 +18,9 @@
 package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.collections.sharedMutableListOf
+import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.ensureNeverFrozen
+import co.touchlab.stately.isFrozen
 
 typealias DisposeHandler = () -> Unit
 
@@ -44,17 +47,21 @@ expect class SimpleDisposable(onDispose: DisposeHandler):BaseSimpleDisposable
  */
 abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 
+    private val _isDisposed = AtomicBoolean(false)
+    val isDisposed
+        get() = _isDisposed.value
+
     private var disposeHandler: DisposeHandler? = onDispose
 
     /**
      * Disposes the associated object
      */
     override fun dispose() {
-        disposeHandler?.invoke()
-
-        // TODO could be frozen:
-        //     disposeHandler = null
-        afterDispose()
+        if (_isDisposed.compareAndSet(expected = false, new = true)) {
+            disposeHandler?.invoke()
+            if (!disposeHandler.isFrozen) disposeHandler = null
+            afterDispose()
+        }
     }
 
     protected open fun afterDispose() {}
@@ -68,12 +75,17 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 }
 
 /**
- * Container for multiple [Disposable]. Allows nested [DisposeBag]
+ * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
-class DisposeBag : Disposable {
+class DisposeBag(allowFreezing:Boolean = false) : Disposable {
 
-    private val disposables = sharedMutableListOf<Disposable>()
-    private val nestedBags = sharedMutableListOf<DisposeBag>()
+    private val disposables:MutableList<Disposable> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
+    private val nestedBags:MutableList<DisposeBag> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
+
+    init {
+        if (!allowFreezing)
+            ensureNeverFrozen() // if our DisposeBag gets frozen we cannot dispose properly so this is generally unwanted
+    }
 
     /**
      * Adds a nested [DisposeBag]
