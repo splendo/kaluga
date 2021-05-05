@@ -45,7 +45,7 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Naviga
         scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
         scope.launch { bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
             cleanDevices()
-            _devices.value = devices
+            _devices.value = devices.sortedByDescending { it.name.currentOrNull }
         } }
     }
 

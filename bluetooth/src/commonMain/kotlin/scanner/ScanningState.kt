@@ -24,17 +24,12 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterCreating
-import com.splendo.kaluga.state.HandleAfterNewStateIsSet
-import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
-import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.launch
-import kotlin.native.concurrent.SharedImmutable
 
 typealias Filter = Set<UUID>
 
@@ -280,22 +275,26 @@ class ScanningStateRepo(
     coroutineScope: CoroutineScope
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineScope.coroutineContext,
-    init = {
-        ScanningState.NotInitialized(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, builder)
+    initChangeState = { _,_ ->
+        suspend { ScanningState.NotInitialized(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, builder) }
     },
-    deinit = { _,_ -> }
+    deinitChangeState = { state, repo ->
+        if (state is ScanningState.Initialized.Enabled) {
+            @Suppress("NAME_SHADOWING")
+            val repo = repo as ScanningStateRepo
+
+            // TODO: these should be copied into a state instead of set as fields
+            repo.lastDevices = state.discovered.devices
+            repo.lastFilter = when (state) {
+                is ScanningState.Initialized.Enabled.Idle,
+                is ScanningState.Initialized.Enabled.Scanning -> state.discovered.filter
+            }
+        }
+        null
+    }
 ) {
 
     private var lastDevices: List<Device> = emptyList()
     private var lastFilter: Set<UUID> = emptySet()
 
-    override suspend fun deinitialize(state: ScanningState) {
-        if (state is ScanningState.Initialized.Enabled) {
-            lastDevices = state.discovered.devices
-            lastFilter = when (state) {
-                is ScanningState.Initialized.Enabled.Idle,
-                is ScanningState.Initialized.Enabled.Scanning -> state.discovered.filter
-            }
-        }
-    }
 }
