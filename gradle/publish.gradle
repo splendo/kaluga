@@ -1,4 +1,3 @@
-import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 
 publishing {
     publications {
@@ -6,84 +5,6 @@ publishing {
             artifactId = module.name
             groupId = "com.splendo.kaluga"
             version = gradle.ext.library_version
-        }
-    }
-}
-
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-    developers {
-        developer {
-            id "splendo"
-            name "Splendo BV"
-        }
-    }
-    scm {
-        url "https://github.com/splendo/kaluga"
-    }
-}
-
-def bintray_user = project.hasProperty('bintray_user') ? project.property('bintray_user') : System.getenv('BINTRAY_USER')
-def bintray_key = project.hasProperty('bintray_key') ? project.property('bintray_key') : System.getenv('BINTRAY_API_KEY')
-def bintray_dryRun = project.hasProperty('bintray_dry_run') ? project.property('bintray_dry_run').toBoolean() : true
-def bintray_publish = project.hasProperty('bintray_publish') ? project.property('bintray_publish').toBoolean() : false
-
-//
-// See:
-// https://github.com/bintray/gradle-bintray-plugin
-// https://github.com/bintray/bintray-examples/blob/master/gradle-bintray-plugin-examples/publications-example/build.gradle
-//
-bintray {
-
-    user = bintray_user
-    key = bintray_key
-    dryRun = bintray_dryRun
-    publish = bintray_publish
-    override = true
-
-    pkg {
-        repo = 'com.splendo.kaluga'
-        name = module.name
-        userOrg = 'kaluga'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/splendo/kaluga'
-        issueTrackerUrl = 'https://github.com/splendo/kaluga/issues'
-        websiteUrl = 'https://kaluga.splendo.com'
-        version {
-            name = "$gradle.ext.library_version"
-            desc = "Kaluga $gradle.ext.library_version"
-            released = new Date()
-        }
-    }
-}
-
-bintrayUpload.doFirst {
-    publications = publishing.publications
-}
-
-afterEvaluate {
-    project.publishing.publications.forEach { publication ->
-        publication.pom.withXml {
-            def root = asNode()
-            root.appendNode('name', project.name)
-            root.appendNode('description', 'Collection of Kotlin Flow based libraries')
-            root.appendNode('url', 'https://github.com/splendo/kaluga')
-            root.children().last() + pomConfig
-        }
-        boolean isPublishToMavenLocalTask = gradle.startParameter.taskNames.any { it == "publishToMavenLocal" }
-        File moduleFile = new File(project.buildDir, "publications/${publication.name}/module.json")
-        if (!isPublishToMavenLocalTask && moduleFile.exists()) {
-            publication.artifact(new FileBasedMavenArtifact(moduleFile) {
-                protected String getDefaultExtension() {
-                    return 'module'
-                }
-            })
         }
     }
 }

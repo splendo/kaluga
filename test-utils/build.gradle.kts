@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("jacoco")
-    id("maven-publish")
+    id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -38,7 +38,7 @@ kotlin {
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":permissions", ""))
-                implementation("org.koin:koin-core:" + ext["koin_version"])
+                implementation("io.insert-koin:koin-core:" + ext["koin_version"])
             }
         }
 

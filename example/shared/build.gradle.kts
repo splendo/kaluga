@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("jacoco")
-    id("maven-publish")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -14,6 +13,19 @@ repositories {
 }
 
 apply(from = "../../gradle/component.gradle")
+
+android {
+
+    configurations {
+        create("androidTestApi")
+        create("androidTestDebugApi")
+        create("androidTestReleaseApi")
+        create("testApi")
+        create("testDebugApi")
+        create("testReleaseApi")
+    }
+
+}
 
 kotlin {
     sourceSets {
