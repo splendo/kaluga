@@ -15,4 +15,5 @@ By default maven is not used. To enable usage put the property `exampleAsRoot=tr
 
 The iOS app can be opened by either XCode or Appcode. The advantage of AppCode is you will also have access to the kotlin sources, including the ability to set breakpoints. 
 
-The Android app can be opened with Android Studio, though IntelliJ IDEA might also work. To use a unified structure that is also supported by Appcode, the root `settings.gradle` file is under [ios/Supporting Files], so this is the directory to open with Android studio. 
+The Android app can be opened with Android Studio, though IntelliJ IDEA might also work. To use a unified structure that is also supported by Appcode, the root `settings.gradle` file is under [ios/Supporting Files], so this is the directory to open with Android studio.
+Latest Android Studio used: Arctic Fox Canary 14 
