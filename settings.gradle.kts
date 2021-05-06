@@ -34,6 +34,7 @@ pluginManagement {
 apply("gradle/ext.gradle")
 
 rootProject.name = "Kaluga"
+includeBuild("convention-plugins")
 
 include(":base")
 include(":architecture")
@@ -46,7 +47,7 @@ include(":permissions")
 include(":location")
 include(":androidtesthelper")
 include(":keyboard")
+include(":links")
 include(":resources")
 include(":review")
 include(":system")
-include(":links")
