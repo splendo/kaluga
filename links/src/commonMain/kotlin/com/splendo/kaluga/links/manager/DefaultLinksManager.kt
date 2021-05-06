@@ -47,4 +47,4 @@ class LinksManagerBuilder : LinksManager.Builder {
         DefaultLinksManager(PlatformLinksHandler())
 }
 
-expect class PlatformLinksHandler : LinksHandler
+expect class PlatformLinksHandler constructor() : LinksHandler
