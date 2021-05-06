@@ -50,4 +50,4 @@ class Links(
     }
 }
 
-expect class LinksBuilder : Links.Builder
+expect class LinksBuilder constructor() : Links.Builder
