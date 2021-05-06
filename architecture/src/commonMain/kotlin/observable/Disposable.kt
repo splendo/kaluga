@@ -79,6 +79,8 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
  */
 class DisposeBag(allowFreezing:Boolean = false) : Disposable {
 
+    constructor():this(false)
+
     private val disposables:MutableList<Disposable> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
     private val nestedBags:MutableList<DisposeBag> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
 
