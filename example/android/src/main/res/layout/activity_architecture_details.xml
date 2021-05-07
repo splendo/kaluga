@@ -5,8 +5,6 @@
         <variable
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel" />
-
-        <import type="com.splendo.kaluga.architecture.observable.Observable" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,7 +19,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{viewModel.name.liveData}" />
+            android:text="@{viewModel.name.stateFlow}" />
 
         <TextView
             android:id="@+id/number"
@@ -30,7 +28,7 @@
             app:layout_constraintTop_toBottomOf="@id/name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="@{viewModel.number.liveData}" />
+            android:text="@{viewModel.number.stateFlow}" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:layout_width="match_parent"

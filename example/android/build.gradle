@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 repositories {
@@ -17,6 +17,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 android {
+
     compileSdkVersion gradle.android_target_sdk_version
     buildToolsVersion gradle.android_build_tools_version
     defaultConfig {
@@ -41,44 +42,50 @@ android {
     }
 
     buildFeatures.dataBinding = true
-
 }
 
-apply from: "../../gradle/android_common.gradle"
+gradle.ext.component_type = gradle.ext.component_type_composeApp
+
+apply from: "../../gradle/android_compose.gradle"
+
+gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
 
-
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
-        implementation "com.splendo.kaluga:location:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:date-time-picker:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:links:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:system:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:location:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:bluetooth:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:date-time-picker:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
+//      implementation "com.splendo.kaluga:links:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
+//        implementation "com.splendo.kaluga:system:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
-        implementation project(':location')
-        implementation project(':base')
-        implementation project(':date-time-picker')
+//        implementation project(':location')
+//        implementation project(':base')
+//        implementation project(':bluetooth')
+//        implementation project(':date-time-picker')
         implementation project(':shared')
-        implementation project(":permissions")
-        implementation project(":logging")
-        implementation project(":alerts")
-        implementation project(":hud")
-        implementation project(":architecture")
-        implementation project(":keyboard")
-        implementation project(":links")
-        implementation project(":review")
-        implementation project(":system")
+//        implementation project(":permissions")
+//        implementation project(":logging")
+//        implementation project(":alerts")
+//        implementation project(":hud")
+//        implementation project(":architecture")
+        implementation project(":architecture-compose")
+//         implementation project(":links")
+//        implementation project(":keyboard")
+//        implementation project(":review")
+//        implementation project(":system")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
@@ -86,7 +93,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    def koin_version = "3.0.1-beta-1"
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:$gradle.koin_version"
     implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_coroutines_version!!"
+
 }

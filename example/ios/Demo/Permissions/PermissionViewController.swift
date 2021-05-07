@@ -48,11 +48,12 @@ class PermissionViewController: UIViewController {
             
             return [
                 viewModel.permissionStateMessage.observe(onNext: { (message) in
-                    self?.permissionStateLabel.text = NSLocalizedString(message as String? ?? "", comment: "")
-                    }),
+                    self?.permissionStateLabel.text = NSLocalizedString(message as? String ?? "", comment: "")
+                    
+                }),
                 
                 viewModel.requestMessage.observe(onNext: { (optionalMessage) in
-                    guard let message = optionalMessage as String? else {
+                    guard let message = optionalMessage as? String else {
                         return
                     }
                     
@@ -62,7 +63,7 @@ class PermissionViewController: UIViewController {
                     
                     }),
                 
-                viewModel.showPermissionButton.observe(onNext: { (show) in
+                viewModel.showPermissionButton.observe(onNext: { (show) in 
                     self?.requestPermissionButton.isHidden = !(show as? Bool ?? false)
                     })
             ]

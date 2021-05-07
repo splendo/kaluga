@@ -20,10 +20,10 @@ package com.splendo.kaluga.example.alerts
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.AlertViewModel
-import kotlinx.android.synthetic.main.activity_alerts.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("SetTextI18n")
@@ -34,8 +34,8 @@ class AlertsActivity : KalugaViewModelActivity<AlertViewModel>(R.layout.activity
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_simple_alert.setOnClickListener { viewModel.showAlert() }
-        btn_dismissible_alert.setOnClickListener { viewModel.showAndDismissAfter(3) }
-        btn_alert_list.setOnClickListener { viewModel.showList() }
+        findViewById<AppCompatButton>(R.id.btn_simple_alert).setOnClickListener { viewModel.showAlert() }
+        findViewById<AppCompatButton>(R.id.btn_dismissible_alert).setOnClickListener { viewModel.showAndDismissAfter(3) }
+        findViewById<AppCompatButton>(R.id.btn_alert_list).setOnClickListener { viewModel.showList() }
     }
 }

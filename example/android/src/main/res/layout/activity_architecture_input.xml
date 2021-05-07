@@ -6,7 +6,6 @@
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel" />
 
-        <import type="com.splendo.kaluga.architecture.observable.Observable" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,14 +20,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.nameHeader.liveData}"
-            app:errorEnabled="@{viewModel.isNameValid.liveData}">
+            android:hint="@{viewModel.nameHeader.stateFlow}"
+            app:errorEnabled="@{viewModel.isNameValid.stateFlow}">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.nameInput.liveData}"/>
+                android:text="@={viewModel.nameInput.stateFlow}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,14 +38,14 @@
             app:layout_constraintTop_toBottomOf="@id/name_input_layout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.numberHeader.liveData}"
-            app:errorEnabled="@{viewModel.isNumberValid.liveData}">
+            android:hint="@{viewModel.numberHeader.stateFlow}"
+            app:errorEnabled="@{viewModel.isNumberValid.stateFlow}">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/number_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.numberInput.liveData}" />
+                android:text="@={viewModel.numberInput.stateFlow}" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

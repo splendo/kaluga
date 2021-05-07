@@ -42,19 +42,19 @@ class ArchitectureInputViewController: UIViewController  {
             }
             
             return [
-                viewModel.nameHeader.observe { header in
+                viewModel.nameHeader.observeInitialized { header in
                     self?.nameLabel.text = header as String?
                 },
-                viewModel.nameInput.observe { name in
+                viewModel.nameInput.observeInitialized { name in
                     self?.nameInput.text = name as String?
                 },
                 viewModel.isNameValid.observe { isValid in
                     self?.nameError.isHidden = isValid?.boolValue ?? false
                 },
-                viewModel.numberHeader.observe { header in
+                viewModel.numberHeader.observeInitialized { header in
                     self?.numberLabel.text = header as String?
                 },
-                viewModel.numberInput.observe { number in
+                viewModel.numberInput.observeInitialized { number in
                     self?.numberInput.text = number as String?
                 },
                 viewModel.isNumberValid.observe { isValid in

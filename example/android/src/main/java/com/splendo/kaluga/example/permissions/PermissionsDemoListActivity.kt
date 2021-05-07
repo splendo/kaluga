@@ -21,13 +21,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import kotlinx.android.synthetic.main.activity_permissions_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewModel>(R.layout.activity_permissions_list) {
@@ -38,9 +36,9 @@ class PermissionsDemoListActivity : KalugaViewModelActivity<PermissionsListViewM
         super.onCreate(savedInstanceState)
 
         val adapter = PermissionsAdapter(viewModel).apply {
-            permissions_list.adapter = this
+            findViewById<RecyclerView>(R.id.permissions_list).adapter = this
         }
-        viewModel.permissions.observe(this, Observer { adapter.permissions = it })
+        viewModel.permissions.observeInitialized { adapter.permissions = it }
     }
 }
 

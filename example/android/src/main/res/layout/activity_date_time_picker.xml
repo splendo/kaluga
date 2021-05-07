@@ -6,7 +6,6 @@
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel" />
 
-        <import type="com.splendo.kaluga.architecture.observable.Observable" />
     </data>
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,7 +42,7 @@
             android:id="@+id/date_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.dateLabel.liveData}"/>
+            android:text="@{viewModel.dateLabel.stateFlow}"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

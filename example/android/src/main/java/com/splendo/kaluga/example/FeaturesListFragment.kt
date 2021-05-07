@@ -28,20 +28,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import kotlinx.android.synthetic.main.fragment_features_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.layout.fragment_features_list) {
 
     override val viewModel: FeatureListViewModel by viewModel()
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = FeaturesAdapter(viewModel).apply {
-            features_list.adapter = this
+
+            view.findViewById<RecyclerView>(R.id.features_list).adapter = this
         }
-        viewModel.feature.observe(this, Observer { adapter.features = it })
+        viewModel.feature.observeInitialized { adapter.features = it }
     }
 }
 

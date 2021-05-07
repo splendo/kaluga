@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.state.ColdStateFlowRepo
-import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -90,8 +89,9 @@ abstract class PermissionStateRepo<P : Permission>(
         pm.startMonitoring(monitoringInterval)
         pm.initializeState()
     }   ,
-    deinit = { _, it ->
-        (it as PermissionStateRepo).permissionManager.stopMonitoring()
+    deinit = { repo ->
+        (repo as PermissionStateRepo).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
+        null
     }
 ) {
 

@@ -18,6 +18,9 @@
 package com.splendo.kaluga.keyboard
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Rule
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -37,8 +40,10 @@ class ActivityKeyboardManagerBuilderTest {
     }
 
     @Test
-    fun testActivityKeyboardManagerBuilder() {
-        activity.showKeyboard()
+    fun testActivityKeyboardManagerBuilder() = runBlocking {
+        withContext(Dispatchers.Main) {
+            activity.showKeyboard()
+        }
         // not crashing is good enough since we are testing the builder, not the keyboard
     }
 }

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,6 +15,13 @@
 
  */
 
-package com.splendo.kaluga.architecture.observable
+package com.splendo.kaluga.bluetooth.device
 
-actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)
+import com.splendo.kaluga.bluetooth.UUID
+
+actual typealias Identifier = UUID
+
+actual val Identifier.stringValue: String
+    get() = uuidString
+
+actual class DeviceHolder(actual val name: String? = null, actual val identifier: Identifier = UUID(""))
