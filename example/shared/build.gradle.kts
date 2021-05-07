@@ -20,8 +20,6 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-
-                println("EXAMPLE_AS_ROOT is ${ ext["exampleAsRoot"] }")
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     implementation(project(":alerts", ""))
                     implementation(project(":architecture", ""))
