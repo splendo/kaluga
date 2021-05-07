@@ -17,27 +17,20 @@
 
 package com.splendo.kaluga.system.network
 
-import com.splendo.kaluga.flow.Flowable
 import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowTestBlock
-import com.splendo.kaluga.test.FlowableTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class NetworkStateTest : FlowableTest<NetworkState>() {
+class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
 
-    private val networkStateRepoBuilder = MockNetworkStateRepoBuilder()
 
-    lateinit var networkStateRepo: NetworkStateRepo
+    override val flow: () -> NetworkStateRepo = { MockNetworkStateRepoBuilder().create() }
 
-    override fun flowable(): Flowable<NetworkState> = networkStateRepo.flowable
-
-    private fun testNetworkState(test: FlowTestBlock<NetworkState>) {
-        networkStateRepo = networkStateRepoBuilder.create()
-
+    private fun testNetworkState(test: FlowTestBlock<NetworkState, NetworkStateRepo>) {
         testWithFlow(test)
     }
 
@@ -47,7 +40,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun testNetworkStateChanged() = testNetworkState {
+    fun testNetworkStateChanged() = testNetworkState { networkStateRepo ->
         assertInitialValue(this)
 
         action {
@@ -79,7 +72,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun testAvailabletransition() = testNetworkState {
+    fun testAvailableTransition() = testNetworkState { networkStateRepo ->
         assertInitialValue(this)
 
         action {
@@ -105,7 +98,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
             assertTrue { (it.networkType as Network.Unknown.WithLastNetwork).lastKnownNetwork is Network.Known.Wifi }
         }
 
-        resetStateTo<NetworkState.Available>(Network.Known.Wifi(), this)
+        resetStateTo<NetworkState.Available>(networkStateRepo, Network.Known.Wifi(), this)
 
         action {
             networkStateRepo.onNetworkStateChange(Network.Known.Cellular())
@@ -127,7 +120,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun testUnavailableTransition() = testNetworkState {
+    fun testUnavailableTransition() = testNetworkState { networkStateRepo ->
         assertInitialValue(this)
 
         action {
@@ -147,7 +140,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
             assertTrue { it.networkType is Network.Known.Cellular }
         }
 
-        resetStateTo<NetworkState.Unavailable>(Network.Known.Absent, this)
+        resetStateTo<NetworkState.Unavailable>(networkStateRepo, Network.Known.Absent, this)
 
         action {
             networkStateRepo.onNetworkStateChange(Network.Known.Wifi())
@@ -160,7 +153,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
     }
 
     @Test
-    fun testUnknownTransition() = testNetworkState {
+    fun testUnknownTransition() = testNetworkState { networkStateRepo ->
         networkStateRepo.lastKnownNetwork = Network.Unknown.WithoutLastNetwork(
             Network.Unknown.Reason.NOT_CLEAR
         )
@@ -179,6 +172,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
 
         resetStateTo<NetworkState.Unknown>(
+            networkStateRepo,
             Network.Unknown.WithoutLastNetwork(
                 Network.Unknown.Reason.NOT_CLEAR
             ),
@@ -195,6 +189,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
 
         resetStateTo<NetworkState.Unknown>(
+            networkStateRepo,
             Network.Unknown.WithoutLastNetwork(
                 Network.Unknown.Reason.NOT_CLEAR
             ),
@@ -211,7 +206,7 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
     }
 
-    private suspend inline fun <reified T> resetStateTo(network: Network, testBlock: FlowTest<NetworkState>) {
+    private suspend inline fun <reified T> resetStateTo(networkStateRepo: NetworkStateRepo, network: Network, testBlock: FlowTest<NetworkState, NetworkStateRepo>) {
         testBlock.action {
             networkStateRepo.onNetworkStateChange(network)
         }
@@ -220,11 +215,12 @@ class NetworkStateTest : FlowableTest<NetworkState>() {
         }
     }
 
-    private suspend fun assertInitialValue(testBlock: FlowTest<NetworkState>) {
+    private suspend fun assertInitialValue(testBlock: FlowTest<NetworkState, NetworkStateRepo>) {
         testBlock.test {
             assertTrue { it is NetworkState.Unknown }
             assertTrue { it.networkType is Network.Unknown.WithoutLastNetwork }
             assertEquals(Network.Unknown.Reason.NOT_CLEAR, (it.networkType as Network.Unknown.WithoutLastNetwork).reason)
         }
     }
+
 }
