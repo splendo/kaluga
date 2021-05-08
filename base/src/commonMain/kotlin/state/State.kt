@@ -42,7 +42,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
@@ -376,7 +375,6 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
             if (!isInitialized && initialized.compareAndSet(expected = false, new = true)) {
                 launch(coroutineContext) {
                     flow.onCollectionEvent { event ->
-                        yield() // allow the new collector to read the initial state, this especially helps with testing
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }
                             FirstCollection -> firstCollection()

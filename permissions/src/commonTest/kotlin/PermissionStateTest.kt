@@ -17,11 +17,15 @@
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.permissions.PermissionState.Denied.Requestable
 import com.splendo.kaluga.test.FlowTest
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -30,6 +34,9 @@ import kotlin.test.assertTrue
 
 class PermissionStateTest : FlowTest<PermissionState<Permission.Microphone>, MockPermissionStateRepo>() {
 
+    override val filter:(Flow<PermissionState<Permission.Microphone>>) -> (Flow<PermissionState<Permission.Microphone>>) = {
+        it.filterOnlyImportant()
+    }
 
     override val flow: () -> MockPermissionStateRepo = { MockPermissionStateRepo() }
 
@@ -41,7 +48,7 @@ class PermissionStateTest : FlowTest<PermissionState<Permission.Microphone>, Moc
 
         test {
             assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionStateRepo.permissionManager.hasStartedMonitoring.getCompleted())
-            assertTrue(it is PermissionState.Denied.Requestable)
+            assertTrue(it is Requestable)
         }
         permissionStateRepo.permissionManager.hasStartedMonitoring.await()
         delay(50) /// wait for init and de-init
@@ -51,9 +58,10 @@ class PermissionStateTest : FlowTest<PermissionState<Permission.Microphone>, Moc
 
     @Test
     fun testRequestPermission() = testWithFlow { permissionStateRepo ->
-        val denied: CompletableDeferred<PermissionState.Denied.Requestable<Permission.Microphone>> = CompletableDeferred()
+        val denied: CompletableDeferred<Requestable<Permission.Microphone>> = CompletableDeferred()
         test {
-            denied.complete(it as PermissionState.Denied.Requestable)
+            assertTrue(it is Requestable)
+            denied.complete(it)
         }
         action {
             denied.await().request(permissionStateRepo.permissionManager)
@@ -94,7 +102,7 @@ class PermissionStateTest : FlowTest<PermissionState<Permission.Microphone>, Moc
     fun testRequestFromFlow() = testWithFlow { permissionStateRepo ->
 
         val hasRequested = CompletableDeferred<Boolean>()
-        launch {
+        launch(Dispatchers.Main) {
             hasRequested.complete(permissionStateRepo.request(permissionStateRepo.permissionManager))
         }
         launch {
@@ -126,7 +134,7 @@ class MockPermissionStateRepo : PermissionStateRepo<Permission.Microphone>() {
 
 class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<Permission.Microphone>(mockPermissionRepo) {
 
-    var initialState: PermissionState<Permission.Microphone> = PermissionState.Denied.Requestable()
+    var initialState: PermissionState<Permission.Microphone> = Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()

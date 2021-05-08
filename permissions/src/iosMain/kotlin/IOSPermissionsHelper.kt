@@ -88,7 +88,7 @@ class IOSPermissionsHelper {
          * @param permissionManager The [PermissionManager] to update to the proper state.
          */
         fun <P : Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
-            return when (authorizationStatus) {
+            when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)
                 AuthorizationStatus.Authorized -> permissionManager.grantPermission()
                 AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> permissionManager.revokePermission(true)

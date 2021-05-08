@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -50,12 +51,10 @@ abstract class BaseLocationManager(
         if (monitoringPermissionsJob.compareAndSet(null, job))
             launch(job) {
                 locationPermissionRepo.collect { state ->
-                    when (state) {
-                        is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(locationPermission))
-                        else -> {
-                        }
-                    }
+                    if (state is PermissionState.Denied.Requestable&& autoRequestPermission)
+                        state.request(permissions.getManager(locationPermission))
                     val hasPermission = state is PermissionState.Allowed
+
                     locationStateRepo.takeAndChangeState { locationState ->
                         when (locationState) {
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
@@ -75,7 +74,7 @@ abstract class BaseLocationManager(
     }
 
     internal suspend fun isPermitted(): Boolean {
-        return locationPermissionRepo.first() is PermissionState.Allowed
+        return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     internal abstract suspend fun startMonitoringLocationEnabled()
