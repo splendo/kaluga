@@ -15,14 +15,22 @@
 
  */
 
+@file:JvmName("DisposableCommonKt")
 package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.ensureNeverFrozen
 import co.touchlab.stately.isFrozen
+import kotlin.jvm.JvmName
 
 typealias DisposeHandler = () -> Unit
+
+internal expect fun <R:T, T, OO:ObservableOptional<R>> addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit)
+
+internal expect fun <R:T, T, OO:ObservableOptional<R>> removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit)
+
+internal expect fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit>
 
 /**
  * Reference to an object that should be disposed in time
