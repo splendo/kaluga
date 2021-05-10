@@ -15,20 +15,19 @@
 
  */
 
-@file:JvmName("AndroidAwaitCurrentValue")
-package com.splendo.kaluga.test.utils
+package com.splendo.kaluga.fields
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.ObservableOptional
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withTimeout
+import com.splendo.kaluga.fields.FieldContent.*
 
-actual suspend fun <T> Observable<T>.awaitCurrentValue(
-    timeOut: Long
-): T = withTimeout(timeOut) {
-    val value by this@awaitCurrentValue
-    while (value is ObservableOptional.Nothing) {
-        delay(100)
+fun parseEmailAddress(email: String, invalid: Reason, empty: Reason? = null): EmailAddress {
+    TODO()
+}
+
+sealed class EmailAddress(override val content: FieldContent, reason: Reason? = null) : Field(content, reason) {
+
+    fun parse(): EmailAddress {
+        TODO()
     }
-    (value as ObservableOptional.Value).value
+
+    class ValidEmailAddress(override val content: FieldContent, reason: Reason? = null)
 }
