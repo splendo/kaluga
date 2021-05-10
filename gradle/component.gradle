@@ -1,9 +1,6 @@
 repositories {
     google()
     mavenCentral()
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
 }
 
 // if the include is made from the example project shared module we need to go up one more directory

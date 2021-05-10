@@ -2,7 +2,6 @@ buildscript {
     val ext = (gradle as ExtensionAware).extra
     val android_gradle_plugin_version: String by project
     val kotlin_version: String by project
-    val bintray_plugin_version: String by ext
 
     repositories {
         mavenCentral()
@@ -17,6 +16,5 @@ buildscript {
         classpath("com.google.gms:google-services:4.3.3")
         classpath("org.jlleitschuh.gradle:ktlint-gradle:10.0.0")
         classpath("com.adarshr:gradle-test-logger-plugin:2.1.0")
-        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:$bintray_plugin_version")
     }
 }

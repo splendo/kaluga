@@ -40,6 +40,5 @@ dependencies {
 }
 
 if (!gradle.ext.component_type.toLowerCase().contains("app")) {
-    apply plugin: "com.jfrog.bintray"
     apply from: "$path_prefix/gradle/publish.gradle"
 }
