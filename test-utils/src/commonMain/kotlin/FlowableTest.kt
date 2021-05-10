@@ -63,7 +63,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
     val flowable: ()->F
         get() = flow
 
-    open fun filter(f:F):Flow<T> = f
+    open val filter:(Flow<T>) -> Flow<T> = { it }
 
     private val tests: MutableList<EmptyCompletableDeferred> = mutableListOf()
 
@@ -125,6 +125,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
 
         debug("launch flow scope...")
         val started = EmptyCompletableDeferred()
+        val filter = filter
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
