@@ -15,7 +15,7 @@
 
  */
 
-package observable
+package com.splendo.kaluga.architecture.observable
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
