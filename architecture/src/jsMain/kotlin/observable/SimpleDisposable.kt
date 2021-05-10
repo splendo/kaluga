@@ -15,10 +15,17 @@
 
  */
 
-plugins {
-    `kotlin-dsl` // Is needed to turn our build logic written in Kotlin into Gralde Plugin
+package com.splendo.kaluga.architecture.observable
+
+actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)
+
+internal actual fun <R:T, T, OO:ObservableOptional<R>> addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.add(observer)
 }
 
-repositories {
-    gradlePluginPortal() // To use 'maven-publish' and 'signing' plugins in our own plugin
+internal actual fun <R:T, T, OO:ObservableOptional<R>> removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.remove(observer)
 }
+
+internal actual fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit> =
+    observation.observers
