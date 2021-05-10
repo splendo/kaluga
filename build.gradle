@@ -14,12 +14,10 @@ buildscript {
 }
 
 plugins {
-    id 'maven-publish'
+    id "convention.publication"
     id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
     id 'org.jlleitschuh.gradle.ktlint-idea' version '10.0.0'
 }
-
-apply plugin: "com.jfrog.bintray"
 
 allprojects {
     repositories {
@@ -40,74 +38,3 @@ apply from:"gradle/ext.gradle"
 
 group 'com.splendo.kaluga'
 version gradle.ext.library_version
-
-def pomConfig = {
-    licenses {
-        license {
-            name "The Apache Software License, Version 2.0"
-            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
-            distribution "repo"
-        }
-    }
-    developers {
-        developer {
-            id "splendo"
-            name "Splendo BV"
-        }
-    }
-    scm {
-        url "https://github.com/splendo/kaluga"
-    }
-}
-
-publishing {
-    publications {
-        kalugaPublication(MavenPublication) {
-            artifactId = module.name.toLowerCase()
-            groupId = 'com.splendo.kaluga'
-            version = gradle.ext.library_version
-            pom.withXml {
-                def root = asNode()
-                def dependencies = root.appendNode('dependencies')
-                subprojects.each {
-                    def dep = dependencies.appendNode('dependency')
-                    dep.appendNode('groupId', 'com.splendo.kaluga')
-                    dep.appendNode('artifactId', it.name)
-                    dep.appendNode('version', gradle.ext.library_version)
-                    dep.appendNode('scope', 'runtime')
-                }
-                root.children().last() + pomConfig
-            }
-        }
-    }
-}
-
-def bintray_user = project.hasProperty('bintray_user') ? project.property('bintray_user') : System.getenv('BINTRAY_USER')
-def bintray_key = project.hasProperty('bintray_key') ? project.property('bintray_key') : System.getenv('BINTRAY_API_KEY')
-def bintray_dryRun = project.hasProperty('bintray_dry_run') ? project.property('bintray_dry_run').toBoolean() : true
-def bintray_publish = project.hasProperty('bintray_publish') ? project.property('bintray_publish').toBoolean() : false
-
-bintray {
-
-    user = bintray_user
-    key = bintray_key
-    dryRun = bintray_dryRun
-    publish = bintray_publish
-    override = true
-
-    pkg {
-        repo = 'com.splendo.kaluga'
-        name = module.name.toLowerCase()
-        userOrg = 'kaluga'
-        licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/splendo/kaluga'
-        issueTrackerUrl = 'https://github.com/splendo/kaluga/issues'
-        websiteUrl = 'https://kaluga.splendo.com'
-        version {
-            name = "$gradle.ext.library_version"
-            desc = "Kaluga $gradle.ext.library_version"
-            released = new Date()
-        }
-        publications = ["kalugaPublication"]
-    }
-}

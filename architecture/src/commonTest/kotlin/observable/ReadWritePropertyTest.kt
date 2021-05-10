@@ -18,10 +18,13 @@
 package com.splendo.kaluga.architecture.observable
 
 import com.splendo.kaluga.base.runBlocking
+import kotlinx.coroutines.Dispatchers
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlin.test.Test
 
+// We use the Unconfined dispatcher for observables to keep testing on the same thread.
+// This indirectly also tests using an alternate dispatcher
 class ReadWritePropertyTest : ObservableBaseTest() {
 
     var nullableReadWritePropertyValue:String? = null
@@ -54,7 +57,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
 
         nullableReadWritePropertyValue = initialValue
 
-        val subject = nullableReadWriteProperty.toDefaultSubject("default")
+        val subject = nullableReadWriteProperty.toDefaultSubject("default", Dispatchers.Unconfined)
 
         testStringDefaultSubject(
             subject,
@@ -70,7 +73,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     @Test
     fun testReadWritePropertyObservable() = runBlocking {
 
-        val subject = readWriteProperty.toInitializedSubject()
+        val subject = readWriteProperty.toInitializedSubject(Dispatchers.Unconfined)
 
         testStringSubject(
             subject,
@@ -88,7 +91,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
         nullableReadWritePropertyValue = "initial"
 
         testStringSubject(
-            subject = nullableReadWriteProperty.toInitializedSubject(),
+            subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,
@@ -101,7 +104,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     @Test
     fun testReadWriteNullablePropertyObservable() = runBlocking {
         testStringSubject(
-            subject = nullableReadWriteProperty.toInitializedSubject(),
+            subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
             initialExpected = null,
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,

@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.serialization")
     id("jacoco")
     id("com.android.library")
-    id("maven-publish")
+    id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
 }
 

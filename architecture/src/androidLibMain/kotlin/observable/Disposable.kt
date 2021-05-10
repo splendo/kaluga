@@ -15,19 +15,18 @@
 
  */
 
+@file:JvmName("DisposableJVMKt")
 package com.splendo.kaluga.architecture.observable
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.asLiveData
 
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)
 
-val <T>Uninitialized<T>.liveData:LiveData<T?>
-    get() = stateFlow.asLiveData()
+internal actual fun <R:T, T, OO:ObservableOptional<R>> addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.add(observer)
+}
 
-val <R:T, T>Initialized<R, T>.liveData:LiveData<R>
-    get() = stateFlow.asLiveData()
+internal actual fun <R:T, T, OO:ObservableOptional<R>> removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.remove(observer)
+}
 
-val <R:T, T, OO:ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
-    get() = Observer<T> { this.post(it) }
+internal actual fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit> =
+    observation.observers

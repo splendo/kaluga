@@ -47,26 +47,22 @@ class IOSPermissionsHelper {
          * @param requiredDeclarationName List of declarations that should be present in the PList
          * @return The list of declarations not present in the PList. If empty all declarations where provided.
          */
-        fun missingDeclarationsInPList(bundle: NSBundle, vararg requiredDeclarationName: String): List<String> {
-
-            val missingDeclarations = requiredDeclarationName.toMutableList()
-            missingDeclarations.forEach { declaration ->
-                try {
-
-                    val objectForInfoDictionaryKey = bundle.objectForInfoDictionaryKey(declaration)
-
-                    if (objectForInfoDictionaryKey == null) {
-                        error(TAG, "$declaration was not declared")
-                    } else {
-                        debug(TAG, "$declaration was declared")
-                        missingDeclarations.remove(declaration)
-                    }
-                } catch (error: Exception) {
-                    error(TAG, error)
+        fun missingDeclarationsInPList(
+            bundle: NSBundle,
+            vararg requiredDeclarationName: String
+        ) = requiredDeclarationName.mapNotNull { declaration ->
+            try {
+                if (bundle.objectForInfoDictionaryKey(declaration) == null) {
+                    error(TAG, "$declaration was not declared")
+                    declaration
+                } else {
+                    debug(TAG, "$declaration was declared")
+                    null
                 }
+            } catch (error: Exception) {
+                error(TAG, error)
+                null
             }
-
-            return missingDeclarations
         }
 
         /**
@@ -88,7 +84,7 @@ class IOSPermissionsHelper {
          * @param permissionManager The [PermissionManager] to update to the proper state.
          */
         fun <P : Permission> handleAuthorizationStatus(authorizationStatus: AuthorizationStatus, permissionManager: PermissionManager<P>) {
-            return when (authorizationStatus) {
+            when (authorizationStatus) {
                 AuthorizationStatus.NotDetermined -> permissionManager.revokePermission(false)
                 AuthorizationStatus.Authorized -> permissionManager.grantPermission()
                 AuthorizationStatus.Denied, AuthorizationStatus.Restricted -> permissionManager.revokePermission(true)

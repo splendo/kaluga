@@ -196,9 +196,10 @@ task copyResources(type: Copy) {
 }
 
 afterEvaluate {
-    tasks.named("linkDebugTestIosx64").configure {
-        dependsOn copyResources
-    }
+    if (tasks.getNames().contains("linkDebugTestIosx64"))
+        tasks.named("linkDebugTestIosx64").configure {
+            dependsOn copyResources
+        }
 }
 
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

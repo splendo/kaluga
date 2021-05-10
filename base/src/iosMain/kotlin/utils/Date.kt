@@ -19,7 +19,10 @@ package com.splendo.kaluga.base.utils
 
 import kotlinx.cinterop.useContents
 import platform.Foundation.NSCalendar
+import platform.Foundation.NSCalendarMatchNextTimePreservingSmallerUnits
+import platform.Foundation.NSCalendarMatchPreviousTimePreservingSmallerUnits
 import platform.Foundation.NSCalendarOptions
+import platform.Foundation.NSCalendarSearchBackwards
 import platform.Foundation.NSCalendarUnit
 import platform.Foundation.NSCalendarUnitDay
 import platform.Foundation.NSCalendarUnitEra
@@ -69,7 +72,6 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     actual var timeZone: TimeZone
         get() = TimeZone(calendar.timeZone)
         set(value) { calendar.timeZone = value.timeZone }
-
     actual var era: Int
         get() = calendar.component(NSCalendarUnitEra, fromDate = date).toInt()
         set(value) { updateDateForComponent(NSCalendarUnitEra, value) }
@@ -136,8 +138,42 @@ actual class Date internal constructor(private val calendar: NSCalendar, initial
     override fun compareTo(other: Date): Int = this.date.compare(other.date).toInt()
 
     private fun updateDateForComponent(component: NSCalendarUnit, value: Int) {
-        val previousValue = calendar.component(component, this.date)
-        calendar.dateByAddingUnit(component, (value - previousValue).toLong() as NSInteger, date, 0.toULong() as NSCalendarOptions)?.let {
+        // Check whether this component update can use dateBySettingUnit.
+        // This doesn't work properly when going out of bounds for a component (e.g. setting hour to 26)
+        // Therefore we must ensure that the value is within bounds.
+        // This is especially important for Minutes and Hours due to daylight savings,
+        // as using dateByAddingUnit will be incorrect if changing between a date that has DLS and one that hasn't.
+        val canSetComponent = when (component) {
+            NSCalendarUnitMinute -> {
+                calendar.rangeOfUnit(NSCalendarUnitMinute, NSCalendarUnitHour, date).useContents {
+                    value >= location.toInt() && value < (location + length).toInt()
+                }
+            }
+            NSCalendarUnitHour -> {
+                calendar.rangeOfUnit(NSCalendarUnitHour, NSCalendarUnitDay, date).useContents {
+                    value >= location.toInt() && value < (location + length).toInt()
+                }
+            }
+            else -> {
+                false
+            }
+        }
+        if (canSetComponent) {
+            // If the new value is lower than the old one, make sure we go backwards as otherwise the next highest component will increase
+            val calendarOptions = if (value.toLong() < calendar.component(component, date))
+                NSCalendarMatchPreviousTimePreservingSmallerUnits or NSCalendarSearchBackwards
+            else
+                NSCalendarMatchNextTimePreservingSmallerUnits
+            calendar.dateBySettingUnit(component, value.toLong() as NSInteger, date, calendarOptions)
+        } else {
+            val previousValue = calendar.component(component, this.date)
+            calendar.dateByAddingUnit(
+                component,
+                (value - previousValue).toLong() as NSInteger,
+                date,
+                0UL as NSCalendarOptions
+            )
+        }?.let {
             date = it
         }
     }
