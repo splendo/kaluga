@@ -38,6 +38,7 @@ class PermissionViewModel(private val permissions: Permissions, private val perm
                 is PermissionState.Allowed -> "permission_allowed".localized()
                 is PermissionState.Denied.Requestable -> "permission_requestable".localized()
                 is PermissionState.Denied.Locked -> "permission_denied".localized()
+                is PermissionState.Unknown -> "permission_unknown".localized()
             }
         }
         .toUninitializedObservable(coroutineScope)
