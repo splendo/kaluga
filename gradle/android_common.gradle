@@ -63,6 +63,9 @@ android {
             main {
                 manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
                 res.srcDir 'src/androidLibMain/res'
+                if (gradle.component_type.contains("compose")) {
+                    java.srcDir 'src/androidLibMain/kotlin'
+                }
             }
             androidTest {
                 manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
