@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -18,3 +18,14 @@
 package com.splendo.kaluga.architecture.observable
 
 actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : BaseSimpleDisposable(onDispose)
+
+internal actual fun <R:T, T, OO:ObservableOptional<R>> addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.add(observer)
+}
+
+internal actual fun <R:T, T, OO:ObservableOptional<R>> removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+    observation.observers.remove(observer)
+}
+
+internal actual fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit> =
+    observation.observers

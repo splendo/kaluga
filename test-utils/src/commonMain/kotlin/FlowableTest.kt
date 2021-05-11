@@ -34,7 +34,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 
@@ -64,7 +63,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
     val flowable: ()->F
         get() = flow
 
-    open var filter: suspend(T) -> Boolean = { true }
+    open val filter:(Flow<T>) -> Flow<T> = { it }
 
     private val tests: MutableList<EmptyCompletableDeferred> = mutableListOf()
 
@@ -123,15 +122,15 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
 
         val flow = _flow
         val testChannel = testChannel
-        val filter = filter
 
         debug("launch flow scope...")
         val started = EmptyCompletableDeferred()
+        val filter = filter
         try {
             job = launch(Dispatchers.Main.immediate) {
                 started.complete()
                 debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-                flow.filter(filter).collect { value ->
+                filter(flow).collect { value ->
                     debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
                     val test = testChannel.receive()
                     debug("received test block $test")

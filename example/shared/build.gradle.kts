@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("jacoco")
-    id("maven-publish")
+    id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }

@@ -17,14 +17,13 @@
 
 package com.splendo.kaluga.architecture.observable
 
-import co.touchlab.stately.isFrozen
 import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.test.assertFrozen
+import com.splendo.kaluga.test.assertNotFrozen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ThreadingTest {
 
@@ -33,29 +32,67 @@ class ThreadingTest {
     @Test
     fun testThreadingMainOnly() = runBlocking(Dispatchers.Main) {
         val s = subjectOf<Value?>(null)
-        assertFalse(s.isFrozen)
+        assertNotFrozen(s)
         val value = Value()
-        assertFalse(value.isFrozen)
+        assertNotFrozen(value)
         s.set(value)
         assertEquals(value, s.currentOrNull)
         // still nothing should be frozen
-        assertFalse(value.isFrozen)
-        assertFalse(s.isFrozen)
+        assertNotFrozen(value)
+        assertNotFrozen(s)
 
-        s.stateFlow
-        assertTrue(value.isFrozen) // initializing the stateFlow will freeze the value
-        assertFalse(s.isFrozen) // the subject itself however, not
+        assertEquals(value, s.stateFlow.value)
+        assertNotFrozen(value) // using StateFlow from the same thread should not freeze the value
+        assertNotFrozen(s) // the subject itself is also not frozen
     }
 
     @Test
     fun testThreadingDefaultThenMain() = runBlocking(Dispatchers.Default) {
         val s = subjectOf<Value?>(null)
         withContext(Dispatchers.Main) {
-            assertTrue(s.isFrozen) // due to the context switch the subject itself is frozen
+            assertFrozen(s) // due to the context switch the subject itself is frozen
             val value = Value()
-            assertFalse(value.isFrozen) // of course not
+            assertNotFrozen(value) // of course not
             s.set(value)
-            assertTrue(value.isFrozen) // due to the context switch the var inside subject is frozen
+            assertFrozen(value) // due to the context switch the var inside subject is frozen
         }
     }
+
+    @Test
+    fun testThreadingMainThenDefault() = runBlocking(Dispatchers.Main) {
+        val s = subjectOf<Value?>(null)
+        val value = Value()
+        s.stateFlow.value = value
+        assertNotFrozen(value)
+        withContext(Dispatchers.Default) {
+            assertFrozen(s) // due to the context switch the subject itself is frozen
+            assertFrozen(value)
+        }
+    }
+
+    @Test
+    fun testThreadingMainThenDefaultObservers() = runBlocking(Dispatchers.Main) {
+        val s = subjectOf<Value?>(null)
+        val value = Value()
+        val observer:(Value?) -> Unit = { }
+        val disposable = s.observe(observer)
+        assertNotFrozen(value)
+        assertNotFrozen(observer)
+
+        withContext(Dispatchers.Default) {
+            // due to the context switch the subject itself is frozen
+            assertFrozen(s)
+            assertFrozen(value)
+            val observer2:(Value?) -> Unit = { }
+            val disposable2 = s.observe(observer2)
+            assertFrozen(observer2)
+
+            disposable2.dispose()
+        }
+
+
+        assertNotFrozen(observer)
+        disposable.dispose()
+    }
+
 }

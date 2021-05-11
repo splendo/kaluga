@@ -34,6 +34,7 @@ pluginManagement {
 apply("gradle/ext.gradle")
 
 rootProject.name = "Kaluga"
+includeBuild("convention-plugins")
 
 include(":base")
 include(":bluetooth")
@@ -51,3 +52,4 @@ include(":keyboard")
 include(":resources")
 include(":review")
 include(":system")
+

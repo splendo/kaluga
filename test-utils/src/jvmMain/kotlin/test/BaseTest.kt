@@ -18,17 +18,49 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import com.splendo.kaluga.logging.w
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
 // we use this surrogate main thread because Swing/JavaFX testing on CI is unreliable
 actual open class BaseTest {
 
-    private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("UI thread")
+    /***********************************************************
+     * PLEASE KEEP IMPLEMENTATION IN SYNC WITH ANDROID VERSION *
+     ***********************************************************/
+
+    // might re-enable this if needed, but to encourage cross platform behaviour it is off
+    // @Rule @JvmField
+    // val instantExecutorRule = InstantTaskExecutorRule()
+
+    private val mainDispatcher: CoroutineDispatcher by lazy {
+        var mainThread:Thread? = null
+        val factory = ThreadFactory { r ->
+            Thread(r, "synthetic UI thread").also {
+                it.uncaughtExceptionHandler =
+                    Thread.UncaughtExceptionHandler { _, e -> w(throwable = e) { "error in synthetic main thread: $e" } }
+                mainThread = it
+            }
+        }
+
+        val executor: ExecutorService = Executors.newSingleThreadExecutor(factory)
+        val d = executor.asCoroutineDispatcher()
+        // Implement proper immediate support
+        object: CoroutineDispatcher() {
+            override fun dispatch(context: CoroutineContext, block: Runnable) {
+                d.dispatch(context, block)
+            }
+            override fun isDispatchNeeded(context: CoroutineContext): Boolean = Thread.currentThread() != mainThread
+        }
+    }
 
     @BeforeTest
     actual open fun beforeTest() {
