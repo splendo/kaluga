@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import com.splendo.kaluga.architecture.observable.WithMutableState
 import com.splendo.kaluga.architecture.observable.WithState
 
@@ -32,15 +33,19 @@ inline fun <R> WithState<R>.state(): State<R> =
 @Composable
 fun <R> WithMutableState<R>.mutableState(): MutableState<R> {
     val readState = state()
-    return object:MutableState<R> {
-        override var value: R
-            get() = readState.value
-            set(value) { stateFlow.value = value }
 
-        override fun component1(): R = value
-        override fun component2(): (R) -> Unit = {
-            value = it
+    return remember {
+        object : MutableState<R> {
+            override var value: R
+                get() = readState.value
+                set(value) {
+                    stateFlow.value = value
+                }
+
+            override fun component1(): R = value
+            override fun component2(): (R) -> Unit = {
+                value = it
+            }
         }
     }
-
 }
