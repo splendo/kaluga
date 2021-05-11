@@ -22,8 +22,8 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.logger.PrintLogger
 import org.koin.dsl.module
 import kotlin.test.Test

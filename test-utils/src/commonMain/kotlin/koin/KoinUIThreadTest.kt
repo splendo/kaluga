@@ -18,7 +18,7 @@
 package com.splendo.kaluga.test.koin
 
 import com.splendo.kaluga.test.UIThreadTest
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
