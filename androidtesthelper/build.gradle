@@ -18,11 +18,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-repositories {
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
-}
 
 android {
     compileSdkVersion gradle.android_target_sdk_version

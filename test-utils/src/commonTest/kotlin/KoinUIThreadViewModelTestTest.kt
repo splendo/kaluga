@@ -24,7 +24,7 @@ import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.logger.Level
+import org.koin.core.logger.PrintLogger
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
