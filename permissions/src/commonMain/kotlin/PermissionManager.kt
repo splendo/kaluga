@@ -18,8 +18,8 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.permissions.PermissionState.Denied
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * Manager for maintaining the [PermissionState] of a given [Permission]
@@ -53,12 +53,10 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
      * This will bring the [PermissionStateRepo] to [PermissionState.Allowed]
      */
     open fun grantPermission() {
-        stateRepo.launch {
-            stateRepo.takeAndChangeState { state ->
-                when (state) {
-                    is PermissionState.Denied -> state.allow
-                    is PermissionState.Allowed -> state.remain()
-                }
+        stateRepo.launchTakeAndChangeState { state ->
+            when (state) {
+                is Denied -> state.allow
+                is PermissionState.Allowed, is PermissionState.Unknown -> state.remain()
             }
         }
     }
@@ -69,17 +67,16 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
      * @param locked `true` if the permission can no longer be requested after this. This corresponds to [PermissionState.Denied.Locked] when `true` and [PermissionState.Denied.Requestable] otherwise.
      */
     open fun revokePermission(locked: Boolean) {
-        stateRepo.launch {
-            stateRepo.takeAndChangeState { state ->
-                when (state) {
-                    is PermissionState.Allowed -> suspend { state.deny(locked) }
-                    is PermissionState.Denied.Requestable -> {
-                        if (locked) state.lock else state.remain()
-                    }
-                    is PermissionState.Denied.Locked -> {
-                        if (locked) state.remain() else state.unlock
-                    }
+        stateRepo.launchTakeAndChangeState { state ->
+            when (state) {
+                is PermissionState.Allowed -> suspend { state.deny(locked) }
+                is Denied.Requestable -> {
+                    if (locked) state.lock else state.remain()
                 }
+                is Denied.Locked -> {
+                    if (locked) state.remain() else state.unlock
+                }
+                is PermissionState.Unknown -> state.remain()
             }
         }
     }

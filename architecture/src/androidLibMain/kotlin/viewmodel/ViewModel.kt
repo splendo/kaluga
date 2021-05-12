@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 
-actual open class ViewModel internal actual constructor() : androidx.lifecycle.ViewModel() {
+actual open class ViewModel internal actual constructor(allowFreezing:Boolean) : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 
@@ -32,7 +32,7 @@ actual open class ViewModel internal actual constructor() : androidx.lifecycle.V
 
 /**
  * Binds an [AppCompatActivity] to the [ViewModel] to manage the viewmodel lifecycle.
- * @param activity The [Activity] to bind to.
+ * @param activity The [AppCompatActivity] to bind to.
  */
 fun <VM : BaseViewModel> VM.bind(activity: AppCompatActivity) {
     activity.lifecycle.addObserver(KalugaViewModelLifecycleObserver(this, activity, activity, activity.supportFragmentManager))

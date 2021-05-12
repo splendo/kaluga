@@ -18,10 +18,13 @@
 package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.concurrency.AtomicReference
+import kotlinx.coroutines.Dispatchers
 import kotlin.properties.ReadOnlyProperty
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+// We use the Unconfined dispatcher for observables to keep testing on the same thread.
+// This indirectly also tests using an alternate dispatcher
 class ReadOnlyPropertyTest: ObservableBaseTest() {
 
     @Test
@@ -30,8 +33,7 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
         var nullableString:String? = null
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString }
 
-        val observable = ro.toDefaultObservable(
-            "default")
+        val observable = ro.toDefaultObservable("default", Dispatchers.Unconfined)
 
         val observed = AtomicReference("nothing yet")
         observable.observeInitialized { observed.set(it) }
@@ -54,7 +56,7 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
         val ro = ReadOnlyProperty<Any?, String> { _, _ -> s }
 
         testInitializedStringObservable(
-            observable = ro.toInitializedObservable(),
+            observable = ro.toInitializedObservable(Dispatchers.Unconfined),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             { s = "new"; "new" }, //
@@ -71,7 +73,7 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s }
 
         testInitializedNullableStringObservable(
-            observable = ro.toInitializedObservable(),
+            observable = ro.toInitializedObservable(Dispatchers.Unconfined),
             initialExpected = initial,
             shortDelayAfterUpdate = false,
             { s = "new"; "new" },

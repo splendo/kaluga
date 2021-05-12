@@ -176,6 +176,7 @@ suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionMana
             is PermissionState.Allowed -> emit(true)
             is PermissionState.Denied.Requestable -> state.request(permissionManager)
             is PermissionState.Denied.Locked -> emit(false)
+            is PermissionState.Unknown -> {}
         }
     }.first()
 }
