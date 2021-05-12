@@ -19,9 +19,38 @@
 
 package com.splendo.kaluga.base.utils
 
-// Add/Use Closed ranges
-
 interface CardiacOutputData<T> : SciUnit<T>
+
+interface VolumetricFlowRate<T> : CardiacOutputData<T>
+interface LiterPerMinute<T> : VolumetricFlowRate<T>
+
+interface Volume<T> : CardiacOutputData<T>
+interface Milliliter<T> : Volume<T>
+
+interface VolumeIndex<T> : CardiacOutputData<T>
+interface MilliliterPerSquareMeter<T> : VolumeIndex<T>
+
+interface Rate<T> : CardiacOutputData<T>
+interface BeatsPerMinute<T> : Rate<T>
+interface BreathsPerMinute<T> : Rate<T>
+
+interface VolumetricFlowRateIndex<T> : CardiacOutputData<T>
+interface MilliliterPerMinutePerSquareMeter<T> : VolumetricFlowRateIndex<T>
+
+interface Time<T> : CardiacOutputData<T>
+interface Milliseconds<T> : Time<T>
+
+interface Resistance<T> : CardiacOutputData<T>
+interface DyneSecondPerCentimeterToTheFifth<T> : Resistance<T>
+
+interface ResistanceIndex<T> : CardiacOutputData<T>
+interface DyneSecondPerCentimeterToTheFifthPerSquareMeter<T> : ResistanceIndex<T>
+
+interface Pressure<T> : CardiacOutputData<T>
+interface MillimeterOfMercury<T> :Pressure<T>
+
+interface WorkPerArea<T> : CardiacOutputData<T>
+interface KilogramMeterPerSquareMeter<T> : WorkPerArea<T>
 
 
 inline class CardiacOutput (override val value: Double) : CardiacOutputData<Double> {

@@ -18,15 +18,11 @@
 package com.splendo.kaluga.base.utils
 
 
-interface SciUnit<T> {
-    val value:T
-}
 interface Temperature<T>:SciUnit<T> {
     override val value: T
     val fahrenheit:Fahrenheit<T>
     val celsius:Celsius<T>
 }
-
 
 interface Celsius<T>:Temperature<T>
 interface Fahrenheit<T>:Temperature<T>

@@ -18,16 +18,23 @@
 package com.splendo.kaluga.base.utils
 
 
+
+
+
 interface OxygenationData<T> : SciUnit<T> {
     override val value: T
 }
 
-
-inline class TSI(override val value: Double) : OxygenationData<Double>{
-        val valid : TSI
+interface Concentration<T> : OxygenationData<T> {
+    override val value: T
+}
+//Archetypal concentration unit inline class
+interface Micromolar<T> : Concentration<T>
+inline class MicromolarDouble(override val value: Double) : Micromolar<Double>{
+    val valid : MicromolarDouble
         get() {
-            if (value in 0.0..1.0){ //Valid values in 0-1 range, since it's a percentage.
-                return TSI(value)
+            if (value in -319.9..319.9){
+                return MicromolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
@@ -35,11 +42,34 @@ inline class TSI(override val value: Double) : OxygenationData<Double>{
         }
 }
 
-inline class O2HB(override val value: Double) : OxygenationData<Double>{
-    val valid : O2HB
+/*The NIRS quantities as inline classes */
+
+interface TSI<T> : OxygenationData<T>, percentage<T>{
+    override val value: T
+    override val valid: percentage<T>
+}
+
+inline class TSIDouble(override val value: Double) : TSI<Double>{
+        override val valid : TSIDouble
+        get() {
+            if (value in 0.0..1.0){ //Valid values in 0-1 range, since it's a percentage.
+                return TSIDouble(value)
+            }
+            else {
+                throw Exception("Value out of valid range")
+            }
+        }
+}
+
+interface O2HB<T> : Concentration<T> {
+    override val value: T
+}
+
+inline class O2HBmicromolarDouble(override val value: Double) : O2HB<Double>{
+    val valid : O2HBmicromolarDouble
     get() {
         if (value in -319.9..319.9){
-            return O2HB(value)
+            return O2HBmicromolarDouble(value)
         }
         else {
             throw Exception("Value out of valid range")
@@ -47,11 +77,14 @@ inline class O2HB(override val value: Double) : OxygenationData<Double>{
     }
 }
 
-inline class HHB(override val value: Double) : OxygenationData<Double>{
-    val valid : HHB
+interface HHB<T> : Concentration<T> {
+    override val value: T
+}
+inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>{
+    val valid : HHBMicromolarDouble
         get() {
             if (value in -319.9..319.9){
-                return HHB(value)
+                return HHBMicromolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
@@ -59,23 +92,28 @@ inline class HHB(override val value: Double) : OxygenationData<Double>{
         }
 }
 
-inline class tHB(override val value: Double) : OxygenationData<Double>{
-    val valid : tHB
+interface tHB<T> : Concentration<T> {
+    override val value: T
+}
+inline class tHBMicrmolarDouble(override val value: Double) : tHB<Double>{
+    val valid : tHBMicrmolarDouble
         get() {
             if (value in -319.9..319.9){
-                return tHB(value)
+                return tHBMicrmolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
             }
         }
 }
-
-inline class HbDiff(override val value: Double) : OxygenationData<Double>{
-    val valid : HbDiff
+interface HbDiff<T> : Concentration<T> {
+    override val value: T
+}
+inline class HbDiffDouble(override val value: Double) : HbDiff<Double>{
+    val valid : HbDiffDouble
         get() {
             if (value in -319.9..319.9){
-                return HbDiff(value)
+                return HbDiffDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
