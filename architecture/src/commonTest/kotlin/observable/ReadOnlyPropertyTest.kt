@@ -18,6 +18,7 @@
 package com.splendo.kaluga.architecture.observable
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlin.properties.ReadOnlyProperty
 import kotlin.test.Test
@@ -28,7 +29,7 @@ import kotlin.test.assertEquals
 class ReadOnlyPropertyTest: ObservableBaseTest() {
 
     @Test
-    fun testReadOnlyPropertyDefaultObservable() {
+    fun testReadOnlyPropertyDefaultObservable() = runBlocking {
 
         var nullableString:String? = null
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString }
@@ -51,7 +52,7 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
     }
 
     @Test
-    fun testReadOnlyPropertyObservable() {
+    fun testReadOnlyPropertyObservable() = runBlocking {
         var s = "initial"
         val ro = ReadOnlyProperty<Any?, String> { _, _ -> s }
 
@@ -68,7 +69,7 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
     fun testReadOnlyNullablePropertyObservableWithInitialValue() = testReadOnlyNullablePropertyObservable("initial")
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialNull() = testReadOnlyNullablePropertyObservable(null)
-    private fun testReadOnlyNullablePropertyObservable(initial:String?) {
+    private fun testReadOnlyNullablePropertyObservable(initial:String?) = runBlocking {
         var s:String? = initial
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s }
 

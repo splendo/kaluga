@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.Dispatchers
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -52,7 +53,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     @Test
     fun testReadWritePropertyDefaultObservableWithInitialNull()  = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
 
-    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean ) {
+    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean ) = runBlocking {
 
         nullableReadWritePropertyValue = initialValue
 
@@ -70,7 +71,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWritePropertyObservable() {
+    fun testReadWritePropertyObservable() = runBlocking {
 
         val subject = readWriteProperty.toInitializedSubject(Dispatchers.Unconfined)
 
@@ -85,7 +86,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWriteNullablePropertyObservableWithInitialValue() {
+    fun testReadWriteNullablePropertyObservableWithInitialValue() = runBlocking {
 
         nullableReadWritePropertyValue = "initial"
 
@@ -101,7 +102,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWriteNullablePropertyObservable() {
+    fun testReadWriteNullablePropertyObservable() = runBlocking {
         testStringSubject(
             subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
             initialExpected = null,

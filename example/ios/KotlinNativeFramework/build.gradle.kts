@@ -15,16 +15,17 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    maven(url="https://kotlin.bintray.com/kotlinx")
 }
+
 
 kotlin {
 
     xcode {
         setupFramework("KotlinNativeFramework") {
+
             export(project(":shared"))
+
             transitiveExport = true
-            freeCompilerArgs += "-Xobjc-generics"
         }
     }
 
@@ -39,4 +40,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.create<Delete>("cleanKotlinNativeFrameworkTest") {
+    delete = setOf (
+        "build"
+    )
 }

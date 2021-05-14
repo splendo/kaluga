@@ -18,12 +18,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
-repositories {
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
-}
-
 android {
     compileSdkVersion gradle.android_target_sdk_version
     buildToolsVersion gradle.android_build_tools_version
@@ -67,7 +61,9 @@ android {
     }
 }
 
+gradle.ext.component_type = gradle.ext.component_type_app
 apply from: "../gradle/android_common.gradle"
+gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
 
@@ -79,6 +75,7 @@ dependencies {
     androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_isolate_version")
 
     def excluded = ["androidtesthelper", // this project
+                    "architecture-compose" // TODO, Compose in test helper not yet supported
                     ]
     rootProject.subprojects.findAll{ !excluded.contains(it.name) }.each {
         implementation project(path: ":$it.name")

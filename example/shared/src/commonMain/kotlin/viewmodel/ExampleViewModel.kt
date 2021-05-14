@@ -20,13 +20,13 @@ package com.splendo.kaluga.example.shared.viewmodel
 import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.observable.toSubject
+import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.base.MainQueueDispatcher
-import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 sealed class ExampleTabNavigation : NavigationAction<Nothing>(null) {
@@ -44,12 +44,12 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
 
     val tabs = observableOf(listOf(Tab.FeatureList, Tab.Info))
 
-    private val _tab = HotFlowable<Tab>(Tab.FeatureList)
-    val tab = _tab.toSubject(coroutineScope)
+    private val _tab = MutableStateFlow<Tab>(Tab.FeatureList)
+    val tab = _tab.toInitializedSubject(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
-        scope.launch(MainQueueDispatcher) { _tab.flow().distinctUntilChanged().collect { currentTab ->
+        scope.launch(Dispatchers.Main.immediate) { _tab.collect { currentTab ->
             navigator.navigate(when (currentTab) {
                 is Tab.FeatureList -> ExampleTabNavigation.FeatureList
                 is Tab.Info -> ExampleTabNavigation.Info

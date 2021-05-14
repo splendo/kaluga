@@ -1,21 +1,13 @@
 repositories {
     google()
     mavenCentral()
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
 }
 
-kotlin {
+// if the include is made from the example project shared module we need to go up one more directory
+String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
-    targets {
-        configure([]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
-            }
-        }
-    }
+
+kotlin {
 
     targets {
         configure([]) {
@@ -28,8 +20,8 @@ kotlin {
 
 
     android("androidLib") {
-        publishAllLibraryVariants()
 
+        publishAllLibraryVariants()
     }
 
     if (gradle.ios_primary_arch == "iosx64")
@@ -161,53 +153,12 @@ kotlin {
     }
 }
 
-
+apply from: "$path_prefix/gradle/android_common.gradle"
 
 android {
 
-    kotlinOptions {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-
     testOptions {
         unitTests.returnDefaultValues = true
-    }
-
-    defaultPublishConfig = "debug"
-
-    compileSdkVersion gradle.android_target_sdk_version
-
-    defaultConfig {
-        minSdkVersion gradle.android_min_sdk_version
-        targetSdkVersion gradle.android_target_sdk_version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-            res.srcDir 'src/androidLibMain/res'
-        }
-        androidTest {
-            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
-            java.srcDir 'src/androidLibAndroidTest/kotlin'
-            res.srcDir 'src/androidLibAndroidTest/res'
-        }
-
-
-        test {
-            java.srcDir 'src/androidLibUnitTest/kotlin'
-        }
     }
 
     packagingOptions {
@@ -237,8 +188,4 @@ afterEvaluate {
         }
 }
 
-// if the include is made from the example project shared module we need to go up one more directory
-String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
-
-apply from: "$path_prefix/gradle/android_common.gradle"
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

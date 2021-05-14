@@ -29,7 +29,7 @@ class DateTimePickerViewController : UIViewController {
             }
             return [
                 viewModel.dateLabel.observe(onNext: { (time) in
-                    if let timeString = time {
+                    if let timeString = (time as? String) {
                         self?.timeLabel.text = String(timeString)
                     }
             })

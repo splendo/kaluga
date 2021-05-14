@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.system.network
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.system.network.Network
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
@@ -34,7 +34,7 @@ class NetworkViewModel(
     private val networkRepo = networkStateRepoBuilder.create()
 
     private val _networkState: MutableStateFlow<String?> = MutableStateFlow(null)
-    val networkState = _networkState.toObservable(coroutineScope)
+    val networkState = _networkState.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
