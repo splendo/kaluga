@@ -17,13 +17,15 @@ repositories {
     mavenCentral()
 }
 
+
 kotlin {
 
     xcode {
         setupFramework("KotlinNativeFramework") {
+
             export(project(":shared"))
+
             transitiveExport = true
-            freeCompilerArgs += "-Xobjc-generics"
         }
     }
 
@@ -38,4 +40,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.create<Delete>("cleanKotlinNativeFrameworkTest") {
+    delete = setOf (
+        "build"
+    )
 }

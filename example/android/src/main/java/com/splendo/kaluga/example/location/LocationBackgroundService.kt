@@ -32,9 +32,9 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
     override fun onCreate() {
         super.onCreate()
 
-        viewModel.location.observe(this, Observer { message ->
+        viewModel.location.observeInitialized { message ->
             NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
-        })
+        }
 
         startForeground(notificationId, getNotification(""))
     }

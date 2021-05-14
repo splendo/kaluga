@@ -14,6 +14,7 @@
     limitations under the License.
 
  */
+@file:JvmName("AndroidObservable")
 
 package com.splendo.kaluga.architecture.observable
 

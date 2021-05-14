@@ -22,11 +22,11 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.observable.toObservable
-import com.splendo.kaluga.architecture.observable.toSubject
+import com.splendo.kaluga.architecture.observable.toInitializedSubject
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -42,21 +42,21 @@ class ArchitectureInputViewModel(navigator: Navigator<SingleValueNavigationActio
     val nameHeader = observableOf("Enter your Name")
     val numberHeader = observableOf("Enter a Number")
 
-    private val _nameInput = HotFlowable("")
-    val nameInput = _nameInput.toSubject(coroutineScope)
+    private val _nameInput = MutableStateFlow("")
+    val nameInput = _nameInput.toInitializedSubject(coroutineScope)
 
-    private val _numberInput = HotFlowable("")
-    val numberInput = _numberInput.toSubject(coroutineScope)
+    private val _numberInput = MutableStateFlow("")
+    val numberInput = _numberInput.toInitializedSubject(coroutineScope)
 
-    private val _isNameValid: Flow<Boolean> get() { return _nameInput.flow().map {
+    private val _isNameValid: Flow<Boolean> get() { return _nameInput.map {
         it.isNotEmpty()
     } }
-    val isNameValid = _isNameValid.toObservable(coroutineScope)
+    val isNameValid = _isNameValid.toUninitializedObservable(coroutineScope)
 
-    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.flow().map {
+    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.map {
         it.toIntOrNull() != null
     } }
-    val isNumberValid = _isNumberValid.toObservable(coroutineScope)
+    val isNumberValid = _isNumberValid.toUninitializedObservable(coroutineScope)
 
     private val isValid = combine(_isNameValid, _isNumberValid) {
             validName, validNumber -> validName && validNumber

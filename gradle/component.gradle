@@ -7,19 +7,6 @@ repositories {
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
 
-android {
-//     workaround for https://youtrack.jetbrains.com/issue/KT-43944
-        configurations {
-            androidTestApi {}
-            androidTestDebugApi {}
-            androidTestReleaseApi {}
-            testApi {}
-            testDebugApi {}
-            testReleaseApi {}
-        }
-
-}
-
 kotlin {
 
     targets {
@@ -31,7 +18,9 @@ kotlin {
         }
     }
 
+
     android("androidLib") {
+
         publishAllLibraryVariants()
     }
 
