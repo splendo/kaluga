@@ -45,7 +45,7 @@ class LocationViewController: UIViewController {
                 return []
             }
             return [viewModel.location.observe(onNext: { (location) in
-                self?.label.text = location as String?
+                self?.label.text = location as? String ?? ""
                 })]
         })
     }

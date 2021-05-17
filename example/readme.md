@@ -60,6 +60,8 @@ While `apple-app-site-association` will be
 
 # Using IDEs
 
-The iOS app can be opened by either XCode or Appcode. The advantage of AppCode is you will also have access to the kotlin sources, including the ability to set breakpoints. 
+The iOS app can be opened by either XCode or the KMM plugin of Android Studio. 
 
-The Android app can be opened with Android Studio, though IntelliJ IDEA might also work. To use a unified structure that is also supported by Appcode, the root `settings.gradle` file is under [ios/Supporting Files], so this is the directory to open with Android studio. 
+The Android app can be opened with Android Studio, at times the latest Beta or Canary release is needed. IntelliJ IDEA might also work but is not officially supported. 
+
+This project uses a structure created by Appcode (the Kotlin/Native plugin of Appcode is now unfortunately not recent anymore) , the root `settings.gradle.kts` file is under [ios/Supporting Files], so this is the directory to open with Android studio. 

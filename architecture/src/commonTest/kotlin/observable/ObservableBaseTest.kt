@@ -37,7 +37,7 @@ abstract class ObservableBaseTest:BaseTest() {
     fun <V:String?, O>((O) -> V).asUpdate() = { observable:O -> Value(this(observable))}
     fun <O>((O) -> String?).asNullableUpdate() = { observable:O -> Value(this(observable))}
 
-    fun <O:InitializedObservable<String?>> testInitializedNullableStringObservable(
+    suspend fun <O:InitializedObservable<String?>> testInitializedNullableStringObservable(
         observable:O,
         initialExpected:String?,
         shortDelayAfterUpdate:Boolean = false,
@@ -50,7 +50,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asNullableUpdate() }.toTypedArray()
     )
 
-    fun <V:String?, O:InitializedObservable<V>> testInitializedStringObservable(
+    suspend fun <V:String?, O:InitializedObservable<V>> testInitializedStringObservable(
         observable:O,
         initialExpected:V,
         shortDelayAfterUpdate:Boolean = false,
@@ -63,7 +63,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    fun <V:String?, OO:ObservableOptional<V>, S:BasicSubject<V, V, OO>> testStringSubject(
+    suspend fun <V:String?, OO:ObservableOptional<V>, S:BasicSubject<V, V, OO>> testStringSubject(
         subject: S,
         initialExpected:V,
         shortDelayAfterUpdate:Boolean = false,
@@ -77,7 +77,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate<V, OO, S>(useSuspendableSetter) }.toTypedArray()
     )
 
-    fun <V:String?, OO:ObservableOptional<V>, O:BasicObservable<V, V, OO>> testUninitializedStringObservable(
+    suspend fun <V:String?, OO:ObservableOptional<V>, O:BasicObservable<V, V, OO>> testUninitializedStringObservable(
         observable:O,
         shortDelayAfterUpdate:Boolean = false,
         vararg updates: (O) -> ObservableOptional<V>
@@ -89,7 +89,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates
     )
 
-    fun <O:DefaultObservable<String, String?>> testDefaultStringObservable(
+    suspend fun <O:DefaultObservable<String, String?>> testDefaultStringObservable(
         observable:O,
         initialExpected: String,
         shortDelayAfterUpdate:Boolean = false,
@@ -102,7 +102,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    fun <R:T, T:String?, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>> testStringObservable(
+    suspend fun <R:T, T:String?, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>> testStringObservable(
         observable:O,
         initialExpected:T,
         shortDelayAfterUpdate:Boolean = false,
@@ -132,7 +132,7 @@ abstract class ObservableBaseTest:BaseTest() {
         Value(this.second)
     }
 
-    fun <S:DefaultSubject<String, String?>>testStringDefaultSubject(
+    suspend fun <S:DefaultSubject<String, String?>>testStringDefaultSubject(
         subject: S,
         initialExpected:String,
         shortDelayAfterUpdate:Boolean = false,
@@ -146,7 +146,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asNullableUpdate<S>(useSuspendableSetter) }.toTypedArray()
     )
 
-    fun <O:DefaultObservable<String, String?>> testStringDefaultObservable(
+    suspend fun <O:DefaultObservable<String, String?>> testStringDefaultObservable(
         observable:O,
         initialExpected:String,
         shortDelayAfterUpdate:Boolean = false,
@@ -164,13 +164,13 @@ abstract class ObservableBaseTest:BaseTest() {
         updateSemaphore.get()?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
     }
 
-    fun <R:T,T, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>>testObservable(
+    suspend fun <R:T,T, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>>testObservable(
         observable:O,
         unusedValue: R,
         initialExpected: OO,
         shortDelayAfterUpdate:Boolean = false,
         vararg updates: (O) -> ObservableOptional<R>
-    ) = runBlocking {
+    ) {
         val permits = updates.size + 1 // +1 for initial state
         val semaphore = Semaphore(permits).freeze()
         updateSemaphore.set(semaphore)

@@ -17,10 +17,14 @@
 
 package com.splendo.kaluga.architecture.observable
 
+import com.splendo.kaluga.base.runBlocking
+import kotlinx.coroutines.Dispatchers
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlin.test.Test
 
+// We use the Unconfined dispatcher for observables to keep testing on the same thread.
+// This indirectly also tests using an alternate dispatcher
 class ReadWritePropertyTest : ObservableBaseTest() {
 
     var nullableReadWritePropertyValue:String? = null
@@ -49,11 +53,11 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     @Test
     fun testReadWritePropertyDefaultObservableWithInitialNull()  = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
 
-    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean ) {
+    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean ) = runBlocking {
 
         nullableReadWritePropertyValue = initialValue
 
-        val subject = nullableReadWriteProperty.toDefaultSubject("default")
+        val subject = nullableReadWriteProperty.toDefaultSubject("default", Dispatchers.Unconfined)
 
         testStringDefaultSubject(
             subject,
@@ -67,9 +71,9 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWritePropertyObservable() {
+    fun testReadWritePropertyObservable() = runBlocking {
 
-        val subject = readWriteProperty.toInitializedSubject()
+        val subject = readWriteProperty.toInitializedSubject(Dispatchers.Unconfined)
 
         testStringSubject(
             subject,
@@ -82,12 +86,12 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWriteNullablePropertyObservableWithInitialValue() {
+    fun testReadWriteNullablePropertyObservableWithInitialValue() = runBlocking {
 
         nullableReadWritePropertyValue = "initial"
 
         testStringSubject(
-            subject = nullableReadWriteProperty.toInitializedSubject(),
+            subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,
@@ -98,9 +102,9 @@ class ReadWritePropertyTest : ObservableBaseTest() {
     }
 
     @Test
-    fun testReadWriteNullablePropertyObservable() {
+    fun testReadWriteNullablePropertyObservable() = runBlocking {
         testStringSubject(
-            subject = nullableReadWriteProperty.toInitializedSubject(),
+            subject = nullableReadWriteProperty.toInitializedSubject(Dispatchers.Unconfined),
             initialExpected = null,
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,

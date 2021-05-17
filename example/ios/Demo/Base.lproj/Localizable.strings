@@ -31,6 +31,7 @@
 "permissions_notifications" = "Notifications Demo";
 "permissions_storage" = "Storage Demo";
 
+"permission_unknown" = "The status of the permission is not known yet";
 "permission_allowed" = "The permission has been granted";
 "permission_requestable" = "The permission can be requested";
 "permission_denied" = "The permission has been denied";
