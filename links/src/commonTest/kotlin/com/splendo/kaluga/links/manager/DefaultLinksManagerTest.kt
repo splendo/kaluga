@@ -18,8 +18,6 @@
 package com.splendo.kaluga.links.manager
 
 import kotlinx.serialization.Serializable
-import kotlin.test.Test
-import kotlin.test.assertEquals
 
 @Serializable
 data class Person(
@@ -43,38 +41,4 @@ enum class Languages {
     DUTCH,
 }
 
-class LinksManagerTest {
-
-    private val linksManager = LinksManagerBuilder().create()
-
-    @Test
-    fun testHandleIncomingLinkSucceed() {
-        val result = linksManager.handleIncomingLink(Person.dummyUrl, Person.serializer())
-
-        assertEquals(Person.dummyPerson, result)
-    }
-
-    @Test
-    fun testHandleIncomingLinkFailed() {
-        val query = ""
-
-        val result = linksManager.handleIncomingLink(query, Person.serializer())
-        assertEquals(null, result)
-    }
-
-    @Test
-    fun testHandleOutgoingLinkSucceed() {
-        val url = "http://valid-link?parameter=1"
-
-        val result = linksManager.validateLink(url)
-        assertEquals(url, result)
-    }
-
-    @Test
-    fun testHandleOutgoingLinkFailed() {
-        val url = "not valid"
-
-        val result = linksManager.validateLink(url)
-        assertEquals(null, result)
-    }
-}
+expect class LinksManagerTest
