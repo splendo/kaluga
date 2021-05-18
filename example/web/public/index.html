@@ -5,27 +5,12 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <meta name="kaluga-example" content="app-id=2732HQPVJP.com.splendo.kaluga.example, app-argument=https://kaluga-links.web.app/kalugaexample?name=Kaluga&type=Multiplatform+Library">
 
-        <link rel="stylesheet" href="style.css">
       <title>Kaluga Example Web</title>
     </head>
     <body>
         <script>
-          var IS_IPAD = navigator.userAgent.match(/iPad/i) != null
-          var IS_IPHONE = !IS_IPAD && ((navigator.userAgent.match(/iPhone/i) != null) || (navigator.userAgent.match(/iPod/i) != null));
-          var IS_IOS = IS_IPAD || IS_IPHONE;
-          var IS_ANDROID = !IS_IOS && navigator.userAgent.match(/android/i) != null;
-          var IS_MOBILE = IS_IOS || IS_ANDROID;
-
           function openApp() {
-              if (IS_IOS) {
-                  console.log("site reached from ios.");
-                  window.location = "https://kaluga-links.web.app/kalugaexample?name=Kaluga&type=Multiplatform+Library";
-              } else if (IS_ANDROID) {
-                  console.log("site reached from android.");
-                  window.location = "https://kaluga-links.web.app/kalugaexample?name=Kaluga&type=Multiplatform+Library";
-              } else {
-                  console.log("site reached from a computer.");
-              }
+              window.location = "https://kaluga-links.web.app/kalugaexample?name=Kaluga&type=Multiplatform+Library";
           }
         </script>
         <h1>Kaluga Links</h1>
