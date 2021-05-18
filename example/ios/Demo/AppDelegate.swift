@@ -26,11 +26,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         return true
     }
-
+    
     func application(_ application: UIApplication,
-                     open url: URL,
-                     options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        guard let url = NSURLComponents(url: url, resolvingAgainstBaseURL: true) else {
+                     continue userActivity: NSUserActivity,
+                     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        guard let url = NSURLComponents(url: userActivity.webpageURL!, resolvingAgainstBaseURL: true) else {
             print("Invalid url.")
             return false
         }
