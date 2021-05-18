@@ -40,5 +40,3 @@ enum class Languages {
     ENGLISH,
     DUTCH,
 }
-
-expect class LinksManagerTest
