@@ -202,7 +202,7 @@ class KNArchitectureFramework {
                 when (action) {
                     is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
                         NSURL.URLWithString(action.bundle!!.get(BrowserSpecRow.UrlSpecRow))!!,
-                        NavigationSpec.Browser.Type.SafariView(animated, completion)
+                        NavigationSpec.Browser.Type.Normal
                     )
                 }
             }
