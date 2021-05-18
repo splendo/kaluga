@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.links.manager
 
-actual class LinksManagerTest
+class LinksManagerTestJs

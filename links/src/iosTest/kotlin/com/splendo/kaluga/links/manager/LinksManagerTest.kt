@@ -20,7 +20,7 @@ package com.splendo.kaluga.links.manager
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-actual class LinksManagerTest {
+class LinksManagerTestIOS {
 
     private val linksManager = LinksManagerBuilder().create()
 
