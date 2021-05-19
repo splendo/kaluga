@@ -17,6 +17,7 @@
 
 package architecture
 
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
 import com.splendo.kaluga.architecture.observable.Disposable
@@ -34,6 +35,9 @@ import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNaviga
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
@@ -43,6 +47,7 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -84,7 +89,8 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
-                        FeatureListNavigationAction.System -> "showSystem"
+                        is FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.System -> "showSystem"
                     })
             })
     }
@@ -182,6 +188,25 @@ class KNArchitectureFramework {
 
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
+    }
+
+    fun createLinksViewModel(
+        parent: UIViewController,
+        animated: Boolean,
+        completion: (() -> Unit)? = null
+    ): LinksViewModel {
+        return LinksViewModel(
+            LinksBuilder(),
+            AlertPresenter.Builder(parent),
+            ViewControllerNavigator(parent) { action ->
+                when (action) {
+                    is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
+                        NSURL.URLWithString(action.bundle!!.get(BrowserSpecRow.UrlSpecRow))!!,
+                        NavigationSpec.Browser.Type.Normal
+                    )
+                }
+            }
+        )
     }
 
 }

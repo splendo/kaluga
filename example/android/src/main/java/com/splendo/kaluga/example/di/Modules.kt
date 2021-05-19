@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.di
 
 import com.splendo.kaluga.alerts.AlertPresenter
+import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
@@ -32,6 +33,7 @@ import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
+import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
@@ -52,6 +54,9 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
@@ -63,6 +68,7 @@ import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.KeyboardHostingView
 import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -101,6 +107,7 @@ val viewModelModule = module {
                     is FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     is FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     is FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
+                    is FeatureListNavigationAction.Links -> NavigationSpec.Activity(LinksActivity::class.java)
                     is FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                 }
             }
@@ -173,9 +180,24 @@ val viewModelModule = module {
     }
 
     viewModel {
+        LinksViewModel(
+            LinksBuilder(),
+            AlertPresenter.Builder(),
+            ActivityNavigator {
+                when (it) {
+                    is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
+                        URL(it.bundle!!.get(BrowserSpecRow.UrlSpecRow)),
+                        NavigationSpec.Browser.Type.Normal
+                    )
+                }
+            }
+        )
+    }
+
+    viewModel {
         SystemViewModel(
             ActivityNavigator {
-                when(it) {
+                when (it) {
                     is SystemNavigationActions.Network -> NavigationSpec.Fragment(
                         R.id.system_features_fragment,
                         createFragment = { NetworkFragment() }

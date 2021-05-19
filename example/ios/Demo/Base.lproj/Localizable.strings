@@ -7,6 +7,7 @@
 "feature_keyboard" = "Keyboard";
 "feature_location" = "Location";
 "feature_permissions" = "Permissions";
+"feature_links" = "Links";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
@@ -41,6 +42,11 @@
 
 "architecture_details" = "Show Details";
 "architecture_details_inverse" = "Inverse Input";
+
+"browser_button_text" = "Open browser";
+"links_instructions" = "Tapping \"Open browser\" will redirect you in a webpage.
+There you can find a button that if tapped will bring you back to the app passing a query.
+That query will be deserialized into a object and shown in an alert.";
 
 "feature_system" = "System";
 "network_feature" = "Network";

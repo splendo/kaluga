@@ -27,7 +27,20 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            keyAlias "key0"
+            keyPassword "nckI1UYofHIMkOnXpmZJVA"
+            storeFile file("../keystore/debug.keystore")
+            storePassword "nckI1UYofHIMkOnXpmZJVA"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -63,6 +76,7 @@ dependencies {
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:links:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:system:$gradle.ext.library_version"
         implementation project(':shared')
@@ -79,6 +93,7 @@ dependencies {
         implementation project(":architecture")
         implementation project(":architecture-compose")
         implementation project(":keyboard")
+        implementation project(":links")
         implementation project(":review")
         implementation project(":system")
     }
