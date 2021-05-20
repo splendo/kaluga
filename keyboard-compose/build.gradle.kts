@@ -39,5 +39,5 @@ ext["component_type"] = ext["component_type_default"]
 
 dependencies {
     val ext = (gradle as ExtensionAware).extra
-    implementation("androidx.compose.ui:ui:${ext["androidx_compose_version"]}")
+    api("androidx.compose.ui:ui:${ext["androidx_compose_version"]}")
 }

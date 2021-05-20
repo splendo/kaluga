@@ -27,5 +27,11 @@ kotlin {
                 api(project(":test-utils", ""))
             }
         }
+        getByName("androidLibMain") {
+            val ext = (gradle as ExtensionAware).extra
+            dependencies {
+                implementation(project(":keyboard-compose", ""))
+            }
+        }
     }
 }
