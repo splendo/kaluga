@@ -19,9 +19,9 @@ package com.splendo.kaluga.keyboard
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.focus.FocusRequester
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.getOrPutAndRemoveOnDestroyFromCache
@@ -30,7 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-actual typealias KeyboardHostingView = Int
+actual typealias KeyboardHostingView = FocusRequester
 
 actual class KeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
@@ -60,7 +60,7 @@ actual class KeyboardManager(
 
     override fun show(keyboardHostingView: KeyboardHostingView) {
         inputMethodManager?.let {
-            activity?.findViewById<View>(keyboardHostingView)?.requestFocus()
+            keyboardHostingView.requestFocus()
             it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
