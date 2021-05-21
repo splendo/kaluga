@@ -21,10 +21,13 @@ package com.splendo.kaluga.keyboard
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import kotlinx.coroutines.CoroutineScope
 
+
 /**
- * Class that can a keyboard can be shown for
+ * Common interface which handles the focus on a view.
  */
-expect class KeyboardHostingView
+interface FocusHandler {
+    fun requestFocus()
+}
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
@@ -51,7 +54,7 @@ interface BaseKeyboardManager {
      *
      * @param keyboardHostingView The view for which the keyboard will be shown
      */
-    fun show(keyboardHostingView: KeyboardHostingView)
+    fun show(focusHandler: FocusHandler)
 
     /**
      * Dismisses the current keyboard
