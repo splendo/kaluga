@@ -23,7 +23,13 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIView
 import platform.darwin.sel_registerName
 
-actual typealias KeyboardHostingView = UIView
+class UIKitFocusHandler(val view: UIView) : FocusHandler {
+    override fun requestFocus() {
+        if (view.canBecomeFirstResponder) {
+            view.becomeFirstResponder()
+        }
+    }
+}
 
 actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
@@ -31,10 +37,8 @@ actual class KeyboardManager(private val application: UIApplication) : BaseKeybo
         actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
     }
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
-        if (keyboardHostingView.canBecomeFirstResponder) {
-            keyboardHostingView.becomeFirstResponder()
-        }
+    override fun show(focusHandler: FocusHandler) {
+        focusHandler.requestFocus()
     }
 
     override fun hide() {
