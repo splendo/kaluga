@@ -29,7 +29,10 @@ kotlin {
         }
         getByName("androidLibMain") {
             dependencies {
-                implementation(project(":keyboard-compose", ""))
+                val ext = (gradle as ExtensionAware).extra
+                implementation(
+                    "androidx.compose.ui:ui:${ext["androidx_compose_version"]}"
+                )
             }
         }
     }
