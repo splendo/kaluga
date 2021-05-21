@@ -18,11 +18,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
+import android.app.Activity
 import com.splendo.kaluga.alerts.AlertPresenter
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.architecture.navigation.SingleValueNavigationSpec
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -66,7 +65,7 @@ import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewMod
 import com.splendo.kaluga.example.system.SystemActivity
 import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.keyboard.KeyboardHostingView
+import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
@@ -75,9 +74,9 @@ import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
-import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import java.net.URL
 
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
@@ -175,8 +174,8 @@ val viewModelModule = module {
         HudViewModel(HUD.Builder())
     }
 
-    viewModel { (keyboardHostingView: KeyboardHostingView) ->
-        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
+    viewModel { (activity: Activity, focusHandler: FocusHandler) ->
+        KeyboardViewModel(KeyboardManager.Builder(activity), focusHandler)
     }
 
     viewModel {
