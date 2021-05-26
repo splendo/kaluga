@@ -31,14 +31,14 @@ class MockKeyboardManager : BaseKeyboardManager {
         }
     }
 
-    var showingView: FocusHandler? = null
+    var focusHandler: FocusHandler? = null
         private set
 
     override fun show(focusHandler: FocusHandler) {
-        showingView = focusHandler
+        this.focusHandler = focusHandler
     }
 
     override fun hide() {
-        showingView = null
+        focusHandler = null
     }
 }
