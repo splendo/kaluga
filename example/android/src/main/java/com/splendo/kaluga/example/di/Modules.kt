@@ -174,8 +174,8 @@ val viewModelModule = module {
         HudViewModel(HUD.Builder())
     }
 
-    viewModel { (activity: Activity, focusHandler: FocusHandler) ->
-        KeyboardViewModel(KeyboardManager.Builder(activity), focusHandler)
+    viewModel { (keyboardBuilder: KeyboardManager.Builder, focusHandler: FocusHandler) ->
+        KeyboardViewModel(keyboardBuilder, focusHandler)
     }
 
     viewModel {
