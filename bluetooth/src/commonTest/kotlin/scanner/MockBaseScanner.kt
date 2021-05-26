@@ -27,7 +27,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>, coroutineScope: CoroutineScope) : BaseScanner(permissions,
+class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>) : BaseScanner(permissions,
     connectionSettings,
     autoRequestPermissions,
     autoEnableBluetooth,

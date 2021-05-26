@@ -25,15 +25,13 @@ import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import kotlin.device.DefaultCBPeripheralWrapper
+import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.launch
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -211,10 +209,15 @@ actual class Scanner internal constructor(
         }
 
         val advertisementData = AdvertisementData(advertisementDataMap)
-        val deviceHolder = DeviceHolder(DefaultCBPeripheralWrapper(peripheral))
-        handleDeviceDiscovered(deviceHolder.identifier, rssi, advertisementData) {
-            val deviceInfo = DeviceInfoImpl(deviceHolder, rssi, advertisementData)
-            Device(connectionSettings, deviceInfo, DeviceConnectionManager.Builder(central, peripheral), coroutineContext)
+        val deviceWrapper = DefaultCBPeripheralWrapper(peripheral)
+        handleDeviceDiscovered(deviceWrapper.identifier, rssi, advertisementData) {
+            val deviceInfo = DeviceInfoImpl(deviceWrapper, rssi, advertisementData)
+            Device(
+                connectionSettings,
+                deviceInfo,
+                DeviceConnectionManager.Builder(central, peripheral),
+                coroutineContext
+            )
         }
     }
 }

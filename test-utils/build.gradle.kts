@@ -34,6 +34,7 @@ kotlin {
                 implementation(project(":alerts", ""))
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":bluetooth", ""))
                 implementation(project(":hud", ""))
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))

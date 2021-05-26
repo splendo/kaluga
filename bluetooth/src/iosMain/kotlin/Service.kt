@@ -23,20 +23,13 @@ import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBService
 import platform.CoreBluetooth.CBUUID
 
-actual open class Service(service: ServiceWrapper, private val stateRepo: DeviceStateFlowRepo) : BaseService {
-
-    override val uuid = service.UUID
-
-    override val characteristics = service.characteristics?.map { Characteristic(it, stateRepo) } ?: emptyList()
-}
-
-interface ServiceWrapper {
-    val UUID: CBUUID
-    val characteristics: List<CharacteristicWrapper>?
+actual interface ServiceWrapper {
+    actual val uuid: CBUUID
+    actual val characteristics: List<CharacteristicWrapper>
 }
 
 class DefaultServiceWrapper(service: CBService) : ServiceWrapper {
 
-    override val UUID: CBUUID = service.UUID
-    override val characteristics: List<CharacteristicWrapper>? = service.characteristics?.typedList<CBCharacteristic>()?.map { DefaultCharacteristicWrapper(it) }
+    override val uuid: CBUUID = service.UUID
+    override val characteristics: List<CharacteristicWrapper> = service.characteristics?.typedList<CBCharacteristic>()?.map { DefaultCharacteristicWrapper(it) } ?: emptyList()
 }

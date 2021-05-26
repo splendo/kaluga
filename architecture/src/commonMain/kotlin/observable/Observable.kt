@@ -272,10 +272,16 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
      override fun observe(onNext: (R?) -> Unit): Disposable {
         return runBlocking<Disposable> {
             withContext(context) {
-                addObserver(this@Observation, onNext)
-                val lastResult = currentObserved
                 @Suppress("UNCHECKED_CAST") // OO<T> should be guaranteed
+                // send the value before adding
+                val lastResult = currentObserved
                 onNext((lastResult as? Value<*>)?.value as R)
+                addObserver(this@Observation, onNext)
+                // adding an observer often happens concurrently with initialization,
+                // if we detect a change in the current observed value we re-send it to the added observer
+                val newResult = currentObserved
+                if (newResult != lastResult)
+                    onNext((newResult as? Value<*>)?.value as R)
                 SimpleDisposable {
                     runBlocking {
                         withContext(context) {

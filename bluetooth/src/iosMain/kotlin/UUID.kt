@@ -25,6 +25,9 @@ actual typealias UUID = CBUUID
 actual val UUID.uuidString: String
     get() = UUIDString
 
-fun randomUUID(): UUID {
+actual fun uuidFrom(uuidString:String) =
+    CBUUID.UUIDWithString(uuidString)
+
+actual fun randomUUID(): UUID {
     return CBUUID.UUIDWithNSUUID(NSUUID.UUID())
 }

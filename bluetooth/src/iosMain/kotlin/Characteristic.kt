@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBCharacteristicWriteWithResponse
 import platform.CoreBluetooth.CBDescriptor
@@ -28,36 +25,10 @@ import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-actual open class Characteristic(
-    val characteristic: CharacteristicWrapper,
-    stateRepo: DeviceStateFlowRepo
-) : BaseCharacteristic(characteristic.value?.toByteArray(), stateRepo) {
-
-    override val uuid = characteristic.UUID
-
-    override val descriptors = characteristic.descriptors?.map { Descriptor(it, stateRepo) } ?: emptyList()
-
-    override fun createReadAction(): DeviceAction.Read.Characteristic {
-        return DeviceAction.Read.Characteristic(this)
-    }
-
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
-        return DeviceAction.Write.Characteristic(newValue, this)
-    }
-
-    override fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
-        return DeviceAction.Notification(this, enabled)
-    }
-
-    override fun getUpdatedValue(): ByteArray? {
-        return characteristic.value?.toByteArray()
-    }
-}
-
-interface CharacteristicWrapper {
-    val UUID: CBUUID
-    val descriptors: List<DescriptorWrapper>?
-    val value: NSData?
+actual interface CharacteristicWrapper {
+    actual val uuid: CBUUID
+    actual val descriptors: List<DescriptorWrapper>
+    actual val value: NSData?
 
     fun readValue(peripheral: CBPeripheral)
     fun writeValue(value: NSData, peripheral: CBPeripheral)
@@ -66,8 +37,8 @@ interface CharacteristicWrapper {
 
 class DefaultCharacteristicWrapper(private val characteristic: CBCharacteristic) : CharacteristicWrapper {
 
-    override val UUID: CBUUID get() { return characteristic.UUID }
-    override val descriptors: List<DescriptorWrapper>? = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) }
+    override val uuid: CBUUID get() { return characteristic.UUID }
+    override val descriptors: List<DescriptorWrapper> = characteristic.descriptors?.typedList<CBDescriptor>()?.map { DefaultDescriptorWrapper(it) } ?: emptyList()
     override val value: NSData? get() { return characteristic.value }
 
     override fun readValue(peripheral: CBPeripheral) {

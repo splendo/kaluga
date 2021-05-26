@@ -18,7 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
+import com.splendo.kaluga.permissions.PermissionState.Allowed
 import com.splendo.kaluga.permissions.PermissionState.Denied
+import com.splendo.kaluga.permissions.PermissionState.Unknown
 import kotlinx.coroutines.CoroutineScope
 
 /**
@@ -56,7 +58,7 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
         stateRepo.launchTakeAndChangeState { state ->
             when (state) {
                 is Denied -> state.allow
-                is PermissionState.Allowed, is PermissionState.Unknown -> state.remain()
+                is Allowed, is Unknown -> state.remain()
             }
         }
     }
@@ -69,14 +71,14 @@ abstract class PermissionManager<P : Permission> constructor(private val stateRe
     open fun revokePermission(locked: Boolean) {
         stateRepo.launchTakeAndChangeState { state ->
             when (state) {
-                is PermissionState.Allowed -> suspend { state.deny(locked) }
+                is Allowed -> suspend { state.deny(locked) }
                 is Denied.Requestable -> {
                     if (locked) state.lock else state.remain()
                 }
                 is Denied.Locked -> {
                     if (locked) state.remain() else state.unlock
                 }
-                is PermissionState.Unknown -> state.remain()
+                is Unknown -> state.remain()
             }
         }
     }

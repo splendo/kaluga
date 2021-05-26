@@ -25,11 +25,12 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
-import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
+import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.coroutines.CoroutineContext
 
 typealias Filter = Set<UUID>
 
@@ -272,9 +273,9 @@ class ScanningStateRepo(
     autoRequestPermission: Boolean,
     autoEnableBluetooth: Boolean,
     builder: BaseScanner.Builder,
-    coroutineScope: CoroutineScope
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<ScanningState>(
-    coroutineContext = coroutineScope.coroutineContext,
+    coroutineContext = coroutineContext,
     initChangeState = { _,_ ->
         suspend { ScanningState.NotInitialized(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, builder) }
     },

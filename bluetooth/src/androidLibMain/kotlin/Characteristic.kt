@@ -18,43 +18,15 @@
 package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattCharacteristic
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 
-actual open class Characteristic(val characteristic: CharacteristicWrapper, stateRepo: DeviceStateFlowRepo) :
-    BaseCharacteristic(characteristic.value, stateRepo) {
+actual interface CharacteristicWrapper {
 
-    override val uuid = characteristic.uuid
+    actual val uuid: java.util.UUID
+    actual val value: ByteArray?
+    fun updateValue(value:ByteArray?)
 
-    override val descriptors = characteristic.descriptors.map { Descriptor(it, stateRepo) }
-
-    override fun createReadAction(): DeviceAction.Read.Characteristic {
-        return DeviceAction.Read.Characteristic(this)
-    }
-
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
-        return DeviceAction.Write.Characteristic(newValue, this)
-    }
-
-    override fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
-        return DeviceAction.Notification(this, enabled)
-    }
-
-    override fun getUpdatedValue(): ByteArray? {
-        return characteristic.value
-    }
-}
-
-interface CharacteristicWrapper {
-
-    val uuid: java.util.UUID
-    var value: ByteArray?
-    val service: GattServiceWrapper
-    val descriptors: List<DescriptorWrapper>
+    val service: ServiceWrapper
+    actual val descriptors: List<DescriptorWrapper>
     val permissions: Int
     val properties: Int
     var writeType: Int
@@ -72,14 +44,16 @@ class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGatt
 
     override val uuid: java.util.UUID
         get() { return gattCharacteristic.uuid }
-    override var value: ByteArray?
+    override val value: ByteArray?
         get() {
             return gattCharacteristic.value
         }
-        set(newValue) {
-            gattCharacteristic.value = newValue
-        }
-    override val service: GattServiceWrapper
+
+    override fun updateValue(value: ByteArray?) {
+        gattCharacteristic.value = value
+    }
+
+    override val service: ServiceWrapper
         get() = DefaultGattServiceWrapper(gattCharacteristic.service)
     override val descriptors: List<DescriptorWrapper>
         get() { return gattCharacteristic.descriptors.map { DefaultDescriptorWrapper(it) } }

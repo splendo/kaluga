@@ -17,18 +17,3 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.DeviceHolder
-import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
-import platform.CoreBluetooth.CBUUID
-
-class IOSScanningStateRepoTest : ScanningStateRepoTest() {
-
-    override fun createFilter(): Set<UUID> {
-        return setOf(CBUUID())
-    }
-
-    override fun createDeviceHolder(): DeviceHolder {
-        return DeviceHolder(MockCBPeripheralWrapper())
-    }
-}

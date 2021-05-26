@@ -18,33 +18,12 @@
 package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattDescriptor
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.flow.MutableSharedFlow
 
-actual open class Descriptor(val descriptor: DescriptorWrapper, stateRepoAccessor: DeviceStateFlowRepo) : BaseDescriptor(descriptor.value, stateRepoAccessor) {
+actual interface DescriptorWrapper {
+    actual val uuid: java.util.UUID
+    actual val value: ByteArray?
+    fun updateValue(value: ByteArray?)
 
-    override val uuid = descriptor.uuid
-
-    override fun createReadAction(): DeviceAction.Read.Descriptor {
-        return DeviceAction.Read.Descriptor(this)
-    }
-
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Descriptor {
-        return DeviceAction.Write.Descriptor(newValue, this)
-    }
-
-    override fun getUpdatedValue(): ByteArray? {
-        return descriptor.value
-    }
-}
-
-interface DescriptorWrapper {
-
-    val uuid: java.util.UUID
-    var value: ByteArray?
     val permissions: Int
     val characteristic: CharacteristicWrapper
 
@@ -55,9 +34,11 @@ class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescript
 
     override val uuid: java.util.UUID
         get() = gattDescriptor.uuid
-    override var value: ByteArray?
+    override val value: ByteArray?
         get() = gattDescriptor.value
-        set(newValue) { gattDescriptor.value = newValue }
+    override fun updateValue(value:ByteArray?) {
+        gattDescriptor.value = value
+    }
     override val permissions: Int
         get() = gattDescriptor.permissions
     override val characteristic: CharacteristicWrapper

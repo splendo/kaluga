@@ -24,19 +24,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.MainQueueDispatcher
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.DeviceHolder
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 // import com.splendo.kaluga.location.LocationEnabledMonitor
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
@@ -44,7 +41,6 @@ import no.nordicsemi.android.support.v18.scanner.ScanCallback
 import no.nordicsemi.android.support.v18.scanner.ScanFilter
 import no.nordicsemi.android.support.v18.scanner.ScanResult
 import no.nordicsemi.android.support.v18.scanner.ScanSettings
-import kotlin.coroutines.CoroutineContext
 
 actual class Scanner internal constructor(
     private val bluetoothScanner: BluetoothLeScannerCompat = BluetoothLeScannerCompat.getScanner(),
@@ -122,10 +118,10 @@ actual class Scanner internal constructor(
 
         private fun handleScanResult(scanResult: ScanResult) {
             val advertisementData = AdvertisementData(scanResult)
-            val deviceHolder = DeviceHolder(DefaultDeviceWrapper(scanResult.device))
+            val deviceWrapper = DefaultDeviceWrapper(scanResult.device)
 
-            handleDeviceDiscovered(deviceHolder.identifier, scanResult.rssi, advertisementData) {
-                val deviceInfo = DeviceInfoImpl(deviceHolder, scanResult.rssi, advertisementData)
+            handleDeviceDiscovered(deviceWrapper.identifier, scanResult.rssi, advertisementData) {
+                val deviceInfo = DeviceInfoImpl(deviceWrapper, scanResult.rssi, advertisementData)
                 Device(connectionSettings, deviceInfo, deviceConnectionManagerBuilder, stateRepo.coroutineContext)
             }
         }

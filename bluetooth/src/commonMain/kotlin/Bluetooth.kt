@@ -71,7 +71,13 @@ class Bluetooth internal constructor(
         private const val LOG_TAG = "Kaluga Bluetooth"
     }
 
-    internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineScope)
+    internal val scanningStateRepo = ScanningStateRepo(
+        permissions,
+        connectionSettings,
+        autoRequestPermission,
+        autoEnableBluetooth,
+        scannerBuilder
+    )
 
     sealed class ScanMode {
         object Stopped:ScanMode()
@@ -80,72 +86,61 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    fun collectRepo(it:Any) {
-        println(it)
-
-    }
-
     fun devices(): Flow<List<Device>> {
 
-        launch {
-            scanningStateRepo.collect {
-                collectRepo(it)
-            }
-        }
-
-            return combine(scanningStateRepo, scanMode) { scanState, scanMode ->
-                when (scanState) {
-                    is ScanningState.Initialized.Enabled.Idle -> {
-                        when(scanMode) {
-                            is ScanMode.Stopped -> emptyList()
-                            is ScanMode.Scan -> {
-                                scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
-                                    it.startScanning(scanMode.filter)
-                                }
-                                if (scanState.discovered.filter == scanMode.filter)
-                                    scanState.discovered.devices
-                                else
-                                    emptyList()
-
+        return combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+            when (scanState) {
+                is ScanningState.Initialized.Enabled.Idle -> {
+                    when(scanMode) {
+                        is ScanMode.Stopped -> emptyList()
+                        is ScanMode.Scan -> {
+                            scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
+                                it.startScanning(scanMode.filter)
                             }
+                            if (scanState.discovered.filter == scanMode.filter)
+                                scanState.discovered.devices
+                            else
+                                emptyList()
+
                         }
                     }
-                    is ScanningState.Initialized.Enabled.Scanning -> {
+                }
+                is ScanningState.Initialized.Enabled.Scanning -> {
 
-                        when (scanMode) {
-                            is ScanMode.Scan -> {
-                                d("devices: ${scanState.discovered}")
-                                if (scanState.discovered.filter == scanMode.filter)
-                                    scanState.discovered.devices
-                                else {
-                                    scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
-                                        state.stopScanning
-                                    }
-                                    emptyList()
-                                }
-                            }
-                            else -> {
+                    when (scanMode) {
+                        is ScanMode.Scan -> {
+                            d("devices: ${scanState.discovered}")
+                            if (scanState.discovered.filter == scanMode.filter)
+                                scanState.discovered.devices
+                            else {
                                 scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
                                     state.stopScanning
                                 }
-                                scanState.discovered.devices
+                                emptyList()
                             }
                         }
-                    }
-
-                    is ScanningState.Initialized.NoBluetooth -> {
-                        emptyList()
-                    }
-
-                    is ScanningState.NotInitialized -> {
-                        scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
-                            state.initialize(scanningStateRepo)
+                        else -> {
+                            scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                                state.stopScanning
+                            }
+                            scanState.discovered.devices
                         }
-                        emptyList()
                     }
-
                 }
+
+                is ScanningState.Initialized.NoBluetooth -> {
+                    emptyList()
+                }
+
+                is ScanningState.NotInitialized -> {
+                    scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
+                        state.initialize(scanningStateRepo)
+                    }
+                    emptyList()
+                }
+
             }
+        }
     }
 
     fun startScanning(filter: Set<UUID> = emptySet()) {

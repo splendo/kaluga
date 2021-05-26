@@ -24,16 +24,16 @@ import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import kotlinx.coroutines.CoroutineScope
 
-internal abstract class BaseDeviceConnectionManager(
-    internal val connectionSettings: ConnectionSettings = ConnectionSettings(),
-    internal val deviceHolder: DeviceHolder,
-    internal val stateRepo: DeviceStateFlowRepo
+abstract class BaseDeviceConnectionManager(
+    val connectionSettings: ConnectionSettings = ConnectionSettings(),
+    val deviceWrapper: DeviceWrapper,
+    val stateRepo: DeviceStateFlowRepo
 ) : CoroutineScope by stateRepo {
 
     interface Builder {
         fun create(
             connectionSettings: ConnectionSettings,
-            deviceHolder: DeviceHolder,
+            deviceWrapper: DeviceWrapper,
             stateRepo: DeviceStateFlowRepo
         ): BaseDeviceConnectionManager
     }
@@ -47,13 +47,13 @@ internal abstract class BaseDeviceConnectionManager(
     abstract suspend fun readRssi()
     abstract suspend fun performAction(action: DeviceAction)
 
-    internal suspend fun handleNewRssi(rssi: Int) {
+    suspend fun handleNewRssi(rssi: Int) {
         stateRepo.takeAndChangeState {
             it.rssiDidUpdate(rssi)
         }
     }
 
-    internal suspend fun handleConnect() {
+    suspend fun handleConnect() {
         stateRepo.takeAndChangeState { state ->
             when (state) {
                 is DeviceState.Connecting -> state.didConnect
@@ -69,7 +69,7 @@ internal abstract class BaseDeviceConnectionManager(
         }
     }
 
-    internal suspend fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null) {
+    suspend fun handleDisconnect(onDisconnect: (suspend () -> Unit)? = null) {
         val clean = suspend {
             currentAction = null
             notifyingCharacteristics.clear()
@@ -107,7 +107,7 @@ internal abstract class BaseDeviceConnectionManager(
         }
     }
 
-    internal suspend fun handleScanCompleted(services: List<Service>) {
+    suspend fun handleScanCompleted(services: List<Service>) {
         stateRepo.takeAndChangeState { state ->
             when (state) {
                 is DeviceState.Connected.Discovering -> state.didDiscoverServices(services)
@@ -116,7 +116,7 @@ internal abstract class BaseDeviceConnectionManager(
         }
     }
 
-    internal suspend fun handleCurrentActionCompleted() {
+    suspend fun handleCurrentActionCompleted() {
         stateRepo.takeAndChangeState { state ->
             val newState = when (state) {
                 is DeviceState.Connected.HandlingAction -> {
@@ -133,7 +133,7 @@ internal abstract class BaseDeviceConnectionManager(
         }
     }
 
-    internal suspend fun handleUpdatedCharacteristic(uuid: UUID, onUpdate: ((Characteristic) -> Unit)? = null) {
+    suspend fun handleUpdatedCharacteristic(uuid: UUID, onUpdate: ((Characteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.updateValue()
         val characteristicToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Characteristic -> {
@@ -156,7 +156,7 @@ internal abstract class BaseDeviceConnectionManager(
         }
     }
 
-    internal suspend fun handleUpdatedDescriptor(uuid: UUID, onUpdate: ((Descriptor) -> Unit)? = null) {
+    suspend fun handleUpdatedDescriptor(uuid: UUID, onUpdate: ((Descriptor) -> Unit)? = null) {
         val descriptorToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {

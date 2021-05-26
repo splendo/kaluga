@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.device
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
-import com.splendo.kaluga.state.HotStateRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +44,7 @@ typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceSt
 
 sealed class DeviceState(
     open val deviceInfo: DeviceInfoImpl,
-    internal open val connectionManager: BaseDeviceConnectionManager
+    open val connectionManager: BaseDeviceConnectionManager
 ) : State(), DeviceInfo by deviceInfo, CoroutineScope by connectionManager {
 
     sealed class Connected(
@@ -53,7 +52,7 @@ sealed class DeviceState(
         connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager) {
 
-        data class NoServices internal constructor(
+        data class NoServices constructor(
             override val deviceInfo: DeviceInfoImpl,
             override val connectionManager: BaseDeviceConnectionManager
         ) : Connected(deviceInfo, connectionManager) {
@@ -74,7 +73,7 @@ sealed class DeviceState(
             }
         }
 
-        data class Discovering internal constructor(
+        data class Discovering constructor(
             override val deviceInfo: DeviceInfoImpl,
             override val connectionManager: BaseDeviceConnectionManager
         ) : Connected(deviceInfo, connectionManager),
@@ -89,7 +88,7 @@ sealed class DeviceState(
             }
         }
 
-        data class Idle internal constructor(
+        data class Idle constructor(
             val services: List<Service>,
             override val deviceInfo: DeviceInfoImpl,
             override val connectionManager: BaseDeviceConnectionManager
@@ -100,7 +99,7 @@ sealed class DeviceState(
             }
         }
 
-        data class HandlingAction internal constructor(
+        data class HandlingAction constructor(
             internal val action: DeviceAction,
             internal val nextActions: List<DeviceAction>,
             val services: List<Service>,
@@ -176,7 +175,7 @@ sealed class DeviceState(
             connectionManager.disconnect()
         }
     }
-    data class Connecting internal constructor(
+    data class Connecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
@@ -207,7 +206,7 @@ sealed class DeviceState(
         }
     }
 
-    data class Reconnecting internal constructor(
+    data class Reconnecting constructor(
         val attempt: Int,
         val services: List<Service>?,
         override val deviceInfo: DeviceInfoImpl,
@@ -254,7 +253,7 @@ sealed class DeviceState(
         }
     }
 
-    data class Disconnected internal constructor(
+    data class Disconnected constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager) {
@@ -282,7 +281,7 @@ sealed class DeviceState(
         }
     }
 
-    data class Disconnecting internal constructor(
+    data class Disconnecting constructor(
         override val deviceInfo: DeviceInfoImpl,
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager), HandleAfterOldStateIsRemoved<DeviceState> {
@@ -327,7 +326,7 @@ sealed class DeviceState(
     }
 }
 
-class Device internal constructor(
+class Device constructor(
     connectionSettings: ConnectionSettings,
     private val initialDeviceInfo: DeviceInfoImpl,
     connectionBuilder: BaseDeviceConnectionManager.Builder,
@@ -335,7 +334,7 @@ class Device internal constructor(
 ) : HotStateFlowRepo<DeviceState>(
     coroutineContext = coroutineContext,
     initialState = {
-        val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceHolder, it)
+        val deviceConnectionManager = connectionBuilder.create(connectionSettings, initialDeviceInfo.deviceWrapper, it)
         DeviceState.Disconnected(initialDeviceInfo, deviceConnectionManager)
     }
 ) {

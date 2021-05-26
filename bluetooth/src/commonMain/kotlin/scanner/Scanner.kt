@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -88,7 +89,7 @@ abstract class BaseScanner internal constructor(
     }
 
     internal suspend fun isPermitted(): Boolean {
-        return bluetoothPermissionRepo.first() is PermissionState.Allowed
+        return bluetoothPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     internal abstract suspend fun scanForDevices(filter: Set<UUID>)

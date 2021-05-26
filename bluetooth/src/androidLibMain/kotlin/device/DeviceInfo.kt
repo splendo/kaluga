@@ -21,12 +21,3 @@ actual typealias Identifier = String
 
 actual val Identifier.stringValue: String
     get() = this
-
-actual open class DeviceHolder(internal val device: DeviceWrapper) {
-
-    actual val name: String?
-        get() = device.name
-
-    actual val identifier: Identifier
-        get() = device.address
-}
