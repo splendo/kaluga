@@ -17,12 +17,8 @@ import android.content.Context
 import android.os.IBinder
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleOwner
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.yield
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
@@ -38,7 +34,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
 
 
     inner class AndroidKeyboardTestContext(coroutineScope:CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
-        override val view get() = viewId
+        override val focusHandler get() = AndroidFocusHandler(mockActivity, viewId)
         override lateinit var builder: KeyboardManager.Builder
 
         val mockActivity:Activity = mock(Activity::class.java)
@@ -47,10 +43,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
         init {
-
-            val mockLifecycleOwner = mock(LifecycleOwner::class.java)
-            val mockFragmentManager = mock(FragmentManager::class.java)
-
             `when`(mockActivity.getSystemService(eq(Context.INPUT_METHOD_SERVICE))).thenReturn(
                 mockInputMethodManager
             )
@@ -59,15 +51,7 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
             `when`(mockView.windowToken).thenReturn(mockWindowToken)
             `when`(mockInputMethodManager.isAcceptingText).thenReturn(true)
 
-            builder = KeyboardManager.Builder()
-
-            builder.subscribe(
-                LifecycleSubscribable.LifecycleManager(
-                    mockActivity,
-                    mockLifecycleOwner,
-                    mockFragmentManager
-                )
-            )
+            builder = KeyboardManager.Builder(mockActivity)
         }
     }
 

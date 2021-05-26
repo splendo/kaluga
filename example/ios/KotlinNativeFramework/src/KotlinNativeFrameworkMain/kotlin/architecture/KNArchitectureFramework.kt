@@ -46,6 +46,7 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListVi
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
+import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
@@ -171,8 +172,8 @@ class KNArchitectureFramework {
         })
     }
 
-    fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
-        return KeyboardViewModel(KeyboardManager.Builder(), textField)
+    fun createKeyboardViewModel(focusHandler: FocusHandler): KeyboardViewModel {
+        return KeyboardViewModel(KeyboardManager.Builder(), focusHandler)
     }
 
     fun createSystemViewModel(parent: UIViewController): SystemViewModel {

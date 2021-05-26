@@ -67,6 +67,7 @@ gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${gradle.kotlinx_coroutines_version}!!")
     implementation("androidx.fragment:fragment:$gradle.androidx_fragment_version")
     androidTestImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
 

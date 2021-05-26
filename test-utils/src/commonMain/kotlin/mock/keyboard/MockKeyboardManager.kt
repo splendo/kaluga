@@ -18,8 +18,7 @@
 package com.splendo.kaluga.test.mock.keyboard
 
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
-import com.splendo.kaluga.keyboard.KeyboardHostingView
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.keyboard.FocusHandler
 
 class MockKeyboardManager : BaseKeyboardManager {
 
@@ -27,19 +26,19 @@ class MockKeyboardManager : BaseKeyboardManager {
 
         val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
 
-        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager {
+        override fun create(): MockKeyboardManager {
             return MockKeyboardManager().also { builtKeyboardManagers.add(it) }
         }
     }
 
-    var showingView: KeyboardHostingView? = null
+    var focusHandler: FocusHandler? = null
         private set
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
-        showingView = keyboardHostingView
+    override fun show(focusHandler: FocusHandler) {
+        this.focusHandler = focusHandler
     }
 
     override fun hide() {
-        showingView = null
+        focusHandler = null
     }
 }

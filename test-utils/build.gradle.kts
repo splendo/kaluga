@@ -42,6 +42,14 @@ kotlin {
             }
         }
 
+        getByName("androidLibMain") {
+            val ext = (gradle as ExtensionAware).extra
+            dependencies {
+                // import needed for android KeyboardHostingView implementation.
+                implementation("androidx.compose.ui:ui:${ext["androidx_compose_version"]}")
+            }
+        }
+
         getByName("jsMain") {
             dependencies {
                 api(kotlin("test-js"))
