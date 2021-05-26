@@ -52,6 +52,12 @@ sealed class NavigationBundleSpecType<T> {
      */
     abstract fun convertValue(value: T): NavigationBundleValue<T>
 
+    object UnitType : NavigationBundleSpecType<Unit>() {
+        override fun convertValue(value: Unit): NavigationBundleValue<Unit> {
+            return NavigationBundleValue.UnitValue
+        }
+    }
+
     object BooleanType : NavigationBundleSpecType<Boolean>() {
 
         override fun convertValue(value: Boolean): NavigationBundleValue<Boolean> {
@@ -147,7 +153,7 @@ sealed class NavigationBundleSpecType<T> {
             return NavigationBundleValue.LongArrayValue(value)
         }
     }
-    class SerializedType<T>(private val serializer: KSerializer<T>) : NavigationBundleSpecType<T>() {
+    data class SerializedType<T>(private val serializer: KSerializer<T>) : NavigationBundleSpecType<T>() {
         companion object {
             private val json = Json { }
         }
@@ -197,11 +203,11 @@ sealed class NavigationBundleSpecType<T> {
         }
     }
 
-    class OptionalType<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
+    data class OptionalType<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecType<T?>() {
         override fun convertValue(value: T?): NavigationBundleValue<T?> {
             return value?.let {
                 NavigationBundleValue.OptionalValue(type.convertValue(it))
-            } ?: NavigationBundleValue.OptionalValue<T>(null)
+            } ?: NavigationBundleValue.OptionalValue(null)
         }
     }
 }
@@ -210,6 +216,14 @@ sealed class NavigationBundleSpecType<T> {
  * A set of [NavigationBundleSpecRow]s that can be used to form a [NavigationBundle] using [NavigationBundleSpec.toBundle]
  */
 open class NavigationBundleSpec<R : NavigationBundleSpecRow<*>>(internal val rows: Set<R>)
+
+/**
+ * A [NavigationBundleSpec] that only provides a single [NavigationBundleSpecRow]
+ * @param type The [NavigationBundleSpecType] used for the [NavigationBundleSpecRow]
+ */
+class SingleValueNavigationSpec<T>(type: NavigationBundleSpecType<T>) : NavigationBundleSpec<SingleValueNavigationSpec.Row<T>>(setOf(Row(type))) {
+    data class Row<T>(val type: NavigationBundleSpecType<T>) : NavigationBundleSpecRow<T>(type)
+}
 
 /**
  * Creates a [NavigationBundle] from the [NavigationBundleSpec]

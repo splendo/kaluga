@@ -17,12 +17,11 @@
 
 package architecture
 
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.Subject
-import com.splendo.kaluga.architecture.observable.Disposable
-import com.splendo.kaluga.architecture.observable.DisposeBag
+import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.navigation.ViewControllerNavigator
+import com.splendo.kaluga.architecture.observable.Disposable
+import com.splendo.kaluga.architecture.observable.DisposeBag
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
@@ -31,22 +30,31 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.DetailsSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.*
+import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
+import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemFeatures
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
+import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.resources.localized
+import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
 import platform.UIKit.*
 import platform.UserNotifications.UNAuthorizationOptionAlert
@@ -82,12 +90,15 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
+                        is FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.System -> "showSystem"
                     })
             })
     }
 
     fun createInfoViewModel(parent: UIViewController): InfoViewModel {
         return InfoViewModel(
+            ReviewManager.Builder(),
             ViewControllerNavigator(parent) { action ->
                 when (action) {
                     is InfoNavigation.Dialog -> {
@@ -100,8 +111,10 @@ class KNArchitectureFramework {
                         })
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
-                        NSURL.URLWithString(action.bundle!!.get(
-                        LinkSpecRow.LinkRow))!!)
+                        NSURL.URLWithString(
+                            action.bundle!!.get(LinkSpecRow.LinkRow))!!,
+                            NavigationSpec.Browser.Type.Normal
+                        )
                     is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(to = action.bundle?.get(
                         MailSpecRow.ToRow) ?: emptyList(), subject = action.bundle?.get(MailSpecRow.SubjectRow)))
                 }
@@ -141,41 +154,67 @@ class KNArchitectureFramework {
         return LocationViewModel(permission, repoBuilder)
     }
 
-    fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (String, Int) -> UIViewController): ArchitectureInputViewModel {
+    fun createArchitectureInputViewModel(parent: UIViewController, createDetailsViewController: (InputDetails) -> UIViewController): ArchitectureInputViewModel {
         return ArchitectureInputViewModel(
             ViewControllerNavigator(parent) { action ->
                 NavigationSpec.Present(present = {
-                    val name = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
-                    val number = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
-                    createDetailsViewController(name, number)
+                    createDetailsViewController(action.bundle?.get(action.type) ?: InputDetails("", 0))
                 })
             }
         )
     }
 
-    fun createArchitectureDetailsViewModel(parent: UIViewController, name: String, number: Int, onDismiss: (String, Int) -> Unit): ArchitectureDetailsViewModel {
-        return ArchitectureDetailsViewModel(name, number, ViewControllerNavigator(parent) { action ->
+    fun createArchitectureDetailsViewModel(parent: UIViewController, inputDetails: InputDetails, onDismiss: (InputDetails) -> Unit): ArchitectureDetailsViewModel {
+        return ArchitectureDetailsViewModel(inputDetails, ViewControllerNavigator(parent) { action ->
             NavigationSpec.Dismiss(completion = {
-                val finalName = action.bundle?.get(DetailsSpecRow.NameRow) ?: ""
-                val finalNumber = action.bundle?.get(DetailsSpecRow.NumberRow) ?: 0
-                onDismiss(finalName, finalNumber)
+                onDismiss(action.bundle?.get(action.type) ?: InputDetails("", 0))
             })
         })
     }
 
-    fun createKeyboardViewModel(textField: UITextField): KeyboardViewModel {
-        return KeyboardViewModel(KeyboardManager.Builder(), textField)
+    fun createKeyboardViewModel(focusHandler: FocusHandler): KeyboardViewModel {
+        return KeyboardViewModel(KeyboardManager.Builder(), focusHandler)
+    }
+
+    fun createSystemViewModel(parent: UIViewController): SystemViewModel {
+        return SystemViewModel(
+            ViewControllerNavigator(parent) { action ->
+                when(action) {
+                    SystemNavigationActions.Network ->
+                        NavigationSpec.Segue("showNetwork")
+                }
+            }
+        )
     }
 
     fun <VM: BaseViewModel> bind(viewModel: VM, to: UIViewController, onLifecycleChanges: onLifeCycleChanged): LifecycleManager {
         return viewModel.addLifecycleManager(to, onLifecycleChanges)
     }
 
+    fun createLinksViewModel(
+        parent: UIViewController,
+        animated: Boolean,
+        completion: (() -> Unit)? = null
+    ): LinksViewModel {
+        return LinksViewModel(
+            LinksBuilder(),
+            AlertPresenter.Builder(parent),
+            ViewControllerNavigator(parent) { action ->
+                when (action) {
+                    is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
+                        NSURL.URLWithString(action.bundle!!.get(BrowserSpecRow.UrlSpecRow))!!,
+                        NavigationSpec.Browser.Type.Normal
+                    )
+                }
+            }
+        )
+    }
+
 }
 
 fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton, () -> Unit) -> Unit): List<Disposable> {
     val selectedButtonDisposeBag = DisposeBag()
-    return listOf(tabs.observe { tabs ->
+    return listOf(tabs.observeInitialized { tabs ->
         selectedButtonDisposeBag.dispose()
         stackView.arrangedSubviews.forEach { subView -> (subView as UIView).removeFromSuperview() }
         tabs.forEach { tab ->
@@ -184,7 +223,7 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton
             button.setTitleColor(UIColor.systemBlueColor, UIControlStateSelected)
             button.setTitleColor(UIColor.systemBlueColor, UIControlStateHighlighted)
             button.setTitleColor(UIColor.grayColor, UIControlStateNormal)
-            this.tab.observe { selectedTab ->
+            this.tab.observeInitialized { selectedTab ->
                 button.setSelected(selectedTab == tab)
             }.addTo(selectedButtonDisposeBag)
             addOnPressed(button) {
@@ -195,22 +234,28 @@ fun ExampleViewModel.observeTabs(stackView: UIStackView, addOnPressed: (UIButton
     })
 }
 
+fun SystemViewModel.observeModules(onModuleChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable =
+    modules.observeInitialized { modules ->
+        val moduleName = modules.map { it.name }
+        onModuleChanged(moduleName) { onButtonTapped(modules[it]) }
+    }
+
 fun FeatureListViewModel.observeFeatures(onFeaturesChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
-    return feature.observe { features ->
+    return feature.observeInitialized { features ->
         val titles = features.map { feature -> feature.title }
         onFeaturesChanged(titles) { index -> this.onFeaturePressed(features[index]) }
     }
 }
 
 fun InfoViewModel.observeButtons(onInfoButtonsChanged: (List<String>, (Int) -> Unit) -> Unit): Disposable {
-    return buttons.observe { buttons ->
+    return buttons.observeInitialized { buttons ->
         val titles = buttons.map { button -> button.title }
         onInfoButtonsChanged(titles) { index -> this.onButtonPressed(buttons[index]) }
     }
 }
 
 fun PermissionsListViewModel.observePermissions(onPermissionsChanged: (List<PermissionView>, (Int) -> Unit) -> Unit): Disposable {
-    return permissions.observe { permissions ->
+    return permissions.observeInitialized { permissions ->
         onPermissionsChanged(permissions) { index -> this.onPermissionPressed(permissions[index]) }
     }
 }

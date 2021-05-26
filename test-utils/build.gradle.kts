@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("jacoco")
-    id("maven-publish")
+    id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -38,7 +38,15 @@ kotlin {
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":permissions", ""))
-                implementation("org.koin:koin-core:" + ext["koin_version"])
+                implementation("io.insert-koin:koin-core:" + ext["koin_version"])
+            }
+        }
+
+        getByName("androidLibMain") {
+            val ext = (gradle as ExtensionAware).extra
+            dependencies {
+                // import needed for android KeyboardHostingView implementation.
+                implementation("androidx.compose.ui:ui:${ext["androidx_compose_version"]}")
             }
         }
 
@@ -62,5 +70,6 @@ android {
     dependencies {
         val ext = (gradle as ExtensionAware).extra
         api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${ext["kotlinx_coroutines_version"]}")
     }
 }

@@ -20,6 +20,9 @@ package com.splendo.kaluga.architecture.lifecycle
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.splendo.kaluga.architecture.TestActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Rule
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -39,12 +42,14 @@ class LifecycleManagerTest {
     }
 
     @Test
-    fun testLifecycleManagerObserver() {
+    fun testLifecycleManagerObserver() = runBlocking(Dispatchers.Main) {
         val activity = activity!!
         val observer = activity.lifecycleManagerObserver()
         assertEquals(LifecycleSubscribable.LifecycleManager(activity, activity, activity.supportFragmentManager), observer.managerState.value)
 
-        activityRule.scenario.moveToState(Lifecycle.State.DESTROYED)
-        assertNull(observer.managerState.value)
+        withContext(Dispatchers.Default) {
+            activityRule.scenario.moveToState(Lifecycle.State.DESTROYED)
+            assertNull(observer.managerState.value)
+        }
     }
 }

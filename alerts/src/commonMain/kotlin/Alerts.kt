@@ -20,7 +20,7 @@ package com.splendo.kaluga.alerts
 
 import co.touchlab.stately.concurrency.Lock
 import co.touchlab.stately.concurrency.withLock
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribableMarker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
@@ -114,7 +114,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
      *
      * @see [AlertPresenter.Builder]
      */
-    abstract class Builder : LifecycleSubscribable {
+    abstract class Builder : LifecycleSubscribableMarker {
 
         private var title: String? = null
         private var message: String? = null

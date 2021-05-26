@@ -3,7 +3,6 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         google()
-        jcenter()
     }
 
     resolutionStrategy {
@@ -32,10 +31,10 @@ pluginManagement {
  *
  ***********************************************/
 
-
+includeBuild("../../../convention-plugins")
 apply("../../../gradle/ext.gradle")
 
-val ext =  (gradle as ExtensionAware).extra
+val ext = (gradle as ExtensionAware).extra
 
 if (!(ext["exampleAsRoot"] as Boolean)) {
 
@@ -44,6 +43,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
 
     include(":architecture")
     project(":architecture").projectDir = file("../../../architecture")
+
+    include(":architecture-compose")
+    project(":architecture-compose").projectDir = file("../../../architecture-compose")
 
     include(":base")
     project(":base").projectDir = file("../../../base")
@@ -57,6 +59,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":keyboard")
     project(":keyboard").projectDir = file("../../../keyboard")
 
+    include(":links")
+    project(":links").projectDir = file("../../../links")
+
     include(":location")
     project(":location").projectDir = file("../../../location")
 
@@ -68,6 +73,12 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
 
     include(":resources")
     project(":resources").projectDir = file("../../../resources")
+
+    include(":review")
+    project(":review").projectDir = file("../../../review")
+
+    include(":system")
+    project(":system").projectDir = file("../../../system")
 
     include(":test-utils")
     project(":test-utils").projectDir = file("../../../test-utils")

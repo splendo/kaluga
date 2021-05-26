@@ -25,8 +25,8 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 /**
  * A [BaseFlowable] that represents a Cold flow. This flowable will only become active once observed and deinitialises once no observers are present.
@@ -37,15 +37,16 @@ import kotlinx.coroutines.sync.withPermit
  * @param deinitialize method for deinitializing the flow, passing the last known value. Will be called when the flow transitions from one or more to zero observers.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
+@Deprecated("Use SharedFlowable or StateFlowable")
 class ColdFlowable<T>(private val initialize: suspend () -> T, private val deinitialize: suspend (T) -> Unit, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
-    private val counterMutex = Semaphore(1)
+    private val counterMutex = Mutex()
     private var flowingCounter = AtomicInt(0)
 
     override fun flow(flowConfig: FlowConfig): Flow<T> {
         return super.flow(flowConfig)
             .onStart {
-                counterMutex.withPermit {
+                counterMutex.withLock {
                     val count = flowingCounter.incrementAndGet()
                     if (count == 1) {
                         set(initialize())
@@ -53,7 +54,7 @@ class ColdFlowable<T>(private val initialize: suspend () -> T, private val deini
                 }
             }
             .onCompletion {
-                counterMutex.withPermit {
+                counterMutex.withLock {
                     val count = flowingCounter.decrementAndGet()
                     if (count == 0) {
                         val finalValue = currentValue()

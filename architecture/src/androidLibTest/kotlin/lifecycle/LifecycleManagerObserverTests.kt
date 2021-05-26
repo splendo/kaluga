@@ -49,7 +49,7 @@ class LifecycleManagerObserverTests : BaseTest() {
     }
 
     @Test
-    fun testUIContextObserverHandlerCalled() = runBlocking {
+    fun testLifecycleManagerObserverHandlerCalled() = runBlocking {
         val observer = LifecycleManagerObserver()
         val data: LifecycleSubscribable.LifecycleManager? = LifecycleSubscribable.LifecycleManager(
             activity,
@@ -57,18 +57,18 @@ class LifecycleManagerObserverTests : BaseTest() {
             fragmentManager
         )
 
-        val deferredUIContext = MutableList(3) { CompletableDeferred<LifecycleSubscribable.LifecycleManager?>() }
+        val deferredLifecycleManager = MutableList(3) { CompletableDeferred<LifecycleSubscribable.LifecycleManager?>() }
         val job = launch(Dispatchers.Main) {
             observer.managerState.collect { context ->
-                deferredUIContext.firstOrNull { !it.isCompleted }?.complete(context)
+                deferredLifecycleManager.firstOrNull { !it.isCompleted }?.complete(context)
             }
         }
 
-        assertNull(deferredUIContext[0].await())
+        assertNull(deferredLifecycleManager[0].await())
         observer.subscribe(activity, lifecycleOwner, fragmentManager)
-        assertEquals(data, deferredUIContext[1].await())
+        assertEquals(data, deferredLifecycleManager[1].await())
         observer.unsubscribe()
-        assertNull(deferredUIContext[2].await())
+        assertNull(deferredLifecycleManager[2].await())
         job.cancel()
     }
 }

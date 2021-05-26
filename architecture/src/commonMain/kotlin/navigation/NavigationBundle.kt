@@ -28,6 +28,9 @@ sealed class NavigationBundleValue<T> {
 
     abstract val value: T
 
+    object UnitValue : NavigationBundleValue<Unit>() {
+        override val value: Unit = Unit
+    }
     data class BooleanValue internal constructor(override val value: Boolean) : NavigationBundleValue<Boolean>()
     data class BooleanArrayValue internal constructor(override val value: BooleanArray) : NavigationBundleValue<BooleanArray>() {
         override fun equals(other: Any?): Boolean {
@@ -195,4 +198,12 @@ class NavigationBundle<R : NavigationBundleSpecRow<*>> internal constructor(val 
         val value = values[row] as? NavigationBundleValue<V> ?: throw NavigationBundleGetError()
         return value.value
     }
+
+    /**
+     * Convenience getter for a [NavigationBundle] described using a [SingleValueNavigationSpec]
+     * @param type The [NavigationBundleSpecType] associated with the [SingleValueNavigationSpec]
+     * @return The value stored in this bundle according to its type
+     * @throws [NavigationBundleGetError] if [spec] is note [SingleValueNavigationSpec] associated with [type]
+     */
+    fun <V> get(type: NavigationBundleSpecType<V>) = get(SingleValueNavigationSpec.Row(type))
 }

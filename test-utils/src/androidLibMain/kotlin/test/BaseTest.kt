@@ -18,41 +18,88 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.test
 
+import android.os.Build
 import com.splendo.kaluga.logging.LogLevel
 import com.splendo.kaluga.logging.Logger
 import com.splendo.kaluga.logging.logger
 import com.splendo.kaluga.logging.resetLogger
+import com.splendo.kaluga.logging.w
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.debug.DebugProbes
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.ThreadFactory
+import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 
 actual open class BaseTest {
 
+    /*******************************************************
+     * PLEASE KEEP IMPLEMENTATION IN SYNC WITH JVM VERSION *
+     *******************************************************/
+
     // might re-enable this if needed, but to encourage cross platform behaviour it is off
     // @Rule @JvmField
     // val instantExecutorRule = InstantTaskExecutorRule()
 
-    private val mainDispatcher: ExecutorCoroutineDispatcher = newSingleThreadContext("synthetic UI thread")
+    private val mainDispatcher: CoroutineDispatcher by lazy {
+        var mainThread:Thread? = null
+        val factory = ThreadFactory { r ->
+            Thread(r, "synthetic UI thread").also {
+                it.uncaughtExceptionHandler =
+                    Thread.UncaughtExceptionHandler { _, e -> w(throwable = e) { "error in synthetic main thread: $e" } }
+                mainThread = it
+            }
+        }
+
+        val executor: ExecutorService = Executors.newSingleThreadExecutor(factory)
+        val d = executor.asCoroutineDispatcher()
+        // Implement proper immediate support
+        object:CoroutineDispatcher() {
+            override fun dispatch(context: CoroutineContext, block: Runnable) {
+                d.dispatch(context, block)
+            }
+            override fun isDispatchNeeded(context: CoroutineContext): Boolean = Thread.currentThread() != mainThread
+        }
+    }
+
+    protected val isUnitTest: Boolean
+        get() = Build.MODEL == null
 
     @BeforeTest
     actual open fun beforeTest() {
-        logger = object : Logger {
-            override fun log(level: LogLevel, tag: String?, throwable: Throwable?, message: (() -> String)?) {
-                println("$level: ${tag?.let {"[$it]"} ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
-                throwable?.printStackTrace(System.out)
+
+        if (isUnitTest) {
+            DebugProbes.install() // coroutine debugging
+
+            Dispatchers.setMain(mainDispatcher)
+
+            logger = object : Logger {
+                override fun log(
+                    level: LogLevel,
+                    tag: String?,
+                    throwable: Throwable?,
+                    message: (() -> String)?
+                ) {
+                    println("$level: ${tag?.let { "[$it]" } ?: ""} ${message?.invoke() ?: ""} ${throwable?.message ?: ""}".trim())
+                    throwable?.printStackTrace(System.out)
+                }
             }
         }
-        Dispatchers.setMain(mainDispatcher)
     }
 
     @AfterTest
     actual open fun afterTest() {
-        Dispatchers.resetMain()
-        mainDispatcher.close()
-        resetLogger()
+        if (isUnitTest) {
+            Thread.sleep(50) // reseting the main dispatcher too early can lead to strange issues
+            Dispatchers.resetMain()
+            resetLogger()
+        }
     }
 }

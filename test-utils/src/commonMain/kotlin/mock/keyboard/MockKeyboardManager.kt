@@ -17,31 +17,28 @@
 
 package com.splendo.kaluga.test.mock.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
-import com.splendo.kaluga.keyboard.KeyboardHostingView
-import com.splendo.kaluga.test.mock.architecture.MockLifecycleSubscriber
-import kotlinx.coroutines.CoroutineScope
+import com.splendo.kaluga.keyboard.FocusHandler
 
 class MockKeyboardManager : BaseKeyboardManager {
 
-    class Builder : BaseKeyboardManager.Builder, LifecycleSubscribable by MockLifecycleSubscriber() {
+    class Builder : BaseKeyboardManager.Builder {
 
         val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
 
-        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager {
+        override fun create(): MockKeyboardManager {
             return MockKeyboardManager().also { builtKeyboardManagers.add(it) }
         }
     }
 
-    var showingView: KeyboardHostingView? = null
+    var focusHandler: FocusHandler? = null
         private set
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
-        showingView = keyboardHostingView
+    override fun show(focusHandler: FocusHandler) {
+        this.focusHandler = focusHandler
     }
 
     override fun hide() {
-        showingView = null
+        focusHandler = null
     }
 }

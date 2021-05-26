@@ -16,13 +16,13 @@ class ArchitectureDetailsViewController: UIViewController {
         static let storyboardId = "ArchitectureDetails"
     }
     
-    static func create(name: String, number: Int32, onDismiss: @escaping (String, Int32) -> Void) -> ArchitectureDetailsViewController {
+    static func create(inputDetails: InputDetails, onDismiss: @escaping (InputDetails) -> Void) -> ArchitectureDetailsViewController {
         let vc = Const.storyboard.instantiateViewController(withIdentifier: Const.storyboardId) as! ArchitectureDetailsViewController
         if #available(iOS 13.0, *) {
             vc.isModalInPresentation = true
         }
-        vc.viewModel = KNArchitectureFramework().createArchitectureDetailsViewModel(parent: vc, name: name, number: number) { resultName, resultNumber in
-            onDismiss(resultName, resultNumber.int32Value)
+        vc.viewModel = KNArchitectureFramework().createArchitectureDetailsViewModel(parent: vc, inputDetails: inputDetails) { inputDetails in
+            onDismiss(inputDetails)
         }
         return vc
     }
@@ -50,10 +50,10 @@ class ArchitectureDetailsViewController: UIViewController {
             
             return [
                 viewModel.name.observe { name in
-                    self?.nameLabel.text = name as String?
+                    self?.nameLabel.text = name as? String ?? ""
                 },
                 viewModel.number.observe { number in
-                    self?.numberLabel.text = number as String?
+                    self?.numberLabel.text = number as? String ?? ""
                 }
             ]
         }

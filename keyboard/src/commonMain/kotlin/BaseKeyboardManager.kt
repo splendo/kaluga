@@ -18,13 +18,13 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
-import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
-import kotlinx.coroutines.CoroutineScope
 
 /**
- * Class that can a keyboard can be shown for
+ * Common interface which handles the focus on a view.
  */
-expect class KeyboardHostingView
+interface FocusHandler {
+    fun requestFocus()
+}
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
@@ -36,14 +36,14 @@ interface BaseKeyboardManager {
      *
      * @see KeyboardManager
      */
-    interface Builder : LifecycleSubscribable {
+    interface Builder {
 
         /**
          * Creates KeyboardManager object
          *
          * @return The KeyboardManager object
          */
-        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
+        fun create(): BaseKeyboardManager
     }
 
     /**
@@ -51,7 +51,7 @@ interface BaseKeyboardManager {
      *
      * @param keyboardHostingView The view for which the keyboard will be shown
      */
-    fun show(keyboardHostingView: KeyboardHostingView)
+    fun show(focusHandler: FocusHandler)
 
     /**
      * Dismisses the current keyboard
@@ -68,6 +68,6 @@ expect class KeyboardManager : BaseKeyboardManager {
      * Builder for creating a [KeyboardManager].
      */
     class Builder : BaseKeyboardManager.Builder {
-        override fun create(coroutineScope: CoroutineScope): KeyboardManager
+        override fun create(): KeyboardManager
     }
 }

@@ -2,9 +2,42 @@
 
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
-Its main goal is to provide access to common multiplatform features used in mobile app development, such as location, permissions, bluetooth etc.
+Its main goal is to provide access to common multiplatform features used in mobile app development, such as MVVM-Architecture, location, permissions, bluetooth etc.
 
 Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
+
+## Installing
+Kaluga is currently only available through bintray. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repository to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
+
+```kotlin
+repositories {
+    // ...
+    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+}
+// ...
+dependencies {
+    // ...
+    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
+}
+```
+
+### Available Modules
+Module | Usage | Library Name | Latest Version
+--- | --- | --- | ---
+[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.1.9
+[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.1.9
+[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.1.9
+[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.1.9
+[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.1.9
+[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.1.9
+[Links](https://github.com/splendo/kaluga/tree/master/links) | Used for decoding url into an object | com.splendo.kaluga.links | 0.1.9
+[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.1.9
+[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.1.9
+[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.1.9
+[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.1.9
+[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | 0.1.9
+[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | 0.1.9
+[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.1.9
 
 ## Build instructions
 
@@ -12,7 +45,7 @@ This project uses Android Studio. You might need a canary version at times.
 ______
 Both IDEA and Android Studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
 
-Just go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install latest available plugin.
+to resolve these issues, go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install the latest available plugin.
 ______
 Some components use Google Play services. For this you will need to supply your own `google-services.json` file.
 ______
@@ -60,8 +93,32 @@ Most of the components within this project use Kotlin coroutines and `Flow` to d
  
 ## Publishing
 
-The libraries are not published on any hosted repository yet, but can be published to your local maven repo  
- 
+### Publishing process
+
+1. Bump version at `gradle/ext.gradle`:
+
+```sh
+library_version = 'X.X.X'
+```
+
+2. Publish to local maven:
+
+```sh
+./gradlew publishToMavenLocal
+```
+
+3. Upload and publish on Maven Central:
+
+```sh
+./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
+```
+
+Where `SIGNING_KEY_ID` is the key id associated with the signing key,
+`SIGNING_KEY_PASSWORD` is the password for the signing key,
+`SIGNING_KEY_PASSWORD` is the gpg file used for signing,
+`OSSRH_USERNAME` is the Sonatype user name to upload the repository to,
+and `OSSRH_PASSWORD` is the password for the Sonatype account to upload the repository to.
+
 ## Code conventions
 
 The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.

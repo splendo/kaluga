@@ -127,7 +127,7 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
     operator fun <P : Permission> get(permission: P): Flow<PermissionState<out Permission>> {
-        return permissionStateRepo(permission).flow()
+        return permissionStateRepo(permission)
     }
 
     /**
@@ -176,6 +176,7 @@ suspend fun <P : Permission> Flow<PermissionState<out P>>.request(permissionMana
             is PermissionState.Allowed -> emit(true)
             is PermissionState.Denied.Requestable -> state.request(permissionManager)
             is PermissionState.Denied.Locked -> emit(false)
+            is PermissionState.Unknown -> {}
         }
     }.first()
 }

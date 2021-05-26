@@ -1,13 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 repositories {
     mavenLocal()
     mavenCentral()
     google()
-    jcenter()
 }
 
 //noinspection UnnecessaryQualifiedReference
@@ -18,6 +16,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 }
 
 android {
+
     compileSdkVersion gradle.android_target_sdk_version
     buildToolsVersion gradle.android_build_tools_version
     defaultConfig {
@@ -28,7 +27,20 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        debug {
+            keyAlias "key0"
+            keyPassword "nckI1UYofHIMkOnXpmZJVA"
+            storeFile file("../keystore/debug.keystore")
+            storePassword "nckI1UYofHIMkOnXpmZJVA"
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -42,13 +54,15 @@ android {
     }
 
     buildFeatures.dataBinding = true
-
 }
 
-apply from: "../../gradle/android_dependencies.gradle"
+gradle.ext.component_type = gradle.ext.component_type_composeApp
+
+apply from: "../../gradle/android_compose.gradle"
+
+gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
-
 
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
@@ -60,7 +74,11 @@ dependencies {
         implementation "com.splendo.kaluga:alerts:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:hud:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:architecture:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:architecture-compose:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:keyboard:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:links:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:review:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:system:$gradle.ext.library_version"
         implementation project(':shared')
     }
     else {
@@ -73,7 +91,11 @@ dependencies {
         implementation project(":alerts")
         implementation project(":hud")
         implementation project(":architecture")
+        implementation project(":architecture-compose")
         implementation project(":keyboard")
+        implementation project(":links")
+        implementation project(":review")
+        implementation project(":system")
     }
 
     implementation "androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version"
@@ -81,10 +103,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.2.0-alpha06'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    def koin_version = "2.1.5"
-    implementation "org.koin:koin-android:$koin_version"
-    implementation "org.koin:koin-androidx-scope:$koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    implementation "org.koin:koin-androidx-fragment:$koin_version"
+    implementation "io.insert-koin:koin-android:$gradle.koin_version"
     implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_coroutines_version!!"
+
 }

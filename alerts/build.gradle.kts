@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("jacoco")
-    id("maven-publish")
+    id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -12,11 +12,6 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
-
-repositories {
-    google()
-    mavenCentral()
-}
 
 dependencies {
 

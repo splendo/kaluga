@@ -25,11 +25,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
-import kotlinx.android.synthetic.main.fragment_info.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_info) {
@@ -37,12 +35,15 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
     override val viewModel: InfoViewModel by viewModel()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = InfoAdapter(viewModel).apply {
-            info_buttons.adapter = this
+            view.findViewById<RecyclerView>(R.id.info_buttons)
+                .adapter = this
         }
-        viewModel.buttons.observe(this, Observer { adapter.buttons = it })
+        viewModel.buttons.observeInitialized { adapter.buttons = it }
     }
 }
 

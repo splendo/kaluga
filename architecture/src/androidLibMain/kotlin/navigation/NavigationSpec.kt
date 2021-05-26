@@ -111,11 +111,23 @@ sealed class NavigationSpec {
     }
 
     /**
+     * Removes a [Fragment] with a given tag
+     * @param tag The tag of the [Fragment] to remove
+     */
+    data class RemoveFragment(val tag: String) : NavigationSpec()
+
+    /**
      * Shows a [DialogFragment]
      * @param tag Optional tag to add to the Dialog
      * @param createDialog Function to create the [DialogFragment] to display
      */
     data class Dialog(val tag: String? = null, val createDialog: () -> DialogFragment) : NavigationSpec()
+
+    /**
+     * Dismisses a [DialogFragment] with a given Tag
+     * @param tag The tag of the [DialogFragment] to remove
+     */
+    data class DismissDialog(val tag: String) : NavigationSpec()
 
     /**
      * Shows the Camera
@@ -227,6 +239,7 @@ sealed class NavigationSpec {
             object LocationSource : Type()
             object InternalStorage : Type()
             object MemoryCard : Type()
+            object AppDetails : Type()
         }
     }
 
@@ -259,5 +272,40 @@ sealed class NavigationSpec {
      * Opens the browser
      * @param url The [URL] to open in the browser
      */
-    data class Browser(val url: URL) : NavigationSpec()
+    data class Browser(val url: URL, val viewType: Type) : NavigationSpec() {
+        sealed class Type {
+            object CustomTab : Type()
+            object Normal : Type()
+        }
+    }
+
+    /**
+     * Opens a Third Party app if installed on the phone or navigates to the store if it does not exist.
+     * @param packageName The name of the package for which to open the store
+     * @param openMode The [OpenMode] used to determine how to handle whether to open the app or the PlayStore
+     */
+    data class ThirdPartyApp(val packageName: String, val openMode: OpenMode = OpenMode.FALLBACK_TO_STORE) : NavigationSpec() {
+        enum class OpenMode {
+            /**
+             * Immediately opens the store
+             */
+            FORCE_STORE,
+
+            /**
+             * Only navigates when the app is installed
+             */
+            ONLY_WHEN_INSTALLED,
+
+            /**
+             * Opens the PlayStore if the app is not installed
+             */
+            FALLBACK_TO_STORE
+        }
+    }
+
+    /**
+     * Navigates according to a given [Intent]
+     * @param intent The [Intent] to navigate to
+     */
+    data class CustomIntent(val intent: Intent) : NavigationSpec()
 }

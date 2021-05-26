@@ -31,7 +31,7 @@ class SimpleUIThreadViewModelTestTest : SimpleUIThreadViewModelTest<ViewModel>()
     override fun createViewModel() = ViewModel()
 
     @Test
-    fun test() = testWithViewModel {
+    fun test() = testOnUIThread {
         assertEquals("", viewModel.v)
         viewModel.v = "foo" // should not crash on native
     }

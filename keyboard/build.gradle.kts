@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("jacoco")
     id("com.android.library")
-    id("maven-publish")
+    id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
@@ -12,11 +12,6 @@ apply(from = "../gradle/publishable_component.gradle")
 
 group = "com.splendo.kaluga"
 version = ext["library_version"]!!
-
-repositories {
-    google()
-    mavenCentral()
-}
 
 kotlin {
     sourceSets {
@@ -30,6 +25,14 @@ kotlin {
         getByName("commonTest") {
             dependencies {
                 api(project(":test-utils", ""))
+            }
+        }
+        getByName("androidLibMain") {
+            dependencies {
+                val ext = (gradle as ExtensionAware).extra
+                implementation(
+                    "androidx.compose.ui:ui:${ext["androidx_compose_version"]}"
+                )
             }
         }
     }

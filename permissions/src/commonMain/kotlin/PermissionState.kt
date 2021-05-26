@@ -18,21 +18,26 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.state.ColdStateRepo
+import com.splendo.kaluga.base.flow.SpecialFlowValue
+import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
 /**
  * State of a [Permission]
- * @param permissionManager The [PermissionManager] managing the associated [Permission]
  */
 sealed class PermissionState<P : Permission> : State() {
+
+
+    class Unknown<P:Permission>:PermissionState<P>(),SpecialFlowValue.NotImportant
+
+    // TODO: consider below states could be wrapped in a sealed Known, and Flows could expose PermissionState.Known where applicable
 
     /**
      * When in this state the [Permission] has been granted
      */
-    class Allowed<P : Permission>() : PermissionState<P>() {
+    class Allowed<P : Permission> : PermissionState<P>() {
 
         internal fun deny(locked: Boolean): Denied<P> {
             return if (locked) Denied.Locked() else Denied.Requestable()
@@ -76,26 +81,34 @@ sealed class PermissionState<P : Permission> : State() {
 
 /**
  * State machine for managing a given [Permission].
- * Since this is a [ColdStateRepo], it will only monitor for changes to permissions while being observed.
+ * Since this is a [ColdStateFlowRepo], it will only monitor for changes to permissions while being observed.
  * @param monitoringInterval The interval in milliseconds between checking for a change in [PermissionState]
  */
 abstract class PermissionStateRepo<P : Permission>(
     private val monitoringInterval: Long = defaultMonitoringInterval,
-    coroutineContext: CoroutineContext = Dispatchers.Main
-) : ColdStateRepo<PermissionState<P>>(coroutineContext) {
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+) : ColdStateFlowRepo<PermissionState<P>>(
+    coroutineContext,
+    initChangeState = { state, repo ->
+        val pm = (repo as PermissionStateRepo<P>).permissionManager
+        pm.startMonitoring(monitoringInterval)
+        if (state == null || state is PermissionState.Unknown<P>)
+            suspend { pm.initializeState() }
+        else
+            suspend { state }
+    }   ,
+    deinitChangeState = { state, repo ->
+        (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
+        null
+    },
+    firstState = { PermissionState.Unknown() }
+) {
 
     companion object {
         const val defaultMonitoringInterval: Long = 1000
     }
 
+    // TODO move to constructor, so no explicit cast is needed in init block
     abstract val permissionManager: PermissionManager<P>
 
-    override suspend fun initialValue(): PermissionState<P> {
-        permissionManager.startMonitoring(monitoringInterval)
-        return permissionManager.initializeState()
-    }
-
-    override suspend fun deinitialize(state: PermissionState<P>) {
-        permissionManager.stopMonitoring()
-    }
 }

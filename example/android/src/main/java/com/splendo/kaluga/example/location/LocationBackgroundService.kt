@@ -12,8 +12,8 @@ import androidx.lifecycle.Observer
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.permissions.Permission
-import org.koin.core.KoinComponent
-import org.koin.core.get
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinComponent {
 
@@ -32,9 +32,9 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
     override fun onCreate() {
         super.onCreate()
 
-        viewModel.location.observe(this, Observer { message ->
+        viewModel.location.observeInitialized { message ->
             NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
-        })
+        }
 
         startForeground(notificationId, getNotification(""))
     }

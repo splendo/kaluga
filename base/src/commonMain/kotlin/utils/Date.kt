@@ -169,3 +169,117 @@ operator fun Date.plus(date: Date): Date {
  */
 fun Date.Companion.nowUtc(offsetInMilliseconds: Long = 0L, locale: Locale = defaultLocale): Date =
     now(offsetInMilliseconds, TimeZone.utc, locale)
+
+/**
+ * Gets a [Date] equal to midnight on the same day as this Date
+ * @return A [Date] equal to midnight on the same day as this Date
+ */
+fun Date.toStartOfDay() = this.copy().apply {
+    hour = 0
+    minute = 0
+    second = 0
+    millisecond = 0
+}
+
+/**
+ * Gets a [Date] that is set at midnight on the same day as the current time.
+ * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [Date] that is set at midnight on the same day as the current time.
+ */
+fun Date.Companion.today(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = now(timeZone = timeZone, locale = locale).toStartOfDay()
+
+/**
+ * Gets a [Date] that is set at midnight on the day after the current time.
+ * @param timeZone The [TimeZone] in which the Date is set. Defaults to [TimeZone.current]
+ * @param locale The [Locale] for which the Date is configured. Defaults to [Locale.defaultLocale]
+ * @return A [Date] that is set at midnight on the day after the current time.
+ */
+fun Date.Companion.tomorrow(timeZone: TimeZone = TimeZone.current(), locale: Locale = defaultLocale) = today(timeZone = timeZone, locale = locale).apply { day += 1 }
+
+/**
+ * Checks whether a [Date] is on the same day as a given Date.
+ * @param date The [Date] to check
+ * @return `true` if this [Date] is on the same day as [date]
+ */
+fun Date.isOnSameDay(date: Date): Boolean {
+    return this.era == date.era &&
+        this.year == date.year &&
+        this.month == date.month &&
+        this.day == date.day
+}
+
+/**
+ * Checks whether a [Date] is on the same month as a given Date.
+ * @param date The [Date] to check
+ * @return `true` if this [Date] is on the same month as [date]
+ */
+fun Date.isOnSameMonth(date: Date): Boolean {
+    return this.era == date.era &&
+        this.year == date.year &&
+        this.month == date.month
+}
+
+/**
+ * Checks whether a [Date] is in the same year as a given Date.
+ * @param date The [Date] to check
+ * @return `true` if this [Date] is in the same year as [date]
+ */
+fun Date.isInSameYear(date: Date): Boolean {
+    return this.era == date.era &&
+        this.year == date.year
+}
+
+/**
+ * True if this [Date] is today
+ */
+val Date.isToday: Boolean
+    get() = isOnSameDay(Date.now(timeZone = this.timeZone))
+
+/**
+ * True if this [Date] is yesterday
+ */
+val Date.isYesterday: Boolean
+    get() = isOnSameDay(Date.now(timeZone = this.timeZone).apply { day -= 1 })
+
+/**
+ * True if this [Date] is tomorrow
+ */
+val Date.isTomorrow: Boolean
+    get() = isOnSameDay(Date.now(timeZone = this.timeZone).apply { day += 1 })
+
+/**
+ * True if this [Date] is this month
+ */
+val Date.isThisMonth: Boolean
+    get() = isOnSameMonth(Date.now(timeZone = this.timeZone))
+
+/**
+ * True if this [Date] is last month
+ */
+val Date.isLastMonth: Boolean
+    get() = isOnSameMonth(Date.now(timeZone = this.timeZone).apply { month -= 1 })
+
+/**
+ * True if this [Date] is next month
+ */
+val Date.isNextMonth: Boolean
+    get() = isOnSameMonth(Date.now(timeZone = this.timeZone).apply { month += 1 })
+
+/**
+ * True if this [Date] is this year
+ */
+val Date.isThisYear: Boolean
+    get() = isInSameYear(Date.now(timeZone = this.timeZone))
+
+/**
+ * True if this [Date] is last year
+ */
+val Date.isLastYear: Boolean
+    get() = isInSameYear(Date.now(timeZone = this.timeZone).apply { year -= 1 })
+
+/**
+ * True if this [Date] is next year
+ */
+val Date.isNextYear: Boolean
+    get() = isInSameYear(Date.now(timeZone = this.timeZone).apply { year += 1 })

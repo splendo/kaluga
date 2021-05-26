@@ -1,22 +1,13 @@
 repositories {
     google()
     mavenCentral()
-    jcenter()
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
 }
 
-kotlin {
+// if the include is made from the example project shared module we need to go up one more directory
+String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
-    targets {
-        configure([]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
-            }
-        }
-    }
+
+kotlin {
 
     targets {
         configure([]) {
@@ -29,8 +20,8 @@ kotlin {
 
 
     android("androidLib") {
-        publishAllLibraryVariants()
 
+        publishAllLibraryVariants()
     }
 
     if (gradle.ios_primary_arch == "iosx64")
@@ -109,14 +100,14 @@ kotlin {
         }
 
         "${gradle.ios_primary_arch}Main" {
-            kotlin.srcDirs("src/iosMain")
+            kotlin.srcDirs("src/iosMain/kotlin")
             dependencies {
                 // none for now
             }
         }
 
         "${gradle.ios_primary_arch}Test" {
-            kotlin.srcDirs("src/iosTest")
+            kotlin.srcDirs("src/iosTest/kotlin")
             dependencies {
                 implementation kotlin('test')
             }
@@ -126,19 +117,19 @@ kotlin {
         if (!gradle.ext.ios_one_sourceset) {
 
             iosarm32Main {
-                kotlin.srcDirs("src/iosMain")
+                kotlin.srcDirs("src/iosMain/kotlin")
             }
             iosarm32Test {
-                kotlin.srcDirs("src/iosTest")
+                kotlin.srcDirs("src/iosTest/kotlin")
                 dependencies {
                     implementation kotlin('test')
                 }
             }
             "${gradle.ios_secondary_arch}Main" {
-                kotlin.srcDirs("src/iosMain")
+                kotlin.srcDirs("src/iosMain/kotlin")
             }
             "${gradle.ios_secondary_arch}Test" {
-                kotlin.srcDirs("src/iosTest")
+                kotlin.srcDirs("src/iosTest/kotlin")
                 dependencies {
                     implementation kotlin('test')
                 }
@@ -147,11 +138,13 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
+                useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
+                useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
                 enableLanguageFeature("InlineClasses")
             }
         }
@@ -161,53 +154,12 @@ kotlin {
     }
 }
 
-
+apply from: "$path_prefix/gradle/android_common.gradle"
 
 android {
 
-    kotlinOptions {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
-    }
-
     testOptions {
         unitTests.returnDefaultValues = true
-    }
-
-    defaultPublishConfig = "debug"
-
-    compileSdkVersion gradle.android_target_sdk_version
-
-    defaultConfig {
-        minSdkVersion gradle.android_min_sdk_version
-        targetSdkVersion gradle.android_target_sdk_version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-            res.srcDir 'src/androidLibMain/resources'
-        }
-        androidTest {
-            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
-            java.srcDir 'src/androidLibAndroidTest/kotlin'
-            res.srcDir 'src/androidLibAndroidTest/res'
-        }
     }
 
     packagingOptions {
@@ -225,8 +177,16 @@ task printConfigurations {
     }
 }
 
-// if the include is made from the example project shared module we need to go up one more directory
-String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
+task copyResources(type: Copy) {
+    from file('src/iosTest/res/.')
+    into file("$buildDir/bin/iosx64/debugTest")
+}
 
-apply from: "$path_prefix/gradle/android_dependencies.gradle"
+afterEvaluate {
+    if (tasks.getNames().contains("linkDebugTestIosx64"))
+        tasks.named("linkDebugTestIosx64").configure {
+            dependsOn copyResources
+        }
+}
+
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

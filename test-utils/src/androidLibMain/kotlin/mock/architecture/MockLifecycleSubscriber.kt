@@ -19,7 +19,7 @@ package com.splendo.kaluga.test.mock.architecture
 
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 
-actual class MockLifecycleSubscriber : LifecycleSubscribable {
+class MockLifecycleSubscriber : LifecycleSubscribable {
     override var manager: LifecycleSubscribable.LifecycleManager? = null
 
     override fun subscribe(manager: LifecycleSubscribable.LifecycleManager) {

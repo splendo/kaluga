@@ -1,3 +1,12 @@
+buildscript {
+
+    repositories {
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+}
+
 plugins {
     kotlin("multiplatform")
     kotlin("xcode-compat") version "0.2.5"
@@ -6,17 +15,17 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
-    jcenter()
-    maven(url="https://kotlin.bintray.com/kotlinx")
 }
+
 
 kotlin {
 
     xcode {
         setupFramework("KotlinNativeFramework") {
+
             export(project(":shared"))
+
             transitiveExport = true
-            freeCompilerArgs += "-Xobjc-generics"
         }
     }
 
@@ -31,4 +40,10 @@ kotlin {
             }
         }
     }
+}
+
+tasks.create<Delete>("cleanKotlinNativeFrameworkTest") {
+    delete = setOf (
+        "build"
+    )
 }

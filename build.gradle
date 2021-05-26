@@ -1,35 +1,28 @@
 buildscript {
+
     repositories {
         google()
-        jcenter()
-
-// uncomment for early access / dev releases
-//        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
-//        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
+        mavenCentral()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.4'
+        classpath "com.google.gms:google-services:4.3.4"
     }
 }
 
 plugins {
-    id 'maven-publish'
-    id 'org.jlleitschuh.gradle.ktlint' version '9.4.1'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '9.4.1'
+    id "convention.publication"
+    id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
+    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.0.0'
 }
 
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         mavenLocal()
-
-// uncomment for early access / dev releases
-//        maven { url 'https://dl.bintray.com/kotlin/kotlin-dev' }
-//        maven { url 'https://dl.bintray.com/kotlin/kotlin-eap' }
     }
 
     tasks.withType(Test) {
@@ -40,22 +33,7 @@ allprojects {
     }
 }
 
+apply from:"gradle/ext.gradle"
+
 group 'com.splendo.kaluga'
 version gradle.ext.library_version
-
-
-
-// TODO: multiplatform module in main project does not seem to work anymore, which breaks publishing
-//publishing {
-//    publications {
-//        kotlinMultiplatform {
-//            artifactId = "kaluga"
-//
-//            pom {
-//                name = 'Splendo Kaluga Library'
-//                description = 'A set of Kotlin multiplatform components'
-//                url = 'https://splendo.com'
-//            }
-//        }
-//    }
-//}
