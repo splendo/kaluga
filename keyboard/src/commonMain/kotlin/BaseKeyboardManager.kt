@@ -18,13 +18,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Common interface which handles the focus on a view.
  */
-interface FocusHandler {
-    fun requestFocus()
-}
+expect interface FocusHandler
 
 /**
  * Interface that defines the actions available for the Keyboard Manager
@@ -43,7 +42,7 @@ interface BaseKeyboardManager {
          *
          * @return The KeyboardManager object
          */
-        fun create(): BaseKeyboardManager
+        fun create(coroutineScope: CoroutineScope): BaseKeyboardManager
     }
 
     /**
@@ -68,6 +67,6 @@ expect class KeyboardManager : BaseKeyboardManager {
      * Builder for creating a [KeyboardManager].
      */
     class Builder : BaseKeyboardManager.Builder {
-        override fun create(): KeyboardManager
+        override fun create(coroutineScope: CoroutineScope): KeyboardManager
     }
 }

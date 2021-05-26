@@ -19,6 +19,7 @@ package com.splendo.kaluga.test.mock.keyboard
 
 import com.splendo.kaluga.keyboard.BaseKeyboardManager
 import com.splendo.kaluga.keyboard.FocusHandler
+import kotlinx.coroutines.CoroutineScope
 
 class MockKeyboardManager : BaseKeyboardManager {
 
@@ -26,7 +27,7 @@ class MockKeyboardManager : BaseKeyboardManager {
 
         val builtKeyboardManagers = mutableListOf<MockKeyboardManager>()
 
-        override fun create(): MockKeyboardManager {
+        override fun create(coroutineScope: CoroutineScope): MockKeyboardManager {
             return MockKeyboardManager().also { builtKeyboardManagers.add(it) }
         }
     }

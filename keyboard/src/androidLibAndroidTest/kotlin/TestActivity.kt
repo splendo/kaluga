@@ -20,6 +20,7 @@ package com.splendo.kaluga.keyboard
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 
 class TestActivity : AppCompatActivity() {
 
@@ -35,6 +36,6 @@ class TestActivity : AppCompatActivity() {
     }
 
     fun showKeyboard() {
-        keyboardManagerBuilder(this).create().show(AndroidFocusHandler(this, view.id))
+        keyboardManagerBuilder().create(lifecycleScope).show(AndroidFocusHandler(view.id))
     }
 }
