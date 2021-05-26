@@ -23,11 +23,11 @@ import androidx.annotation.IdRes
 import androidx.compose.ui.focus.FocusRequester
 
 actual interface FocusHandler {
-    fun requestFocus(activity: Activity)
+    fun requestFocus(activity: Activity?)
 }
 
 class ComposeFocusHandler(private val focusRequester: FocusRequester) : FocusHandler {
-    override fun requestFocus(activity: Activity) {
+    override fun requestFocus(activity: Activity?) {
         focusRequester.requestFocus()
     }
 }
@@ -35,8 +35,8 @@ class ComposeFocusHandler(private val focusRequester: FocusRequester) : FocusHan
 class AndroidFocusHandler(
     @IdRes private val id: Int
 ) : FocusHandler {
-    override fun requestFocus(activity: Activity) {
-        val view = activity.findViewById<View>(id)
-        view.requestFocus()
+    override fun requestFocus(activity: Activity?) {
+        val view = activity?.findViewById<View>(id)
+        view?.requestFocus()
     }
 }
