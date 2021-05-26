@@ -310,6 +310,11 @@ abstract class StateRepo<S : State, F:MutableSharedFlow<S>>(coroutineContext: Co
 // Somewhat similar to a ConflatedBroadcastChannel, which was used in the previous implementation
 inline fun <S> defaultLazySharedFlow():Lazy<MutableSharedFlow<S>> = lazy { MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) }
 
+
+interface StateFlowRepo<S: State> {
+    val stateFlow: StateFlow<S>
+}
+
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
@@ -321,9 +326,13 @@ abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Disp
 abstract class HotStateFlowRepo<S : State>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     val initialState: (HotStateFlowRepo<S>) -> S
-    ) : BaseHotStateRepo<S, MutableStateFlow<S>>(coroutineContext) {
+) : StateFlowRepo<S>,
+    BaseHotStateRepo<S, MutableStateFlow<S>>(coroutineContext) {
 
     override val lazyMutableSharedFlow = lazy { MutableStateFlow(initialState(this)) }
+
+    override val stateFlow
+        get() = mutableFlow.asStateFlow()
 
     final override suspend fun initialValue(): S = mutableFlow.value
 }
@@ -406,7 +415,8 @@ open class ColdStateFlowRepo<S:State>(
     val initChangeState: suspend (S?, ColdStateFlowRepo<S>) -> (suspend () -> S),
     val deinitChangeState: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S)?,
     val firstState: (suspend() -> S)? = null
-) : BaseColdStateRepo<S, MutableStateFlow<S>>(
+) : StateFlowRepo<S>,
+    BaseColdStateRepo<S, MutableStateFlow<S>>(
     context = coroutineContext,
 ) {
 
@@ -422,7 +432,7 @@ open class ColdStateFlowRepo<S:State>(
         firstState = firstState
     )
 
-    val stateflow: StateFlow<S>
+    override val stateFlow: StateFlow<S>
         get() = mutableFlow.asStateFlow()
 
     // the first initialization is done in the lazy block below since StateFlow requires an initial value
