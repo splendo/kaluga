@@ -30,3 +30,7 @@ expect fun createServiceWrapper(
     uuid: UUID = randomUUID(),
     characteristics: List<Pair<UUID, List<UUID>>> = listOf(randomUUID() to listOf(randomUUID()))
 ): ServiceWrapper
+
+interface CanUpdateMockValue {
+    fun updateMockValue(value: ByteArray?)
+}

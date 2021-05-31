@@ -18,18 +18,5 @@
 package com.splendo.kaluga.test.mock.bluetooth
 
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
-import com.splendo.kaluga.bluetooth.ServiceWrapper
-import com.splendo.kaluga.bluetooth.UUID
 
-class MockServiceWrapper(
-    override val uuid: UUID = UUID(),
-    characteristicUuids: List<Pair<UUID, List<UUID>>> = emptyList()
-) : ServiceWrapper {
-
-    override val characteristics: List<CharacteristicWrapper> = characteristicUuids.map {
-        IOSMockCharacteristicWrapper(
-            it.first,
-            it.second
-        )
-    }
-}
+interface MockCharacteristicWrapper : CharacteristicWrapper, CanUpdateMockValue

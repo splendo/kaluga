@@ -19,6 +19,4 @@ package com.splendo.kaluga.test.mock.bluetooth
 
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 
-interface MockDescriptorWrapper: DescriptorWrapper {
-    fun updateMockValue(value:ByteArray?)
-}
+interface MockDescriptorWrapper : DescriptorWrapper, CanUpdateMockValue

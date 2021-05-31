@@ -29,7 +29,7 @@ class MockServiceWrapper(override val uuid: UUID = UUID.randomUUID(), characteri
 
     override val type: Int = 0
     override val instanceId: Int = 0
-    private val mutableCharacteristics = mutableListOf<CharacteristicWrapper>(*characteristicUuids.map { MockCharacteristicWrapper(it.first, it.second, this) }.toTypedArray())
+    private val mutableCharacteristics = mutableListOf<CharacteristicWrapper>(*characteristicUuids.map { AndroidMockCharacteristicWrapper(it.first, it.second, this) }.toTypedArray())
     override val characteristics: List<CharacteristicWrapper>
         get() = mutableCharacteristics
     private val mutableIncludedServices = mutableListOf<ServiceWrapper>()

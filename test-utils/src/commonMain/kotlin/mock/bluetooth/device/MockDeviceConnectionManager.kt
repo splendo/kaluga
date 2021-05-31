@@ -24,6 +24,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.mock.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
 
@@ -68,7 +69,10 @@ class MockDeviceConnectionManager(
         when(action) {
             is DeviceAction.Read.Characteristic -> TODO()
             is DeviceAction.Read.Descriptor -> TODO()
-            is DeviceAction.Write.Characteristic -> TODO()
+            is DeviceAction.Write.Characteristic -> {
+                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
+                action.characteristic.updateValue()
+            }
             is DeviceAction.Write.Descriptor ->  {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
                 action.descriptor.updateValue()

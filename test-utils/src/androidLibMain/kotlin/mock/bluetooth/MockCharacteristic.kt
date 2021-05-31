@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import java.util.UUID
 
-class MockCharacteristicWrapper(override val uuid: UUID = UUID.randomUUID(), descriptorUuids: List<UUID> = emptyList(), override val service: ServiceWrapper) : CharacteristicWrapper {
+class AndroidMockCharacteristicWrapper(
+    override val uuid: UUID = UUID.randomUUID(),
+    descriptorUuids: List<UUID> = emptyList(),
+    override val service: ServiceWrapper
+) : MockCharacteristicWrapper {
 
     override var value: ByteArray? = null
     override fun updateValue(value: ByteArray?) {
@@ -61,4 +64,6 @@ class MockCharacteristicWrapper(override val uuid: UUID = UUID.randomUUID(), des
     override fun intValue(formatType: Int, offset: Int): Int {
         return 0
     }
+
+    override fun updateMockValue(value: ByteArray?) = updateValue(value)
 }
