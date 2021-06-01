@@ -23,9 +23,14 @@ import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.randomUUID
 
-expect fun createDeviceWrapper(): DeviceWrapper
+expect fun createDeviceWrapper(deviceName: String? = null): DeviceWrapper
 
 expect fun createServiceWrapper(
     stateRepo: DeviceStateFlowRepo,
+    uuid: UUID = randomUUID(),
     characteristics: List<Pair<UUID, List<UUID>>> = listOf(randomUUID() to listOf(randomUUID()))
 ): ServiceWrapper
+
+interface CanUpdateMockValue {
+    fun updateMockValue(value: ByteArray?)
+}

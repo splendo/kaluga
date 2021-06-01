@@ -18,11 +18,18 @@
 package com.splendo.kaluga.test.mock.bluetooth
 
 import com.splendo.kaluga.bluetooth.ServiceWrapper
+import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import platform.CoreBluetooth.CBUUID
 
-actual fun createDeviceWrapper(): DeviceWrapper = MockCBPeripheralWrapper()
+actual fun createDeviceWrapper(
+    deviceName: String?
+): DeviceWrapper = MockCBPeripheralWrapper(name = deviceName)
 
-actual fun createServiceWrapper(stateRepo: DeviceStateFlowRepo, characteristics: List<Pair<CBUUID, List<CBUUID>>>): ServiceWrapper =
-    MockServiceWrapper(CBUUID(), characteristics)
+actual fun createServiceWrapper(
+    stateRepo: DeviceStateFlowRepo,
+    uuid: UUID,
+    characteristics: List<Pair<CBUUID, List<CBUUID>>>
+): ServiceWrapper =
+    MockServiceWrapper(uuid, characteristics)

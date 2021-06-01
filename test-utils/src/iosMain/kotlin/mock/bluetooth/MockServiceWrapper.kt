@@ -27,7 +27,7 @@ class MockServiceWrapper(
 ) : ServiceWrapper {
 
     override val characteristics: List<CharacteristicWrapper> = characteristicUuids.map {
-        MockCharacteristicWrapper(
+        IOSMockCharacteristicWrapper(
             it.first,
             it.second
         )

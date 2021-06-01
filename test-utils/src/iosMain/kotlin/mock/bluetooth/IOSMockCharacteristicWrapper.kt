@@ -17,17 +17,19 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
+import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSData
 
-class MockCharacteristicWrapper(override val uuid: CBUUID = CBUUID(), descriptorUuids: List<CBUUID> = emptyList()) :
-    CharacteristicWrapper {
+class IOSMockCharacteristicWrapper(
+    override val uuid: CBUUID = CBUUID(),
+    descriptorUuids: List<CBUUID> = emptyList()
+) : MockCharacteristicWrapper {
 
     val isReadCompleted = EmptyCompletableDeferred()
     val isWriteCompleted = CompletableDeferred<NSData>()
@@ -52,5 +54,9 @@ class MockCharacteristicWrapper(override val uuid: CBUUID = CBUUID(), descriptor
     override fun writeValue(value: NSData, peripheral: CBPeripheral) {
         this.value = value
         isWriteCompleted.complete(value)
+    }
+
+    override fun updateMockValue(value: ByteArray?) {
+        this.value = value?.toNSData() ?: NSData()
     }
 }
