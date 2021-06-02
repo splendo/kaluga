@@ -19,14 +19,24 @@ package com.splendo.kaluga.test.mock.bluetooth.device
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.base.utils.toHexString
+import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.mock.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 class MockDeviceConnectionManager(
     connectionSettings: ConnectionSettings,
@@ -39,6 +49,8 @@ class MockDeviceConnectionManager(
     var disconnectCompleted = EmptyCompletableDeferred()
     var readRssiCompleted = EmptyCompletableDeferred()
     var performActionCompleted = CompletableDeferred<DeviceAction>()
+    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 1)
+    val handledAction = _handledAction.asSharedFlow()
 
     fun reset() {
         connectCompleted = EmptyCompletableDeferred()
@@ -65,17 +77,30 @@ class MockDeviceConnectionManager(
     }
 
     override suspend fun performAction(action: DeviceAction) {
-
+        currentAction = action
+        debug("Mock Action: $currentAction")
         when(action) {
-            is DeviceAction.Read.Characteristic -> action.characteristic.updateValue()
-            is DeviceAction.Read.Descriptor -> action.descriptor.updateValue()
-            is DeviceAction.Write.Characteristic -> {
-                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
-                action.characteristic.updateValue()
+            is DeviceAction.Read.Characteristic -> launch {
+                handleUpdatedCharacteristic(action.characteristic.uuid) {
+                    debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+                }
+                _handledAction.emit(action)
             }
-            is DeviceAction.Write.Descriptor ->  {
+            is DeviceAction.Read.Descriptor -> launch {
+                handleUpdatedDescriptor(action.descriptor.uuid)
+                _handledAction.emit(action)
+            }
+            is DeviceAction.Write.Characteristic -> launch {
+                (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
+                handleUpdatedCharacteristic(action.characteristic.uuid) {
+                    debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
+                }
+                _handledAction.emit(action)
+            }
+            is DeviceAction.Write.Descriptor -> launch {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
-                action.descriptor.updateValue()
+                handleUpdatedDescriptor(action.descriptor.uuid)
+                _handledAction.emit(action)
             }
             is DeviceAction.Notification -> TODO()
         }
