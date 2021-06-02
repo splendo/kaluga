@@ -31,11 +31,7 @@ import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.mock.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class MockDeviceConnectionManager(
@@ -102,7 +98,10 @@ class MockDeviceConnectionManager(
                 handleUpdatedDescriptor(action.descriptor.uuid)
                 _handledAction.emit(action)
             }
-            is DeviceAction.Notification -> TODO()
+            is DeviceAction.Notification -> launch {
+                handleCurrentActionCompleted()
+                _handledAction.emit(action)
+            }
         }
 
         performActionCompleted.complete(action)
