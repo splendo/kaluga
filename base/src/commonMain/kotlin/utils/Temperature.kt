@@ -18,21 +18,21 @@
 package com.splendo.kaluga.base.utils
 
 
-interface Temperature<T>:SciUnit<T> {
+interface Temperature<T>:SciUnit<T>, Serializable {
     override val value: T
     val fahrenheit:Fahrenheit<T>
     val celsius:Celsius<T>
 }
 
-interface Celsius<T>:Temperature<T>
-interface Fahrenheit<T>:Temperature<T>
-inline class CelsiusDouble(override val value:Double):Celsius<Double> {
+interface Celsius<T>:Temperature<T>, Serializable
+interface Fahrenheit<T>:Temperature<T>, Serializable
+inline class CelsiusDouble(override val value:Double):Celsius<Double>, Serializable {
     override val fahrenheit: Fahrenheit<Double>
         get() = FahrenheitDouble(value * 9 / 5 + 32)
     override val celsius: Celsius<Double>
         get() = this
 }
-inline class FahrenheitDouble(override val value:Double):Fahrenheit<Double> {
+inline class FahrenheitDouble(override val value:Double):Fahrenheit<Double>, Serializable {
     override val fahrenheit: Fahrenheit<Double>
         get() = this
     override val celsius: Celsius<Double>

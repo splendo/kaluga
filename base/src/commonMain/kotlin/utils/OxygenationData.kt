@@ -21,16 +21,16 @@ package com.splendo.kaluga.base.utils
 
 
 
-interface OxygenationData<T> : SciUnit<T> {
+interface OxygenationData<T> : SciUnit<T>, Serializable {
     override val value: T
 }
 
-interface Concentration<T> : OxygenationData<T> {
+interface Concentration<T> : OxygenationData<T>, Serializable {
     override val value: T
 }
 //Archetypal concentration unit inline class
-interface Micromolar<T> : Concentration<T>
-inline class MicromolarDouble(override val value: Double) : Micromolar<Double>{
+interface Micromolar<T> : Concentration<T>, Serializable
+inline class MicromolarDouble(override val value: Double) : Micromolar<Double>, Serializable{
     val valid : MicromolarDouble
         get() {
             if (value in -319.9..319.9){
@@ -44,12 +44,12 @@ inline class MicromolarDouble(override val value: Double) : Micromolar<Double>{
 
 /*The NIRS quantities as inline classes */
 
-interface TSI<T> : OxygenationData<T>, percentage<T>{
+interface TSI<T> : OxygenationData<T>, percentage<T>, Serializable{
     override val value: T
     override val valid: percentage<T>
 }
 
-inline class TSIDouble(override val value: Double) : TSI<Double>{
+inline class TSIDouble(override val value: Double) : TSI<Double>, Serializable{
         override val valid : TSIDouble
         get() {
             if (value in 0.0..1.0){ //Valid values in 0-1 range, since it's a percentage.
@@ -61,11 +61,11 @@ inline class TSIDouble(override val value: Double) : TSI<Double>{
         }
 }
 
-interface O2HB<T> : Concentration<T> {
+interface O2HB<T> : Concentration<T>, Serializable {
     override val value: T
 }
 
-inline class O2HBmicromolarDouble(override val value: Double) : O2HB<Double>{
+inline class O2HBmicromolarDouble(override val value: Double) : O2HB<Double>, Serializable{
     val valid : O2HBmicromolarDouble
     get() {
         if (value in -319.9..319.9){
@@ -77,10 +77,10 @@ inline class O2HBmicromolarDouble(override val value: Double) : O2HB<Double>{
     }
 }
 
-interface HHB<T> : Concentration<T> {
+interface HHB<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>{
+inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>, Serializable{
     val valid : HHBMicromolarDouble
         get() {
             if (value in -319.9..319.9){
@@ -92,10 +92,10 @@ inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>{
         }
 }
 
-interface tHB<T> : Concentration<T> {
+interface tHB<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class tHBMicrmolarDouble(override val value: Double) : tHB<Double>{
+inline class tHBMicrmolarDouble(override val value: Double) : tHB<Double>, Serializable{
     val valid : tHBMicrmolarDouble
         get() {
             if (value in -319.9..319.9){
@@ -106,10 +106,10 @@ inline class tHBMicrmolarDouble(override val value: Double) : tHB<Double>{
             }
         }
 }
-interface HbDiff<T> : Concentration<T> {
+interface HbDiff<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class HbDiffDouble(override val value: Double) : HbDiff<Double>{
+inline class HbDiffDouble(override val value: Double) : HbDiff<Double>, Serializable{
     val valid : HbDiffDouble
         get() {
             if (value in -319.9..319.9){

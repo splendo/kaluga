@@ -19,41 +19,41 @@
 
 package com.splendo.kaluga.base.utils
 
-interface CardiacOutputData<T> : SciUnit<T>
+interface CardiacOutputData<T> : SciUnit<T>, Serializable
 
-interface VolumetricFlowRate<T> : CardiacOutputData<T>
-interface LiterPerMinute<T> : VolumetricFlowRate<T>
+interface VolumetricFlowRate<T> : CardiacOutputData<T>, Serializable
+interface LiterPerMinute<T> : VolumetricFlowRate<T>, Serializable
 
-interface Volume<T> : CardiacOutputData<T>
-interface Milliliter<T> : Volume<T>
+interface Volume<T> : CardiacOutputData<T>, Serializable
+interface Milliliter<T> : Volume<T>, Serializable
 
-interface VolumeIndex<T> : CardiacOutputData<T>
-interface MilliliterPerSquareMeter<T> : VolumeIndex<T>
+interface VolumeIndex<T> : CardiacOutputData<T>, Serializable
+interface MilliliterPerSquareMeter<T> : VolumeIndex<T>, Serializable
 
-interface Rate<T> : CardiacOutputData<T>
-interface BeatsPerMinute<T> : Rate<T>
-interface BreathsPerMinute<T> : Rate<T>
+interface Rate<T> : CardiacOutputData<T>, Serializable
+interface BeatsPerMinute<T> : Rate<T>, Serializable
+interface BreathsPerMinute<T> : Rate<T>, Serializable
 
-interface VolumetricFlowRateIndex<T> : CardiacOutputData<T>
-interface MilliliterPerMinutePerSquareMeter<T> : VolumetricFlowRateIndex<T>
+interface VolumetricFlowRateIndex<T> : CardiacOutputData<T>, Serializable
+interface MilliliterPerMinutePerSquareMeter<T> : VolumetricFlowRateIndex<T>, Serializable
 
-interface Time<T> : CardiacOutputData<T>
-interface Milliseconds<T> : Time<T>
+interface Time<T> : CardiacOutputData<T>, Serializable
+interface Milliseconds<T> : Time<T>, Serializable
 
-interface Resistance<T> : CardiacOutputData<T>
-interface DyneSecondPerCentimeterToTheFifth<T> : Resistance<T>
+interface Resistance<T> : CardiacOutputData<T>, Serializable
+interface DyneSecondPerCentimeterToTheFifth<T> : Resistance<T>, Serializable
 
-interface ResistanceIndex<T> : CardiacOutputData<T>
-interface DyneSecondPerCentimeterToTheFifthPerSquareMeter<T> : ResistanceIndex<T>
+interface ResistanceIndex<T> : CardiacOutputData<T>, Serializable
+interface DyneSecondPerCentimeterToTheFifthPerSquareMeter<T> : ResistanceIndex<T>, Serializable
 
-interface Pressure<T> : CardiacOutputData<T>
-interface MillimeterOfMercury<T> :Pressure<T>
+interface Pressure<T> : CardiacOutputData<T>, Serializable
+interface MillimeterOfMercury<T> :Pressure<T>, Serializable
 
-interface WorkPerArea<T> : CardiacOutputData<T>
-interface KilogramMeterPerSquareMeter<T> : WorkPerArea<T>
+interface WorkPerArea<T> : CardiacOutputData<T>, Serializable
+interface KilogramMeterPerSquareMeter<T> : WorkPerArea<T>, Serializable
 
 
-inline class CardiacOutput (override val value: Double) : CardiacOutputData<Double> {
+inline class CardiacOutput (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : CardiacOutput
     get() {
         if (value in 0.01..10.0){ //Valid values in 0-1 range, since it's a percentage.
@@ -65,7 +65,7 @@ inline class CardiacOutput (override val value: Double) : CardiacOutputData<Doub
     }
 }
 
-inline class StrokeVolume (override val value: Double) : CardiacOutputData<Double> {
+inline class StrokeVolume (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : StrokeVolume
     get() {
         if (value in 0.01..200.0) {
@@ -75,7 +75,7 @@ inline class StrokeVolume (override val value: Double) : CardiacOutputData<Doubl
         }
     }
 }
-inline class HeartRate (override val value: Double) : CardiacOutputData<Double> {
+inline class HeartRate (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : HeartRate
         get() {
             if (value in 0.0..300.0) {
@@ -85,7 +85,7 @@ inline class HeartRate (override val value: Double) : CardiacOutputData<Double> 
             }
         }
 }
-inline class CardiacIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class CardiacIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : CardiacIndex
         get() {
             if (value in 1.0..10.0) {
@@ -95,7 +95,7 @@ inline class CardiacIndex (override val value: Double) : CardiacOutputData<Doubl
             }
         }
 }
-inline class StrokeVolumeIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class StrokeVolumeIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : StrokeVolumeIndex
         get() {
             if (value in 10.0..80.0) {
@@ -105,7 +105,7 @@ inline class StrokeVolumeIndex (override val value: Double) : CardiacOutputData<
             }
         }
 }
-inline class SystemicVascularResistance (override val value: Double) : CardiacOutputData<Double> {
+inline class SystemicVascularResistance (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : SystemicVascularResistance
         get() {
             if (value in 500.0..2000.0) {
@@ -115,7 +115,7 @@ inline class SystemicVascularResistance (override val value: Double) : CardiacOu
             }
         }
 }
-inline class SystemicVascularResistanceIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class SystemicVascularResistanceIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : SystemicVascularResistanceIndex
         get() {
             if (value in 1000.0..5000.0) {
@@ -125,7 +125,7 @@ inline class SystemicVascularResistanceIndex (override val value: Double) : Card
             }
         }
 }
-inline class LeftCardiacWorkIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class LeftCardiacWorkIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : LeftCardiacWorkIndex
         get() {
             if (value in 1.0..6.0) {
@@ -135,13 +135,13 @@ inline class LeftCardiacWorkIndex (override val value: Double) : CardiacOutputDa
             }
         }
 }
-inline class ContractilityIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class ContractilityIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : ContractilityIndex
         get() {
             return ContractilityIndex(value) //No ranges within value is expected so always return?
         }
 }
-inline class VentricularEjectionTime (override val value: Double) : CardiacOutputData<Double> {
+inline class VentricularEjectionTime (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : VentricularEjectionTime
         get(){
             if (value in 0.1..0.9){ //in milliseconds
@@ -151,7 +151,7 @@ inline class VentricularEjectionTime (override val value: Double) : CardiacOutpu
             }
         }
 }
-inline class ThoracicFlowInversionTime (override val value: Double) : CardiacOutputData<Double> {
+inline class ThoracicFlowInversionTime (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : ThoracicFlowInversionTime
         get() {
             if (value in 0.1..0.9){
@@ -161,7 +161,7 @@ inline class ThoracicFlowInversionTime (override val value: Double) : CardiacOut
             }
         }
 }
-inline class EjectionFraction (override val value: Double) : CardiacOutputData<Double> {
+inline class EjectionFraction (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : EjectionFraction
         get() {
             if (value in 0.0..1.0){
@@ -171,7 +171,7 @@ inline class EjectionFraction (override val value: Double) : CardiacOutputData<D
             }
         }
 }
-inline class EndDiastolicVolume (override val value: Double) : CardiacOutputData<Double> {
+inline class EndDiastolicVolume (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : EndDiastolicVolume
         get () {
             if (value in 50.0..300.0){
@@ -181,13 +181,13 @@ inline class EndDiastolicVolume (override val value: Double) : CardiacOutputData
             }
         }
 }
-inline class FillingIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class FillingIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : FillingIndex
     get (){
         return FillingIndex(value)
     }
 }
-inline class SystolicArterialPressure (override val value: Double) : CardiacOutputData<Double> {
+inline class SystolicArterialPressure (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : SystolicArterialPressure
     get() {
         if (value in 10.0..400.0){
@@ -197,7 +197,7 @@ inline class SystolicArterialPressure (override val value: Double) : CardiacOutp
         }
     }
 }
-inline class MeanArterialPressure (override val value: Double) : CardiacOutputData<Double> {
+inline class MeanArterialPressure (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : MeanArterialPressure
     get() {
         if (value in 10.0..400.0){
@@ -207,7 +207,7 @@ inline class MeanArterialPressure (override val value: Double) : CardiacOutputDa
         }
     }
 }
-inline class DiastolicArterialPressure (override val value: Double) : CardiacOutputData<Double> {
+inline class DiastolicArterialPressure (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : DiastolicArterialPressure
     get() {
         if (value in 10.0..400.0){
@@ -217,19 +217,19 @@ inline class DiastolicArterialPressure (override val value: Double) : CardiacOut
         }
     }
 }
-inline class EDFR (override val value: Double) : CardiacOutputData<Double> {
+inline class EDFR (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : EDFR
     get() {
         return EDFR(value)
     }
 }
-inline class ThoracicFluidIndex (override val value: Double) : CardiacOutputData<Double> {
+inline class ThoracicFluidIndex (override val value: Double) : CardiacOutputData<Double>, Serializable {
  val valid : ThoracicFluidIndex
     get() {
         return ThoracicFluidIndex(value)
     }
 }
-inline class SignalQuality (override val value: Double) : CardiacOutputData<Double> {
+inline class SignalQuality (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : SignalQuality
         get() {
             if (value in 0.0..1.0){
@@ -239,7 +239,7 @@ inline class SignalQuality (override val value: Double) : CardiacOutputData<Doub
             }
         }
 }
-inline class BreathingFrequency (override val value: Double) : CardiacOutputData<Double> {
+inline class BreathingFrequency (override val value: Double) : CardiacOutputData<Double>, Serializable {
     val valid : BreathingFrequency
     get() {
         return BreathingFrequency(value)

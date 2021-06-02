@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.base.utils
 
-interface SciUnit<T> {
+interface SciUnit<T> : Serializable {
     val value:T
 }
 
-interface percentage<T> : SciUnit<T> {
+interface percentage<T> : SciUnit<T>, Serializable {
     override val value : T
     val valid: percentage<T> //Not sure if this should be here
 }
-interface Index<T> : SciUnit<T>
+interface Index<T> : SciUnit<T>, Serializable
 
-inline class closedPercentageDouble(override val value:Double) : percentage<Double>{
+inline class closedPercentageDouble(override val value:Double) : percentage<Double>, Serializable{
     override val valid: percentage<Double>
         get() {
             if (value in 0.0..1.0){ //Valid values in 0-1 range, since it's a percentage.
