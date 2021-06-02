@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,26 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.scanner
+package com.splendo.kaluga.test.mock.bluetooth.scanner
 
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 
-class MockBaseScanner(permissions: Permissions, connectionSettings: ConnectionSettings, autoRequestPermissions: Boolean, autoEnableBluetooth: Boolean, stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>) : BaseScanner(permissions,
+class MockBaseScanner(
+    permissions: Permissions,
+    connectionSettings: ConnectionSettings,
+    autoRequestPermissions: Boolean,
+    autoEnableBluetooth: Boolean,
+    stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>
+) : BaseScanner(permissions,
     connectionSettings,
     autoRequestPermissions,
     autoEnableBluetooth,
