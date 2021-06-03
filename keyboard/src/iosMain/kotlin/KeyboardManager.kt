@@ -18,22 +18,14 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.keyboard
 
+import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
-import platform.UIKit.UIView
 import platform.darwin.sel_registerName
-
-class UIKitFocusHandler(val view: UIView) : FocusHandler {
-    override fun requestFocus() {
-        if (view.canBecomeFirstResponder) {
-            view.becomeFirstResponder()
-        }
-    }
-}
 
 actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
     actual class Builder(private val application: UIApplication = UIApplication.sharedApplication) : BaseKeyboardManager.Builder {
-        actual override fun create() = KeyboardManager(application)
+        actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
     }
 
     override fun show(focusHandler: FocusHandler) {

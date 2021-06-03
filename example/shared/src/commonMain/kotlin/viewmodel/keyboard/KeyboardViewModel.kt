@@ -6,7 +6,7 @@ import com.splendo.kaluga.keyboard.FocusHandler
 
 class KeyboardViewModel(keyboardManagerBuilder: BaseKeyboardManager.Builder, private val editFieldFocusHandler: FocusHandler) : BaseViewModel() {
 
-    private val keyboardManager: BaseKeyboardManager = keyboardManagerBuilder.create()
+    private val keyboardManager: BaseKeyboardManager = keyboardManagerBuilder.create(coroutineScope)
 
     fun onShowPressed() {
         keyboardManager.show(editFieldFocusHandler)

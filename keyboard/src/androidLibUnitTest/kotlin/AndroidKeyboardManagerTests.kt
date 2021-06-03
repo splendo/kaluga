@@ -17,6 +17,9 @@ import android.content.Context
 import android.os.IBinder
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
+import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
 import org.mockito.ArgumentMatchers
@@ -31,10 +34,8 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         private const val viewId = 1
     }
 
-
-
     inner class AndroidKeyboardTestContext(coroutineScope:CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
-        override val focusHandler get() = AndroidFocusHandler(mockActivity, viewId)
+        override val focusHandler get() = AndroidFocusHandler(viewId)
         override lateinit var builder: KeyboardManager.Builder
 
         val mockActivity:Activity = mock(Activity::class.java)
@@ -43,6 +44,9 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
         init {
+            val mockLifecycleOwner = mock(LifecycleOwner::class.java)
+            val mockFragmentManager = mock(FragmentManager::class.java)
+
             `when`(mockActivity.getSystemService(eq(Context.INPUT_METHOD_SERVICE))).thenReturn(
                 mockInputMethodManager
             )
@@ -51,7 +55,15 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
             `when`(mockView.windowToken).thenReturn(mockWindowToken)
             `when`(mockInputMethodManager.isAcceptingText).thenReturn(true)
 
-            builder = KeyboardManager.Builder(mockActivity)
+            builder = KeyboardManager.Builder()
+
+            builder.subscribe(
+                LifecycleSubscribable.LifecycleManager(
+                    mockActivity,
+                    mockLifecycleOwner,
+                    mockFragmentManager
+                )
+            )
         }
     }
 

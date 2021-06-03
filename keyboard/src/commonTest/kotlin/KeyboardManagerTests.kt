@@ -31,7 +31,7 @@ abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KT
     @Test
     fun testShow() = testOnUIThread {
         launch {
-            val manager = builder.create()
+            val manager = builder.create(this)
             yield()
             manager.show(focusHandler)
             cancel()
@@ -45,7 +45,7 @@ abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KT
     @Test
     fun testDismiss() = testOnUIThread {
         launch {
-            val manager = builder.create()
+            val manager = builder.create(this)
             yield()
             manager.hide()
             cancel()
