@@ -162,6 +162,15 @@ kotlin {
 
 android {
 
+    configurations {
+        create("androidTestApi")
+        create("androidTestDebugApi")
+        create("androidTestReleaseApi")
+        create("testApi")
+        create("testDebugApi")
+        create("testReleaseApi")
+    }
+
     kotlinOptions {
         kotlinOptions {
             jvmTarget = "1.8"
