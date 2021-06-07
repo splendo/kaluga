@@ -15,8 +15,8 @@ class IOSKeyboardManagerTests : KeyboardManagerTests<IOSKeyboardTestContext>() {
 
         override val builder get() = KeyboardManager.Builder(application)
 
-        override val view: KeyboardHostingView
-            get() = textField
+        override val focusHandler: FocusHandler
+            get() = UIKitFocusHandler(textField)
     }
 
     override fun IOSKeyboardTestContext.verifyShow() {

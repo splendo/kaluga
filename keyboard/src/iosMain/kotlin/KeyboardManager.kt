@@ -20,10 +20,7 @@ package com.splendo.kaluga.keyboard
 
 import kotlinx.coroutines.CoroutineScope
 import platform.UIKit.UIApplication
-import platform.UIKit.UIView
 import platform.darwin.sel_registerName
-
-actual typealias KeyboardHostingView = UIView
 
 actual class KeyboardManager(private val application: UIApplication) : BaseKeyboardManager {
 
@@ -31,10 +28,8 @@ actual class KeyboardManager(private val application: UIApplication) : BaseKeybo
         actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(application)
     }
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
-        if (keyboardHostingView.canBecomeFirstResponder) {
-            keyboardHostingView.becomeFirstResponder()
-        }
+    override fun show(focusHandler: FocusHandler) {
+        focusHandler.requestFocus()
     }
 
     override fun hide() {

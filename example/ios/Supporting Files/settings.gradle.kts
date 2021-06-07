@@ -63,6 +63,9 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":keyboard")
     project(":keyboard").projectDir = file("../../../keyboard")
 
+    include(":links")
+    project(":links").projectDir = file("../../../links")
+
     include(":location")
     project(":location").projectDir = file("../../../location")
 

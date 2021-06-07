@@ -17,6 +17,7 @@
   -->
 
 <resources>
+    <dimen name="linksBottomMargin">250dp</dimen>
     <dimen name="networkFragmentsHeight">500dp</dimen>
     <dimen name="networkLayoutsMargin">10dp</dimen>
 </resources>
