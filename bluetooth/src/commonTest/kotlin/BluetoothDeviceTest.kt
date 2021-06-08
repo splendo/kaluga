@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class BluetoothDeviceTest:BluetoothFlowTest<Device?>() {
 
@@ -35,40 +36,35 @@ class BluetoothDeviceTest:BluetoothFlowTest<Device?>() {
     @Test
     fun testGetDevice() = testWithFlow {
 
-        launch {
-            scanDevice(device, deviceWrapper)
+        test {
+            assertNull(it)
         }
+        scanDevice()
 
         bluetooth.startScanning()
-        val foundDevice = CompletableDeferred<Device>()
-        awaitDevice(this, foundDevice)
-        assertEquals(device, foundDevice.await())
-        action { bluetooth.stopScanning() }
+        val device = device
         test {
             assertEquals(device, it)
         }
 
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        action { bluetooth.stopScanning() }
+
+        mockBaseScanner().stopScanningCompleted.get().await()
+
+        test {
+            assertNull(it)
+        }
     }
 
     @Test
     fun testConnectDevice() = testWithFlow {
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
-        val deviceConnectionManager = device.peekState().connectionManager as MockDeviceConnectionManager
-
-        // device.deviceConnectionManager as MockDeviceConnectionManager
-        connectDevice(device, deviceConnectionManager, this)
-        disconnectDevice(device, connectionManager, this)
+        connectDevice(device)
+        disconnectDevice(device)
 
         resetFlow()
-        //permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        mockBaseScanner().stopMonitoringPermissions.get().await()
     }
 }

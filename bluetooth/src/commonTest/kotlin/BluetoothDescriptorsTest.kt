@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -32,19 +31,18 @@ class BluetoothDescriptorsTest: BluetoothFlowTest<List<Descriptor>>() {
     @Test
     fun testGetDescriptors() = testWithFlow {
 
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
         test {
             assertEquals(emptyList(), it)
         }
         action {
-            connectDevice(device, connectionManager, this)
-            connectionManager.discoverServicesCompleted.await()
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
         }
+        val characteristic = characteristic
         test {
             assertEquals(characteristic.descriptors, it)
         }

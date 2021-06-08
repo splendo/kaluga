@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -34,9 +32,7 @@ class BluetoothServiceTest: BluetoothFlowTest<Service?>() {
 
     @Test
     fun testGetService() = testWithFlow {
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
         test {
@@ -44,15 +40,12 @@ class BluetoothServiceTest: BluetoothFlowTest<Service?>() {
         }
 
         action {
-            connectDevice(device, connectionManager, this)
-            discoverService(service, device)
+            connectDevice()
+            discoverService()
         }
-        val foundService = CompletableDeferred<Service>()
-        awaitService(this@BluetoothServiceTest, foundService)
-        assertEquals(service, foundService.await())
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        val service = service
+        test {
+            assertEquals(service, it)
+        }
     }
 }

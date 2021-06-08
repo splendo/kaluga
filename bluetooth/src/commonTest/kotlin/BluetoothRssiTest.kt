@@ -35,17 +35,16 @@ class BluetoothRssiTest: BluetoothFlowTest<Int>() {
     @Test
     fun testRssi() = testWithFlow {
         val newRssi = -42
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
+        val rssi = rssi
         test {
-            assertEquals(initialRssi, it)
+            assertEquals(rssi, it)
         }
         action {
-            connectDevice(device, connectionManager, this@BluetoothRssiTest)
+            connectDevice(device)
             bluetooth.devices()[device.identifier].updateRssi()
-            connectionManager.readRssiCompleted.await()
+            connectionManager.readRssiCompleted.get().await()
             device.filter { it is DeviceState.Connected }.first()
             connectionManager.handleNewRssi(newRssi)
         }
@@ -56,7 +55,6 @@ class BluetoothRssiTest: BluetoothFlowTest<Int>() {
         resetFlow()
 
         permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-//        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        mockBaseScanner().stopMonitoringPermissions.get().await()
     }
 }

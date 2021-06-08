@@ -36,7 +36,11 @@ interface DeviceInfo {
     fun distance(environmentalFactor: Double = 2.0): Double
 }
 
-data class DeviceInfoImpl(internal val deviceWrapper: DeviceWrapper, override val rssi: Int, override val advertisementData: BaseAdvertisementData) : DeviceInfo {
+data class DeviceInfoImpl(
+    internal val deviceWrapper: DeviceWrapper,
+    override val rssi: Int,
+    override val advertisementData: BaseAdvertisementData
+) : DeviceInfo {
 
     override val identifier: Identifier
         get() = deviceWrapper.identifier

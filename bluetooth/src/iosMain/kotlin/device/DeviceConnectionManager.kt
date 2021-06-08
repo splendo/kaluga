@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
@@ -63,8 +64,8 @@ internal actual class DeviceConnectionManager(
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
 
-    private val discoveringServices = emptyList<CBUUID>().toMutableList()
-    private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
+    private val discoveringServices = sharedMutableListOf<CBUUID>()
+    private val discoveringCharacteristics = sharedMutableListOf<CBUUID>()
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {

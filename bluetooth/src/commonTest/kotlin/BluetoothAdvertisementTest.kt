@@ -17,11 +17,9 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -33,12 +31,12 @@ class BluetoothAdvertisementTest: BluetoothFlowTest<BaseAdvertisementData>() {
     }
 
     @Test
-    fun testAdvertisementData() = runBlocking {
-        launch {
-            scanDevice(device, deviceWrapper, initialRssi, advertisementData)
-        }
-        bluetooth.startScanning()
+    fun testAdvertisementData() = testWithFlow {
 
+        bluetooth.startScanning()
+        scanDevice()
+
+        val advertisementData = advertisementData
         test {
             assertEquals(advertisementData, it)
         }
@@ -46,14 +44,10 @@ class BluetoothAdvertisementTest: BluetoothFlowTest<BaseAdvertisementData>() {
         val newAdvertisementData = MockAdvertisementData(name = "New Name")
 
         action {
-            scanDevice(device, deviceWrapper, initialRssi, newAdvertisementData)
+            scanDevice(advertisementData = newAdvertisementData)
         }
         test {
             assertEquals(newAdvertisementData, it)
         }
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
     }
 }

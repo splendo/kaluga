@@ -17,15 +17,21 @@
 
 package com.splendo.kaluga.test.mock.bluetooth.device
 
+import co.touchlab.stately.concurrency.AtomicBoolean
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 
 data class MockAdvertisementData(
-    override var name: String? = null,
-    override var manufacturerId: Int? = null,
-    override var manufacturerData: ByteArray? = null,
-    override var serviceUUIDs: List<UUID> = emptyList(),
-    override var serviceData: Map<UUID, ByteArray?> = emptyMap(),
-    override var txPowerLevel: Int = Int.MIN_VALUE,
-    override var isConnectible: Boolean = true
-) : BaseAdvertisementData
+    override val name: String? = null,
+    override val manufacturerId: Int? = null,
+    override val manufacturerData: ByteArray? = null,
+    override val serviceUUIDs: List<UUID> = emptyList(),
+    override val serviceData: Map<UUID, ByteArray?> = emptyMap(),
+    override val txPowerLevel: Int = Int.MIN_VALUE,
+) : BaseAdvertisementData {
+    private val _isConnectible = AtomicReference(true)
+    override var isConnectible:Boolean
+        get() = _isConnectible.get()
+        set(value) {_isConnectible.set(value)}
+}

@@ -17,9 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import co.touchlab.stately.ensureNeverFrozen
 import co.touchlab.stately.freeze
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -29,53 +27,57 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
-import com.splendo.kaluga.bluetooth.scanner.MockBaseScanner
+import com.splendo.kaluga.test.mock.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.BLUETOOTH
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.CHARACTERISTIC
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DESCRIPTOR
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.SERVICE
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.valueOf
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
+import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.createServiceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-
+import kotlin.test.fail
 
 abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
     companion object {
-        const val initialRssi = -100
-        val initialAdvertisementData = MockAdvertisementData(name="Name")
     }
+
+    var rssi = -100
+    var advertisementData = MockAdvertisementData(name="Name")
+    var autoRequestPermission: Boolean = true
+    var autoEnableBluetooth: Boolean = true
+    var isEnabled: Boolean = true
+    var permissionState: PermissionState<Permission.Bluetooth> = PermissionState.Allowed()
+
+
+    private val deferredScanningStateFlowRepo: CompletableDeferred<ScanningStateFlowRepo> = CompletableDeferred()
+    val scanningStateRepo: ScanningStateFlowRepo
+        get() = deferredScanningStateFlowRepo.getCompleted()
 
     protected lateinit var device: Device
     protected lateinit var deviceWrapper: DeviceWrapper
-    protected lateinit var advertisementData: MockAdvertisementData
     internal lateinit var connectionManager: MockDeviceConnectionManager
     protected lateinit var serviceWrapper: ServiceWrapper
     protected lateinit var service: Service
@@ -101,8 +103,9 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         permissions.getManager(Permission.Bluetooth).grantPermission()
     }
 
-    protected suspend fun setupBluetooth(autoRequestPermission: Boolean = true, autoEnableBluetooth: Boolean = true, isEnabled: Boolean = true, permissionState: PermissionState<Permission.Bluetooth> = PermissionState.Allowed()) {
+    protected fun setupBluetooth(autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, isEnabled: Boolean, permissionState: PermissionState<Permission.Bluetooth>) {
         val deferredBaseScanner = this.deferredBaseScanner
+        val deferredScanningStateFlowRepo = this.deferredScanningStateFlowRepo
         val scannerBuilder = object : BaseScanner.Builder {
             override fun create(
                 permissions: Permissions,
@@ -111,7 +114,14 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
                 autoEnableBluetooth: Boolean,
                 scanningStateRepo: ScanningStateFlowRepo,
             ): BaseScanner {
-                val scanner = MockBaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+                deferredScanningStateFlowRepo.complete(scanningStateRepo)
+                val scanner = MockBaseScanner(
+                    permissions,
+                    connectionSettings,
+                    autoRequestPermission,
+                    autoEnableBluetooth,
+                    scanningStateRepo
+                )
                 scanner.isEnabled = isEnabled
                 deferredBaseScanner.complete(scanner)
                 return scanner
@@ -122,9 +132,27 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         scannerBuilder.freeze()
         bluetooth = Bluetooth(permissions, ConnectionSettings(), autoRequestPermission, autoEnableBluetooth, scannerBuilder, MainScope())
         bluetooth.freeze()
-        // mockBaseScanner = deferredBaseScanner.await()
         permissionManager.currentState = permissionState
     }
+
+    fun testWithBluetoothFlow(
+        autoRequestPermission: Boolean = this.autoRequestPermission,
+        autoEnableBluetooth:Boolean = this.autoEnableBluetooth,
+        permissionState: PermissionState<Permission.Bluetooth> = this.permissionState,
+        isEnabled:Boolean = this.isEnabled,
+        advertisementData: MockAdvertisementData = this.advertisementData,
+        rssi: Int = this.rssi,
+        block: FlowTestBlock<T, Flow<T>>
+    ) {
+        this.autoRequestPermission = autoRequestPermission
+        this.autoEnableBluetooth = autoEnableBluetooth
+        this.permissionState = permissionState
+        this.isEnabled = isEnabled
+        this.advertisementData = advertisementData
+        this.rssi = rssi
+        testWithFlow(block)
+    }
+
 
 
     protected enum class Setup {
@@ -134,20 +162,15 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         CHARACTERISTIC,
         DESCRIPTOR
     }
-    protected suspend fun setup(
+    protected fun setup(
         setup: Setup,
-        mockAdvertisementData: MockAdvertisementData = initialAdvertisementData,
-        rssi: Int = initialRssi
     ) {
-
-
         setupPermissions()
-        setupBluetooth()
+        setupBluetooth(autoRequestPermission, autoEnableBluetooth, isEnabled, permissionState)
         if (setup == BLUETOOTH) return
 
         deviceWrapper = createDeviceWrapper()
-        device = createDevice(deviceWrapper, rssi = rssi, advertisementData = mockAdvertisementData)
-        advertisementData = mockAdvertisementData
+        device = createDevice(deviceWrapper, rssi = rssi, advertisementData = advertisementData)
         connectionManager = device.peekState().connectionManager as MockDeviceConnectionManager
         if (setup == DEVICE) return
 
@@ -162,124 +185,65 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
     }
 
-    protected suspend fun scanDevice(device: Device, deviceWrapper: DeviceWrapper, rssi: Int = initialRssi, advertisementData: BaseAdvertisementData = initialAdvertisementData, scanCompleted: EmptyCompletableDeferred? = null) {
-        bluetooth.scanningStateRepo.filter {
-            it is ScanningState.Initialized.Enabled.Scanning
-        }.first()
-        bluetooth.scanningStateRepo.takeAndChangeState { state ->
-            when (state) {
-                is ScanningState.Initialized.Enabled.Scanning -> {
-                    state.discoverDevice(deviceWrapper.identifier, rssi, advertisementData) { device }
-                }
-                else -> {
-                    state.remain()
-                }
-            }
-        }
-        scanCompleted?.complete()
-    }
+    protected suspend fun scanDevice(
+        device: Device = this.device,
+        deviceWrapper: DeviceWrapper = this.deviceWrapper,
+        rssi: Int = this.rssi,
+        advertisementData: BaseAdvertisementData = this.advertisementData,
+        scanCompleted: EmptyCompletableDeferred? = null
+    ) {
 
-    protected suspend fun awaitDevice(flowTest: FlowTest<Device?, Flow<Device?>>, foundDevice: CompletableDeferred<Device>) {
-        // val deviceNotFound = EmptyCompletableDeferred()
-        // deviceNotFound.invokeOnCompletion {
-        //     awaitDevice(flowTest, foundDevice)
-        // }
-        flowTest.test {
-            if (it != null) {
-                foundDevice.complete(it)
-            } else {
-                awaitDevice(flowTest, foundDevice)
-                // deviceNotFound.complete()
+        val bluetooth = this.bluetooth
+
+        launch {
+
+            bluetooth.scanningStateRepo.filter {
+                it is ScanningState.Initialized.Enabled.Scanning
+            }.take(1).collect {
+                bluetooth.scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                    state.discoverDevice(
+                        deviceWrapper.identifier,
+                        rssi,
+                        advertisementData
+                    ) { device }
+                }
+                scanCompleted?.complete()
             }
         }
     }
 
-    internal suspend fun connectDevice(device: Device, connectionManager: MockDeviceConnectionManager, coroutineScope: CoroutineScope) {
+    internal suspend fun connectDevice(device: Device = this.device) {
         connectionManager.reset()
-        val connectingJob = coroutineScope.async {
+        val bluetooth = bluetooth
+        val connectingJob = async {
             bluetooth.devices()[device.identifier].connect()
         }
-        connectionManager.connectCompleted.await()
+        connectionManager.connectCompleted.get().await()
         connectionManager.handleConnect()
         connectingJob.await()
     }
 
-    internal suspend fun disconnectDevice(device: Device, connectionManager: MockDeviceConnectionManager, coroutineScope: CoroutineScope) {
+    internal suspend fun disconnectDevice(device: Device) {
         connectionManager.reset()
-        val disconnectingJob = coroutineScope.async {
+        val bluetooth = bluetooth
+        val disconnectingJob = async {
             bluetooth.devices()[device.identifier].disconnect()
         }
-        connectionManager.disconnectCompleted.await()
+        connectionManager.disconnectCompleted.get().await()
         connectionManager.handleDisconnect()
         disconnectingJob.await()
     }
 
-    protected suspend fun discoverService(service: Service, device: Device) {
+    protected suspend fun discoverService(service: Service = this.service, device: Device = this.device) {
         device.filter { it is DeviceState.Connected.Discovering }.first()
         connectionManager.handleScanCompleted(listOf(service))
     }
 
-    protected suspend fun awaitService(flowTest: SimpleFlowTest<Service?>, foundService: CompletableDeferred<Service>) {
-        // val serviceNotFound = EmptyCompletableDeferred()
-        // serviceNotFound.invokeOnCompletion {
-        //
-        // }
-        flowTest.test {
-            if (it != null) {
-                foundService.complete(it)
-            } else {
-                awaitService(flowTest, foundService)
-                // serviceNotFound.complete()
-            }
-        }
-    }
-
-    protected suspend fun awaitCharacteristic(flowTest: SimpleFlowTest<Characteristic?>, foundCharacteristic: CompletableDeferred<Characteristic>) {
-        // val characteristicNotFound = EmptyCompletableDeferred()
-        // characteristicNotFound.invokeOnCompletion {
-        //
-        // }
-        flowTest.test {
-            if (it != null) {
-                foundCharacteristic.complete(it)
-            } else {
-                awaitCharacteristic(flowTest, foundCharacteristic)
-                // characteristicNotFound.complete()
-            }
-        }
-    }
-
-    protected suspend fun awaitDescriptor(flowTest: SimpleFlowTest<Descriptor?>, foundDescriptor: CompletableDeferred<Descriptor>) {
-        // val descriptorNotFound = EmptyCompletableDeferred()
-        // descriptorNotFound.invokeOnCompletion {
-        //
-        // }
-        flowTest.test {
-            if (it != null) {
-                foundDescriptor.complete(it)
-            } else {
-                awaitDescriptor(flowTest, foundDescriptor)
-                // descriptorNotFound.complete()
-            }
-        }
-    }
-
-    protected suspend fun awaitByte(flowTest: FlowTest<ByteArray?, Flow<ByteArray?>>, foundByte: CompletableDeferred<ByteArray>) {
-        // val byteNotFound = EmptyCompletableDeferred()
-        // byteNotFound.invokeOnCompletion {
-        //
-        // }
-        flowTest.test {
-            if (it != null) {
-                foundByte.complete(it)
-            } else {
-                awaitByte(flowTest, foundByte)
-                // byteNotFound.complete()
-            }
-        }
-    }
-
-    protected fun createDevice(deviceWrapper: DeviceWrapper, rssi: Int = initialRssi, advertisementData: BaseAdvertisementData = initialAdvertisementData): Device {
+    protected fun createDevice(
+        deviceWrapper: DeviceWrapper,
+        rssi: Int = this.rssi,
+        advertisementData: BaseAdvertisementData = this.advertisementData
+    ): Device {
         return Device(
             ConnectionSettings(),
             DeviceInfoImpl(deviceWrapper, rssi, advertisementData),

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test.mock.bluetooth.device
 
+import co.touchlab.stately.collections.sharedMutableMapOf
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.base.utils.toHexString
@@ -24,6 +26,7 @@ import com.splendo.kaluga.bluetooth.asBytes
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.DeviceAction
+import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.logging.debug
@@ -34,6 +37,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import kotlin.reflect.KClass
 
 class MockDeviceConnectionManager(
     connectionSettings: ConnectionSettings,
@@ -41,45 +45,48 @@ class MockDeviceConnectionManager(
     stateRepo: DeviceStateFlowRepo
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
 
-    var connectCompleted = EmptyCompletableDeferred()
-    var discoverServicesCompleted = EmptyCompletableDeferred()
-    var disconnectCompleted = EmptyCompletableDeferred()
-    var readRssiCompleted = EmptyCompletableDeferred()
-    var performActionCompleted = CompletableDeferred<DeviceAction>()
-    private val _handledAction = MutableSharedFlow<DeviceAction>(
-        replay = 16,
-        onBufferOverflow = BufferOverflow.DROP_OLDEST
-    )
+    val connectCompleted = AtomicReference(EmptyCompletableDeferred())
+    val discoverServicesCompleted = AtomicReference(EmptyCompletableDeferred())
+    val disconnectCompleted = AtomicReference(EmptyCompletableDeferred())
+    val readRssiCompleted = AtomicReference(EmptyCompletableDeferred())
+    val performActionCompleted = AtomicReference(CompletableDeferred<DeviceAction>())
+    val performActionStarted = AtomicReference(CompletableDeferred<DeviceAction>())
+    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val handledAction = _handledAction.asSharedFlow()
 
     fun reset() {
-        connectCompleted = EmptyCompletableDeferred()
-        discoverServicesCompleted = EmptyCompletableDeferred()
-        disconnectCompleted = EmptyCompletableDeferred()
-        readRssiCompleted = EmptyCompletableDeferred()
-        performActionCompleted = CompletableDeferred()
+        connectCompleted.set(EmptyCompletableDeferred())
+        discoverServicesCompleted.set(EmptyCompletableDeferred())
+        disconnectCompleted.set(EmptyCompletableDeferred())
+        readRssiCompleted.set(EmptyCompletableDeferred())
+        performActionCompleted.set(CompletableDeferred())
+        performActionStarted.set(CompletableDeferred())
         _handledAction.resetReplayCache()
     }
 
     override suspend fun connect() {
-        connectCompleted.complete()
+        connectCompleted.get().complete()
     }
 
     override suspend fun discoverServices() {
-        discoverServicesCompleted.complete()
+        discoverServicesCompleted.get().complete()
     }
 
     override suspend fun disconnect() {
-        disconnectCompleted.complete()
+        disconnectCompleted.get().complete()
     }
 
     override suspend fun readRssi() {
-        readRssiCompleted.complete()
+        readRssiCompleted.get().complete()
     }
+
+    var waitAfterHandlingAction: MutableMap<KClass<out DeviceAction>,EmptyCompletableDeferred> = sharedMutableMapOf()
 
     override suspend fun performAction(action: DeviceAction) {
         currentAction = action
         debug("Mock Action: $currentAction")
+        performActionStarted.get().complete(action)
+
         when(action) {
             is DeviceAction.Read.Characteristic -> launch {
                 handleUpdatedCharacteristic(action.characteristic.uuid) {
@@ -111,6 +118,15 @@ class MockDeviceConnectionManager(
             }
         }
 
-        performActionCompleted.complete(action)
+        performActionCompleted.get().complete(action)
+    }
+
+    override suspend fun handleCurrentActionCompleted(): DeviceState {
+
+        currentAction?.let { currentAction ->
+            val wait = waitAfterHandlingAction[currentAction::class]
+            wait?.await()
+        }
+        return super.handleCurrentActionCompleted()
     }
 }

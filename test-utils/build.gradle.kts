@@ -21,13 +21,15 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
 
                 // these are not coming from component.gradle because they need to be in the main scope
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
+
+                implementation("org.jetbrains.kotlin:kotlin-reflect:" + ext["kotlin_version"])
 
                 // these dependencies make test linking slow, but Kotlin/Native cannot handle `compileOnly`
                 // https://github.com/splendo/kaluga/issues/208
@@ -61,7 +63,8 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:"+ext["kotlinx_coroutines_version"])
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:"+ext["kotlinx_coroutines_version"])
             }
         }
     }
@@ -70,7 +73,7 @@ kotlin {
 android {
     dependencies {
         val ext = (gradle as ExtensionAware).extra
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${ext["kotlinx_coroutines_version"]}")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:"+ext["kotlinx_coroutines_version"])
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:"+ext["kotlinx_coroutines_version"])
     }
 }

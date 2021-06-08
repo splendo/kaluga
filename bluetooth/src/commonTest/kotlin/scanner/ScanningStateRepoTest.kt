@@ -17,76 +17,44 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
-import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
-import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Scanning
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.MissingPermissions
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.test.FlowTestBlock
-import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.SimpleFlowTest
-import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
-import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlin.test.fail
 
-class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
+class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
 
-    private lateinit var permissionsBuilder: MockPermissionsBuilder
-    private lateinit var permissions: Permissions
-    private val permissionManager: MockPermissionManager<Permission.Bluetooth>
-        get() {
-            return permissionsBuilder.bluetoothPMManager
-        }
+    private val deviceFilter = setOf(randomUUID())
 
-    lateinit var mockBaseScanner: MockBaseScanner
-    lateinit var scanningStateRepo: ScanningStateRepo
-
-    var autoRequestPermission: Boolean = true
-    var autoEnableBluetooth: Boolean = true
-    var isEnabled: Boolean = true
-    var permissionState: PermissionState<Permission.Bluetooth> = PermissionState.Allowed()
-    var deviceFilter = setOf(
-        randomUUID()
-    )
+    override val filter: (Flow<ScanningState>) -> Flow<ScanningState> = {
+        it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new })
+    }
 
     override val flow: suspend () -> Flow<ScanningState> = {
-        setupPermissions()
-        setupScanningState()
-        scanningStateRepo
+        setup(DEVICE)
+        bluetooth.scanningStateRepo.takeAndChangeState(remainIfStateNot = NotInitialized::class) {
+            it.initialize(bluetooth.scanningStateRepo)
+        }
+
+        bluetooth.scanningStateRepo.filterOnlyImportant()
     }
 
-    fun testWithScanningStateFlow(
-        autoRequestPermission: Boolean = this.autoRequestPermission,
-        autoEnableBluetooth:Boolean = this.autoEnableBluetooth,
-        permissionState: PermissionState<Permission.Bluetooth> = this.permissionState,
-        isEnabled:Boolean = this.isEnabled,
-        block: FlowTestBlock<ScanningState, Flow<ScanningState>>
-    ) {
-        this.autoRequestPermission = autoRequestPermission
-        this.autoEnableBluetooth = autoEnableBluetooth
-        this.permissionState = permissionState
-        this.isEnabled = isEnabled
-        testWithFlow(block)
-    }
 
     @Test
     fun testStartWithBluetoothEnabled() = testWithFlow {
@@ -94,96 +62,85 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
         }
-
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
 
     @Test
-    fun testStartWithoutPermissions() = testWithScanningStateFlow(permissionState = PermissionState.Denied.Requestable()) {
-        assertFalse(mockBaseScanner.startMonitoringPermissions.isCompleted)
+    fun testStartWithoutPermissions() = testWithBluetoothFlow(permissionState = PermissionState.Denied.Requestable()) {
+        val hasStartedMonitoring = permissionManager.hasStartedMonitoring
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+            assertEquals(PermissionStateRepo.defaultMonitoringInterval, hasStartedMonitoring.getCompleted())
             assertTrue(it is MissingPermissions)
-            assertFalse(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
-            assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
         }
+        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        assertTrue(mockBaseScanner().startMonitoringPermissions.get().isCompleted)
+
         action {
             permissionManager.hasRequestedPermission.await()
             permissionManager.setPermissionAllowed()
         }
+        val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringBluetoothCompleted.get()
         test {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
+            assertTrue(startMonitoringBluetoothCompleted.isCompleted)
         }
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
     }
 
     @Test
-    fun testStartWithoutPermissionNoAutoRequest() = testWithScanningStateFlow(
+    fun testStartWithoutPermissionNoAutoRequest() = testWithBluetoothFlow(
         autoRequestPermission = false,
         permissionState = PermissionState.Denied.Requestable()
     ) {
-        assertFalse(mockBaseScanner.startMonitoringPermissions.isCompleted)
+        val hasStartedMonitoring = permissionManager.hasStartedMonitoring
         test {
-            assertEquals(PermissionStateRepo.defaultMonitoringInterval, permissionManager.hasStartedMonitoring.getCompleted())
+            assertEquals(PermissionStateRepo.defaultMonitoringInterval, hasStartedMonitoring.getCompleted())
             assertTrue(it is MissingPermissions)
-            assertFalse(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
-            assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
         }
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
+        assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringPermissions.get().isCompleted)
+
         assertFalse(permissionManager.hasRequestedPermission.isCompleted)
     }
 
     @Test
-    fun testStartWithBluetoothDisabled() = testWithScanningStateFlow(isEnabled = false) {
+    fun testStartWithBluetoothDisabled() = testWithBluetoothFlow(isEnabled = false) {
+
         test {
             assertTrue(it is Disabled)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
-            assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
         }
+
+        // TODO:
+        // val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+
         action {
-            mockBaseScanner.requestEnableCompleted.await()
-            mockBaseScanner.isEnabled = true
-            mockBaseScanner.bluetoothEnabled()
+            mockBaseScanner().requestEnableCompleted.get().await()
+            mockBaseScanner().isEnabled = true
+            mockBaseScanner().bluetoothEnabled()
         }
+
         test {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
         }
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
 
     @Test
-    fun testStartWithBluetoothDisabledNoAutoEnable() = testWithScanningStateFlow(autoEnableBluetooth = false, isEnabled = false) {
+    fun testStartWithBluetoothDisabledNoAutoEnable() = testWithBluetoothFlow(autoEnableBluetooth = false, isEnabled = false) {
         test {
             assertTrue(it is Disabled)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
-            assertTrue(mockBaseScanner.startMonitoringPermissions.isCompleted)
-        }
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
 
-        assertFalse(mockBaseScanner.requestEnableCompleted.isCompleted)
+        }
+
+        mockBaseScanner().startMonitoringPermissions.get().await()
+        assertFalse(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+        assertFalse(mockBaseScanner().requestEnableCompleted.get().isCompleted)
     }
 
     @Test
     fun testScanning() = testWithFlow {
-        val deviceWrapper = createDeviceWrapper()
-        val advertisementData = MockAdvertisementData()
-        val device = createDevice(deviceWrapper, advertisementData)
         test {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
@@ -197,12 +154,15 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
                 }
             }
         }
+        val deviceFilter = deviceFilter
+        val scanForDevicesCompleted = mockBaseScanner().scanForDevicesCompleted.get()
+        val stopScanningCompleted = mockBaseScanner().stopScanningCompleted.get()
         test {
             assertTrue(it is Scanning)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            assertEquals(deviceFilter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
-            assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertEquals(deviceFilter, scanForDevicesCompleted.getCompleted())
+            assertFalse(stopScanningCompleted.isCompleted)
         }
         action {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -212,12 +172,15 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
                 }
             }
         }
+        val device = device
+        val scanForDevicesCompletedSecond = mockBaseScanner().scanForDevicesCompleted.get()
+        val stopScanningCompletedSecond = mockBaseScanner().stopScanningCompleted.get()
         test {
             assertTrue(it is Scanning)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(listOf(device), it.discovered.devices)
-            assertEquals(deviceFilter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
-            assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertEquals(deviceFilter, scanForDevicesCompletedSecond.getCompleted())
+            assertFalse(stopScanningCompletedSecond.isCompleted)
         }
         action {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -227,36 +190,26 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
                 }
             }
         }
+        val stopScanningCompletedThird = mockBaseScanner().stopScanningCompleted.get()
         test {
             assertTrue(it is Idle)
             assertEquals(deviceFilter, it.discovered.filter)
-            assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertTrue(stopScanningCompletedThird.isCompleted)
             assertEquals(listOf(device), it.discovered.devices)
         }
 
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
-
-        mockBaseScanner.reset()
+        resetFlow()
+        mockBaseScanner().reset()
 
         test {
             assertTrue(it is Idle)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(listOf(device), it.discovered.devices)
         }
-
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
 
     @Test
     fun testRediscoverSameDevice() = testWithFlow {
-        val deviceHolder = createDeviceWrapper()
-        val initialRssi = -100
-        val advertisementData = MockAdvertisementData(name = "Name")
-        val device = createDevice(deviceHolder, advertisementData)
         test {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
@@ -270,88 +223,89 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
                 }
             }
         }
+
+        val scanForDevicesCompleted = mockBaseScanner().scanForDevicesCompleted.get()
+        val stopScanningCompleted = mockBaseScanner().stopScanningCompleted.get()
+        val deviceFilter = deviceFilter
         test {
             assertTrue(it is Scanning)
             assertEquals(deviceFilter, it.discovered.filter)
             assertEquals(emptyList(), it.discovered.devices)
-            assertEquals(deviceFilter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
-            assertFalse(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertEquals(deviceFilter, scanForDevicesCompleted.getCompleted())
+            assertFalse(stopScanningCompleted.isCompleted)
         }
         action {
             scanningStateRepo.takeAndChangeState { scanningState ->
                 when (scanningState) {
-                    is Scanning -> scanningState.discoverDevice(deviceHolder.identifier, initialRssi, advertisementData) { device }
-                    else -> scanningState.remain()
-                }
-            }
-        }
-        test {
-            assertTrue(it is Scanning)
-            assertEquals(advertisementData, it.discovered.devices[0].first().advertisementData)
-            scanningStateRepo.takeAndChangeState { scanningState ->
-                when (scanningState) {
-                    is Scanning -> {
-                        val newAdvertisementData = MockAdvertisementData(name = "New Name")
-                        val newRssi = -42
-                        val newState = scanningState.discoverDevice(deviceHolder.identifier, newRssi, newAdvertisementData) { device }
-                        assertEquals(scanningState.remain(), newState)
-                        assertEquals(listOf(device), scanningState.discovered.devices)
-                        assertEquals(newAdvertisementData, scanningState.discovered.devices[0].first().advertisementData)
-                        assertEquals(newRssi, scanningState.discovered.devices[0].first().rssi)
-                        newState
-                    }
+                    is Scanning -> scanningState.discoverDevice(deviceWrapper.identifier, rssi, advertisementData) { device }
                     else -> scanningState.remain()
                 }
             }
         }
 
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
+        val advertisementData = advertisementData
+        test {
+            assertTrue(it is Scanning)
+            assertEquals(advertisementData, it.discovered.devices[0].first().advertisementData)
+        }
+
+        val deviceWrapper = deviceWrapper
+        val device = device
+        val scanningStateRepo = scanningStateRepo
+
+        scanningStateRepo.takeAndChangeState { scanningState ->
+            when (scanningState) {
+                is Scanning -> {
+                    val newAdvertisementData = MockAdvertisementData(name = "New Name")
+                    val newRssi = -42
+                    val newState = scanningState.discoverDevice(deviceWrapper.identifier, newRssi, newAdvertisementData) { device }
+                    assertEquals(scanningState.remain(), newState)
+                    assertEquals(listOf(device), scanningState.discovered.devices)
+                    assertEquals(newAdvertisementData, scanningState.discovered.devices[0].first().advertisementData)
+                    assertEquals(newRssi, scanningState.discovered.devices[0].first().rssi)
+                    newState
+                }
+                else -> fail("unexpected state")
+            }
+        }
     }
 
     @Test
     fun testPermissionsRevokedWhileIdle() = testWithFlow {
         test {
             assertTrue(it is Idle)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
         }
         action {
             permissionManager.setPermissionDenied()
         }
         test {
+            println("->> $it")
             assertTrue(it is MissingPermissions)
         }
 
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
+        assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+
     }
 
     @Test
     fun testBluetoothDisabledWhileIdle() = testWithFlow {
         test {
             assertTrue(it is Idle)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
         }
         action {
-            mockBaseScanner.isEnabled = false
-            mockBaseScanner.bluetoothDisabled()
+            mockBaseScanner().isEnabled = false
+            mockBaseScanner().bluetoothDisabled()
         }
+
         test {
             assertTrue(it is Disabled)
         }
-
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
 
     @Test
     fun testPermissionRevokedWhileScanning() = testWithFlow {
         test {
             assertTrue(it is Idle)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
         }
         action {
             scanningStateRepo.takeAndChangeState { scanningState ->
@@ -367,27 +321,23 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
         action {
             permissionManager.setPermissionDenied()
         }
+        val stopScanningCompleted = mockBaseScanner().stopScanningCompleted.get()
         test {
-            assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertTrue(stopScanningCompleted.isCompleted)
             assertTrue(it is MissingPermissions)
         }
-
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
 
     @Test
-    fun testBluetoothDisabledWhileScanning() = testWithFlow {
+    fun testBluetoothDisabledWhileScanning() = testWithBluetoothFlow {
         test {
             assertTrue(it is Idle)
-            assertTrue(mockBaseScanner.startMonitoringBluetoothCompleted.isCompleted)
         }
         action {
             scanningStateRepo.takeAndChangeState { scanningState ->
                 when (scanningState) {
                     is Idle -> scanningState.startScanning(deviceFilter)
-                    else -> scanningState.remain()
+                    else -> fail("unexpected state $scanningState")
                 }
             }
         }
@@ -395,63 +345,13 @@ class ScanningStateRepoTest : SimpleFlowTest<ScanningState>() {
             assertTrue(it is Scanning)
         }
         action {
-            mockBaseScanner.isEnabled = false
-            mockBaseScanner.bluetoothDisabled()
+            mockBaseScanner().isEnabled = false
+            mockBaseScanner().bluetoothDisabled()
         }
+        val stopScanningCompleted = mockBaseScanner().stopScanningCompleted.get()
         test {
-            assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
+            assertTrue(stopScanningCompleted.isCompleted)
             assertTrue(it is Disabled)
         }
-
-        mockBaseScanner.stopMonitoringBluetoothCompleted.await()
-        mockBaseScanner.stopMonitoringPermissions.await()
-        permissionManager.hasStoppedMonitoring.await()
     }
-
-    private fun setupPermissions() {
-        permissionsBuilder = MockPermissionsBuilder()
-        permissions = Permissions(permissionsBuilder)
-        permissions[Permission.Bluetooth]
-    }
-
-    private fun setupScanningState() {
-        scanningStateRepo = ScanningStateRepo(permissions, ConnectionSettings(), autoRequestPermission, autoEnableBluetooth, object : BaseScanner.Builder {
-
-            override fun create(
-                permissions: Permissions,
-                connectionSettings: ConnectionSettings,
-                autoRequestPermission: Boolean,
-                autoEnableBluetooth: Boolean,
-                scanningStateRepo: ScanningStateFlowRepo
-            ): BaseScanner {
-                mockBaseScanner = MockBaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
-                return mockBaseScanner
-            }
-        })
-        mockBaseScanner.isEnabled = isEnabled
-        permissionManager.currentState = permissionState
-    }
-
-    private fun createDevice(deviceWrapper: DeviceWrapper, advertisementData: BaseAdvertisementData): Device {
-        return Device(
-            ConnectionSettings(),
-            DeviceInfoImpl(deviceWrapper, 0, advertisementData),
-            object : BaseDeviceConnectionManager.Builder {
-
-                override fun create(
-                    connectionSettings: ConnectionSettings,
-                    deviceWrapper: DeviceWrapper,
-                    stateRepo: DeviceStateFlowRepo,
-                ): BaseDeviceConnectionManager {
-                    return MockDeviceConnectionManager(
-                        connectionSettings,
-                        deviceWrapper,
-                        stateRepo
-                    )
-                }
-            },
-        Dispatchers.Main.immediate
-        )
-    }
-
 }

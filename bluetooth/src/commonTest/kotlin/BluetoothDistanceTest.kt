@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -27,59 +26,55 @@ class BluetoothDistanceTest: BluetoothFlowTest<Double>() {
 
     override val flow: suspend () -> Flow<Double> = {
         advertisementData = MockAdvertisementData(txPowerLevel = -50)
-        setup(Setup.DEVICE, rssi = -50, mockAdvertisementData = advertisementData)
+        rssi = -50
+        setup(Setup.DEVICE)
         bluetooth.devices()[device.identifier].distance()
     }
 
     @Test
     fun testDistance() = testWithFlow {
-        launch {
-            scanDevice(device, deviceWrapper, -50, advertisementData)
-        }
+        scanDevice(rssi = -50)
         bluetooth.startScanning()
         test {
             assertEquals(1.0, it)
         }
         action {
-            scanDevice(device, deviceWrapper, -70, advertisementData)
+            scanDevice(rssi = -70)
         }
         test {
             assertEquals(5.5, it)
         }
         action {
-            scanDevice(device, deviceWrapper, -50, advertisementData)
+            scanDevice(rssi = -50)
         }
         test {
             assertEquals(4.0, it)
         }
         action {
-            scanDevice(device, deviceWrapper, -30, advertisementData)
+            scanDevice(rssi = -30)
         }
         test {
             assertEquals(3.025, it)
         }
         action {
-            scanDevice(device, deviceWrapper, -30, advertisementData)
+            scanDevice(rssi = -30)
         }
 
-        // this should not have led to an update since it repeats the RSSI value
-
+        // this should not have led to an update since it repeats the RSSI value, so the following would fail:
+        //
         // test {
         //     assertEquals(2.44, it)
         // }
 
         action {
-            scanDevice(device, deviceWrapper, -70, advertisementData)
+            scanDevice(rssi = -70)
         }
         test {
             assertEquals(4.42, it)
         }
 
-
         resetFlow()
-
         permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        //mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        mockBaseScanner().stopMonitoringPermissions.get().await()
     }
 }

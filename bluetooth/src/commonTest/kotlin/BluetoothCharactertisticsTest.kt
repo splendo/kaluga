@@ -32,25 +32,20 @@ class BluetoothCharacteristicsTest: BluetoothFlowTest<List<Characteristic>>() {
 
     @Test
     fun testGetCharacteristics() = testWithFlow {
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
         test {
             assertEquals(emptyList(), it)
         }
         action {
-            connectDevice(device, connectionManager, this)
-            connectionManager.discoverServicesCompleted.await()
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
         }
+        val service = service
         test {
             assertEquals(service.characteristics, it)
         }
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
     }
 }

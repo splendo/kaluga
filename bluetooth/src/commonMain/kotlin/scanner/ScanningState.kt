@@ -17,15 +17,18 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Scanning
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
+import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.Dispatchers
@@ -61,17 +64,21 @@ sealed class ScanningState : State() {
         error.message?.let { com.splendo.kaluga.logging.error(TAG, it) }
     }
 
-    sealed class Initialized(private val scanner: BaseScanner):ScanningState() {
+    sealed class Initialized(private val scanner: BaseScanner):ScanningState(),HandleBeforeOldStateIsRemoved<ScanningState> {
 
-        override suspend fun initialState() {
-            scanner.startMonitoringPermissions()
+        override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
+            if (oldState is NotInitialized)
+                scanner.startMonitoringPermissions()
         }
 
         override suspend fun finalState() {
+            // TODO introduce a separate state for this
             scanner.stopMonitoringPermissions()
         }
 
         val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner)}
+
+        // TODO: verify better all below code is not needed any longer
 
 //        interface Permitted : HandleBeforeOldStateIsRemoved<ScanningState>,
 //            HandleAfterNewStateIsSet<ScanningState> {
@@ -150,8 +157,15 @@ sealed class ScanningState : State() {
                 scanner: BaseScanner
             ) : Enabled(previouslyDiscovered, scanner) {
 
-                fun startScanning(filter: Set<UUID>): suspend () -> Scanning = {
+                fun startScanning(filter: Set<UUID> = discovered.filter): suspend () -> Scanning = {
                     Scanning(
+                        discovered.discoveredForFilter(filter),
+                        scanner
+                    )
+                }
+
+                fun refresh(filter: Set<UUID> = discovered.filter): suspend () -> Idle = {
+                    Idle(
                         discovered.discoveredForFilter(filter),
                         scanner
                     )
@@ -211,7 +225,7 @@ sealed class ScanningState : State() {
                 }
 
                 override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                   if (oldState !is Disabled  && scanner.autoEnableBluetooth)
+                   if (oldState !is Disabled && scanner.autoEnableBluetooth)
                        scanner.requestBluetoothEnable()
                 }
             }
@@ -242,7 +256,7 @@ sealed class ScanningState : State() {
         val autoRequestPermission: Boolean,
         val autoEnableBluetooth: Boolean,
         val builder: BaseScanner.Builder
-        ):ScanningState() {
+        ):ScanningState(), SpecialFlowValue.NotImportant {
 
         suspend fun initialize(
             repo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>
@@ -276,26 +290,30 @@ class ScanningStateRepo(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
-    initChangeState = { _,_ ->
-        suspend { ScanningState.NotInitialized(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, builder) }
-    },
-    deinitChangeState = { state, repo ->
-        if (state is ScanningState.Initialized.Enabled) {
-            @Suppress("NAME_SHADOWING")
-            val repo = repo as ScanningStateRepo
-
-            // TODO: these should be copied into a state instead of set as fields
-            repo.lastDevices = state.discovered.devices
-            repo.lastFilter = when (state) {
-                is ScanningState.Initialized.Enabled.Idle,
-                is ScanningState.Initialized.Enabled.Scanning -> state.discovered.filter
-            }
+    initChangeState = { state ->
+        when(state) {
+            is ScanningState.Initialized.Enabled.Idle ->
+                state.refresh() // check if we now need to start scanning again
+            is Scanning,
+            is ScanningState.Initialized.NoBluetooth.Disabled,
+            is ScanningState.Initialized.NoBluetooth.MissingPermissions,
+            is ScanningState.NotInitialized ->
+                state.remain()
         }
-        null
+    },
+    deinitChangeState = { state ->
+        if (state is Scanning)
+            state.stopScanning
+        else
+            state.remain()
+    },
+    firstState = {
+        ScanningState.NotInitialized(
+            permissions,
+            connectionSettings,
+            autoRequestPermission,
+            autoEnableBluetooth,
+            builder
+        )
     }
-) {
-
-    private var lastDevices: List<Device> = emptyList()
-    private var lastFilter: Set<UUID> = emptySet()
-
-}
+)

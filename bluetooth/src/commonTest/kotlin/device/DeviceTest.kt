@@ -17,16 +17,20 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
-import com.splendo.kaluga.test.FlowTest
-import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristic
+import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
+import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
-import com.splendo.test.mock.bluetooth.MockDescriptor
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlin.test.fail
 
 class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
@@ -37,41 +41,46 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
     private lateinit var deviceStateRepo: Device
 
-    private fun validateCharacteristicUpdated(): Boolean = (characteristic as MockCharacteristic).didUpdate.isCompleted
-    private fun validateDescriptorUpdated(): Boolean = (descriptor as MockDescriptor).didUpdate.isCompleted
-
     override val flow: suspend () -> Flow<DeviceState> = {
-        deviceStateRepo = Device(connectionSettings, DeviceInfoImpl(deviceWrapper, initialRssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
+        setup(Setup.DESCRIPTOR)
+        val connectionSettings = connectionSettings
+        val deviceWrapper = deviceWrapper
+        val rssi = rssi
+        val advertisementData = advertisementData
+
+        val deviceStateRepo = Device(connectionSettings, DeviceInfoImpl(deviceWrapper, rssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
 
             override fun create(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo): BaseDeviceConnectionManager {
-                connectionManager = MockDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo)
-                return connectionManager
+                return MockDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo)
             }
-        }, deviceStateRepo.coroutineContext)
-
+        }, coroutineContext)
+        this.deviceStateRepo = deviceStateRepo
+        connectionManager = deviceStateRepo.peekState().connectionManager as MockDeviceConnectionManager
         deviceStateRepo
+
     }
 
 
     @Test
     fun testInitialState() = testWithFlow {
+        val rssi = rssi
         test {
             assertTrue(it is DeviceState.Disconnected)
-            assertEquals(initialRssi, it.deviceInfo.rssi)
+            assertEquals(rssi, it.deviceInfo.rssi)
         }
     }
 
     @Test
     fun testConnected() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
     }
 
     @Test
     fun testCancelConnection() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
+        getDisconnectedState()
+        connecting()
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
@@ -80,21 +89,21 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
-        disconnecting(this)
-        disconnect(this)
+        disconnecting()
+        disconnect()
     }
 
     @Test
     fun testConnectNotConnectible() = testWithFlow {
         advertisementData.isConnectible = false
-        getDisconnectedState(this)
+        getDisconnectedState()
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Disconnected -> {
-                        val newState = deviceState.connect(deviceState)
-                        assertEquals(deviceState.remain(), newState)
-                        newState
+                        deviceState.connect(deviceState).also {
+                            assertEquals(deviceState.remain(), it)
+                        }
                     }
                     else -> deviceState.remain()
                 }
@@ -104,18 +113,18 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
     @Test
     fun testDisconnect() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
-        disconnecting(this)
-        disconnect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
+        disconnecting()
+        disconnect()
     }
 
     @Test
     fun testReconnect() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
 
         action {
             connectionManager.reset()
@@ -126,9 +135,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
-
+        val connectCompleted = connectionManager.connectCompleted.get()
         test {
-            assertTrue(connectionManager.connectCompleted.isCompleted)
+            assertTrue(connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(0, it.attempt)
         }
@@ -147,9 +156,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
     @Test
     fun testReconnectFailed() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
 
         action {
             connectionManager.reset()
@@ -161,8 +170,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
 
+        val connectCompleted = connectionManager.connectCompleted.get()
         test {
-            assertTrue(connectionManager.connectCompleted.isCompleted)
+            assertTrue(connectCompleted.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(0, it.attempt)
         }
@@ -175,8 +185,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
+        val connectCompletedSecond = connectionManager.connectCompleted.get()
         test {
-            assertTrue(connectionManager.connectCompleted.isCompleted)
+            assertTrue(connectCompletedSecond.isCompleted)
             assertTrue(it is DeviceState.Reconnecting)
             assertEquals(1, it.attempt)
         }
@@ -189,20 +200,21 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
+        val connectCompletedThird = connectionManager.connectCompleted.get()
         test {
-            assertFalse(connectionManager.connectCompleted.isCompleted)
+            assertFalse(connectCompletedThird.isCompleted)
             assertTrue(it is DeviceState.Disconnected)
         }
     }
 
     @Test
     fun testReadRssi() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
 
         action {
-            assertEquals(initialRssi, deviceStateRepo.peekState().deviceInfo.rssi)
+            assertEquals(rssi, deviceStateRepo.peekState().deviceInfo.rssi)
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Connected -> {
@@ -214,8 +226,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
 
+        val readRssiCompleted = connectionManager.readRssiCompleted.get()
         test {
-            assertTrue(connectionManager.readRssiCompleted.isCompleted)
+            assertTrue(readRssiCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected)
             assertEquals(-20, it.deviceInfo.rssi)
         }
@@ -223,9 +236,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
     @Test
     fun testDiscoverDevices() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
@@ -234,8 +247,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
+        val discoverServicesCompleted = connectionManager.discoverServicesCompleted.get()
         test {
-            assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
+            assertTrue(discoverServicesCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected.Discovering)
         }
         val services = listOf(service)
@@ -248,16 +262,16 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             }
         }
         test {
-            assertTrue(it is DeviceState.Connected.Idle)
+            assertTrue(it is Idle)
             assertEquals(services, it.services)
         }
     }
 
     @Test
     fun testHandleActions() = testWithFlow {
-        getDisconnectedState(this)
-        connecting(this)
-        connect(this)
+        getDisconnectedState()
+        connecting()
+        connect()
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
@@ -266,8 +280,9 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
+        val discoverServicesCompleted = connectionManager.discoverServicesCompleted.get()
         test {
-            assertTrue(connectionManager.discoverServicesCompleted.isCompleted)
+            assertTrue(discoverServicesCompleted.isCompleted)
             assertTrue(it is DeviceState.Connected.Discovering)
         }
         val services = listOf(service)
@@ -279,88 +294,94 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
+        val service = service
         test {
-            assertTrue(it is DeviceState.Connected.Idle)
-            assertEquals(services, it.services)
+            assertTrue(it is Idle)
+            assertEquals(listOf(service), it.services)
         }
+
+        connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class] = EmptyCompletableDeferred()
+        connectionManager.waitAfterHandlingAction[DeviceAction.Write.Descriptor::class] = EmptyCompletableDeferred()
+
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is DeviceState.Connected.Idle -> deviceState.handleAction(DeviceAction.Read.Characteristic(characteristic))
-                    else -> deviceState.remain()
+                    is Idle -> deviceState.handleAction(DeviceAction.Read.Characteristic(characteristic))
+                    else -> fail("unexpected state")
                 }
             }
         }
-        test {
-            assertTrue(it is DeviceState.Connected.HandlingAction)
-        }
+
+        connectionManager.performActionStarted.get().await()
+
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is DeviceState.Connected.HandlingAction -> deviceState.addAction(DeviceAction.Write.Descriptor(null, descriptor))
-                    else -> deviceState.remain()
+                    is HandlingAction -> deviceState.addAction(DeviceAction.Write.Descriptor(null, descriptor))
+                    else -> fail("unexpected device state $deviceState")
                 }
             }
         }
-        test {
-            assertTrue(it is DeviceState.Connected.HandlingAction)
-        }
+
         action {
-            deviceStateRepo.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.HandlingAction -> deviceState.actionCompleted
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class]?.complete()
         }
+
+        val handledAction = connectionManager.handledAction
         test {
-            assertTrue(validateCharacteristicUpdated())
-            assertTrue(it is DeviceState.Connected.HandlingAction)
+            assertTrue(it is HandlingAction)
+            assertTrue(handledAction.first() is DeviceAction.Read)
         }
+
         action {
-            deviceStateRepo.takeAndChangeState { deviceState ->
-                when (deviceState) {
-                    is DeviceState.Connected.HandlingAction -> deviceState.actionCompleted
-                    else -> deviceState.remain()
-                }
-            }
+            connectionManager.waitAfterHandlingAction[DeviceAction.Write.Descriptor::class]?.complete()
         }
+
+        val handledActionSecond = connectionManager.handledAction
         test {
-            assertTrue(validateDescriptorUpdated())
-            assertTrue(it is DeviceState.Connected.Idle)
+            // filter because the second event might not be written yet
+            assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read}.first() is DeviceAction.Write)
+            assertTrue(it is HandlingAction)
+        }
+
+        test {
+            assertTrue(it is Idle)
         }
     }
 
-    private suspend fun getDisconnectedState(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.test {
+    private suspend fun getDisconnectedState() {
+        test {
             assertTrue(it is DeviceState.Disconnected)
         }
     }
 
-    private suspend fun getDisconnectingState(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.test {
-            assertTrue(connectionManager.disconnectCompleted.isCompleted)
+    private suspend fun getDisconnectingState() {
+        val disconnectCompleted = connectionManager.disconnectCompleted.get()
+        test {
+            disconnectCompleted.await()
             assertTrue(it is DeviceState.Disconnecting)
         }
     }
 
-    private suspend fun connecting(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.action {
+    private suspend fun connecting() {
+        action {
             deviceStateRepo.takeAndChangeState { deviceState ->
+                println("state: $deviceState")
                 when (deviceState) {
                     is DeviceState.Disconnected -> deviceState.connect(deviceState)
-                    else -> deviceState.remain()
+                    else -> fail("$deviceState is not expected")
                 }
             }
         }
-        flowTest.test {
-            assertTrue(connectionManager.connectCompleted.isCompleted)
+        val connectCompleted = connectionManager.connectCompleted.get()
+        test {
+            connectCompleted.await()
             assertTrue(it is DeviceState.Connecting)
         }
     }
 
-    private suspend fun connect(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.action {
+    private suspend fun connect() {
+        action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Connecting -> deviceState.didConnect
@@ -368,13 +389,13 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
-        flowTest.test {
+        test {
             assertTrue(it is DeviceState.Connected.NoServices)
         }
     }
 
-    private suspend fun disconnecting(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.action {
+    private suspend fun disconnecting() {
+        action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Connected -> deviceState.disconnecting
@@ -382,11 +403,11 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
-        getDisconnectingState(flowTest)
+        getDisconnectingState()
     }
 
-    private suspend fun disconnect(flowTest: FlowTest<DeviceState, Flow<DeviceState>>) {
-        flowTest.action {
+    private suspend fun disconnect() {
+        action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
                     is DeviceState.Disconnecting -> deviceState.didDisconnect
@@ -394,8 +415,6 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
                 }
             }
         }
-        getDisconnectedState(flowTest)
+        getDisconnectedState()
     }
 }
-
-
