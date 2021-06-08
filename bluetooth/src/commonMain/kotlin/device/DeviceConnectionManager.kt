@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import co.touchlab.stately.collections.sharedMutableMapOf
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
@@ -38,8 +40,11 @@ abstract class BaseDeviceConnectionManager(
         ): BaseDeviceConnectionManager
     }
 
-    protected var currentAction: DeviceAction? = null
-    protected val notifyingCharacteristics = mutableMapOf<String, Characteristic>()
+    private val _currentAction = AtomicReference<DeviceAction?>(null)
+    protected var currentAction: DeviceAction?
+        get() = _currentAction.get()
+        set(value) { _currentAction.set(value) }
+    protected val notifyingCharacteristics = sharedMutableMapOf<String, Characteristic>()
 
     abstract suspend fun connect()
     abstract suspend fun discoverServices()
@@ -99,7 +104,8 @@ abstract class BaseDeviceConnectionManager(
                     }
                 }
                 is DeviceState.Disconnected -> state.remain()
-                else -> {
+                is DeviceState.Connecting,
+                is DeviceState.Disconnecting -> {
                     clean()
                     state.didDisconnect
                 }
@@ -116,22 +122,15 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    suspend fun handleCurrentActionCompleted() {
-        stateRepo.takeAndChangeState { state ->
-            val newState = when (state) {
-                is DeviceState.Connected.HandlingAction -> {
-                    if (state.action == currentAction) {
-                        state.actionCompleted
-                    } else {
-                        state.remain()
-                    }
-                }
-                else -> state.remain()
-            }
-            currentAction = null
-            newState
-        }
+    suspend open fun handleCurrentActionCompleted() = stateRepo.takeAndChangeState { state ->
+        (
+            if (state is DeviceState.Connected.HandlingAction && state.action == currentAction)
+                state.actionCompleted
+            else
+                state.remain()
+        ).also { currentAction = null}
     }
+
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, onUpdate: ((Characteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.updateValue()

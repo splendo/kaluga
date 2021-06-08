@@ -33,6 +33,7 @@ class BluetoothScanTest: BluetoothFlowTest<Boolean>() {
 
     @Test
     fun testIsScanning() = testWithFlow {
+        val bluetooth = bluetooth
         val devicesJob = launch {
             bluetooth.devices().collect { }
         }

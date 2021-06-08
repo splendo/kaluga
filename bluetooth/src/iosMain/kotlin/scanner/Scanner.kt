@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import co.touchlab.stately.collections.sharedMutableListOf
+import co.touchlab.stately.collections.sharedMutableSetOf
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.bluetooth.UUID
@@ -122,10 +124,9 @@ actual class Scanner internal constructor(
 
     private lateinit var mainCentralManager: CBCentralManager
     private lateinit var checkEnabledCentralManager: CBCentralManager
-    private val centralManagers = emptyList<CBCentralManager>().toMutableList()
-//    private var connectionManagerMap = emptyMap<Identifier, BaseDeviceConnectionManager>().toMutableMap()
-    private val discoveringDelegates = mutableListOf<CBCentralManagerDelegateProtocol>()
-    private val activeDelegates = mutableSetOf<CBCentralManagerDelegateProtocol>()
+    private val centralManagers = sharedMutableListOf<CBCentralManager>()
+    private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
+    private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
 
     private fun initMainManagers() {
         if (!::mainCentralManager.isInitialized) {
@@ -136,29 +137,23 @@ actual class Scanner internal constructor(
         }
     }
 
-    override suspend fun scanForDevices(filter: Set<UUID>) {
-        if (filter.isEmpty()) {
-            val centralManager = CBCentralManager(null, dispatch_get_main_queue())
-            centralManagers.add(centralManager)
-            val awaitPoweredOn = EmptyCompletableDeferred()
-            val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
-            discoveringDelegates.add(delegate)
-            centralManager.delegate = delegate
-            awaitPoweredOn.await()
-            centralManager.scanForPeripheralsWithServices(null, null)
-        }
-
-        filter.forEach {
-            val centralManager = CBCentralManager(null, dispatch_get_main_queue())
-            centralManagers.add(centralManager)
-            val awaitPoweredOn = EmptyCompletableDeferred()
-            val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
-            discoveringDelegates.add(delegate)
-            centralManager.delegate = delegate
-            awaitPoweredOn.await()
-            centralManager.scanForPeripheralsWithServices(listOf(it), null)
-        }
+    private suspend fun scan(filter:UUID? = null) {
+        val centralManager = CBCentralManager(null, dispatch_get_main_queue())
+        centralManagers.add(centralManager)
+        val awaitPoweredOn = EmptyCompletableDeferred()
+        val delegate = PoweredOnCBCentralManagerDelegate(this, awaitPoweredOn)
+        discoveringDelegates.add(delegate)
+        centralManager.delegate = delegate
+        awaitPoweredOn.await()
+        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter)}, null)
     }
+
+    override suspend fun scanForDevices(filter: Set<UUID>) =
+        if (filter.isEmpty())
+            scan()
+        else
+            filter.forEach { scan(it) }
+
 
     override suspend fun stopScanning() {
         info(TAG, "Stop Scanning")

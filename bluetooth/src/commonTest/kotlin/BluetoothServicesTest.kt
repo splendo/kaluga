@@ -35,25 +35,20 @@ class BluetoothServicesTest: BluetoothFlowTest<List<Service>>() {
 
     @Test
     fun testGetServices() = testWithFlow {
-        launch {
-            scanDevice(device, deviceWrapper, initialRssi)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
         test {
             assertEquals(emptyList(), it)
         }
         action {
-            connectDevice(device, connectionManager, this)
-            connectionManager.discoverServicesCompleted.await()
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
         }
+        val services = listOf(service)
         test {
-            assertEquals(listOf(service), it)
+            assertEquals(services, it)
         }
-
-        permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.await()
-        mockBaseScanner().stopMonitoringBluetoothCompleted.await()
     }
 }

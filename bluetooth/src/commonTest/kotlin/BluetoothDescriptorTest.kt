@@ -34,20 +34,19 @@ class BluetoothDescriptorTest: BluetoothFlowTest<Descriptor?>() {
     @Test
     fun testGetDescriptor() = testWithFlow {
 
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice(device, deviceWrapper)
         bluetooth.startScanning()
 
         test {
             assertNull(it)
         }
         action {
-            connectDevice(device, connectionManager, this)
+            connectDevice(device)
             discoverService(service, device)
         }
-        val foundDescriptor = CompletableDeferred<Descriptor>()
-        awaitDescriptor(this@BluetoothDescriptorTest, foundDescriptor)
-        assertEquals(descriptor, foundDescriptor.await())
+        val descriptor = descriptor
+        test {
+            assertEquals(descriptor, it)
+        }
     }
 }

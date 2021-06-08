@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -37,7 +38,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-abstract class BaseScanner internal constructor(
+abstract class BaseScanner constructor(
     internal val permissions: Permissions,
     private val connectionSettings: ConnectionSettings,
     private val autoRequestPermission: Boolean,
@@ -56,9 +57,13 @@ abstract class BaseScanner internal constructor(
     }
 
     private val bluetoothPermissionRepo get() = permissions[Permission.Bluetooth]
-    private var monitoringPermissionsJob: Job? = null
 
-    internal open fun startMonitoringPermissions() {
+    private val _monitoringPermissionsJob = AtomicReference<Job?>( null)
+    private var monitoringPermissionsJob: Job?
+        get() = _monitoringPermissionsJob.get()
+        set(value) { _monitoringPermissionsJob.set(value) }
+
+    open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
             bluetoothPermissionRepo.collect { state ->
@@ -83,7 +88,7 @@ abstract class BaseScanner internal constructor(
         }
     }
 
-    internal open fun stopMonitoringPermissions() {
+    open fun stopMonitoringPermissions() {
         monitoringPermissionsJob?.cancel()
         monitoringPermissionsJob = null
     }
@@ -92,18 +97,18 @@ abstract class BaseScanner internal constructor(
         return bluetoothPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
-    internal abstract suspend fun scanForDevices(filter: Set<UUID>)
-    internal abstract suspend fun stopScanning()
-    internal abstract fun startMonitoringBluetooth()
-    internal abstract fun stopMonitoringBluetooth()
-    internal abstract suspend fun isBluetoothEnabled(): Boolean
-    internal abstract suspend fun requestBluetoothEnable()
+    abstract suspend fun scanForDevices(filter: Set<UUID>)
+    abstract suspend fun stopScanning()
+    abstract fun startMonitoringBluetooth()
+    abstract fun stopMonitoringBluetooth()
+    abstract suspend fun isBluetoothEnabled(): Boolean
+    abstract suspend fun requestBluetoothEnable()
 
-    internal fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
+    fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable
     }
 
-    internal fun bluetoothDisabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Enabled::class) {
+    fun bluetoothDisabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Enabled::class) {
         it.disable
     }
 

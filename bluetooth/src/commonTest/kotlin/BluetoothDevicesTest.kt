@@ -25,7 +25,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
 
@@ -48,42 +47,28 @@ class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
         }
 
         val mockBaseScanner = mockBaseScanner()
-        mockBaseScanner.startMonitoringBluetoothCompleted.await()
 
         action {
             bluetooth.startScanning()
         }
-        test {
-            assertEquals(noDevices, it)
-            assertEquals(emptySet(), mockBaseScanner.scanForDevicesCompleted.await())
-        }
+
+        assertEquals(emptySet(), mockBaseScanner.scanForDevicesCompleted.get().await())
 
         val filter = setOf(randomUUID())
         action {
             mockBaseScanner.reset()
             bluetooth.startScanning(filter)
         }
-        test {
-            assertEquals(noDevices, it)
-        }
-        test {
-            assertEquals(noDevices, it)
-            assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
-        }
-        test {
-            assertEquals(noDevices, it)
-            assertEquals(filter, mockBaseScanner.scanForDevicesCompleted.getCompleted())
-        }
-        test {
-            assertEquals(noDevices, it)
-        }
+        mockBaseScanner.stopScanningCompleted.get().await()
+        assertEquals(filter, mockBaseScanner.scanForDevicesCompleted.get().await())
+
+        mockBaseScanner.reset()
+
         val deviceWrapper = createDeviceWrapper()
         val device = createDevice(deviceWrapper)
         val scanCompleted = EmptyCompletableDeferred()
         action {
-            launch {
-                scanDevice(device, deviceWrapper, scanCompleted = scanCompleted)
-            }
+            scanDevice(device, deviceWrapper, scanCompleted = scanCompleted)
         }
         test {
             scanCompleted.await()
@@ -93,16 +78,11 @@ class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
             mockBaseScanner.reset()
             bluetooth.stopScanning()
         }
-        test {
-            assertEquals(listOf(device), it)
-        }
-        test {
-            assertTrue(mockBaseScanner.stopScanningCompleted.isCompleted)
-            assertEquals(listOf(device), it)
-        }
 
-        // permissionManager.hasStoppedMonitoring.await()
-        // mockBaseScanner().stopMonitoringPermissions.await()
-        // mockBaseScanner().stopMonitoringBluetoothCompleted.await()
+        mockBaseScanner.stopScanningCompleted.get().await()
+
+        test {
+            assertEquals(emptyList(), it)
+        }
     }
 }

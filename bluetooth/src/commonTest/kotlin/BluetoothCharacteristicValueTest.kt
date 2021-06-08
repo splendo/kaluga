@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class BluetoothCharacteristicValueTest : BluetoothFlowTest<ByteArray?>() {
 
@@ -35,22 +36,20 @@ class BluetoothCharacteristicValueTest : BluetoothFlowTest<ByteArray?>() {
 
         val newValue = "Test".encodeToByteArray()
 
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice()
         bluetooth.startScanning()
 
         test {
             assertEquals(null, it)
         }
         action {
-            connectDevice(device, connectionManager, this@testWithFlow)
-            connectionManager.discoverServicesCompleted.await()
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
             characteristic.writeValue(newValue)
         }
-        val foundByte = CompletableDeferred<ByteArray>()
-        awaitByte(this@BluetoothCharacteristicValueTest, foundByte)
-        assertEquals(newValue, foundByte.await())
+        test {
+            assertTrue(newValue contentEquals it)
+        }
     }
 }

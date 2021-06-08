@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -34,7 +35,10 @@ class IOSMockDescriptorWrapper(override val uuid: CBUUID = CBUUID()) : MockDescr
         this.value = value?.toNSData()
     }
 
-    override var value: NSData? = null
+    private val _value = AtomicReference<NSData?>(null)
+    override var value: NSData?
+        get() = _value.get()
+        set(value) { _value.set(value) }
 
     override fun readValue(peripheral: CBPeripheral) {
         isReadCompleted.complete()

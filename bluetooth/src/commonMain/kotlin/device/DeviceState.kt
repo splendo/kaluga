@@ -122,7 +122,6 @@ sealed class DeviceState(
                             action.characteristic.updateValue()
                     }
                 }
-
                 if (nextActions.isEmpty()) {
                     Idle(services, deviceInfo, connectionManager)
                 } else {
@@ -133,28 +132,16 @@ sealed class DeviceState(
             }
 
             override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
-                when (oldState) {
-                    is HandlingAction -> {
-                        if (oldState.action == action)
-                            return
-                    }
-                    else -> {}
-                }
-
+                if (oldState is HandlingAction && oldState.action == action)
+                    return
                 connectionManager.performAction(action)
             }
         }
 
-        fun startDisconnected() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Connected)
-                        disconnecting
-                    else
-                        deviceState.remain()
-                }
+        fun startDisconnected() =
+            connectionManager.stateRepo.launchTakeAndChangeState(remainIfStateNot = Connected::class) {
+                disconnecting
             }
-        }
 
         val reconnect = suspend {
             val services = when (this) {
@@ -201,7 +188,12 @@ sealed class DeviceState(
         override suspend fun afterOldStateIsRemoved(oldState: DeviceState) {
             when (oldState) {
                 is Disconnected -> connectionManager.connect()
-                else -> {}
+                is Connected,
+                is Connecting,
+                is Reconnecting,
+                is Disconnecting -> {
+                     // do nothing: TODO check all these are correct, e.g. Disconnecting
+                }
             }
         }
     }
@@ -258,27 +250,20 @@ sealed class DeviceState(
         override val connectionManager: BaseDeviceConnectionManager
     ) : DeviceState(deviceInfo, connectionManager) {
 
-        fun startConnecting() {
-            launch(coroutineContext) {
-                connectionManager.stateRepo.takeAndChangeState { deviceState ->
-                    if (deviceState is Disconnected) {
-                        connect(deviceState)
-                    } else {
-                        deviceState.remain()
-                    }
-                }
-            }
+        fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
+            coroutineContext,
+            remainIfStateNot = Disconnected::class
+        ) { deviceState ->
+            connect(deviceState)
         }
 
-        fun connect(deviceState: DeviceState): suspend () -> DeviceState {
-            return if (deviceInfo.advertisementData.isConnectible) {
+        fun connect(deviceState: DeviceState): suspend () -> DeviceState =
+            if (deviceInfo.advertisementData.isConnectible)
                 suspend {
                     Connecting(deviceInfo, connectionManager)
                 }
-            } else {
+            else
                 deviceState.remain()
-            }
-        }
     }
 
     data class Disconnecting constructor(

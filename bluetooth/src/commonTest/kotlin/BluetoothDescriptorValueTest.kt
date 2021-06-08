@@ -17,12 +17,10 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class BluetoothDescriptorValueTest:BluetoothFlowTest<ByteArray?>() {
 
@@ -35,27 +33,20 @@ class BluetoothDescriptorValueTest:BluetoothFlowTest<ByteArray?>() {
     fun testGetDescriptorValue() = testWithFlow {
         val newValue = "Test".encodeToByteArray()
 
-        launch {
-            scanDevice(device, deviceWrapper)
-        }
+        scanDevice(device, deviceWrapper)
         bluetooth.startScanning()
 
         test {
             assertNull(it)
         }
         action {
-            connectDevice(device, connectionManager, this)
-            connectionManager.discoverServicesCompleted.await()
+            connectDevice(device)
+            connectionManager.discoverServicesCompleted.get().await()
             discoverService(service, device)
             descriptor.writeValue(newValue)
         }
-        val foundByte = CompletableDeferred<ByteArray>()
-        // awaitByte(this, foundByte)
-
-
         test {
-            assertEquals(newValue, it)
+            assertTrue(newValue contentEquals it)
         }
-        //assertEquals(newValue, foundByte.await())
     }
 }
