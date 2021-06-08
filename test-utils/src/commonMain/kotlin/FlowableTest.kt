@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.test
 
 import co.touchlab.stately.ensureNeverFrozen
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -175,10 +176,12 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
 
     var firstTestBlock = true
 
-    suspend fun test(skip: Int = 0, test: TestBlock<T>) {
+    suspend fun test(skip: Int = 0, test: TestBlock<T>,) {
+        test.freeze()
         if (firstTestBlock) {
             firstTestBlock = false
             tests.ensureNeverFrozen()
+            debug("first test offered, starting collection")
             startFlow(lateflow)
         }
         repeat(skip) {
@@ -186,7 +189,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
         }
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
-        debug("${tests.size} in collection, offering")
+        debug("${tests.size} in collection (including this one), offering")
         testChannel.offer(Pair(test, completable))
     }
 }
