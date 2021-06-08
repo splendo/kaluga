@@ -30,6 +30,7 @@ import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.mock.bluetooth.MockCharacteristicWrapper
 import com.splendo.kaluga.test.mock.bluetooth.MockDescriptorWrapper
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -45,7 +46,10 @@ class MockDeviceConnectionManager(
     var disconnectCompleted = EmptyCompletableDeferred()
     var readRssiCompleted = EmptyCompletableDeferred()
     var performActionCompleted = CompletableDeferred<DeviceAction>()
-    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 1)
+    private val _handledAction = MutableSharedFlow<DeviceAction>(
+        replay = 16,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
+    )
     val handledAction = _handledAction.asSharedFlow()
 
     fun reset() {
@@ -54,6 +58,7 @@ class MockDeviceConnectionManager(
         disconnectCompleted = EmptyCompletableDeferred()
         readRssiCompleted = EmptyCompletableDeferred()
         performActionCompleted = CompletableDeferred()
+        _handledAction.resetReplayCache()
     }
 
     override suspend fun connect() {
@@ -91,7 +96,9 @@ class MockDeviceConnectionManager(
                 handleUpdatedCharacteristic(action.characteristic.uuid) {
                     debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
+                debug("Will emit write action")
                 _handledAction.emit(action)
+                debug("Did emit write action")
             }
             is DeviceAction.Write.Descriptor -> launch {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
