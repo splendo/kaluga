@@ -75,6 +75,6 @@ class BluetoothDistanceTest: BluetoothFlowTest<Double>() {
 
         resetFlow()
         permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.get().await()
+        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }
