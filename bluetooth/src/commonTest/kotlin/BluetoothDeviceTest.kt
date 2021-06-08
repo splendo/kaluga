@@ -18,10 +18,7 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -65,6 +62,6 @@ class BluetoothDeviceTest:BluetoothFlowTest<Device?>() {
         disconnectDevice(device)
 
         resetFlow()
-        mockBaseScanner().stopMonitoringPermissions.get().await()
+        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }

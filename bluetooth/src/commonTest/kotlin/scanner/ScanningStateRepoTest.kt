@@ -73,7 +73,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is MissingPermissions)
         }
         mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
-        assertTrue(mockBaseScanner().startMonitoringPermissions.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringPermissionsCompleted.get().isCompleted)
 
         action {
             permissionManager.hasRequestedPermission.await()
@@ -99,7 +99,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is MissingPermissions)
         }
         assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
-        assertTrue(mockBaseScanner().startMonitoringPermissions.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringPermissionsCompleted.get().isCompleted)
 
         assertFalse(permissionManager.hasRequestedPermission.isCompleted)
     }
@@ -134,7 +134,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
 
         }
 
-        mockBaseScanner().startMonitoringPermissions.get().await()
+        mockBaseScanner().startMonitoringPermissionsCompleted.get().await()
         assertFalse(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
         assertFalse(mockBaseScanner().requestEnableCompleted.get().isCompleted)
     }

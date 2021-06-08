@@ -21,7 +21,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -55,6 +54,6 @@ class BluetoothRssiTest: BluetoothFlowTest<Int>() {
         resetFlow()
 
         permissionManager.hasStoppedMonitoring.await()
-        mockBaseScanner().stopMonitoringPermissions.get().await()
+        mockBaseScanner().stopMonitoringPermissionsCompleted.get().await()
     }
 }

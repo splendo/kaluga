@@ -44,8 +44,8 @@ class MockBaseScanner(
 
     val scanForDevicesCompleted = AtomicReference(CompletableDeferred<Set<UUID>?>())
     val stopScanningCompleted = AtomicReference(EmptyCompletableDeferred())
-    val startMonitoringPermissions = AtomicReference(EmptyCompletableDeferred())
-    val stopMonitoringPermissions = AtomicReference(EmptyCompletableDeferred())
+    val startMonitoringPermissionsCompleted = AtomicReference(EmptyCompletableDeferred())
+    val stopMonitoringPermissionsCompleted = AtomicReference(EmptyCompletableDeferred())
     val requestEnableCompleted = AtomicReference(EmptyCompletableDeferred())
     val startMonitoringBluetoothCompleted = AtomicReference(EmptyCompletableDeferred())
     val stopMonitoringBluetoothCompleted = AtomicReference(EmptyCompletableDeferred())
@@ -64,19 +64,19 @@ class MockBaseScanner(
         stopScanningCompleted.set(EmptyCompletableDeferred())
         stopMonitoringBluetoothCompleted.set(EmptyCompletableDeferred())
         startMonitoringBluetoothCompleted.set(EmptyCompletableDeferred())
-        startMonitoringPermissions.set(EmptyCompletableDeferred())
-        stopMonitoringPermissions.set(EmptyCompletableDeferred())
+        startMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
+        stopMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
         requestEnableCompleted.set(EmptyCompletableDeferred())
     }
 
     override fun startMonitoringPermissions() {
         super.startMonitoringPermissions()
-        startMonitoringPermissions.get().complete()
+        startMonitoringPermissionsCompleted.get().complete()
     }
 
     override fun stopMonitoringPermissions() {
         super.stopMonitoringPermissions()
-        stopMonitoringPermissions.get().complete()
+        stopMonitoringPermissionsCompleted.get().complete()
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
