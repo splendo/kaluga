@@ -103,11 +103,8 @@ actual class Scanner internal constructor(
                 if (scannerState is ScanningState.Initialized.Enabled)
                     scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
                         ?.let { device ->
-                            device.useState { deviceState ->
-                                block(deviceState.connectionManager)
-                            }
+                            block(device.peekState().connectionManager)
                         }
-
             }
         }.invoke()
 
