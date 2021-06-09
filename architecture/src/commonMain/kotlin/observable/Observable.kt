@@ -369,6 +369,7 @@ interface InitializedObservable<T>:BasicObservable<T, T, Value<T>>, Initialized<
 interface UninitializedObservable<T>:BasicObservable<T, T, ObservableOptional<T>>, Uninitialized<T>
 
 interface BasicSubject<R:T, T, OO : ObservableOptional<R>>:BasicObservable<R, T, OO>, SuspendableSetter<T> {
+    var boundCoroutine: CoroutineScope?
     fun bind(coroutineScope: CoroutineScope)
     fun bind(coroutineScope: CoroutineScope, context: CoroutineContext)
 }
@@ -463,8 +464,11 @@ abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>>(
     private val stateFlowToBind:()->StateFlow<R?>)
     : BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
+    final override var boundCoroutine: CoroutineScope? = null
+
     final override fun bind(coroutineScope: CoroutineScope) = bind(coroutineScope, observation.context)
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+        boundCoroutine = coroutineScope
         coroutineScope.launch(context) {
             stateFlowToBind().collect { set(it as T) }
         }
