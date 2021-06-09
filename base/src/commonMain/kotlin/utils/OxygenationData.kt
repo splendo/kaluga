@@ -65,11 +65,11 @@ interface O2HB<T> : Concentration<T>, Serializable {
     override val value: T
 }
 
-inline class O2HBmicromolarDouble(override val value: Double) : O2HB<Double>, Serializable{
-    val valid : O2HBmicromolarDouble
+inline class O2HBMicromolarDouble(override val value: Double) : O2HB<Double>, Serializable{
+    val valid : O2HBMicromolarDouble
     get() {
         if (value in -319.9..319.9){
-            return O2HBmicromolarDouble(value)
+            return O2HBMicromolarDouble(value)
         }
         else {
             throw Exception("Value out of valid range")
@@ -95,11 +95,11 @@ inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>, Seri
 interface tHB<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class tHBMicrmolarDouble(override val value: Double) : tHB<Double>, Serializable{
-    val valid : tHBMicrmolarDouble
+inline class tHBMicromolarDouble(override val value: Double) : tHB<Double>, Serializable{
+    val valid : tHBMicromolarDouble
         get() {
             if (value in -319.9..319.9){
-                return tHBMicrmolarDouble(value)
+                return tHBMicromolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
