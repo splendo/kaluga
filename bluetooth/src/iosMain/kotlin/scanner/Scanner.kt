@@ -111,14 +111,20 @@ actual class Scanner internal constructor(
             }
         }.invoke()
 
-        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) =
+        override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
+            info(TAG, "Did Connect Peripheral ${didConnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didConnectPeripheral) { handleConnect() }
+        }
 
-        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) =
+        override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
+            info(TAG, "Did Disconnect Peripheral ${didDisconnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
+        }
 
-        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) =
+        override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+            info(TAG, "Did Fail to Connect Peripheral ${didFailToConnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
+        }
     }
 
 
