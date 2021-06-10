@@ -61,15 +61,15 @@ inline class TSIDouble(override val value: Double) : TSI<Double>, Serializable{
         }
 }
 
-interface O2HB<T> : Concentration<T>, Serializable {
+interface O2Hb<T> : Concentration<T>, Serializable {
     override val value: T
 }
 
-inline class O2HBMicromolarDouble(override val value: Double) : O2HB<Double>, Serializable{
-    val valid : O2HBMicromolarDouble
+inline class O2HbMicromolarDouble(override val value: Double) : O2Hb<Double>, Serializable{
+    val valid : O2HbMicromolarDouble
     get() {
         if (value in -319.9..319.9){
-            return O2HBMicromolarDouble(value)
+            return O2HbMicromolarDouble(value)
         }
         else {
             throw Exception("Value out of valid range")
@@ -77,14 +77,14 @@ inline class O2HBMicromolarDouble(override val value: Double) : O2HB<Double>, Se
     }
 }
 
-interface HHB<T> : Concentration<T>, Serializable {
+interface HHb<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>, Serializable{
-    val valid : HHBMicromolarDouble
+inline class HHbMicromolarDouble(override val value: Double) : HHb<Double>, Serializable{
+    val valid : HHbMicromolarDouble
         get() {
             if (value in -319.9..319.9){
-                return HHBMicromolarDouble(value)
+                return HHbMicromolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
@@ -92,14 +92,14 @@ inline class HHBMicromolarDouble(override val value: Double) : HHB<Double>, Seri
         }
 }
 
-interface tHB<T> : Concentration<T>, Serializable {
+interface tHb<T> : Concentration<T>, Serializable {
     override val value: T
 }
-inline class tHBMicromolarDouble(override val value: Double) : tHB<Double>, Serializable{
-    val valid : tHBMicromolarDouble
+inline class tHbMicromolarDouble(override val value: Double) : tHb<Double>, Serializable{
+    val valid : tHbMicromolarDouble
         get() {
             if (value in -319.9..319.9){
-                return tHBMicromolarDouble(value)
+                return tHbMicromolarDouble(value)
             }
             else {
                 throw Exception("Value out of valid range")
