@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
+import android.app.Activity
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
@@ -33,6 +34,7 @@ import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
 import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
+import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
@@ -55,6 +57,9 @@ import com.splendo.kaluga.example.shared.viewmodel.info.InfoViewModel
 import com.splendo.kaluga.example.shared.viewmodel.info.LinkSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.info.MailSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.keyboard.KeyboardViewModel
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
+import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
+import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
@@ -64,15 +69,15 @@ import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewMod
 import com.splendo.kaluga.example.system.SystemActivity
 import com.splendo.kaluga.example.system.fragments.NetworkFragment
 import com.splendo.kaluga.hud.HUD
-import com.splendo.kaluga.keyboard.KeyboardHostingView
+import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
+import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
-import java.net.URL
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import com.splendo.kaluga.bluetooth.*
@@ -115,6 +120,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.LoadingIndicator -> NavigationSpec.Activity(LoadingActivity::class.java)
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
+                    FeatureListNavigationAction.Links -> NavigationSpec.Activity(LinksActivity::class.java)
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                 }
@@ -183,14 +189,29 @@ val viewModelModule = module {
         HudViewModel(HUD.Builder())
     }
 
-    viewModel { (keyboardHostingView: KeyboardHostingView) ->
-        KeyboardViewModel(KeyboardManager.Builder(), keyboardHostingView)
+    viewModel { (keyboardBuilder: KeyboardManager.Builder, focusHandler: FocusHandler) ->
+        KeyboardViewModel(keyboardBuilder, focusHandler)
+    }
+
+    viewModel {
+        LinksViewModel(
+            LinksBuilder(),
+            AlertPresenter.Builder(),
+            ActivityNavigator {
+                when (it) {
+                    is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
+                        URL(it.bundle!!.get(BrowserSpecRow.UrlSpecRow)),
+                        NavigationSpec.Browser.Type.Normal
+                    )
+                }
+            }
+        )
     }
 
     viewModel {
         SystemViewModel(
             ActivityNavigator {
-                when(it) {
+                when (it) {
                     SystemNavigationActions.Network -> NavigationSpec.Fragment(
                         R.id.system_features_fragment,
                         createFragment = { NetworkFragment() }

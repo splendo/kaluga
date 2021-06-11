@@ -36,6 +36,6 @@ class TestActivity : AppCompatActivity() {
     }
 
     fun showKeyboard() {
-        keyboardManagerBuilder().create(lifecycleScope).show(view.id)
+        keyboardManagerBuilder().create(lifecycleScope).show(AndroidFocusHandler(view.id))
     }
 }

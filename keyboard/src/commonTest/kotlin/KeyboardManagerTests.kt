@@ -25,7 +25,7 @@ abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KT
 
     abstract class KeyboardTestContext : TestContext, CoroutineScope {
         abstract val builder: KeyboardManager.Builder
-        abstract val view: KeyboardHostingView
+        abstract val focusHandler: FocusHandler
     }
 
     @Test
@@ -33,7 +33,7 @@ abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KT
         launch {
             val manager = builder.create(this)
             yield()
-            manager.show(view)
+            manager.show(focusHandler)
             cancel()
         }.join()
         verifyShow()

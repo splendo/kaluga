@@ -51,7 +51,7 @@ class MockDeviceConnectionManager(
     val readRssiCompleted = AtomicReference(EmptyCompletableDeferred())
     val performActionCompleted = AtomicReference(CompletableDeferred<DeviceAction>())
     val performActionStarted = AtomicReference(CompletableDeferred<DeviceAction>())
-    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+    private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val handledAction = _handledAction.asSharedFlow()
 
     fun reset() {
@@ -61,6 +61,7 @@ class MockDeviceConnectionManager(
         readRssiCompleted.set(EmptyCompletableDeferred())
         performActionCompleted.set(CompletableDeferred())
         performActionStarted.set(CompletableDeferred())
+        _handledAction.resetReplayCache()
     }
 
     override suspend fun connect() {
@@ -102,7 +103,9 @@ class MockDeviceConnectionManager(
                 handleUpdatedCharacteristic(action.characteristic.uuid) {
                     debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
+                debug("Will emit write action")
                 _handledAction.emit(action)
+                debug("Did emit write action")
             }
             is DeviceAction.Write.Descriptor -> launch {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)

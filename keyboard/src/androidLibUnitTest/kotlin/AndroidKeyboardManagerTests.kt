@@ -22,7 +22,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.yield
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
@@ -35,10 +34,8 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         private const val viewId = 1
     }
 
-
-
     inner class AndroidKeyboardTestContext(coroutineScope:CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
-        override val view get() = viewId
+        override val focusHandler get() = AndroidFocusHandler(viewId)
         override lateinit var builder: KeyboardManager.Builder
 
         val mockActivity:Activity = mock(Activity::class.java)
@@ -47,7 +44,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
         init {
-
             val mockLifecycleOwner = mock(LifecycleOwner::class.java)
             val mockFragmentManager = mock(FragmentManager::class.java)
 

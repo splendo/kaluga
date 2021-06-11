@@ -49,7 +49,7 @@ include(":permissions")
 include(":location")
 include(":androidtesthelper")
 include(":keyboard")
+include(":links")
 include(":resources")
 include(":review")
 include(":system")
-

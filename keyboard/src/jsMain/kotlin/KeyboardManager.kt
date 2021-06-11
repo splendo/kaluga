@@ -20,15 +20,13 @@ package com.splendo.kaluga.keyboard
 
 import kotlinx.coroutines.CoroutineScope
 
-actual class KeyboardHostingView
-
 actual class KeyboardManager : BaseKeyboardManager {
 
     actual class Builder : BaseKeyboardManager.Builder {
         actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager()
     }
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
+    override fun show(focusHandler: FocusHandler) {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
