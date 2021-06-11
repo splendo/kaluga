@@ -23,13 +23,12 @@ expect class Identifier
 
 expect val Identifier.stringValue: String
 
-expect class DeviceHolder {
+expect interface DeviceWrapper {
     val name: String?
     val identifier: Identifier
 }
 
 interface DeviceInfo {
-
     val identifier: Identifier
     val name: String?
     val rssi: Int
@@ -37,13 +36,17 @@ interface DeviceInfo {
     fun distance(environmentalFactor: Double = 2.0): Double
 }
 
-data class DeviceInfoImpl(internal val deviceHolder: DeviceHolder, override val rssi: Int, override val advertisementData: BaseAdvertisementData) : DeviceInfo {
+data class DeviceInfoImpl(
+    internal val deviceWrapper: DeviceWrapper,
+    override val rssi: Int,
+    override val advertisementData: BaseAdvertisementData
+) : DeviceInfo {
 
     override val identifier: Identifier
-        get() = deviceHolder.identifier
+        get() = deviceWrapper.identifier
 
     override val name: String?
-        get() = deviceHolder.name
+        get() = deviceWrapper.name
 
     override fun distance(environmentalFactor: Double): Double {
         if (advertisementData.txPowerLevel == Int.MIN_VALUE || environmentalFactor.isNaN())

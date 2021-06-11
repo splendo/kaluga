@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.device
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.base.toNSData
 import com.splendo.kaluga.base.typedList
 import com.splendo.kaluga.bluetooth.DefaultServiceWrapper
@@ -34,27 +35,26 @@ import platform.CoreBluetooth.CBUUID
 import platform.Foundation.NSError
 import platform.Foundation.NSNumber
 import platform.darwin.NSObject
-import kotlin.coroutines.CoroutineContext
 
 internal actual class DeviceConnectionManager(
     private val cbCentralManager: CBCentralManager,
     private val peripheral: CBPeripheral,
     connectionSettings: ConnectionSettings,
-    deviceHolder: DeviceHolder,
+    deviceWrapper: DeviceWrapper,
     stateRepo: DeviceStateFlowRepo,     
-) : BaseDeviceConnectionManager(connectionSettings, deviceHolder, stateRepo) {
+) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
         override fun create(
             connectionSettings: ConnectionSettings,
-            deviceHolder: DeviceHolder,
+            deviceWrapper: DeviceWrapper,
             stateRepo: DeviceStateFlowRepo
         ): BaseDeviceConnectionManager {
             return DeviceConnectionManager(
                 cbCentralManager,
                 peripheral,
                 connectionSettings,
-                deviceHolder,
+                deviceWrapper,
                 stateRepo
             )
         }
@@ -64,8 +64,8 @@ internal actual class DeviceConnectionManager(
         private const val TAG = "IOS Bluetooth DeviceConnectionManager"
     }
 
-    private val discoveringServices = emptyList<CBUUID>().toMutableList()
-    private val discoveringCharacteristics = emptyList<CBUUID>().toMutableList()
+    private val discoveringServices = sharedMutableListOf<CBUUID>()
+    private val discoveringCharacteristics = sharedMutableListOf<CBUUID>()
 
     @Suppress("CONFLICTING_OVERLOADS")
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
@@ -79,7 +79,7 @@ internal actual class DeviceConnectionManager(
             info(TAG, "Did Update Notification State for Characteristic ${didUpdateNotificationStateForCharacteristic.UUID.UUIDString}")
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
-                    if (action.characteristic.characteristic.UUID.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
+                    if (action.characteristic.wrapper.uuid.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
                         launch {
                             handleCurrentActionCompleted()
                         }
@@ -156,16 +156,16 @@ internal actual class DeviceConnectionManager(
         info(TAG, "Perform Action for Peripheral ${peripheral.identifier.UUIDString}")
         currentAction = action
         when (action) {
-            is DeviceAction.Read.Characteristic -> action.characteristic.characteristic.readValue(peripheral)
-            is DeviceAction.Read.Descriptor -> action.descriptor.descriptor.readValue(peripheral)
+            is DeviceAction.Read.Characteristic -> action.characteristic.wrapper.readValue(peripheral)
+            is DeviceAction.Read.Descriptor -> action.descriptor.wrapper.readValue(peripheral)
             is DeviceAction.Write.Characteristic -> {
                 action.newValue?.toNSData()?.let {
-                    action.characteristic.characteristic.writeValue(it, peripheral)
+                    action.characteristic.wrapper.writeValue(it, peripheral)
                 }
             }
             is DeviceAction.Write.Descriptor -> {
                 action.newValue?.toNSData()?.let {
-                    action.descriptor.descriptor.writeValue(it, peripheral)
+                    action.descriptor.wrapper.writeValue(it, peripheral)
                 }
             }
             is DeviceAction.Notification -> {
@@ -173,7 +173,7 @@ internal actual class DeviceConnectionManager(
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                action.characteristic.characteristic.setNotificationValue(action.enable, peripheral)
+                action.characteristic.wrapper.setNotificationValue(action.enable, peripheral)
             }
         }
     }

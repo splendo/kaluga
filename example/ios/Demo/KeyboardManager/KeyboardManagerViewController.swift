@@ -13,7 +13,10 @@ class KeyboardManagerViewController : UIViewController {
     
     @IBOutlet private var editField: UITextField!
     
-    lazy var viewModel = KNArchitectureFramework().createKeyboardViewModel(textField: self.editField)
+    private lazy var editFieldFocusHandler = {
+        return UIKitFocusHandler(view: self.editField)
+    }()
+    lazy var viewModel = KNArchitectureFramework().createKeyboardViewModel(focusHandler: self.editFieldFocusHandler)
     private var lifecycleManager: LifecycleManager!
     
     deinit {

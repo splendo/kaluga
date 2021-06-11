@@ -20,9 +20,8 @@ package com.splendo.kaluga.bluetooth
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 
-abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
+open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
-    abstract val descriptors: List<Descriptor>
     var isNotifying: Boolean = false
 
     suspend fun enableNotification() {
@@ -37,7 +36,30 @@ abstract class BaseCharacteristic(initialValue: ByteArray? = null, stateRepo: De
         isNotifying = false
     }
 
-    internal abstract fun createNotificationAction(enabled: Boolean): DeviceAction.Notification
+    override val uuid = wrapper.uuid
+
+    val descriptors:List<Descriptor> = wrapper.descriptors.map { Descriptor(it, stateRepo = stateRepo) }
+
+    override fun createReadAction(): DeviceAction.Read.Characteristic {
+        return DeviceAction.Read.Characteristic(this)
+    }
+
+    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Characteristic {
+        return DeviceAction.Write.Characteristic(newValue, this)
+    }
+
+    fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
+        return DeviceAction.Notification(this, enabled)
+    }
+
+    override fun getUpdatedValue(): ByteArray? {
+        return wrapper.value?.asBytes
+    }
+
 }
 
-expect open class Characteristic : BaseCharacteristic
+expect interface CharacteristicWrapper {
+    val uuid: UUID
+    val descriptors: List<DescriptorWrapper>
+    val value: Value?
+}

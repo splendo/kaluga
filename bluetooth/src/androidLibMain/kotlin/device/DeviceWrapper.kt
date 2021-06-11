@@ -22,20 +22,21 @@ import android.bluetooth.BluetoothGattCallback
 import android.content.Context
 import android.os.Build
 
-interface DeviceWrapper {
-    val name: String?
-    val address: Identifier
+actual interface DeviceWrapper {
+    actual val name: String?
+    actual val identifier: Identifier
     val bondState: Int
-
     fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper
     fun removeBond()
+
+    val device:BluetoothDevice
 }
 
-class DefaultDeviceWrapper(private val device: BluetoothDevice) : DeviceWrapper {
+class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper {
 
     override val name: String?
         get() = device.name
-    override val address: Identifier
+    override val identifier: Identifier
         get() = device.address
     override val bondState: Int
         get() = device.bondState

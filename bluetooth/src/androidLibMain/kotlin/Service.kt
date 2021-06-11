@@ -19,32 +19,22 @@ package com.splendo.kaluga.bluetooth
 
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattService
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.flow.MutableSharedFlow
 
-actual open class Service(private val service: GattServiceWrapper, private val stateRepo: DeviceStateFlowRepo) : BaseService {
+actual interface ServiceWrapper {
 
-    override val uuid = service.uuid
-
-    override val characteristics = service.characteristics.map { Characteristic(it, stateRepo) }
-}
-
-interface GattServiceWrapper {
-
-    val uuid: java.util.UUID
+    actual val uuid: java.util.UUID
     val type: Int
     val instanceId: Int
-    val characteristics: List<CharacteristicWrapper>
-    val includedServices: List<GattServiceWrapper>
+    actual val characteristics: List<CharacteristicWrapper>
+    val includedServices: List<ServiceWrapper>
 
     fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper?
     fun addCharacteristic(characteristic: BluetoothGattCharacteristic): Boolean
     fun addService(service: BluetoothGattService): Boolean
 }
 
-class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) : GattServiceWrapper {
+class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
+    ServiceWrapper {
 
     override val uuid: java.util.UUID
         get() = gattService.uuid
@@ -54,7 +44,7 @@ class DefaultGattServiceWrapper(private val gattService: BluetoothGattService) :
         get() = gattService.instanceId
     override val characteristics: List<CharacteristicWrapper>
         get() = gattService.characteristics.map { DefaultCharacteristicWrapper(it) }
-    override val includedServices: List<GattServiceWrapper>
+    override val includedServices: List<ServiceWrapper>
         get() = gattService.includedServices.map { DefaultGattServiceWrapper(it) }
 
     override fun getCharacteristic(uuid: java.util.UUID): CharacteristicWrapper? {

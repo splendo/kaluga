@@ -2,7 +2,6 @@ plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("jacoco")
-    id("convention.publication")
     id("com.android.library")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -21,7 +20,6 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-
                 if (!(ext["exampleAsRoot"] as Boolean)) {
                     api(project(":alerts", ""))
                     api(project(":architecture", ""))
@@ -30,6 +28,7 @@ kotlin {
                     api(project(":date-time-picker", ""))
                     api(project(":hud", ""))
                     api(project(":keyboard", ""))
+                    api(project(":links", ""))
                     api(project(":location", ""))
                     api(project(":logging", ""))
                     api(project(":permissions", ""))
@@ -45,6 +44,7 @@ kotlin {
                     api("com.splendo.kaluga:date-time-picker:$libraryVersion")
                     api("com.splendo.kaluga:hud:$libraryVersion")
                     api("com.splendo.kaluga:keyboard:$libraryVersion")
+                    api("com.splendo.kaluga:links:$libraryVersion")
                     api("com.splendo.kaluga:location:$libraryVersion")
                     api("com.splendo.kaluga:logging:$libraryVersion")
                     api("com.splendo.kaluga:permissions:$libraryVersion")

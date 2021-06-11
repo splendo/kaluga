@@ -17,12 +17,18 @@
 
 package com.splendo.kaluga.bluetooth
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
+import com.splendo.kaluga.bluetooth.device.DeviceState.Connected
+import com.splendo.kaluga.bluetooth.device.DeviceState.Connecting
+import com.splendo.kaluga.bluetooth.device.DeviceState.Disconnected
+import com.splendo.kaluga.bluetooth.device.DeviceState.Disconnecting
+import com.splendo.kaluga.bluetooth.device.DeviceState.Reconnecting
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
@@ -36,7 +42,6 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -47,7 +52,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
-import kotlinx.coroutines.launch
 
 class Bluetooth internal constructor(
     permissions: Permissions,
@@ -71,7 +75,13 @@ class Bluetooth internal constructor(
         private const val LOG_TAG = "Kaluga Bluetooth"
     }
 
-    internal val scanningStateRepo = ScanningStateRepo(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scannerBuilder, coroutineScope)
+    internal val scanningStateRepo = ScanningStateRepo(
+        permissions,
+        connectionSettings,
+        autoRequestPermission,
+        autoEnableBluetooth,
+        scannerBuilder
+    )
 
     sealed class ScanMode {
         object Stopped:ScanMode()
@@ -80,73 +90,59 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    fun collectRepo(it:Any) {
-        println(it)
-
-    }
-
-    fun devices(): Flow<List<Device>> {
-
-        launch {
-            scanningStateRepo.collect {
-                collectRepo(it)
-            }
-        }
-
-            return combine(scanningStateRepo, scanMode) { scanState, scanMode ->
-                when (scanState) {
-                    is ScanningState.Initialized.Enabled.Idle -> {
-                        when(scanMode) {
-                            is ScanMode.Stopped -> emptyList()
-                            is ScanMode.Scan -> {
-                                scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
-                                    it.startScanning(scanMode.filter)
-                                }
-                                if (scanState.discovered.filter == scanMode.filter)
-                                    scanState.discovered.devices
-                                else
-                                    emptyList()
-
-                            }
+    fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+        when (scanState) {
+            is ScanningState.Initialized.Enabled.Idle -> {
+                when(scanMode) {
+                    is ScanMode.Stopped -> emptyList()
+                    is ScanMode.Scan -> {
+                        scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
+                            it.startScanning(scanMode.filter)
                         }
-                    }
-                    is ScanningState.Initialized.Enabled.Scanning -> {
+                        if (scanState.discovered.filter == scanMode.filter)
+                            scanState.discovered.devices
+                        else
+                            emptyList()
 
-                        when (scanMode) {
-                            is ScanMode.Scan -> {
-                                d("devices: ${scanState.discovered}")
-                                if (scanState.discovered.filter == scanMode.filter)
-                                    scanState.discovered.devices
-                                else {
-                                    scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
-                                        state.stopScanning
-                                    }
-                                    emptyList()
-                                }
-                            }
-                            else -> {
-                                scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
-                                    state.stopScanning
-                                }
-                                scanState.discovered.devices
-                            }
-                        }
                     }
-
-                    is ScanningState.Initialized.NoBluetooth -> {
-                        emptyList()
-                    }
-
-                    is ScanningState.NotInitialized -> {
-                        scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
-                            state.initialize(scanningStateRepo)
-                        }
-                        emptyList()
-                    }
-
                 }
             }
-    }
+            is ScanningState.Initialized.Enabled.Scanning -> {
+
+                when (scanMode) {
+                    is ScanMode.Scan -> {
+                        d("devices: ${scanState.discovered}")
+                        if (scanState.discovered.filter == scanMode.filter)
+                            scanState.discovered.devices
+                        else {
+                            scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                                state.stopScanning
+                            }
+                            emptyList()
+                        }
+                    }
+                    else -> {
+                        scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
+                            state.stopScanning
+                        }
+                        scanState.discovered.devices
+                    }
+                }
+            }
+
+            is ScanningState.Initialized.NoBluetooth -> {
+                emptyList()
+            }
+
+            is ScanningState.NotInitialized -> {
+                scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
+                    state.initialize(scanningStateRepo)
+                }
+                emptyList()
+            }
+
+        }
+    }.distinctUntilChanged()
 
     fun startScanning(filter: Set<UUID> = emptySet()) {
         scanMode.value = ScanMode.Scan(filter)
@@ -182,14 +178,14 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
     return state().transformLatest { deviceState ->
             emit(
                 when (deviceState) {
-                    is DeviceState.Connected -> {
+                    is Connected -> {
                         when (deviceState) {
-                            is DeviceState.Connected.NoServices -> {
+                            is Connected.NoServices -> {
                                 deviceState.startDiscovering()
                                 emptyList()
                             }
-                            is DeviceState.Connected.Idle -> deviceState.services
-                            is DeviceState.Connected.HandlingAction -> deviceState.services
+                            is Connected.Idle -> deviceState.services
+                            is Connected.HandlingAction -> deviceState.services
                             else -> emptyList()
                         }
                     }
@@ -202,9 +198,9 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 suspend fun Flow<Device?>.connect() {
     state().transformLatest { deviceState ->
             when (deviceState) {
-                is DeviceState.Disconnected -> deviceState.startConnecting()
-                is DeviceState.Connected -> emit(Unit)
-                else -> {}
+                is Disconnected -> deviceState.startConnecting()
+                is Connected -> emit(Unit)
+                is Connecting, is Reconnecting, is Disconnecting -> { }
             }
     }.first()
 }
@@ -212,11 +208,11 @@ suspend fun Flow<Device?>.connect() {
 suspend fun Flow<Device?>.disconnect() {
     state().transformLatest { deviceState ->
             when (deviceState) {
-                is DeviceState.Connected -> deviceState.startDisconnected()
-                is DeviceState.Connecting -> deviceState.handleCancel()
-                is DeviceState.Reconnecting -> deviceState.handleCancel()
-                is DeviceState.Disconnected -> emit(Unit)
-                is DeviceState.Disconnecting -> {}
+                is Connected -> deviceState.startDisconnected()
+                is Connecting -> deviceState.handleCancel()
+                is Reconnecting -> deviceState.handleCancel()
+                is Disconnected -> emit(Unit)
+                is Disconnecting -> {} // just wait
             }
     }.first()
 }
@@ -236,7 +232,7 @@ fun Flow<Device?>.rssi(): Flow<Int> {
 }
 
 fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int = 5): Flow<Double> {
-    val lastNResults = mutableListOf<Double>()
+    val lastNResults = sharedMutableListOf<Double>()
     return this.info().map { deviceInfo ->
         while (lastNResults.size >= averageOver) {
             lastNResults.removeAt(0)
@@ -254,7 +250,7 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
 suspend fun Flow<Device?>.updateRssi() {
     state().transformLatest { deviceState ->
             when (deviceState) {
-                is DeviceState.Connected -> {
+                is Connected -> {
                     deviceState.readRssi()
                     emit(Unit)
                 }

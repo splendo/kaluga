@@ -62,19 +62,19 @@ class BluetoothDeviceDetailsViewController : UIViewController, UICollectionViewD
             
             return [
             viewModel.name.observe { name in
-                self?.deviceName.text = name as? String
+                self?.deviceName.text = name as String?
             }
             ,
             viewModel.rssi.observe { rssiValue in
-                self?.rssi.text = rssiValue as? String
+                self?.rssi.text = rssiValue as String?
             }
             ,
             viewModel.distance.observe { distanceValue in
-                self?.distance.text = distanceValue as? String
+                self?.distance.text = distanceValue as String?
             }
             ,
             viewModel.state.observe { state in
-                self?.connectionStatus.text = state as? String
+                self?.connectionStatus.text = state as String?
             }
             ,
             viewModel.services.observe { servicesList in
@@ -126,7 +126,7 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
     
     fileprivate weak var parent: BluetoothDeviceDetailsViewController?
     fileprivate var service: BluetoothServiceViewModel?
-    private let disposebag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     private var isInvalidating: Bool = false
 
@@ -155,7 +155,7 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
     }
     
     fileprivate func startMonitoring() {
-        disposebag.dispose()
+        disposeBag.dispose()
         guard let service = self.service else {
             return
         }
@@ -166,12 +166,12 @@ class BluetoothServiceView: UICollectionViewCell, UICollectionViewDelegate, UICo
             self?.characteristics = characteristics as? [BluetoothCharacteristicViewModel] ?? []
             self?.characteristicsList.reloadData()
             self?.updateListSize(isInvalidating: false)
-        }.addTo(disposeBag: disposebag)
+        }.addTo(disposeBag: disposeBag)
     }
     
     fileprivate func stopMonitoring() {
         service?.didPause()
-        disposebag.dispose()
+        disposeBag.dispose()
     }
     
     fileprivate func updateListSize(isInvalidating: Bool) {
@@ -224,7 +224,7 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     
     fileprivate weak var parent: BluetoothServiceView?
     fileprivate var characteristic: BluetoothCharacteristicViewModel?
-    private let disposebag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     private var isInvalidating: Bool = false
     
@@ -251,7 +251,7 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
     }
     
     fileprivate func startMonitoring() {
-        disposebag.dispose()
+        disposeBag.dispose()
         guard let characteristic = self.characteristic else {
             return
         }
@@ -262,15 +262,15 @@ class BluetoothCharacteristicView : UICollectionViewCell, UICollectionViewDelega
             self?.descriptors = descriptors as? [BluetoothDescriptorViewModel] ?? []
             self?.descriptorsList.reloadData()
             self?.updateListSize(isInvalidating: false)
-        }.addTo(disposeBag: disposebag)
+        }.addTo(disposeBag: disposeBag)
         
         characteristic.value.observe { [weak self] value in
-            self?.characteristicValue.text = value as? String
-        }.addTo(disposeBag: disposebag)
+            self?.characteristicValue.text = value as String?
+        }.addTo(disposeBag: disposeBag)
     }
     
     fileprivate func stopMonitoring() {
-        disposebag.dispose()
+        disposeBag.dispose()
         characteristic?.didPause()
     }
     
@@ -322,13 +322,13 @@ class BluetoothDescriptorView : UICollectionViewCell {
     }
     
     fileprivate var descriptor: BluetoothDescriptorViewModel?
-    private let disposebag = DisposeBag()
+    private let disposeBag = DisposeBag()
     
     @IBOutlet var descriptorIdentifier: UILabel!
     @IBOutlet var descriptorValue: UILabel!
     
     fileprivate func startMonitoring() {
-        disposebag.dispose()
+        disposeBag.dispose()
         guard let descriptor = self.descriptor else {
             return
         }
@@ -337,12 +337,12 @@ class BluetoothDescriptorView : UICollectionViewCell {
         descriptorIdentifier.text = descriptor.uuid
         
         descriptor.value.observe { [weak self] value in
-            self?.descriptorValue.text = value as? String
-        }.addTo(disposeBag: disposebag)
+            self?.descriptorValue.text = value as String?
+        }.addTo(disposeBag: disposeBag)
     }
     
     fileprivate func stopMonitoring() {
-        disposebag.dispose()
+        disposeBag.dispose()
         descriptor?.didResume()
     }
     
@@ -352,5 +352,4 @@ class BluetoothDescriptorView : UICollectionViewCell {
         layoutAttributes.frame.size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         return layoutAttributes
     }
-    
 }

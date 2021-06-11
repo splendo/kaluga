@@ -19,6 +19,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.test
 
 import co.touchlab.stately.ensureNeverFrozen
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -45,22 +46,25 @@ abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T, MutableSharedFlow<T>>) = runBlocking {
        object:FlowTest<T, MutableSharedFlow<T>>(this) {
-           override val flow: () -> MutableSharedFlow<T>
-               get() =  ::mutableSharedFlow
+           override val flow: suspend () -> MutableSharedFlow<T> = suspend { mutableSharedFlow() }
        }.testWithFlow(block)
     }
 
-    abstract fun mutableSharedFlow(): MutableSharedFlow<T>
+    abstract suspend fun mutableSharedFlow(): MutableSharedFlow<T>
 
 }
 
+abstract class SimpleFlowTest<T>(scope: CoroutineScope = MainScope()):FlowTest<T, Flow<T>>(scope)
+
 abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseTest(), CoroutineScope by scope {
 
-    abstract val flow: () -> F
-    private val _flow by lazy { flow() }
+    init { ensureNeverFrozen() }
 
-    @Deprecated("use flow() instead", ReplaceWith("flow"))
-    val flowable: ()->F
+
+    abstract val flow: suspend () -> F
+
+    @Deprecated("use flow instead", ReplaceWith("flow"))
+    val flowable: suspend ()->F
         get() = flow
 
     open val filter:(Flow<T>) -> Flow<T> = { it }
@@ -107,23 +111,25 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
         }
     }
 
+    lateinit var lateflow:F
+
     fun testWithFlow(block: FlowTestBlock<T, F>) {
         runBlocking {
             testChannel = Channel(Channel.UNLIMITED)
             // startFlow is only called when the first test block is offered
-            block(this@FlowTest, _flow)
+
+            lateflow = flow()
+            val f = lateflow
+            block(this@FlowTest, f)
             resetFlow()
         }
     }
 
     @Suppress("SuspendFunctionOnCoroutineScope")
-    private suspend fun startFlow() {
+    private suspend fun startFlow(flow: F) {
         this.ensureNeverFrozen()
-
-        val flow = _flow
-        val testChannel = testChannel
-
         debug("launch flow scope...")
+        val testChannel = testChannel
         val started = EmptyCompletableDeferred()
         val filter = filter
         try {
@@ -170,18 +176,20 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseT
 
     var firstTestBlock = true
 
-    suspend fun test(skip: Int = 0, test: TestBlock<T>) {
+    suspend fun test(skip: Int = 0, test: TestBlock<T>,) {
+        test.freeze()
         if (firstTestBlock) {
             firstTestBlock = false
             tests.ensureNeverFrozen()
-            startFlow()
+            debug("first test offered, starting collection")
+            startFlow(lateflow)
         }
         repeat(skip) {
             test {}
         }
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
-        debug("${tests.size} in collection, offering")
+        debug("${tests.size} in collection (including this one), offering")
         testChannel.offer(Pair(test, completable))
     }
 }

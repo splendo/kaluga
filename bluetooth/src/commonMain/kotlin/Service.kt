@@ -17,9 +17,17 @@
 
 package com.splendo.kaluga.bluetooth
 
-interface BaseService {
-    val uuid: UUID
-    val characteristics: List<Characteristic>
+import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+
+class Service(
+    service: ServiceWrapper,
+    private val stateRepo: DeviceStateFlowRepo
+) {
+    val uuid = service.uuid
+    val characteristics = service.characteristics.map { Characteristic(it, stateRepo = stateRepo) }
 }
 
-expect open class Service : BaseService
+expect interface ServiceWrapper {
+    val characteristics: List<CharacteristicWrapper>
+    val uuid:UUID
+}

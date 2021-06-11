@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.base.toByteArray
 import com.splendo.kaluga.base.toNSData
-import com.splendo.kaluga.bluetooth.device.DeviceAction
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import platform.CoreBluetooth.CBDescriptor
 import platform.CoreBluetooth.CBPeripheral
 import platform.CoreBluetooth.CBUUID
@@ -35,26 +32,9 @@ import platform.Foundation.NSString
 import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.dataUsingEncoding
 
-actual open class Descriptor(internal val descriptor: DescriptorWrapper, stateRepo: DeviceStateFlowRepo) : BaseDescriptor(descriptor.value?.toByteArray(), stateRepo) {
-
-    override val uuid = descriptor.UUID
-
-    override fun createReadAction(): DeviceAction.Read.Descriptor {
-        return DeviceAction.Read.Descriptor(this)
-    }
-
-    override fun createWriteAction(newValue: ByteArray?): DeviceAction.Write.Descriptor {
-        return DeviceAction.Write.Descriptor(newValue, this)
-    }
-
-    override fun getUpdatedValue(): ByteArray? {
-        return descriptor.value?.toByteArray()
-    }
-}
-
-interface DescriptorWrapper {
-    val UUID: CBUUID
-    val value: NSData?
+actual interface DescriptorWrapper {
+    actual val uuid: CBUUID
+    actual val value: NSData?
 
     fun readValue(peripheral: CBPeripheral)
     fun writeValue(value: NSData, peripheral: CBPeripheral)
@@ -62,7 +42,7 @@ interface DescriptorWrapper {
 
 class DefaultDescriptorWrapper(private val descriptor: CBDescriptor) : DescriptorWrapper {
 
-    override val UUID: CBUUID get() { return descriptor.UUID }
+    override val uuid: CBUUID get() { return descriptor.UUID }
     override val value: NSData? get() {
         return when (descriptor.UUID.uuidString) {
             CBUUIDCharacteristicFormatString -> {

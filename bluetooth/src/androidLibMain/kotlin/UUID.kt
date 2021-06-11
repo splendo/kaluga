@@ -21,3 +21,9 @@ actual typealias UUID = java.util.UUID
 
 actual val UUID.uuidString: String
     get() = toString()
+
+actual fun uuidFrom(uuidString: String) =
+    UUID.fromString(uuidString)
+
+actual fun randomUUID():UUID = UUID.randomUUID()
+

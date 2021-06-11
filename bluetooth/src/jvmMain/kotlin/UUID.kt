@@ -29,3 +29,7 @@ actual data class UUID(val uuidString: String) {
 
 actual val UUID.uuidString: String
     get() = uuidString
+
+actual fun uuidFrom(uuidString:String):UUID = UUID(uuidString = uuidString)
+
+actual fun randomUUID():UUID = TODO()

@@ -20,3 +20,7 @@ package com.splendo.kaluga.bluetooth
 expect class UUID
 
 expect val UUID.uuidString: String
+
+expect fun uuidFrom(uuidString:String):UUID
+
+expect fun randomUUID():UUID

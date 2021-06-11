@@ -21,7 +21,7 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
 
@@ -29,16 +29,27 @@ kotlin {
                 api(kotlin("test"))
                 api(kotlin("test-junit"))
 
+                implementation("org.jetbrains.kotlin:kotlin-reflect:" + ext["kotlin_version"])
+
                 // these dependencies make test linking slow, but Kotlin/Native cannot handle `compileOnly`
                 // https://github.com/splendo/kaluga/issues/208
                 implementation(project(":alerts", ""))
                 implementation(project(":architecture", ""))
                 implementation(project(":base", ""))
+                implementation(project(":bluetooth", ""))
                 implementation(project(":hud", ""))
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":permissions", ""))
                 implementation("io.insert-koin:koin-core:" + ext["koin_version"])
+            }
+        }
+
+        getByName("androidLibMain") {
+            val ext = (gradle as ExtensionAware).extra
+            dependencies {
+                // import needed for android KeyboardHostingView implementation.
+                implementation("androidx.compose.ui:ui:${ext["androidx_compose_version"]}")
             }
         }
 
@@ -52,7 +63,8 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:"+ext["kotlinx_coroutines_version"])
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:"+ext["kotlinx_coroutines_version"])
             }
         }
     }
@@ -61,7 +73,7 @@ kotlin {
 android {
     dependencies {
         val ext = (gradle as ExtensionAware).extra
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:${ext["kotlinx_coroutines_version"]}")
-        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:${ext["kotlinx_coroutines_version"]}")
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-test:"+ext["kotlinx_coroutines_version"])
+        api("org.jetbrains.kotlinx:kotlinx-coroutines-debug:"+ext["kotlinx_coroutines_version"])
     }
 }

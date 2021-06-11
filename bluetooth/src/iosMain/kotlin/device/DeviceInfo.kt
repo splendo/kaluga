@@ -17,20 +17,9 @@
 
 package com.splendo.kaluga.bluetooth.device
 
-import kotlin.device.CBPeripheralWrapper
 import platform.Foundation.NSUUID
 
 actual typealias Identifier = NSUUID
 
 actual val Identifier.stringValue: String
     get() = UUIDString
-
-actual class DeviceHolder(internal val peripheral: CBPeripheralWrapper) {
-
-    actual val name: String?
-        get() =
-            peripheral.name
-
-    actual val identifier: Identifier
-        get() = peripheral.identifier
-}

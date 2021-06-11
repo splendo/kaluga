@@ -17,24 +17,4 @@
 
 package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.device.DeviceHolder
-import com.splendo.kaluga.bluetooth.device.DeviceState
-import com.splendo.kaluga.bluetooth.mock.MockCBPeripheralWrapper
-import com.splendo.kaluga.bluetooth.mock.MockServiceWrapper
-import com.splendo.kaluga.state.StateRepo
-import platform.CoreBluetooth.CBUUID
 
-class IOSBluetoothTest : BluetoothTest() {
-
-    override fun createFilter(): Set<UUID> {
-        return setOf(CBUUID())
-    }
-
-    override fun createDeviceHolder(): DeviceHolder {
-        return DeviceHolder(MockCBPeripheralWrapper())
-    }
-
-    override fun createService(stateRepo: DeviceStateRepo): Service {
-        return Service(MockServiceWrapper(CBUUID(), listOf(Pair(CBUUID(), listOf(CBUUID())))), stateRepo)
-    }
-}
