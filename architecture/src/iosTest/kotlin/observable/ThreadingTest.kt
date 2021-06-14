@@ -35,10 +35,16 @@ class ThreadingTest {
         val s = subjectOf<Value?>(null)
         assertNotFrozen(s)
         val value = Value()
-        value.ensureNeverFrozen() // provide early failure for debugging test
+
+        // provide early failure for debugging test
+        value.ensureNeverFrozen()
+        s.ensureNeverFrozen()
+
         assertNotFrozen(value)
+        assertNotFrozen(s)
         s.set(value)
         assertEquals(value, s.currentOrNull)
+
         // still nothing should be frozen
         assertNotFrozen(value)
         assertNotFrozen(s)
