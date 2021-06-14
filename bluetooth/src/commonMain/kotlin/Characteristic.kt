@@ -17,12 +17,16 @@
 
 package com.splendo.kaluga.bluetooth
 
+import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 
 open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
-    var isNotifying: Boolean = false
+    val _isNotifying = AtomicBoolean(false)
+    var isNotifying: Boolean
+        get() = _isNotifying.value
+        set(value) { _isNotifying.value = value }
 
     suspend fun enableNotification() {
         if (!isNotifying)
