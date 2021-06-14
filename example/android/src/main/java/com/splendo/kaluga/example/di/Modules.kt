@@ -83,6 +83,7 @@ import org.koin.dsl.module
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
+import java.net.URL
 
 //import com.splendo.kaluga.bluetooth.device.*
 
