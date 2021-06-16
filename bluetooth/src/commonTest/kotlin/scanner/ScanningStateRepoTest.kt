@@ -249,23 +249,33 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertEquals(advertisementData, it.discovered.devices[0].first().advertisementData)
         }
 
-        val deviceWrapper = deviceWrapper
-        val device = device
-        val scanningStateRepo = scanningStateRepo
+        action {
 
-        scanningStateRepo.takeAndChangeState { scanningState ->
-            when (scanningState) {
-                is Scanning -> {
-                    val newAdvertisementData = MockAdvertisementData(name = "New Name")
-                    val newRssi = -42
-                    val newState = scanningState.discoverDevice(deviceWrapper.identifier, newRssi, newAdvertisementData) { device }
-                    assertEquals(scanningState.remain(), newState)
-                    assertEquals(listOf(device), scanningState.discovered.devices)
-                    assertEquals(newAdvertisementData, scanningState.discovered.devices[0].first().advertisementData)
-                    assertEquals(newRssi, scanningState.discovered.devices[0].first().rssi)
-                    newState
+            val deviceWrapper = deviceWrapper
+            val device = device
+            val scanningStateRepo = scanningStateRepo
+
+            scanningStateRepo.takeAndChangeState { scanningState ->
+                when (scanningState) {
+                    is Scanning -> {
+                        val newAdvertisementData = MockAdvertisementData(name = "New Name")
+                        val newRssi = -42
+                        val newState = scanningState.discoverDevice(
+                            deviceWrapper.identifier,
+                            newRssi,
+                            newAdvertisementData
+                        ) { device }
+                        assertEquals(scanningState.remain(), newState)
+                        assertEquals(listOf(device), scanningState.discovered.devices)
+                        assertEquals(
+                            newAdvertisementData,
+                            scanningState.discovered.devices[0].first().advertisementData
+                        )
+                        assertEquals(newRssi, scanningState.discovered.devices[0].first().rssi)
+                        newState
+                    }
+                    else -> fail("unexpected state")
                 }
-                else -> fail("unexpected state")
             }
         }
     }
