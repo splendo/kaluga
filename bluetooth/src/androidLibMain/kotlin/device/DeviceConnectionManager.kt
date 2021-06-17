@@ -25,6 +25,7 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
@@ -194,10 +195,13 @@ internal actual class DeviceConnectionManager(
                 gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable).also {
                     info(TAG, "setCharacteristicNotification result: $it")
                 }
-                // Enable remote notifications
+                // Enable/Disable remote notifications
+                val value = if (action.enable) BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                else BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+
                 action.characteristic.descriptors.forEach { descriptor ->
-                    info(TAG, "writeValue ENABLE_NOTIFICATION_VALUE to $descriptor")
-                    descriptor.wrapper.updateValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE)
+                    info(TAG, "writeValue 0x${value.toHexString()} to $descriptor")
+                    descriptor.wrapper.updateValue(value)
                     gatt.await().writeDescriptor(descriptor.wrapper)
                 }
                 false
