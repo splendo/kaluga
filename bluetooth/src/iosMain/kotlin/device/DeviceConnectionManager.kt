@@ -71,12 +71,12 @@ internal actual class DeviceConnectionManager(
     private val peripheralDelegate = object : NSObject(), CBPeripheralDelegateProtocol {
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverDescriptorsForCharacteristic: CBCharacteristic, error: NSError?) {
-            info(TAG, "Did Discover Descriptors for Characteristic ${didDiscoverDescriptorsForCharacteristic.UUID.UUIDString}")
+            info(TAG, "Did Discover Descriptors for Characteristic ${didDiscoverDescriptorsForCharacteristic.UUID.UUIDString} with error: $error")
             didDiscoverDescriptors(didDiscoverDescriptorsForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateNotificationStateForCharacteristic: CBCharacteristic, error: NSError?) {
-            info(TAG, "Did Update Notification State for Characteristic ${didUpdateNotificationStateForCharacteristic.UUID.UUIDString}")
+            info(TAG, "Did Update Notification State for Characteristic ${didUpdateNotificationStateForCharacteristic.UUID.UUIDString} with error: $error")
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
                     if (action.characteristic.wrapper.uuid.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
@@ -89,37 +89,37 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            info(TAG, "Did Update Value for Characteristic ${didUpdateValueForCharacteristic.UUID.UUIDString}")
+            info(TAG, "Did Update Value for Characteristic ${didUpdateValueForCharacteristic.UUID.UUIDString} with error: $error")
             updateCharacteristic(didUpdateValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            info(TAG, "Did Write Value for Characteristic ${didWriteValueForCharacteristic.UUID.UUIDString}")
+            info(TAG, "Did Write Value for Characteristic ${didWriteValueForCharacteristic.UUID.UUIDString} with error: $error")
             updateCharacteristic(didWriteValueForCharacteristic)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
-            info(TAG, "Did Update Value for Descriptor ${didUpdateValueForDescriptor.UUID.UUIDString}")
+            info(TAG, "Did Update Value for Descriptor ${didUpdateValueForDescriptor.UUID.UUIDString} with error: $error")
             updateDescriptor(didUpdateValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            info(TAG, "Did Write Value for Descriptor ${didWriteValueForDescriptor.UUID.UUIDString}")
+            info(TAG, "Did Write Value for Descriptor ${didWriteValueForDescriptor.UUID.UUIDString} with error: $error")
             updateDescriptor(didWriteValueForDescriptor)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
-            info(TAG, "Did Discover Characteristics for Service ${didDiscoverCharacteristicsForService.UUID.UUIDString}")
+            info(TAG, "Did Discover Characteristics for Service ${didDiscoverCharacteristicsForService.UUID.UUIDString} with error: $error")
             didDiscoverCharacteristic(didDiscoverCharacteristicsForService)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverServices: NSError?) {
-            info(TAG, "Did Discover Services for Peripheral ${peripheral.identifier.UUIDString}")
+            info(TAG, "Did Discover Services for Peripheral ${peripheral.identifier.UUIDString} with error: $didDiscoverServices")
             didDiscoverServices()
         }
 
         override fun peripheral(peripheral: CBPeripheral, didReadRSSI: NSNumber, error: NSError?) {
-            info(TAG, "Did Read RSSI for Peripheral ${peripheral.identifier.UUIDString}")
+            info(TAG, "Did Read RSSI for Peripheral ${peripheral.identifier.UUIDString} with error: $error")
             launch {
                 handleNewRssi(didReadRSSI.intValue)
             }
