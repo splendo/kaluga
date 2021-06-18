@@ -25,9 +25,11 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.uuidString
+import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +43,10 @@ internal actual class DeviceConnectionManager(
     stateRepo: DeviceStateFlowRepo,
     val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // Implementation wanted some things to run on the main thread explicitly, however for testing it might make sense to replace this
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo), CoroutineScope by stateRepo {
+
+    private companion object {
+         const val TAG = "Android Bluetooth DeviceConnectionManager"
+    }
 
     override val coroutineContext: CoroutineContext
         get() = stateRepo.coroutineContext
@@ -66,14 +72,14 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+            info(TAG, "onCharacteristicRead $gatt $characteristic $status")
             characteristic ?: return
-
             updateCharacteristic(characteristic)
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
+            info(TAG, "onCharacteristicWrite $gatt $characteristic $status")
             characteristic ?: return
-
             updateCharacteristic(characteristic)
         }
 
@@ -85,12 +91,12 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
-            descriptor?.let {
-                updateDescriptor(it)
-            }
+            descriptor ?: return
+            updateDescriptor(descriptor)
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
+            info(TAG, "onCharacteristicChanged $gatt $characteristic")
             characteristic ?: return
             updateCharacteristic(characteristic)
         }
@@ -186,7 +192,18 @@ internal actual class DeviceConnectionManager(
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable)
+                gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable).also {
+                    info(TAG, "setCharacteristicNotification result: $it")
+                }
+                // Enable/Disable remote notifications
+                val value = if (action.enable) BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                else BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+
+                action.characteristic.descriptors.forEach { descriptor ->
+                    info(TAG, "writeValue 0x${value.toHexString()} to $descriptor")
+                    descriptor.wrapper.updateValue(value)
+                    gatt.await().writeDescriptor(descriptor.wrapper)
+                }
                 false
             }
         }
