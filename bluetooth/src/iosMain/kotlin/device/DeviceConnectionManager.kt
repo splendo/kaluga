@@ -79,7 +79,7 @@ internal actual class DeviceConnectionManager(
             info(TAG, "Did Update Notification State for Characteristic ${didUpdateNotificationStateForCharacteristic.UUID.UUIDString} with error: $error")
             when (val action = currentAction) {
                 is DeviceAction.Notification -> {
-                    if (action.characteristic.wrapper.uuid.toString() == didUpdateNotificationStateForCharacteristic.UUID.toString()) {
+                    if (action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
                         launch {
                             handleCurrentActionCompleted()
                         }
