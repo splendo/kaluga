@@ -86,11 +86,6 @@ internal actual class DeviceConnectionManager(
             characteristic ?: return
 
             updateCharacteristic(characteristic)
-
-            //TODO: Remove it before merge to master
-            // if (characteristic.properties and PROPERTY_INDICATE != 0) {
-            //     gatt?.readCharacteristic(characteristic)
-            // }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
