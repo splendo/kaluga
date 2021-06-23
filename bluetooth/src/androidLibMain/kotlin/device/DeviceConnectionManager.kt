@@ -205,17 +205,19 @@ internal actual class DeviceConnectionManager(
                     info(TAG, "setCharacteristicNotification result: $it")
                 }
 
-                val value = when {
+                when {
                     action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                     action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    else -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                    !action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE or PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                    else -> null
+                }?.let { value ->
+                    action.characteristic.descriptors.forEach { descriptor ->
+                        info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
+                        descriptor.wrapper.updateValue(value)
+                        gatt.await().writeDescriptor(descriptor.wrapper)
+                    }
                 }
 
-                action.characteristic.descriptors.forEach { descriptor ->
-                    info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
-                    descriptor.wrapper.updateValue(value)
-                    gatt.await().writeDescriptor(descriptor.wrapper)
-                }
                 false
             }
         }
