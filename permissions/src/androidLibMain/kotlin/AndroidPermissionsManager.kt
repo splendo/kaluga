@@ -24,6 +24,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import co.touchlab.stately.collections.IsoMutableMap
+import co.touchlab.stately.collections.sharedMutableMapOf
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
@@ -88,7 +90,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     internal companion object {
         const val TAG = "Permissions"
 
-        val permissionsStates: MutableMap<String, AndroidPermissionState> = mutableMapOf()
+        val permissionsStates: IsoMutableMap<String, AndroidPermissionState> = sharedMutableMapOf()
     }
 
     private val filteredPermissionsStates: Map<String, AndroidPermissionState>
