@@ -206,8 +206,8 @@ internal actual class DeviceConnectionManager(
                 }
 
                 val value = when {
-                    action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
                     else -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
                 }
 
