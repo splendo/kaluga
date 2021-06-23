@@ -33,6 +33,7 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.hasProperty
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -209,7 +210,10 @@ internal actual class DeviceConnectionManager(
                     action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                     action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
                     !action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE or PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
-                    else -> null
+                    else -> {
+                        warn(TAG, "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}")
+                        null
+                    }
                 }?.let { value ->
                     action.characteristic.descriptors.forEach { descriptor ->
                         info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
