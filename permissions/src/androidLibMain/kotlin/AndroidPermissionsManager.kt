@@ -94,7 +94,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     }
 
     private val filteredPermissionsStates: Map<String, AndroidPermissionState>
-        get() = permissionsStates.filterKeys { permissions.contains(it) }
+        get() = permissionsStates.access { it.filterKeys { permissions.contains(it) } }
     private var timer: Timer? = null
 
     /**
