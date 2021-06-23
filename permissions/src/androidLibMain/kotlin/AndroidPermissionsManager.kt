@@ -24,8 +24,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import co.touchlab.stately.collections.IsoMutableMap
-import co.touchlab.stately.collections.sharedMutableMapOf
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
@@ -33,6 +31,7 @@ import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Timer
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.fixedRateTimer
 
 internal enum class AndroidPermissionState {
@@ -90,11 +89,11 @@ class AndroidPermissionsManager<P : Permission> constructor(
     internal companion object {
         const val TAG = "Permissions"
 
-        val permissionsStates: IsoMutableMap<String, AndroidPermissionState> = sharedMutableMapOf()
+        val permissionsStates: MutableMap<String, AndroidPermissionState> = ConcurrentHashMap()
     }
 
     private val filteredPermissionsStates: Map<String, AndroidPermissionState>
-        get() = permissionsStates.access { it.filterKeys { permissions.contains(it) } }
+        get() = permissionsStates.filterKeys { permissions.contains(it) }
     private var timer: Timer? = null
 
     /**
