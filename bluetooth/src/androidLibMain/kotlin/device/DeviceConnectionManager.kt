@@ -22,6 +22,7 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE
+import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
@@ -205,11 +206,11 @@ internal actual class DeviceConnectionManager(
                 }
 
                 info { " * wrapper property: ${action.characteristic.wrapper.properties}" }
-                val value = if (action.enable)
-                    if (action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE))
-                        BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    else BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                else BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                val value = when {
+                    action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                    action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    else -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                }
 
                 action.characteristic.descriptors.forEach { descriptor ->
                     info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
