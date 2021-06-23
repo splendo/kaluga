@@ -205,7 +205,6 @@ internal actual class DeviceConnectionManager(
                     info(TAG, "setCharacteristicNotification result: $it")
                 }
 
-                info { " * wrapper property: ${action.characteristic.wrapper.properties}" }
                 val value = when {
                     action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
                     action.enable and action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
