@@ -39,8 +39,7 @@ actual interface CharacteristicWrapper {
     fun floatValue(formatType: Int, offset: Int): Float
     fun intValue(formatType: Int, offset: Int): Int
 }
-
-fun CharacteristicWrapper.hasProperty(property: Int) = properties.and(property) == property
+fun CharacteristicWrapper.containsAnyOf(vararg property: Int) = properties and property.reduce { acc, i -> acc.or(i) } != 0
 
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 

@@ -30,7 +30,7 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
-import com.splendo.kaluga.bluetooth.hasProperty
+import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.logging.warn
@@ -202,9 +202,9 @@ internal actual class DeviceConnectionManager(
                 }
 
                 when {
-                    action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    !action.enable && action.characteristic.wrapper.hasProperty(PROPERTY_INDICATE or PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                    !action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
                     else -> {
                         warn(TAG, "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}")
                         null
