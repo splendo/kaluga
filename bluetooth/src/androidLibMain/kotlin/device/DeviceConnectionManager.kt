@@ -21,6 +21,8 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE
+import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_NOTIFY
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
@@ -28,8 +30,10 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +65,7 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    private val device:android.bluetooth.BluetoothDevice = deviceWrapper.device
+    private val device: android.bluetooth.BluetoothDevice = deviceWrapper.device
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
     private val callback = object : BluetoothGattCallback() {
 
@@ -80,6 +84,7 @@ internal actual class DeviceConnectionManager(
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             info(TAG, "onCharacteristicWrite $gatt $characteristic $status")
             characteristic ?: return
+
             updateCharacteristic(characteristic)
         }
 
@@ -195,15 +200,23 @@ internal actual class DeviceConnectionManager(
                 gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable).also {
                     info(TAG, "setCharacteristicNotification result: $it")
                 }
-                // Enable/Disable remote notifications
-                val value = if (action.enable) BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                else BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
 
-                action.characteristic.descriptors.forEach { descriptor ->
-                    info(TAG, "writeValue 0x${value.toHexString()} to $descriptor")
-                    descriptor.wrapper.updateValue(value)
-                    gatt.await().writeDescriptor(descriptor.wrapper)
+                when {
+                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+                    !action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+                    else -> {
+                        warn(TAG, "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}")
+                        null
+                    }
+                }?.let { value ->
+                    action.characteristic.descriptors.forEach { descriptor ->
+                        info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
+                        descriptor.wrapper.updateValue(value)
+                        gatt.await().writeDescriptor(descriptor.wrapper)
+                    }
                 }
+
                 false
             }
         }

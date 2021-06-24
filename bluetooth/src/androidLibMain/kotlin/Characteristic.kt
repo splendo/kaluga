@@ -40,6 +40,12 @@ actual interface CharacteristicWrapper {
     fun intValue(formatType: Int, offset: Int): Int
 }
 
+fun CharacteristicWrapper.containsAnyOf(vararg property: Int) =
+    if (property.count() > 0)
+        properties and property.reduce { acc, i -> acc.or(i) } != 0
+    else
+        false
+
 class DefaultCharacteristicWrapper(private val gattCharacteristic: BluetoothGattCharacteristic) : CharacteristicWrapper {
 
     override val uuid: java.util.UUID
