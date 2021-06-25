@@ -15,7 +15,10 @@
 
  */
 
+@file:JvmName("CommonUUID")
 package com.splendo.kaluga.bluetooth
+
+import kotlin.jvm.JvmName
 
 expect class UUID
 
@@ -24,3 +27,7 @@ expect val UUID.uuidString: String
 expect fun uuidFrom(uuidString:String):UUID
 
 expect fun randomUUID():UUID
+
+fun uuidFromShort(uuidString: String): UUID = uuidFrom("0000$uuidString-0000-1000-8000-00805f9b34fb")
+internal fun String.isShortUUID() = length == 4
+
