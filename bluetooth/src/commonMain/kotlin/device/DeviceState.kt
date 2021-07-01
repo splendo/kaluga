@@ -144,12 +144,8 @@ sealed class DeviceState(
             }
 
         val reconnect = suspend {
-            val services = when (this) {
-                is Idle -> this.services
-                is HandlingAction -> this.services
-                else -> null
-            }
-            Reconnecting(0, services, deviceInfo, connectionManager)
+            // All services, characteristics and descriptors become invalidated after it disconnects
+            Reconnecting(0, null, deviceInfo, connectionManager)
         }
 
         suspend fun readRssi() {

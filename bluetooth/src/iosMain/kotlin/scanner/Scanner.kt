@@ -94,7 +94,7 @@ actual class Scanner internal constructor(
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
-            info(TAG, "Did Discover Peripheral ${didDiscoverPeripheral.identifier.UUIDString}")
+            // info(TAG, "Did Discover Peripheral ${didDiscoverPeripheral.identifier.UUIDString}")
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 

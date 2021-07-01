@@ -82,7 +82,6 @@ abstract class BaseDeviceConnectionManager(
         }
 
         stateRepo.takeAndChangeState { state ->
-
             when (state) {
                 is DeviceState.Reconnecting -> {
                     state.retry().also {
@@ -91,16 +90,12 @@ abstract class BaseDeviceConnectionManager(
                         }
                     }
                 }
-                is DeviceState.Connected -> {
-                    when (connectionSettings.reconnectionSettings) {
-                        is ConnectionSettings.ReconnectionSettings.Always,
-                        is ConnectionSettings.ReconnectionSettings.Limited -> {
-                            state.reconnect
-                        }
-                        else -> {
-                            clean()
-                            state.didDisconnect
-                        }
+                is DeviceState.Connected -> when (connectionSettings.reconnectionSettings) {
+                    is ConnectionSettings.ReconnectionSettings.Always,
+                    is ConnectionSettings.ReconnectionSettings.Limited -> state.reconnect
+                    is ConnectionSettings.ReconnectionSettings.Never -> {
+                        clean()
+                        state.didDisconnect
                     }
                 }
                 is DeviceState.Disconnected -> state.remain()
