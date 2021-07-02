@@ -18,22 +18,14 @@
 package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.collections.IsoMutableMap
-import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
-import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
-import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
-import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -41,7 +33,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.KClass
 import kotlin.reflect.KClassifier
 
 /**
@@ -96,23 +87,14 @@ data class NotificationsPermission(val options: NotificationOptions? = null) : P
  */
 data class StoragePermission(val allowWrite: Boolean = false) : Permission()
 
-// interface BasePermissionsBuilder_Legacy {
-//     val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder
-//     val calendarPMBuilder: BaseCalendarPermissionManagerBuilder
-//     val cameraPMBuilder: BaseCameraPermissionManagerBuilder
-//     val contactsPMBuilder: BaseContactsPermissionManagerBuilder
-//     val locationPMBuilder: BaseLocationPermissionManagerBuilder
-//     val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder
-//     val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder
-//     val storagePMBuilder: BaseStoragePermissionManagerBuilder
-// }
-
 interface BasePermissionsBuilder
 /**
  * Builder for providing the proper [PermissionManager] for each [Permission]
  */
 class PermissionsBuilder {
-    fun register(builder: BasePermissionsBuilder, permission: KClassifier) { TODO("Not implemented") }
+    fun register(builder: BasePermissionsBuilder, permission: KClassifier) {
+        TODO("Not implemented")
+    }
 }
 
 expect fun PermissionsBuilder.registerBluetoothBuilder()

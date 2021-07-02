@@ -16,33 +16,14 @@
  */
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
-import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
-import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
-
-// actual data class PermissionsBuilder(
-//     override val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder = ,
-//     override val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = CalendarPermissionManagerBuilder(),
-//     override val cameraPMBuilder: BaseCameraPermissionManagerBuilder = CameraPermissionManagerBuilder(),
-//     override val contactsPMBuilder: BaseContactsPermissionManagerBuilder = ContactsPermissionManagerBuilder(),
-//     override val locationPMBuilder: BaseLocationPermissionManagerBuilder = LocationPermissionManagerBuilder(),
-//     override val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder = MicrophonePermissionManagerBuilder(),
-//     override val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder = NotificationsPermissionManagerBuilder(),
-//     override val storagePMBuilder: BaseStoragePermissionManagerBuilder = StoragePermissionManagerBuilder()
-// ) : BasePermissionsBuilder
 
 actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
 actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
