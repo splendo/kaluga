@@ -21,15 +21,16 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
 actual class LocationPermissionManager(
     context: Context,
-    actual val location: Permission.Location,
+    actual val location: LocationPermission,
     stateRepo: LocationPermissionStateRepo
-) : PermissionManager<Permission.Location>(stateRepo) {
+) : PermissionManager<LocationPermission>(stateRepo) {
 
     private val permissions: Array<String> get() {
         val result = mutableListOf(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -46,7 +47,7 @@ actual class LocationPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Location> {
+    override suspend fun initializeState(): PermissionState<LocationPermission> {
         return when {
             permissionsManager.hasPermissions -> PermissionState.Allowed()
             else -> PermissionState.Denied.Requestable()
@@ -64,7 +65,7 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
+    override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
         return LocationPermissionManager(context, location, repo)
     }
 }

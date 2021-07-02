@@ -41,73 +41,88 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transformLatest
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
+import kotlin.reflect.KClassifier
 
 /**
  * Permissions that can be requested by Kaluga
  */
-sealed class Permission {
-    /**
-     * Permission to access the Bluetooth scanner
-     */
-    object Bluetooth : Permission()
+abstract class Permission
 
-    /**
-     * Permission to access the users Calendar
-     * @param allowWrite If `true` writing to the calendar is permitted
-     */
-    data class Calendar(val allowWrite: Boolean = false) : Permission()
+/**
+ * Permission to access the Bluetooth scanner
+ */
+object BluetoothPermission : Permission()
 
-    /**
-     * Permission to access the users Camera
-     */
-    object Camera : Permission()
-    /**
-     * Permission to access the users Contacts
-     * @param allowWrite If `true` writing to the contacts is permitted
-     */
-    data class Contacts(val allowWrite: Boolean = false) : Permission()
+/**
+ * Permission to access the users Calendar
+ * @param allowWrite If `true` writing to the calendar is permitted
+ */
+data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
 
-    /**
-     * Permission to access the users Location
-     * @param background If `true` scanning for location in the background is permitted
-     * @param precise If `true` precise location scanning is permitted
-     */
-    data class Location(val background: Boolean = false, val precise: Boolean = false) : Permission()
+/**
+ * Permission to access the users Camera
+ */
+object CameraPermission : Permission()
 
-    /**
-     * Permission to access the users Microphone
-     */
-    object Microphone : Permission()
+/**
+ * Permission to access the users Contacts
+ * @param allowWrite If `true` writing to the contacts is permitted
+ */
+data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
-    /**
-     * Permission to access the users Notifications.
-     * @param options The [NotificationOptions] determining the type of notifications that can be accessed
-     */
-    data class Notifications(val options: NotificationOptions? = null) : Permission()
+/**
+ * Permission to access the users Location
+ * @param background If `true` scanning for location in the background is permitted
+ * @param precise If `true` precise location scanning is permitted
+ */
+data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) : Permission()
 
-    /**
-     * Permission to access the users device storage.
-     * On iOS this corresponds to the Photos permission
-     * @param allowWrite If `true` writing to the storage is permitted
-     */
-    data class Storage(val allowWrite: Boolean = false) : Permission()
-}
+/**
+ * Permission to access the users Microphone
+ */
+object MicrophonePermission : Permission()
 
-interface BasePermissionsBuilder {
-    val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder
-    val calendarPMBuilder: BaseCalendarPermissionManagerBuilder
-    val cameraPMBuilder: BaseCameraPermissionManagerBuilder
-    val contactsPMBuilder: BaseContactsPermissionManagerBuilder
-    val locationPMBuilder: BaseLocationPermissionManagerBuilder
-    val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder
-    val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder
-    val storagePMBuilder: BaseStoragePermissionManagerBuilder
-}
+/**
+ * Permission to access the users Notifications.
+ * @param options The [NotificationOptions] determining the type of notifications that can be accessed
+ */
+data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
 
+/**
+ * Permission to access the users device storage.
+ * On iOS this corresponds to the Photos permission
+ * @param allowWrite If `true` writing to the storage is permitted
+ */
+data class StoragePermission(val allowWrite: Boolean = false) : Permission()
+
+// interface BasePermissionsBuilder_Legacy {
+//     val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder
+//     val calendarPMBuilder: BaseCalendarPermissionManagerBuilder
+//     val cameraPMBuilder: BaseCameraPermissionManagerBuilder
+//     val contactsPMBuilder: BaseContactsPermissionManagerBuilder
+//     val locationPMBuilder: BaseLocationPermissionManagerBuilder
+//     val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder
+//     val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder
+//     val storagePMBuilder: BaseStoragePermissionManagerBuilder
+// }
+
+interface BasePermissionsBuilder
 /**
  * Builder for providing the proper [PermissionManager] for each [Permission]
  */
-expect class PermissionsBuilder : BasePermissionsBuilder
+class PermissionsBuilder {
+    fun register(builder: BasePermissionsBuilder, permission: KClassifier) { TODO("Not implemented") }
+}
+
+expect fun PermissionsBuilder.registerBluetoothBuilder()
+expect fun PermissionsBuilder.registerCalendarPermissionBuilder()
+expect fun PermissionsBuilder.registerCameraPermissionBuilder()
+expect fun PermissionsBuilder.registerContactsPermissionBuilder()
+expect fun PermissionsBuilder.registerLocationPermissionBuilder()
+expect fun PermissionsBuilder.registerMicrophonePermissionBuilder()
+expect fun PermissionsBuilder.registerNotificationsPermissionBuilder()
+expect fun PermissionsBuilder.registerStoragePermissionBuilder()
 
 /**
  * Manager to request the [PermissionStateRepo] of a given [Permission]

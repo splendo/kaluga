@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -30,19 +32,19 @@ expect class NotificationOptions
 /**
  * A [PermissionManager] for managing [Permission.Notifications]
  */
-expect class NotificationsPermissionManager : PermissionManager<Permission.Notifications> {
+expect class NotificationsPermissionManager : PermissionManager<NotificationsPermission> {
     /**
      * The [Permission.Notifications] managed by this manager.
      */
-    val notifications: Permission.Notifications
+    val notifications: NotificationsPermission
 }
 
-interface BaseNotificationsPermissionManagerBuilder {
+interface BaseNotificationsPermissionManagerBuilder : BasePermissionsBuilder {
     /**
      * Creates a [NotificationsPermissionManager]
      * @param repo The [NotificationsPermissionStateRepo] associated with the [Permission.Notifications]
      */
-    fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications>
+    fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission>
 }
 
 /**
@@ -55,7 +57,7 @@ expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermission
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class NotificationsPermissionStateRepo(notifications: Permission.Notifications, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Notifications>(coroutineContext = coroutineContext) {
+class NotificationsPermissionStateRepo(notifications: NotificationsPermission, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Notifications>(coroutineContext = coroutineContext) {
 
-    override val permissionManager: PermissionManager<Permission.Notifications> = builder.create(notifications, this)
+    override val permissionManager: PermissionManager<NotificationsPermission> = builder.create(notifications, this)
 }

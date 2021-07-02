@@ -21,15 +21,16 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.CalendarPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
 actual class CalendarPermissionManager(
     context: Context,
-    actual val calendar: Permission.Calendar,
+    actual val calendar: CalendarPermission,
     stateRepo: CalendarPermissionStateRepo
-) : PermissionManager<Permission.Calendar>(stateRepo) {
+) : PermissionManager<CalendarPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, if (calendar.allowWrite) arrayOf(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR) else arrayOf(Manifest.permission.READ_CALENDAR))
 
@@ -37,7 +38,7 @@ actual class CalendarPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Calendar> {
+    override suspend fun initializeState(): PermissionState<CalendarPermission> {
         return when {
             permissionsManager.hasPermissions -> PermissionState.Allowed()
             else -> PermissionState.Denied.Requestable()
@@ -55,7 +56,7 @@ actual class CalendarPermissionManager(
 
 actual class CalendarPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCalendarPermissionManagerBuilder {
 
-    override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
+    override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
         return CalendarPermissionManager(context, calendar, repo)
     }
 }

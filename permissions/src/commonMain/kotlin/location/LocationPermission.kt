@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.location
 
+import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -25,20 +27,20 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [PermissionManager] for managing [Permission.Location]
  */
-expect class LocationPermissionManager : PermissionManager<Permission.Location> {
+expect class LocationPermissionManager : PermissionManager<LocationPermission> {
     /**
      * The [Permission.Location] managed by this manager.
      */
-    val location: Permission.Location
+    val location: LocationPermission
 }
 
-interface BaseLocationPermissionManagerBuilder {
+interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [LocationPermissionManager]
      * @param repo The [LocationPermissionStateRepo] associated with the [Permission.Location]
      */
-    fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location>
+    fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission>
 }
 
 /**
@@ -51,7 +53,7 @@ expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBui
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class LocationPermissionStateRepo(location: Permission.Location, builder: BaseLocationPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Location>(coroutineContext = coroutineContext) {
+class LocationPermissionStateRepo(location: LocationPermission, builder: BaseLocationPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<LocationPermission>(coroutineContext = coroutineContext) {
 
-    override val permissionManager: PermissionManager<Permission.Location> = builder.create(location, this)
+    override val permissionManager: PermissionManager<LocationPermission> = builder.create(location, this)
 }
