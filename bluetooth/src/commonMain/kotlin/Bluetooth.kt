@@ -111,7 +111,7 @@ class Bluetooth internal constructor(
 
                 when (scanMode) {
                     is ScanMode.Scan -> {
-                        d("devices: ${scanState.discovered}")
+                        // d("devices: ${scanState.discovered}")
                         if (scanState.discovered.filter == scanMode.filter)
                             scanState.discovered.devices
                         else {
