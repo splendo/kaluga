@@ -99,7 +99,7 @@ interface BasePermissionsBuilder
 /**
  * Builder for providing the proper [PermissionManager] for each [Permission]
  */
-class PermissionsBuilder {
+open class PermissionsBuilder {
     private val builders = mutableMapOf<KClassifier, BasePermissionsBuilder>()
 
     fun register(builder: BasePermissionsBuilder, permission: KClassifier) {

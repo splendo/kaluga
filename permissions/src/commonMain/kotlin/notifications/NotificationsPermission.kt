@@ -57,7 +57,7 @@ expect class NotificationsPermissionManagerBuilder : BaseNotificationsPermission
  * @param builder The [NotificationsPermissionManagerBuilder] for creating the [NotificationsPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class NotificationsPermissionStateRepo(notifications: NotificationsPermission, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Notifications>(coroutineContext = coroutineContext) {
+class NotificationsPermissionStateRepo(notifications: NotificationsPermission, builder: BaseNotificationsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<NotificationsPermission>(coroutineContext = coroutineContext) {
 
     override val permissionManager: PermissionManager<NotificationsPermission> = builder.create(notifications, this)
 }
