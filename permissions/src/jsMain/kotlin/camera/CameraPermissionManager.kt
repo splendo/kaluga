@@ -17,17 +17,18 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : PermissionManager<Permission.Camera>(repo) {
+actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : PermissionManager<CameraPermission>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Camera> {
+    override suspend fun initializeState(): PermissionState<CameraPermission> {
         TODO("not implemented")
     }
 
@@ -42,7 +43,7 @@ actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : Permissi
 
 actual class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
+    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
         return CameraPermissionManager(repo)
     }
 }

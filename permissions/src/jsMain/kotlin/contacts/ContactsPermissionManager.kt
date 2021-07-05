@@ -17,17 +17,18 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-actual class ContactsPermissionManager(actual val contacts: Permission.Contacts, repo: ContactsPermissionStateRepo) : PermissionManager<Permission.Contacts>(repo) {
+actual class ContactsPermissionManager(actual val contacts: ContactsPermission, repo: ContactsPermissionStateRepo) : PermissionManager<ContactsPermission>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Contacts> {
+    override suspend fun initializeState(): PermissionState<ContactsPermission> {
         TODO("not implemented")
     }
 
@@ -42,7 +43,7 @@ actual class ContactsPermissionManager(actual val contacts: Permission.Contacts,
 
 actual class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
+    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
         return ContactsPermissionManager(contacts, repo)
     }
 }

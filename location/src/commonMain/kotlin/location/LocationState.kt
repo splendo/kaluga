@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateRepo
@@ -200,7 +201,7 @@ sealed class LocationState(open val location: Location, private val locationMana
  * @param locationManagerBuilder The [BaseLocationManager.Builder] to create the [LocationManager] managing the location state.
  */
 class LocationStateRepo(
-    locationPermission: Permission.Location,
+    locationPermission: LocationPermission,
     permissions: Permissions,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
@@ -221,7 +222,7 @@ class LocationStateRepo(
          * @return The created [LocationStateRepo]
          */
         fun create(
-            locationPermission: Permission.Location,
+            locationPermission: LocationPermission,
             autoRequestPermission: Boolean = true,
             autoEnableLocations: Boolean = true,
             coroutineContext: CoroutineContext = Dispatchers.Main

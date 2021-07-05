@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetoothpermissions
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.BluetoothPermission
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState

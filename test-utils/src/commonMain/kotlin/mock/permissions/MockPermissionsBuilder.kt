@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.permissions.BluetoothPermission
 import com.splendo.kaluga.permissions.CalendarPermission
 import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.ContactsPermission
@@ -27,8 +26,6 @@ import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.StoragePermission
-import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
@@ -48,14 +45,6 @@ import com.splendo.kaluga.test.MockPermissionManager
 class MockPermissionsBuilder : PermissionsBuilder() {
     init {
         registerAllPermissionsBuilders()
-    }
-
-    private lateinit var bluetoothPMManager: MockPermissionManager<BluetoothPermission>
-    private val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder = object : BaseBluetoothPermissionManagerBuilder {
-        override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
-            bluetoothPMManager = MockPermissionManager(repo)
-            return bluetoothPMManager
-        }
     }
 
     private lateinit var calendarPMManager: MockPermissionManager<CalendarPermission>
@@ -115,7 +104,6 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     }
 
     private fun registerAllPermissionsBuilders() {
-        register(bluetoothPMBuilder, BluetoothPermission::class)
         register(calendarPMBuilder, CalendarPermission::class)
         register(cameraPMBuilder, CameraPermission::class)
         register(contactsPMBuilder, ContactsPermission::class)
