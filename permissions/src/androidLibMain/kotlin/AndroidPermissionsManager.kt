@@ -182,7 +182,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     /**
      * `true` if the permission has been granted.
      */
-    internal val hasPermissions: Boolean
+    val hasPermissions: Boolean
         get() = filteredPermissionsStates.values.all { it == AndroidPermissionState.GRANTED }
 
     private fun updatePermissionsStates() {

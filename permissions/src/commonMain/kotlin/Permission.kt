@@ -18,9 +18,6 @@
 package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.collections.IsoMutableMap
-import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
@@ -44,7 +41,6 @@ import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilde
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -56,11 +52,6 @@ import kotlin.reflect.KClassifier
  * Permissions that can be requested by Kaluga
  */
 abstract class Permission
-
-/**
- * Permission to access the Bluetooth scanner
- */
-object BluetoothPermission : Permission()
 
 /**
  * Permission to access the users Calendar
@@ -130,16 +121,6 @@ open class PermissionsBuilder {
     fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext) : PermissionStateRepo<*> =
         repoFactories[permission::class]?.let { it(permission, coroutineContext)  } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
-
-// ********************** Bluetooth *****************
-fun PermissionsBuilder.registerBluetooth() =
-    registerBluetoothBuilder().also { builder ->
-        registerRepoFactory(BluetoothPermission::class) { _, coroutineContext ->
-            BluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerBluetoothBuilder() : BluetoothPermissionManagerBuilder
 
 // ********************** Calendar *****************
 fun PermissionsBuilder.registerCalendarPermission() =

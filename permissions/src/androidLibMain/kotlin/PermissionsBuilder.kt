@@ -18,7 +18,6 @@
 package com.splendo.kaluga.permissions
 
 import android.content.Context
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
@@ -26,9 +25,6 @@ import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
-
-internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
-fun PermissionsBuilder.registerBluetoothBuilder(context: Context) = register(builder = BluetoothPermissionManagerBuilder(context), permission = BluetoothPermission::class)
 
 internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
 fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Context) = register(builder = CalendarPermissionManagerBuilder(context), permission = CalendarPermission::class)

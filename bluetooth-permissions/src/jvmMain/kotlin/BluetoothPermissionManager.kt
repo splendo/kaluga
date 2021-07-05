@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,18 @@
 
  */
 
-package com.splendo.kaluga.permissions.bluetooth
+package com.splendo.kaluga.bluetoothpermissions
 
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
-actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : PermissionManager<Permission.Bluetooth>(repo) {
+actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : PermissionManager<BluetoothPermission>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Bluetooth> {
+    override suspend fun initializeState(): PermissionState<BluetoothPermission> {
         TODO("not implemented")
     }
 
@@ -42,7 +41,7 @@ actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : Pe
 
 actual class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder {
 
-    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth> {
+    override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
         return BluetoothPermissionManager(repo)
     }
 }

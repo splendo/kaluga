@@ -16,13 +16,12 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions.bluetooth
+package com.splendo.kaluga.bluetoothpermissions
 
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.BluetoothPermission
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import platform.CoreBluetooth.CBCentralManager
