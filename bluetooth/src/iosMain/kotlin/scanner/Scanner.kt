@@ -131,7 +131,7 @@ actual class Scanner internal constructor(
     private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
 
-    private fun initMainManagers() {
+    private fun initMainManagersIfNeeded() {
         if (!::mainCentralManager.isInitialized) {
             mainCentralManager = CBCentralManager(null, dispatch_get_main_queue(), emptyMap<Any?, Any>())
         }
@@ -170,21 +170,23 @@ actual class Scanner internal constructor(
     }
 
     override fun startMonitoringBluetooth() {
-        initMainManagers()
-        discoveringDelegates.clear()
-        activeDelegates.clear()
+        initMainManagersIfNeeded()
+        // Monitoring is independent of discovery
+        // discoveringDelegates.clear()
+        // activeDelegates.clear()
         mainCentralManager.delegate = mainCBCentralManagerDelegate
     }
 
     override fun stopMonitoringBluetooth() {
-        initMainManagers()
-        discoveringDelegates.clear()
-        activeDelegates.clear()
+        initMainManagersIfNeeded()
+        // Monitoring is independent of discovery
+        // discoveringDelegates.clear()
+        // activeDelegates.clear()
         mainCentralManager.delegate = null
     }
 
     override suspend fun isBluetoothEnabled(): Boolean {
-        initMainManagers()
+        initMainManagersIfNeeded()
         val completable = CompletableDeferred<Boolean>()
         val delegate = EnabledCBCentralManagerDelegate(completable)
         checkEnabledCentralManager.delegate = delegate
@@ -200,7 +202,7 @@ actual class Scanner internal constructor(
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {
-        initMainManagers()
+        initMainManagersIfNeeded()
 
         central.delegate?.let {
             activeDelegates.add(it)
