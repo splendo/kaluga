@@ -27,25 +27,25 @@ import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuil
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
 
-actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
+internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
 fun PermissionsBuilder.registerBluetoothBuilder(context: Context) = register(builder = BluetoothPermissionManagerBuilder(context), permission = BluetoothPermission::class)
 
-actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
+internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
 fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Context) = register(builder = CalendarPermissionManagerBuilder(context), permission = CalendarPermission::class)
 
-actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
+internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
 fun PermissionsBuilder.registerCameraPermissionBuilder(context: Context) = register(builder = CameraPermissionManagerBuilder(context), permission = CameraPermission::class)
 
-actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
 fun PermissionsBuilder.registerContactsPermissionBuilder(context: Context) = register(builder = ContactsPermissionManagerBuilder(context), permission = ContactsPermission::class)
 
-actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
+internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
 fun PermissionsBuilder.registerLocationPermissionBuilder(context: Context) = register(builder = LocationPermissionManagerBuilder(context), permission = LocationPermission::class)
 
-actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
 fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Context)  = register(builder = MicrophonePermissionManagerBuilder(context), permission = MicrophonePermission::class)
 
-actual fun PermissionsBuilder.registerNotificationsPermissionBuilder() = register(builder = NotificationsPermissionManagerBuilder(), permission = NotificationsPermission::class)
+internal actual fun PermissionsBuilder.registerNotificationsPermissionBuilder() = register(builder = NotificationsPermissionManagerBuilder(), permission = NotificationsPermission::class)
 
-actual fun PermissionsBuilder.registerStoragePermissionBuilder() = register(builder = StoragePermissionManagerBuilder(), permission = StoragePermission::class)
+internal actual fun PermissionsBuilder.registerStoragePermissionBuilder() = register(builder = StoragePermissionManagerBuilder(), permission = StoragePermission::class)
 fun PermissionsBuilder.registerStoragePermissionBuilder(context: Context) = register(builder = StoragePermissionManagerBuilder(context), permission = StoragePermission::class)
