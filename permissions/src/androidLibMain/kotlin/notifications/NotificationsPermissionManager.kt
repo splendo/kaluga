@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -24,15 +25,15 @@ import com.splendo.kaluga.permissions.PermissionState
 actual class NotificationOptions
 
 actual class NotificationsPermissionManager(
-    actual val notifications: Permission.Notifications,
+    actual val notifications: NotificationsPermission,
     stateRepo: NotificationsPermissionStateRepo
-) : PermissionManager<Permission.Notifications>(stateRepo) {
+) : PermissionManager<NotificationsPermission>(stateRepo) {
 
     override suspend fun requestPermission() {
         // No need to do anything, permission always granted
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Notifications> {
+    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
         // Permission always granted
         return PermissionState.Allowed()
     }
@@ -47,7 +48,7 @@ actual class NotificationsPermissionManager(
 
 actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications> {
+    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
         return NotificationsPermissionManager(notifications, repo)
     }
 }

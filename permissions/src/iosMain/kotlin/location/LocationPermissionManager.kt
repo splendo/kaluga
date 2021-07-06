@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -34,9 +35,9 @@ const val NSLocationAlwaysUsageDescription = "NSLocationAlwaysUsageDescription"
 
 actual class LocationPermissionManager(
     private val bundle: NSBundle,
-    actual val location: Permission.Location,
+    actual val location: LocationPermission,
     stateRepo: LocationPermissionStateRepo
-) : PermissionManager<Permission.Location>(stateRepo) {
+) : PermissionManager<LocationPermission>(stateRepo) {
 
     private val locationManager = CLLocationManager()
     private val authorizationStatus = {
@@ -66,7 +67,7 @@ actual class LocationPermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Location> {
+    override suspend fun initializeState(): PermissionState<LocationPermission> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus())
     }
 
@@ -81,7 +82,7 @@ actual class LocationPermissionManager(
 
 actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseLocationPermissionManagerBuilder {
 
-    override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
+    override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
         return LocationPermissionManager(bundle, location, repo)
     }
 }

@@ -17,19 +17,21 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import com.splendo.kaluga.permissions.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.StoragePermission
 import kotlin.coroutines.CoroutineContext
 
 /**
  * A [PermissionManager] for managing [Permission.Storage]
  */
-expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
+expect class StoragePermissionManager : PermissionManager<StoragePermission> {
     /**
      * The [Permission.Storage] managed by this manager.
      */
-    val storage: Permission.Storage
+    val storage: StoragePermission
 }
 
 /**
@@ -37,12 +39,12 @@ expect class StoragePermissionManager : PermissionManager<Permission.Storage> {
  */
 typealias PhotosPermissionManager = StoragePermissionManager
 
-interface BaseStoragePermissionManagerBuilder {
+interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder {
     /**
      * Creates a [StoragePermissionManager]
      * @param repo The [StoragePermissionStateRepo] associated with the [Permission.Storage]
      */
-    fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage>
+    fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission>
 }
 
 /**
@@ -60,7 +62,7 @@ typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class StoragePermissionStateRepo(storage: Permission.Storage, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Storage>(coroutineContext = coroutineContext) {
+class StoragePermissionStateRepo(storage: StoragePermission, builder: BaseStoragePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<StoragePermission>(coroutineContext = coroutineContext) {
 
-    override val permissionManager: PermissionManager<Permission.Storage> = builder.create(storage, this)
+    override val permissionManager: PermissionManager<StoragePermission> = builder.create(storage, this)
 }

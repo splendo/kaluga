@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.contacts
 
+import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -25,20 +27,20 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [PermissionManager] for managing [Permission.Contacts]
  */
-expect class ContactsPermissionManager : PermissionManager<Permission.Contacts> {
+expect class ContactsPermissionManager : PermissionManager<ContactsPermission> {
     /**
      * The [Permission.Contacts] managed by this manager
      */
-    val contacts: Permission.Contacts
+    val contacts: ContactsPermission
 }
 
-interface BaseContactsPermissionManagerBuilder {
+interface BaseContactsPermissionManagerBuilder: BasePermissionsBuilder {
 
     /**
      * Creates a [ContactsPermissionManager]
      * @param repo The [ContactsPermissionStateRepo] associated with the [Permission.Contacts]
      */
-    fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts>
+    fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission>
 }
 
 /**
@@ -51,7 +53,7 @@ expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBui
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class ContactsPermissionStateRepo(contacts: Permission.Contacts, builder: BaseContactsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Contacts>(coroutineContext = coroutineContext) {
+class ContactsPermissionStateRepo(contacts: ContactsPermission, builder: BaseContactsPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<ContactsPermission>(coroutineContext = coroutineContext) {
 
-    override val permissionManager: PermissionManager<Permission.Contacts> = builder.create(contacts, this)
+    override val permissionManager: PermissionManager<ContactsPermission> = builder.create(contacts, this)
 }

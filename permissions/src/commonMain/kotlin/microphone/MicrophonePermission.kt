@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
@@ -25,15 +27,15 @@ import kotlin.coroutines.CoroutineContext
 /**
  * A [PermissionManager] for managing [Permission.Microphone]
  */
-expect class MicrophonePermissionManager : PermissionManager<Permission.Microphone>
+expect class MicrophonePermissionManager : PermissionManager<MicrophonePermission>
 
-interface BaseMicrophonePermissionManagerBuilder {
+interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [MicrophonePermissionManager]
      * @param repo The [MicrophonePermissionStateRepo] associated with the [Permission.Microphone]
      */
-    fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone>
+    fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission>
 }
 
 /**
@@ -46,7 +48,7 @@ expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManage
  * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<Permission.Microphone>(coroutineContext = coroutineContext) {
+class MicrophonePermissionStateRepo(builder: BaseMicrophonePermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<MicrophonePermission>(coroutineContext = coroutineContext) {
 
-    override val permissionManager: PermissionManager<Permission.Microphone> = builder.create(this)
+    override val permissionManager: PermissionManager<MicrophonePermission> = builder.create(this)
 }

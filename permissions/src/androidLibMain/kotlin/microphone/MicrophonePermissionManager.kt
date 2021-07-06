@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -29,7 +30,7 @@ import com.splendo.kaluga.permissions.PermissionState
 actual class MicrophonePermissionManager(
     context: Context,
     stateRepo: MicrophonePermissionStateRepo
-) : PermissionManager<Permission.Microphone>(stateRepo) {
+) : PermissionManager<MicrophonePermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.RECORD_AUDIO))
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
@@ -39,7 +40,7 @@ actual class MicrophonePermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Microphone> {
+    override suspend fun initializeState(): PermissionState<MicrophonePermission> {
         return when {
             !supported -> PermissionState.Denied.Locked()
             permissionsManager.hasPermissions -> PermissionState.Allowed()
@@ -60,7 +61,7 @@ actual class MicrophonePermissionManager(
 
 actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseMicrophonePermissionManagerBuilder {
 
-    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
+    override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
         return MicrophonePermissionManager(context, repo)
     }
 }

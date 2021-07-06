@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
@@ -38,9 +39,9 @@ import platform.UserNotifications.UNUserNotificationCenter
 actual data class NotificationOptions(val options: UNAuthorizationOptions)
 
 actual class NotificationsPermissionManager(
-    actual val notifications: Permission.Notifications,
+    actual val notifications: NotificationsPermission,
     stateRepo: NotificationsPermissionStateRepo
-) : PermissionManager<Permission.Notifications>(stateRepo) {
+) : PermissionManager<NotificationsPermission>(stateRepo) {
 
     private val notificationCenter = UNUserNotificationCenter.currentNotificationCenter()
     private var authorization: suspend () -> IOSPermissionsHelper.AuthorizationStatus = {
@@ -71,7 +72,7 @@ actual class NotificationsPermissionManager(
         )
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Notifications> {
+    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
         return IOSPermissionsHelper.getPermissionState(authorization())
     }
 
@@ -86,7 +87,7 @@ actual class NotificationsPermissionManager(
 
 actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
 
-    override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications> {
+    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
         return NotificationsPermissionManager(notifications, repo)
     }
 }

@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.contacts
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
@@ -38,9 +39,9 @@ const val NSContactsUsageDescription = "NSContactsUsageDescription"
 
 actual class ContactsPermissionManager(
     private val bundle: NSBundle,
-    actual val contacts: Permission.Contacts,
+    actual val contacts: ContactsPermission,
     stateRepo: ContactsPermissionStateRepo
-) : PermissionManager<Permission.Contacts>(stateRepo) {
+) : PermissionManager<ContactsPermission>(stateRepo) {
 
     private val contactStore = CNContactStore()
     private val authorizationStatus = suspend {
@@ -68,7 +69,7 @@ actual class ContactsPermissionManager(
         }
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Contacts> {
+    override suspend fun initializeState(): PermissionState<ContactsPermission> {
         return IOSPermissionsHelper.getPermissionState(authorizationStatus())
     }
 
@@ -83,7 +84,7 @@ actual class ContactsPermissionManager(
 
 actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
+    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
         return ContactsPermissionManager(bundle, contacts, repo)
     }
 }

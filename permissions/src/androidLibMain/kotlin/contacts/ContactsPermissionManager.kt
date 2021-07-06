@@ -21,15 +21,16 @@ import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
 actual class ContactsPermissionManager(
     context: Context,
-    actual val contacts: Permission.Contacts,
+    actual val contacts: ContactsPermission,
     stateRepo: ContactsPermissionStateRepo
-) : PermissionManager<Permission.Contacts>(stateRepo) {
+) : PermissionManager<ContactsPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, if (contacts.allowWrite) arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS) else arrayOf(Manifest.permission.READ_CONTACTS))
 
@@ -37,7 +38,7 @@ actual class ContactsPermissionManager(
         permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Contacts> {
+    override suspend fun initializeState(): PermissionState<ContactsPermission> {
         return when {
             permissionsManager.hasPermissions -> PermissionState.Allowed()
             else -> PermissionState.Denied.Requestable()
@@ -55,7 +56,7 @@ actual class ContactsPermissionManager(
 
 actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseContactsPermissionManagerBuilder {
 
-    override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
+    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
         return ContactsPermissionManager(context, contacts, repo)
     }
 }

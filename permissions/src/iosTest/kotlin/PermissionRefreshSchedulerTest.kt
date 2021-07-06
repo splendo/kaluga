@@ -78,17 +78,17 @@ class PermissionRefreshSchedulerTest : BaseTest() {
     }
 }
 
-private class MockStoragePermissionStateRepo : PermissionStateRepo<Permission.Storage>() {
+private class MockStoragePermissionStateRepo : PermissionStateRepo<StoragePermission>() {
 
     override val permissionManager = MockStoragePermissionManager(this)
 }
 
-private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<Permission.Storage>(mockPermissionRepo) {
+private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<StoragePermission>(mockPermissionRepo) {
 
     var didGrantPermission: AtomicReference<EmptyCompletableDeferred> = AtomicReference(EmptyCompletableDeferred())
     var didRevokePermission: AtomicReference<CompletableDeferred<Boolean>> = AtomicReference(CompletableDeferred())
 
-    var initialState: PermissionState<Permission.Storage> = PermissionState.Denied.Requestable()
+    var initialState: PermissionState<StoragePermission> = PermissionState.Denied.Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()
@@ -98,7 +98,7 @@ private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermis
         hasRequestedPermission.complete()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Storage> {
+    override suspend fun initializeState(): PermissionState<StoragePermission> {
         return initialState
     }
 

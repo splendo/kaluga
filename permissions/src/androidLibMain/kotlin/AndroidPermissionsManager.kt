@@ -31,6 +31,7 @@ import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Timer
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.fixedRateTimer
 
 internal enum class AndroidPermissionState {
@@ -88,7 +89,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     internal companion object {
         const val TAG = "Permissions"
 
-        val permissionsStates: MutableMap<String, AndroidPermissionState> = mutableMapOf()
+        val permissionsStates: MutableMap<String, AndroidPermissionState> = ConcurrentHashMap()
     }
 
     private val filteredPermissionsStates: Map<String, AndroidPermissionState>
@@ -181,7 +182,7 @@ class AndroidPermissionsManager<P : Permission> constructor(
     /**
      * `true` if the permission has been granted.
      */
-    internal val hasPermissions: Boolean
+    val hasPermissions: Boolean
         get() = filteredPermissionsStates.values.all { it == AndroidPermissionState.GRANTED }
 
     private fun updatePermissionsStates() {

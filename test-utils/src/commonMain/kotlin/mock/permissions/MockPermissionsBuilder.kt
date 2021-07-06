@@ -17,11 +17,15 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.CalendarPermission
+import com.splendo.kaluga.permissions.CameraPermission
+import com.splendo.kaluga.permissions.ContactsPermission
+import com.splendo.kaluga.permissions.LocationPermission
+import com.splendo.kaluga.permissions.MicrophonePermission
+import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermissionStateRepo
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.StoragePermission
 import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
 import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
@@ -38,69 +42,74 @@ import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilde
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 
-class MockPermissionsBuilder : BasePermissionsBuilder {
-
-    lateinit var bluetoothPMManager: MockPermissionManager<Permission.Bluetooth>
-    override val bluetoothPMBuilder: BaseBluetoothPermissionManagerBuilder = object : BaseBluetoothPermissionManagerBuilder {
-        override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<Permission.Bluetooth> {
-            bluetoothPMManager = MockPermissionManager(repo)
-            return bluetoothPMManager
-        }
+class MockPermissionsBuilder : PermissionsBuilder() {
+    init {
+        registerAllPermissionsBuilders()
     }
 
-    lateinit var calendarPMManager: MockPermissionManager<Permission.Calendar>
-    override val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
-        override fun create(calendar: Permission.Calendar, repo: CalendarPermissionStateRepo): PermissionManager<Permission.Calendar> {
+    private lateinit var calendarPMManager: MockPermissionManager<CalendarPermission>
+    private val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
+        override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
             calendarPMManager = MockPermissionManager(repo)
             return calendarPMManager
         }
     }
 
-    lateinit var cameraPMManager: MockPermissionManager<Permission.Camera>
-    override val cameraPMBuilder: BaseCameraPermissionManagerBuilder = object : BaseCameraPermissionManagerBuilder {
-        override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
+    private lateinit var cameraPMManager: MockPermissionManager<CameraPermission>
+    private val cameraPMBuilder: BaseCameraPermissionManagerBuilder = object : BaseCameraPermissionManagerBuilder {
+        override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
             cameraPMManager = MockPermissionManager(repo)
             return cameraPMManager
         }
     }
 
-    lateinit var contactsPMManager: MockPermissionManager<Permission.Contacts>
-    override val contactsPMBuilder: BaseContactsPermissionManagerBuilder = object : BaseContactsPermissionManagerBuilder {
-        override fun create(contacts: Permission.Contacts, repo: ContactsPermissionStateRepo): PermissionManager<Permission.Contacts> {
+    private lateinit var contactsPMManager: MockPermissionManager<ContactsPermission>
+    private val contactsPMBuilder: BaseContactsPermissionManagerBuilder = object : BaseContactsPermissionManagerBuilder {
+        override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
             contactsPMManager = MockPermissionManager(repo)
             return contactsPMManager
         }
     }
 
-    lateinit var locationPMManager: MockPermissionManager<Permission.Location>
-    override val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
-        override fun create(location: Permission.Location, repo: LocationPermissionStateRepo): PermissionManager<Permission.Location> {
+    private lateinit var locationPMManager: MockPermissionManager<LocationPermission>
+    private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
+        override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
             locationPMManager = MockPermissionManager(repo)
             return locationPMManager
         }
     }
 
-    lateinit var microphonePMManager: MockPermissionManager<Permission.Microphone>
-    override val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder = object : BaseMicrophonePermissionManagerBuilder {
-        override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<Permission.Microphone> {
+    private lateinit var microphonePMManager: MockPermissionManager<MicrophonePermission>
+    private val microphonePMBuilder: BaseMicrophonePermissionManagerBuilder = object : BaseMicrophonePermissionManagerBuilder {
+        override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
             microphonePMManager = MockPermissionManager(repo)
             return microphonePMManager
         }
     }
 
-    lateinit var notificationsPMManager: MockPermissionManager<Permission.Notifications>
-    override val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder = object : BaseNotificationsPermissionManagerBuilder {
-        override fun create(notifications: Permission.Notifications, repo: NotificationsPermissionStateRepo): PermissionManager<Permission.Notifications> {
+    lateinit var notificationsPMManager: MockPermissionManager<NotificationsPermission>
+    private val notificationsPMBuilder: BaseNotificationsPermissionManagerBuilder = object : BaseNotificationsPermissionManagerBuilder {
+        override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
             notificationsPMManager = MockPermissionManager(repo)
             return notificationsPMManager
         }
     }
 
-    lateinit var storagePMManager: MockPermissionManager<Permission.Storage>
-    override val storagePMBuilder: BaseStoragePermissionManagerBuilder = object : BaseStoragePermissionManagerBuilder {
-        override fun create(storage: Permission.Storage, repo: StoragePermissionStateRepo): PermissionManager<Permission.Storage> {
+    lateinit var storagePMManager: MockPermissionManager<StoragePermission>
+    private val storagePMBuilder: BaseStoragePermissionManagerBuilder = object : BaseStoragePermissionManagerBuilder {
+        override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
             storagePMManager = MockPermissionManager(repo)
             return storagePMManager
         }
+    }
+
+    private fun registerAllPermissionsBuilders() {
+        register(calendarPMBuilder, CalendarPermission::class)
+        register(cameraPMBuilder, CameraPermission::class)
+        register(contactsPMBuilder, ContactsPermission::class)
+        register(locationPMBuilder, LocationPermission::class)
+        register(microphonePMBuilder, MicrophonePermission::class)
+        register(notificationsPMBuilder, NotificationsPermission::class)
+        register(storagePMBuilder, StoragePermission::class)
     }
 }

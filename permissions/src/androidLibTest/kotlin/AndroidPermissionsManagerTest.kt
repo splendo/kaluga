@@ -50,8 +50,8 @@ class AndroidPermissionsManagerTest : BaseTest() {
     lateinit var packageInfo: PackageInfo
 
     @Mock
-    lateinit var permissionsManager: PermissionManager<Permission.Storage>
-    private lateinit var androidPermissionsManager: AndroidPermissionsManager<Permission.Storage>
+    lateinit var permissionsManager: PermissionManager<StoragePermission>
+    private lateinit var androidPermissionsManager: AndroidPermissionsManager<StoragePermission>
 
     @BeforeTest
     override fun beforeTest() {

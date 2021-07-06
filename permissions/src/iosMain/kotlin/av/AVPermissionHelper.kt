@@ -19,7 +19,9 @@ package com.splendo.kaluga.permissions.av
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
@@ -50,13 +52,13 @@ internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, 
         abstract val avMediaType: AVMediaType
         abstract val declarationName: String
 
-        class Camera(override val permissionManager: CameraPermissionManager) : Type<Permission.Camera>() {
+        class Camera(override val permissionManager: CameraPermissionManager) : Type<CameraPermission>() {
 
             override val avMediaType = AVMediaTypeVideo
             override val declarationName = NSCameraUsageDescription
         }
 
-        class Microphone(override val permissionManager: MicrophonePermissionManager) : Type<Permission.Microphone>() {
+        class Microphone(override val permissionManager: MicrophonePermissionManager) : Type<MicrophonePermission>() {
 
             override val avMediaType = AVMediaTypeAudio
             override val declarationName = NSMicrophoneUsageDescription

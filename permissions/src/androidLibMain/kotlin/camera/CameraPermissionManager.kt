@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -29,7 +30,7 @@ import com.splendo.kaluga.permissions.PermissionState
 actual class CameraPermissionManager(
     context: Context,
     stateRepo: CameraPermissionStateRepo
-) : PermissionManager<Permission.Camera>(stateRepo) {
+) : PermissionManager<CameraPermission>(stateRepo) {
 
     private val permissionsManager = AndroidPermissionsManager(context, this, arrayOf(Manifest.permission.CAMERA))
     private val supported = context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
@@ -39,7 +40,7 @@ actual class CameraPermissionManager(
             permissionsManager.requestPermissions()
     }
 
-    override suspend fun initializeState(): PermissionState<Permission.Camera> {
+    override suspend fun initializeState(): PermissionState<CameraPermission> {
         return when {
             !supported -> PermissionState.Denied.Locked()
             permissionsManager.hasPermissions -> PermissionState.Allowed()
@@ -60,7 +61,7 @@ actual class CameraPermissionManager(
 
 actual class CameraPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseCameraPermissionManagerBuilder {
 
-    override fun create(repo: CameraPermissionStateRepo): PermissionManager<Permission.Camera> {
+    override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
         return CameraPermissionManager(context, repo)
     }
 }

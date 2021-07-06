@@ -19,6 +19,7 @@ package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -29,7 +30,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(
-    protected val locationPermission: Permission.Location,
+    protected val locationPermission: LocationPermission,
     private val permissions: Permissions,
     private val autoRequestPermission: Boolean,
     internal val autoEnableLocations: Boolean,
@@ -37,7 +38,7 @@ abstract class BaseLocationManager(
 ) : CoroutineScope by locationStateRepo {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
+        fun create(locationPermission: LocationPermission, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
