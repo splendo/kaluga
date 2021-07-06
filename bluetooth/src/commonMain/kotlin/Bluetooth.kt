@@ -40,10 +40,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -150,9 +151,10 @@ class Bluetooth internal constructor(
         scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
     }.stateIn(this)
 
-    suspend fun isEnabled() = scanningStateRepo.mapLatest {
-        it is ScanningState.Initialized.Enabled
-    }.stateIn(this)
+    val isEnabled = scanningStateRepo
+        .mapLatest { it is ScanningState.Initialized.Enabled }
+        .stateIn(this, SharingStarted.Lazily, null)
+        .filterNotNull()
 }
 
 expect class BluetoothBuilder : Bluetooth.Builder
