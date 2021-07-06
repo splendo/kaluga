@@ -33,7 +33,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.logging.d
 import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import kotlin.jvm.JvmName
@@ -41,7 +40,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -84,67 +82,61 @@ class Bluetooth internal constructor(
     )
 
     sealed class ScanMode {
-        object Stopped:ScanMode()
-        class Scan(val filter: Set<UUID>):ScanMode()
+        object Stopped : ScanMode()
+        class Scan(val filter: Set<UUID>) : ScanMode()
     }
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
     fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
-            is ScanningState.Initialized.Enabled.Idle -> {
-                when(scanMode) {
-                    is ScanMode.Stopped -> emptyList()
-                    is ScanMode.Scan -> {
-                        scanningStateRepo.takeAndChangeState(remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class) {
-                            it.startScanning(scanMode.filter)
-                        }
-                        if (scanState.discovered.filter == scanMode.filter)
-                            scanState.discovered.devices
-                        else
-                            emptyList()
-
-                    }
-                }
-            }
-            is ScanningState.Initialized.Enabled.Scanning -> {
-
-                when (scanMode) {
-                    is ScanMode.Scan -> {
-                        // d("devices: ${scanState.discovered}")
-                        if (scanState.discovered.filter == scanMode.filter)
-                            scanState.discovered.devices
-                        else {
-                            scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
-                                state.stopScanning
-                            }
-                            emptyList()
-                        }
-                    }
-                    else -> {
-                        scanningStateRepo.takeAndChangeState(ScanningState.Initialized.Enabled.Scanning::class) { state ->
-                            state.stopScanning
-                        }
+            is ScanningState.Initialized.Enabled.Idle -> when(scanMode) {
+                is ScanMode.Scan -> {
+                    scanningStateRepo.takeAndChangeState(
+                        remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class
+                    ) { it.startScanning(scanMode.filter) }
+                    if (scanState.discovered.filter == scanMode.filter) {
                         scanState.discovered.devices
+                    } else {
+                        emptyList()
                     }
                 }
+                is ScanMode.Stopped -> emptyList()
             }
-
-            is ScanningState.Initialized.NoBluetooth -> {
-                emptyList()
-            }
-
-            is ScanningState.NotInitialized -> {
-                scanningStateRepo.takeAndChangeState(ScanningState.NotInitialized::class) { state ->
-                    state.initialize(scanningStateRepo)
+            is ScanningState.Initialized.Enabled.Scanning -> when (scanMode) {
+                is ScanMode.Scan -> {
+                    // d("devices: ${scanState.discovered}")
+                    if (scanState.discovered.filter == scanMode.filter) {
+                        scanState.discovered.devices
+                    } else {
+                        scanningStateRepo.takeAndChangeState(
+                            remainIfStateNot = ScanningState.Initialized.Enabled.Scanning::class
+                        ) { it.stopScanning }
+                        emptyList()
+                    }
                 }
+                is ScanMode.Stopped -> {
+                    scanningStateRepo.takeAndChangeState(
+                        remainIfStateNot = ScanningState.Initialized.Enabled.Scanning::class
+                    ) { it.stopScanning }
+                    scanState.discovered.devices
+                }
+            }
+            is ScanningState.Initialized.NoBluetooth -> {
+                info(LOG_TAG, "No Bluetooth ($scanState) in mode ($scanMode)")
                 emptyList()
             }
-
+            is ScanningState.NotInitialized -> {
+                scanningStateRepo.takeAndChangeState(
+                    remainIfStateNot = ScanningState.NotInitialized::class
+                ) { it.initialize(scanningStateRepo) }
+                emptyList()
+            }
         }
     }.distinctUntilChanged()
 
     fun startScanning(filter: Set<UUID> = emptySet()) {
+        info(LOG_TAG, "Start Scanning for $filter")
         scanMode.value = ScanMode.Scan(filter)
     }
 
@@ -153,11 +145,12 @@ class Bluetooth internal constructor(
         scanMode.value = ScanMode.Stopped
     }
 
-    suspend fun isScanning(): StateFlow<Boolean> {
-        return scanningStateRepo.combine(scanMode) { scanState, filter ->
-            filter is ScanMode.Scan && scanState is ScanningState.Initialized.Enabled.Scanning
-        }.stateIn(this)
-    }
+    suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+        scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
+    }.stateIn(this)
+
+    val isEnabled = scanningStateRepo
+        .mapLatest { it is ScanningState.Initialized.Enabled }
 }
 
 expect class BluetoothBuilder : Bluetooth.Builder
