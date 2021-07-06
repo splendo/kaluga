@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.permissions.CalendarPermission
 import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.LocationPermission
@@ -26,8 +25,6 @@ import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.StoragePermission
-import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
 import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
@@ -45,14 +42,6 @@ import com.splendo.kaluga.test.MockPermissionManager
 class MockPermissionsBuilder : PermissionsBuilder() {
     init {
         registerAllPermissionsBuilders()
-    }
-
-    private lateinit var calendarPMManager: MockPermissionManager<CalendarPermission>
-    private val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
-        override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-            calendarPMManager = MockPermissionManager(repo)
-            return calendarPMManager
-        }
     }
 
     private lateinit var cameraPMManager: MockPermissionManager<CameraPermission>
@@ -104,7 +93,6 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     }
 
     private fun registerAllPermissionsBuilders() {
-        register(calendarPMBuilder, CalendarPermission::class)
         register(cameraPMBuilder, CameraPermission::class)
         register(contactsPMBuilder, ContactsPermission::class)
         register(locationPMBuilder, LocationPermission::class)

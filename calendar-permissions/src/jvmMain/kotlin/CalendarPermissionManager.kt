@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.calendarpermissions
 
-import com.splendo.kaluga.permissions.CalendarPermission
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 

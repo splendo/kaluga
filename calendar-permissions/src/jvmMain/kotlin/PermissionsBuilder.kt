@@ -16,6 +16,6 @@
  */
 package com.splendo.kaluga.calendarpermissions
 
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)

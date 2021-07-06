@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.permissions.calendar
+package com.splendo.kaluga.calendarpermissions
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.CalendarPermission
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 

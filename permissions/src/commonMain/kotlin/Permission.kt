@@ -18,9 +18,6 @@
 package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.collections.IsoMutableMap
-import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionManagerBuilder
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
@@ -52,12 +49,6 @@ import kotlin.reflect.KClassifier
  * Permissions that can be requested by Kaluga
  */
 abstract class Permission
-
-/**
- * Permission to access the users Calendar
- * @param allowWrite If `true` writing to the calendar is permitted
- */
-data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
 
 /**
  * Permission to access the users Camera
@@ -121,16 +112,6 @@ open class PermissionsBuilder {
     fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext) : PermissionStateRepo<*> =
         repoFactories[permission::class]?.let { it(permission, coroutineContext)  } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
-
-// ********************** Calendar *****************
-fun PermissionsBuilder.registerCalendarPermission() =
-    registerCalendarPermissionBuilder().also { builder ->
-        registerRepoFactory(CalendarPermission::class) { permission, coroutineContext ->
-            CalendarPermissionStateRepo(permission as CalendarPermission, builder as BaseCalendarPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerCalendarPermissionBuilder() : CalendarPermissionManagerBuilder
 
 // ********************** Camera *****************
 fun PermissionsBuilder.registerCameraPermission() =
