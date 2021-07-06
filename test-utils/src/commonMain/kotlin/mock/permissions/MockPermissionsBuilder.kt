@@ -21,7 +21,6 @@ import com.splendo.kaluga.basepermissions.PermissionManager
 import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.ContactsPermission
-import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.NotificationsPermission
 import com.splendo.kaluga.permissions.StoragePermission
@@ -29,8 +28,6 @@ import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
 import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
 import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
@@ -57,14 +54,6 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
             contactsPMManager = MockPermissionManager(repo)
             return contactsPMManager
-        }
-    }
-
-    private lateinit var locationPMManager: MockPermissionManager<LocationPermission>
-    private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
-        override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-            locationPMManager = MockPermissionManager(repo)
-            return locationPMManager
         }
     }
 
@@ -95,7 +84,6 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     private fun registerAllPermissionsBuilders() {
         register(cameraPMBuilder, CameraPermission::class)
         register(contactsPMBuilder, ContactsPermission::class)
-        register(locationPMBuilder, LocationPermission::class)
         register(microphonePMBuilder, MicrophonePermission::class)
         register(notificationsPMBuilder, NotificationsPermission::class)
         register(storagePMBuilder, StoragePermission::class)

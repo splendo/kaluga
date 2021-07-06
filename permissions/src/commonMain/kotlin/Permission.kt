@@ -25,9 +25,6 @@ import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
 import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
@@ -94,16 +91,6 @@ fun PermissionsBuilder.registerContactsPermission() =
     }
 
 internal expect fun PermissionsBuilder.registerContactsPermissionBuilder() : ContactsPermissionManagerBuilder
-
-// ********************** Location *****************
-fun PermissionsBuilder.registerLocationPermission()  =
-    registerLocationPermissionBuilder().also { builder ->
-        registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
-            LocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerLocationPermissionBuilder() : LocationPermissionManagerBuilder
 
 // ********************** Microphone *****************
 fun PermissionsBuilder.registerMicrophonePermission() =

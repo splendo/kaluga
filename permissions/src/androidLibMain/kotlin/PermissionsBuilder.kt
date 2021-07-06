@@ -21,7 +21,6 @@ import android.content.Context
 import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
@@ -31,9 +30,6 @@ fun PermissionsBuilder.registerCameraPermissionBuilder(context: Context) = regis
 
 internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
 fun PermissionsBuilder.registerContactsPermissionBuilder(context: Context) = register(builder = ContactsPermissionManagerBuilder(context), permission = ContactsPermission::class)
-
-internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
-fun PermissionsBuilder.registerLocationPermissionBuilder(context: Context) = register(builder = LocationPermissionManagerBuilder(context), permission = LocationPermission::class)
 
 internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
 fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Context)  = register(builder = MicrophonePermissionManagerBuilder(context), permission = MicrophonePermission::class)

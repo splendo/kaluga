@@ -20,10 +20,7 @@ package com.splendo.kaluga.location
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.basepermissions.Permissions
 import com.splendo.kaluga.basepermissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.LocationPermission
-import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
-import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
-import com.splendo.kaluga.permissions.registerLocationPermission
+import com.splendo.kaluga.locationpermissions.LocationPermission
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation

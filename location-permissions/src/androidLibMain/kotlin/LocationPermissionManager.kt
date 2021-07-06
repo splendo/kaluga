@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.permissions.location
+package com.splendo.kaluga.locationpermissions
 
 import android.Manifest
 import android.content.Context
@@ -23,7 +23,6 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.basepermissions.AndroidPermissionsManager
 import com.splendo.kaluga.basepermissions.PermissionManager
 import com.splendo.kaluga.basepermissions.PermissionState
-import com.splendo.kaluga.permissions.LocationPermission
 
 actual class LocationPermissionManager(
     context: Context,

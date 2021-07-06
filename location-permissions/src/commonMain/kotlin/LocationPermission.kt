@@ -15,12 +15,11 @@
 
  */
 
-package com.splendo.kaluga.permissions.location
+package com.splendo.kaluga.locationpermissions
 
 import com.splendo.kaluga.basepermissions.BasePermissionsBuilder
 import com.splendo.kaluga.basepermissions.PermissionManager
 import com.splendo.kaluga.basepermissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.LocationPermission
 import kotlin.coroutines.CoroutineContext
 
 /**
