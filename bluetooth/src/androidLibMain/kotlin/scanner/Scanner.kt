@@ -32,7 +32,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 // import com.splendo.kaluga.location.LocationEnabledMonitor
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.basepermissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
