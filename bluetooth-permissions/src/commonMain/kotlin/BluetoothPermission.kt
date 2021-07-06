@@ -18,10 +18,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.bluetoothpermissions
 
-import com.splendo.kaluga.permissions.BasePermissionsBuilder
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.basepermissions.BasePermissionsBuilder
+import com.splendo.kaluga.basepermissions.PermissionManager
+import com.splendo.kaluga.basepermissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**

@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions
 
 import android.content.Context
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.location.LocationPermissionManagerBuilder

@@ -22,8 +22,6 @@ import com.splendo.kaluga.basepermissions.IOSPermissionsHelper
 import com.splendo.kaluga.basepermissions.PermissionManager
 import com.splendo.kaluga.basepermissions.PermissionState
 import com.splendo.kaluga.permissions.LocationPermission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol

@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
+import com.splendo.kaluga.basepermissions.PermissionManager
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.ContactsPermission
 import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.NotificationsPermission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.StoragePermission
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo

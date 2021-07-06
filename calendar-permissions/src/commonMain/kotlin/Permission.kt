@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.calendarpermissions
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.basepermissions.Permission
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
 
 /**
  * Permission to access the users Calendar
