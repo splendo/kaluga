@@ -153,8 +153,6 @@ class Bluetooth internal constructor(
 
     val isEnabled = scanningStateRepo
         .mapLatest { it is ScanningState.Initialized.Enabled }
-        .stateIn(this, SharingStarted.Lazily, null)
-        .filterNotNull()
 }
 
 expect class BluetoothBuilder : Bluetooth.Builder
