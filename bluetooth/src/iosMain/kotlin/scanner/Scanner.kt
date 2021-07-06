@@ -171,17 +171,11 @@ actual class Scanner internal constructor(
 
     override fun startMonitoringBluetooth() {
         initMainManagersIfNeeded()
-        // Monitoring is independent of discovery
-        // discoveringDelegates.clear()
-        // activeDelegates.clear()
         mainCentralManager.delegate = mainCBCentralManagerDelegate
     }
 
     override fun stopMonitoringBluetooth() {
         initMainManagersIfNeeded()
-        // Monitoring is independent of discovery
-        // discoveringDelegates.clear()
-        // activeDelegates.clear()
         mainCentralManager.delegate = null
     }
 

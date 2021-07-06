@@ -68,7 +68,8 @@ sealed class ScanningState : State() {
 
         override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             if (oldState is NotInitialized) {
-                // Keep monitoring Permissions and Bluetooth
+                // Start monitoring Permissions and Bluetooth
+                // Stop will be called from deinitChangeState
                 scanner.startMonitoringPermissions()
                 scanner.startMonitoringBluetooth()
             }
@@ -233,6 +234,11 @@ sealed class ScanningState : State() {
                 }
             }
         }
+
+        internal fun stopMonitoring() {
+            scanner.stopMonitoringPermissions()
+            scanner.stopMonitoringBluetooth()
+        }
     }
 
     class NotInitialized(
@@ -287,6 +293,8 @@ class ScanningStateRepo(
         }
     },
     deinitChangeState = { state ->
+        if (state is ScanningState.Initialized)
+            state.stopMonitoring()
         if (state is Scanning)
             state.stopScanning
         else

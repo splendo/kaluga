@@ -135,7 +135,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
         }
 
         mockBaseScanner().startMonitoringPermissionsCompleted.get().await()
-        assertFalse(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
         assertFalse(mockBaseScanner().requestEnableCompleted.get().isCompleted)
     }
 
