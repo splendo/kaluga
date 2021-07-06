@@ -82,15 +82,12 @@ class Bluetooth internal constructor(
         scannerBuilder
     )
 
-    val scanningState: Flow<ScanningState> = scanningStateRepo
-
     sealed class ScanMode {
         object Stopped : ScanMode()
         class Scan(val filter: Set<UUID>) : ScanMode()
     }
 
-    private val _scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
-    val scanMode = _scanMode.asStateFlow()
+    private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
     fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
@@ -141,16 +138,20 @@ class Bluetooth internal constructor(
 
     fun startScanning(filter: Set<UUID> = emptySet()) {
         info(LOG_TAG, "Start Scanning for $filter")
-        _scanMode.value = ScanMode.Scan(filter)
+        scanMode.value = ScanMode.Scan(filter)
     }
 
     fun stopScanning() {
         info(LOG_TAG, "Stop Scanning")
-        _scanMode.value = ScanMode.Stopped
+        scanMode.value = ScanMode.Stopped
     }
 
     suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
+    }.stateIn(this)
+
+    suspend fun isEnabled() = scanningStateRepo.mapLatest {
+        it is ScanningState.Initialized.Enabled
     }.stateIn(this)
 }
 
