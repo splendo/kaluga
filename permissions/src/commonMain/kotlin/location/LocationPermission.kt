@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.location
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 

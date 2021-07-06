@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.microphone
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 

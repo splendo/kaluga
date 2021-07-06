@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.basepermissions
 
 import android.app.Activity
 import android.content.Context

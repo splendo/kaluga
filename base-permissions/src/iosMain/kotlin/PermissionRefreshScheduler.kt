@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.basepermissions
 
 import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference

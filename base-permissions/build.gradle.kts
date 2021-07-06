@@ -28,7 +28,6 @@ kotlin {
             dependencies {
                 implementation(project(":logging", ""))
                 api(project(":base", ""))
-                api(project(":base-permissions", ""))
             }
         }
         getByName("commonTest") {

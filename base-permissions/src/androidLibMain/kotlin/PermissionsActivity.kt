@@ -16,7 +16,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.basepermissions
 
 import android.content.Context
 import android.content.Intent
@@ -29,6 +29,7 @@ import com.splendo.kaluga.logging.info
 /**
  * An [AppCompatActivity] responsible for requesting a [Permission]
  */
+
 class PermissionsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
