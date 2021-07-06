@@ -17,23 +17,17 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.permissions.CalendarPermission
+import com.splendo.kaluga.basepermissions.PermissionManager
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.CameraPermission
 import com.splendo.kaluga.permissions.ContactsPermission
-import com.splendo.kaluga.permissions.LocationPermission
 import com.splendo.kaluga.permissions.MicrophonePermission
 import com.splendo.kaluga.permissions.NotificationsPermission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.StoragePermission
-import com.splendo.kaluga.permissions.calendar.BaseCalendarPermissionManagerBuilder
-import com.splendo.kaluga.permissions.calendar.CalendarPermissionStateRepo
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
 import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.location.BaseLocationPermissionManagerBuilder
-import com.splendo.kaluga.permissions.location.LocationPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
 import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
@@ -45,14 +39,6 @@ import com.splendo.kaluga.test.MockPermissionManager
 class MockPermissionsBuilder : PermissionsBuilder() {
     init {
         registerAllPermissionsBuilders()
-    }
-
-    private lateinit var calendarPMManager: MockPermissionManager<CalendarPermission>
-    private val calendarPMBuilder: BaseCalendarPermissionManagerBuilder = object : BaseCalendarPermissionManagerBuilder {
-        override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
-            calendarPMManager = MockPermissionManager(repo)
-            return calendarPMManager
-        }
     }
 
     private lateinit var cameraPMManager: MockPermissionManager<CameraPermission>
@@ -68,14 +54,6 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
             contactsPMManager = MockPermissionManager(repo)
             return contactsPMManager
-        }
-    }
-
-    private lateinit var locationPMManager: MockPermissionManager<LocationPermission>
-    private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
-        override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-            locationPMManager = MockPermissionManager(repo)
-            return locationPMManager
         }
     }
 
@@ -104,10 +82,8 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     }
 
     private fun registerAllPermissionsBuilders() {
-        register(calendarPMBuilder, CalendarPermission::class)
         register(cameraPMBuilder, CameraPermission::class)
         register(contactsPMBuilder, ContactsPermission::class)
-        register(locationPMBuilder, LocationPermission::class)
         register(microphonePMBuilder, MicrophonePermission::class)
         register(notificationsPMBuilder, NotificationsPermission::class)
         register(storagePMBuilder, StoragePermission::class)

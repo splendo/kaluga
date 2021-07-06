@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.permissions.LocationPermission
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.locationpermissions.LocationPermission
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 
@@ -68,7 +67,8 @@ actual class LocationManager(
     }
 }
 
-actual class LocationStateRepoBuilder(private val permissions: Permissions = Permissions(PermissionsBuilder(), Dispatchers.Main)) : LocationStateRepo.Builder {
+actual class LocationStateRepoBuilder(private val permissions: Permissions = Permissions(
+    PermissionsBuilder(), Dispatchers.Main)) : LocationStateRepo.Builder {
 
     override fun create(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
         return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(), coroutineContext)

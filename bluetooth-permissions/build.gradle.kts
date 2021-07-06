@@ -20,7 +20,6 @@ dependencies {
 }
 
 kotlin {
-
     sourceSets {
         getByName("commonMain") {
             val ext = (gradle as ExtensionAware).extra
@@ -28,7 +27,12 @@ kotlin {
             dependencies {
                 implementation(project(":logging", ""))
                 api(project(":base", ""))
-                api(project(":permissions", ""))
+                api(project(":base-permissions", ""))
+            }
+        }
+        getByName("androidLibMain") {
+            dependencies {
+                api(project(":location-permissions", ""))
             }
         }
         getByName("commonTest") {

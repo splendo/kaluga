@@ -1,13 +1,6 @@
 <manifest package="com.splendo.kaluga.permissions"
           xmlns:android="http://schemas.android.com/apk/res/android"
 >
-<!--    <uses-permission android:name="android.permission.BLUETOOTH"/>-->
-
-    <application>
-        <activity
-                android:name=".PermissionsActivity"
-                android:theme="@style/Permissions"/>
-    </application>
 </manifest>
 
 

@@ -19,10 +19,9 @@ package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.permissions.LocationPermission
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.locationpermissions.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect

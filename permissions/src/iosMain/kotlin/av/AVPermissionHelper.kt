@@ -15,17 +15,17 @@
 
  */
 
-package com.splendo.kaluga.permissions.av
+package com.splendo.kaluga.basepermissions.av
 
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.basepermissions.IOSPermissionsHelper
+import com.splendo.kaluga.basepermissions.Permission
+import com.splendo.kaluga.basepermissions.PermissionManager
+import com.splendo.kaluga.basepermissions.PermissionRefreshScheduler
+import com.splendo.kaluga.basepermissions.PermissionState
 import com.splendo.kaluga.permissions.CameraPermission
-import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.MicrophonePermission
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionRefreshScheduler
-import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
 import platform.AVFoundation.AVAuthorizationStatus

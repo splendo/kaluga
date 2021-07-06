@@ -16,6 +16,6 @@
  */
 package com.splendo.kaluga.bluetoothpermissions
 
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)

@@ -32,10 +32,10 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.permissions.LocationPermission
-import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.registerLocationPermissionBuilder
+import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.locationpermissions.LocationPermission
+import com.splendo.kaluga.locationpermissions.registerLocationPermissionBuilder
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
