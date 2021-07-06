@@ -21,6 +21,9 @@ import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.basepermissions.Permissions
 import com.splendo.kaluga.basepermissions.PermissionsBuilder
 import com.splendo.kaluga.locationpermissions.LocationPermission
+import com.splendo.kaluga.locationpermissions.CLAuthorizationStatusKotlin
+import com.splendo.kaluga.locationpermissions.toCLAuthorizationStatusKotlin
+import com.splendo.kaluga.locationpermissions.registerLocationPermission
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation

@@ -48,13 +48,6 @@ object CameraPermission : Permission()
 data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
 /**
- * Permission to access the users Location
- * @param background If `true` scanning for location in the background is permitted
- * @param precise If `true` precise location scanning is permitted
- */
-data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) : Permission()
-
-/**
  * Permission to access the users Microphone
  */
 object MicrophonePermission : Permission()
