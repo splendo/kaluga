@@ -9,7 +9,7 @@ import platform.Foundation.NSBundle
 
 actual class BluetoothBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
-    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle))
+    private val permissions: Permissions = Permissions(PermissionsBuilder(/*bundle*/)) //FIXME: It should be possinle to pas bundle as a paramether
 ) : Bluetooth.Builder {
 
     override fun create(connectionSettings: ConnectionSettings, autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, coroutineScope: CoroutineScope): Bluetooth {

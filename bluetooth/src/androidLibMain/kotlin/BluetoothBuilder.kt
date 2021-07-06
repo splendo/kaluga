@@ -10,7 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 
 actual class BluetoothBuilder(
     private val applicationContext: Context = ApplicationHolder.applicationContext,
-    private val permissions: Permissions = Permissions(PermissionsBuilder(applicationContext)),
+    private val permissions: Permissions = Permissions(PermissionsBuilder(/*applicationContext*/)), //FIXME: It should be possible to pass app context
     private val scannerBuilder: Scanner.Builder = Scanner.Builder(applicationContext = applicationContext)
 ) : Bluetooth.Builder {
 
