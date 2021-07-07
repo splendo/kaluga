@@ -15,11 +15,8 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.contacts
 
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
-
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)

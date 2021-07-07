@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.contacts
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import com.splendo.kaluga.permissions.ContactsPermission
 import kotlin.coroutines.CoroutineContext
 
 /**

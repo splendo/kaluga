@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.ContactsPermission
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied

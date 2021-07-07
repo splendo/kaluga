@@ -23,7 +23,6 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.ContactsPermission
 
 actual class ContactsPermissionManager(
     context: Context,

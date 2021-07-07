@@ -20,9 +20,6 @@ package com.splendo.kaluga.permissions
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
@@ -31,12 +28,6 @@ import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
  * Permission to access the users Camera
  */
 object CameraPermission : Permission()
-
-/**
- * Permission to access the users Contacts
- * @param allowWrite If `true` writing to the contacts is permitted
- */
-data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
 /**
  * Permission to access the users Microphone
@@ -52,16 +43,6 @@ fun PermissionsBuilder.registerCameraPermission() =
     }
 
 internal expect fun PermissionsBuilder.registerCameraPermissionBuilder() : CameraPermissionManagerBuilder
-
-// ********************** Contacts *****************
-fun PermissionsBuilder.registerContactsPermission() =
-    registerContactsPermissionBuilder().also { builder ->
-        registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
-            ContactsPermissionStateRepo(permission as  ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerContactsPermissionBuilder() : ContactsPermissionManagerBuilder
 
 // ********************** Microphone *****************
 fun PermissionsBuilder.registerMicrophonePermission() =

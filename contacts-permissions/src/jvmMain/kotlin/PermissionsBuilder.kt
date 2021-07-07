@@ -14,12 +14,8 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.permissions.contacts
 
-package com.splendo.kaluga.permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
-
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
-
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)

@@ -15,21 +15,18 @@
 
  */
 
-package com.splendo.kaluga.permissions.notifications
+package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.NotificationsPermission
 
-actual class NotificationOptions
-
-actual class NotificationsPermissionManager(actual val notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo) : PermissionManager<NotificationsPermission>(repo) {
+actual class ContactsPermissionManager(actual val contacts: ContactsPermission, repo: ContactsPermissionStateRepo) : PermissionManager<ContactsPermission>(repo) {
 
     override suspend fun requestPermission() {
         TODO("not implemented")
     }
 
-    override suspend fun initializeState(): PermissionState<NotificationsPermission> {
+    override suspend fun initializeState(): PermissionState<ContactsPermission> {
         TODO("not implemented")
     }
 
@@ -42,9 +39,9 @@ actual class NotificationsPermissionManager(actual val notifications: Notificati
     }
 }
 
-actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder {
 
-    override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
-        return NotificationsPermissionManager(notifications, repo)
+    override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
+        return ContactsPermissionManager(contacts, repo)
     }
 }

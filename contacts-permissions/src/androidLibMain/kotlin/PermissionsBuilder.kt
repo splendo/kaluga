@@ -15,11 +15,11 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.contacts
 
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
+import android.content.Context
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
+fun PermissionsBuilder.registerContactsPermissionBuilder(context: Context) = register(builder = ContactsPermissionManagerBuilder(context), permission = ContactsPermission::class)
 
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
