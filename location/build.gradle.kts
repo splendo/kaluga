@@ -25,7 +25,7 @@ kotlin {
             dependencies {
                 implementation(project(":location-permissions", ""))
                 implementation(project(":logging", ""))
-            }git 
+            }
         }
         commonTest {
             dependencies {
