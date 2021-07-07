@@ -15,9 +15,9 @@
 
  */
 
-package com.splendo.kaluga.locationpermissions
+package com.splendo.kaluga.permissions.location
 
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import platform.Foundation.NSBundle
 
 

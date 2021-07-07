@@ -16,7 +16,7 @@
  */
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder

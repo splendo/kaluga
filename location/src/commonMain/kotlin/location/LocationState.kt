@@ -18,8 +18,8 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.basepermissions.Permissions
-import com.splendo.kaluga.locationpermissions.LocationPermission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.ColdStateRepo
 import com.splendo.kaluga.state.HandleAfterNewStateIsSet
 import com.splendo.kaluga.state.HandleBeforeOldStateIsRemoved

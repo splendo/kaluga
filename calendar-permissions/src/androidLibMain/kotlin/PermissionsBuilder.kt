@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.calendarpermissions
+package com.splendo.kaluga.permissions.calendar
 
 import android.content.Context
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
 fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Context) = register(builder = CalendarPermissionManagerBuilder(context), permission = CalendarPermission::class)

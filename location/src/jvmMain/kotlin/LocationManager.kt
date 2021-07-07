@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.basepermissions.Permissions
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
-import com.splendo.kaluga.locationpermissions.LocationPermission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
 

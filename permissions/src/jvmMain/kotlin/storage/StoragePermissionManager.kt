@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.permissions.storage
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.StoragePermission
 
 actual class StoragePermissionManager(actual val storage: StoragePermission, repo: StoragePermissionStateRepo) : PermissionManager<StoragePermission>(repo) {

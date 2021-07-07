@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.basepermissions
+package com.splendo.kaluga.permissions
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.basepermissions.PermissionState.Denied.Requestable
+import com.splendo.kaluga.permissions.PermissionState.Denied.Requestable
 import com.splendo.kaluga.test.FlowTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers

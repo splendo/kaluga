@@ -18,12 +18,12 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicBoolean
-import com.splendo.kaluga.basepermissions.Permissions
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
-import com.splendo.kaluga.locationpermissions.LocationPermission
-import com.splendo.kaluga.locationpermissions.CLAuthorizationStatusKotlin
-import com.splendo.kaluga.locationpermissions.toCLAuthorizationStatusKotlin
-import com.splendo.kaluga.locationpermissions.registerLocationPermission
+import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation

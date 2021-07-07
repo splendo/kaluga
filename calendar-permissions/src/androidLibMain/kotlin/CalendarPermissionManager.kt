@@ -15,14 +15,14 @@
 
  */
 
-package com.splendo.kaluga.calendarpermissions
+package com.splendo.kaluga.permissions.calendar
 
 import android.Manifest
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.basepermissions.AndroidPermissionsManager
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 
 actual class CalendarPermissionManager(
     context: Context,

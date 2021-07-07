@@ -18,10 +18,10 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.base.mainContinuation
-import com.splendo.kaluga.basepermissions.IOSPermissionsHelper
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionRefreshScheduler
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionRefreshScheduler
+import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.ContactsPermission

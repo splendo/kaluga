@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.permissions.microphone
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
-import com.splendo.kaluga.basepermissions.av.AVPermissionHelper
+import com.splendo.kaluga.permissions.av.AVPermissionHelper
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.MicrophonePermission
 import platform.Foundation.NSBundle
 

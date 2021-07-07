@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.permissions.contacts
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.ContactsPermission
 
 actual class ContactsPermissionManager(actual val contacts: ContactsPermission, repo: ContactsPermissionStateRepo) : PermissionManager<ContactsPermission>(repo) {

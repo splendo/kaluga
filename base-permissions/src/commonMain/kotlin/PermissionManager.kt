@@ -16,9 +16,9 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 */
 
-package com.splendo.kaluga.basepermissions
+package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.basepermissions.PermissionState.Denied
+import com.splendo.kaluga.permissions.PermissionState.Denied
 import kotlinx.coroutines.CoroutineScope
 
 /**

@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.bluetoothpermissions
+package com.splendo.kaluga.permissions.bluetooth
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 
 actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : PermissionManager<BluetoothPermission>(repo) {
 

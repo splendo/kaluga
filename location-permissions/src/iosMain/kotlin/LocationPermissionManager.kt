@@ -15,12 +15,12 @@
 
  */
 
-package com.splendo.kaluga.locationpermissions
+package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
-import com.splendo.kaluga.basepermissions.IOSPermissionsHelper
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
