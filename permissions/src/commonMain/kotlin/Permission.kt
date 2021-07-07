@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
@@ -32,9 +30,6 @@ import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionM
 import com.splendo.kaluga.permissions.notifications.NotificationOptions
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
 import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
-import com.splendo.kaluga.permissions.storage.StoragePermissionManagerBuilder
-import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 
 /**
  * Permission to access the users Camera
@@ -57,13 +52,6 @@ object MicrophonePermission : Permission()
  * @param options The [NotificationOptions] determining the type of notifications that can be accessed
  */
 data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
-
-/**
- * Permission to access the users device storage.
- * On iOS this corresponds to the Photos permission
- * @param allowWrite If `true` writing to the storage is permitted
- */
-data class StoragePermission(val allowWrite: Boolean = false) : Permission()
 
 // ********************** Camera *****************
 fun PermissionsBuilder.registerCameraPermission() =
@@ -104,14 +92,4 @@ fun PermissionsBuilder.registerNotificationsPermission() =
     }
 
 internal expect fun PermissionsBuilder.registerNotificationsPermissionBuilder() : NotificationsPermissionManagerBuilder
-
-// ********************** Storage *****************
-fun PermissionsBuilder.registerStoragePermission() =
-    registerStoragePermissionBuilder().also { builder ->
-        registerRepoFactory(StoragePermission::class) { permission, coroutineContext ->
-            StoragePermissionStateRepo(permission as StoragePermission, builder as BaseStoragePermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerStoragePermissionBuilder() : StoragePermissionManagerBuilder
 // ***************************************

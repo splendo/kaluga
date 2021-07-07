@@ -17,32 +17,44 @@
 
 package com.splendo.kaluga.permissions.storage
 
+import android.Manifest
+import android.content.Context
+import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.StoragePermission
 
-actual class StoragePermissionManager(actual val storage: StoragePermission, repo: StoragePermissionStateRepo) : PermissionManager<StoragePermission>(repo) {
+actual class StoragePermissionManager(
+    context: Context,
+    actual val storage: StoragePermission,
+    stateRepo: StoragePermissionStateRepo
+) : PermissionManager<StoragePermission>(stateRepo) {
+
+    private val permissionsManager = AndroidPermissionsManager(context, this, if (storage.allowWrite) arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE) else arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
 
     override suspend fun requestPermission() {
-        TODO("not implemented")
+        permissionsManager.requestPermissions()
     }
 
     override suspend fun initializeState(): PermissionState<StoragePermission> {
-        TODO("not implemented")
+        return when {
+            permissionsManager.hasPermissions -> PermissionState.Allowed()
+            else -> PermissionState.Denied.Requestable()
+        }
     }
 
     override suspend fun startMonitoring(interval: Long) {
-        TODO("not implemented")
+        permissionsManager.startMonitoring(interval)
     }
 
     override suspend fun stopMonitoring() {
-        TODO("not implemented")
+        permissionsManager.stopMonitoring()
     }
 }
 
-actual class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder {
+actual class StoragePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseStoragePermissionManagerBuilder {
 
     override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(storage, repo)
+        return StoragePermissionManager(context, storage, repo)
     }
 }
