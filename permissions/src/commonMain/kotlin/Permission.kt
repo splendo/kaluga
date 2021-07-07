@@ -26,10 +26,6 @@ import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
 import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
-import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationOptions
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
 
 /**
  * Permission to access the users Camera
@@ -46,12 +42,6 @@ data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
  * Permission to access the users Microphone
  */
 object MicrophonePermission : Permission()
-
-/**
- * Permission to access the users Notifications.
- * @param options The [NotificationOptions] determining the type of notifications that can be accessed
- */
-data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
 
 // ********************** Camera *****************
 fun PermissionsBuilder.registerCameraPermission() =
@@ -83,13 +73,3 @@ fun PermissionsBuilder.registerMicrophonePermission() =
 
 internal expect fun PermissionsBuilder.registerMicrophonePermissionBuilder() : MicrophonePermissionManagerBuilder
 
-// ********************** Notifications *****************
-fun PermissionsBuilder.registerNotificationsPermission() =
-    registerNotificationsPermissionBuilder().also { builder ->
-        registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
-            NotificationsPermissionStateRepo(permission as NotificationsPermission, builder as BaseNotificationsPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerNotificationsPermissionBuilder() : NotificationsPermissionManagerBuilder
-// ***************************************
