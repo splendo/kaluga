@@ -15,37 +15,10 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.notifications
 
-import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
-import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationOptions
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-
-/**
- * Permission to access the users Camera
- */
-object CameraPermission : Permission()
-
-/**
- * Permission to access the users Contacts
- * @param allowWrite If `true` writing to the contacts is permitted
- */
-data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
-
-/**
- * Permission to access the users Microphone
- */
-object MicrophonePermission : Permission()
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 /**
  * Permission to access the users Notifications.
@@ -53,37 +26,6 @@ object MicrophonePermission : Permission()
  */
 data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
 
-// ********************** Camera *****************
-fun PermissionsBuilder.registerCameraPermission() =
-    registerCameraPermissionBuilder().also { builder ->
-        registerRepoFactory(CameraPermission::class) { _, coroutineContext ->
-            CameraPermissionStateRepo(builder as BaseCameraPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerCameraPermissionBuilder() : CameraPermissionManagerBuilder
-
-// ********************** Contacts *****************
-fun PermissionsBuilder.registerContactsPermission() =
-    registerContactsPermissionBuilder().also { builder ->
-        registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
-            ContactsPermissionStateRepo(permission as  ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerContactsPermissionBuilder() : ContactsPermissionManagerBuilder
-
-// ********************** Microphone *****************
-fun PermissionsBuilder.registerMicrophonePermission() =
-    registerMicrophonePermissionBuilder().also { builder ->
-        registerRepoFactory(MicrophonePermission::class) { _, coroutineContext ->
-            MicrophonePermissionStateRepo(builder as BaseMicrophonePermissionManagerBuilder, coroutineContext)
-        }
-    }
-
-internal expect fun PermissionsBuilder.registerMicrophonePermissionBuilder() : MicrophonePermissionManagerBuilder
-
-// ********************** Notifications *****************
 fun PermissionsBuilder.registerNotificationsPermission() =
     registerNotificationsPermissionBuilder().also { builder ->
         registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
@@ -92,4 +34,4 @@ fun PermissionsBuilder.registerNotificationsPermission() =
     }
 
 internal expect fun PermissionsBuilder.registerNotificationsPermissionBuilder() : NotificationsPermissionManagerBuilder
-// ***************************************
+

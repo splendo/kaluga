@@ -15,21 +15,8 @@
 
  */
 
-package com.splendo.kaluga.permissions
+package com.splendo.kaluga.permissions.notifications
 
-import android.content.Context
-import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionManagerBuilder
-
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
-fun PermissionsBuilder.registerCameraPermissionBuilder(context: Context) = register(builder = CameraPermissionManagerBuilder(context), permission = CameraPermission::class)
-
-internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
-fun PermissionsBuilder.registerContactsPermissionBuilder(context: Context) = register(builder = ContactsPermissionManagerBuilder(context), permission = ContactsPermission::class)
-
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
-fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Context)  = register(builder = MicrophonePermissionManagerBuilder(context), permission = MicrophonePermission::class)
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerNotificationsPermissionBuilder() = register(builder = NotificationsPermissionManagerBuilder(), permission = NotificationsPermission::class)

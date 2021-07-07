@@ -18,12 +18,11 @@
 package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.NotificationsPermission
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.launch
 import platform.UserNotifications.UNAuthorizationOptionNone
