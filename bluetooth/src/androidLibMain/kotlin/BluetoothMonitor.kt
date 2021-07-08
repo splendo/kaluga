@@ -39,7 +39,10 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
-    private val _isEnabled = MutableStateFlow(false)
+    private val isPoweredOn: Boolean
+        get() = bluetoothAdapter?.isEnabled == true
+
+    private val _isEnabled = MutableStateFlow(isPoweredOn)
     actual val isEnabled = _isEnabled.asStateFlow()
 
     actual fun startMonitoring() {
@@ -56,6 +59,6 @@ actual class BluetoothMonitor internal constructor(
     }
 
     private fun updateEnabledState() {
-        _isEnabled.value = bluetoothAdapter?.isEnabled == true
+        _isEnabled.value = isPoweredOn
     }
 }

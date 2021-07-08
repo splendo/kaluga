@@ -37,17 +37,21 @@ actual class BluetoothMonitor(
         }
     }
 
-    private val _isEnabled = MutableStateFlow(false)
+    private val isPoweredOn: Boolean
+        get() = centralManager.state == CBCentralManagerStatePoweredOn
+
+    private val _isEnabled = MutableStateFlow(isPoweredOn)
     actual val isEnabled = _isEnabled.asStateFlow()
 
     actual fun startMonitoring() {
         centralManager.delegate = centralManagerDelegate
     }
+
     actual fun stopMonitoring() {
         centralManager.delegate = null
     }
 
     private fun updateEnabledState() {
-        _isEnabled.value = centralManager.state == CBCentralManagerStatePoweredOn
+        _isEnabled.value = isPoweredOn
     }
 }
