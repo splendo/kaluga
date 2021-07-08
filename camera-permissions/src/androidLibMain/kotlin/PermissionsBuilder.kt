@@ -18,6 +18,7 @@
 package com.splendo.kaluga.permissions.camera
 
 import android.content.Context
+import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.camera.CameraPermissionManagerBuilder
 
 internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
