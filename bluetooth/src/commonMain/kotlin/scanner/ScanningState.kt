@@ -24,7 +24,7 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Scanning
-import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.HandleAfterCreating
 import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved

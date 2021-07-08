@@ -34,7 +34,7 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.permissions.Permissions
 import kotlin.jvm.JvmName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope

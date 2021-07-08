@@ -19,7 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
-import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 

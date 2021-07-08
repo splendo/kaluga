@@ -29,7 +29,7 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.basepermissions.Permissions
+import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
