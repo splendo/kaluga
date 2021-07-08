@@ -42,14 +42,14 @@ abstract class AVType<P : Permission> {
     abstract val declarationName: String
 }
 
-internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private val type: AVType<P>) {
+class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, private val type: AVType<P>) {
 
     private val authorizationStatus: suspend () -> IOSPermissionsHelper.AuthorizationStatus get() = suspend {
         AVCaptureDevice.authorizationStatusForMediaType(type.avMediaType).toAuthorizationStatus()
     }
     private val timerHelper = PermissionRefreshScheduler(type.permissionManager, authorizationStatus)
 
-    internal fun requestPermission() {
+    fun requestPermission() {
         if (IOSPermissionsHelper.missingDeclarationsInPList(bundle, type.declarationName).isEmpty()) {
             timerHelper.isWaiting.value = true
             AVCaptureDevice.requestAccessForMediaType(
@@ -68,18 +68,18 @@ internal class AVPermissionHelper<P : Permission>(private val bundle: NSBundle, 
         }
     }
 
-    internal suspend fun initializeState(): PermissionState<P> {
+    suspend fun initializeState(): PermissionState<P> {
         return when {
             AVCaptureDevice.devicesWithMediaType(type.avMediaType).isEmpty() -> PermissionState.Denied.Locked()
             else -> IOSPermissionsHelper.getPermissionState(authorizationStatus())
         }
     }
 
-    internal suspend fun startMonitoring(interval: Long) {
+    suspend fun startMonitoring(interval: Long) {
         timerHelper.startMonitoring(interval)
     }
 
-    internal suspend fun stopMonitoring() {
+    suspend fun stopMonitoring() {
         timerHelper.stopMonitoring()
     }
 }

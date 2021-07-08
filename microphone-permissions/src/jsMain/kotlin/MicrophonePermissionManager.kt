@@ -19,7 +19,6 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.MicrophonePermission
 
 actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : PermissionManager<MicrophonePermission>(repo) {
 

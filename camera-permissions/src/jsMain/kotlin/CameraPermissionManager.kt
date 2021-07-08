@@ -19,7 +19,6 @@ package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.CameraPermission
 
 actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : PermissionManager<CameraPermission>(repo) {
 

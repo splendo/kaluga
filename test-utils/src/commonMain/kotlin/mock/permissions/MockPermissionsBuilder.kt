@@ -19,12 +19,12 @@ package com.splendo.kaluga.test.mock.permissions
 
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.CameraPermission
-import com.splendo.kaluga.permissions.MicrophonePermission
-import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
+// import com.splendo.kaluga.permissions.CameraPermission
+// import com.splendo.kaluga.permissions.MicrophonePermission
+// import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
+// import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
+// import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
+// import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 
 // FIXME: Probably separated mocks should be created in each module
