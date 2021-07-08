@@ -14,8 +14,8 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.locationpermissions
+package com.splendo.kaluga.permissions.location
 
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)

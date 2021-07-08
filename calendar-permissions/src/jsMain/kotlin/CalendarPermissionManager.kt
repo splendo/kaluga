@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.calendarpermissions
+package com.splendo.kaluga.permissions.calendar
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 
 actual class CalendarPermissionManager(actual val calendar: CalendarPermission, repo: CalendarPermissionStateRepo) : PermissionManager<CalendarPermission>(repo) {
 

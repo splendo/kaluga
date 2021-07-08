@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.basepermissions
+package com.splendo.kaluga.permissions
 
 import co.touchlab.stately.collections.IsoMutableMap
 import kotlinx.coroutines.Dispatchers

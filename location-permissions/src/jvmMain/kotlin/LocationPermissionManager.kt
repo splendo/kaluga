@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.locationpermissions
+package com.splendo.kaluga.permissions.location
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionState
 
 actual class LocationPermissionManager(actual val location: LocationPermission, repo: LocationPermissionStateRepo) : PermissionManager<LocationPermission>(repo) {
 

@@ -17,25 +17,18 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.basepermissions.PermissionManager
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.CameraPermission
-import com.splendo.kaluga.permissions.ContactsPermission
-import com.splendo.kaluga.permissions.MicrophonePermission
-import com.splendo.kaluga.permissions.NotificationsPermission
-import com.splendo.kaluga.permissions.StoragePermission
-import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
-import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-import com.splendo.kaluga.permissions.contacts.BaseContactsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.contacts.ContactsPermissionStateRepo
-import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
-import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
-import com.splendo.kaluga.permissions.notifications.BaseNotificationsPermissionManagerBuilder
-import com.splendo.kaluga.permissions.notifications.NotificationsPermissionStateRepo
-import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
-import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
+import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionsBuilder
+// import com.splendo.kaluga.permissions.CameraPermission
+// import com.splendo.kaluga.permissions.MicrophonePermission
+// import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
+// import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
+// import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
+// import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 
+// FIXME: Probably separated mocks should be created in each module
+/*
 class MockPermissionsBuilder : PermissionsBuilder() {
     init {
         registerAllPermissionsBuilders()
@@ -73,19 +66,11 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         }
     }
 
-    lateinit var storagePMManager: MockPermissionManager<StoragePermission>
-    private val storagePMBuilder: BaseStoragePermissionManagerBuilder = object : BaseStoragePermissionManagerBuilder {
-        override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-            storagePMManager = MockPermissionManager(repo)
-            return storagePMManager
-        }
-    }
-
     private fun registerAllPermissionsBuilders() {
         register(cameraPMBuilder, CameraPermission::class)
         register(contactsPMBuilder, ContactsPermission::class)
         register(microphonePMBuilder, MicrophonePermission::class)
         register(notificationsPMBuilder, NotificationsPermission::class)
-        register(storagePMBuilder, StoragePermission::class)
     }
 }
+*/

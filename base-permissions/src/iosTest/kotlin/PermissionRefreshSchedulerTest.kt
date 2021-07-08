@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.basepermissions
+package com.splendo.kaluga.permissions
 
 
 //FIXME: It uses storage but test is in base

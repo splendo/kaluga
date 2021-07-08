@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.bluetoothpermissions
+package com.splendo.kaluga.permissions.bluetooth
 
-import com.splendo.kaluga.basepermissions.Permission
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 /**
  * Permission to access the Bluetooth scanner

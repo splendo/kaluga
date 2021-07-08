@@ -15,10 +15,10 @@
 
  */
 
-package com.splendo.kaluga.locationpermissions
+package com.splendo.kaluga.permissions.location
 
 import android.content.Context
-import com.splendo.kaluga.basepermissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionsBuilder
 
 internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
 fun PermissionsBuilder.registerLocationPermissionBuilder(context: Context) = register(builder = LocationPermissionManagerBuilder(context), permission = LocationPermission::class)

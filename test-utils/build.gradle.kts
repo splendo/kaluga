@@ -40,7 +40,7 @@ kotlin {
                 implementation(project(":hud", ""))
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
-                implementation(project(":permissions", ""))
+                implementation(project(":base-permissions", ""))
                 implementation("io.insert-koin:koin-core:" + ext["koin_version"])
             }
         }

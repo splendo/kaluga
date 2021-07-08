@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.basepermissions
+package com.splendo.kaluga.permissions
 
 import android.Manifest
 import android.content.Context
