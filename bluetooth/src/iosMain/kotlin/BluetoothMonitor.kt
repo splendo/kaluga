@@ -17,24 +17,20 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.darwin.NSObject
-import platform.darwin.dispatch_get_main_queue
 
 actual class BluetoothMonitor internal constructor(
     private val centralManager: CBCentralManager
 ) {
 
     class Builder {
-        fun create() = BluetoothMonitor(
-            centralManager = CBCentralManager(
-                delegate = null, dispatch_get_main_queue(), emptyMap<Any?, Any>()
-            )
-        )
+        fun create() = BluetoothMonitor(centralManager = CBCentralManager())
     }
 
     private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
@@ -50,14 +46,21 @@ actual class BluetoothMonitor internal constructor(
     actual val isEnabled = _isEnabled.asStateFlow()
 
     actual fun startMonitoring() {
+        debug("Start monitoring Bluetooth")
+        debug("Current state is $isPoweredOn")
         centralManager.delegate = centralManagerDelegate
+        updateEnabledState()
     }
 
     actual fun stopMonitoring() {
+        debug("Stop monitoring Bluetooth")
+        debug("Current state is $isPoweredOn")
         centralManager.delegate = null
+        updateEnabledState()
     }
 
     private fun updateEnabledState() {
+        debug("Update monitoring Bluetooth state to $isPoweredOn")
         _isEnabled.value = isPoweredOn
     }
 }
