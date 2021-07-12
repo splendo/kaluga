@@ -27,6 +27,7 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
 import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
@@ -129,8 +130,8 @@ class KNArchitectureFramework {
             })
     }
 
-    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
-        return BluetoothListViewModel(bluetooth, ViewControllerNavigator(parent) { action ->
+    fun createBluetoothListViewModel(parent: UIViewController, bluetooth: Bluetooth, monitor: BluetoothMonitor, createDeviceDetailsViewController: (Identifier, Bluetooth) -> UIViewController): BluetoothListViewModel {
+        return BluetoothListViewModel(bluetooth, monitor, ViewControllerNavigator(parent) { action ->
             NavigationSpec.Push(push = {
                 val bundle = action.bundle ?: return@Push UIViewController()
                 val identifier = NSUUID(uUIDString = bundle.get(DeviceDetailsSpecRow.UUIDRow))

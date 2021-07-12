@@ -50,6 +50,8 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         viewModel.isScanning.observe {
             invalidateOptionsMenu()
         }
+
+        viewModel.title.observe(::setTitle)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

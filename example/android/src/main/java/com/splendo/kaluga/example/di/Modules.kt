@@ -91,6 +91,7 @@ val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
+    single { BluetoothMonitor.Builder().create() }
 }
 
 val viewModelModule = module {
@@ -228,7 +229,7 @@ val viewModelModule = module {
 
     viewModel {
 
-        BluetoothListViewModel(get(), ActivityNavigator {
+        BluetoothListViewModel(get(), get(), ActivityNavigator {
             NavigationSpec.Activity(BluetoothMoreActivity::class.java)
         })
     }
