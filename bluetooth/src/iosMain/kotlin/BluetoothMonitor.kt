@@ -25,11 +25,17 @@ import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue
 
-actual class BluetoothMonitor(
-    private val centralManager: CBCentralManager = CBCentralManager(
-        delegate = null, dispatch_get_main_queue(), emptyMap<Any?, Any>()
-    )
+actual class BluetoothMonitor internal constructor(
+    private val centralManager: CBCentralManager
 ) {
+
+    class Builder {
+        fun create() = BluetoothMonitor(
+            centralManager = CBCentralManager(
+                delegate = null, dispatch_get_main_queue(), emptyMap<Any?, Any>()
+            )
+        )
+    }
 
     private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {

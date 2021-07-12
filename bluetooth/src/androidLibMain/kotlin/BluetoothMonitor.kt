@@ -27,9 +27,16 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 actual class BluetoothMonitor internal constructor(
-    private val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter(),
-    private val applicationContext: Context = ApplicationHolder.applicationContext
+    private val bluetoothAdapter: BluetoothAdapter?,
+    private val applicationContext: Context
 ) {
+
+    class Builder {
+        fun create() = BluetoothMonitor(
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
+            applicationContext = ApplicationHolder.applicationContext
+        )
+    }
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
