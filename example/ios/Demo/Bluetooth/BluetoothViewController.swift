@@ -11,13 +11,13 @@ import KotlinNativeFramework
 
 class BluetoothViewController : UICollectionViewController {
     
-    lazy var viewModel = KNArchitectureFramework().createBluetoothListViewModel(parent: self, bluetooth: KNBluetoothFramework().bluetooth) { uuid, bluetooth in
+    lazy var viewModel = KNArchitectureFramework().createBluetoothListViewModel(parent: self, bluetooth: KNBluetoothFramework().bluetooth, monitor: KNBluetoothFramework().bluetoothMonitor) { uuid, bluetooth in
         return BluetoothDeviceDetailsViewController.create(deviceUuid: uuid, bluetooth: bluetooth)
     }
     
     private var devices: [BluetoothListDeviceViewModel] = []
     private var lifecycleManager: LifecycleManager!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -37,12 +37,14 @@ class BluetoothViewController : UICollectionViewController {
             return [
                 viewModel.isScanning.observe { isScanning in
                     self?.updateNavigationItem(isScanning: isScanning as? Bool ?? false)
-                }
-            ,
+                },
                 viewModel.devices.observe { devices in
                     self?.devices = devices as? [BluetoothListDeviceViewModel] ?? []
                     self?.collectionView?.reloadData()
                     self?.collectionView.layoutIfNeeded()
+                },
+                viewModel.title.observe { title in
+                    self?.updateTitle(title: title as String?)
                 }
             ]
         })
@@ -54,6 +56,10 @@ class BluetoothViewController : UICollectionViewController {
         } else {
             self.navigationItem.setRightBarButton(UIBarButtonItem(title: NSLocalizedString("bluetooth_start_scanning", comment: ""), style: .plain, target: self, action: #selector(self.toggleScanning)), animated: true)
         }
+    }
+
+    private func updateTitle(title: String?) {
+        self.title = title
     }
     
     @objc private func toggleScanning() {

@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,14 +15,15 @@
 
  */
 
-package com.splendo.kaluga.example.ios.bluetooth
+package com.splendo.kaluga.bluetooth
 
-import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
-class KNBluetoothFramework {
-    val mainScope = MainScope()
-    val bluetooth = BluetoothBuilder().create(coroutineScope = mainScope)
-    val bluetoothMonitor = BluetoothMonitor.Builder().create()
+actual class BluetoothMonitor {
+    private val _isEnabled = MutableStateFlow(false)
+    actual val isEnabled = _isEnabled.asStateFlow()
+
+    actual fun startMonitoring() { }
+    actual fun stopMonitoring() { }
 }
