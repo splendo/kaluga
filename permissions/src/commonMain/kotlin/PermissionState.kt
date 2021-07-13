@@ -89,7 +89,7 @@ abstract class PermissionStateRepo<P : Permission>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate
 ) : ColdStateFlowRepo<PermissionState<P>>(
     coroutineContext,
-    initChangeState = { state, repo ->
+    initChangeStateWithRepo = { state, repo ->
         val pm = (repo as PermissionStateRepo<P>).permissionManager
         pm.startMonitoring(monitoringInterval)
         if (state == null || state is PermissionState.Unknown<P>)
@@ -97,7 +97,7 @@ abstract class PermissionStateRepo<P : Permission>(
         else
             suspend { state }
     }   ,
-    deinitChangeState = { state, repo ->
+    deinitChangeStateWithRepo = { state, repo ->
         (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
         null
     },

@@ -46,8 +46,12 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
             {
                 nullableString = "new"
                 assertEquals("default", observed.get(), "the property will only report the new value upon read")
-                "new" }, // when we actually read the property to test this, the new value will propagate
-            { nullableString = null; "default" }
+                "new"
+            }, // when we actually read the property to test this, the new value will propagate
+            {
+                nullableString = null
+                "default"
+            }
         )
     }
 

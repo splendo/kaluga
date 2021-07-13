@@ -59,7 +59,7 @@ class HotFlowableTest : BaseTest() {
         val values2 = CompletableDeferred<List<Int>>()
         val scope = MainScope()
         val job1 = scope.launch {
-            val values = emptyList<Int>().toMutableList()
+            val values = mutableListOf<Int>()
             flowable.flow().take(3).collect { value ->
                 values.add(value)
                 if (values.size == 3) {
@@ -71,7 +71,7 @@ class HotFlowableTest : BaseTest() {
             flowable.set(1)
         }
         val job2 = scope.launch {
-            val values = emptyList<Int>().toMutableList()
+            val values = mutableListOf<Int>()
             flowable.flow().take(2).collect { value ->
                 values.add(value)
                 if (values.size == 2) {

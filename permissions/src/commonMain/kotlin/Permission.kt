@@ -114,7 +114,7 @@ expect class PermissionsBuilder : BasePermissionsBuilder
  * @param builder The [BasePermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
+class Permissions(private val builder: BasePermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main.immediate) {
 
     private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
 
@@ -147,8 +147,8 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
         return get(p).request(getManager(p))
     }
 
-    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = Dispatchers.Main): PermissionStateRepo<*> {
-        return when (permission) {
+    private fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext = Dispatchers.Main.immediate ): PermissionStateRepo<*> =
+        when (permission) {
             is Permission.Bluetooth -> BluetoothPermissionStateRepo(builder.bluetoothPMBuilder, coroutineContext)
             is Permission.Calendar -> CalendarPermissionStateRepo(permission, builder.calendarPMBuilder, coroutineContext)
             is Permission.Camera -> CameraPermissionStateRepo(builder.cameraPMBuilder, coroutineContext)
@@ -158,7 +158,6 @@ class Permissions(private val builder: BasePermissionsBuilder, private val corou
             is Permission.Notifications -> NotificationsPermissionStateRepo(permission, builder.notificationsPMBuilder, coroutineContext)
             is Permission.Storage -> StoragePermissionStateRepo(permission, builder.storagePMBuilder, coroutineContext)
         }
-    }
 
     fun clean() {
         permissionStateRepos.values.forEach { it.cancel() }

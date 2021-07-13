@@ -44,7 +44,7 @@ class ColdStateFlowRepoTest:BaseTest() {
     fun testColdStateFlowRepo() = runBlocking {
         val repo = Repo()
 
-        assertEquals(first, repo.stateflow.value)
+        assertEquals(first, repo.stateFlow.value)
         repo.useState { state ->
             assertEquals(first, state)
         }

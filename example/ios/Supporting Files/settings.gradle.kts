@@ -50,6 +50,10 @@ if (!(ext["exampleAsRoot"] as Boolean)) {
     include(":base")
     project(":base").projectDir = file("../../../base")
 
+    include(":bluetooth")
+    project(":bluetooth").projectDir = file("../../../bluetooth")
+
+
     include(":date-time-picker")
     project(":date-time-picker").projectDir = file("../../../date-time-picker")
 

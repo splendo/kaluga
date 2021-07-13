@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
@@ -38,12 +39,10 @@ fun <R:T, T, OO:ObservableOptional<R>> observeFlow(
     flow: Flow<T>) {
 
     observation.onFirstObservation = {
-        val flow = flow
-        val observation = observation
         coroutineScope.launch(context) {
-            flow.collect {
+            flow.flowOn(observation.context).collect { // shortcut to reuse the scope we are collecting in
                 @Suppress("UNCHECKED_CAST") // should always be correct
-                observation.observedValue = Value(it)
+                observation.setValueUnconfined(Value(it))
             }
         }
     }
