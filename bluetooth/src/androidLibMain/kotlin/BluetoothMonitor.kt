@@ -31,8 +31,8 @@ actual class BluetoothMonitor internal constructor(
     private val applicationContext: Context
 ) {
 
-    class Builder {
-        fun create() = BluetoothMonitor(
+    actual class Builder actual constructor() {
+        actual fun create() = BluetoothMonitor(
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
             applicationContext = ApplicationHolder.applicationContext
         )

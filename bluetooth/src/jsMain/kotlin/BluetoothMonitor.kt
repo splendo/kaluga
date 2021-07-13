@@ -21,6 +21,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 actual class BluetoothMonitor {
+
+    actual class Builder actual constructor() {
+        actual fun create() = BluetoothMonitor()
+    }
+
     private val _isEnabled = MutableStateFlow(false)
     actual val isEnabled = _isEnabled.asStateFlow()
 
