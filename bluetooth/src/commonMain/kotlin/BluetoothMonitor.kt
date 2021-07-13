@@ -20,6 +20,11 @@ package com.splendo.kaluga.bluetooth
 import kotlinx.coroutines.flow.StateFlow
 
 expect class BluetoothMonitor {
+
+    class Builder constructor() {
+        fun create(): BluetoothMonitor
+    }
+
     val isEnabled: StateFlow<Boolean>
 
     fun startMonitoring()
