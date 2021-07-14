@@ -15,17 +15,18 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.example.beacons
 
-import com.splendo.kaluga.bluetooth.device.Identifier
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
 
-typealias BeaconID = Eddystone.UID
-typealias TxPower = Int
-
-data class BeaconInfo(
-    var identifier: Identifier,
-    var beaconID: BeaconID,
-    var txPower: TxPower
-)
-
-fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
+object BeaconsBinding {
+    @ExperimentalStdlibApi
+    @BindingAdapter("beacons")
+    @JvmStatic
+    fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
+        val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
+        beaconsAdapter.beacons = beacons ?: emptyList()
+    }
+}

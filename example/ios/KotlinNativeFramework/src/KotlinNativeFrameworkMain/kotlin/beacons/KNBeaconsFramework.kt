@@ -15,17 +15,15 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.example.ios.beacons
 
-import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.beacons.BeaconService
+import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import kotlinx.coroutines.MainScope
 
-typealias BeaconID = Eddystone.UID
-typealias TxPower = Int
-
-data class BeaconInfo(
-    var identifier: Identifier,
-    var beaconID: BeaconID,
-    var txPower: TxPower
-)
-
-fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
+class KNBeaconsFramework {
+    val mainScope = MainScope()
+    val service = BeaconService(
+        BluetoothBuilder().create(coroutineScope = mainScope),
+    )
+}

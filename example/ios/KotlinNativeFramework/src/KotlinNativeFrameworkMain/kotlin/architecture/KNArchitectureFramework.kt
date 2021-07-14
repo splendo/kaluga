@@ -26,6 +26,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
+import com.splendo.kaluga.beacons.BeaconService
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -34,6 +35,7 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.DeviceDetailsSpecRow
@@ -100,7 +102,7 @@ class KNArchitectureFramework {
                         FeatureListNavigationAction.System -> "showSystem"
                         FeatureListNavigationAction.Links -> "showLinks"
                         FeatureListNavigationAction.Bluetooth -> "showBluetooth"
-
+                        FeatureListNavigationAction.Beacons -> "showBeacons"
                     })
             })
     }
@@ -142,6 +144,11 @@ class KNArchitectureFramework {
 
     fun createBluetoothDeviceDetailsViewModel(identifier: Identifier, bluetooth: Bluetooth): BluetoothDeviceDetailViewModel {
         return BluetoothDeviceDetailViewModel(bluetooth, identifier)
+    }
+
+    @ExperimentalStdlibApi
+    fun createBeaconsListViewModel(parent: UIViewController, service: BeaconService): BeaconsListViewModel {
+        return BeaconsListViewModel(service)
     }
 
     fun createPermissionListViewModel(parent: UIViewController, createPermissionViewController: (Permission) -> UIViewController): PermissionsListViewModel {

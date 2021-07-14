@@ -19,6 +19,7 @@ package com.splendo.kaluga.beacons
 
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -43,10 +44,10 @@ class BeaconService (
         val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
-        return BeaconInfo(frame.uid, frame.txPower)
+        return BeaconInfo(device.identifier, frame.uid, frame.txPower)
     }
 }
 
-operator fun Flow<List<BeaconInfo>>.get(beaconId: String) = map { beacons ->
-    beacons.firstOrNull { it.fullID() == beaconId }
+operator fun Flow<List<BeaconInfo>>.get(identifier: Identifier) = map { beacons ->
+    beacons.firstOrNull { it.identifier == identifier }
 }

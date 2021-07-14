@@ -15,9 +15,7 @@
 
  */
 
-import com.splendo.kaluga.beacons.BeaconInfo
 import com.splendo.kaluga.beacons.Eddystone
-import com.splendo.kaluga.beacons.fullID
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -46,10 +44,8 @@ class BeaconServiceTest {
     @Test
     fun validEddystoneBeaconCreated() {
         val frame = Eddystone.unpack(EddystoneUIDFrame) ?: fail("Invalid Eddystone frame")
-        val info = BeaconInfo(frame.uid, frame.txPower)
-        assertEquals("f7826da6bc5b71e0893e", info.beaconID.namespace)
-        assertEquals("4e4161460102", info.beaconID.instance)
-        assertEquals("f7826da6bc5b71e0893e4e4161460102", info.fullID())
-        assertEquals(-36, info.txPower)
+        assertEquals("f7826da6bc5b71e0893e", frame.uid.namespace)
+        assertEquals("4e4161460102", frame.uid.instance)
+        assertEquals(-36, frame.txPower)
     }
 }
