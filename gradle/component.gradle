@@ -13,11 +13,13 @@ kotlin {
         configure([]) {
             tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+                freeCompilerArgs += [
+                        '-Xopt-in=kotlin.ExperimentalUnsignedTypes',
+                        '-XXLanguage:+InlineClasses'
+                ]
             }
         }
     }
-
 
     android("androidLib") {
 
