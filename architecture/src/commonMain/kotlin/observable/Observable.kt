@@ -381,7 +381,7 @@ interface DefaultObservable<R:T?, T>:BasicObservable<R, T?, Value<R>>, DefaultIn
 
 interface DefaultSubject<R:T?, T>:BasicSubject<R, T?, Value<R>>, DefaultObservable<R, T>, MutableDefaultInitialized<R, T?>
 
-interface WithState<T> {
+expect interface WithState<T> {
     val stateFlow:StateFlow<T>
     val valueDelegate:ReadOnlyProperty<Any?, T>
 }
@@ -458,21 +458,26 @@ abstract class BaseDefaultObservable<R:T?, T>(
 /**
  * A Subject is an [BaseObservable] with a value that can be changed using the [post] method from the [Postable] interface
  */
-abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>>(
+abstract class AbstractBaseSubject<R:T, T, OO : ObservableOptional<R>>(
     observation: Observation<R, T, OO>,
     private val stateFlowToBind:()->StateFlow<R?>)
     : BaseObservable<R, T, OO>(observation), BasicSubject<R, T, OO> {
 
     final override fun bind(coroutineScope: CoroutineScope) = bind(coroutineScope, observation.context)
-    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+    override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         coroutineScope.launch(context) {
             stateFlowToBind().collect { set(it as T) }
         }
     }
 }
 
+expect abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>>(
+    observation: Observation<R, T, OO>,
+    stateFlowToBind:()->StateFlow<R?>)
+    : AbstractBaseSubject<R, T, OO>
+
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class BaseInitializedSubject<T>(override val observation: ObservationInitialized<T>)
+abstract class AbstractBaseInitializedSubject<T>(override val observation: ObservationInitialized<T>)
     : BaseSubject<T, T, Value<T>>(
         observation,
         { observation.stateFlow }
@@ -489,8 +494,15 @@ abstract class BaseInitializedSubject<T>(override val observation: ObservationIn
         observation.currentObserved
 }
 
+expect abstract class BaseInitializedSubject<T>(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T> {
+    constructor(
+        initialValue: Value<T>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    )
+}
+
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
-abstract class BaseUninitializedSubject<T>(
+abstract class AbstractBaseUninitializedSubject<T>(
     override val observation: ObservationUninitialized<T>
 ) : BaseSubject<T, T, ObservableOptional<T>> (
     observation,
@@ -502,6 +514,10 @@ abstract class BaseUninitializedSubject<T>(
         observation.observedValue
 
 }
+
+expect abstract class BaseUninitializedSubject<T>(
+    observation: ObservationUninitialized<T>
+): AbstractBaseUninitializedSubject<T>
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE")
 abstract class BaseUninitializedObservable<T>(
@@ -552,7 +568,7 @@ class SimpleDefaultSubject<R:T?, T>(
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate
-abstract class BaseDefaultSubject<R:T?, T>(
+abstract class AbstractBaseDefaultSubject<R:T?, T>(
     override val observation: ObservationDefault<R, T?>
 ) : BaseSubject<R, T?, Value<R>>(
     observation,
@@ -569,4 +585,15 @@ abstract class BaseDefaultSubject<R:T?, T>(
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): Value<R> =
         observation.currentObserved
+}
+
+expect abstract class BaseDefaultSubject<R:T?, T>(
+    observation: ObservationDefault<R, T?>
+) : AbstractBaseDefaultSubject<R, T> {
+
+    constructor(
+        defaultValue: Value<R>,
+        initialValue: Value<T?>,
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate
+    )
 }
