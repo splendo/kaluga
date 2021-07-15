@@ -42,7 +42,7 @@ actual class LocationMonitor(
             println("LocationMonitor: arrived in onReceived")
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
                 println("LocationMonitor: intent?.action == LocationManager.MODE_CHANGED_ACTION")
-                _isEnabled.value = isPoweredOn
+                _isEnabled.value = isLocationEnabled
             }
         }
     }
@@ -50,10 +50,10 @@ actual class LocationMonitor(
     private val locationManager: LocationManager =
         applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    private val isPoweredOn: Boolean
+    private val isLocationEnabled: Boolean
         get() = LocationManagerCompat.isLocationEnabled(locationManager)
 
-    private val _isEnabled = MutableStateFlow(isPoweredOn)
+    private val _isEnabled = MutableStateFlow(isLocationEnabled)
     override val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
 
     override fun startMonitoring() {

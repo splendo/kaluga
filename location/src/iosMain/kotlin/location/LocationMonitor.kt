@@ -33,7 +33,7 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
         )
     }
 
-    private val isPoweredOn: Boolean
+    private val isLocationEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
 
     private val _isEnabled = MutableStateFlow(false)
@@ -50,7 +50,7 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
     }
 
     private fun updateState() {
-        _isEnabled.value = isPoweredOn
+        _isEnabled.value = isLocationEnabled
     }
 }
 
