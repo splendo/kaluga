@@ -36,17 +36,11 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
     private val isPoweredOn: Boolean
         get() = locationManager.locationServicesEnabled()
 
-    private val locationManagerDelegate = object : NSObject(), CLLocationManagerDelegateProtocol {
-        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            updateState()
-        }
-    }
-
     private val _isEnabled = MutableStateFlow(false)
     override val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
 
     override fun startMonitoring() {
-        locationManager.delegate = locationManagerDelegate
+        locationManager.delegate = LocationManagerDelegate(::updateState)
         updateState()
     }
 
@@ -57,5 +51,11 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
 
     private fun updateState() {
         _isEnabled.value = isPoweredOn
+    }
+}
+
+class LocationManagerDelegate(private val updateState: () -> Unit) : NSObject(), CLLocationManagerDelegateProtocol {
+    override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
+        updateState()
     }
 }
