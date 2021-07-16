@@ -23,7 +23,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":location-permissions", ""))
+                api(project(":permissions", ""))
                 api(project(":logging", ""))
                 api(project(":base", ""))
             }
