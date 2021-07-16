@@ -25,6 +25,7 @@ import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,15 +34,19 @@ actual class LocationMonitor(
     private val applicationContext: Context
 ) : ServiceMonitor {
 
+    private companion object {
+        private const val TAG = "LocationMonitor"
+    }
+
     actual class Builder {
         actual fun create() = LocationMonitor(applicationContext = ApplicationHolder.applicationContext)
     }
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            println("LocationMonitor: arrived in onReceived")
+            debug(TAG) { "LocationMonitor: onReceived new intent" }
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
-                println("LocationMonitor: intent?.action == LocationManager.MODE_CHANGED_ACTION")
+                debug(TAG) { "isLocationEnabled = $isLocationEnabled" }
                 _isEnabled.value = isLocationEnabled
             }
         }
