@@ -24,6 +24,7 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.withBundle
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -141,12 +142,24 @@ actual class LocationManager(
 actual class LocationStateRepoBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
     private val locationManager: CLLocationManager = CLLocationManager(),
-    private val permissions: Permissions = Permissions(PermissionsBuilder().apply {
-        registerLocationPermission(/*bundle*/) //FIXME: It should be possible to use bundle
-                                                                                  }, Dispatchers.Main)
+    private val permissions: Permissions = Permissions(PermissionsBuilder.withBundle(bundle).apply {
+        registerLocationPermission()
+    }, Dispatchers.Main)
 ) : LocationStateRepo.Builder {
 
-    override fun create(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
-        return LocationStateRepo(locationPermission, permissions, autoRequestPermission, autoEnableLocations, LocationManager.Builder(locationManager), coroutineContext)
+    override fun create(
+        locationPermission: LocationPermission,
+        autoRequestPermission: Boolean,
+        autoEnableLocations: Boolean,
+        coroutineContext: CoroutineContext
+    ): LocationStateRepo {
+        return LocationStateRepo(
+            locationPermission,
+            permissions,
+            autoRequestPermission,
+            autoEnableLocations,
+            LocationManager.Builder(locationManager),
+            coroutineContext
+        )
     }
 }

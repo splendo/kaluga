@@ -36,7 +36,8 @@ interface BasePermissionsBuilder
  * Builder for providing the proper [PermissionManager] for each [Permission]
  */
 typealias RepoFactory = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
-open class PermissionsBuilder {
+open class PermissionsBuilder(internal val context: Any? = null) {
+    companion object Factory
 
     private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder>()
 
