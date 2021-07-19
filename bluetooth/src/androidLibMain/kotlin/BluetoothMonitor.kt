@@ -23,13 +23,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.base.ServiceMonitor
 
 actual class BluetoothMonitor internal constructor(
     private val bluetoothAdapter: BluetoothAdapter?,
     private val applicationContext: Context
-) {
+) : ServiceMonitor()  {
 
     actual class Builder actual constructor() {
         actual fun create() = BluetoothMonitor(
@@ -46,13 +45,10 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
-    private val isPoweredOn: Boolean
+    override val isServiceEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled == true
 
-    private val _isEnabled = MutableStateFlow(isPoweredOn)
-    actual val isEnabled = _isEnabled.asStateFlow()
-
-    actual fun startMonitoring() {
+    override fun startMonitoring() {
         if (bluetoothAdapter == null) return
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
@@ -60,12 +56,12 @@ actual class BluetoothMonitor internal constructor(
         )
     }
 
-    actual fun stopMonitoring() {
+    override fun stopMonitoring() {
         if (bluetoothAdapter == null) return
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
     }
 
     private fun updateEnabledState() {
-        _isEnabled.value = isPoweredOn
+        _isEnabled.value = isServiceEnabled
     }
 }
