@@ -32,11 +32,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-// Fixme: This test is in base but has reference on storage permission
-/*
-class PermissionStateTest : FlowTest<PermissionState<MicrophonePermission>, MockPermissionStateRepo>() {
+object TestPermission: Permission()
 
-    override val filter:(Flow<PermissionState<MicrophonePermission>>) -> (Flow<PermissionState<MicrophonePermission>>) = {
+class PermissionStateTest : FlowTest<PermissionState<TestPermission>, MockPermissionStateRepo>() {
+
+    override val filter:(Flow<PermissionState<TestPermission>>) -> (Flow<PermissionState<TestPermission>>) = {
         it.filterOnlyImportant()
     }
 
@@ -60,7 +60,7 @@ class PermissionStateTest : FlowTest<PermissionState<MicrophonePermission>, Mock
 
     @Test
     fun testRequestPermission() = testWithFlow { permissionStateRepo ->
-        val denied: CompletableDeferred<Requestable<MicrophonePermission>> = CompletableDeferred()
+        val denied: CompletableDeferred<Requestable<TestPermission>> = CompletableDeferred()
         test {
             assertTrue(it is Requestable)
             denied.complete(it)
@@ -85,7 +85,7 @@ class PermissionStateTest : FlowTest<PermissionState<MicrophonePermission>, Mock
         permissionStateRepo.permissionManager.initialState = PermissionState.Allowed()
 
         test {
-            assertTrue(it is PermissionState.Allowed<MicrophonePermission>)
+            assertTrue(it is PermissionState.Allowed<TestPermission>)
         }
         action {
             permissionStateRepo.takeAndChangeState { state ->
@@ -129,14 +129,14 @@ class PermissionStateTest : FlowTest<PermissionState<MicrophonePermission>, Mock
 
 }
 
-class MockPermissionStateRepo : PermissionStateRepo<MicrophonePermission>() {
+class MockPermissionStateRepo : PermissionStateRepo<TestPermission>() {
 
     override val permissionManager = MockPermissionManager(this)
 }
 
-class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<MicrophonePermission>(mockPermissionRepo) {
+class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<TestPermission>(mockPermissionRepo) {
 
-    var initialState: PermissionState<MicrophonePermission> = Requestable()
+    var initialState: PermissionState<TestPermission> = Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()
@@ -146,7 +146,7 @@ class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : Permi
         hasRequestedPermission.complete()
     }
 
-    override suspend fun initializeState(): PermissionState<MicrophonePermission> {
+    override suspend fun initializeState(): PermissionState<TestPermission> {
         return initialState
     }
 
@@ -158,4 +158,3 @@ class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : Permi
         hasStoppedMonitoring.complete()
     }
 }
-*/
