@@ -23,14 +23,14 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                api(project(":permissions", ""))
-                api(project(":logging", ""))
-                api(project(":base", ""))
+                implementation(project(":permissions", ""))
+                implementation(project(":logging", ""))
+                implementation(project(":base", ""))
             }
         }
         commonTest {
             dependencies {
-                api(project(":test-utils", ""))
+                implementation(project(":test-utils", ""))
             }
         }
     }
