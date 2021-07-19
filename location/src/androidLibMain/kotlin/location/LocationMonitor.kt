@@ -26,13 +26,10 @@ import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 actual class LocationMonitor(
     private val applicationContext: Context
-) : ServiceMonitor {
+) : ServiceMonitor() {
 
     private companion object {
         private const val TAG = "LocationMonitor"
@@ -46,20 +43,23 @@ actual class LocationMonitor(
         override fun onReceive(context: Context?, intent: Intent?) {
             debug(TAG) { "LocationMonitor: onReceived new intent" }
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
-                debug(TAG) { "isLocationEnabled = $isLocationEnabled" }
-                _isEnabled.value = isLocationEnabled
+                debug(TAG) { "isLocationEnabled = $isServiceEnabled" }
+                _isEnabled.value = isServiceEnabled
             }
         }
     }
 
-    private val locationManager: LocationManager =
-        applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager: LocationManager? =
+        applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
 
-    private val isLocationEnabled: Boolean
-        get() = LocationManagerCompat.isLocationEnabled(locationManager)
-
-    private val _isEnabled = MutableStateFlow(isLocationEnabled)
-    override val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
+    override val isServiceEnabled: Boolean
+        get() {
+            return if (locationManager == null) {
+                false
+            } else {
+                LocationManagerCompat.isLocationEnabled(locationManager)
+            }
+        }
 
     override fun startMonitoring() {
         applicationContext.registerReceiver(

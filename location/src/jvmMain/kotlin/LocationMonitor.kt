@@ -18,17 +18,15 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
-actual class LocationMonitor : ServiceMonitor {
+actual class LocationMonitor : ServiceMonitor() {
 
     actual class Builder actual constructor() {
         actual fun create(): LocationMonitor = LocationMonitor()
     }
 
-    private val _isEnabled = MutableStateFlow(false)
-    override val isEnabled = _isEnabled.asStateFlow()
+    override val isServiceEnabled: Boolean
+        get() = TODO("Not yet implemented")
 
     override fun startMonitoring() { }
     override fun stopMonitoring() { }

@@ -19,14 +19,11 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
-actual class LocationMonitor(private val locationManager: CLLocationManager) : ServiceMonitor {
+actual class LocationMonitor(private val locationManager: CLLocationManager) : ServiceMonitor() {
 
     private companion object {
         private const val TAG = "LocationMonitor"
@@ -48,11 +45,8 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
     }
 
 
-    private val isLocationEnabled: Boolean
+    override val isServiceEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
-
-    private val _isEnabled = MutableStateFlow(isLocationEnabled)
-    override val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
 
     override fun startMonitoring() {
         locationManager.delegate = LocationManagerDelegate(::updateState)
@@ -65,7 +59,7 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
     }
 
     private fun updateState() {
-        debug(TAG) { "updateState isLocationEnabled = $isLocationEnabled" }
-        _isEnabled.value = isLocationEnabled
+        debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
+        _isEnabled.value = isServiceEnabled
     }
 }
