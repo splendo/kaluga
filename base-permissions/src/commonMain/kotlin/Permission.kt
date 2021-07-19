@@ -53,7 +53,6 @@ open class PermissionsBuilder(val context: Any? = null) {
     operator fun get(permission: Permission) : BasePermissionsBuilder =
         builders[permission::class] ?: throw Error("The Builder for $permission was not registered")
 
-    // FIXME: Repos factory probably should move somewhere else. Refactor it after separation
     private val repoFactories = IsoMutableMap<KClassifier, RepoFactory>()
     fun registerRepoFactory(permission: KClassifier, repoFactory: RepoFactory) {
         repoFactories[permission] = repoFactory
