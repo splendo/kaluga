@@ -34,8 +34,7 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
-//FIXME: It uses storage but placed in base
-/*
+
 class AndroidPermissionsManagerTest : BaseTest() {
 
     companion object {
@@ -51,8 +50,8 @@ class AndroidPermissionsManagerTest : BaseTest() {
     lateinit var packageInfo: PackageInfo
 
     @Mock
-    lateinit var permissionsManager: PermissionManager<StoragePermission>
-    private lateinit var androidPermissionsManager: AndroidPermissionsManager<StoragePermission>
+    lateinit var permissionsManager: PermissionManager<DummyPermission>
+    private lateinit var androidPermissionsManager: AndroidPermissionsManager<DummyPermission>
 
     @BeforeTest
     override fun beforeTest() {
@@ -124,4 +123,3 @@ class AndroidPermissionsManagerTest : BaseTest() {
         verify(permissionsManager).revokePermission(true)
     }
 }
-*/

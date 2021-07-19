@@ -32,11 +32,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-object TestPermission: Permission()
-
-class PermissionStateTest : FlowTest<PermissionState<TestPermission>, MockPermissionStateRepo>() {
-
-    override val filter:(Flow<PermissionState<TestPermission>>) -> (Flow<PermissionState<TestPermission>>) = {
+class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermissionStateRepo>() {
+    override val filter:(Flow<PermissionState<DummyPermission>>) -> (Flow<PermissionState<DummyPermission>>) = {
         it.filterOnlyImportant()
     }
 
@@ -60,7 +57,7 @@ class PermissionStateTest : FlowTest<PermissionState<TestPermission>, MockPermis
 
     @Test
     fun testRequestPermission() = testWithFlow { permissionStateRepo ->
-        val denied: CompletableDeferred<Requestable<TestPermission>> = CompletableDeferred()
+        val denied: CompletableDeferred<Requestable<DummyPermission>> = CompletableDeferred()
         test {
             assertTrue(it is Requestable)
             denied.complete(it)
@@ -85,7 +82,7 @@ class PermissionStateTest : FlowTest<PermissionState<TestPermission>, MockPermis
         permissionStateRepo.permissionManager.initialState = PermissionState.Allowed()
 
         test {
-            assertTrue(it is PermissionState.Allowed<TestPermission>)
+            assertTrue(it is PermissionState.Allowed<DummyPermission>)
         }
         action {
             permissionStateRepo.takeAndChangeState { state ->
@@ -129,14 +126,14 @@ class PermissionStateTest : FlowTest<PermissionState<TestPermission>, MockPermis
 
 }
 
-class MockPermissionStateRepo : PermissionStateRepo<TestPermission>() {
+class MockPermissionStateRepo : PermissionStateRepo<DummyPermission>() {
 
     override val permissionManager = MockPermissionManager(this)
 }
 
-class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<TestPermission>(mockPermissionRepo) {
+class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
 
-    var initialState: PermissionState<TestPermission> = Requestable()
+    var initialState: PermissionState<DummyPermission> = Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()
@@ -146,7 +143,7 @@ class MockPermissionManager(mockPermissionRepo: MockPermissionStateRepo) : Permi
         hasRequestedPermission.complete()
     }
 
-    override suspend fun initializeState(): PermissionState<TestPermission> {
+    override suspend fun initializeState(): PermissionState<DummyPermission> {
         return initialState
     }
 
