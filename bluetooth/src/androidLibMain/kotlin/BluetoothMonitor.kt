@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.logging.warn
 
 actual class BluetoothMonitor internal constructor(
     private val bluetoothAdapter: BluetoothAdapter?,
@@ -49,16 +50,17 @@ actual class BluetoothMonitor internal constructor(
         get() = bluetoothAdapter?.isEnabled == true
 
     override fun startMonitoring() {
-        if (bluetoothAdapter == null) return
+        if (bluetoothAdapter == null) warn("BluetoothMonitor") { "bluetoothAdapter is null" }
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
+        updateEnabledState()
     }
 
     override fun stopMonitoring() {
-        if (bluetoothAdapter == null) return
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
+        updateEnabledState()
     }
 
     private fun updateEnabledState() {

@@ -32,12 +32,15 @@ actual class BluetoothMonitor internal constructor(
         actual fun create() = BluetoothMonitor(centralManager = CBCentralManager())
     }
 
-    private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
+    internal class CentralManagerDelegate(
+        private val updateEnabledState: () -> Unit
+    ) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()
         }
     }
 
+    private val centralManagerDelegate = CentralManagerDelegate(::updateEnabledState)
     override val isServiceEnabled: Boolean
         get() = centralManager.state == CBCentralManagerStatePoweredOn
 
