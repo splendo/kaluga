@@ -51,7 +51,7 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
     private val isLocationEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
 
-    private val _isEnabled = MutableStateFlow(false)
+    private val _isEnabled = MutableStateFlow(isLocationEnabled)
     override val isEnabled: StateFlow<Boolean> = _isEnabled.asStateFlow()
 
     override fun startMonitoring() {
