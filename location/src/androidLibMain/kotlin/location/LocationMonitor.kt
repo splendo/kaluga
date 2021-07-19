@@ -28,7 +28,8 @@ import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.logging.debug
 
 actual class LocationMonitor(
-    private val applicationContext: Context
+    private val applicationContext: Context,
+    private val locationManager: LocationManager?
 ) : ServiceMonitor() {
 
     private companion object {
@@ -36,7 +37,11 @@ actual class LocationMonitor(
     }
 
     actual class Builder {
-        actual fun create() = LocationMonitor(applicationContext = ApplicationHolder.applicationContext)
+        actual fun create() = LocationMonitor(
+            applicationContext = ApplicationHolder.applicationContext,
+            locationManager = ApplicationHolder.applicationContext
+                .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        )
     }
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
@@ -48,9 +53,6 @@ actual class LocationMonitor(
             }
         }
     }
-
-    private val locationManager: LocationManager? =
-        applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
 
     override val isServiceEnabled: Boolean
         get() {
