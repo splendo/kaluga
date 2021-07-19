@@ -18,5 +18,13 @@
 package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
+internal actual fun PermissionsBuilder.registerCameraPermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is NSBundle -> CameraPermissionManagerBuilder(context)
+            else -> CameraPermissionManagerBuilder()
+        },
+        permission = CameraPermission::class
+    )

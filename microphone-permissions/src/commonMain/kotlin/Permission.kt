@@ -26,11 +26,11 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 object MicrophonePermission : Permission()
 
 fun PermissionsBuilder.registerMicrophonePermission() =
-    registerMicrophonePermissionBuilder().also { builder ->
+    registerMicrophonePermissionBuilder(context).also { builder ->
         registerRepoFactory(MicrophonePermission::class) { _, coroutineContext ->
             MicrophonePermissionStateRepo(builder as BaseMicrophonePermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerMicrophonePermissionBuilder() : MicrophonePermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Any?) : MicrophonePermissionManagerBuilder
 

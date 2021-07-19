@@ -20,5 +20,11 @@ package com.splendo.kaluga.permissions.microphone
 import android.content.Context
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
-fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Context)  = register(builder = MicrophonePermissionManagerBuilder(context), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is Context -> MicrophonePermissionManagerBuilder(context)
+            else -> MicrophonePermissionManagerBuilder()
+        },
+        permission = MicrophonePermission::class
+    )

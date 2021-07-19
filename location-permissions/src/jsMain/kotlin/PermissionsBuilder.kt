@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
+internal actual fun PermissionsBuilder.registerLocationPermissionBuilder(context: Any?) = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)

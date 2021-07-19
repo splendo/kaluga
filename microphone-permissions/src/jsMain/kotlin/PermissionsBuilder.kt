@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Any?) = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)

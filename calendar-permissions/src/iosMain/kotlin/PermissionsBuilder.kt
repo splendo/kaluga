@@ -18,5 +18,13 @@
 package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder() = register(builder = CalendarPermissionManagerBuilder(), permission = CalendarPermission::class)
+internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is NSBundle -> CalendarPermissionManagerBuilder(context)
+            else -> CalendarPermissionManagerBuilder()
+        },
+        permission = CalendarPermission::class
+    )

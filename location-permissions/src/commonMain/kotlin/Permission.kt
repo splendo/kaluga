@@ -28,10 +28,10 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 data class LocationPermission(val background: Boolean = false, val precise: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerLocationPermission()  =
-    registerLocationPermissionBuilder().also { builder ->
+    registerLocationPermissionBuilder(context).also { builder ->
         registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
             LocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerLocationPermissionBuilder() : LocationPermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerLocationPermissionBuilder(context: Any?) : LocationPermissionManagerBuilder

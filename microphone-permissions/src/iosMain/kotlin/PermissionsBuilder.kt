@@ -18,5 +18,13 @@
 package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder() = register(builder = MicrophonePermissionManagerBuilder(), permission = MicrophonePermission::class)
+internal actual fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is NSBundle -> MicrophonePermissionManagerBuilder(context)
+            else -> MicrophonePermissionManagerBuilder()
+        },
+        permission = MicrophonePermission::class
+    )

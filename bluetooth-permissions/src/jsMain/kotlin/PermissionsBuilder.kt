@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
+internal actual fun PermissionsBuilder.registerBluetoothBuilder(context: Any?) = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)

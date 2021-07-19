@@ -20,5 +20,10 @@ package com.splendo.kaluga.permissions.bluetooth
 import android.content.Context
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
-fun PermissionsBuilder.registerBluetoothBuilder(context: Context) = register(builder = BluetoothPermissionManagerBuilder(context), permission = BluetoothPermission::class)
+internal actual fun PermissionsBuilder.registerBluetoothBuilder(context: Any?)  = register(
+    builder = when (context) {
+        is Context -> BluetoothPermissionManagerBuilder(context)
+        else -> BluetoothPermissionManagerBuilder()
+    },
+    permission = BluetoothPermission::class
+)

@@ -26,12 +26,12 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 object CameraPermission : Permission()
 
 fun PermissionsBuilder.registerCameraPermission() =
-    registerCameraPermissionBuilder().also { builder ->
+    registerCameraPermissionBuilder(context).also { builder ->
         registerRepoFactory(CameraPermission::class) { _, coroutineContext ->
             CameraPermissionStateRepo(builder as BaseCameraPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerCameraPermissionBuilder() : CameraPermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerCameraPermissionBuilder(context: Any?) : CameraPermissionManagerBuilder
 
 

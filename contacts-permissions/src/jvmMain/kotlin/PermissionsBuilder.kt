@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder(context: Any?) = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)

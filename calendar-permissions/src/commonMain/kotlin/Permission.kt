@@ -27,10 +27,10 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerCalendarPermission() =
-    registerCalendarPermissionBuilder().also { builder ->
+    registerCalendarPermissionBuilder(context).also { builder ->
         registerRepoFactory(CalendarPermission::class) { permission, coroutineContext ->
             CalendarPermissionStateRepo(permission as CalendarPermission, builder as BaseCalendarPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerCalendarPermissionBuilder() : CalendarPermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Any?) : CalendarPermissionManagerBuilder

@@ -20,6 +20,12 @@ package com.splendo.kaluga.permissions.contacts
 import android.content.Context
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
-fun PermissionsBuilder.registerContactsPermissionBuilder(context: Context) = register(builder = ContactsPermissionManagerBuilder(context), permission = ContactsPermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is Context -> ContactsPermissionManagerBuilder(context)
+            else -> ContactsPermissionManagerBuilder()
+        },
+        permission = ContactsPermission::class
+    )
 

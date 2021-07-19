@@ -21,5 +21,11 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 import platform.Foundation.NSBundle
 
 
-internal actual fun PermissionsBuilder.registerLocationPermissionBuilder() = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
-fun PermissionsBuilder.registerLocationPermissionBuilder(bundle: NSBundle) = register(builder = LocationPermissionManagerBuilder(bundle), permission = LocationPermission::class)
+internal actual fun PermissionsBuilder.registerLocationPermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is NSBundle -> LocationPermissionManagerBuilder(context)
+            else -> LocationPermissionManagerBuilder()
+        },
+        permission = LocationPermission::class
+    )

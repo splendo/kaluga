@@ -27,10 +27,10 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerContactsPermission() =
-    registerContactsPermissionBuilder().also { builder ->
+    registerContactsPermissionBuilder(context).also { builder ->
         registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
             ContactsPermissionStateRepo(permission as  ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerContactsPermissionBuilder() : ContactsPermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerContactsPermissionBuilder(context: Any?) : ContactsPermissionManagerBuilder

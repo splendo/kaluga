@@ -18,5 +18,12 @@
 package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerBluetoothBuilder() = register(builder = BluetoothPermissionManagerBuilder(), permission = BluetoothPermission::class)
+internal actual fun PermissionsBuilder.registerBluetoothBuilder(context: Any?) = register(
+    builder = when (context) {
+        is NSBundle -> BluetoothPermissionManagerBuilder(context)
+        else -> BluetoothPermissionManagerBuilder()
+    },
+    permission = BluetoothPermission::class
+)

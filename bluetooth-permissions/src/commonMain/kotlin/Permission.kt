@@ -26,10 +26,10 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 object BluetoothPermission : Permission()
 
 fun PermissionsBuilder.registerBluetooth() =
-    registerBluetoothBuilder().also { builder ->
+    registerBluetoothBuilder(context).also { builder ->
         registerRepoFactory(BluetoothPermission::class) { _, coroutineContext ->
             BluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerBluetoothBuilder() : BluetoothPermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerBluetoothBuilder(context: Any?) : BluetoothPermissionManagerBuilder

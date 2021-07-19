@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerStoragePermissionBuilder() = register(builder = StoragePermissionManagerBuilder(), permission = StoragePermission::class)
+internal actual fun PermissionsBuilder.registerStoragePermissionBuilder(context: Any?) = register(builder = StoragePermissionManagerBuilder(), permission = StoragePermission::class)

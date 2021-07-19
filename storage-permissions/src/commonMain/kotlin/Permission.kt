@@ -28,11 +28,11 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 data class StoragePermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerStoragePermission() =
-    registerStoragePermissionBuilder().also { builder ->
+    registerStoragePermissionBuilder(context).also { builder ->
         registerRepoFactory(StoragePermission::class) { permission, coroutineContext ->
             StoragePermissionStateRepo(permission as StoragePermission, builder as BaseStoragePermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerStoragePermissionBuilder() : StoragePermissionManagerBuilder
+internal expect fun PermissionsBuilder.registerStoragePermissionBuilder(context: Any?) : StoragePermissionManagerBuilder
 

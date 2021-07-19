@@ -18,4 +18,4 @@ package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
 
-internal actual fun PermissionsBuilder.registerCameraPermissionBuilder() = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)
+internal actual fun PermissionsBuilder.registerCameraPermissionBuilder(context: Any?) = register(builder = CameraPermissionManagerBuilder(), permission = CameraPermission::class)

@@ -18,5 +18,13 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerContactsPermissionBuilder() = register(builder = ContactsPermissionManagerBuilder(), permission = ContactsPermission::class)
+internal actual fun PermissionsBuilder.registerContactsPermissionBuilder(context: Any?) =
+    register(
+        builder = when (context) {
+            is NSBundle -> ContactsPermissionManagerBuilder(context)
+            else -> ContactsPermissionManagerBuilder()
+        },
+        permission = ContactsPermission::class
+    )
