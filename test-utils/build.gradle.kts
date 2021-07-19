@@ -38,6 +38,14 @@ kotlin {
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":base-permissions", ""))
+                implementation(project(":camera-permissions", ""))
+                implementation(project(":contacts-permissions", ""))
+                implementation(project(":microphone-permissions", ""))
+                implementation(project(":notifications-permissions", ""))
+                implementation(project(":storage-permissions", ""))
+                implementation(project(":bluetooth-permissions", ""))
+                implementation(project(":location-permissions", ""))
+                implementation(project(":calendar-permissions", ""))
                 implementation("io.insert-koin:koin-core:" + ext["koin_version"])
             }
         }
