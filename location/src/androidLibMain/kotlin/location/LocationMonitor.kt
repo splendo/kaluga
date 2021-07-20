@@ -25,7 +25,6 @@ import android.location.LocationManager
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.logging.debug
 
 actual class LocationMonitor(
     private val applicationContext: Context,
@@ -46,10 +45,8 @@ actual class LocationMonitor(
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            debug(TAG) { "LocationMonitor: onReceived new intent" }
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
-                debug(TAG) { "isLocationEnabled = $isServiceEnabled" }
-                _isEnabled.value = isServiceEnabled
+                updateState()
             }
         }
     }
@@ -69,10 +66,12 @@ actual class LocationMonitor(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
+        updateState()
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
         applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
+        updateState()
     }
 }

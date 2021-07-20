@@ -59,9 +59,4 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
         locationManager.delegate = null
         updateState()
     }
-
-    private fun updateState() {
-        debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
-        _isEnabled.value = isServiceEnabled
-    }
 }
