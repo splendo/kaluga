@@ -22,15 +22,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 abstract class ServiceMonitor {
+
+    private companion object {
+        const val TAG = "ServiceMonitor"
+    }
+
     abstract val isServiceEnabled: Boolean
 
     protected val _isEnabled = MutableStateFlow(isServiceEnabled)
     val isEnabled = _isEnabled.asStateFlow()
 
     open fun startMonitoring() {
-        debug("ServiceMonitor") { "Start monitoring service state ($isEnabled)" }
+        debug(TAG) { "Start monitoring service state ($isEnabled)" }
     }
     open fun stopMonitoring() {
-        debug("ServiceMonitor") { "Stop monitoring service state" }
+        debug(TAG) { "Stop monitoring service state" }
     }
 }
