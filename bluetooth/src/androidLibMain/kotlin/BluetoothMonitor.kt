@@ -50,6 +50,7 @@ actual class BluetoothMonitor internal constructor(
         get() = bluetoothAdapter?.isEnabled == true
 
     override fun startMonitoring() {
+        super.startMonitoring()
         if (bluetoothAdapter == null) warn("BluetoothMonitor") { "bluetoothAdapter is null" }
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
@@ -59,6 +60,7 @@ actual class BluetoothMonitor internal constructor(
     }
 
     override fun stopMonitoring() {
+        super.stopMonitoring()
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
         updateEnabledState()
     }

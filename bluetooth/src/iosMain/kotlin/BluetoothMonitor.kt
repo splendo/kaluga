@@ -45,12 +45,14 @@ actual class BluetoothMonitor internal constructor(
         get() = centralManager.state == CBCentralManagerStatePoweredOn
 
     override fun startMonitoring() {
+        super.startMonitoring()
         debug("Current state is $isServiceEnabled")
         centralManager.delegate = centralManagerDelegate
         updateEnabledState()
     }
 
     override fun stopMonitoring() {
+        super.stopMonitoring()
         debug("Current state is $isServiceEnabled")
         centralManager.delegate = null
         updateEnabledState()

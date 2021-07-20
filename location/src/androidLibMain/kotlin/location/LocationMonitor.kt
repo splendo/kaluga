@@ -64,6 +64,7 @@ actual class LocationMonitor(
         }
 
     override fun startMonitoring() {
+        super.startMonitoring()
         applicationContext.registerReceiver(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
@@ -71,6 +72,7 @@ actual class LocationMonitor(
     }
 
     override fun stopMonitoring() {
+        super.stopMonitoring()
         applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
     }
 }
