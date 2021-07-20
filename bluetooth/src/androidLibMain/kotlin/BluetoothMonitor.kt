@@ -31,10 +31,14 @@ actual class BluetoothMonitor internal constructor(
 ) : ServiceMonitor()  {
 
     actual class Builder actual constructor() {
-        actual fun create() = BluetoothMonitor(
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
-            applicationContext = ApplicationHolder.applicationContext
-        )
+        actual fun create(): BluetoothMonitor {
+            val adapter = BluetoothAdapter.getDefaultAdapter()
+                ?: throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
+            return BluetoothMonitor(
+                bluetoothAdapter = adapter,
+                applicationContext = ApplicationHolder.applicationContext
+            )
+        }
     }
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
@@ -50,9 +54,6 @@ actual class BluetoothMonitor internal constructor(
 
     override fun startMonitoring() {
         super.startMonitoring()
-        if (bluetoothAdapter == null) {
-            throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
-        }
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
