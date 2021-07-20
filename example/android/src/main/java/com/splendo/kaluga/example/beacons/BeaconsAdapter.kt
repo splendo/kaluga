@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.databinding.BeaconItemBinding
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
 
-@ExperimentalStdlibApi
 class BeaconsAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<BeaconsAdapter.BeaconItemViewHolder>() {
 
     class BeaconItemViewHolder(val binding: BeaconItemBinding) : RecyclerView.ViewHolder(binding.root)

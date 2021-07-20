@@ -15,8 +15,9 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth.beacons
 
+import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -24,8 +25,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-class BeaconService (
-    private val bluetooth: Bluetooth
+class Beacons (
+    private val bluetooth: Bluetooth,
+    private val timeoutMs: Int = 10_000
 ) {
 
     fun startMonitoring() = bluetooth.startScanning()
@@ -37,14 +39,17 @@ class BeaconService (
     }
 
     fun isAnyInRange(beaconIds: List<String>) = beacons().map { list ->
-        list.any { beaconIds.contains(it.fullID()) }
+        list.filter { beaconIds.contains(it.fullID()) }
+            .any { it.seenMs() <= timeoutMs }
     }
 
     private suspend fun createBeaconWith(device: Device): BeaconInfo? {
         val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
         val data = serviceData[Eddystone.SERVICE_UUID] ?: return null
         val frame = Eddystone.unpack(data) ?: return null
-        return BeaconInfo(device.identifier, frame.uid, frame.txPower)
+        val rssi = device.map { it.rssi }.firstOrNull() ?: 0
+        val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: Date.now()
+        return BeaconInfo(device.identifier, frame.uid, frame.txPower, rssi, lastSeen)
     }
 }
 

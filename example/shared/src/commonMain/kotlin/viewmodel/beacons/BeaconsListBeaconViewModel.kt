@@ -20,15 +20,14 @@ package com.splendo.kaluga.example.shared.viewmodel.beacons
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.format
-import com.splendo.kaluga.beacons.BeaconInfo
-import com.splendo.kaluga.beacons.BeaconService
-import com.splendo.kaluga.beacons.get
+import com.splendo.kaluga.bluetooth.beacons.BeaconInfo
+import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.beacons.get
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.flow.map
 
-@ExperimentalStdlibApi
-class BeaconsListBeaconViewModel(identifier: Identifier, service: BeaconService) : BaseViewModel() {
+class BeaconsListBeaconViewModel(identifier: Identifier, service: Beacons) : BaseViewModel() {
 
     private val beacon = service.beacons()[identifier]
 

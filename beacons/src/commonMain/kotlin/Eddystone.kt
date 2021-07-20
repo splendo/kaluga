@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.uuidFrom

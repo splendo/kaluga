@@ -22,7 +22,7 @@ import android.app.Activity
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
-import com.splendo.kaluga.beacons.BeaconService
+import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -95,7 +95,7 @@ val utilitiesModule = module {
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
     single { BluetoothMonitor.Builder().create() }
-    single { BeaconService(get()) }
+    single { Beacons(get()) }
 }
 
 @ExperimentalStdlibApi

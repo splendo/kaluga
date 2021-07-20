@@ -15,17 +15,22 @@
 
  */
 
-package com.splendo.kaluga.beacons
+package com.splendo.kaluga.bluetooth.beacons
 
+import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.device.Identifier
 
 typealias BeaconID = Eddystone.UID
 typealias TxPower = Int
+typealias RSSI = Int
 
 data class BeaconInfo(
     var identifier: Identifier,
     var beaconID: BeaconID,
-    var txPower: TxPower
+    var txPower: TxPower,
+    var RSSI: RSSI,
+    var lastSeen: Date
 )
 
 fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
+fun BeaconInfo.seenMs() = Date.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch

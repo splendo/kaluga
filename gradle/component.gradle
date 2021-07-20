@@ -15,6 +15,7 @@ kotlin {
                 jvmTarget = "1.8"
                 freeCompilerArgs += [
                         '-Xopt-in=kotlin.ExperimentalUnsignedTypes',
+                        '-Xopt-in=kotlin.ExperimentalStdlibApi',
                         '-XXLanguage:+InlineClasses'
                 ]
             }
