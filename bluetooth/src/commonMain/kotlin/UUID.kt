@@ -28,6 +28,12 @@ expect fun uuidFrom(uuidString:String):UUID
 
 expect fun randomUUID():UUID
 
+/**
+ * The UUID format is the same for all services and characteristics and defined in bluetooth specification.
+ *
+ * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
+ * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
+ */
 fun uuidFromShort(uuidString: String): UUID = uuidFrom("0000$uuidString-0000-1000-8000-00805f9b34fb")
 internal fun String.isShortUUID() = length == 4
 
