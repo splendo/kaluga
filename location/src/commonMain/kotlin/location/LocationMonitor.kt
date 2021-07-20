@@ -15,16 +15,12 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
 
-actual class BluetoothMonitor : ServiceMonitor() {
-
-    actual class Builder actual constructor() {
-        actual fun create() = BluetoothMonitor()
+expect class LocationMonitor : ServiceMonitor {
+    class Builder constructor() {
+        fun create(): LocationMonitor
     }
-
-    override val isServiceEnabled: Boolean
-        get() = TODO("Not yet implemented")
 }

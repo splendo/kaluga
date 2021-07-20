@@ -17,9 +17,8 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
@@ -27,40 +26,40 @@ import platform.darwin.NSObject
 
 actual class BluetoothMonitor internal constructor(
     private val centralManager: CBCentralManager
-) {
+) : ServiceMonitor() {
 
     actual class Builder actual constructor() {
         actual fun create() = BluetoothMonitor(centralManager = CBCentralManager())
     }
 
-    private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
+    internal class CentralManagerDelegate(
+        private val updateEnabledState: () -> Unit
+    ) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()
         }
     }
 
-    private val isPoweredOn: Boolean
+    private val centralManagerDelegate = CentralManagerDelegate(::updateEnabledState)
+    override val isServiceEnabled: Boolean
         get() = centralManager.state == CBCentralManagerStatePoweredOn
 
-    private val _isEnabled = MutableStateFlow(isPoweredOn)
-    actual val isEnabled = _isEnabled.asStateFlow()
-
-    actual fun startMonitoring() {
-        debug("Start monitoring Bluetooth")
-        debug("Current state is $isPoweredOn")
+    override fun startMonitoring() {
+        super.startMonitoring()
+        debug("Current state is $isServiceEnabled")
         centralManager.delegate = centralManagerDelegate
         updateEnabledState()
     }
 
-    actual fun stopMonitoring() {
-        debug("Stop monitoring Bluetooth")
-        debug("Current state is $isPoweredOn")
+    override fun stopMonitoring() {
+        super.stopMonitoring()
+        debug("Current state is $isServiceEnabled")
         centralManager.delegate = null
         updateEnabledState()
     }
 
     private fun updateEnabledState() {
-        debug("Update monitoring Bluetooth state to $isPoweredOn")
-        _isEnabled.value = isPoweredOn
+        debug("Update monitoring Bluetooth state to $isServiceEnabled")
+        _isEnabled.value = isServiceEnabled
     }
 }

@@ -17,18 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.base.ServiceMonitor
 
-actual class BluetoothMonitor {
+actual class BluetoothMonitor : ServiceMonitor() {
 
     actual class Builder actual constructor() {
         actual fun create() = BluetoothMonitor()
     }
 
-    private val _isEnabled = MutableStateFlow(false)
-    actual val isEnabled = _isEnabled.asStateFlow()
-
-    actual fun startMonitoring() { }
-    actual fun stopMonitoring() { }
+    override val isServiceEnabled: Boolean
+        get() = TODO("Not yet implemented")
 }

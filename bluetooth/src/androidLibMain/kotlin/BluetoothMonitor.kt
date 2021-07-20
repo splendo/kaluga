@@ -23,19 +23,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.base.ServiceMonitor
 
 actual class BluetoothMonitor internal constructor(
-    private val bluetoothAdapter: BluetoothAdapter?,
+    private val bluetoothAdapter: BluetoothAdapter,
     private val applicationContext: Context
-) {
+) : ServiceMonitor()  {
 
     actual class Builder actual constructor() {
-        actual fun create() = BluetoothMonitor(
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter(),
-            applicationContext = ApplicationHolder.applicationContext
-        )
+        actual fun create(): BluetoothMonitor {
+            val adapter = BluetoothAdapter.getDefaultAdapter()
+                ?: throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
+            return BluetoothMonitor(
+                bluetoothAdapter = adapter,
+                applicationContext = ApplicationHolder.applicationContext
+            )
+        }
     }
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
@@ -46,26 +49,25 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
-    private val isPoweredOn: Boolean
+    override val isServiceEnabled: Boolean
         get() = bluetoothAdapter?.isEnabled == true
 
-    private val _isEnabled = MutableStateFlow(isPoweredOn)
-    actual val isEnabled = _isEnabled.asStateFlow()
-
-    actual fun startMonitoring() {
-        if (bluetoothAdapter == null) return
+    override fun startMonitoring() {
+        super.startMonitoring()
         applicationContext.registerReceiver(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
+        updateEnabledState()
     }
 
-    actual fun stopMonitoring() {
-        if (bluetoothAdapter == null) return
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
+        updateEnabledState()
     }
 
     private fun updateEnabledState() {
-        _isEnabled.value = isPoweredOn
+        _isEnabled.value = isServiceEnabled
     }
 }

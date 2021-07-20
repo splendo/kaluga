@@ -17,16 +17,11 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.StateFlow
+import com.splendo.kaluga.base.ServiceMonitor
 
-expect class BluetoothMonitor {
+expect class BluetoothMonitor : ServiceMonitor {
 
     class Builder constructor() {
         fun create(): BluetoothMonitor
     }
-
-    val isEnabled: StateFlow<Boolean>
-
-    fun startMonitoring()
-    fun stopMonitoring()
 }
