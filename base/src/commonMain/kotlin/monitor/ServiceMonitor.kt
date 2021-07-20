@@ -38,4 +38,9 @@ abstract class ServiceMonitor {
     open fun stopMonitoring() {
         debug(TAG) { "Stop monitoring service state" }
     }
+
+    protected fun updateState() {
+        debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
+        _isEnabled.value = isServiceEnabled
+    }
 }
