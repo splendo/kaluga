@@ -325,6 +325,7 @@
                         <segue destination="VPE-Hp-Qc9" kind="show" identifier="showLinks" id="KlM-G9-P6y"/>
                         <segue destination="NRf-rC-nl1" kind="show" identifier="showSystem" id="IT2-HT-9Hz"/>
                         <segue destination="SGP-dn-hxw" kind="show" identifier="showBluetooth" id="Z5V-Lj-mdM"/>
+                        <segue destination="2CB-DJ-Qmw" kind="show" identifier="showBeacons" id="jYU-Fd-PgO"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="L6W-Hz-iOT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1200,6 +1201,120 @@
             </objects>
             <point key="canvasLocation" x="2648" y="2496"/>
         </scene>
+        <!--Beacons View Controller-->
+         <scene sceneID="dvn-k6-9er">
+             <objects>
+                 <collectionViewController id="2CB-DJ-Qmw" customClass="BeaconsViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="cYv-YE-iqg">
+                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="inz-04-s6f">
+                             <size key="itemSize" width="414" height="128"/>
+                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                             <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
+                         </collectionViewFlowLayout>
+                         <cells>
+                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="BeaconsViewCell" id="fED-Jc-30d" customClass="BeaconsViewCell" customModule="Demo" customModuleProvider="target">
+                                 <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="SaY-ub-Wq9">
+                                     <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                     <subviews>
+                                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="IcG-Yk-e5u">
+                                             <rect key="frame" x="8" y="8" width="398" height="112"/>
+                                             <subviews>
+                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" id="1RE-K4-cnb">
+                                                     <rect key="frame" x="0.0" y="0.0" width="398" height="36"/>
+                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                     <subviews>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Namespace" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HNq-ol-rRY">
+                                                             <rect key="frame" x="0.0" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QVS-It-nax">
+                                                             <rect key="frame" x="200" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                     </subviews>
+                                                     <viewLayoutGuide key="safeArea" id="ulH-ay-Ddg"/>
+                                                 </stackView>
+                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" id="kOa-Di-Zqh">
+                                                     <rect key="frame" x="0.0" y="38" width="398" height="36"/>
+                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                     <subviews>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Instance" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ivo-uG-sYi">
+                                                             <rect key="frame" x="0.0" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="1TX-mO-ACb">
+                                                             <rect key="frame" x="200" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                     </subviews>
+                                                     <viewLayoutGuide key="safeArea" id="pCO-wD-q2L"/>
+                                                 </stackView>
+                                                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="SET-SM-ExN">
+                                                     <rect key="frame" x="0.0" y="76" width="398" height="36"/>
+                                                     <subviews>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="txPower" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="dk1-m4-MzC">
+                                                             <rect key="frame" x="0.0" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BQO-eA-EWc">
+                                                             <rect key="frame" x="200" y="0.0" width="198" height="36"/>
+                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                             <nil key="textColor"/>
+                                                             <nil key="highlightedColor"/>
+                                                         </label>
+                                                     </subviews>
+                                                 </stackView>
+                                             </subviews>
+                                         </stackView>
+                                     </subviews>
+                                     <color key="backgroundColor" name="darker_color"/>
+                                     <constraints>
+                                         <constraint firstItem="IcG-Yk-e5u" firstAttribute="top" secondItem="SaY-ub-Wq9" secondAttribute="top" constant="8" id="Hev-1e-fVf"/>
+                                         <constraint firstItem="IcG-Yk-e5u" firstAttribute="leading" secondItem="SaY-ub-Wq9" secondAttribute="leading" constant="8" id="SRz-w5-zPJ"/>
+                                         <constraint firstAttribute="trailing" secondItem="IcG-Yk-e5u" secondAttribute="trailing" constant="8" id="qNx-Aa-A75"/>
+                                         <constraint firstAttribute="bottom" secondItem="IcG-Yk-e5u" secondAttribute="bottom" constant="8" id="uU1-II-FeC"/>
+                                     </constraints>
+                                 </collectionViewCellContentView>
+                                 <connections>
+                                     <outlet property="instanceLabel" destination="1TX-mO-ACb" id="5ng-kk-qlc"/>
+                                     <outlet property="namespaceLabel" destination="QVS-It-nax" id="NX2-2G-l9z"/>
+                                     <outlet property="txPowerLabel" destination="BQO-eA-EWc" id="Q1L-qe-uR6"/>
+                                 </connections>
+                             </collectionViewCell>
+                         </cells>
+                         <connections>
+                             <outlet property="delegate" destination="2CB-DJ-Qmw" id="NOW-Hm-xOY"/>
+                         </connections>
+                     </collectionView>
+                     <navigationItem key="navigationItem" id="3FX-SL-z8l"/>
+                 </collectionViewController>
+                 <placeholder placeholderIdentifier="IBFirstResponder" id="5DO-tU-e34" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+             </objects>
+             <point key="canvasLocation" x="1716" y="1073"/>
+         </scene>
     </scenes>
     <resources>
         <image name="close_icon" width="24" height="24"/>
