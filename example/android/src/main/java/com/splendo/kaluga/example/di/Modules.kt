@@ -95,7 +95,7 @@ val utilitiesModule = module {
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
     single { BluetoothMonitor.Builder().create() }
-    single { Beacons(get()) }
+    single { Beacons(get<Bluetooth>()) }
 }
 
 @ExperimentalStdlibApi
