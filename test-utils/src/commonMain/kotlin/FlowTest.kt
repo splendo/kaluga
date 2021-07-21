@@ -75,7 +75,13 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseF
 
 abstract class BaseKoinFlowTest<TC:KoinUIThreadTest.KoinTestContext, T, F:Flow<T>>:BaseFlowTest<TC, T, F>()
 
-@ThreadLocal
+/*
+Context for each tests needs to be created and kept on the main thread for iOS.
+
+Since the class itself is created in the test thread
+*/
+
+@ThreadLocal // thread local on native, global on non-native, but still accessed from only the main thread.
 val contextMap = mutableMapOf<Long, TestContext>()
 
 private suspend fun <TC: TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
@@ -84,10 +90,8 @@ private suspend fun <TC: TestContext> testContext(cookie: Long, testContext: sus
     return contextMap[cookie] as TC
 }
 
-private fun clearTestContext(cookie: Long) = contextMap.remove(cookie)
-
 @SharedImmutable
-private val cookieTin = AtomicLong(1L)
+private val cookieTin = AtomicLong(0L)
 
 abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineScope = MainScope()):UIThreadTest<TC>(), CoroutineScope by scope {
 
@@ -184,7 +188,8 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
             } finally {
                 val cookie = cookie
                 withContext(Dispatchers.Main.immediate) {
-                    contextMap.remove(cookie)
+                    val testContext = contextMap.remove(cookie)
+                    testContext?.dispose()
                 }
             }
         }
@@ -204,34 +209,30 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
         createTestContext.freeze()
         try {
             job = launch(Dispatchers.Main.immediate) {
-                try {
-                    started.complete()
-                    val testContext = testContext(cookie) { createTestContext(scope) }
-                    debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
-                    filter(flow).collect { value ->
-                        debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
-                        val test = testChannel.receive()
-                        debug("received test block $test")
+                started.complete()
+                val testContext = testContext(cookie) { createTestContext(scope) }
+                debug("main scope launched, about to flow, test channel ${if (testChannel.isEmpty) "" else "not "}empty ")
+                filter(flow).collect { value ->
+                    debug("in flow received [$value], test channel ${if (testChannel.isEmpty) "" else "not "}empty \"")
+                    val test = testChannel.receive()
+                    debug("received test block $test")
+                    try {
+                        test.first(testContext, value)
+                        debug("ran test block $test")
+                        test.second.complete(Unit)
+                        debug("completed $test")
+                    } catch (t: Throwable) {
+                        warn(throwable = t) { "Exception when testing... $t cause: ${t.cause}" }
                         try {
-                            test.first(testContext, value)
-                            debug("ran test block $test")
-                            test.second.complete(Unit)
-                            debug("completed $test")
+                            test.second.completeExceptionally(t)
+                            debug("completed exceptionally $test")
                         } catch (t: Throwable) {
-                            warn(throwable = t) { "Exception when testing... $t cause: ${t.cause}" }
-                            try {
-                                test.second.completeExceptionally(t)
-                                debug("completed exceptionally $test")
-                            } catch (t: Throwable) {
-                                e(throwable = t) { "exception in completing completable" }
-                            }
+                            e(throwable = t) { "exception in completing completable" }
                         }
-                        debug("handeling value completed [$value]")
                     }
-                    debug("flow collect completed")
-                } finally {
-                    clearTestContext(cookie)
+                    debug("handeling value completed [$value]")
                 }
+                debug("flow collect completed")
             }
         } catch (t: Throwable) {
             e(throwable = t) { "error launching" }
@@ -264,13 +265,12 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
 
     var firstTestBlock = true
 
-    suspend fun test(skip: Int = 0, test: TestBlock<TC, T>,) {
+    suspend fun test(skip: Int = 0, test: TestBlock<TC, T>) {
         test.freeze()
         if (firstTestBlock) {
             firstTestBlock = false
             tests.ensureNeverFrozen()
             debug("first test offered, starting collection")
-            val f = lateflow
             require(lateflow != null) { "Only use test from inside `testWith` methods" }
             startFlow(lateflow!!)
         }
