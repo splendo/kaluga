@@ -43,12 +43,6 @@ import com.splendo.kaluga.permissions.notifications.NotificationsPermissionState
 import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilder
 import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
-// import com.splendo.kaluga.permissions.CameraPermission
-// import com.splendo.kaluga.permissions.MicrophonePermission
-// import com.splendo.kaluga.permissions.camera.BaseCameraPermissionManagerBuilder
-// import com.splendo.kaluga.permissions.camera.CameraPermissionStateRepo
-// import com.splendo.kaluga.permissions.microphone.BaseMicrophonePermissionManagerBuilder
-// import com.splendo.kaluga.permissions.microphone.MicrophonePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 
 class MockPermissionsBuilder : PermissionsBuilder() {
