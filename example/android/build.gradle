@@ -67,7 +67,15 @@ dependencies {
     if (gradle.ext.exampleAsRoot) {
         // if the example is the root we use a maven dependency instead of the project
         implementation "com.splendo.kaluga:location:$gradle.ext.library_version"
-        implementation "com.splendo.kaluga:permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:base-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:location-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:bluetooth-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:camera-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:contacts-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:microphone-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:storage-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:notifications-permissions:$gradle.ext.library_version"
+        implementation "com.splendo.kaluga:calendar-permissions:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:base:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:date-time-picker:$gradle.ext.library_version"
         implementation "com.splendo.kaluga:logging:$gradle.ext.library_version"
@@ -86,7 +94,15 @@ dependencies {
         implementation project(':base')
         implementation project(':date-time-picker')
         implementation project(':shared')
-        implementation project(":permissions")
+        implementation project(":base-permissions")
+        implementation project(":location-permissions")
+        implementation project(":bluetooth-permissions")
+        implementation project(":camera-permissions")
+        implementation project(":contacts-permissions")
+        implementation project(":microphone-permissions")
+        implementation project(":storage-permissions")
+        implementation project(":notifications-permissions")
+        implementation project(":calendar-permissions")
         implementation project(":logging")
         implementation project(":alerts")
         implementation project(":hud")
