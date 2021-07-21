@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.example.permissions
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -30,7 +29,14 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.calendar.CalendarPermission
+import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.contacts.ContactsPermission
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.microphone.MicrophonePermission
+import com.splendo.kaluga.permissions.notifications.NotificationsPermission
+import com.splendo.kaluga.permissions.storage.StoragePermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -40,14 +46,14 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
         val permissionNavSpec = PermissionNavigationBundleSpec()
         intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
             val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
-                PermissionView.Bluetooth -> Permission.Bluetooth
-                PermissionView.Calendar -> Permission.Calendar(allowWrite = true)
-                PermissionView.Camera -> Permission.Camera
-                PermissionView.Contacts -> Permission.Contacts(allowWrite = true)
-                PermissionView.Location -> Permission.Location(background = true, precise = true)
-                PermissionView.Microphone -> Permission.Microphone
-                PermissionView.Notifications -> Permission.Notifications()
-                PermissionView.Storage -> Permission.Storage(allowWrite = true)
+                PermissionView.Bluetooth -> BluetoothPermission
+                PermissionView.Calendar -> CalendarPermission(allowWrite = true)
+                PermissionView.Camera -> CameraPermission
+                PermissionView.Contacts -> ContactsPermission(allowWrite = true)
+                PermissionView.Location -> LocationPermission(background = true, precise = true)
+                PermissionView.Microphone -> MicrophonePermission
+                PermissionView.Notifications -> NotificationsPermission()
+                PermissionView.Storage -> StoragePermission(allowWrite = true)
             }
             parametersOf(permission)
         } ?: parametersOf()
