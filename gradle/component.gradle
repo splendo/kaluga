@@ -13,11 +13,6 @@ kotlin {
         configure([]) {
             tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
-                freeCompilerArgs += [
-                        '-Xopt-in=kotlin.ExperimentalUnsignedTypes',
-                        '-Xopt-in=kotlin.ExperimentalStdlibApi',
-                        '-XXLanguage:+InlineClasses'
-                ]
             }
         }
     }
@@ -147,6 +142,7 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
+                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
                 enableLanguageFeature("InlineClasses")
             }
