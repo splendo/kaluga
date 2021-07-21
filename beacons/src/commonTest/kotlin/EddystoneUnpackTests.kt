@@ -21,7 +21,9 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-class BeaconServiceTest {
+fun dataOf(vararg elements: Int) = elements.map { it.toByte() }.toByteArray()
+
+class EddystoneUnpackTests {
 
     companion object {
 
@@ -32,8 +34,6 @@ class BeaconServiceTest {
             0xf7, 0x82, 0x6d, 0xa6, 0xbc, 0x5b, 0x71, 0xe0, 0x89, 0x3e, // Name Space ID
             0x4e, 0x41, 0x61, 0x46, 0x01, 0x02 // Instance ID
         )
-
-        private fun dataOf(vararg elements: Int) = elements.map { it.toByte() }.toByteArray()
     }
 
     @Test

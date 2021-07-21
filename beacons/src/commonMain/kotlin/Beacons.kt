@@ -18,7 +18,7 @@
 package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.base.utils.Date
-import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
 import kotlinx.coroutines.flow.Flow
@@ -26,7 +26,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 class Beacons (
-    private val bluetooth: Bluetooth,
+    private val bluetooth: BluetoothService,
     private val timeoutMs: Int = 10_000
 ) {
 
@@ -39,9 +39,12 @@ class Beacons (
     }
 
     fun isAnyInRange(beaconIds: List<String>) = beacons().map { list ->
-        list.filter { beaconIds.contains(it.fullID()) }
+        list.filter { beaconIds.containsLowerCased(it.fullID()) }
             .any { it.seenMs() <= timeoutMs }
     }
+
+    private fun List<String>.containsLowerCased(element: String): Boolean =
+        this.map(String::toLowerCase).contains(element.toLowerCase())
 
     private suspend fun createBeaconWith(device: Device): BeaconInfo? {
         val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
