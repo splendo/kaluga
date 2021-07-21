@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.test
 
+import co.touchlab.stately.ensureNeverFrozen
+import co.touchlab.stately.freeze
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -24,9 +26,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.yield
 
 open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContext>() {
-    inner class SimpleTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope
+    class SimpleTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope
 
-    override fun CoroutineScope.createTestContext() = SimpleTestContext(this)
+    override val createTestContext: suspend (CoroutineScope) -> SimpleTestContext = { SimpleTestContext(it) }
 }
 
 /**
@@ -40,13 +42,23 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
+abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing:Boolean = false) : BaseTest() {
+
+    init {
+        if (!allowFreezing) ensureNeverFrozen()
+    }
 
     interface TestContext {
         fun dispose() {}
     }
 
-    abstract fun CoroutineScope.createTestContext(): TC
+    class EmptyTestContext private constructor():TestContext {
+        companion object {
+            val INSTANCE = EmptyTestContext()
+        }
+    }
+
+    abstract val createTestContext: suspend (scope:CoroutineScope) -> TC
 
     private companion object {
         val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")
@@ -68,8 +80,10 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
      */
     fun testOnUIThread(cancelScopeAfterTest: Boolean = false, block: suspend TC.() -> Unit) {
         try {
-            val test: suspend (CoroutineScope) -> Unit = { scope ->
-                val testContext = scope.createTestContext()
+
+            val createTestContext = createTestContext
+            val test: suspend (CoroutineScope) -> Unit = {
+                val testContext = createTestContext(it)
                 yield()
                 try {
                     block(testContext)
@@ -77,6 +91,8 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext> : BaseTest() {
                     testContext.dispose()
                 }
             }
+            createTestContext.freeze()
+            test.freeze()
 
             if (cancelScopeAfterTest)
                 testBlockingAndCancelScope(Dispatchers.Main) { test(this) }

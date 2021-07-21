@@ -17,13 +17,19 @@
 
 package com.splendo.kaluga.test.architecture
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.architecture.viewmodel.ViewModel
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
-abstract class ViewModelTest<VM : ViewModel> : BaseTest() {
+abstract class ViewModelTest<VM : ViewModel>(allowFreezing:Boolean = false) : BaseTest() {
+
+    init {
+        if (!allowFreezing) ensureNeverFrozen()
+    }
+
     lateinit var viewModel: VM
 
     protected abstract fun createViewModel(): VM
@@ -36,16 +42,16 @@ abstract class ViewModelTest<VM : ViewModel> : BaseTest() {
 }
 
 abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
-    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>() {
+    UIThreadViewModelTest<UIThreadViewModelTest.ViewModelTestContext<VM>, VM>(allowFreezing = true) {
 
-    override fun CoroutineScope.createTestContext(): ViewModelTestContext<VM> =
-        LazyViewModelTestContext(this, ::createViewModel)
+    override val createTestContext: suspend (CoroutineScope) -> ViewModelTestContext<VM> =
+        { LazyViewModelTestContext(it, ::createViewModel) }
 
     abstract fun createViewModel(): VM
 }
 
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel> :
-    UIThreadTest<VMC>() {
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing:Boolean = false) :
+    UIThreadTest<VMC>(allowFreezing) {
 
     open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :
         ViewModelTestContext<VM>, CoroutineScope by coroutineScope {
