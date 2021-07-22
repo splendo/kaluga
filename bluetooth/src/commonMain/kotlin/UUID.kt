@@ -48,7 +48,7 @@ expect fun randomUUID():UUID
  * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
  * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
  */
-fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
+internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
 
 /**
  * meant for internal usage. It takes string which already passed validation
