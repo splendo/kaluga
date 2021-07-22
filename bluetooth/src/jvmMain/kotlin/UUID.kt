@@ -27,4 +27,4 @@ actual val UUID.uuidString: String
 
 internal actual fun unsafeUUIDFrom(uuidString: String):UUID = UUID(uuidString = uuidString)
 
-actual fun randomUUID(): UUID = TODO()
+actual fun randomUUID(): UUID = UUID(randomUUIDString())

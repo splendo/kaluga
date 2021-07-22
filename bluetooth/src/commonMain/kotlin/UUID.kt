@@ -26,6 +26,10 @@ private object Constants {
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
+sealed class UUIDException: Exception() {
+    class InvalidFormat(uuidString:String) : Exception("'String $uuidString does not represent a valid UUID'")
+}
+
 expect class UUID
 
 expect val UUID.uuidString: String
@@ -34,11 +38,6 @@ expect val UUID.uuidString: String
 fun uuidFrom(uuidString : String): UUID =
     if(uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString)
     else throw UUIDException.InvalidFormat(uuidString)
-
-/**
- * meant for internal usage. It takes string which already passed validation
- */
-internal expect fun unsafeUUIDFrom(uuidString:String): UUID
 
 expect fun randomUUID():UUID
 
@@ -50,10 +49,21 @@ expect fun randomUUID():UUID
  */
 fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
 
+/**
+ * meant for internal usage. It takes string which already passed validation
+ */
+internal expect fun unsafeUUIDFrom(uuidString:String): UUID
+
 internal fun String.isShortUUID() = length == 4
 
 internal fun String.isValidUUIDString(): Boolean = Constants.validationRegex.matches(this)
 
-sealed class UUIDException: Exception() {
-    class InvalidFormat(uuidString:String) : Exception("'String $uuidString does not represent a valid UUID'")
+/**
+ * This function can be used to generate UUID on platforms which don't support it out of the box
+ */
+internal fun randomUUIDString() : String {
+    val alphabet = ('A'..'F') + ('0'..'9')
+    fun randomBlock(size: Int) = List(size) { alphabet.random() }.joinToString("")
+
+    return "${randomBlock(8)}-${randomBlock(4)}-${randomBlock(4)}-${randomBlock(4)}-${randomBlock(12)}"
 }
