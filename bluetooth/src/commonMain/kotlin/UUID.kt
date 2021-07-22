@@ -22,12 +22,13 @@ import com.splendo.kaluga.base.text.format
 import kotlin.jvm.JvmName
 
 private object Constants {
-    val validationRegex = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i".toRegex()
+    val longFormatValidationRegex = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", RegexOption.IGNORE_CASE)
+    val shortFormatValidationRegex = Regex("[0-9a-f]{4}", RegexOption.IGNORE_CASE)
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
 sealed class UUIDException: Exception() {
-    class InvalidFormat(uuidString:String) : Exception("'String $uuidString does not represent a valid UUID'")
+    class InvalidFormat(uuidString:String) : Exception("String '$uuidString' does not represent a valid UUID")
 }
 
 expect class UUID
@@ -56,7 +57,9 @@ internal expect fun unsafeUUIDFrom(uuidString:String): UUID
 
 internal fun String.isShortUUID() = length == 4
 
-internal fun String.isValidUUIDString(): Boolean = Constants.validationRegex.matches(this)
+internal fun String.isValidUUIDString(): Boolean =
+    Constants.longFormatValidationRegex.matches(this) ||
+    Constants.shortFormatValidationRegex.matches(this)
 
 /**
  * This function can be used to generate UUID on platforms which don't support it out of the box

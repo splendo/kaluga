@@ -22,6 +22,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class BluetoothUUIDTest: BaseTest() {
 
@@ -36,13 +37,28 @@ class BluetoothUUIDTest: BaseTest() {
     }
 
     @Test
-    fun uuidFrom_invalid_string__it_throws_an_invalid_format_exception() {
+    fun uuidFrom_invalid_string_uuid__it_throws_an_invalid_format_exception() {
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234-000000000000-<invalid>") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234-000000i00000") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000_1234_1234_1234_000000000000") }
+        assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("BCDJ") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("0") }
+    }
+
+    @Test
+    fun uuidFrom_valid_string_uuid__it_creates_UUID() {
+        try {
+            uuidFrom("00000000-1234-1234-1234-000000000000")
+            uuidFrom("000ABCDF-1234-ABCD-BCDF-0000ABCDF000")
+            uuidFrom("000abcdf-1234-abcd-bcdf-0000abcdf000")
+            uuidFrom("1234")
+            uuidFrom("abcd")
+            uuidFrom("BCDF")
+        } catch (exception: Exception) {
+            fail("I should create an UUID. Exception was thrown: $exception")
+        }
     }
 }
