@@ -108,19 +108,19 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
 
     actual var percentSymbol: Char
         get() = formatter.percentSymbol.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.percentSymbol = String(charArrayOf(value)) }
+        set(value) { formatter.percentSymbol = charArrayOf(value).concatToString() }
     actual var perMillSymbol: Char
         get() = formatter.perMillSymbol.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.perMillSymbol = String(charArrayOf(value)) }
+        set(value) { formatter.perMillSymbol = charArrayOf(value).concatToString() }
     actual var minusSign: Char
         get() = formatter.minusSign.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.minusSign = String(charArrayOf(value)) }
+        set(value) { formatter.minusSign = charArrayOf(value).concatToString() }
     actual var exponentSymbol: String
         get() = formatter.exponentSymbol
         set(value) { formatter.exponentSymbol = value }
     actual var zeroSymbol: Char
         get() = formatter.zeroSymbol?.getOrNull(0) ?: '0'
-        set(value) { formatter.zeroSymbol = String(charArrayOf(value)) }
+        set(value) { formatter.zeroSymbol = charArrayOf(value).concatToString() }
     actual var notANumberSymbol: String
         get() = formatter.notANumberSymbol
         set(value) { formatter.notANumberSymbol = value }
@@ -151,7 +151,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
     actual var groupingSeparator: Char
         get() = formatter.groupingSeparator.getOrNull(0) ?: Char.MIN_VALUE
         set(value) {
-            val charValue = String(charArrayOf(value))
+            val charValue = charArrayOf(value).concatToString()
             formatter.groupingSeparator = charValue
             formatter.currencyGroupingSeparator = charValue
         }
@@ -160,13 +160,13 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         set(value) { formatter.usesGroupingSeparator = value }
     actual var decimalSeparator: Char
         get() = formatter.decimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.decimalSeparator = String(charArrayOf(value)) }
+        set(value) { formatter.decimalSeparator = charArrayOf(value).concatToString() }
     actual var alwaysShowsDecimalSeparator: Boolean
         get() = formatter.alwaysShowsDecimalSeparator
         set(value) { formatter.alwaysShowsDecimalSeparator = value }
     actual var currencyDecimalSeparator: Char
         get() = formatter.currencyDecimalSeparator.getOrNull(0) ?: Char.MIN_VALUE
-        set(value) { formatter.currencyDecimalSeparator = String(charArrayOf(value)) }
+        set(value) { formatter.currencyDecimalSeparator = charArrayOf(value).concatToString() }
     actual var groupingSize: Int
         get() = formatter.groupingSize.toInt()
         set(value) {
