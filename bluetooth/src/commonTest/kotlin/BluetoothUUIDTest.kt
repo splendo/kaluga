@@ -33,7 +33,7 @@ class BluetoothUUIDTest: BaseTest() {
         assertEquals(36, uuid.uuidString.length, "it should generate a long UUID")
 
         val itMatches = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", RegexOption.IGNORE_CASE).matches(uuid.uuidString)
-        assertTrue(itMatches, "UUID should contain of 5 sections separated by \'-\'. Sections should contain 8, 4,4,4 and 12 characters. Actual UUID: $uuid")
+        assertTrue(itMatches, "UUID should contain of 5 sections separated by \'-\'. Sections should contain 8, 4, 4, 4 and 12 characters. Actual UUID: $uuid")
     }
 
     @Test

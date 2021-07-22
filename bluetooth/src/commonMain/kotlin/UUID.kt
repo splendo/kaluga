@@ -53,7 +53,7 @@ internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBl
 /**
  * meant for internal usage. It takes string which already passed validation
  */
-internal expect fun unsafeUUIDFrom(uuidString:String): UUID
+internal expect fun unsafeUUIDFrom(uuidString: String): UUID
 
 internal fun String.isShortUUID() = length == 4
 
