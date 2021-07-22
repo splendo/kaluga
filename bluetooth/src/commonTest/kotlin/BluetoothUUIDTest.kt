@@ -61,4 +61,12 @@ class BluetoothUUIDTest: BaseTest() {
             fail("I should create an UUID. Exception was thrown: $exception")
         }
     }
+
+    @Test
+    fun uuidFromShort__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
+        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString)
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString)
+        assertEquals("000012AB-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString)
+
+    }
 }
