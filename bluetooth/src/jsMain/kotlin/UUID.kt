@@ -17,10 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-actual data class UUID (val uuidString: String) {
-    val isValid: Boolean
-        get() = uuidString.isValidUUIDString()
-}
+actual data class UUID (val uuidString: String)
 
 actual val UUID.uuidString: String
     get() = uuidString
