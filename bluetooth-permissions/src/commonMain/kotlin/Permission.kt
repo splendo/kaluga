@@ -25,7 +25,7 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
  */
 object BluetoothPermission : Permission()
 
-fun PermissionsBuilder.registerBluetooth() =
+fun PermissionsBuilder.registerBluetoothPermission() =
     registerBluetoothBuilder(context).also { builder ->
         registerRepoFactory(BluetoothPermission::class) { _, coroutineContext ->
             BluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
