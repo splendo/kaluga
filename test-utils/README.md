@@ -152,7 +152,7 @@ override val viewModel by lazy { MyViewModel(myArgs) }
 
 `BaseFlowTest` and derivative classes like `BaseKoinFlowTest`, `FlowTest` and `SimpleFlowTest` can be used to test Flows in a cross thread manner, with tests running in a test thread, and the flow being collected in a main thread.
 
-In this example we extend `SimpleFlowTest` and run our test function with `testWithFlow {`
+In this example we extend `SimpleFlowTest` and run our test function with `testWithFlow { }`
 
 ```kotlin
 
@@ -186,7 +186,7 @@ class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
 }
 ```
 
-This works by providing `action {}` and `test {}` blocks, where test blocks run asynchronously on the main thread, when there is a new value collected from the `Flow`, and action blocks are only run when all test blocks have been executed. `mainAction` can be used to run an action block on the main thread.
+This works by providing `action { }` and `test { }` blocks, where test blocks run asynchronously on the main thread, when there is a new value collected from the `Flow`, and action blocks are only run when all test blocks have been executed. `mainAction` can be used to run an action block on the main thread.
 
 The flow to be tested is provided through an abstract field (`flow` or `flowFromTestContext`) with closure that returns the flow. 
 
