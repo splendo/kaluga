@@ -52,7 +52,14 @@ import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.calendar.CalendarPermission
+import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.contacts.ContactsPermission
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.notifications.*
+import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.resources.localized
 import com.splendo.kaluga.review.ReviewManager
 import platform.Foundation.NSURL
@@ -127,18 +134,18 @@ class KNArchitectureFramework {
                 NavigationSpec.Push(push = {
                     val bundle = action.bundle ?: return@Push UIViewController()
                     val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
-                        PermissionView.Bluetooth -> Permission.Bluetooth
-                        PermissionView.Calendar -> Permission.Calendar()
-                        PermissionView.Camera -> Permission.Camera
-                        PermissionView.Contacts -> Permission.Contacts()
-                        PermissionView.Location -> Permission.Location(
+                        PermissionView.Bluetooth -> BluetoothPermission
+                        PermissionView.Calendar -> CalendarPermission()
+                        PermissionView.Camera -> CameraPermission
+                        PermissionView.Contacts -> ContactsPermission()
+                        PermissionView.Location -> LocationPermission(
                             background = true,
                             precise = true
                         )
-                        PermissionView.Microphone -> Permission.Microphone
-                        PermissionView.Notifications -> Permission.Notifications(NotificationOptions(
+                        PermissionView.Microphone -> MicrophonePermission
+                        PermissionView.Notifications -> NotificationsPermission(NotificationOptions(
                             UNAuthorizationOptionAlert or UNAuthorizationOptionSound))
-                        PermissionView.Storage -> Permission.Storage()
+                        PermissionView.Storage -> StoragePermission()
                     }
                     createPermissionViewController(permission)
                 })
@@ -150,7 +157,7 @@ class KNArchitectureFramework {
         return PermissionViewModel(permissions, permission)
     }
 
-    fun createLocationViewModel(permission: Permission.Location, repoBuilder: LocationStateRepoBuilder): LocationViewModel {
+    fun createLocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder): LocationViewModel {
         return LocationViewModel(permission, repoBuilder)
     }
 

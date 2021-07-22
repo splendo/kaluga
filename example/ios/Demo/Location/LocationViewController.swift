@@ -23,7 +23,7 @@ import KotlinNativeFramework
 class LocationViewController: UIViewController {
 
     struct Const {
-        static let permission = Permission.Location(background: false, precise: true)
+        static let permission = LocationPermission(background: false, precise: true)
     }
     
     //MARK: Properties
