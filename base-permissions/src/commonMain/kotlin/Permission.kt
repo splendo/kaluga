@@ -68,7 +68,7 @@ open class PermissionsBuilder(val context: Any? = null) {
  * @param builder The [PermissionsBuilder] to build the [PermissionManager] associated with each [Permission]
  * @param coroutineContext The [CoroutineContext] to run permission checks from
  */
-class Permissions(private val builder: PermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main.immediate) {
+class Permissions(private val builder: PermissionsBuilder, private val coroutineContext: CoroutineContext = Dispatchers.Main) {
 
     private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
 
