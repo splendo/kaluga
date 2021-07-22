@@ -18,18 +18,13 @@
 package com.splendo.kaluga.bluetooth
 
 actual data class UUID(val uuidString: String) {
-
-    companion object {
-        val validationRegex = "/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i".toRegex()
-    }
-
     val isValid: Boolean
-        get() = validationRegex.matches(uuidString)
+        get() = uuidString.isValidUUIDString()
 }
 
 actual val UUID.uuidString: String
     get() = uuidString
 
-actual fun uuidFrom(uuidString:String):UUID = UUID(uuidString = uuidString)
+internal actual fun unsafeUUIDFrom(uuidString: String):UUID = UUID(uuidString = uuidString)
 
-actual fun randomUUID():UUID = TODO()
+actual fun randomUUID(): UUID = TODO()
