@@ -22,7 +22,7 @@ actual typealias UUID = java.util.UUID
 actual val UUID.uuidString: String
     get() = toString()
 
-actual fun unsafeUUIDFrom(uuidString: String): UUID = if (uuidString.isShortUUID()) uuidFromShort(uuidString)
+internal actual fun unsafeUUIDFrom(uuidString: String): UUID = if (uuidString.isShortUUID()) uuidFromShort(uuidString)
 else UUID.fromString(uuidString)
 
 actual fun randomUUID():UUID = UUID.randomUUID()
