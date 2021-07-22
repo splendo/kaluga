@@ -51,7 +51,7 @@ expect fun randomUUID():UUID
 internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
 
 /**
- * meant for internal usage. It takes string which already passed validation
+ * Meant for internal usage. It takes string which already passed validation
  */
 internal expect fun unsafeUUIDFrom(uuidString: String): UUID
 
