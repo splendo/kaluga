@@ -25,8 +25,6 @@ actual class BluetoothMonitor : ServiceMonitor() {
         actual fun create() = BluetoothMonitor()
     }
 
-    override val TAG: String = "BluetoothMonitor"
-
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")
 }

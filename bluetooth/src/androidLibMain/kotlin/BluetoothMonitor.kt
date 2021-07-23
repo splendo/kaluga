@@ -41,8 +41,6 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
-    override val TAG: String = "BluetoothMonitor"
-
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == BluetoothAdapter.ACTION_STATE_CHANGED) {

@@ -31,10 +31,6 @@ actual class LocationMonitor(
     private val locationManager: LocationManager?
 ) : ServiceMonitor() {
 
-    private companion object {
-        private const val TAG = "LocationMonitor"
-    }
-
     actual class Builder {
         actual fun create() = LocationMonitor(
             applicationContext = ApplicationHolder.applicationContext,
@@ -42,8 +38,6 @@ actual class LocationMonitor(
                 .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
         )
     }
-
-    override val TAG: String = "LocationMonitor"
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {

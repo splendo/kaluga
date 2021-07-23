@@ -18,16 +18,11 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.logging.debug
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
 
 actual class LocationMonitor(private val locationManager: CLLocationManager) : ServiceMonitor() {
-
-    private companion object {
-        private const val TAG = "LocationMonitor"
-    }
 
     actual class Builder {
         actual fun create(): LocationMonitor = LocationMonitor(
@@ -35,13 +30,10 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
         )
     }
 
-    override val TAG: String = "LocationMonitor"
-
     internal class LocationManagerDelegate(
         private val updateState: () -> Unit
     ) : NSObject(), CLLocationManagerDelegateProtocol {
         override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            debug(TAG) { "locationManagerDidChangeAuthorization" }
             updateState()
         }
     }
