@@ -31,15 +31,22 @@ import kotlin.reflect.KClassifier
  */
 abstract class Permission
 
+/**
+ *
+ */
 interface BasePermissionsBuilder
+
+/**
+ *
+ */
+typealias RepoFactory = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
+
 /**
  * Builder for providing the proper [PermissionManager] for each [Permission]
  * @param context an additional parameter platform can pass to the [PermissionsBuilder]. [NSBundle] on iOS and [Contect] on Andoid.
  * To create builder with parameter on a platform an extension of the companion object [Factory] can be used.
  * it will be [PermissionsBuilder.withBundle] on iOS and [PermissionsBuilder.withContext] on Android.
  */
-typealias RepoFactory = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
-
 open class PermissionsBuilder(val context: Any? = null) {
     companion object Factory
 

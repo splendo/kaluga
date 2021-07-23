@@ -1,1 +1,1 @@
-## Calendar Permissions
+## Please check [general permissions documentation](../base-permission/README.md#calendarPermission)

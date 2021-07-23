@@ -3,14 +3,14 @@
 This library provide support for out-of-the-box access to device permissions.
 
 Supported device features:
- - Bluetooth
- - Calendar
- - Camera
- - Contacts
- - Location (both with and without background)
- - Microphone
- - Notifications
- - Storage (aka Photos on iOS)
+ - [Bluetooth](#bluetoothPermission)
+ - [Calendar](#calendarPermission)
+ - [Camera](#cameraPermission)
+ - [Contacts](#contactsPermission)
+ - [Location](#locationPermission) (both with and without background)
+ - [Microphone](#microphonePermission)
+ - [Notifications](#notificationsPermission)
+ - [Storage](#storagePermission) (aka Photos on iOS)
 
  ## Installing
  To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Permissions as follows:
