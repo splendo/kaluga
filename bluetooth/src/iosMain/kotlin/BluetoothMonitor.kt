@@ -40,7 +40,7 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
-    private val centralManagerDelegate = CentralManagerDelegate(::updateEnabledState)
+    private val centralManagerDelegate = CentralManagerDelegate(::updateState)
     override val isServiceEnabled: Boolean
         get() = centralManager.state == CBCentralManagerStatePoweredOn
 
@@ -48,18 +48,11 @@ actual class BluetoothMonitor internal constructor(
         super.startMonitoring()
         debug("Current state is $isServiceEnabled")
         centralManager.delegate = centralManagerDelegate
-        updateEnabledState()
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
         debug("Current state is $isServiceEnabled")
         centralManager.delegate = null
-        updateEnabledState()
-    }
-
-    private fun updateEnabledState() {
-        debug("Update monitoring Bluetooth state to $isServiceEnabled")
-        _isEnabled.value = isServiceEnabled
     }
 }

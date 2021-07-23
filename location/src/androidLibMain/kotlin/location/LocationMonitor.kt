@@ -52,13 +52,11 @@ actual class LocationMonitor(
     }
 
     override val isServiceEnabled: Boolean
-        get() {
-            return if (locationManager == null) {
+        get() = if (locationManager == null) {
                 false
             } else {
                 LocationManagerCompat.isLocationEnabled(locationManager)
             }
-        }
 
     override fun startMonitoring() {
         super.startMonitoring()
@@ -66,12 +64,10 @@ actual class LocationMonitor(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
-        updateState()
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
         applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
-        updateState()
     }
 }

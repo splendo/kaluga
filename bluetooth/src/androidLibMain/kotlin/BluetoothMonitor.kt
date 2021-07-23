@@ -50,7 +50,7 @@ actual class BluetoothMonitor internal constructor(
     }
 
     override val isServiceEnabled: Boolean
-        get() = bluetoothAdapter?.isEnabled == true
+        get() = bluetoothAdapter.isEnabled
 
     override fun startMonitoring() {
         super.startMonitoring()
@@ -58,13 +58,11 @@ actual class BluetoothMonitor internal constructor(
             availabilityBroadcastReceiver,
             IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         )
-        updateEnabledState()
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
         applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
-        updateEnabledState()
     }
 
     private fun updateEnabledState() {
