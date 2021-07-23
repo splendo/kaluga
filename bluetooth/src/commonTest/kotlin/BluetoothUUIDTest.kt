@@ -41,6 +41,7 @@ class BluetoothUUIDTest: BaseTest() {
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000") }
+        assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234-0000000000000") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234-000000000000-<invalid>") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234-000000i00000") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000_1234_1234_1234_000000000000") }
@@ -62,11 +63,12 @@ class BluetoothUUIDTest: BaseTest() {
         }
     }
 
+    @ExperimentalStdlibApi
     @Test
     fun uuidFromShort__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
-        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString)
-        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString)
-        assertEquals("000012AB-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString)
+        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString.lowercase())
 
     }
 }
