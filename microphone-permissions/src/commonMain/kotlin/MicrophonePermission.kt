@@ -23,7 +23,7 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Microphone]
+ * A [PermissionManager] for managing [MicrophonePermission]
  */
 expect class MicrophonePermissionManager : PermissionManager<MicrophonePermission>
 
@@ -31,7 +31,7 @@ interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [MicrophonePermissionManager]
-     * @param repo The [MicrophonePermissionStateRepo] associated with the [Permission.Microphone]
+     * @param repo The [MicrophonePermissionStateRepo] associated with the [MicrophonePermission]
      */
     fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission>
 }
@@ -42,7 +42,7 @@ interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder {
 expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Microphone]
+ * A [PermissionStateRepo] for [MicrophonePermission]
  * @param builder The [MicrophonePermissionManagerBuilder] for creating the [MicrophonePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */

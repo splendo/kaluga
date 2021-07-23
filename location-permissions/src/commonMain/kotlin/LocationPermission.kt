@@ -23,11 +23,11 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Location]
+ * A [PermissionManager] for managing [LocationPermission]
  */
 expect class LocationPermissionManager : PermissionManager<LocationPermission> {
     /**
-     * The [Permission.Location] managed by this manager.
+     * The [LocationPermission] managed by this manager.
      */
     val location: LocationPermission
 }
@@ -36,7 +36,7 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [LocationPermissionManager]
-     * @param repo The [LocationPermissionStateRepo] associated with the [Permission.Location]
+     * @param repo The [LocationPermissionStateRepo] associated with the [LocationPermission]
      */
     fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission>
 }
@@ -47,7 +47,7 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder {
 expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Location]
+ * A [PermissionStateRepo] for [LocationPermission]
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */

@@ -23,7 +23,7 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Camera]
+ * A [PermissionManager] for managing [CameraPermission]
  */
 expect class CameraPermissionManager : PermissionManager<CameraPermission>
 
@@ -31,7 +31,7 @@ interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [CameraPermissionManager]
-     * @param repo The [CameraPermissionStateRepo] associated with the [Permission.Camera]
+     * @param repo The [CameraPermissionStateRepo] associated with the [CameraPermission]
      */
     fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission>
 }
@@ -42,7 +42,7 @@ interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder {
 expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Camera]
+ * A [PermissionStateRepo] for [CameraPermission]
  * @param builder The [CameraPermissionManagerBuilder] for creating the [CameraPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */

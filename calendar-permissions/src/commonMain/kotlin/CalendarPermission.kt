@@ -23,11 +23,11 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Calendar]
+ * A [PermissionManager] for managing [CalendarPermission]
  */
 expect class CalendarPermissionManager : PermissionManager<CalendarPermission> {
     /**
-     * The [Permission.Calendar] managed by this manager
+     * The [CalendarPermission] managed by this manager
      */
     val calendar: CalendarPermission
 }
@@ -36,7 +36,7 @@ interface BaseCalendarPermissionManagerBuilder: BasePermissionsBuilder {
 
     /**
      * Creates a [CalendarPermissionManager]
-     * @param repo The [CalendarPermissionStateRepo] associated with the [Permission.Calendar]
+     * @param repo The [CalendarPermissionStateRepo] associated with the [CalendarPermission]
      */
     fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission>
 }
@@ -47,7 +47,7 @@ interface BaseCalendarPermissionManagerBuilder: BasePermissionsBuilder {
 expect class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Calendar]
+ * A [PermissionStateRepo] for [CalendarPermission]
  * @param builder The [CalendarPermissionManagerBuilder] for creating the [CalendarPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */

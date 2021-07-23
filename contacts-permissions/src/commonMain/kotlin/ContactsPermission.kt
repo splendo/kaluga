@@ -23,7 +23,7 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Contacts]
+ * A [PermissionManager] for managing [ContactsPermission]
  */
 expect class ContactsPermissionManager : PermissionManager<ContactsPermission> {
     /**
@@ -36,7 +36,7 @@ interface BaseContactsPermissionManagerBuilder: BasePermissionsBuilder {
 
     /**
      * Creates a [ContactsPermissionManager]
-     * @param repo The [ContactsPermissionStateRepo] associated with the [Permission.Contacts]
+     * @param repo The [ContactsPermissionStateRepo] associated with the [ContactsPermission]
      */
     fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission>
 }
@@ -47,7 +47,7 @@ interface BaseContactsPermissionManagerBuilder: BasePermissionsBuilder {
 expect class ContactsPermissionManagerBuilder : BaseContactsPermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Contacts]
+ * A [PermissionStateRepo] for [ContactsPermission]
  * @param builder The [ContactsPermissionManagerBuilder] for creating the [ContactsPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */

@@ -28,16 +28,19 @@ import kotlin.reflect.KClassifier
 
 /**
  * Permissions that can be requested by Kaluga
+ * Each permission component should declare subclass of [Permission]
  */
 abstract class Permission
 
 /**
- *
+ *  Base type for all permissions builders. Each permission component implements a concrete permissions builder
+ *  and declares helper methods for registering this builder in the [PermissionsBuilder].
  */
 interface BasePermissionsBuilder
 
 /**
- *
+ * Closure that takes permission and coroutine contexts and creates [PermissionStateRepo].
+ * Each platform registers [RepoFactory] in the register permission helper method.
  */
 typealias RepoFactory = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
 

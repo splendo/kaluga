@@ -23,11 +23,11 @@ import com.splendo.kaluga.permissions.PermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [PermissionManager] for managing [Permission.Storage]
+ * A [PermissionManager] for managing [StoragePermission]
  */
 expect class StoragePermissionManager : PermissionManager<StoragePermission> {
     /**
-     * The [Permission.Storage] managed by this manager.
+     * The [StoragePermission] managed by this manager.
      */
     val storage: StoragePermission
 }
@@ -40,7 +40,7 @@ typealias PhotosPermissionManager = StoragePermissionManager
 interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder {
     /**
      * Creates a [StoragePermissionManager]
-     * @param repo The [StoragePermissionStateRepo] associated with the [Permission.Storage]
+     * @param repo The [StoragePermissionStateRepo] associated with the [StoragePermission]
      */
     fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission>
 }
@@ -56,7 +56,7 @@ expect class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuild
 typealias PhotosPermissionManagerBuilder = StoragePermissionManagerBuilder
 
 /**
- * A [PermissionStateRepo] for [Permission.Storage]
+ * A [PermissionStateRepo] for [StoragePermission]
  * @param builder The [StoragePermissionManagerBuilder] for creating the [StoragePermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
