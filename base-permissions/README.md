@@ -28,7 +28,8 @@ Supported device features:
  ```
 
 ### Usage
-Permissions can be requested through an instance of the `Permissions` class. This class is instantiated with a `PermissionsBuilder`, which defaults to requesting permissions for the Application Context (Android) or Main NSBundle (iOS).
+Permissions can be requested through an instance of the `Permissions` class. This class is instantiated with a `PermissionsBuilder`, which defaults to requesting permissions for the Application Context (Android) or Main NSBundle (iOS). 
+To instantiate the `PermissionsBuilder` with a Context other than Application Context use `PermissionsBuilder.withContext(context)` method. On iOS use `PermissionsBuilder.withBundle(bundle)` to instantiate the `PermissionsBuilder` with an NSBundle.
 
 Permissions are modelled as a `Flowable` `State`, providing updates should the state change during observation. A permission can either be `Allowed` or `Denied`. A `Denied` permission can in turn be `Locked`, preventing the app from requesting it, or `Requestable`.
 
@@ -39,7 +40,9 @@ For instance the `Location` permission will be denied if background support is r
 If a request fails, a new request with a more limited scope can then be made.
 
 ```kotlin
-val permissionBuilder = PermissionBuilder()
+val permissionBuilder = PermissionBuilder().apply {
+    registerLocationPermission()
+}
 val permissions = Permissions(permissionBuilder)
 val locationPermission = Permission.Location(background=true, precise=true)
 launch {
