@@ -1,1 +1,1 @@
-## Please check [general permissions documentation](../base-permission/README.md#calendarPermission)
+## Please check [general permissions documentation](../base-permissions/README.md#calendarPermission)

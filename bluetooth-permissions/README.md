@@ -1,1 +1,1 @@
-## Please check [general permissions documentation](../base-permission/README.md#bluetoothPermission)
+## Please check [general permissions documentation](../base-permissions/README.md#bluetoothPermission)
