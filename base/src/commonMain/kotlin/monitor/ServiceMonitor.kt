@@ -34,9 +34,11 @@ abstract class ServiceMonitor {
 
     open fun startMonitoring() {
         debug(TAG) { "Start monitoring service state ($isEnabled)" }
+        updateState()
     }
     open fun stopMonitoring() {
         debug(TAG) { "Stop monitoring service state" }
+        updateState()
     }
 
     protected fun updateState() {
