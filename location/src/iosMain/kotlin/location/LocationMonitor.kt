@@ -35,6 +35,8 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
         )
     }
 
+    override val TAG: String = "LocationMonitor"
+
     internal class LocationManagerDelegate(
         private val updateState: () -> Unit
     ) : NSObject(), CLLocationManagerDelegateProtocol {

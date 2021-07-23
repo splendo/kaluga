@@ -23,9 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 abstract class ServiceMonitor {
 
-    private companion object {
-        const val TAG = "ServiceMonitor"
-    }
+    abstract val TAG: String
 
     abstract val isServiceEnabled: Boolean
 

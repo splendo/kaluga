@@ -32,6 +32,8 @@ actual class BluetoothMonitor internal constructor(
         actual fun create() = BluetoothMonitor(centralManager = CBCentralManager())
     }
 
+    override val TAG: String = "BluetoothMonitor"
+
     internal class CentralManagerDelegate(
         private val updateEnabledState: () -> Unit
     ) : NSObject(), CBCentralManagerDelegateProtocol {

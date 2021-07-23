@@ -25,6 +25,8 @@ actual class LocationMonitor : ServiceMonitor() {
         actual fun create(): LocationMonitor = LocationMonitor()
     }
 
+    override val TAG: String = "LocationMonitor"
+
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")
 

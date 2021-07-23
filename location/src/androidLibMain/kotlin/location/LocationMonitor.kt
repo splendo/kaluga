@@ -43,6 +43,8 @@ actual class LocationMonitor(
         )
     }
 
+    override val TAG: String = "LocationMonitor"
+
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
