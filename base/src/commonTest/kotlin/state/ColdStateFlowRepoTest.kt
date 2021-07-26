@@ -72,7 +72,7 @@ class ColdStateFlowRepoTest:BaseTest() {
         }
 
         job.cancel()
-        delay(20)
+        delay(40)
         repo.useState { state ->
             assertEquals(deinit, state)
         }
@@ -80,7 +80,7 @@ class ColdStateFlowRepoTest:BaseTest() {
         // we might get deinit first (this is not guaranteed), but this is already tested above
         assertEquals(active, repo.filter { it != deinit }.first())
 
-        delay(20) // small delay to allow the counter collector to process the denint
+        delay(40) // small delay to allow the counter collector to process the denint
         repo.useState { state ->
             assertEquals(deinit, state)
         }
