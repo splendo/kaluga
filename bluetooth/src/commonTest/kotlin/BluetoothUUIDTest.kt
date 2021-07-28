@@ -65,10 +65,10 @@ class BluetoothUUIDTest: BaseTest() {
 
     @ExperimentalStdlibApi
     @Test
-    fun uuidFromShort__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
-        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString.lowercase())
-        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString.lowercase())
-        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString.lowercase())
+    fun uuidFrom__short_format__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
+        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFrom("0000").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFrom("12ab").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFrom("12AB").uuidString.lowercase())
 
     }
 }

@@ -23,6 +23,13 @@ import kotlin.jvm.JvmName
 
 private object Constants {
     val formatValidationRegex = Regex("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{4}", RegexOption.IGNORE_CASE)
+
+    /**
+     * The UUID format is the same for all services and characteristics and defined in bluetooth specification.
+     *
+     * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
+     * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
+     */
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
@@ -36,18 +43,14 @@ expect val UUID.uuidString: String
 
 @Throws(UUIDException::class)
 fun uuidFrom(uuidString : String): UUID =
-    if(uuidString.isValidUUIDString()) unsafeUUIDFrom(uuidString)
+    if(uuidString.isValidUUIDString()) {
+        val uuidString = if (uuidString.isShortUUID()) Constants.baseBluetoothUUID.format(uuidString) else uuidString
+        unsafeUUIDFrom(uuidString)
+
+    }
     else throw UUIDException.InvalidFormat(uuidString)
 
 expect fun randomUUID():UUID
-
-/**
- * The UUID format is the same for all services and characteristics and defined in bluetooth specification.
- *
- * @see <a href="https://www.bluetooth.com/specifications/gatt/characteristics/">GATT Characteristics specification</a>
- * @see <a href="https://btprodspecificationrefs.blob.core.windows.net/assigned-numbers/Assigned%20Number%20Types/Service%20Discovery.pdf">Service discovery</a>
- */
-internal fun uuidFromShort(uuidString: String): UUID = uuidFrom(Constants.baseBluetoothUUID.format(uuidString))
 
 /**
  * Meant for internal usage. It takes string which already passed validation
