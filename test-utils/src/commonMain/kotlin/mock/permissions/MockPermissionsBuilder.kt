@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.test.mock.permissions
 
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -47,10 +49,6 @@ import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.MockPermissionStateRepo
 
 class MockPermissionsBuilder : PermissionsBuilder() {
-    init {
-        registerAllPermissionsBuilders()
-    }
-
     private lateinit var cameraPMManager: MockPermissionManager<CameraPermission>
     private val cameraPMBuilder: BaseCameraPermissionManagerBuilder = object : BaseCameraPermissionManagerBuilder {
         override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
@@ -115,30 +113,46 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         }
     }
 
-    private fun registerAllPermissionsBuilders() {
-        register(bluetoothPMBuilder, BluetoothPermission::class).also {
-            registerRepoFactory(BluetoothPermission::class) { _, _ -> MockPermissionStateRepo<BluetoothPermission>() }
+    fun registerAllPermissionsBuilders() {
+        register(bluetoothPMBuilder, BluetoothPermission::class).also { builder ->
+            registerRepoFactory(BluetoothPermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<BluetoothPermission>()
+            }
         }
-        register(locationPMBuilder, LocationPermission::class).also {
-            registerRepoFactory(LocationPermission::class) { _, _ -> MockPermissionStateRepo<LocationPermission>() }
+        register(locationPMBuilder, LocationPermission::class).also { builder ->
+            registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
+                LocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
+            }
         }
-        register(calendarPMBuilder, CalendarPermission::class).also {
-            registerRepoFactory(CalendarPermission::class) { _, _ -> MockPermissionStateRepo<CalendarPermission>() }
+        register(calendarPMBuilder, CalendarPermission::class).also { builder ->
+            registerRepoFactory(CalendarPermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<CalendarPermission>()
+            }
         }
-        register(storagePMBuilder, StoragePermission::class).also {
-            registerRepoFactory(StoragePermission::class) { _, _ -> MockPermissionStateRepo<StoragePermission>() }
+        register(storagePMBuilder, StoragePermission::class).also { builder ->
+            registerRepoFactory(StoragePermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<StoragePermission>()
+            }
         }
-        register(cameraPMBuilder, CameraPermission::class).also {
-            registerRepoFactory(CameraPermission::class) { _, _ -> MockPermissionStateRepo<CameraPermission>() }
+        register(cameraPMBuilder, CameraPermission::class).also { builder ->
+            registerRepoFactory(CameraPermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<CameraPermission>()
+            }
         }
-        register(contactsPMBuilder, ContactsPermission::class).also {
-            registerRepoFactory(ContactsPermission::class) { _, _ -> MockPermissionStateRepo<ContactsPermission>() }
+        register(contactsPMBuilder, ContactsPermission::class).also { builder ->
+            registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<ContactsPermission>()
+            }
         }
-        register(microphonePMBuilder, MicrophonePermission::class).also {
-            registerRepoFactory(MicrophonePermission::class) { _, _ -> MockPermissionStateRepo<MicrophonePermission>() }
+        register(microphonePMBuilder, MicrophonePermission::class).also { builder ->
+            registerRepoFactory(MicrophonePermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<MicrophonePermission>()
+            }
         }
-        register(notificationsPMBuilder, NotificationsPermission::class).also {
-            registerRepoFactory(NotificationsPermission::class) { _, _ -> MockPermissionStateRepo<NotificationsPermission>() }
+        register(notificationsPMBuilder, NotificationsPermission::class).also { builder ->
+            registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
+                MockPermissionStateRepo<NotificationsPermission>()
+            }
         }
     }
 }

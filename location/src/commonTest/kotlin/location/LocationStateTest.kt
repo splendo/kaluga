@@ -20,12 +20,10 @@ package com.splendo.kaluga.location
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.MockPermissionManager
@@ -72,7 +70,9 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + testCoroutine)
 
-    private val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder()
+    private val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
+        registerAllPermissionsBuilders()
+    }
     private val permissions = Permissions(permissionsBuilder, coroutineContext = coroutineScope.coroutineContext)
     private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
 
