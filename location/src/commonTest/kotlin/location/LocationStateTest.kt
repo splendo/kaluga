@@ -24,6 +24,8 @@ import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.MockPermissionManager
@@ -74,7 +76,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     private val permissions = Permissions(permissionsBuilder, coroutineContext = coroutineScope.coroutineContext)
     private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
 
-    private lateinit var permissionManager: MockPermissionManager<Permission.Location>
+    private lateinit var permissionManager: MockPermissionManager<LocationPermission>
     private lateinit var locationManager: MockLocationManager
 
     override val flow = { locationStateRepo }
@@ -88,7 +90,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartEnabled() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testStartEnabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
         assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
         permissionManager.currentState = PermissionState.Allowed()
@@ -115,7 +117,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartNoPermission() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testStartNoPermission() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Denied.Requestable()
         val permissionManager = permissionManager
         val locationManager = locationManager
@@ -136,7 +138,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartNoPermissionAutoRequest() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
+    fun testStartNoPermissionAutoRequest() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Denied.Requestable()
 
         val locationManager = locationManager
@@ -175,7 +177,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartNoPermissionAutoRequestNoGPS() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
+    fun testStartNoPermissionAutoRequestNoGPS() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Denied.Requestable()
 
         val locationManager = locationManager
@@ -209,7 +211,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartNoGPS() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testStartNoGPS() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = false
 
@@ -234,7 +236,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testStartNoGPSAutoRequest() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
+    fun testStartNoGPSAutoRequest() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
         assertFalse(permissionManager.hasStartedMonitoring.isCompleted)
         assertFalse(permissionManager.hasStoppedMonitoring.isCompleted)
         permissionManager.currentState = PermissionState.Allowed()
@@ -273,7 +275,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testLocationChanged() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
+    fun testLocationChanged() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         test {
@@ -306,7 +308,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testMultipleLocationChanged() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
+    fun testMultipleLocationChanged() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         test {
@@ -336,7 +338,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testPermissionRevoked() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
+    fun testPermissionRevoked() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = true, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
 
@@ -377,7 +379,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testGPSDisabled() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
+    fun testGPSDisabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = true) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
 
@@ -418,7 +420,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     }
 
     @Test
-    fun testResumeFlow() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testResumeFlow() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
         test {
@@ -457,7 +459,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
 
     @Test
     @Ignore // Unstable test
-    fun testResumeFlowPermissionDenied() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testResumeFlowPermissionDenied() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
 
@@ -499,7 +501,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
 
     @Test
     @Ignore // TODO
-    fun testResumeFlowGPSDisabled() = testLocationState(Permission.Location(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
+    fun testResumeFlowGPSDisabled() = testLocationState(LocationPermission(background = false, precise = false), autoRequestPermission = false, autoEnableLocations = false) {
         permissionManager.currentState = PermissionState.Allowed()
         locationManager.locationEnabled = true
 
@@ -541,7 +543,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
         )
     }
 
-    private fun testLocationState(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, test: FlowTestBlock<LocationState, LocationStateRepo>) {
+    private fun testLocationState(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, test: FlowTestBlock<LocationState, LocationStateRepo>) {
 
         // Make sure permissionState has been created as it may break the tests otherwise
         permissions[locationPermission]
@@ -558,7 +560,7 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
 
     lateinit var locationManager: MockLocationManager
 
-    override fun create(locationPermission: Permission.Location, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
+    override fun create(locationPermission: LocationPermission, autoRequestPermission: Boolean, autoEnableLocations: Boolean, coroutineContext: CoroutineContext): LocationStateRepo {
         return LocationStateRepo(
             locationPermission,
             permissions,
@@ -567,7 +569,7 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
             object : BaseLocationManager.Builder {
 
                 override fun create(
-                    locationPermission: Permission.Location,
+                    locationPermission: LocationPermission,
                     permissions: Permissions,
                     autoRequestPermission: Boolean,
                     autoEnableLocations: Boolean,
@@ -583,7 +585,7 @@ class MockLocationStateRepoBuilder(private val permissions: Permissions) : Locat
 }
 
 class MockLocationManager(
-    locationPermission: Permission.Location,
+    locationPermission: LocationPermission,
     permissions: Permissions,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,

@@ -44,6 +44,7 @@ import com.splendo.kaluga.permissions.storage.BaseStoragePermissionManagerBuilde
 import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
+import com.splendo.kaluga.test.MockPermissionStateRepo
 
 class MockPermissionsBuilder : PermissionsBuilder() {
     init {
@@ -115,13 +116,29 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     }
 
     private fun registerAllPermissionsBuilders() {
-        register(bluetoothPMBuilder, BluetoothPermission::class)
-        register(locationPMBuilder, LocationPermission::class)
-        register(calendarPMBuilder, CalendarPermission::class)
-        register(storagePMBuilder, StoragePermission::class)
-        register(cameraPMBuilder, CameraPermission::class)
-        register(contactsPMBuilder, ContactsPermission::class)
-        register(microphonePMBuilder, MicrophonePermission::class)
-        register(notificationsPMBuilder, NotificationsPermission::class)
+        register(bluetoothPMBuilder, BluetoothPermission::class).also {
+            registerRepoFactory(BluetoothPermission::class) { _, _ -> MockPermissionStateRepo<BluetoothPermission>() }
+        }
+        register(locationPMBuilder, LocationPermission::class).also {
+            registerRepoFactory(LocationPermission::class) { _, _ -> MockPermissionStateRepo<LocationPermission>() }
+        }
+        register(calendarPMBuilder, CalendarPermission::class).also {
+            registerRepoFactory(CalendarPermission::class) { _, _ -> MockPermissionStateRepo<CalendarPermission>() }
+        }
+        register(storagePMBuilder, StoragePermission::class).also {
+            registerRepoFactory(StoragePermission::class) { _, _ -> MockPermissionStateRepo<StoragePermission>() }
+        }
+        register(cameraPMBuilder, CameraPermission::class).also {
+            registerRepoFactory(CameraPermission::class) { _, _ -> MockPermissionStateRepo<CameraPermission>() }
+        }
+        register(contactsPMBuilder, ContactsPermission::class).also {
+            registerRepoFactory(ContactsPermission::class) { _, _ -> MockPermissionStateRepo<ContactsPermission>() }
+        }
+        register(microphonePMBuilder, MicrophonePermission::class).also {
+            registerRepoFactory(MicrophonePermission::class) { _, _ -> MockPermissionStateRepo<MicrophonePermission>() }
+        }
+        register(notificationsPMBuilder, NotificationsPermission::class).also {
+            registerRepoFactory(NotificationsPermission::class) { _, _ -> MockPermissionStateRepo<NotificationsPermission>() }
+        }
     }
 }
