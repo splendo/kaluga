@@ -30,29 +30,29 @@ import com.splendo.kaluga.test.architecture.UIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withTimeout
-import kotlin.test.AfterTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
-import kotlin.test.fail
+import kotlin.test.*
 import kotlin.time.seconds
 
 class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelTestContext, ViewModel>() {
-    private val isDisposed = AtomicBoolean(false)
+
+    companion object {
+        val isDisposed = AtomicBoolean(false)
+    }
 
     class ViewModel : BaseViewModel() {
         var v: String = ""
     }
 
-    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope, private val isDisposed: AtomicBoolean) :
+    class CustomLazyViewModelTestContext(coroutineScope: CoroutineScope) :
         LazyViewModelTestContext<ViewModel>(coroutineScope, { ViewModel() }) {
+
         override fun dispose() {
             isDisposed.value = true
         }
     }
 
-    override fun CoroutineScope.createTestContext(): CustomLazyViewModelTestContext =
-        CustomLazyViewModelTestContext(this, isDisposed)
+    override val createTestContext: suspend (scope: CoroutineScope) -> CustomLazyViewModelTestContext =
+        { CustomLazyViewModelTestContext(it) }
 
     @Test
     fun testMainThreadViewModelTest() = testOnUIThread {
@@ -72,6 +72,11 @@ class LazyUIThreadViewModelTestTest : UIThreadViewModelTest<CustomLazyViewModelT
         }
     }
 
+    @BeforeTest
+    fun resetDisposed() {
+        isDisposed.value = false
+    }
+
     @AfterTest
     fun testDisposed() {
         assertTrue(isDisposed.value)
@@ -87,7 +92,7 @@ class CustomUIThreadViewModelTestTest : UIThreadViewModelTest<CustomViewModelTes
         override val viewModel: MyViewModel = MyViewModel(mockAlertBuilder)
     }
 
-    override fun CoroutineScope.createTestContext(): CustomViewModelTestContext = CustomViewModelTestContext()
+    override val createTestContext: suspend (scope: CoroutineScope) -> CustomViewModelTestContext = { CustomViewModelTestContext() }
 
     @Test
     fun testCustomUIThreadViewModelTest() = testOnUIThread {
