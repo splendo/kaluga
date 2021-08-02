@@ -22,6 +22,6 @@ actual data class UUID(val uuidString: String)
 actual val UUID.uuidString: String
     get() = uuidString
 
-internal actual fun unsafeUUIDFrom(uuidString: String):UUID = UUID(uuidString = uuidString)
+internal actual fun unsafeUUIDFrom(uuidString: String): UUID = UUID(uuidString = uuidString)
 
 actual fun randomUUID(): UUID = UUID(randomUUIDString())
