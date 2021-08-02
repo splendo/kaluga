@@ -18,16 +18,16 @@
 package com.splendo.kaluga.state
 
 import com.splendo.kaluga.base.runBlocking
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 class ColdStateRepoTest : BaseTest() {
 
@@ -57,20 +57,19 @@ class ColdStateRepoTest : BaseTest() {
     @Test
     fun testLaterCollectionsCallsInitialState() = runBlocking {
         val repo = Repo()
-        val jobCompletion = EmptyCompletableDeferred()
-        val job = launch {
-            repo.collect {
-                jobCompletion.complete()
-            }
+        for(times in 1..2) {
+           repo.testCollectionIsCalledTimes(times)
         }
-        jobCompletion.await()
-        job.cancel()
+    }
 
-        val job2 = launch { repo.collect() }
-        delay(1000)
-        repo.useState {
-            assertTrue { it.initialStateCounter.value == 2 }
+    private suspend fun Repo.testCollectionIsCalledTimes(times: Int) {
+        val job = launch { collect() }
+        delay(100)
+        useState {
+            val isCalledTimes = it.initialStateCounter.filter { it == times }.first()
+            assertEquals(times, isCalledTimes)
+            assertEquals(CircuitState.Open, it)
         }
-        job2.cancel()
+        job.cancel()
     }
 }
