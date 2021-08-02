@@ -20,11 +20,10 @@ package com.splendo.kaluga.state
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.test.Test
@@ -33,12 +32,11 @@ import kotlin.test.assertTrue
 class ColdStateRepoTest : BaseTest() {
 
     sealed class CircuitState : State() {
-        private val _initialStateCounter = MutableStateFlow(0)
-        val initialStateCounter = _initialStateCounter.asStateFlow()
+        val initialStateCounter = MutableStateFlow(0)
 
         override suspend fun initialState() {
             super.initialState()
-            _initialStateCounter.value++
+            initialStateCounter.value++
         }
 
         object Open : CircuitState()
@@ -46,23 +44,13 @@ class ColdStateRepoTest : BaseTest() {
     }
 
     class Repo : ColdStateRepo<CircuitState>() {
-        val initialCompletion = CompletableDeferred<State>()
-        val deinitCompletion = CompletableDeferred<State>()
-
-        val lastKnownState = MutableStateFlow<CircuitState?>(null)
-
         override suspend fun initialValue(): CircuitState {
-            return when (lastKnownState.value) {
-                is CircuitState.Open -> CircuitState.Open
-                is CircuitState.Closed, null -> CircuitState.Closed
-            }.also {
-                initialCompletion.complete(it)
-            }
+            debug("ColdStateRepoTest") { "initialValue" }
+            return CircuitState.Open
         }
 
         override suspend fun deinitialize(state: CircuitState) {
-            lastKnownState.value = state
-            deinitCompletion.complete(state)
+            debug("ColdStateRepoTest") { "deinitialize" }
         }
     }
 
