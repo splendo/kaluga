@@ -25,7 +25,7 @@ import kotlin.test.assertEquals
 
 class BluetoothAdvertisementTest: BluetoothFlowTest<BaseAdvertisementData>() {
 
-    override val flow: suspend () -> Flow<BaseAdvertisementData> = {
+    override val flow: () -> Flow<BaseAdvertisementData> = {
         setup(Setup.DEVICE)
         bluetooth.devices()[device.identifier].advertisement()
     }

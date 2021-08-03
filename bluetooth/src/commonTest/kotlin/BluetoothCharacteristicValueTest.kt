@@ -17,16 +17,14 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class BluetoothCharacteristicValueTest : BluetoothFlowTest<ByteArray?>() {
 
-    override val flow: suspend () -> Flow<ByteArray?> = {
+    override val flow: () -> Flow<ByteArray?> = {
         setup(Setup.CHARACTERISTIC)
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].value()
     }
