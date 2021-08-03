@@ -49,10 +49,6 @@ import com.splendo.kaluga.test.MockPermissionStateRepo
 
 class MockPermissionsBuilder : PermissionsBuilder() {
 
-    init {
-        registerAllPermissionsBuilders()
-    }
-
     private val _cameraPMManager = AtomicReference<MockPermissionManager<CameraPermission>?>(null)
     var cameraPMManager: MockPermissionManager<CameraPermission>?
         get() = _cameraPMManager.get()
@@ -157,8 +153,7 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         }
         register(locationPMBuilder, LocationPermission::class).also { builder ->
             registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<LocationPermission>()
-                // LocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
+                LocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
             }
         }
         register(calendarPMBuilder, CalendarPermission::class).also { builder ->
