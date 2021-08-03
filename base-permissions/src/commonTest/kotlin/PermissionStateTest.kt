@@ -37,7 +37,7 @@ class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermi
         it.filterOnlyImportant()
     }
 
-    override val flow: () -> MockPermissionStateRepo = { MockPermissionStateRepo() }
+    override val flow = { MockPermissionStateRepo() }
 
     @Test
     fun testInitialState() = testWithFlow { permissionStateRepo ->
