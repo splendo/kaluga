@@ -25,7 +25,7 @@ import kotlin.test.assertNull
 
 class BluetoothDeviceTest:BluetoothFlowTest<Device?>() {
 
-    override val flow: suspend () -> Flow<Device?> = {
+    override val flow: () -> Flow<Device?> = {
         setup(Setup.DEVICE)
         bluetooth.devices()[device.identifier]
     }

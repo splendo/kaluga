@@ -26,7 +26,7 @@ import kotlin.test.assertNull
 
 class BluetoothDescriptorTest: BluetoothFlowTest<Descriptor?>() {
 
-    override val flow: suspend () -> Flow<Descriptor?> = {
+    override val flow: () -> Flow<Descriptor?> = {
         setup(Setup.DESCRIPTOR)
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid]
     }

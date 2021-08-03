@@ -26,7 +26,7 @@ import kotlin.test.assertTrue
 
 class BluetoothCharacteristicValueTest : BluetoothFlowTest<ByteArray?>() {
 
-    override val flow: suspend () -> Flow<ByteArray?> = {
+    override val flow: () -> Flow<ByteArray?> = {
         setup(Setup.CHARACTERISTIC)
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].value()
     }

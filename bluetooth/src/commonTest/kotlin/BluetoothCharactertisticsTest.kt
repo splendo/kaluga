@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 
 class BluetoothCharacteristicsTest: BluetoothFlowTest<List<Characteristic>>() {
 
-    override val flow: suspend () -> Flow<List<Characteristic>> = {
+    override val flow: () -> Flow<List<Characteristic>> = {
         setup(Setup.SERVICE)
 
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()

@@ -32,7 +32,7 @@ class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
         ensureNeverFrozen()
     }
 
-    override val flow: suspend () -> Flow<List<Device>> = {
+    override val flow: () -> Flow<List<Device>> = {
         setup(Setup.BLUETOOTH)
         bluetooth.devices()
     }

@@ -26,7 +26,7 @@ import kotlin.test.assertEquals
 
 class BluetoothRssiTest: BluetoothFlowTest<Int>() {
 
-    override val flow: suspend () -> Flow<Int> = {
+    override val flow: () -> Flow<Int> = {
         setup(Setup.DEVICE)
         bluetooth.devices()[device.identifier].rssi()
     }
