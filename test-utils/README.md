@@ -157,7 +157,7 @@ In this example we extend `SimpleFlowTest` and run our test function with `testW
 ```kotlin
 
 class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
-    override val flow: () -> Flow<Int> = { flowOf(1, 2, 3) }
+    override val flow: suspend () -> Flow<Int> = { flowOf(1, 2, 3) }
 
     @Test
     // use testWithFlow to run the test

@@ -71,5 +71,5 @@ class FlowTestTest : FlowTest<String, MutableStateFlow<String>>() {
         it.subscriptionCount.filter { it == 0 }.first()
     }
 
-    override val flow = { MutableStateFlow("") }
+    override val flow = suspend { MutableStateFlow("") }
 }

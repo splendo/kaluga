@@ -50,7 +50,7 @@ abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T, MutableSharedFlow<T>>) = runBlocking {
        object:FlowTest<T, MutableSharedFlow<T>>(this@runBlocking) {
-           override val flow = { mutableSharedFlow() }
+           override val flow = suspend { mutableSharedFlow() }
        }.testWithFlow(block)
     }
     abstract fun mutableSharedFlow(): MutableSharedFlow<T>
@@ -65,7 +65,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseF
     override val flowFromTestContext: suspend EmptyTestContext.() -> F =
         { flow() }
 
-    abstract val flow: () -> F
+    abstract val flow: suspend () -> F
 
     fun testWithFlow(block: FlowTestBlock<T, F>) =
         super.testWithFlowAndTestContext(createFlowInMainScope = false) {
