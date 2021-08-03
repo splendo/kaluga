@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

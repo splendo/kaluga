@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
 
 
-    override val flow: suspend () -> NetworkStateRepo = { MockNetworkStateRepoBuilder().create() }
+    override val flow: () -> NetworkStateRepo = { MockNetworkStateRepoBuilder().create() }
 
     private fun testNetworkState(test: FlowTestBlock<NetworkState, NetworkStateRepo>) {
         testWithFlow(test)

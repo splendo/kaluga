@@ -77,7 +77,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
     private lateinit var permissionManager: MockPermissionManager<Permission.Location>
     private lateinit var locationManager: MockLocationManager
 
-    override val flow = suspend { locationStateRepo }
+    override val flow = { locationStateRepo }
 
     lateinit var locationStateRepo: LocationStateRepo
 
