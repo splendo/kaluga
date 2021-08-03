@@ -48,15 +48,14 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
     }
 
     override val flow: () -> Flow<ScanningState> = {
-        setup(DEVICE)
         runBlocking {
+            setup(DEVICE)
             bluetooth.scanningStateRepo.takeAndChangeState(remainIfStateNot = NotInitialized::class) {
                 it.initialize(bluetooth.scanningStateRepo)
             }
+            bluetooth.scanningStateRepo.filterOnlyImportant()
         }
-        bluetooth.scanningStateRepo.filterOnlyImportant()
     }
-
 
     @Test
     fun testStartWithBluetoothEnabled() = testWithFlow {

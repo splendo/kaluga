@@ -28,8 +28,10 @@ import kotlin.test.assertTrue
 class BluetoothScanTest: BluetoothFlowTest<Boolean>() {
 
     override val flow: () -> Flow<Boolean> = {
-        setup(Setup.BLUETOOTH)
-        runBlocking { bluetooth.isScanning() }
+        runBlocking {
+            setup(Setup.BLUETOOTH)
+            bluetooth.isScanning()
+        }
     }
 
     @Test
