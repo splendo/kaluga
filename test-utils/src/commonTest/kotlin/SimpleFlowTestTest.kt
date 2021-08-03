@@ -28,7 +28,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
-    override val flow: () -> Flow<Int> = { flowOf(1, 2, 3) }
+    override val flow = suspend { flowOf(1, 2, 3) }
 
     @Test
     // use testWithFlow to run the test
@@ -59,7 +59,7 @@ class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
 
 class SimpleFlowTestTest: SimpleFlowTest<Int>() {
 
-    override val flow = { MutableStateFlow(1) }
+    override val flow = suspend { MutableStateFlow(1) }
 
     @Test
     fun testFlowActionFirst() = testWithFlow { flow ->

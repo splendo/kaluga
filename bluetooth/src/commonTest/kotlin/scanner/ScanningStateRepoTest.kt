@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth.scanner
 
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
@@ -47,14 +46,12 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
         it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new })
     }
 
-    override val flow: () -> Flow<ScanningState> = {
-        runBlocking {
-            setup(DEVICE)
-            bluetooth.scanningStateRepo.takeAndChangeState(remainIfStateNot = NotInitialized::class) {
-                it.initialize(bluetooth.scanningStateRepo)
-            }
-            bluetooth.scanningStateRepo.filterOnlyImportant()
+    override val flow = suspend {
+        setup(DEVICE)
+        bluetooth.scanningStateRepo.takeAndChangeState(remainIfStateNot = NotInitialized::class) {
+            it.initialize(bluetooth.scanningStateRepo)
         }
+        bluetooth.scanningStateRepo.filterOnlyImportant()
     }
 
     @Test

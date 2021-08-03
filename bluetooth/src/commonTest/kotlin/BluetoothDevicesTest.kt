@@ -21,7 +21,6 @@ import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
-import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -31,7 +30,7 @@ class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
         ensureNeverFrozen()
     }
 
-    override val flow: () -> Flow<List<Device>> = {
+    override val flow = suspend {
         setup(Setup.BLUETOOTH)
         bluetooth.devices()
     }

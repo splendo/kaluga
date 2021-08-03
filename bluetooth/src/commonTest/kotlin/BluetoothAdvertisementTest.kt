@@ -19,13 +19,12 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
-import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class BluetoothAdvertisementTest: BluetoothFlowTest<BaseAdvertisementData>() {
 
-    override val flow: () -> Flow<BaseAdvertisementData> = {
+    override val flow = suspend {
         setup(Setup.DEVICE)
         bluetooth.devices()[device.identifier].advertisement()
     }

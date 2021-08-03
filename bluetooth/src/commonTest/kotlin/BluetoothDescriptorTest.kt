@@ -17,14 +17,13 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 class BluetoothDescriptorTest: BluetoothFlowTest<Descriptor?>() {
 
-    override val flow: () -> Flow<Descriptor?> = {
+    override val flow = suspend {
         setup(Setup.DESCRIPTOR)
         bluetooth.devices()[device.identifier].services()[service.uuid].characteristics()[characteristic.uuid].descriptors()[descriptor.uuid]
     }
