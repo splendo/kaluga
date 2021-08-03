@@ -70,9 +70,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main + testCoroutine)
 
-    private val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder().apply {
-        registerAllPermissionsBuilders()
-    }
+    private val permissionsBuilder: MockPermissionsBuilder = MockPermissionsBuilder()
     private val permissions = Permissions(permissionsBuilder, coroutineContext = coroutineScope.coroutineContext)
     private val locationStateRepoBuilder = MockLocationStateRepoBuilder(permissions)
 
@@ -550,7 +548,7 @@ class LocationStateTest : FlowTest<LocationState, LocationStateRepo>() {
 
         locationStateRepo = locationStateRepoBuilder.create(locationPermission, autoRequestPermission, autoEnableLocations, coroutineScope.coroutineContext)
         locationManager = locationStateRepoBuilder.locationManager
-        permissionManager = permissionsBuilder.locationPMManager
+        permissionManager = permissionsBuilder.locationPMManager!!
 
         testWithFlow(test)
     }
