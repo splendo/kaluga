@@ -63,7 +63,6 @@ class BluetoothUUIDTest: BaseTest() {
         }
     }
 
-    @ExperimentalStdlibApi
     @Test
     fun uuidFrom__short_format__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
         assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFrom("0000").uuidString.lowercase())
