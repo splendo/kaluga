@@ -229,7 +229,7 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
         if (!distance.isNaN())
             lastNResults.add(distance)
         if (lastNResults.isNotEmpty())
-            lastNResults.reduce { acc, d -> acc + d } / lastNResults.size.toDouble()
+            lastNResults.average()
         else
             Double.NaN
     }
