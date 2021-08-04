@@ -23,18 +23,14 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
-import com.splendo.kaluga.architecture.observable.BaseSimpleDisposable
-import com.splendo.kaluga.architecture.observable.BasicSubject
-import com.splendo.kaluga.architecture.observable.Initialized
-import com.splendo.kaluga.architecture.observable.ObservableOptional
-import com.splendo.kaluga.architecture.observable.Uninitialized
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.jvm.isAccessible
 
 actual interface WithState<T> {
     actual val stateFlow:StateFlow<T>
@@ -55,11 +51,14 @@ private fun <B, R:T, T, OO: ObservableOptional<R>> B.mutableLiveData(): MutableL
     return mediatorLiveData
 }
 
-fun <T> LiveData<T>.observeOnCoroutine(coroutineScope: CoroutineScope, observer: Observer<T>) {
-    coroutineScope.launch(Dispatchers.Main.immediate) {
+fun <T> LiveData<T>.observeOnCoroutine(
+    coroutineScope: CoroutineScope,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    observer: Observer<T>
+) {
+    coroutineScope.launch(coroutineContext) {
         observeForever(observer)
-        val neverCompleting = EmptyCompletableDeferred()
-        neverCompleting.await()
+        awaitCancellation()
     }.invokeOnCompletion {
         removeObserver(observer)
     }
@@ -70,12 +69,29 @@ actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual con
     stateFlowToBind:()-> StateFlow<R?>
 ): AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
-    abstract val mutableLiveData: MutableLiveData<R>
+    private lateinit var coroutineScope: CoroutineScope
+    val mutableLiveData: MutableLiveData<R> by lazy {
+        createLiveData().also {
+            if (this::coroutineScope.isInitialized) {
+                it.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+            }
+        }
+    }
+    protected abstract fun createLiveData(): MutableLiveData<R>
     abstract fun liveDataObserver(): Observer<R>
 
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
-        mutableLiveData.observeOnCoroutine(coroutineScope, liveDataObserver())
+        this.coroutineScope = coroutineScope
+        this::mutableLiveData.let { liveDataProperty ->
+            val accessibility = liveDataProperty.isAccessible
+            liveDataProperty.isAccessible = true
+            if ((liveDataProperty.getDelegate() as Lazy<*>).isInitialized()) {
+                mutableLiveData.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+            }
+            liveDataProperty.isAccessible = accessibility
+        }
+
     }
 }
 
@@ -83,19 +99,19 @@ actual abstract class BaseUninitializedSubject<T> actual constructor(
     observation: ObservationUninitialized<T>
 ): AbstractBaseUninitializedSubject<T>(observation) {
 
-    override val mutableLiveData: MutableLiveData<T> by lazy {
+    override fun createLiveData(): MutableLiveData<T> {
         val mediatorLiveData = MediatorLiveData<T>()
         mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
             mediatorLiveData.postValue(value)
         }
-        mediatorLiveData
+        return mediatorLiveData
     }
     override fun liveDataObserver() = Observer<T> { value -> value?.let { post(it) } }
 }
 
 actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
-    override val mutableLiveData: MutableLiveData<T> by lazy { this.mutableLiveData() }
+    override fun createLiveData(): MutableLiveData<T> = this.mutableLiveData()
     override fun liveDataObserver() = liveDataObserver
 
     actual constructor(
@@ -108,7 +124,7 @@ actual abstract class BaseDefaultSubject<R:T?, T> actual constructor(
     observation: ObservationDefault<R, T?>
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 
-    override val mutableLiveData: MutableLiveData<R> = this.mutableLiveData()
+    override fun createLiveData(): MutableLiveData<R> = this.mutableLiveData()
     override fun liveDataObserver() = Observer<R> { post(it) }
 
     actual constructor(
