@@ -109,8 +109,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is Disabled)
         }
 
-        // TODO:
-        // val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
 
         action {
             mockBaseScanner().requestEnableCompleted.get().await()
