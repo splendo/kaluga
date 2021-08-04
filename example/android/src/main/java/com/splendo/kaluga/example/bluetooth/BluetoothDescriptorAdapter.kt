@@ -63,7 +63,6 @@ class BluetoothDescriptorAdapter(private val lifecycleOwner: LifecycleOwner) : R
         holder.descriptorItem.viewModel = descriptors[position]
     }
 
-    @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothDescriptorItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 

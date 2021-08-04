@@ -85,8 +85,6 @@ import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureL
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
 import java.net.URL
 
-//import com.splendo.kaluga.bluetooth.device.*
-
 val utilitiesModule = module {
     single { Permissions(PermissionsBuilder()) }
     single { LocationStateRepoBuilder() }
