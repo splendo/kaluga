@@ -51,7 +51,13 @@ expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBui
  * @param builder The [LocationPermissionManagerBuilder] for creating the [LocationPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class LocationPermissionStateRepo(location: LocationPermission, builder: BaseLocationPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<LocationPermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<LocationPermission> = builder.create(location, this)
+class DefaultLocationPermissionStateRepo(
+    location: LocationPermission,
+    builder: BaseLocationPermissionManagerBuilder,
+    coroutineContext: CoroutineContext
+) : LocationPermissionStateRepo(coroutineContext = coroutineContext){
+    override val permissionManager: PermissionManager<LocationPermission> =
+        builder.create(location, this)
 }
+
+abstract class LocationPermissionStateRepo(coroutineContext: CoroutineContext) : PermissionStateRepo<LocationPermission>(coroutineContext = coroutineContext)

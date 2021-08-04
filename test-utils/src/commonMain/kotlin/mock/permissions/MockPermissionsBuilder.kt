@@ -18,7 +18,9 @@
 package com.splendo.kaluga.test.mock.permissions
 
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.permissions.PermissionManager
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -46,6 +48,11 @@ import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.MockPermissionStateRepo
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class MockPermissionsBuilder : PermissionsBuilder() {
 
@@ -116,8 +123,9 @@ class MockPermissionsBuilder : PermissionsBuilder() {
 
     private val locationPMBuilder: BaseLocationPermissionManagerBuilder = object : BaseLocationPermissionManagerBuilder {
         override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-            locationPMManager = MockPermissionManager(repo)
-            return locationPMManager!!
+            return MockPermissionManager(repo).also {
+                locationPMManager = it
+            }
         }
     }
 
@@ -153,7 +161,7 @@ class MockPermissionsBuilder : PermissionsBuilder() {
         }
         register(locationPMBuilder, LocationPermission::class).also { builder ->
             registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
-                LocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
+                MockLocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
             }
         }
         register(calendarPMBuilder, CalendarPermission::class).also { builder ->
@@ -185,6 +193,19 @@ class MockPermissionsBuilder : PermissionsBuilder() {
             registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<NotificationsPermission>()
             }
+        }
+    }
+
+    private class MockLocationPermissionStateRepo(
+        location: LocationPermission,
+        builder: BaseLocationPermissionManagerBuilder,
+        coroutineContext: CoroutineContext
+    ) : LocationPermissionStateRepo(coroutineContext) {
+        private val _permissionManager = AtomicReference<PermissionManager<LocationPermission>?>(null)
+        override val permissionManager: PermissionManager<LocationPermission> by lazy { _permissionManager.get()!! }
+
+        init {
+            _permissionManager.set(builder.create(location, this))
         }
     }
 }

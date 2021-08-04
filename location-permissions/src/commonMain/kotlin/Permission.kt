@@ -30,7 +30,7 @@ data class LocationPermission(val background: Boolean = false, val precise: Bool
 fun PermissionsBuilder.registerLocationPermission()  =
     registerLocationPermissionBuilder(context).also { builder ->
         registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
-            LocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
+            DefaultLocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
         }
     }
 
