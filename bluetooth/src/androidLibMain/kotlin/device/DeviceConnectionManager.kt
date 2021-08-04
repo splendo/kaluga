@@ -45,7 +45,7 @@ internal actual class DeviceConnectionManager(
     connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
     stateRepo: DeviceStateFlowRepo,
-    val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // Implementation wanted some things to run on the main thread explicitly, however for testing it might make sense to replace this
+    val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // can be replaced for testing
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo), CoroutineScope by stateRepo {
 
     private companion object {
