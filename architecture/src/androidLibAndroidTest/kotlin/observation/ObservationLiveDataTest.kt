@@ -126,6 +126,17 @@ class ObservationLiveDataTest: BaseTest() {
     }
 
     @Test
+    fun testMutableLiveData() = testBlockingAndCancelScope {
+        val flow = MutableStateFlow("initial")
+        val subject = flow.toInitializedSubject(this)
+        withContext(Dispatchers.Main) {
+            val liveData = subject.mutableLiveData
+            liveData.value = "value"
+            assertEquals("value", flow.value)
+        }
+    }
+
+    @Test
     fun testLiveDataObserveOnCoroutine() = testBlockingAndCancelScope {
         val liveData = MutableLiveData("value")
         assertFalse(liveData.hasObservers())
