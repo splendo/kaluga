@@ -23,10 +23,6 @@ import kotlin.test.assertEquals
 class BluetoothServicesTest: BluetoothFlowTest<List<Service>>() {
 
     override val flow = suspend {
-        // setupPermissions(this)
-        // setupBluetooth(coroutineScope = this)
-        // deviceWrapper = createDeviceWrapper()
-        // device = createDevice(deviceWrapper, coroutineScope = this)
         setup(Setup.SERVICE)
         bluetooth.devices()[device.identifier].services()
     }
