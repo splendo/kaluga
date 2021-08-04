@@ -22,6 +22,8 @@ import com.splendo.kaluga.test.BaseTest
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -70,27 +72,15 @@ class ColdStateFlowRepoTest:BaseTest() {
         }
 
         job.cancel()
-        delay(20)
+        delay(40)
         repo.useState { state ->
             assertEquals(deinit, state)
         }
 
-        val firstCollect2 = CompletableDeferred<State>()
-        val secondCollect2 = CompletableDeferred<State>()
-        val job2 = launch {
-            repo.collect {
-                if (!firstCollect2.isCompleted)
-                    firstCollect2.complete(it)
-                else if (!secondCollect2.isCompleted)
-                    secondCollect2.complete(it) // further calls are ignored
-            }
-        }
+        // we might get deinit first (this is not guaranteed), but this is already tested above
+        assertEquals(active, repo.filter { it != deinit }.first())
 
-        assertEquals(deinit, firstCollect2.await())
-        assertEquals(active, secondCollect2.await())
-
-        job2.cancel()
-        delay(20)
+        delay(40) // small delay to allow the counter collector to process the denint
         repo.useState { state ->
             assertEquals(deinit, state)
         }
