@@ -277,5 +277,5 @@ class StateRepoTest : FlowTest<TrafficLightState, TrafficLight>() {
         }
     }
 
-    override val flow = { TrafficLight() }
+    override val flow = suspend { TrafficLight() }
 }
