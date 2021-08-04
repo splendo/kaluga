@@ -33,7 +33,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import kotlin.jvm.JvmName
 import kotlinx.coroutines.CoroutineScope
@@ -114,7 +113,6 @@ class Bluetooth internal constructor(
             }
             is ScanningState.Initialized.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
-                    // d("devices: ${scanState.discovered}")
                     if (scanState.discovered.filter == scanMode.filter) {
                         scanState.discovered.devices
                     } else {
@@ -132,7 +130,6 @@ class Bluetooth internal constructor(
                 }
             }
             is ScanningState.Initialized.NoBluetooth -> {
-                info(LOG_TAG, "No Bluetooth ($scanState) in mode ($scanMode)")
                 emptyList()
             }
             is ScanningState.NotInitialized -> {
@@ -145,12 +142,10 @@ class Bluetooth internal constructor(
     }.distinctUntilChanged()
 
     override fun startScanning(filter: Set<UUID>) {
-        info(LOG_TAG, "Start Scanning for $filter")
         scanMode.value = ScanMode.Scan(filter)
     }
 
     override fun stopScanning() {
-        info(LOG_TAG, "Stop Scanning")
         scanMode.value = ScanMode.Stopped
     }
 
@@ -243,7 +238,7 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
         if (!distance.isNaN())
             lastNResults.add(distance)
         if (lastNResults.isNotEmpty())
-            lastNResults.reduce { acc, d -> acc + d } / lastNResults.size.toDouble()
+            lastNResults.average()
         else
             Double.NaN
     }

@@ -28,7 +28,6 @@ import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -87,14 +86,12 @@ actual class Scanner internal constructor(
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            info(TAG, "Powered On Did Update State")
             if (central.state == CBCentralManagerStatePoweredOn) {
                 isEnabledCompleted.complete()
             }
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
-            // info(TAG, "Did Discover Peripheral ${didDiscoverPeripheral.identifier.UUIDString}")
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
@@ -109,17 +106,14 @@ actual class Scanner internal constructor(
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            info(TAG, "Did Connect Peripheral ${didConnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didConnectPeripheral) { handleConnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            info(TAG, "Did Disconnect Peripheral ${didDisconnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            info(TAG, "Did Fail to Connect Peripheral ${didFailToConnectPeripheral.identifier.UUIDString}")
             handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
         }
     }
@@ -159,7 +153,6 @@ actual class Scanner internal constructor(
 
 
     override suspend fun stopScanning() {
-        info(TAG, "Stop Scanning")
         centralManagers.forEach { centralManager ->
             if (centralManager.state == CBCentralManagerStatePoweredOn) {
                 centralManager.stopScan()

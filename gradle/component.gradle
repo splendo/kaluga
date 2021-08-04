@@ -144,6 +144,7 @@ kotlin {
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
                 useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
+                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 enableLanguageFeature("InlineClasses")
             }
         }

@@ -77,77 +77,14 @@ sealed class ScanningState : State() {
 
         val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner)}
 
-        // TODO: verify better all below code is not needed any longer
-
-//        interface Permitted : HandleBeforeOldStateIsRemoved<ScanningState>,
-//            HandleAfterNewStateIsSet<ScanningState> {
-//            suspend fun initialState()
-//            suspend fun finalState()
-//        }
-
-//        class PermittedHandler(private val scanner: BaseScanner) : Permitted {
-
-//            override val revokePermission: suspend () -> NoBluetooth.MissingPermissions = {
-//                NoBluetooth.MissingPermissions(scanner)
-//            }
-
-//            override suspend fun afterNewStateIsSet(newState: ScanningState) {
-//                when (newState) {
-//                    // TODO: only Missing Permissions? Can't this be on that state?
-//                    is NoBluetooth.MissingPermissions -> scanner.stopMonitoringBluetooth()
-//                    else -> {
-//                    }
-//                }
-//            }
-//
-//            override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
-//                when (oldState) {
-//                    is NoBluetooth.MissingPermissions -> scanner.startMonitoringBluetooth()
-//                    else -> {
-//                    }
-//                }
-//            }
-
-//            override suspend fun initialState() {
-//                scanner.startMonitoringBluetooth()
-//            }
-//
-//            override suspend fun finalState() {
-//                scanner.stopMonitoringBluetooth()
-//            }
-//        }
-
         sealed class Enabled(
             val discovered: Discovered,
             protected val scanner: BaseScanner
         ) : Initialized(scanner) {
 
-//            override val revokePermission: suspend () -> NoBluetooth.MissingPermissions =
-//                permittedHandler.revokePermission
-
             val disable = suspend {
                 NoBluetooth.Disabled(scanner)
             }
-
-//            override suspend fun initialState() {
-//                super.initialState()
-//
-//                permittedHandler.initialState()
-//            }
-
-//            override suspend fun finalState() {
-//                super.finalState()
-//
-//                permittedHandler.finalState()
-//            }
-
-//            override suspend fun afterNewStateIsSet(newState: ScanningState) {
-//                permittedHandler.afterNewStateIsSet(newState)
-//            }
-//
-//            override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
-//                permittedHandler.beforeOldStateIsRemoved(oldState)
-//            }
 
             class Idle internal constructor(
                 previouslyDiscovered:Discovered,

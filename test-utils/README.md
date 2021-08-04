@@ -147,3 +147,51 @@ if not you can use lazy initialization:
 ```kotlin
 override val viewModel by lazy { MyViewModel(myArgs) }
 ```
+
+## Testing flows
+
+`BaseFlowTest` and derivative classes like `BaseKoinFlowTest`, `FlowTest` and `SimpleFlowTest` can be used to test Flows in a cross thread manner, with tests running in a test thread, and the flow being collected in a main thread.
+
+In this example we extend `SimpleFlowTest` and run our test function with `testWithFlow { }`
+
+```kotlin
+
+class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
+    override val flow: suspend () -> Flow<Int> = { flowOf(1, 2, 3) }
+
+    @Test
+    // use testWithFlow to run the test
+    fun test() = testWithFlow {
+        val complete = EmptyCompletableDeferred()
+
+        // tests values collected from the flow on the main thread asynchronously
+        test {
+            assertEquals(1, it)
+        }
+
+        test {
+            assertEquals(2, it)
+            delay(10)
+            complete.complete()
+        }
+        // wait for all asynchronous tests to be completed
+        action {
+            assertTrue(complete.isCompleted)
+        }
+        test {
+            assertEquals(3, it)
+        }
+        // no action needed, last test blocks will be run before test is complete
+    }
+}
+```
+
+This works by providing `action { }` and `test { }` blocks, where test blocks run asynchronously on the main thread, when there is a new value collected from the `Flow`, and action blocks are only run when all test blocks have been executed. `mainAction` can be used to run an action block on the main thread.
+
+The flow to be tested is provided through an abstract field (`flow` or `flowFromTestContext`) with closure that returns the flow. 
+
+Extending `BaseFlowTest` (or `BaseKoinFlowTest`) also allows for supplying a `TestContext`, since these classes extend `UIThreadTest`. `mainAction` blocks have this `TestContext` as its context, as does the `flowFromTestContext` closure.
+
+In particular for `BaseKoinFlowTest` this allows for Koin injected objects only from the main thread. 
+
+Kaluga itself uses these classes to test many of the flows (e.g. from `StateRepo`s), so more advanced example can be found throughout the codebase.
