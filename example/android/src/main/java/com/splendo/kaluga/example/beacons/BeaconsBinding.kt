@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.example.beacons
 
-import platform.CoreBluetooth.CBUUID
-import platform.Foundation.NSUUID
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
 
-actual typealias UUID = CBUUID
-
-actual val UUID.uuidString: String
-    get() = UUIDString
-
-internal actual fun unsafeUUIDFrom(uuidString: String) =
-    CBUUID.UUIDWithString(uuidString)
-
-actual fun randomUUID(): UUID {
-    return CBUUID.UUIDWithNSUUID(NSUUID.UUID())
+object BeaconsBinding {
+    @BindingAdapter("beacons")
+    @JvmStatic
+    fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {
+        val beaconsAdapter = view.adapter as? BeaconsAdapter ?: return
+        beaconsAdapter.beacons = beacons ?: emptyList()
+    }
 }

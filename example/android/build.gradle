@@ -57,6 +57,14 @@ android {
     buildFeatures.dataBinding = true
 }
 
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+        }
+    }
+}
+
 gradle.ext.component_type = gradle.ext.component_type_composeApp
 
 apply from: "../../gradle/android_compose.gradle"

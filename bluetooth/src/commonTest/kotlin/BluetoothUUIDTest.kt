@@ -27,7 +27,7 @@ import kotlin.test.fail
 class BluetoothUUIDTest: BaseTest() {
 
     @Test
-    fun randomUUID__it_generates_an_random_full_UUID() {
+    fun testRandomUUID() {
         val uuid = randomUUID()
 
         assertEquals(36, uuid.uuidString.length, "it should generate a long UUID")
@@ -37,7 +37,7 @@ class BluetoothUUIDTest: BaseTest() {
     }
 
     @Test
-    fun uuidFrom_invalid_string_uuid__it_throws_an_invalid_format_exception() {
+    fun testUUIDInvalidFormatException() {
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000-1234-1234-1234") }
         assertFailsWith<UUIDException.InvalidFormat> { uuidFrom("00000000") }
@@ -50,7 +50,7 @@ class BluetoothUUIDTest: BaseTest() {
     }
 
     @Test
-    fun uuidFrom_valid_string_uuid__it_creates_UUID() {
+    fun testUUIDFromValidString() {
         try {
             uuidFrom("00000000-1234-1234-1234-000000000000")
             uuidFrom("000ABCDF-1234-ABCD-BCDF-0000ABCDF000")
@@ -64,10 +64,10 @@ class BluetoothUUIDTest: BaseTest() {
     }
 
     @Test
-    fun uuidFrom__short_format__it_uses_base_bluetooth_UUID_to_create_log_UUID() {
-        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFrom("0000").uuidString.lowercase())
-        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFrom("12ab").uuidString.lowercase())
-        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFrom("12AB").uuidString.lowercase())
+    fun testUUIDFromShort() {
+        assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString.lowercase())
+        assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString.lowercase())
 
     }
 }

@@ -5,6 +5,7 @@
         <variable
             name="viewModel"
             type="com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel" />
+        <import type="com.splendo.kaluga.architecture.observable.BaseSubject"/>
 
     </data>
 
@@ -20,14 +21,14 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:hint="@{viewModel.nameHeader.stateFlow}"
-            app:errorEnabled="@{viewModel.isNameValid.stateFlow}">
+            android:hint="@{viewModel.nameHeader.liveData}"
+            app:errorEnabled="@{viewModel.isNameValid.liveData}">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.nameInput.stateFlow}"/>
+                android:text="@={viewModel.nameInput.mutableLiveData}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

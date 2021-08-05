@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,19 +15,15 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.example.ios.beacons
 
-import platform.CoreBluetooth.CBUUID
-import platform.Foundation.NSUUID
+import com.splendo.kaluga.bluetooth.beacons.Beacons
+import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import kotlinx.coroutines.MainScope
 
-actual typealias UUID = CBUUID
-
-actual val UUID.uuidString: String
-    get() = UUIDString
-
-internal actual fun unsafeUUIDFrom(uuidString: String) =
-    CBUUID.UUIDWithString(uuidString)
-
-actual fun randomUUID(): UUID {
-    return CBUUID.UUIDWithNSUUID(NSUUID.UUID())
+class KNBeaconsFramework {
+    val mainScope = MainScope()
+    val service = Beacons(
+        BluetoothBuilder().create(coroutineScope = mainScope),
+    )
 }
