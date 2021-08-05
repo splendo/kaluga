@@ -30,9 +30,9 @@ private object Constants {
     const val baseBluetoothUUID = "0000%s-0000-1000-8000-00805f9b34fb"
 }
 
-sealed class UUIDException : Exception() {
+sealed class UUIDException(message: String?) : Exception(message) {
     class InvalidFormat(uuidString: String) :
-        Exception("String '$uuidString' does not represent a valid UUID")
+        UUIDException("String '$uuidString' does not represent a valid UUID")
 }
 
 expect class UUID
