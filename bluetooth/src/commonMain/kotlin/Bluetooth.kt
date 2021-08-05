@@ -33,13 +33,13 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
-import com.splendo.kaluga.logging.info
 import com.splendo.kaluga.permissions.Permissions
 import kotlin.jvm.JvmName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -51,6 +51,14 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 
+interface BluetoothService {
+    fun startScanning(filter: Set<UUID> = emptySet())
+    fun stopScanning()
+    fun devices(): Flow<List<Device>>
+    suspend fun isScanning(): StateFlow<Boolean>
+    val isEnabled: Flow<Boolean>
+}
+
 class Bluetooth internal constructor(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
@@ -58,7 +66,7 @@ class Bluetooth internal constructor(
     autoEnableBluetooth: Boolean,
     scannerBuilder: BaseScanner.Builder,
     coroutineScope: CoroutineScope
-) : CoroutineScope by coroutineScope {
+) : BluetoothService, CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(
@@ -88,7 +96,7 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
             is ScanningState.Initialized.Enabled.Idle -> when(scanMode) {
                 is ScanMode.Scan -> {
@@ -105,7 +113,6 @@ class Bluetooth internal constructor(
             }
             is ScanningState.Initialized.Enabled.Scanning -> when (scanMode) {
                 is ScanMode.Scan -> {
-                    // d("devices: ${scanState.discovered}")
                     if (scanState.discovered.filter == scanMode.filter) {
                         scanState.discovered.devices
                     } else {
@@ -123,7 +130,6 @@ class Bluetooth internal constructor(
                 }
             }
             is ScanningState.Initialized.NoBluetooth -> {
-                info(LOG_TAG, "No Bluetooth ($scanState) in mode ($scanMode)")
                 emptyList()
             }
             is ScanningState.NotInitialized -> {
@@ -135,21 +141,19 @@ class Bluetooth internal constructor(
         }
     }.distinctUntilChanged()
 
-    fun startScanning(filter: Set<UUID> = emptySet()) {
-        info(LOG_TAG, "Start Scanning for $filter")
+    override fun startScanning(filter: Set<UUID>) {
         scanMode.value = ScanMode.Scan(filter)
     }
 
-    fun stopScanning() {
-        info(LOG_TAG, "Stop Scanning")
+    override fun stopScanning() {
         scanMode.value = ScanMode.Stopped
     }
 
-    suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    override suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
     }.stateIn(this)
 
-    val isEnabled = scanningStateRepo
+    override val isEnabled = scanningStateRepo
         .mapLatest { it is ScanningState.Initialized.Enabled }
 }
 
@@ -234,7 +238,7 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
         if (!distance.isNaN())
             lastNResults.add(distance)
         if (lastNResults.isNotEmpty())
-            lastNResults.reduce { acc, d -> acc + d } / lastNResults.size.toDouble()
+            lastNResults.average()
         else
             Double.NaN
     }

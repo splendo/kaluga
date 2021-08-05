@@ -61,6 +61,9 @@ actual class Scanner internal constructor(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
     ) : BaseScanner.Builder {
 
+        /**
+         * @param autoEnableBluetooth note this does not auto enable location at the moment, this is TODO
+         */
         override fun create(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,
@@ -141,7 +144,8 @@ actual class Scanner internal constructor(
     }
 
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
-    //TODO re-enable this private val locationEnabledMonitor = LocationManager.Builder(applicationContext).create(Permission.Location(precise = true, background = false)) { checkBluetoothEnabledChanged() }
+    //TODO re-enable this
+    // private val locationEnabledMonitor = LocationManager.Builder(applicationContext).create(Permission.Location(precise = true, background = false)) { checkBluetoothEnabledChanged() }
     private var shouldEnableLocation: Boolean = false
 
     override suspend fun scanForDevices(filter: Set<UUID>) {

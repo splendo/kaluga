@@ -18,21 +18,26 @@
 package com.splendo.kaluga.architecture.observation
 
 import androidx.lifecycle.MutableLiveData
-import com.splendo.kaluga.architecture.observable.liveData
 import com.splendo.kaluga.architecture.observable.liveDataObserver
+import com.splendo.kaluga.architecture.observable.observeOnCoroutine
 import com.splendo.kaluga.architecture.observable.toDefaultObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.BaseTest
 import com.splendo.kaluga.test.testBlockingAndCancelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class ObservationLiveDataTest: BaseTest() {
 
@@ -118,5 +123,35 @@ class ObservationLiveDataTest: BaseTest() {
         }
 
 
+    }
+
+    @Test
+    fun testMutableLiveData() = testBlockingAndCancelScope {
+        val flow = MutableStateFlow("initial")
+        val subject = flow.toInitializedSubject(this)
+        withContext(Dispatchers.Main) {
+            val liveData = subject.mutableLiveData
+            liveData.value = "value"
+            assertEquals("value", flow.value)
+        }
+    }
+
+    @Test
+    fun testLiveDataObserveOnCoroutine() = testBlockingAndCancelScope {
+        val liveData = MutableLiveData("value")
+        assertFalse(liveData.hasObservers())
+        val completedObserving = EmptyCompletableDeferred()
+        val job = launch(Dispatchers.Main) {
+            liveData.observeOnCoroutine(this, observer = {
+            })
+            assertTrue(liveData.hasObservers())
+            completedObserving.complete()
+        }
+        completedObserving.await()
+        assertTrue(liveData.hasObservers())
+        job.cancel()
+        // Wait for a fraction since Invoke on completion needs to be called
+        delay(100)
+        assertFalse(liveData.hasObservers())
     }
 }

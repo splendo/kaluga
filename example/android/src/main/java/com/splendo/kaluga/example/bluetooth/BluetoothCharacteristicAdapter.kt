@@ -64,7 +64,6 @@ class BluetoothCharacteristicAdapter(private val lifecycleOwner: LifecycleOwner)
         holder.characteristicItem.viewModel = characteristics[position]
     }
 
-    @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothCharacteristicItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 

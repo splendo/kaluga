@@ -45,11 +45,11 @@ class SimpleUIThreadTestTest : SimpleUIThreadTest() {
 }
 
 class UIThreadTestTest : UIThreadTest<UIThreadTestTest.MyTestContext>() {
-    inner class MyTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
+    class MyTestContext(coroutineScope: CoroutineScope) : TestContext, CoroutineScope by coroutineScope {
         var myContext = "myContext"
     }
 
-    override fun CoroutineScope.createTestContext(): MyTestContext = MyTestContext(this)
+    override val createTestContext: suspend (scope: CoroutineScope) -> MyTestContext = { MyTestContext(it) }
 
     @Test
     fun testUIThreadTest() = testOnUIThread {

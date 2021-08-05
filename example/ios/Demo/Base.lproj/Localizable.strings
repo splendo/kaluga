@@ -9,6 +9,7 @@
 "feature_location" = "Location";
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
+"feature_beacons" = "Beacons";
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
@@ -84,6 +85,9 @@
 "bluetooth_permissions_write" = "Write";
 "bluetooth_permissions_read_encrypted" = "Read Encrypted";
 "bluetooth_permissions_write_encrypted" = "Write Encrypted";
+
+"beacons_start_monitoring" = "Start Monitoring";
+"beacons_stop_monitoring" = "Stop Monitoring";
 
 "browser_button_text" = "Open browser";
 "links_instructions" = "Tapping \"Open browser\" will redirect you in a webpage.

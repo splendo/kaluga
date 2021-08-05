@@ -64,7 +64,6 @@ class BluetoothServiceAdapter(private val lifecycleOwner: LifecycleOwner) : Recy
         holder.serviceItem.viewModel = services[position]
     }
 
-    @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BluetoothServiceItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 
