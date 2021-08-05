@@ -521,7 +521,7 @@
 		7477FD4305C126F92DB837CC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				ORGANIZATIONNAME = Splendo;
+				ORGANIZATIONNAME = "Splendo Consulting B.V.";
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
 						DevelopmentTeam = 2732HQPVJP;
