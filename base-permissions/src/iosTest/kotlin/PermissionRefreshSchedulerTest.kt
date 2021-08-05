@@ -17,9 +17,19 @@
 
 package com.splendo.kaluga.permissions
 
+import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
+import com.splendo.kaluga.base.runBlocking
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.test.BaseTest
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.delay
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
-//FIXME: It uses storage but test is in base
-/*
 class PermissionRefreshSchedulerTest : BaseTest() {
 
     private lateinit var permissionsManager: MockStoragePermissionManager
@@ -68,17 +78,17 @@ class PermissionRefreshSchedulerTest : BaseTest() {
     }
 }
 
-private class MockStoragePermissionStateRepo : PermissionStateRepo<StoragePermission>() {
+private class MockStoragePermissionStateRepo : PermissionStateRepo<DummyPermission>() {
 
     override val permissionManager = MockStoragePermissionManager(this)
 }
 
-private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<StoragePermission>(mockPermissionRepo) {
+private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermissionStateRepo) : PermissionManager<DummyPermission>(mockPermissionRepo) {
 
     var didGrantPermission: AtomicReference<EmptyCompletableDeferred> = AtomicReference(EmptyCompletableDeferred())
     var didRevokePermission: AtomicReference<CompletableDeferred<Boolean>> = AtomicReference(CompletableDeferred())
 
-    var initialState: PermissionState<StoragePermission> = PermissionState.Denied.Requestable()
+    var initialState: PermissionState<DummyPermission> = PermissionState.Denied.Requestable()
 
     val hasRequestedPermission = EmptyCompletableDeferred()
     val hasStartedMonitoring = CompletableDeferred<Long>()
@@ -88,7 +98,7 @@ private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermis
         hasRequestedPermission.complete()
     }
 
-    override suspend fun initializeState(): PermissionState<StoragePermission> {
+    override suspend fun initializeState(): PermissionState<DummyPermission> {
         return initialState
     }
 
@@ -113,4 +123,3 @@ private class MockStoragePermissionManager(mockPermissionRepo: MockStoragePermis
         didRevokePermission.set(CompletableDeferred())
     }
 }
-*/
