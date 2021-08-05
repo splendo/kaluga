@@ -69,29 +69,24 @@ actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual con
     stateFlowToBind:()-> StateFlow<R?>
 ): AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
-    private lateinit var coroutineScope: CoroutineScope
-    val mutableLiveData: MutableLiveData<R> by lazy {
+    private var coroutineScope: CoroutineScope? = null
+    private val mutableLiveDataDelegate = lazy {
         createLiveData().also {
-            if (this::coroutineScope.isInitialized) {
+            coroutineScope?.let { coroutineScope ->
                 it.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
             }
         }
     }
+    val mutableLiveData by mutableLiveDataDelegate
     protected abstract fun createLiveData(): MutableLiveData<R>
     abstract fun liveDataObserver(): Observer<R>
 
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
         this.coroutineScope = coroutineScope
-        this::mutableLiveData.let { liveDataProperty ->
-            val accessibility = liveDataProperty.isAccessible
-            liveDataProperty.isAccessible = true
-            if ((liveDataProperty.getDelegate() as Lazy<*>).isInitialized()) {
-                mutableLiveData.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
-            }
-            liveDataProperty.isAccessible = accessibility
+        if (mutableLiveDataDelegate.isInitialized()) {
+            mutableLiveData.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
         }
-
     }
 }
 
