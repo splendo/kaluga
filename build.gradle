@@ -8,14 +8,14 @@ buildscript {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath "com.google.gms:google-services:4.3.4"
+        classpath "com.google.gms:google-services:4.3.8"
     }
 }
 
 plugins {
     id "convention.publication"
-    id 'org.jlleitschuh.gradle.ktlint' version '10.0.0'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.0.0'
+    id 'org.jlleitschuh.gradle.ktlint' version '10.1.0'
+    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.1.0'
 }
 
 allprojects {

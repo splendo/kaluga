@@ -112,7 +112,9 @@ open class ObservationDefault<R:T?, T>(
 
     override val stateFlow: MutableStateFlow<R> by lazy {
         MutableStateFlow(current).also { stateFlow ->
-            this.observeInitialized { stateFlow.value = it }
+            this.observeInitialized {
+                stateFlow.value = it
+            }
         }
     }
 
@@ -195,71 +197,72 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
                 field = value
             }
         }
-    val firstObservation = AtomicBoolean(false)
+
+    private val firstObservation = AtomicBoolean(false)
 
     var beforeObservedValueGet: ((OO) -> ObservableOptional<T>)? = null
 
-    internal val observable:ReadWriteProperty<Any?, OO> by lazy {
-        // everything is initialized within the local scope
-        val initialValue = this@Observation.initialValue
+    // alternate implementation with freezing references
 
-        @Suppress("SENSELESS_COMPARISON") // in case of incorrect initialization this can still be null
-        if (initialValue == null)
-            throw RuntimeException("Observing before class is initialized. Are you observing from the constructor of your observable?")
+    // This implementation's withContext below should freeze this reference if it's accessed from another thread
+    // but if all access is from the main thread it should not be frozen.
+    // if it does get frozen, instead the atomic reference is used to update into.
 
-        val initialValueResult = initialValue.asResult(defaultValue)
-        object : ReadWriteProperty<Any?, OO> {
-
-            // alternate implementation with freezing references
-
-            // This implementation's withContext below should freeze this reference if it's accessed from another thread
-            // but if all access is from the main thread it should not be frozen.
-            // if it does get frozen, instead the atomic reference is used to update into.
-            private var backingInternalValue:ObservableOptional<R> = initialValueResult
-            val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
-
-            var internalValue: ObservableOptional<R>
-                get() =
-                    runBlocking {
-                        withContext(context) {
-                            // we favour the frozen reference, since it should only filled if an update is done after freeze
-                            backingAtomicReference.get() ?: backingInternalValue
-                        }
-                    }
-                set(value) = runBlocking {
-                    withContext(context) {
-                        if (backingInternalValue.isFrozen)
-                            backingAtomicReference.set(value)
-                        else
-                            backingInternalValue = value
-                    }
-                }
-
-            override fun setValue(thisRef: Any?, property: KProperty<*>, value: OO) {
-                val oldValue = internalValue
-
-                val newValue: OO = value.asResult(defaultValue) as OO
-
-                if (oldValue != newValue) { // propagate state, not assignment
-                    internalValue = newValue
-                    // @Suppress("UNCHECKED_CAST") // OO should always be R
-                    val result = (newValue as? Value<*>)?.value as R
-
-                    runBlocking {
-                        withContext(context) {
-                            observers(this@Observation).forEach { it(result) }
-                        }
-                    }
-                }
-            }
-
-            override fun getValue(thisRef: Any?, property: KProperty<*>): OO {
-                if (firstObservation.compareAndSet(expected = false, new = true)) {
-                    onFirstObservation?.invoke()
-                }
-                return internalValue as OO
-            }
+    @Suppress("SENSELESS_COMPARISON") // if not initialized this can still happen
+    private var backingInternalValue:ObservableOptional<R>? = null
+        get() =
+            field ?: if (initialValue == null) // "lazy" var
+                throw RuntimeException("Observing before class is initialized. Are you observing from the constructor of your observable?")
+            else
+                initialValue.asResult(defaultValue)
+        set(value) {
+            checkNotNull(value) { "internal value can not be set to null"}
+            field = value
         }
+
+    private val backingAtomicReference = AtomicReference<ObservableOptional<R>?>(null)
+
+    @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
+    /**
+     * Normally you set a value assigning [observedValue],
+     * however if you are sure you are in the [context] this method can be called directly
+     *
+     * @param value the new value that will be observed
+     */
+    fun setValueUnconfined(value: ObservableOptional<T>): ObservableOptional<T> {
+        val v = value.asResult(defaultValue)
+        val before = backingAtomicReference.get() ?: backingInternalValue
+
+        if (before != v) {
+            // TODO: since our context is supposed to be single thread, we could use a @ThreadLocal similar to tracking observers
+            // This would only need to freeze the current result, or if possible a copy of it
+
+            if (!this@Observation.isFrozen) // if the parent is frozen we can no longer update this reference
+                backingInternalValue = v
+            else // if it's frozen use an atomic value
+                backingAtomicReference.set(v)
+
+            val result = (v as? Value<*>)?.value as R
+
+            observers(this@Observation).forEach {
+                it(result)
+            }
+            return v as ObservableOptional<T>
+        }
+        return before as ObservableOptional<T>
+    }
+
+    private fun getValue(): OO {
+        if (firstObservation.compareAndSet(expected = false, new = true)) {
+            onFirstObservation?.invoke()
+        }
+
+        return runBlocking {
+            withContext(context) {
+                // we favour the frozen reference, since it should only be filled if an update is done after freeze
+                backingAtomicReference.get() ?: backingInternalValue ?: error("unexpected null")
+            }
+        } as OO
     }
 
     /**
@@ -272,10 +275,16 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
      override fun observe(onNext: (R?) -> Unit): Disposable {
         return runBlocking<Disposable> {
             withContext(context) {
-                addObserver(this@Observation, onNext)
-                val lastResult = currentObserved
                 @Suppress("UNCHECKED_CAST") // OO<T> should be guaranteed
+                // send the value before adding
+                val lastResult = currentObserved
                 onNext((lastResult as? Value<*>)?.value as R)
+                addObserver(this@Observation, onNext)
+                // adding an observer often happens concurrently with initialization,
+                // if we detect a change in the current observed value we re-send it to the added observer
+                val newResult = currentObserved
+                if (newResult != lastResult)
+                    onNext((newResult as? Value<*>)?.value as R)
                 SimpleDisposable {
                     runBlocking {
                         withContext(context) {
@@ -290,29 +299,29 @@ open class Observation<R:T, T, OO:ObservableOptional<R>> (
     val currentObserved: OO
         get() = observedValue as OO
 
+    @Suppress("UNCHECKED_CAST")
     var observedValue:ObservableOptional<T>
         // use getter and setter to avoid lazy initialization of observable
         get() {
-            var observable by observable
             beforeObservedValueGet?.let { beforeObservedValueGet ->
-                val current = observable
+                val current = getValue()
                 val new = beforeObservedValueGet(current)
-                @Suppress("UNUSED_VALUE") // changing delegated value will have actual side effects
-                if (new != current) { // state not events
-                    observable = new.asResult(defaultValue) as OO
-                }
-                @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
-                return observable as ObservableOptional<T>
+                return if (new != current) // state not events
+                    runBlocking {
+                        withContext(context) {
+                            return@withContext setValueUnconfined(new)
+                        }
+                    }
+                else new
             }
-            @Suppress("UNCHECKED_CAST") // should always downcast as R extends T
-            return observable as ObservableOptional<T>
+            return getValue() as ObservableOptional<T>
         }
-        set(v) {
-            @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
-            var observable by observable
-            @Suppress("UNUSED_VALUE", "UNCHECKED_CAST") // should always downcast as R extends T
-            observable = v as OO
-        }
+        set(v) =
+            runBlocking {
+                withContext<Unit>(context) {
+                    setValueUnconfined(v)
+                }
+            }
 
     override val currentOrNull: R?
         get() = currentObserved.valueOrNull
@@ -512,7 +521,6 @@ abstract class AbstractBaseUninitializedSubject<T>(
 {
     override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> =
         observation.observedValue
-
 }
 
 expect abstract class BaseUninitializedSubject<T>(
@@ -541,7 +549,9 @@ class SimpleInitializedSubject<T>(
     constructor(initialValue: T, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(Value(initialValue), coroutineContext)
     constructor(initialValue: Value<T>, coroutineContext: CoroutineContext = Dispatchers.Main.immediate):this(ObservationInitialized(initialValue, coroutineContext))
 
-    override suspend fun set(newValue: T) = post(newValue)
+    override suspend fun set(newValue: T): Unit = withContext(observation.context) {
+        observation.setValueUnconfined(Value(newValue))
+    }
 
     override fun post(newValue: T) {
         observation.observedValue = Value(newValue)
@@ -563,8 +573,9 @@ class SimpleDefaultSubject<R:T?, T>(
         observation.observedValue = Value(newValue)
     }
 
-    override suspend fun set(newValue: T?) = post(newValue)
-
+    override suspend fun set(newValue: T?) = withContext<Unit>(observation.context) {
+        observation.setValueUnconfined(Value(newValue))
+    }
 }
 
 @Suppress("DELEGATED_MEMBER_HIDES_SUPERTYPE_OVERRIDE") // deliberate

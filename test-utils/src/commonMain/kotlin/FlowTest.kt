@@ -50,7 +50,7 @@ abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T, MutableSharedFlow<T>>) = runBlocking {
        object:FlowTest<T, MutableSharedFlow<T>>(this@runBlocking) {
-           override val flow = { mutableSharedFlow() }
+           override val flow = suspend { mutableSharedFlow() }
        }.testWithFlow(block)
     }
     abstract fun mutableSharedFlow(): MutableSharedFlow<T>
@@ -65,7 +65,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseF
     override val flowFromTestContext: suspend EmptyTestContext.() -> F =
         { flow() }
 
-    abstract val flow: () -> F
+    abstract val flow: suspend () -> F
 
     fun testWithFlow(block: FlowTestBlock<T, F>) =
         super.testWithFlowAndTestContext(createFlowInMainScope = false) {
@@ -198,9 +198,8 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
     @Suppress("SuspendFunctionOnCoroutineScope")
     private suspend fun startFlow(flow: F) {
         this.ensureNeverFrozen()
-        val testChannel = testChannel
-
         debug("launch flow scope...")
+        val testChannel = testChannel
         val started = EmptyCompletableDeferred()
         val filter = filter
         val scope = scope
@@ -279,7 +278,7 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
         }
         val completable = EmptyCompletableDeferred()
         tests.add(completable)
-        debug("${tests.size} in collection, offering")
+        debug("${tests.size} in collection (including this one), offering")
         testChannel.offer(Pair(test, completable))
     }
 }

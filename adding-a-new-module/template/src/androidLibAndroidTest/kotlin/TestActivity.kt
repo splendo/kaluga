@@ -1,8 +1,3 @@
-package com.splendo.kaluga.template
-
-import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-
 /*
 
 Copyright 2019 Splendo Consulting B.V. The Netherlands
@@ -20,6 +15,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
    limitations under the License.
 
 */
+
+package com.splendo.kaluga.template
+
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 
 class TestActivity : AppCompatActivity() {
 }
