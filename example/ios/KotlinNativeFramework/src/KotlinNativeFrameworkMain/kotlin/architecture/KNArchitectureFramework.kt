@@ -146,7 +146,6 @@ class KNArchitectureFramework {
         return BluetoothDeviceDetailViewModel(bluetooth, identifier)
     }
 
-    @ExperimentalStdlibApi
     fun createBeaconsListViewModel(parent: UIViewController, service: Beacons): BeaconsListViewModel {
         return BeaconsListViewModel(service)
     }

@@ -50,7 +50,6 @@ class BeaconsAdapter(private val lifecycleOwner: LifecycleOwner) : RecyclerView.
         holder.binding.viewModel = viewModel
     }
 
-    @ExperimentalStdlibApi
     override fun onViewAttachedToWindow(holder: BeaconItemViewHolder) {
         super.onViewAttachedToWindow(holder)
 

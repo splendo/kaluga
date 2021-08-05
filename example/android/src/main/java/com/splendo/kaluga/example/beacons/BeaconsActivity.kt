@@ -21,25 +21,21 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.forEach
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityBeaconsBinding
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-@ExperimentalStdlibApi
 class BeaconsActivity : KalugaViewModelActivity<BeaconsListViewModel>() {
 
     override val viewModel: BeaconsListViewModel by viewModel()
 
     private lateinit var adapter: BeaconsAdapter
 
-    @ExperimentalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

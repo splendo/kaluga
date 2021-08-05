@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListBeaconViewModel
 
 object BeaconsBinding {
-    @ExperimentalStdlibApi
     @BindingAdapter("beacons")
     @JvmStatic
     fun bindBeacons(view: RecyclerView, beacons: List<BeaconsListBeaconViewModel>?) {

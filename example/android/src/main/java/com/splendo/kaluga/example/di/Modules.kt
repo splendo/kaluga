@@ -96,7 +96,6 @@ val utilitiesModule = module {
     single { Beacons(get<Bluetooth>()) }
 }
 
-@ExperimentalStdlibApi
 val viewModelModule = module {
     viewModel {
         ExampleViewModel(
