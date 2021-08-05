@@ -38,7 +38,7 @@ class PermissionStateTest : FlowTest<PermissionState<Permission.Microphone>, Moc
         it.filterOnlyImportant()
     }
 
-    override val flow: suspend () -> MockPermissionStateRepo = { MockPermissionStateRepo() }
+    override val flow = suspend { MockPermissionStateRepo() }
 
     @Test
     fun testInitialState() = testWithFlow { permissionStateRepo ->

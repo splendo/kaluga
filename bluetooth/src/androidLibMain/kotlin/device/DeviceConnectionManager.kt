@@ -32,8 +32,7 @@ import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.logging.warn
+import com.splendo.kaluga.logging.w
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -45,7 +44,7 @@ internal actual class DeviceConnectionManager(
     connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
     stateRepo: DeviceStateFlowRepo,
-    val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // Implementation wanted some things to run on the main thread explicitly, however for testing it might make sense to replace this
+    val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // can be replaced for testing
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo), CoroutineScope by stateRepo {
 
     private companion object {
@@ -76,15 +75,12 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-            info(TAG, "onCharacteristicRead $gatt $characteristic $status")
             characteristic ?: return
             updateCharacteristic(characteristic)
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
-            info(TAG, "onCharacteristicWrite $gatt $characteristic $status")
             characteristic ?: return
-
             updateCharacteristic(characteristic)
         }
 
@@ -101,7 +97,6 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
-            info(TAG, "onCharacteristicChanged $gatt $characteristic")
             characteristic ?: return
             updateCharacteristic(characteristic)
         }
@@ -197,21 +192,18 @@ internal actual class DeviceConnectionManager(
                 if (action.enable) {
                     notifyingCharacteristics[uuid] = action.characteristic
                 } else notifyingCharacteristics.remove(uuid)
-                gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable).also {
-                    info(TAG, "setCharacteristicNotification result: $it")
-                }
+                gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable)
 
                 when {
                     action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                     action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
                     !action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
                     else -> {
-                        warn(TAG, "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}")
+                        w(TAG) { "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}" }
                         null
                     }
                 }?.let { value ->
                     action.characteristic.descriptors.forEach { descriptor ->
-                        info(TAG, "(${action.characteristic.uuid.uuidString}) writeValue 0x${value.toHexString()} to $descriptor")
                         descriptor.wrapper.updateValue(value)
                         gatt.await().writeDescriptor(descriptor.wrapper)
                     }

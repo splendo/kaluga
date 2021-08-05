@@ -230,5 +230,5 @@ class AndroidHUDTests : HUDTests<AndroidHUDTestContext>() {
         device.assertTextAppears("Activity")
     }
 
-    override fun CoroutineScope.createTestContext() = AndroidHUDTestContext(this)
+    override val createTestContext: suspend (scope: CoroutineScope) -> AndroidHUDTestContext = { AndroidHUDTestContext(it) }
 }

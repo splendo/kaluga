@@ -41,7 +41,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
     private lateinit var deviceStateRepo: Device
 
-    override val flow: suspend () -> Flow<DeviceState> = {
+    override val flow = suspend {
         setup(Setup.DESCRIPTOR)
         val connectionSettings = connectionSettings
         val deviceWrapper = deviceWrapper
@@ -57,9 +57,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         this.deviceStateRepo = deviceStateRepo
         connectionManager = deviceStateRepo.peekState().connectionManager as MockDeviceConnectionManager
         deviceStateRepo
-
     }
-
 
     @Test
     fun testInitialState() = testWithFlow {

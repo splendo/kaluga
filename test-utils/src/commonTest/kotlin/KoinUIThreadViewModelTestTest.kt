@@ -37,7 +37,7 @@ class KoinUIThreadViewModelTestTest :
         val s: String by inject() // test injecting into ViewModel
     }
 
-    inner class MyKoinViewModelTestContext :
+    class MyKoinViewModelTestContext :
         KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
             {
                 printLogger(Level.DEBUG) // not the default
@@ -55,8 +55,8 @@ class KoinUIThreadViewModelTestTest :
         val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
-    override fun CoroutineScope.createTestContext(): MyKoinViewModelTestContext =
-        MyKoinViewModelTestContext()
+    override val createTestContext: suspend (scope: CoroutineScope) -> MyKoinViewModelTestContext =
+        { MyKoinViewModelTestContext() }
 
     @Test
     fun testKoinViewModelTestContext() = testOnUIThread {

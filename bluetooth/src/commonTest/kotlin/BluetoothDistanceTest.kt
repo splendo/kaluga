@@ -24,7 +24,7 @@ import kotlin.test.assertEquals
 
 class BluetoothDistanceTest: BluetoothFlowTest<Double>() {
 
-    override val flow: suspend () -> Flow<Double> = {
+    override val flow = suspend {
         advertisementData = MockAdvertisementData(txPowerLevel = -50)
         rssi = -50
         setup(Setup.DEVICE)

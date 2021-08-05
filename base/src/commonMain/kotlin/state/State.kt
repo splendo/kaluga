@@ -387,7 +387,7 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }
                             FirstCollection -> firstCollection()
-                            LaterCollections -> laterCollections()
+                            LaterCollections -> laterCollections().also { it.initialState() }
                         }
                     }
                 }
@@ -397,7 +397,7 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
 
     abstract suspend fun firstCollection()
 
-    abstract suspend fun laterCollections()
+    abstract suspend fun laterCollections(): S
 
     abstract suspend fun noMoreCollections():S
 }
@@ -464,12 +464,12 @@ open class ColdStateFlowRepo<S:State>(
             }
         }
 
-    override suspend fun firstCollection() = laterCollections()
+    override suspend fun firstCollection() {
+        laterCollections()
+    }
 
-    override suspend fun laterCollections() {
-        takeAndChangeState { state ->
-            initChangeStateWithRepo(state, this@ColdStateFlowRepo)
-        }
+    override suspend fun laterCollections() = takeAndChangeState { state ->
+        initChangeStateWithRepo(state, this@ColdStateFlowRepo)
     }
 }
 
@@ -491,10 +491,8 @@ abstract class ColdStateRepo<S : State>(
         initialize()
     }
 
-    final override suspend fun laterCollections() {
-        takeAndChangeState {
-            { initialValue() }
-        }
+    final override suspend fun laterCollections() = takeAndChangeState {
+        { initialValue() }
     }
 
     final override suspend fun noMoreCollections(): S = takeAndChangeState {

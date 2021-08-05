@@ -46,15 +46,13 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
         it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new })
     }
 
-    override val flow: suspend () -> Flow<ScanningState> = {
+    override val flow = suspend {
         setup(DEVICE)
         bluetooth.scanningStateRepo.takeAndChangeState(remainIfStateNot = NotInitialized::class) {
             it.initialize(bluetooth.scanningStateRepo)
         }
-
         bluetooth.scanningStateRepo.filterOnlyImportant()
     }
-
 
     @Test
     fun testStartWithBluetoothEnabled() = testWithFlow {
@@ -111,8 +109,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is Disabled)
         }
 
-        // TODO:
-        // val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
 
         action {
             mockBaseScanner().requestEnableCompleted.get().await()

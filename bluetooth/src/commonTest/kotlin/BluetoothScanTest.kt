@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.Flow
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlin.test.Test
@@ -26,9 +26,11 @@ import kotlin.test.assertTrue
 
 class BluetoothScanTest: BluetoothFlowTest<Boolean>() {
 
-    override val flow: suspend () -> Flow<Boolean> = {
-        setup(Setup.BLUETOOTH)
-        bluetooth.isScanning()
+    override val flow = suspend {
+        runBlocking {
+            setup(Setup.BLUETOOTH)
+            bluetooth.isScanning()
+        }
     }
 
     @Test

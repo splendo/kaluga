@@ -141,8 +141,8 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
         val stringToPrint = when (arg) {
             null -> "null"
             is Char -> arg.toString()
-            is Byte -> arg.toChar().toString()
-            is Short -> arg.toChar().toString()
+            is Byte -> arg.toInt().toChar().toString()
+            is Short -> arg.toInt().toChar().toString()
             is Int -> arg.toChar().toString()
             else -> throw StringFormatterException.IllegalFormatConversionException(currentChar.char, arg)
         }
@@ -653,7 +653,7 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
                 continue
             }
             val c = value[j]
-            sb.append((c - '0' + zero.toInt()).toChar())
+            sb.append((c - '0' + zero.code).toChar())
             if (grpSep != '\u0000' && j != dot - 1 && (dot - j) % grpSize == 1) {
                 sb.append(grpSep)
             }
@@ -738,9 +738,9 @@ internal class FormatSpecifier(private val out: StringBuilder, matchResult: Matc
 
     private fun regularConversion(conv: Char): ParsingCharacter.RegularCharacter {
         var currentRegularChar = RegularFormatCharacter.parse(conv)
-        if (conv.toUpperCase() == conv && conv.toLowerCase() != conv) {
+        if (conv.uppercaseChar() == conv && conv.lowercaseChar() != conv) {
             flags.add(Flag.UPPERCASE)
-            currentRegularChar = RegularFormatCharacter.parse(conv.toLowerCase())
+            currentRegularChar = RegularFormatCharacter.parse(conv.lowercaseChar())
         }
         if (currentRegularChar.isText()) {
             index = -2
