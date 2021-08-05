@@ -37,6 +37,7 @@ rootProject.name = "Kaluga"
 includeBuild("convention-plugins")
 
 include(":base")
+include(":beacons")
 include(":bluetooth")
 include(":architecture")
 include(":architecture-compose")

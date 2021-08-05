@@ -22,6 +22,7 @@ import android.app.Activity
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
 import com.splendo.kaluga.example.InfoDialog
@@ -81,8 +82,10 @@ import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import com.splendo.kaluga.bluetooth.*
+import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import java.net.URL
 
 val utilitiesModule = module {
@@ -90,6 +93,7 @@ val utilitiesModule = module {
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
     single { BluetoothMonitor.Builder().create() }
+    single { Beacons(get<Bluetooth>()) }
 }
 
 val viewModelModule = module {
@@ -123,6 +127,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity(LinksActivity::class.java)
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
+                    FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
                 }
             }
         )
@@ -226,7 +231,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-
         BluetoothListViewModel(get(), get(), ActivityNavigator {
             NavigationSpec.Activity(BluetoothMoreActivity::class.java)
         })
@@ -236,4 +240,7 @@ val viewModelModule = module {
         BluetoothDeviceDetailViewModel(get(), identifier)
     }
 
+    viewModel {
+        BeaconsListViewModel(get())
+    }
 }

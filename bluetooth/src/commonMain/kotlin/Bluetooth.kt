@@ -39,6 +39,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
@@ -50,6 +51,14 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
 
+interface BluetoothService {
+    fun startScanning(filter: Set<UUID> = emptySet())
+    fun stopScanning()
+    fun devices(): Flow<List<Device>>
+    suspend fun isScanning(): StateFlow<Boolean>
+    val isEnabled: Flow<Boolean>
+}
+
 class Bluetooth internal constructor(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
@@ -57,7 +66,7 @@ class Bluetooth internal constructor(
     autoEnableBluetooth: Boolean,
     scannerBuilder: BaseScanner.Builder,
     coroutineScope: CoroutineScope
-) : CoroutineScope by coroutineScope {
+) : BluetoothService, CoroutineScope by coroutineScope {
 
     interface Builder {
         fun create(
@@ -87,7 +96,7 @@ class Bluetooth internal constructor(
 
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
-    fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
             is ScanningState.Initialized.Enabled.Idle -> when(scanMode) {
                 is ScanMode.Scan -> {
@@ -132,19 +141,19 @@ class Bluetooth internal constructor(
         }
     }.distinctUntilChanged()
 
-    fun startScanning(filter: Set<UUID> = emptySet()) {
+    override fun startScanning(filter: Set<UUID>) {
         scanMode.value = ScanMode.Scan(filter)
     }
 
-    fun stopScanning() {
+    override fun stopScanning() {
         scanMode.value = ScanMode.Stopped
     }
 
-    suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+    override suspend fun isScanning() = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         scanState is ScanningState.Initialized.Enabled.Scanning && scanMode is ScanMode.Scan
     }.stateIn(this)
 
-    val isEnabled = scanningStateRepo
+    override val isEnabled = scanningStateRepo
         .mapLatest { it is ScanningState.Initialized.Enabled }
 }
 

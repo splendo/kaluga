@@ -35,6 +35,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Keyboard : FeatureListNavigationAction()
     object Links : FeatureListNavigationAction()
     object System : FeatureListNavigationAction()
+    object Beacons : FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
@@ -48,6 +49,7 @@ sealed class Feature(val title: String) {
     object Permissions : Feature("feature_permissions".localized())
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
+    object Beacons : Feature("feature_beacons".localized())
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
@@ -62,7 +64,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
         Feature.LoadingIndicator,
         Feature.Location,
         Feature.Permissions,
-        Feature.System
+        Feature.System,
+        Feature.Beacons
     ))
 
     fun onFeaturePressed(feature: Feature) {
@@ -77,6 +80,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             is Feature.Location -> FeatureListNavigationAction.Location
             is Feature.Permissions -> FeatureListNavigationAction.Permissions
             Feature.System -> FeatureListNavigationAction.System
+            Feature.Beacons -> FeatureListNavigationAction.Beacons
         })
     }
 }
