@@ -63,7 +63,6 @@ class BluetoothUUIDTest: BaseTest() {
         }
     }
 
-    @ExperimentalStdlibApi
     @Test
     fun testUUIDFromShort() {
         assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString.lowercase())
