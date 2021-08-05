@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 abstract class ServiceMonitor {
 
-    protected val TAG: String = this::class.simpleName!!
+    protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
     abstract val isServiceEnabled: Boolean
 
