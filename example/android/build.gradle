@@ -13,7 +13,6 @@ repositories {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "1.8"
-        freeCompilerArgs += ['-Xopt-in=kotlin.ExperimentalStdlibApi']
     }
 }
 
@@ -56,6 +55,14 @@ android {
     }
 
     buildFeatures.dataBinding = true
+}
+
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+        }
+    }
 }
 
 gradle.ext.component_type = gradle.ext.component_type_composeApp
