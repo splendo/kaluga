@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel" />
+
+        <import type="android.view.View"/>
+        <import type="com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListDeviceViewModel.ConnectButtonState"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:onClick="@{view -> viewModel.toggleFoldOut()}">
+
+        <TextView
+            android:id="@+id/name"
+            style="@style/ListTitle"
+            android:text="@{viewModel.name.stateFlow}"
+            tools:text="@string/bluetooth_no_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/button_container"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/info_row"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="@id/name"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name">
+
+            <TextView
+                android:id="@+id/identifier"
+                style="@style/ListSubTitle"
+                android:text="@{viewModel.identifierString}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+
+            <TextView
+                android:id="@+id/rssi"
+                style="@style/ListSubTitle"
+                android:text="@{viewModel.rssi.stateFlow}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/txPower"
+                style="@style/ListSubTitle"
+                android:text="@{viewModel.txPower.stateFlow}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="@{viewModel.isTxPowerVisible().stateFlow ? View.VISIBLE : View.GONE}"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/button_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@id/info_row"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/name"
+            app:layout_constraintTop_toTopOf="@id/name"
+            android:visibility="@{viewModel.isConnectButtonVisible().stateFlow ? View.VISIBLE : View.GONE}">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/connect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bluetooth_connect"
+                android:onClick="@{view -> viewModel.onConnectPressed()}"
+                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Connect ? View.VISIBLE : View.GONE}"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/disconnect_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/bluetooth_disconnect"
+                android:onClick="@{view -> viewModel.onDisconnectPressed()}"
+                android:visibility="@{viewModel.connectButtonState.stateFlow == ConnectButtonState.Disconnect ? View.VISIBLE : View.GONE}" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/status"
+            style="@style/ListContent"
+            android:text="@{viewModel.status.stateFlow}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/info_row"
+            android:paddingBottom="12dp"/>
+
+        <LinearLayout
+            android:id="@+id/fold_out_block"
+            style="@style/ListFoldOut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/status"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:visibility="@{viewModel.isFoldedOut().stateFlow ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:id="@+id/service_uuids"
+                style="@style/ListContent"
+                android:text="@{viewModel.serviceUUIDs.stateFlow}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/service_data"
+                style="@style/ListContent"
+                android:text="@{viewModel.serviceData.stateFlow}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/manufacturer_id"
+                style="@style/ListContent"
+                android:text="@{viewModel.manufacturerId.stateFlow}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/manufacturer_data"
+                style="@style/ListContent"
+                android:text="@{viewModel.manufacturerData.stateFlow}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/more_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="@string/bluetooth_more"
+                android:visibility="@{viewModel.isMoreButtonVisible().stateFlow ? View.VISIBLE : View.GONE}"
+                android:onClick="@{view -> viewModel.onMorePressed()}"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -47,7 +47,7 @@ import kotlin.native.concurrent.SharedImmutable
 import kotlin.reflect.KClass
 
 @SharedImmutable
-val remain: suspend() -> State = { error("This should never be called. It's only used to indicate the state should remain the same") }
+private val remain: suspend() -> State = { error("This should never be called. It's only used to indicate the state should remain the same") }
 
 /**
  * State to be represented in a state machine
@@ -310,6 +310,11 @@ abstract class StateRepo<S : State, F:MutableSharedFlow<S>>(coroutineContext: Co
 // Somewhat similar to a ConflatedBroadcastChannel, which was used in the previous implementation
 inline fun <S> defaultLazySharedFlow():Lazy<MutableSharedFlow<S>> = lazy { MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST) }
 
+
+interface StateFlowRepo<S: State> {
+    val stateFlow: StateFlow<S>
+}
+
 /**
  * A [StateRepo] that represents its [State] as a Hot flow.
  */
@@ -321,9 +326,13 @@ abstract class HotStateRepo<S : State>(coroutineContext: CoroutineContext = Disp
 abstract class HotStateFlowRepo<S : State>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
     val initialState: (HotStateFlowRepo<S>) -> S
-    ) : BaseHotStateRepo<S, MutableStateFlow<S>>(coroutineContext) {
+) : StateFlowRepo<S>,
+    BaseHotStateRepo<S, MutableStateFlow<S>>(coroutineContext) {
 
     override val lazyMutableSharedFlow = lazy { MutableStateFlow(initialState(this)) }
+
+    override val stateFlow
+        get() = mutableFlow.asStateFlow()
 
     final override suspend fun initialValue(): S = mutableFlow.value
 }
@@ -378,7 +387,7 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
                         when (event) {
                             NoMoreCollections -> noMoreCollections().also { it.finalState() }
                             FirstCollection -> firstCollection()
-                            LaterCollections -> laterCollections()
+                            LaterCollections -> laterCollections().also { it.initialState() }
                         }
                     }
                 }
@@ -388,7 +397,7 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
 
     abstract suspend fun firstCollection()
 
-    abstract suspend fun laterCollections()
+    abstract suspend fun laterCollections(): S
 
     abstract suspend fun noMoreCollections():S
 }
@@ -403,12 +412,26 @@ abstract class BaseColdStateRepo<S:State, F:MutableSharedFlow<S>>(
  */
 open class ColdStateFlowRepo<S:State>(
     coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
-    val initChangeState: suspend (S?, ColdStateFlowRepo<S>) -> (suspend () -> S),
-    val deinitChangeState: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S)?,
+    val initChangeStateWithRepo: suspend (S?, ColdStateFlowRepo<S>) -> (suspend () -> S),
+    val deinitChangeStateWithRepo: suspend (S, ColdStateFlowRepo<S>) -> (suspend () -> S)?,
     val firstState: (suspend() -> S)? = null
-) : BaseColdStateRepo<S, MutableStateFlow<S>>(
+) : StateFlowRepo<S>,
+    BaseColdStateRepo<S, MutableStateFlow<S>>(
     context = coroutineContext,
 ) {
+
+    constructor(
+        coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+        // order is different than below because here firstState is mandatory, and to avoid JVM signature clashes
+        firstState: suspend() -> S,
+        initChangeState: suspend (S) -> (suspend () -> S),
+        deinitChangeState: suspend (S) -> (suspend () -> S)
+    ): this(
+        coroutineContext,
+        initChangeStateWithRepo = { state,_ ->  state?.let { initChangeState(state) } ?: firstState },
+        deinitChangeStateWithRepo = { state,_ -> deinitChangeState(state) },
+        firstState = firstState
+    )
 
     constructor(
         coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
@@ -417,36 +440,36 @@ open class ColdStateFlowRepo<S:State>(
         firstState: (suspend() -> S)? = null
     ) : this(
         coroutineContext,
-        initChangeState = { _,repo ->  { init(repo) } },
-        deinitChangeState = { state,repo ->  { deinit(repo) ?: state} },
+        initChangeStateWithRepo = { _,repo ->  { init(repo) } },
+        deinitChangeStateWithRepo = { state,repo ->  { deinit(repo) ?: state} },
         firstState = firstState
     )
 
-    val stateflow: StateFlow<S>
+    override val stateFlow: StateFlow<S>
         get() = mutableFlow.asStateFlow()
 
     // the first initialization is done in the lazy block below since StateFlow requires an initial value
     final override suspend fun initialValue(): S = mutableFlow.value
 
     final override suspend fun noMoreCollections() = takeAndChangeState { state ->
-        deinitChangeState(state, this) ?: state.remain()
+        deinitChangeStateWithRepo(state, this) ?: state.remain()
     }
 
     override val lazyMutableFlow: Lazy<MutableStateFlow<S>> =
         lazy {
             runBlocking {
                 MutableStateFlow(
-                    firstState?.invoke() ?: initChangeState(null, this@ColdStateFlowRepo)()
+                    firstState?.invoke() ?: initChangeStateWithRepo(null, this@ColdStateFlowRepo)()
                 )
             }
         }
 
-    override suspend fun firstCollection() = laterCollections()
+    override suspend fun firstCollection() {
+        laterCollections()
+    }
 
-    override suspend fun laterCollections() {
-        takeAndChangeState { state ->
-            initChangeState(state, this@ColdStateFlowRepo)
-        }
+    override suspend fun laterCollections() = takeAndChangeState { state ->
+        initChangeStateWithRepo(state, this@ColdStateFlowRepo)
     }
 }
 
@@ -468,10 +491,8 @@ abstract class ColdStateRepo<S : State>(
         initialize()
     }
 
-    final override suspend fun laterCollections() {
-        takeAndChangeState {
-            { initialValue() }
-        }
+    final override suspend fun laterCollections() = takeAndChangeState {
+        { initialValue() }
     }
 
     final override suspend fun noMoreCollections(): S = takeAndChangeState {

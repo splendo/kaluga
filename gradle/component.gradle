@@ -145,6 +145,7 @@ kotlin {
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
                 useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
+                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 enableLanguageFeature("InlineClasses")
             }
         }

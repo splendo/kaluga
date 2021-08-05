@@ -21,6 +21,6 @@ import com.splendo.kaluga.base.utils.Locale
 
 actual val lineSeparator = "\n"
 
-actual fun String.lowerCased(locale: Locale): String = this.toLowerCase()
+actual fun String.lowerCased(locale: Locale): String = this.lowercase()
 
-actual fun String.upperCased(locale: Locale): String = this.toUpperCase()
+actual fun String.upperCased(locale: Locale): String = this.uppercase()
