@@ -29,7 +29,6 @@ import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.test.mock.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.test.MockPermissionManager
@@ -43,6 +42,7 @@ import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.SERVICE
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.valueOf
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
@@ -69,7 +69,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     var autoRequestPermission: Boolean = true
     var autoEnableBluetooth: Boolean = true
     var isEnabled: Boolean = true
-    var permissionState: PermissionState<Permission.Bluetooth> = PermissionState.Allowed()
+    var permissionState: PermissionState<BluetoothPermission> = PermissionState.Allowed()
 
 
     private val deferredScanningStateFlowRepo: CompletableDeferred<ScanningStateFlowRepo> = CompletableDeferred()
@@ -86,9 +86,9 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
     protected lateinit var permissionsBuilder: MockPermissionsBuilder
     protected lateinit var permissions: Permissions
-    protected val permissionManager: MockPermissionManager<Permission.Bluetooth>
+    protected val permissionManager: MockPermissionManager<BluetoothPermission>
         get() {
-            return permissionsBuilder.bluetoothPMManager
+            return permissionsBuilder.bluetoothPMManager!!
         }
     
     val deferredBaseScanner = CompletableDeferred<MockBaseScanner>()
@@ -99,11 +99,11 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     protected fun setupPermissions() {
         permissionsBuilder = MockPermissionsBuilder()
         permissions = Permissions(permissionsBuilder, this.coroutineContext)
-        permissions[Permission.Bluetooth]
-        permissions.getManager(Permission.Bluetooth).grantPermission()
+        permissions[BluetoothPermission]
+        permissions.getManager(BluetoothPermission).grantPermission()
     }
 
-    protected fun setupBluetooth(autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, isEnabled: Boolean, permissionState: PermissionState<Permission.Bluetooth>) {
+    protected fun setupBluetooth(autoRequestPermission: Boolean, autoEnableBluetooth: Boolean, isEnabled: Boolean, permissionState: PermissionState<BluetoothPermission>) {
         val deferredBaseScanner = this.deferredBaseScanner
         val deferredScanningStateFlowRepo = this.deferredScanningStateFlowRepo
         val scannerBuilder = object : BaseScanner.Builder {
@@ -138,7 +138,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     fun testWithBluetoothFlow(
         autoRequestPermission: Boolean = this.autoRequestPermission,
         autoEnableBluetooth:Boolean = this.autoEnableBluetooth,
-        permissionState: PermissionState<Permission.Bluetooth> = this.permissionState,
+        permissionState: PermissionState<BluetoothPermission> = this.permissionState,
         isEnabled:Boolean = this.isEnabled,
         advertisementData: MockAdvertisementData = this.advertisementData,
         rssi: Int = this.rssi,
