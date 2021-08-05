@@ -42,6 +42,7 @@ import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.SERVICE
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.valueOf
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.FlowTestBlock
 import com.splendo.kaluga.test.SimpleFlowTest
@@ -97,7 +98,9 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     protected lateinit var bluetooth: Bluetooth
 
     protected fun setupPermissions() {
-        permissionsBuilder = MockPermissionsBuilder()
+        permissionsBuilder = MockPermissionsBuilder().apply {
+            registerAllPermissionsBuilders()
+        }
         permissions = Permissions(permissionsBuilder, this.coroutineContext)
         permissions[BluetoothPermission]
         permissions.getManager(BluetoothPermission).grantPermission()

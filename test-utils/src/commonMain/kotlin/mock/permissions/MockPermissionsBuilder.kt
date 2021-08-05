@@ -18,9 +18,7 @@
 package com.splendo.kaluga.test.mock.permissions
 
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.permissions.PermissionManager
-import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -48,10 +46,6 @@ import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.permissions.storage.StoragePermissionStateRepo
 import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.MockPermissionStateRepo
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class MockPermissionsBuilder : PermissionsBuilder() {
@@ -156,7 +150,7 @@ class MockPermissionsBuilder : PermissionsBuilder() {
     fun registerAllPermissionsBuilders() {
         register(bluetoothPMBuilder, BluetoothPermission::class).also { builder ->
             registerRepoFactory(BluetoothPermission::class) { permission, coroutineContext ->
-                MockPermissionStateRepo<BluetoothPermission>()
+                MockBluetoothPermissionStateRepo(builder, coroutineContext)
             }
         }
         register(locationPMBuilder, LocationPermission::class).also { builder ->
@@ -193,6 +187,18 @@ class MockPermissionsBuilder : PermissionsBuilder() {
             registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<NotificationsPermission>()
             }
+        }
+    }
+
+    private class MockBluetoothPermissionStateRepo(
+        builder: BaseBluetoothPermissionManagerBuilder,
+        coroutineContext: CoroutineContext
+    ) : BluetoothPermissionStateRepo(coroutineContext) {
+        private val _permissionManager = AtomicReference<PermissionManager<BluetoothPermission>?>(null)
+        override val permissionManager: PermissionManager<BluetoothPermission> by lazy { _permissionManager.get()!! }
+
+        init {
+            _permissionManager.set(builder.create(this))
         }
     }
 

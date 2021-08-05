@@ -46,7 +46,12 @@ expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerB
  * @param builder The [BluetoothPermissionManagerBuilder] for creating the [BluetoothPermissionManager] associated with the permission
  * @param coroutineContext The [CoroutineContext] to run the state machine on.
  */
-class BluetoothPermissionStateRepo(builder: BaseBluetoothPermissionManagerBuilder, coroutineContext: CoroutineContext) : PermissionStateRepo<BluetoothPermission>(coroutineContext = coroutineContext) {
-
-    override val permissionManager: PermissionManager<BluetoothPermission> = builder.create(this)
+class DefaultBluetoothPermissionStateRepo(
+    builder: BaseBluetoothPermissionManagerBuilder,
+    coroutineContext: CoroutineContext
+) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext){
+    override val permissionManager: PermissionManager<BluetoothPermission> =
+        builder.create(this)
 }
+
+abstract class BluetoothPermissionStateRepo(coroutineContext: CoroutineContext) : PermissionStateRepo<BluetoothPermission>(coroutineContext = coroutineContext)

@@ -28,7 +28,7 @@ object BluetoothPermission : Permission()
 fun PermissionsBuilder.registerBluetoothPermission() =
     registerBluetoothBuilder(context).also { builder ->
         registerRepoFactory(BluetoothPermission::class) { _, coroutineContext ->
-            BluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
+            DefaultBluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
         }
     }
 
