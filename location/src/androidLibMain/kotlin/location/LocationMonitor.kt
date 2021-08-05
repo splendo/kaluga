@@ -34,8 +34,9 @@ actual class LocationMonitor(
     actual class Builder {
         actual fun create() = LocationMonitor(
             applicationContext = ApplicationHolder.applicationContext,
-            locationManager = ApplicationHolder.applicationContext
-                .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+            locationManager = (ApplicationHolder.applicationContext
+                .getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
+                ?: throw NullPointerException("LocationManager should not be null, check your device capabilities.")
         )
     }
 
