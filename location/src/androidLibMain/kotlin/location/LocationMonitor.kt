@@ -15,57 +15,56 @@
 
  */
 
-package com.splendo.kaluga.bluetooth
+package com.splendo.kaluga.location
 
-import android.bluetooth.BluetoothAdapter
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.LocationManager
+import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
 
-actual class BluetoothMonitor internal constructor(
-    private val bluetoothAdapter: BluetoothAdapter,
-    private val applicationContext: Context
-) : ServiceMonitor()  {
+actual class LocationMonitor(
+    private val applicationContext: Context,
+    private val locationManager: LocationManager?
+) : ServiceMonitor() {
 
-    actual class Builder actual constructor() {
-        actual fun create(): BluetoothMonitor {
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-                ?: throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
-            return BluetoothMonitor(
-                bluetoothAdapter = adapter,
-                applicationContext = ApplicationHolder.applicationContext
-            )
-        }
+    actual class Builder {
+        actual fun create() = LocationMonitor(
+            applicationContext = ApplicationHolder.applicationContext,
+            locationManager = (ApplicationHolder.applicationContext
+                .getSystemService(Context.LOCATION_SERVICE) as? LocationManager)
+                ?: throw NullPointerException("LocationManager should not be null, check your device capabilities.")
+        )
     }
 
-    private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
+    private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == BluetoothAdapter.ACTION_STATE_CHANGED) {
+            if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
                 updateState()
             }
         }
     }
 
     override val isServiceEnabled: Boolean
-        get() = if (bluetoothAdapter == null) {
-            false
-        } else {
-            bluetoothAdapter.isEnabled
-        }
+        get() = if (locationManager == null) {
+                false
+            } else {
+                LocationManagerCompat.isLocationEnabled(locationManager)
+            }
 
     override fun startMonitoring() {
         super.startMonitoring()
         applicationContext.registerReceiver(
-            availabilityBroadcastReceiver,
-            IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+            locationAvailabilityBroadcastReceiver,
+            IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
-        applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
+        applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
     }
 }

@@ -17,8 +17,7 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.base.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
@@ -26,35 +25,31 @@ import platform.darwin.NSObject
 
 actual class BluetoothMonitor internal constructor(
     private val centralManager: CBCentralManager
-) {
+) : ServiceMonitor() {
 
     actual class Builder actual constructor() {
         actual fun create() = BluetoothMonitor(centralManager = CBCentralManager())
     }
 
-    private val centralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
+    internal class CentralManagerDelegate(
+        private val updateEnabledState: () -> Unit
+    ) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
             updateEnabledState()
         }
     }
 
-    private val isPoweredOn: Boolean
+    private val centralManagerDelegate = CentralManagerDelegate(::updateState)
+    override val isServiceEnabled: Boolean
         get() = centralManager.state == CBCentralManagerStatePoweredOn
 
-    private val _isEnabled = MutableStateFlow(isPoweredOn)
-    actual val isEnabled = _isEnabled.asStateFlow()
-
-    actual fun startMonitoring() {
+    override fun startMonitoring() {
+        super.startMonitoring()
         centralManager.delegate = centralManagerDelegate
-        updateEnabledState()
     }
 
-    actual fun stopMonitoring() {
+    override fun stopMonitoring() {
+        super.stopMonitoring()
         centralManager.delegate = null
-        updateEnabledState()
-    }
-
-    private fun updateEnabledState() {
-        _isEnabled.value = isPoweredOn
     }
 }
