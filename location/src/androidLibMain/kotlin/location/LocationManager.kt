@@ -32,11 +32,11 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import com.splendo.kaluga.permissions.withContext
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -218,7 +218,7 @@ class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
 actual class LocationStateRepoBuilder(
     private val context: Context = ApplicationHolder.applicationContext,
     private val permissions: Permissions = Permissions(
-        PermissionsBuilder.withContext(context).apply { registerLocationPermission() },
+        PermissionsBuilder(PermissionContext(context)).apply { registerLocationPermission() },
         Dispatchers.Main
     )
 ) : LocationStateRepo.Builder {

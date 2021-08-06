@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,8 +14,11 @@
     limitations under the License.
 
  */
-package com.splendo.kaluga.permissions.location
 
-import com.splendo.kaluga.permissions.PermissionsBuilder
+package com.splendo.kaluga.permissions
 
-internal actual fun PermissionsBuilder.registerLocationPermissionBuilder(context: Any?) = register(builder = LocationPermissionManagerBuilder(), permission = LocationPermission::class)
+import platform.Foundation.NSBundle
+
+actual typealias PermissionContext = NSBundle
+
+actual val defaultPermissionContext get() = NSBundle.mainBundle

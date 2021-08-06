@@ -19,6 +19,7 @@ package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.base.utils.byOrdinalOrDefault
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import platform.CoreLocation.CLAuthorizationStatus
@@ -78,10 +79,10 @@ actual class LocationPermissionManager(
     }
 }
 
-actual class LocationPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseLocationPermissionManagerBuilder {
+actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(bundle, location, repo)
+        return LocationPermissionManager(context, location, repo)
     }
 }
 

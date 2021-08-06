@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.av.AVPermissionHelper
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -47,9 +48,9 @@ actual class CameraPermissionManager(
     }
 }
 
-actual class CameraPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseCameraPermissionManagerBuilder {
+actual class CameraPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
     override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
-        return CameraPermissionManager(bundle, repo)
+        return CameraPermissionManager(context, repo)
     }
 }

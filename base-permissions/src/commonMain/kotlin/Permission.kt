@@ -40,20 +40,21 @@ interface BasePermissionsBuilder
 
 /**
  * Closure that takes permission and coroutine contexts and creates [PermissionStateRepo].
- * Each platform registers [RepoFactory] in the register permission helper method.
+ * Each platform registers [PermissionStateRepoBuilder] in the register permission helper method.
  */
-typealias RepoFactory = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
+typealias PermissionStateRepoBuilder = (permission: Permission, coroutineContext: CoroutineContext) -> PermissionStateRepo<*>
+
+expect class PermissionContext
+expect val defaultPermissionContext: PermissionContext
 
 /**
  * Builder for providing the proper [PermissionManager] for each [Permission]
- * @param context an additional parameter platform can pass to the [PermissionsBuilder]. [NSBundle] on iOS and [Contect] on Andoid.
- * To create builder with parameter on a platform an extension of the companion object [Factory] can be used.
- * it will be [PermissionsBuilder.withBundle] on iOS and [PermissionsBuilder.withContext] on Android.
+ * @param context [PermissionContext] an additional parameter platform can pass to the [PermissionsBuilder]. [NSBundle] on iOS and [Contect] on Andoid.
  */
-open class PermissionsBuilder(val context: Any? = null) {
-    companion object Factory
+open class PermissionsBuilder(val context: PermissionContext = defaultPermissionContext) {
 
     private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder>()
+    private val repoBuilders = IsoMutableMap<KClassifier, PermissionStateRepoBuilder>()
 
     fun <T : BasePermissionsBuilder> register(builder: T, permission: KClassifier) : T {
         builders[permission] = builder
@@ -63,13 +64,12 @@ open class PermissionsBuilder(val context: Any? = null) {
     operator fun get(permission: Permission) : BasePermissionsBuilder =
         builders[permission::class] ?: throw Error("The Builder for $permission was not registered")
 
-    private val repoFactories = IsoMutableMap<KClassifier, RepoFactory>()
-    fun registerRepoFactory(permission: KClassifier, repoFactory: RepoFactory) {
-        repoFactories[permission] = repoFactory
+    fun registerPermissionStateRepoBuilder(permission: KClassifier, permissionStateRepoBuilder: PermissionStateRepoBuilder) {
+        repoBuilders[permission] = permissionStateRepoBuilder
     }
 
     fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext) : PermissionStateRepo<*> =
-        repoFactories[permission::class]?.let { it(permission, coroutineContext)  } ?: throw Error("Permission state repo factory was not registered for $permission")
+        repoBuilders[permission::class]?.let { it(permission, coroutineContext)  } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
 
 

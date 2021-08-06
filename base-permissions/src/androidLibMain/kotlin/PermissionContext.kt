@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
 
  */
 
-package com.splendo.kaluga.permissions.notifications
+package com.splendo.kaluga.permissions
 
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import android.content.Context
+import com.splendo.kaluga.base.ApplicationHolder
 
-internal actual fun PermissionsBuilder.registerNotificationsPermissionBuilder() = register(builder = NotificationsPermissionManagerBuilder(), permission = NotificationsPermission::class)
+actual data class PermissionContext(val context: Context)
+
+actual val defaultPermissionContext get() = PermissionContext(ApplicationHolder.applicationContext)

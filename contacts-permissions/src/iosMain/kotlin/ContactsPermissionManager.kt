@@ -24,6 +24,7 @@ import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.PermissionContext
 import platform.Contacts.CNAuthorizationStatus
 import platform.Contacts.CNAuthorizationStatusAuthorized
 import platform.Contacts.CNAuthorizationStatusDenied
@@ -80,10 +81,10 @@ actual class ContactsPermissionManager(
     }
 }
 
-actual class ContactsPermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
     override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(bundle, contacts, repo)
+        return ContactsPermissionManager(context, contacts, repo)
     }
 }
 

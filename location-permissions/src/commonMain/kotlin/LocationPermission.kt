@@ -18,8 +18,10 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.defaultPermissionContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -44,7 +46,7 @@ interface BaseLocationPermissionManagerBuilder : BasePermissionsBuilder {
 /**
  * A builder for creating a [LocationPermissionManager]
  */
-expect class LocationPermissionManagerBuilder : BaseLocationPermissionManagerBuilder
+expect class LocationPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseLocationPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [LocationPermission]

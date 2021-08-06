@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Camera
@@ -27,11 +29,12 @@ object CameraPermission : Permission()
 
 fun PermissionsBuilder.registerCameraPermission() =
     registerCameraPermissionBuilder(context).also { builder ->
-        registerRepoFactory(CameraPermission::class) { _, coroutineContext ->
+        registerPermissionStateRepoBuilder(CameraPermission::class) { _, coroutineContext ->
             CameraPermissionStateRepo(builder as BaseCameraPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerCameraPermissionBuilder(context: Any?) : CameraPermissionManagerBuilder
-
-
+internal fun PermissionsBuilder.registerCameraPermissionBuilder(context: PermissionContext = defaultPermissionContext) = register(
+    builder = CameraPermissionManagerBuilder(context),
+    permission = CameraPermission::class
+)

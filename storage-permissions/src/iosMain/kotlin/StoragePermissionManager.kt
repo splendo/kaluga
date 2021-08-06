@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.PermissionContext
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized
@@ -71,10 +72,10 @@ actual class StoragePermissionManager(
     }
 }
 
-actual class StoragePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseStoragePermissionManagerBuilder {
+actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
     override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(bundle, storage, repo)
+        return StoragePermissionManager(context, storage, repo)
     }
 }
 

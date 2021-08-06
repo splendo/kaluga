@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.bluetooth
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -39,7 +40,7 @@ actual class BluetoothPermissionManager(repo: BluetoothPermissionStateRepo) : Pe
     }
 }
 
-actual class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder {
+actual class BluetoothPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseBluetoothPermissionManagerBuilder {
 
     override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
         return BluetoothPermissionManager(repo)

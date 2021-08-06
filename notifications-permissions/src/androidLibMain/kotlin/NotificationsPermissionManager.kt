@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.notifications
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -44,7 +45,7 @@ actual class NotificationsPermissionManager(
     }
 }
 
-actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext): BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
         return NotificationsPermissionManager(notifications, repo)

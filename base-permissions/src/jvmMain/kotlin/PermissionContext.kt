@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,17 +14,8 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.permissions
 
-package com.splendo.kaluga.permissions.storage
+actual class PermissionContext
 
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import platform.Foundation.NSBundle
-
-internal actual fun PermissionsBuilder.registerStoragePermissionBuilder(context: Any?) =
-    register(
-        builder = when (context) {
-            is NSBundle -> StoragePermissionManagerBuilder(context)
-            else -> StoragePermissionManagerBuilder()
-        },
-        permission = StoragePermission::class
-    )
+actual val defaultPermissionContext = PermissionContext()

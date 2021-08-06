@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Calendar
@@ -28,9 +30,12 @@ data class CalendarPermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerCalendarPermission() =
     registerCalendarPermissionBuilder(context).also { builder ->
-        registerRepoFactory(CalendarPermission::class) { permission, coroutineContext ->
+        registerPermissionStateRepoBuilder(CalendarPermission::class) { permission, coroutineContext ->
             CalendarPermissionStateRepo(permission as CalendarPermission, builder as BaseCalendarPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Any?) : CalendarPermissionManagerBuilder
+internal fun PermissionsBuilder.registerCalendarPermissionBuilder(context: PermissionContext = defaultPermissionContext) : CalendarPermissionManagerBuilder = register(
+    builder = CalendarPermissionManagerBuilder(context),
+    permission = CalendarPermission::class
+)

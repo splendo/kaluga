@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.calendar
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -39,7 +40,7 @@ actual class CalendarPermissionManager(actual val calendar: CalendarPermission, 
     }
 }
 
-actual class CalendarPermissionManagerBuilder : BaseCalendarPermissionManagerBuilder {
+actual class CalendarPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCalendarPermissionManagerBuilder {
 
     override fun create(calendar: CalendarPermission, repo: CalendarPermissionStateRepo): PermissionManager<CalendarPermission> {
         return CalendarPermissionManager(calendar, repo)

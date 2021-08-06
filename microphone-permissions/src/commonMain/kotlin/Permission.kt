@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Microphone
@@ -27,10 +29,13 @@ object MicrophonePermission : Permission()
 
 fun PermissionsBuilder.registerMicrophonePermission() =
     registerMicrophonePermissionBuilder(context).also { builder ->
-        registerRepoFactory(MicrophonePermission::class) { _, coroutineContext ->
+        registerPermissionStateRepoBuilder(MicrophonePermission::class) { _, coroutineContext ->
             MicrophonePermissionStateRepo(builder as BaseMicrophonePermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: Any?) : MicrophonePermissionManagerBuilder
+internal fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: PermissionContext = defaultPermissionContext) : MicrophonePermissionManagerBuilder = register(
+    builder = MicrophonePermissionManagerBuilder(context),
+    permission = MicrophonePermission::class
+)
 
