@@ -17,20 +17,10 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
-import com.splendo.kaluga.bluetooth.ServiceWrapper
-import com.splendo.kaluga.bluetooth.UUID
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.randomUUID
+import com.splendo.kaluga.bluetooth.device.Identifier
 
-actual fun createDeviceWrapper(deviceName: String?): DeviceWrapper =
-    MockDeviceWrapper(deviceName, randomUUID())
+class MockDeviceWrapper(override val name: String?, override val identifier: Identifier) :
+    DeviceWrapper {
 
-actual fun createServiceWrapper(
-    stateRepo: DeviceStateFlowRepo,
-    uuid: UUID,
-    characteristics: List<Pair<UUID, List<UUID>>>
-): ServiceWrapper = TODO()
-
-
-
+}
