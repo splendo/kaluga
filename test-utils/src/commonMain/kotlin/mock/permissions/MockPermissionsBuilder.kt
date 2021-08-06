@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.mock.permissions
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
@@ -48,7 +49,9 @@ import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.MockPermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
-class MockPermissionsBuilder : PermissionsBuilder() {
+expect val mockPermissionContext: PermissionContext
+
+class MockPermissionsBuilder : PermissionsBuilder(mockPermissionContext) {
 
     private val _cameraPMManager = AtomicReference<MockPermissionManager<CameraPermission>?>(null)
     var cameraPMManager: MockPermissionManager<CameraPermission>?
