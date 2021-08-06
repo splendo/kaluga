@@ -30,6 +30,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetoot
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -56,7 +57,7 @@ abstract class BaseScanner constructor(
         ): BaseScanner
     }
 
-    private val bluetoothPermissionRepo get() = permissions[Permission.Bluetooth]
+    private val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
 
     private val _monitoringPermissionsJob = AtomicReference<Job?>( null)
     private var monitoringPermissionsJob: Job?
@@ -68,7 +69,7 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
             bluetoothPermissionRepo.collect { state ->
                 when (state) {
-                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(Permission.Bluetooth))
+                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(BluetoothPermission))
                     else -> {}
                 }
                 val hasPermission = state is PermissionState.Allowed

@@ -29,6 +29,7 @@ import androidx.lifecycle.Observer
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -39,7 +40,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
         const val channelId = "location_channel"
         const val channelName = "Kaluga Location"
 
-        private val permission = Permission.Location(background = true, precise = true)
+        private val permission = LocationPermission(background = true, precise = true)
     }
 
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }

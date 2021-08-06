@@ -22,14 +22,14 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.location
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class LocationViewModel(permission: Permission.Location, repoBuilder: LocationStateRepoBuilder) : BaseViewModel() {
+class LocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder) : BaseViewModel() {
 
     private val locationStateRepo = repoBuilder.create(permission)
 

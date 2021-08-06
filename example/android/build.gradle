@@ -80,6 +80,19 @@ dependencies {
     }
     else {
         implementation project(':shared')
+        implementation project(":base-permissions")
+        implementation project(":location-permissions")
+        implementation project(":bluetooth-permissions")
+        implementation project(":camera-permissions")
+        implementation project(":contacts-permissions")
+        implementation project(":microphone-permissions")
+        implementation project(":storage-permissions")
+        implementation project(":notifications-permissions")
+        implementation project(":calendar-permissions")
+        implementation project(":logging")
+        implementation project(":alerts")
+        implementation project(":hud")
+        implementation project(":architecture")
         implementation project(":architecture-compose")
     }
 

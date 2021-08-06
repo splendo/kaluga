@@ -39,6 +39,10 @@
     <string>Demonstrate usage of Kaluga library</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Demonstrate usage of Kaluga library</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSContactsUsageDescription</key>
