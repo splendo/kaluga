@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.logging.debug
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
@@ -46,13 +45,11 @@ actual class BluetoothMonitor internal constructor(
 
     override fun startMonitoring() {
         super.startMonitoring()
-        debug("Current state is $isServiceEnabled")
         centralManager.delegate = centralManagerDelegate
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
-        debug("Current state is $isServiceEnabled")
         centralManager.delegate = null
     }
 }

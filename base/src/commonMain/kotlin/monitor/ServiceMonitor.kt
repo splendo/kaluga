@@ -31,11 +31,11 @@ abstract class ServiceMonitor {
     val isEnabled = _isEnabled.asStateFlow()
 
     open fun startMonitoring() {
-        debug(TAG) { "Start monitoring service state ($isEnabled)" }
+        debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
         updateState()
     }
     open fun stopMonitoring() {
-        debug(TAG) { "Stop monitoring service state" }
+        debug(TAG) { "Stop monitoring service state ($isServiceEnabled)" }
         updateState()
     }
 
