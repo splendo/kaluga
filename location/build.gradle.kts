@@ -25,6 +25,7 @@ kotlin {
             dependencies {
                 implementation(project(":permissions", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":base", ""))
             }
         }
         commonTest {
