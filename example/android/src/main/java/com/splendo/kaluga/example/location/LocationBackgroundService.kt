@@ -1,3 +1,20 @@
+/*
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
 package com.splendo.kaluga.example.location
 
 import android.app.Notification
@@ -8,10 +25,9 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.Observer
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
@@ -22,7 +38,7 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
         const val channelId = "location_channel"
         const val channelName = "Kaluga Location"
 
-        private val permission = Permission.Location(background = true, precise = true)
+        private val permission = LocationPermission(background = true, precise = true)
     }
 
     private val notificationService by lazy { applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
@@ -32,9 +48,9 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
     override fun onCreate() {
         super.onCreate()
 
-        viewModel.location.observe(this, Observer { message ->
+        viewModel.location.observeInitialized { message ->
             NotificationManagerCompat.from(applicationContext).notify(notificationId, getNotification(message))
-        })
+        }
 
         startForeground(notificationId, getNotification(""))
     }
@@ -55,7 +71,9 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
 
     private fun createChannelIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(
-                channelId) == null) {
+                channelId
+            ) == null
+        ) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, channelName, importance)
             channel.setSound(null, null)

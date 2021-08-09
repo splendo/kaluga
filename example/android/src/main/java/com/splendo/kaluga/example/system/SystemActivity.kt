@@ -39,7 +39,7 @@ class SystemActivity : KalugaViewModelActivity<SystemViewModel>(R.layout.activit
             findViewById<RecyclerView>(R.id.system_features_list).adapter = this
         }
 
-        viewModel.modules.observe(this) {
+        viewModel.modules.observeInitialized {
             adapter.modules = it
         }
     }
@@ -73,5 +73,4 @@ class SystemFeatureAdapter(
     }
 
     override fun getItemCount(): Int = modules.size
-
 }

@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.flow
 
+import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.Flow
  *
  * @param T the type of the values emitted by the flowable.
  */
+@Deprecated("Use MutableSharedFlow or MutableStateFlow, with onCollectionEvent", replaceWith = ReplaceWith("MutableSharedFlow"))
 interface Flowable<T> {
 
     /**
@@ -32,8 +34,15 @@ interface Flowable<T> {
      *
      * @param flowConfig the [FlowConfig] to apply to this Flow
      * @return A [Flow] of values set to the Flowable
+     *
      */
     fun flow(flowConfig: FlowConfig = FlowConfig.Conflate): Flow<T>
+
+    /**
+     * Stops the flowable from being observed. Cancels all active [Flow]s.
+     * Starting a new Flow is possible however.
+     */
+    fun cancelFlows()
 
     /**
      * Sets the value of the Flowable. All active [Flow]s should be notified
@@ -45,11 +54,5 @@ interface Flowable<T> {
     /**
      * Applies [set] in a blocking coroutine
      */
-    fun setBlocking(value: T)
-
-    /**
-     * Stops the flowable from being observed. Cancels all active [Flow]s.
-     * Starting a new Flow is possible however.
-     */
-    fun cancelFlows()
+    fun setBlocking(value: T) = runBlocking { set(value) }
 }

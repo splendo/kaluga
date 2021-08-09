@@ -22,7 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 
-actual open class ViewModel internal actual constructor() {
+actual open class ViewModel internal actual constructor(allowFreezing: Boolean) {
 
     private val lifecycleJob = SupervisorJob()
 

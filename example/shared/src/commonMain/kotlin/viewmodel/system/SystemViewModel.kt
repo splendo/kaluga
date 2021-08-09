@@ -21,16 +21,8 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.observableOf
-import com.splendo.kaluga.architecture.observable.toObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.resources.localized
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 
 sealed class SystemFeatures(val name: String) {
     object Network : SystemFeatures("network_feature".localized())
@@ -51,8 +43,8 @@ class SystemViewModel(
         observableOf(
             listOf(
                 SystemFeatures.Network
+            )
         )
-    )
 
     fun onButtonTapped(systemFeatures: SystemFeatures) {
         when (systemFeatures) {

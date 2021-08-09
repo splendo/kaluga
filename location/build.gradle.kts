@@ -23,8 +23,9 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":permissions", ""))
+                implementation(project(":location-permissions", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":base", ""))
             }
         }
         commonTest {

@@ -16,19 +16,100 @@
  */
 
 repositories {
+    mavenCentral()
+
     jcenter {
         content {
             // https://youtrack.jetbrains.com/issue/IDEA-261387
             includeModule("org.jetbrains.trove4j", "trove4j")
+            includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
         }
     }
 }
 
 android {
+//     workaround for https://youtrack.jetbrains.com/issue/KT-43944
+    configurations {
+        androidTestApi {}
+        androidTestDebugApi {}
+        androidTestReleaseApi {}
+        testApi {}
+        testDebugApi {}
+        testReleaseApi {}
+    }
+
+    compileSdkVersion gradle.android_target_sdk_version
+    buildToolsVersion gradle.android_build_tools_version
+
+
+    defaultConfig {
+        minSdkVersion gradle.android_min_sdk_version
+        targetSdkVersion gradle.android_target_sdk_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    defaultPublishConfig = "debug"
+
+    if (!gradle.ext.component_type.toLowerCase().contains("app")) {
+        logger.lifecycle("Android library sourcesets")
+        sourceSets {
+            main {
+                manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
+                res.srcDir 'src/androidLibMain/res'
+                if (gradle.component_type.contains("compose")) {
+                    java.srcDir 'src/androidLibMain/kotlin'
+                }
+            }
+            androidTest {
+                manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
+                java.srcDir 'src/androidLibAndroidTest/kotlin'
+                res.srcDir 'src/androidLibAndroidTest/res'
+            }
+
+
+            test {
+                java.srcDir 'src/androidLibUnitTest/kotlin'
+            }
+
+        }
+    } else {
+        logger.lifecycle("Default Android application sourcesets")
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    if (gradle.component_type.contains("compose")) {
+        logger.lifecycle("IR/Compose module")
+        // can enable Compose if we do IR
+        buildFeatures {
+            compose = true
+        }
+        composeOptions {
+            kotlinCompilerExtensionVersion = "$gradle.androidx_compose_version"
+        }
+        kotlinOptions {
+            jvmTarget = "1.8"
+            useIR = true
+            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+        }
+    } else {
+        logger.lifecycle("Not an IR/Compose module")
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs += ['-XXLanguage:+InlineClasses']
+        }
+    }
+
 }
 
 dependencies {
@@ -36,13 +117,14 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$gradle.kotlinx_coroutines_version"
     implementation "androidx.appcompat:appcompat:$gradle.androidx_appcompat_version"
 
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'org.mockito:mockito-core:3.1.0'
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.mockito:mockito-core:$gradle.mockito_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
     testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
 
-    //noinspection GradleDependency this is locked from being higher by other libraries used.
-    androidTestImplementation 'org.mockito:mockito-core:2.19.0'
+    androidTestImplementation "org.mockito:mockito-android:$gradle.mockito_version"
+    androidTestImplementation "net.bytebuddy:byte-buddy-android:$gradle.bytebuddy_version!!"
+    androidTestImplementation "net.bytebuddy:byte-buddy-agent:$gradle.bytebuddy_version!!"
 
     androidTestImplementation "androidx.test:core:$gradle.androidx_test_version"
     androidTestImplementation "androidx.test:core-ktx:$gradle.androidx_test_version"

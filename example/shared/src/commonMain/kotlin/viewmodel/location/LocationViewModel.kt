@@ -17,24 +17,24 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.location
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.base.flow.HotFlowable
 import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.location.location
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-class LocationViewModel(permission: Permission.Location, repoBuilder: LocationStateRepoBuilder) : BaseViewModel() {
+class LocationViewModel(permission: LocationPermission, repoBuilder: LocationStateRepoBuilder) : BaseViewModel() {
 
     private val locationStateRepo = repoBuilder.create(permission)
 
-    private val _location = HotFlowable("")
-    val location = _location.toObservable(coroutineScope)
+    private val _location = MutableStateFlow("")
+    val location = _location.toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
         scope.launch {
@@ -50,7 +50,7 @@ class LocationViewModel(permission: Permission.Location, repoBuilder: LocationSt
                     }
                 }
             }.collect {
-                _location.set(it)
+                _location.value = it
             }
         }
     }

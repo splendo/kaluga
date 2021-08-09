@@ -20,19 +20,19 @@ package com.splendo.kaluga.example.location
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.lifecycle.Observer
+import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatTextView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.permissions.Permission
-import kotlinx.android.synthetic.main.activity_location.*
+import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.activity_location) {
 
     companion object {
-        private val permission = Permission.Location(background = false, precise = true)
+        private val permission = LocationPermission(background = false, precise = true)
     }
 
     override val viewModel: LocationViewModel by viewModel {
@@ -42,19 +42,20 @@ class LocationActivity : KalugaViewModelActivity<LocationViewModel>(R.layout.act
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enable_background.setOnClickListener {
+        findViewById<AppCompatButton>(R.id.enable_background).setOnClickListener {
             startService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
 
-        disable_background.setOnClickListener {
+        findViewById<AppCompatButton>(R.id.disable_background).setOnClickListener {
             stopService(Intent(applicationContext, LocationBackgroundService::class.java))
         }
 
-        viewModel.location.observe(this, Observer {
+        viewModel.location.observeInitialized {
+            val info = findViewById<AppCompatTextView>(R.id.info)
             info.text = it
             info.animate().withEndAction {
                 info.animate().setDuration(10000).alpha(0.12f).start()
             }.alpha(1f).setDuration(100).start()
-        })
+        }
     }
 }

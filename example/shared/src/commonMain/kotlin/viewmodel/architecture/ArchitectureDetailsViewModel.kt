@@ -20,8 +20,7 @@ package com.splendo.kaluga.example.shared.viewmodel.architecture
 import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
-import com.splendo.kaluga.architecture.observable.Observable
-import com.splendo.kaluga.architecture.observable.ObservableOptional
+import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import kotlinx.serialization.Serializable
@@ -39,29 +38,20 @@ class CloseDetailsNavigation(inputDetails: InputDetails) : SingleValueNavigation
 
 class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navigator<CloseDetailsNavigation>) : NavigatingViewModel<CloseDetailsNavigation>(navigator) {
 
-    private val _name = subjectOf(initialDetail.name, coroutineScope)
-    val name: Observable<String> = _name
-    private val _number = subjectOf(initialDetail.number.toString(), coroutineScope)
-    val number: Observable<String> = _number
+    private val _name = subjectOf(initialDetail.name)
+    val name: InitializedObservable<String> = _name
+    private val _number = subjectOf(initialDetail.number.toString())
+    val number: InitializedObservable<String> = _number
 
-    private var nameResult: ObservableOptional<String> by _name
-    private var numberResult: ObservableOptional<String> by _number
+    private var nameResult: String by _name.valueDelegate
+    private var numberResult: String by _number.valueDelegate
 
     fun onInversePressed() {
-        val newName: String? by nameResult
-        val newNumber: String? by numberResult
-
-        newName?.let {
-            nameResult = ObservableOptional.Value(it.reversed())
-        }
-        newNumber?.let {
-            numberResult = ObservableOptional.Value(it.reversed())
-        }
+        nameResult = nameResult.reversed()
+        numberResult = numberResult.reversed()
     }
 
     fun onClosePressed() {
-        val name: String? by nameResult
-        val number: String? by numberResult
-        navigator.navigate(CloseDetailsNavigation(InputDetails(name ?: "", number?.toIntOrNull() ?: 0)))
+        navigator.navigate(CloseDetailsNavigation(InputDetails(nameResult, numberResult.toIntOrNull() ?: 0)))
     }
 }

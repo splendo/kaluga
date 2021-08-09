@@ -1,6 +1,6 @@
 package com.splendo.kaluga.example.shared.viewmodel.datetimepicker
 
-import com.splendo.kaluga.architecture.observable.toObservable
+import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.text.DateFormatStyle
 import com.splendo.kaluga.base.text.DateFormatter
@@ -19,11 +19,13 @@ class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePicker
         private val formatter = DateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)
     }
 
-    private val selectedDate = MutableStateFlow(Date.now().apply {
-        second = 0
-        millisecond = 0
-    })
-    val dateLabel = selectedDate.map { formatter.format(it) }.toObservable(coroutineScope)
+    private val selectedDate = MutableStateFlow(
+        Date.now().apply {
+            second = 0
+            millisecond = 0
+        }
+    )
+    val dateLabel = selectedDate.map { formatter.format(it) }.toUninitializedObservable(coroutineScope)
 
     fun onSelectDatePressed() {
         coroutineScope.launch {

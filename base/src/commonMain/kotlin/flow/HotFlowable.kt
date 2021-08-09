@@ -28,7 +28,8 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
  * @param initialValue the initial value of the flow
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
-class HotFlowable<T> (initialValue: T, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
+@Deprecated("This channel based implementation of Flowable is deprecated in favor of SharedFlowable or StateFlowable")
+class HotFlowable<T> (val initialValue: T, channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : BaseFlowable<T>(channelFactory) {
 
     init {
         ensureChannel()

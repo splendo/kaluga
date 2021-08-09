@@ -9,25 +9,25 @@ import kotlin.test.assertTrue
 
 class IOSKeyboardManagerTests : KeyboardManagerTests<IOSKeyboardTestContext>() {
 
-    inner class IOSKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
+    class IOSKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
         private val application = UIApplication.sharedApplication
         val textField = MockTextField()
 
         override val builder get() = KeyboardManager.Builder(application)
 
-        override val view: KeyboardHostingView
-            get() = textField
+        override val focusHandler: FocusHandler
+            get() = UIKitFocusHandler(textField)
+
+        override fun verifyShow() {
+            assertTrue(textField.didBecomeFirstResponder)
+        }
+
+        override fun verifyDismiss() {
+            // Should test resign First responder
+        }
     }
 
-    override fun IOSKeyboardTestContext.verifyShow() {
-        assertTrue(textField.didBecomeFirstResponder)
-    }
-
-    override fun IOSKeyboardTestContext.verifyDismiss() {
-        // Should test resign First responder
-    }
-
-    override fun CoroutineScope.createTestContext() = IOSKeyboardTestContext(this)
+    override val createTestContext: suspend (scope: CoroutineScope) -> IOSKeyboardTestContext = { IOSKeyboardTestContext(it) }
 }
 
 class MockTextField : UITextField(CGRectMake(0.0, 0.0, 0.0, 0.0)) {

@@ -19,7 +19,6 @@ package com.splendo.kaluga.keyboard
 
 import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
@@ -29,8 +28,6 @@ import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-
-actual typealias KeyboardHostingView = Int
 
 actual class KeyboardManager(
     private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver(),
@@ -43,13 +40,6 @@ actual class KeyboardManager(
         actual override fun create(coroutineScope: CoroutineScope) = KeyboardManager(lifecycleManagerObserver, coroutineScope)
     }
 
-    private var activity: Activity? = null
-        set(value) {
-            field = value
-            inputMethodManager = value?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
-        }
-    private var inputMethodManager: InputMethodManager? = null
-
     init {
         launch {
             lifecycleManagerObserver.managerState.collect {
@@ -58,10 +48,21 @@ actual class KeyboardManager(
         }
     }
 
-    override fun show(keyboardHostingView: KeyboardHostingView) {
-        inputMethodManager?.let {
-            activity?.findViewById<View>(keyboardHostingView)?.requestFocus()
-            it.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+    private var activity: Activity? = null
+        set(value) {
+            field = value
+            inputMethodManager = value?.getSystemService(INPUT_METHOD_SERVICE) as? InputMethodManager
+        }
+    private var inputMethodManager: InputMethodManager? = null
+
+    override fun show(focusHandler: FocusHandler) {
+        inputMethodManager?.let { inputManager ->
+            activity?.let {
+                focusHandler.requestFocus(it)
+                inputManager.toggleSoftInput(
+                    InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
+            }
         }
     }
 

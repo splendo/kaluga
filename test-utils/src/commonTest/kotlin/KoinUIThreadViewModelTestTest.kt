@@ -22,9 +22,9 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.test.architecture.koin.KoinUIThreadViewModelTest
 import com.splendo.kaluga.test.mock.alerts.MockAlertPresenter
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.KoinComponent
-import org.koin.core.inject
-import org.koin.core.logger.PrintLogger
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import org.koin.core.logger.Level
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -37,10 +37,10 @@ class KoinUIThreadViewModelTestTest :
         val s: String by inject() // test injecting into ViewModel
     }
 
-    inner class MyKoinViewModelTestContext :
+    class MyKoinViewModelTestContext :
         KoinUIThreadViewModelTest.KoinViewModelTestContext<KoinViewModel>(
             {
-                logger(PrintLogger()) // not the default
+                printLogger(Level.DEBUG) // not the default
             },
             module {
                 single { "S" }
@@ -55,15 +55,16 @@ class KoinUIThreadViewModelTestTest :
         val builder: BaseAlertPresenter.Builder by inject() // test injecting into context
     }
 
-    override fun CoroutineScope.createTestContext(): MyKoinViewModelTestContext =
-        MyKoinViewModelTestContext()
+    override val createTestContext: suspend (scope: CoroutineScope) -> MyKoinViewModelTestContext =
+        { MyKoinViewModelTestContext() }
 
     @Test
     fun testKoinViewModelTestContext() = testOnUIThread {
         assertEquals("S", viewModel.s)
         assertTrue(builder is MockAlertPresenter.Builder)
-        assertTrue(
-            viewModel.getKoin()._logger is PrintLogger,
+        assertEquals(
+            Level.DEBUG,
+            viewModel.getKoin().logger.level,
             "KoinApplicationDeclaration should have changed the Logger"
         )
     }

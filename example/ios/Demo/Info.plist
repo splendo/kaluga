@@ -16,11 +16,32 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.splendo.kaluga.example</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kalugaexample</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Demonstrate usage of Kaluga library</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Demonstrate usage of Kaluga library</string>
 	<key>NSCalendarsUsageDescription</key>
+	<string>Demonstrate usage of Kaluga library</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Demonstrate usage of Kaluga library</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Demonstrate usage of Kaluga library</string>

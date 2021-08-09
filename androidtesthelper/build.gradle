@@ -17,12 +17,7 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-
-repositories {
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
-}
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
 
 android {
     compileSdkVersion gradle.android_target_sdk_version
@@ -60,6 +55,7 @@ android {
         exclude 'META-INF/hud_debug.kotlin_module'
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/licenses/ASM'
     }
 
     lintOptions {
@@ -67,10 +63,13 @@ android {
     }
 }
 
+gradle.ext.component_type = gradle.ext.component_type_app
 apply from: "../gradle/android_common.gradle"
+gradle.ext.component_type = gradle.ext.component_type_default
 
 dependencies {
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${gradle.kotlinx_coroutines_version}!!")
     implementation("androidx.fragment:fragment:$gradle.androidx_fragment_version")
     androidTestImplementation("androidx.fragment:fragment-ktx:$gradle.androidx_fragment_version")
 
@@ -79,6 +78,7 @@ dependencies {
     androidTestImplementation("co.touchlab:stately-iso-collections:$gradle.stately_isolate_version")
 
     def excluded = ["androidtesthelper", // this project
+                    "architecture-compose" // TODO, Compose in test helper not yet supported
                     ]
     rootProject.subprojects.findAll{ !excluded.contains(it.name) }.each {
         implementation project(path: ":$it.name")

@@ -1,35 +1,24 @@
 repositories {
     google()
     mavenCentral()
-    maven {
-        url = "https://dl.bintray.com/ekito/koin"
-    }
 }
+
+// if the include is made from the example project shared module we need to go up one more directory
+String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
 kotlin {
 
     targets {
         configure([]) {
-            tasks.getByName(compilations.main.compileKotlinTaskName).kotlinOptions {
-                jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
-            }
-        }
-    }
-
-    targets {
-        configure([]) {
             tasks.getByName(compilations.test.compileKotlinTaskName).kotlinOptions {
                 jvmTarget = "1.8"
-                freeCompilerArgs += ['-XXLanguage:+InlineClasses']
             }
         }
     }
 
-
     android("androidLib") {
-        publishAllLibraryVariants()
 
+        publishAllLibraryVariants()
     }
 
     if (gradle.ios_primary_arch == "iosx64")
@@ -146,12 +135,15 @@ kotlin {
 
         sourceSets.all {
             languageSettings {
+                useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ExperimentalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.ObsoleteCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.InternalCoroutinesApi'
                 useExperimentalAnnotation 'kotlinx.coroutines.FlowPreview'
                 useExperimentalAnnotation 'kotlin.ExperimentalUnsignedTypes'
+                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 useExperimentalAnnotation 'kotlin.time.ExperimentalTime'
+                useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
                 enableLanguageFeature("InlineClasses")
             }
         }
@@ -161,53 +153,12 @@ kotlin {
     }
 }
 
-
+apply from: "$path_prefix/gradle/android_common.gradle"
 
 android {
 
-    kotlinOptions {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-
     testOptions {
         unitTests.returnDefaultValues = true
-    }
-
-    defaultPublishConfig = "debug"
-
-    compileSdkVersion gradle.android_target_sdk_version
-
-    defaultConfig {
-        minSdkVersion gradle.android_min_sdk_version
-        targetSdkVersion gradle.android_target_sdk_version
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidLibMain/AndroidManifest.xml'
-            res.srcDir 'src/androidLibMain/res'
-        }
-        androidTest {
-            manifest.srcFile 'src/androidLibAndroidTest/AndroidManifest.xml'
-            java.srcDir 'src/androidLibAndroidTest/kotlin'
-            res.srcDir 'src/androidLibAndroidTest/res'
-        }
-
-
-        test {
-            java.srcDir 'src/androidLibUnitTest/kotlin'
-        }
     }
 
     packagingOptions {
@@ -216,6 +167,11 @@ android {
         exclude 'META-INF/kotlinx-serialization-runtime.kotlin_module'
         exclude 'META-INF/AL2.0'
         exclude 'META-INF/LGPL2.1'
+        // bytebuddy 🤡
+        exclude 'win32-x86-64/attach_hotspot_windows.dll'
+        exclude 'win32-x86/attach_hotspot_windows.dll'
+        //
+        exclude 'META-INF/licenses/ASM'
     }
 }
 
@@ -231,13 +187,14 @@ task copyResources(type: Copy) {
 }
 
 afterEvaluate {
-    tasks.named("linkDebugTestIosx64").configure {
-        dependsOn copyResources
-    }
+    if (tasks.getNames().contains("linkDebugTestIosx64"))
+        tasks.named("linkDebugTestIosx64").configure {
+            dependsOn copyResources
+        }
 }
 
-// if the include is made from the example project shared module we need to go up one more directory
-String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
+ktlint {
+    disabledRules=["no-wildcard-imports","filename"]
+}
 
-apply from: "$path_prefix/gradle/android_common.gradle"
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

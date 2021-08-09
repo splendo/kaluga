@@ -122,48 +122,105 @@ class SomeViewController : UIViewController {
 
 See the `test-utils` module for base test classes that help setting up the ViewModel in the main thread, while still allowing `Dispatchers.Main` to function. 
 
-## Observables
-Kaluga supports data binding using `Observables` (one way binding) and `Subjects` (two way binding). An Object can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observer), or a `BaseFlowable` (allowing both the Flow and the owner of BaseFlowable to modify the observer.
-Subjects can be created using either an `ObservableProperty` or `BaseFlowable`. All these can easily be converted using `asObservable()` or `asSubject()` respectively.
-Observable values can be accessed through delegation. To account for the difference between uninitialized values and optional values an `ObservableOptional` containing either the value or a `Nothing` type is returned.
+## Observables (and Subjects)
+
+Kaluga supports data binding using `Observable`s (one way binding) and `Subject`s (two way binding). An observable can be created through a `ReadOnlyProperty` (making it immutable on both sides), a `Flow` (allowing the flow to modify the observeable), or a `SharedFlow` or `StateFlow` (allowing both the Flow and the owner of BaseFlowable to modify the observer. Subjects can be created using either a `ReadWritePropery` or `MutableSharedFlow` or `MutableStateFlow`. It's also possible to use the `observableOf` and `subjectOf` methods for any value.
+
+### Goals and design
+
+Kaluga observables are not meant as a replacement for fully reactive frameworks. Instead the focus is on using other such frameworks in a cross-platform manner, with a main focus on use in `ViewModel`s.
+
+In order to smoothly interact with observables from viewmodels, the following methods of observation are supported as much as possible:
+- Delegation through the `by` operator. This lets you use your observables as normal variables.
+- Observing value changes through `StateFlow` (which can also be used as a `LiveData`), this is useful especially for Android, e.g. to observe in Compose, or bind it using data binding. 
+- Simple disposable listeners, for example for observing directly in iOS or integrating with another framework there (such as Combine).
+- Asynchronously `post`ing value changes (also from background threads) to subjects.
+- A suspended `set` method for subjects (which will suspend until the value has reached the underlying object).
+
+Using observables in viewmodels also has some common problems:
+- Distinguishing between a `null` value and a value not available yet.
+- Setting initial values for if no value is available yet.
+- using default values instead of `null`.
+- repeated updates with equal values.
+
+Kaluga observables deal with this by only allowing specific subtypes:
+- `UnintializedObservable`, these hold a `ObservableOptional` value, which is either an `ObservableOptional.Value` or `ObservableOptional.Nothing`. If the generic type an optional`?`, this means a Value can hold `null`, which is distinguishable from `Nothing`. 
+- `IntializedObservable`, these can only hold an `ObservableOptional.Value`. 
+- `DefaultObservable`, a subtype of a `IntializedObservable` where all `null` values of the observed `ObservableOptional.Value` are replaced with a default value.
+
+Equivalent subjects also exist.
+
+For all of these updates of the same value are conflated and not pushes to observers.
+
+### Usage
+
+The easiest way of creating an observable by calling the function `observableOf` or `subjectOf`:
 
 ```kotlin
-class SomeViewModel : BaseViewModel() {
-    private val flow = flowOf(1, 2, 3)
-    val flowObservable = flow.toObservable(coroutineScope)
+val observable = observableOf(1)
+```
+This will result in a `InitializedObservable<Int>`. Now it's possible to observe this value in several ways:
 
-    val flowable: BaseFlowable<Int> = SomeStateRepo() // someFlowable
-    val flowableSubject = flowable.toSubject(coroutineScope)
+```kotlin
 
-    fun readValue(defaultValue: Int): Int? {
-        return flowObservable.currentOrNull
-    }
+// property
+assertEquals(1, observable.current)
 
-    fun postValue(value: Int) {
-        flowableSubject.post(value)
-    }
+// observation
+observable.observe {
+    assertEquals(1, it)
 }
+
+// stateFlow
+observable.stateFlow.collect {
+    assertEquals(1, it)
+} 
+
+// delegation 
+val oo:ObservableOptional.Value by observable
+assertEquals(1, oo.value)
+
+// delegation of the value is also possible 
+val i:Int by observable.valueDelegate
+assertEquals(1, i)
+
 ```
 
-On the platform level observables can be observed. The platform specific observer will be notified of any changes to the observable.
-Observables are stateful, so any new observer will receive the last emitted value.
+However since there is nothing backing the observable (other than an initial value), the value will never change. It makes more sense to make a subject this way:
+
+```kotlin
+
+val subject = subjectOf(1)
+
+subject.post(2)
+assertEquals(2, observable.current)
+
+// or use delegation
+var i:Int by subject.valueDelegate
+assertEquals(2, i)
+i = 3
+assertEquals(3, observable.current)
+```
+
+Another method is using the extension methods provided on many types of classes, `to*Observable()` or `to*Subject()`.
+
+For example on a `StateFlow`:
+```kotlin
+val stateFlow = MutableStateFlow<String>(null)
+val subject = stateFlow.toDefaultSubject()
+```
+
+Other than `(Mutable)StateFlow` there are extension methods for `Flow`, `(Mutable)SharedFlow`, `ReadOnlyProperty`, `ReadWriteProperty`.
+Be aware that properties can not be observed, only when a value is read from the observable is the backing `Property` checked for changes (which will then propagate to observers).
 
 ### Android
-On Android both observable and subject can easily be converted into `LiveData` objects (subject being `MutableLiveData`), allowing lifecycle-aware binding.
+On Android both observable and subject can easily be converted into `LiveData` objects using the extension property `liveData`, allowing lifecycle-aware one way binding.
+Subjects also have a `liveDataObserver` property that can be added to a liveData to automatically set values on the subject.
 
-```kotlin
-val observable: Observable<Int>
-val liveData = observable.liveData
+There are also `asState()` extension methods for use with Compose in the `architecture-compose` module.
 
-val subject: Subject<Int>
-val mutableLiveData = subject.liveData
-
-init {
-    liveData.observe(lifeCycle, Observer { value ->
-        mutableLiveData.postValue(value)
-    })
-}
-```
+Two way bindings can be done on the `MutableStateFlow` of the `stateFlow` field of any subject. Starting with Android Studio ArcticFox databinding also support binding directly to MutableStateFlow.
+This required calling the `bind` method to provide a coroutine scope in which the binding takes place. `*Flow` based observables do this automatically.
 
 ### iOS
 On iOS value changes can be observed using `observe(onNext: ...))`.
@@ -171,11 +228,13 @@ Calling this returns a `Disposable` object. The caller is responsible for dispos
 A convenience `DisposeBag` is available to dispose multiple disposables at one. Use either `DisposeBag.add()` or `Disposable.addTo()` to add a Disposable to a DisposeBag.
 DisposeBags can be emptied using `dispose()`. To post new data to the Subject the `post()` method can be called.
 
+#### SwiftUI and Combine
+
 Since Kotlin Native does not have access to pure Swift libraries, no out of the box solution for `SwiftUI`/`Combine` is provided.
 Observables can be mapped to Combine `Published` classes directly from Swift however.
 
 ```Swift
-let observable: Observable<Int>
+let observable: InitializedObservable<Int>
 let subject: Subject<Int>
 
 let disposeBag = DisposeBag()
@@ -190,6 +249,7 @@ init {
     disposeBag.dispose()
 }
 ```
+#### Usage from ViewController
 
 When bound to a viewController, the `LifecycleManager` calls its `onLifeCycleChanged` callback automatically at the start of each cycle (`viewDidAppear`).
 Use this callback to start observing data that should be bound to the lifecycle and return the resulting list of `Disposable`.
@@ -214,6 +274,15 @@ class SomeViewController : UIViewController {
             ] }
     }
 ```
+
+#### Kotlin/Native freezing and memory management
+
+By default observables do not freeze themselves or their values. The internally stored value for the current observation is held in a regular `var`, and it is mutated only from the supplied `CoroutineContext` (`Dispatchers.Main.immidiate` by default).
+Once access is done from another thread than that of the context this `var` gets frozen (due to the context switch), and future updates frozen and stored in an `AtomicReference`. This mean the value in memory at the time of freezing will be held in memory with the Observable.
+
+In practise, when operating in a ViewModel this should suffice. A caveat is that when the `stateFlow` field of an observable is used (which internally is lazily initialized) it will also hold the value and `StateFlow`s always freeze their values regardless of thread access.
+
+Subjects which require a `CoroutineScope` to be created usually `bind` the StateFlow automatically (which will cause it to be initialized, freezing values). This behaviour can be turned off with the `autoBind` paramater. 
 
 ## Navigation
 Navigation is available through a specialized `NavigatingViewModel`.

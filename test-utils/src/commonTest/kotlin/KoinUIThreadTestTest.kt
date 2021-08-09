@@ -18,14 +18,14 @@
 package com.splendo.kaluga.test.koin
 
 import kotlinx.coroutines.CoroutineScope
-import org.koin.core.inject
+import org.koin.core.component.inject
 import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestContext>() {
 
-    inner class MyKoinTestContext : KoinUIThreadTest.KoinTestContext(
+    class MyKoinTestContext : KoinUIThreadTest.KoinTestContext(
         module {
             single { "K" }
         }
@@ -34,10 +34,10 @@ class KoinUIThreadTestTest : KoinUIThreadTest<KoinUIThreadTestTest.MyKoinTestCon
         val k: String by inject()
     }
 
-    override fun CoroutineScope.createTestContext(): MyKoinTestContext = MyKoinTestContext()
+    override val createTestContext: suspend (scope: CoroutineScope) -> MyKoinTestContext = { MyKoinTestContext() }
 
     @Test
-    fun testKoinUIThreadViewModelTest() = testOnUIThread {
+    fun testKoinUIThreadTest() = testOnUIThread {
         assertEquals("K", k)
     }
 }

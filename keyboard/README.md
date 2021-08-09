@@ -24,18 +24,16 @@ Showing and hiding the keyboard is done through the KeyboardManager.
 
 ```kotlin
 // Shared code
-fun showKeyboard(builder: KeyboardManager.Builder, view: KeyboardHostingView) {
-    val keyboardManager = builder.create(coroutineScope)
-    keyboardManager.show(view)
+fun showKeyboard(focusHandler: FocusHandler) {
+    keyboardManager.show(focusHandler)
 }
 
 fun hideKeyboard(builder: KeyboardManager.Builder) {
-    val keyboardManager = builder.create(coroutineScope)
     keyboardManager.hide()
 }
 ```
 
-The `KeyboardManager.Builder` and `KeyboardHostingView` are provided on the platform.
+The `KeyboardManager.Builder` and `FocusHandler` are provided on the platform.
 
 ### Android
 On Android the builder is a `LifecycleSubscribable` (see Architecture) that needs a `LifecycleSubscribable.LifecycleManager` object to provide the current context in which to display the keyboard.
@@ -43,12 +41,11 @@ For `BaseViewModel`, the builder should be made **publicly** visible and bound t
 The keyboardHostingView is any resource Id for a `View` attached to the `Activity` bound to the manager.
 
 ```kotlin
-class KeyboardViewModel: BaseViewModel() {
+class KeyboardViewModel(val builder: KeyboardManager.Builder): BaseViewModel() {
 
-    val builder = KeyboardManager.Builder()
     private val keyboardManager = builder.create(coroutineScope)
 
-    fun show(view: KeyboardHostingView) {
+    fun show(view: FocusHandler) {
         keyboardManager.show(view)
     }
 
@@ -63,12 +60,12 @@ And then in your `Activity`:
 ```kotlin
 class MyActivity: KalugaViewModelActivity<KeyboardViewModel>() {
 
-    override val viewModel: KeyboardViewModel by viewModels()
+    override val viewModel = KeyboardViewModel(keyboardManagerBuilder())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel.show(R.id.some_view)
+        viewModel.show(AndroidFocusHandler(R.id.some_view))
         viewModel.hide()
     }
 
@@ -82,11 +79,33 @@ For other usages, make sure to call `LifecycleSubscriber.subscribe` and `Lifecyc
 MainScope().launch {
     val builder = KeyboardManager.Builder()
     builder.subscribe(activity)
-    builder.create(coroutineScope).show(R.id.some_view)
+    builder.create(coroutineScope).show(AndroidFocusHandler(R.id.some_view))
 }
 ```
 
 You can use the `AppCompatActivity.keyboardManagerBuilder` convenience method to get a builder that is valid during the lifespan of the Activity it belongs to.
+
+### Android compose-ui
+
+Use compose's implementation for `FocusHandler`.
+```kotlin
+
+@Composable
+fun SomeLayout() {
+    val focusHandler = ComposeFocusHandler(FocusRequester.Default)
+    TextField (
+        value = numberInput,
+        onValueChange = numberInputDelegate,
+        modifier = Modifier
+            .fillMaxWidth()
+            .focusRequester(FocusRequester.Default), // add this line to the TextField Modifier.
+    )
+    
+    Button( { viewModel.show(focusHandler) } ) {
+        Text("Button")
+    }
+}
+```
 
 ### iOS
 In iOS the builder is attached to a `UIApplication`. By default this will be ` UIApplication.sharedApplication`, but it can be overwritten by a custom Application. The `KeyboardHostingView` can be any `UIView` that `canBecomeFirstResponder`.

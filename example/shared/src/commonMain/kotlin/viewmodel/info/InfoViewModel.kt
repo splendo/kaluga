@@ -74,28 +74,36 @@ class InfoViewModel(
 
     fun onButtonPressed(button: Button) {
         when (button) {
-            is Button.About -> InfoNavigation.Dialog(DialogSpec().toBundle { row ->
-                when (row) {
-                    is DialogSpecRow.TitleRow -> row.convertValue("About Us")
-                    is DialogSpecRow.MessageRow -> row.convertValue("Kaluga is developed by Splendo Consulting BV")
+            is Button.About -> InfoNavigation.Dialog(
+                DialogSpec().toBundle { row ->
+                    when (row) {
+                        is DialogSpecRow.TitleRow -> row.convertValue("About Us")
+                        is DialogSpecRow.MessageRow -> row.convertValue("Kaluga is developed by Splendo Consulting BV")
+                    }
                 }
-            })
-            is Button.Website -> InfoNavigation.Link(LinkSpec().toBundle { row ->
-                when (row) {
-                    is LinkSpecRow.LinkRow -> row.convertValue("https://kaluga.splendo.com")
+            )
+            is Button.Website -> InfoNavigation.Link(
+                LinkSpec().toBundle { row ->
+                    when (row) {
+                        is LinkSpecRow.LinkRow -> row.convertValue("https://kaluga.splendo.com")
+                    }
                 }
-            })
-            is Button.GitHub -> InfoNavigation.Link(LinkSpec().toBundle { row ->
-                when (row) {
-                    is LinkSpecRow.LinkRow -> row.convertValue("https://github.com/splendo/kaluga")
+            )
+            is Button.GitHub -> InfoNavigation.Link(
+                LinkSpec().toBundle { row ->
+                    when (row) {
+                        is LinkSpecRow.LinkRow -> row.convertValue("https://github.com/splendo/kaluga")
+                    }
                 }
-            })
-            is Button.Mail -> InfoNavigation.Mail(MailSpec().toBundle { row ->
-                when (row) {
-                    is MailSpecRow.ToRow -> row.convertValue(listOf("info@splendo.com"))
-                    is MailSpecRow.SubjectRow -> row.convertValue("Question about Kaluga")
+            )
+            is Button.Mail -> InfoNavigation.Mail(
+                MailSpec().toBundle { row ->
+                    when (row) {
+                        is MailSpecRow.ToRow -> row.convertValue(listOf("info@splendo.com"))
+                        is MailSpecRow.SubjectRow -> row.convertValue("Question about Kaluga")
+                    }
                 }
-            })
+            )
             is Button.Review -> {
                 coroutineScope.launch {
                     reviewManager.attemptToRequestReview()

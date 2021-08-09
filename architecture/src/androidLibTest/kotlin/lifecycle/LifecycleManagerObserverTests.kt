@@ -45,7 +45,7 @@ class LifecycleManagerObserverTests : BaseTest() {
     @Before
     override fun beforeTest() {
         super.beforeTest()
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this).close()
     }
 
     @Test

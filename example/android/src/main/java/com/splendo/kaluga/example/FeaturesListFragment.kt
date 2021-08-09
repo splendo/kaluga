@@ -23,12 +23,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
-import kotlinx.android.synthetic.main.fragment_features_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.layout.fragment_features_list) {
@@ -39,9 +37,10 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.lay
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = FeaturesAdapter(viewModel).apply {
-            features_list.adapter = this
+
+            view.findViewById<RecyclerView>(R.id.features_list).adapter = this
         }
-        viewModel.feature.observe(this, Observer { adapter.features = it })
+        viewModel.feature.observeInitialized { adapter.features = it }
     }
 }
 

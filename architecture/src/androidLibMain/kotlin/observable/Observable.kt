@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,196 +14,116 @@
     limitations under the License.
 
  */
+@file:JvmName("AndroidObservable")
 
 package com.splendo.kaluga.architecture.observable
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
-import com.splendo.kaluga.base.flow.HotFlowable
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlin.properties.ObservableProperty
+import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-actual abstract class Observable<T> : BaseObservable<T>() {
+actual interface WithState<T> {
+    actual val stateFlow: StateFlow<T>
+    actual val valueDelegate: ReadOnlyProperty<Any?, T>
+    val liveData: LiveData<T>
+        get() = stateFlow.asLiveData()
+}
 
-    /**
-     * [LiveData] syncing with this observable
-     */
-    abstract val liveData: LiveData<T>
+val <R : T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
+    get() = Observer<T> { this.post(it) }
 
-    /**
-     * Adds an [Observer] to this Observable
-     * @param owner The [LifecycleOwner] of the [Observer]
-     * @param observer The [Observer] to observe this Observable
-     */
-    fun observe(owner: LifecycleOwner, observer: Observer<T>) {
-        liveData.observe(owner, observer)
+private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): MutableLiveData<R> where B : BasicSubject<R, T, OO>, B : WithMutableState<R> {
+    val mediatorLiveData = MediatorLiveData<R>()
+    mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
+        mediatorLiveData.postValue(value)
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
-        return liveData.value?.let { ObservableOptional.Value(it) } ?: ObservableOptional.Nothing()
+    return mediatorLiveData
+}
+
+fun <T> LiveData<T>.observeOnCoroutine(
+    coroutineScope: CoroutineScope,
+    coroutineContext: CoroutineContext = Dispatchers.Main.immediate,
+    observer: Observer<T>
+) {
+    coroutineScope.launch(coroutineContext) {
+        observeForever(observer)
+        awaitCancellation()
+    }.invokeOnCompletion {
+        removeObserver(observer)
     }
 }
 
-/**
- * Simple [Observable] that takes an initial value
- * @param initialValue The initial value of the Observable
- */
-class DefaultObservable<T>(initialValue: T) : Observable<T>() {
-    override val liveData = MutableLiveData(initialValue)
+actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
+    observation: Observation<R, T, OO>,
+    stateFlowToBind: () -> StateFlow<R?>
+) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
+
+    private var coroutineScope: CoroutineScope? = null
+    private val mutableLiveDataDelegate = lazy {
+        createLiveData().also {
+            coroutineScope?.let { coroutineScope ->
+                it.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+            }
+        }
+    }
+    val mutableLiveData by mutableLiveDataDelegate
+    protected abstract fun createLiveData(): MutableLiveData<R>
+    abstract fun liveDataObserver(): Observer<R>
+
+    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+        super.bind(coroutineScope, context)
+        this.coroutineScope = coroutineScope
+        if (mutableLiveDataDelegate.isInitialized()) {
+            mutableLiveData.observeOnCoroutine(coroutineScope, observer = liveDataObserver())
+        }
+    }
 }
 
-/**
- * [Observable] whose initial value matches a given [ReadOnlyProperty]
- * @param readOnlyProperty The [ReadOnlyProperty] to match with the initial value
- */
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
-    private val value by readOnlyProperty
-    override val liveData: LiveData<T> = MutableLiveData(value)
-}
+actual abstract class BaseUninitializedSubject<T> actual constructor(
+    observation: ObservationUninitialized<T>
+) : AbstractBaseUninitializedSubject<T>(observation) {
 
-/**
- * [Observable] whose value matches a given [Flow]
- * @param flow The [Flow] whose value to match
- * @param coroutineScope The [CoroutineScope] on which the observe the [Flow]
- */
-class FlowObservable<T>(flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
-    override val liveData: LiveData<T> = flow.asLiveData(coroutineScope.coroutineContext)
-}
-
-actual abstract class Subject<T>(private val coroutineScope: CoroutineScope) : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
-
-    protected abstract val providerLiveData: LiveData<T>
-    private val mediatorLiveData = MediatorLiveData<T>()
-
-    /**
-     * [MutableLiveData] syncing with this Subject
-     */
-    override val liveData: MutableLiveData<T> = mediatorLiveData
-    protected abstract val liveDataObserver: Observer<T>
-
-    protected fun initialize() {
-        mediatorLiveData.addSource(providerLiveData) {
-            value ->
+    override fun createLiveData(): MutableLiveData<T> {
+        val mediatorLiveData = MediatorLiveData<T>()
+        mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
             mediatorLiveData.postValue(value)
         }
-        // Start observing the LiveData for any changes to propagate to the two way binding
-        // Waits until the coroutine is canceled to remove the observer
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            liveData.observeForever(liveDataObserver)
-            val neverCompleting = EmptyCompletableDeferred()
-            neverCompleting.await()
-        }.invokeOnCompletion {
-            liveData.removeObserver(liveDataObserver)
-        }
+        return mediatorLiveData
     }
-
-    /**
-     * Posts a new value to the Subject
-     * @param value New value to set
-     */
-    actual open fun post(newValue: T) {
-        liveData.postValue(newValue)
-    }
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
-        return liveData.value?.let { ObservableOptional.Value(it) } ?: ObservableOptional.Nothing()
-    }
-
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
-        val newValue = value as? ObservableOptional.Value ?: return
-        liveData.postValue(newValue.value)
-    }
+    override fun liveDataObserver() = Observer<T> { value -> value?.let { post(it) } }
 }
 
-/**
- * Simple [Subject] that takes an initial value
- * @param initialValue The initial value of the subject
- */
-class DefaultSubject<T>(initialValue: T, coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
-    override val providerLiveData: LiveData<T> = MutableLiveData(initialValue)
-    override val liveDataObserver = Observer<T> {}
+actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
-    init {
-        initialize()
-    }
+    override fun createLiveData(): MutableLiveData<T> = this.mutableLiveData()
+    override fun liveDataObserver() = liveDataObserver
+
+    actual constructor(
+        initialValue: ObservableOptional.Value<T>,
+        coroutineContext: CoroutineContext,
+    ) : this (ObservationInitialized(initialValue, coroutineContext))
 }
 
-/**
- * [Subject] that matches its value to a [ObservableProperty].
- * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
- * Use [FlowableSubject] if synchronized values are required
- */
-class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>, coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
-    private var value by observableProperty
-    override val providerLiveData: LiveData<T> = MutableLiveData(value)
-    override val liveDataObserver = Observer<T> { t ->
-        value = t
-    }
+actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
+    observation: ObservationDefault<R, T?>
+) : AbstractBaseDefaultSubject<R, T>(observation) {
 
-    init {
-        initialize()
-    }
+    override fun createLiveData(): MutableLiveData<R> = this.mutableLiveData()
+    override fun liveDataObserver() = Observer<R> { post(it) }
+
+    actual constructor(
+        defaultValue: ObservableOptional.Value<R>,
+        initialValue: ObservableOptional.Value<T?>,
+        coroutineContext: CoroutineContext
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue, coroutineContext))
 }
-
-/**
- * [Subject] that synchronizes its value to a [HotFlowable]
- * @param flowable The [HotFlowable] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
- */
-class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
-    override val providerLiveData: LiveData<T> = flowable.flow().distinctUntilChanged().asLiveData(coroutineScope.coroutineContext)
-    override val liveDataObserver = Observer<T> { t ->
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            flowable.set(t)
-        }
-    }
-
-    init {
-        initialize()
-    }
-}
-
-/**
- * [Subject] that synchronizes its value to a [MutableStateFlow]
- * @param stateFlow The [MutableStateFlow] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
- */
-class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>(coroutineScope) {
-    override val providerLiveData: LiveData<T> = stateFlow.asLiveData(coroutineScope.coroutineContext)
-    override val liveDataObserver = Observer<T> { t ->
-        stateFlow.value = t
-    }
-
-    init {
-        initialize()
-    }
-}
-
-actual fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
-
-actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ObservablePropertySubject(this, coroutineScope)
-
-actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
-
-actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
-
-actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowableSubject(this, coroutineScope)
-
-actual fun <T> MutableStateFlow<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = StateFlowSubject(this, coroutineScope)
-
-actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
-
-actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope): Subject<T> = DefaultSubject(initialValue, coroutineScope)

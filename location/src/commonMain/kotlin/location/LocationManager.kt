@@ -18,9 +18,10 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -28,7 +29,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 abstract class BaseLocationManager(
-    protected val locationPermission: Permission.Location,
+    protected val locationPermission: LocationPermission,
     private val permissions: Permissions,
     private val autoRequestPermission: Boolean,
     internal val autoEnableLocations: Boolean,
@@ -36,7 +37,7 @@ abstract class BaseLocationManager(
 ) : CoroutineScope by locationStateRepo {
 
     interface Builder {
-        fun create(locationPermission: Permission.Location, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
+        fun create(locationPermission: LocationPermission, permissions: Permissions, autoRequestPermission: Boolean, autoEnableLocations: Boolean, locationStateRepo: LocationStateRepo): BaseLocationManager
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
@@ -50,12 +51,10 @@ abstract class BaseLocationManager(
         if (monitoringPermissionsJob.compareAndSet(null, job))
             launch(job) {
                 locationPermissionRepo.collect { state ->
-                    when (state) {
-                        is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(locationPermission))
-                        else -> {
-                        }
-                    }
+                    if (state is PermissionState.Denied.Requestable && autoRequestPermission)
+                        state.request(permissions.getManager(locationPermission))
                     val hasPermission = state is PermissionState.Allowed
+
                     locationStateRepo.takeAndChangeState { locationState ->
                         when (locationState) {
                             is LocationState.Disabled.NoGPS, is LocationState.Enabled -> if (hasPermission) locationState.remain() else (locationState as LocationState.Permitted).revokePermission
@@ -75,7 +74,7 @@ abstract class BaseLocationManager(
     }
 
     internal suspend fun isPermitted(): Boolean {
-        return locationPermissionRepo.first() is PermissionState.Allowed
+        return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     internal abstract suspend fun startMonitoringLocationEnabled()

@@ -20,10 +20,10 @@ package com.splendo.kaluga.example.loading
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.HudViewModel
-import kotlinx.android.synthetic.main.activity_loading.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 @SuppressLint("SetTextI18n")
@@ -34,11 +34,11 @@ class LoadingActivity : KalugaViewModelActivity<HudViewModel>(R.layout.activity_
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        btn_show_loading_indicator_system.setOnClickListener {
+        findViewById<AppCompatButton>(R.id.btn_show_loading_indicator_system).setOnClickListener {
             viewModel.onShowSystemPressed()
         }
 
-        btn_show_loading_indicator_custom.setOnClickListener {
+        findViewById<AppCompatButton>(R.id.btn_show_loading_indicator_custom).setOnClickListener {
             viewModel.onShowCustomPressed()
         }
     }

@@ -11,6 +11,11 @@
 		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
 		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
+		209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
+		209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E324C07EAD001426CD /* BluetoothViewController.swift */; };
+		209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */; };
+		209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */; };
+		209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */; };
 		20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */; };
 		20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */; };
 		20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */; };
@@ -19,6 +24,9 @@
 		20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */; };
 		4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B02E503236B221B003F0B36 /* LoadingViewController.swift */; };
 		4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B54CB202369DA6600B69B2D /* AlertsViewController.swift */; };
+		4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */; };
+		4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */; };
+		641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */; };
 		649979D325CC638C00348419 /* SystemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979D225CC638C00348419 /* SystemViewController.swift */; };
 		649979E725CCD37200348419 /* NetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649979E625CCD37200348419 /* NetworkViewController.swift */; };
 		74167996D52193D5DECB517A /* KotlinNativeFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 746885BADB9F6661211345DA /* KotlinNativeFramework.framework */; };
@@ -76,6 +84,11 @@
 		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
 		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		209471E324C07EAD001426CD /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
+		209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceDetailsViewController.swift; sourceTree = "<group>"; };
+		209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothCharacteristicCell.xib; sourceTree = "<group>"; };
+		209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BluetoothDescriptorCell.xib; sourceTree = "<group>"; };
 		20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		20C7D1CE24699A6C00C9A63F /* UIControl+Closure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIControl+Closure.swift"; sourceTree = "<group>"; };
 		20C7D1D12469A3D600C9A63F /* FeaturesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturesListViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +97,10 @@
 		20C7D1D9246A944A00C9A63F /* ArchitectureDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchitectureDetailsViewController.swift; sourceTree = "<group>"; };
 		4B02E503236B221B003F0B36 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		4B54CB202369DA6600B69B2D /* AlertsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertsViewController.swift; sourceTree = "<group>"; };
+		4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewController.swift; sourceTree = "<group>"; };
+		4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconsViewCell.swift; sourceTree = "<group>"; };
+		641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksViewController.swift; sourceTree = "<group>"; };
+		648214DD263095A900CDAE05 /* Demo.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Demo.entitlements; sourceTree = "<group>"; };
 		649979D225CC638C00348419 /* SystemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemViewController.swift; sourceTree = "<group>"; };
 		649979E625CCD37200348419 /* NetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkViewController.swift; sourceTree = "<group>"; };
 		740C363F8973304E72F429BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.info; path = Info.plist; sourceTree = "<group>"; };
@@ -155,6 +172,25 @@
 			path = KeyboardManager;
 			sourceTree = "<group>";
 		};
+		209471DF24C07DE2001426CD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		209471E224C07E61001426CD /* Bluetooth */ = {
+			isa = PBXGroup;
+			children = (
+				209471E324C07EAD001426CD /* BluetoothViewController.swift */,
+				209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */,
+				209471E724C07F19001426CD /* BluetoothCharacteristicCell.xib */,
+				209471E924C07F5F001426CD /* BluetoothDescriptorCell.xib */,
+			);
+			path = Bluetooth;
+			sourceTree = "<group>";
+		};
 		20C7D1CD24699A5000C9A63F /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +246,23 @@
 				4B54CB202369DA6600B69B2D /* AlertsViewController.swift */,
 			);
 			path = Alerts;
+			sourceTree = "<group>";
+		};
+		4BC0CBDC269F1D25000512A9 /* Beacons */ = {
+			isa = PBXGroup;
+			children = (
+				4BC0CBDD269F1D25000512A9 /* BeaconsViewController.swift */,
+				4BC0CBDE269F1D25000512A9 /* BeaconsViewCell.swift */,
+			);
+			path = Beacons;
+			sourceTree = "<group>";
+		};
+		641CC0D625CAC0A1001E1CD1 /* Links */ = {
+			isa = PBXGroup;
+			children = (
+				641CC0DB25CACAAD001E1CD1 /* LinksViewController.swift */,
+			);
+			path = Links;
 			sourceTree = "<group>";
 		};
 		649979D025CC636F00348419 /* System */ = {
@@ -291,23 +344,28 @@
 		746CAD9D15ECB24F4ED84E11 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				648214DD263095A900CDAE05 /* Demo.entitlements */,
+				641CC0D625CAC0A1001E1CD1 /* Links */,
 				649979D025CC636F00348419 /* System */,
 				20524A22257BEA020054B57E /* DateTimePicker */,
-				205747552397C99100CDE25E /* KeyboardManager */,
+				4B54CB1F2369DA4E00B69B2D /* Alerts */,
+				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
 				20C7D1D6246A938A00C9A63F /* Architecture */,
-				20C7D1D32469B24C00C9A63F /* Info */,
+				74C9C443CC304CB387AB324D /* Assets.xcassets */,
+				209471E224C07E61001426CD /* Bluetooth */,
+				20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */,
+				4BC0CBDC269F1D25000512A9 /* Beacons */,
 				20C7D1D02469A3C100C9A63F /* FeaturesList */,
 				20C7D1CD24699A5000C9A63F /* Helpers */,
-				4B02E502236B2206003F0B36 /* LoadingIndicator */,
-				4B54CB1F2369DA4E00B69B2D /* Alerts */,
-				4B54CB1E2369DA2B00B69B2D /* Location */,
-				978348A5235DF51D005B140B /* Permissions */,
+				20C7D1D32469B24C00C9A63F /* Info */,
 				74BEC2BADB02749FD409313B /* Info.plist */,
-				74C9C443CC304CB387AB324D /* Assets.xcassets */,
+				205747552397C99100CDE25E /* KeyboardManager */,
 				74FDC8922442294AF0776058 /* LaunchScreen.storyboard */,
-				74BBBF2C57521E71982179E0 /* AppDelegate.swift */,
+				4B02E502236B2206003F0B36 /* LoadingIndicator */,
+				4B54CB1E2369DA2B00B69B2D /* Location */,
 				74F483E9C1890D693F808DDA /* Main.storyboard */,
-				20C7D1CB246968AA00C9A63F /* ExampleViewController.swift */,
+				978348A5235DF51D005B140B /* Permissions */,
+				209471DF24C07DE2001426CD /* View */,
 			);
 			path = Demo;
 			sourceTree = "<group>";
@@ -463,10 +521,10 @@
 		7477FD4305C126F92DB837CC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				ORGANIZATIONNAME = Splendo;
+				ORGANIZATIONNAME = "Splendo Consulting B.V.";
 				TargetAttributes = {
 					74555136E1B2BB715E50195E = {
-						DevelopmentTeam = NHQ559J67Q;
+						DevelopmentTeam = 2732HQPVJP;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -506,9 +564,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				205AF6562488F017001BD99E /* Localizable.strings in Resources */,
+				209471E824C07F19001426CD /* BluetoothCharacteristicCell.xib in Resources */,
 				74C75886D08DD78EA65E6DD9 /* Assets.xcassets in Resources */,
 				7478297FCF44ED1D49525D4E /* LaunchScreen.storyboard in Resources */,
 				74E6599B023623BD96737582 /* Main.storyboard in Resources */,
+				209471EA24C07F5F001426CD /* BluetoothDescriptorCell.xib in Resources */,
 				74C9929AB26988E8CC66893D /* gradle.properties in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -546,11 +606,15 @@
 			files = (
 				205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */,
 				74671D1F8F6A31F1DD3F7912 /* AppDelegate.swift in Sources */,
+				209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */,
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
+				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
 				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
+				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
 				649979E725CCD37200348419 /* NetworkViewController.swift in Sources */,
+				4BC0CBE0269F1D25000512A9 /* BeaconsViewCell.swift in Sources */,
 				20C7D1D8246A93A600C9A63F /* ArchitectureInputViewController.swift in Sources */,
 				20C7D1D22469A3D600C9A63F /* FeaturesListViewController.swift in Sources */,
 				20C7D1DA246A944A00C9A63F /* ArchitectureDetailsViewController.swift in Sources */,
@@ -559,6 +623,8 @@
 				20C7D1D52469B25B00C9A63F /* InfoViewController.swift in Sources */,
 				4B02E504236B221B003F0B36 /* LoadingViewController.swift in Sources */,
 				7425815FF35195035A8991B0 /* LocationViewController.swift in Sources */,
+				209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */,
+				209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
 				20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */,
 			);
@@ -736,13 +802,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = NHQ559J67Q;
+				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -853,15 +919,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = Demo/Demo.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 2732HQPVJP;
 				FRAMEWORK_SEARCH_PATHS = $BUILT_PRODUCTS_DIR;
 				INFOPLIST_FILE = Demo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.mpp.demo.Demo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.splendo.kaluga.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kaluga example";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

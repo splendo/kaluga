@@ -1,8 +1,8 @@
 package location
 
-import permissions.KNPermissionsFramework
 import com.splendo.kaluga.location.LocationStateRepoBuilder
+import permissions.KNPermissionsFramework
 
 class KNLocationFramework {
-    fun getPermissionRepoBuilder(): LocationStateRepoBuilder { return LocationStateRepoBuilder(permissions=KNPermissionsFramework().getPermissions()) }
+    fun getPermissionRepoBuilder(): LocationStateRepoBuilder { return LocationStateRepoBuilder(permissions = KNPermissionsFramework().getPermissions()) }
 }

@@ -19,8 +19,9 @@ package com.splendo.kaluga.example.permissions
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.Observer
+import androidx.appcompat.widget.AppCompatButton
 import com.splendo.kaluga.architecture.navigation.toNavigationBundle
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
@@ -28,8 +29,14 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigat
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
-import com.splendo.kaluga.permissions.Permission
-import kotlinx.android.synthetic.main.activity_permissions_demo.*
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.calendar.CalendarPermission
+import com.splendo.kaluga.permissions.camera.CameraPermission
+import com.splendo.kaluga.permissions.contacts.ContactsPermission
+import com.splendo.kaluga.permissions.location.LocationPermission
+import com.splendo.kaluga.permissions.microphone.MicrophonePermission
+import com.splendo.kaluga.permissions.notifications.NotificationsPermission
+import com.splendo.kaluga.permissions.storage.StoragePermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -39,14 +46,14 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
         val permissionNavSpec = PermissionNavigationBundleSpec()
         intent.extras?.toNavigationBundle(permissionNavSpec)?.let { bundle ->
             val permission = when (bundle.get(PermissionNavigationBundleSpecRow)) {
-                PermissionView.Bluetooth -> Permission.Bluetooth
-                PermissionView.Calendar -> Permission.Calendar(allowWrite = true)
-                PermissionView.Camera -> Permission.Camera
-                PermissionView.Contacts -> Permission.Contacts(allowWrite = true)
-                PermissionView.Location -> Permission.Location(background = true, precise = true)
-                PermissionView.Microphone -> Permission.Microphone
-                PermissionView.Notifications -> Permission.Notifications()
-                PermissionView.Storage -> Permission.Storage(allowWrite = true)
+                PermissionView.Bluetooth -> BluetoothPermission
+                PermissionView.Calendar -> CalendarPermission(allowWrite = true)
+                PermissionView.Camera -> CameraPermission
+                PermissionView.Contacts -> ContactsPermission(allowWrite = true)
+                PermissionView.Location -> LocationPermission(background = true, precise = true)
+                PermissionView.Microphone -> MicrophonePermission
+                PermissionView.Notifications -> NotificationsPermission()
+                PermissionView.Storage -> StoragePermission(allowWrite = true)
             }
             parametersOf(permission)
         } ?: parametersOf()
@@ -60,20 +67,18 @@ class PermissionsDemoActivity : KalugaViewModelActivity<PermissionViewModel>(R.l
             supportActionBar?.title = bundle.get(PermissionNavigationBundleSpecRow).title
         }
 
-        viewModel.permissionStateMessage.observe(this, Observer {
-            permissions_message.text = it
-        })
+        viewModel.permissionStateMessage.observe {
+            findViewById<TextView>(R.id.permissions_message).text = it
+        }
 
-        viewModel.showPermissionButton.observe(this, Observer {
-            btn_permissions_bluetooth_request_permissions.visibility = if (it) View.VISIBLE else View.GONE
-        })
+        viewModel.showPermissionButton.observe {
+            findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).visibility = if (it == true) View.VISIBLE else View.GONE
+        }
 
-        btn_permissions_bluetooth_request_permissions.setOnClickListener { viewModel.requestPermission() }
+        findViewById<AppCompatButton>(R.id.btn_permissions_bluetooth_request_permissions).setOnClickListener { viewModel.requestPermission() }
 
-        viewModel.requestMessage.observe(this, Observer { message ->
-            message?.let {
-                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-            }
-        })
+        viewModel.requestMessage.observeInitialized { message ->
+            if (message != null) Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        }
     }
 }

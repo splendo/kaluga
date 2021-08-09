@@ -22,7 +22,6 @@ import androidx.lifecycle.LifecycleOwner
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.keyboard.AndroidKeyboardManagerTests.AndroidKeyboardTestContext
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.yield
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.eq
@@ -35,19 +34,25 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         private const val viewId = 1
     }
 
-
-
-    inner class AndroidKeyboardTestContext(coroutineScope:CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
-        override val view get() = viewId
+    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
+        override val focusHandler get() = AndroidFocusHandler(viewId)
         override lateinit var builder: KeyboardManager.Builder
 
-        val mockActivity:Activity = mock(Activity::class.java)
+        val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
         var mockWindowToken: IBinder = mock(IBinder::class.java)
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
 
-        init {
+        override fun verifyShow() {
+            verify(mockView).requestFocus()
+            verify(mockInputMethodManager).toggleSoftInput(eq(InputMethodManager.SHOW_FORCED), eq(InputMethodManager.HIDE_IMPLICIT_ONLY))
+        }
 
+        override fun verifyDismiss() {
+            verify(mockInputMethodManager).hideSoftInputFromWindow(eq(mockWindowToken), eq(0))
+        }
+
+        init {
             val mockLifecycleOwner = mock(LifecycleOwner::class.java)
             val mockFragmentManager = mock(FragmentManager::class.java)
 
@@ -71,14 +76,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         }
     }
 
-    override fun AndroidKeyboardTestContext.verifyShow() {
-        verify(mockView).requestFocus()
-        verify(mockInputMethodManager).toggleSoftInput(eq(InputMethodManager.SHOW_FORCED), eq(InputMethodManager.HIDE_IMPLICIT_ONLY))
-    }
-
-    override fun AndroidKeyboardTestContext.verifyDismiss() {
-        verify(mockInputMethodManager).hideSoftInputFromWindow(eq(mockWindowToken), eq(0))
-    }
-
-    override fun CoroutineScope.createTestContext() = AndroidKeyboardTestContext(this)
+    override val createTestContext: suspend (scope: CoroutineScope) -> AndroidKeyboardTestContext =
+        { AndroidKeyboardTestContext(it) }
 }

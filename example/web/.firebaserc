@@ -1,0 +1,17 @@
+{
+  "projects": {
+    "default": "kaluga"
+  },
+  "targets": {
+    "kaluga": {
+      "hosting": {
+        "kaluga-links-example": [
+          "kaluga-links"
+        ],
+        "kaluga-links": [
+          "kaluga"
+        ]
+      }
+    }
+  }
+}

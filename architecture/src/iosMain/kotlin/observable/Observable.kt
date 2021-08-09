@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,185 +14,47 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.architecture.observable
 
-import com.splendo.kaluga.base.flow.HotFlowable
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.properties.Delegates
-import kotlin.properties.ObservableProperty
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
-actual abstract class Observable<T> : BaseObservable<T>() {
+actual interface WithState<T> {
+    actual val stateFlow: StateFlow<T>
+    actual val valueDelegate: ReadOnlyProperty<Any?, T>
+}
 
-    private val observers = mutableListOf<(T) -> Unit>()
-    protected var value: ObservableOptional<T> by Delegates.observable(ObservableOptional.Nothing()) { _, _, new ->
-        val result = new as? ObservableOptional.Value<T> ?: return@observable
-        observers.forEach { it.invoke(result.value) }
-    }
+actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
+    observation: Observation<R, T, OO>,
+    stateFlowToBind: () -> StateFlow<R?>
+) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
-    /**
-     * Adds an observing function to the Observable to be notified on each change to the observable
-     * @param onNext Function to be called each time the value of the Observable changes
-     * @return [Disposable] that removes the observing function when disposed
-     */
-    fun observe(onNext: (T) -> Unit): Disposable {
-        observers.add(onNext)
-        val lastResult = value
-        if (lastResult is ObservableOptional.Value<T>) {
-            onNext.invoke(lastResult.value)
-        }
-        return SimpleDisposable { observers.remove(onNext) }
-    }
-
-    override fun getValue(thisRef: Any?, property: KProperty<*>): ObservableOptional<T> {
-        return value
+    final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
+        super.bind(coroutineScope, context)
     }
 }
 
-/**
- * Simple [Observable] that takes an initial value
- * @param initialValue The initial value of the Observable
- */
-class DefaultObservable<T>(initialValue: T) : Observable<T>() {
-    init {
-        value = ObservableOptional.Value(initialValue)
-    }
+actual abstract class BaseUninitializedSubject<T> actual constructor(
+    observation: ObservationUninitialized<T>
+) : AbstractBaseUninitializedSubject<T>(observation)
+
+actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
+
+    actual constructor(
+        initialValue: ObservableOptional.Value<T>,
+        coroutineContext: CoroutineContext,
+    ) : this (ObservationInitialized(initialValue, coroutineContext))
 }
 
-/**
- * [Observable] whose initial value matches a given [ReadOnlyProperty]
- * @param readOnlyProperty The [ReadOnlyProperty] to match with the initial value
- */
-class ReadOnlyPropertyObservable<T>(readOnlyProperty: ReadOnlyProperty<Any?, T>) : Observable<T>() {
-    private val initialValue by readOnlyProperty
-    init {
-        value = ObservableOptional.Value(initialValue)
-    }
+actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
+    observation: ObservationDefault<R, T?>
+) : AbstractBaseDefaultSubject<R, T>(observation) {
+
+    actual constructor(
+        defaultValue: ObservableOptional.Value<R>,
+        initialValue: ObservableOptional.Value<T?>,
+        coroutineContext: CoroutineContext
+    ) : this(observation = ObservationDefault<R, T?>(defaultValue, initialValue, coroutineContext))
 }
-
-/**
- * [Observable] whose value matches a given [Flow]
- * @param flow The [Flow] whose value to match
- * @param coroutineScope The [CoroutineScope] on which the observe the [Flow]
- */
-class FlowObservable<T>(private val flow: Flow<T>, coroutineScope: CoroutineScope) : Observable<T>() {
-
-    init {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            flow.collect {
-                value = ObservableOptional.Value(it)
-            }
-        }
-    }
-}
-
-actual abstract class Subject<T> : Observable<T>(), ReadWriteProperty<Any?, ObservableOptional<T>> {
-
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: ObservableOptional<T>) {
-        this.value = value
-    }
-
-    /**
-     * Updates the value of the [Subject]
-     * @param newValue The new value of the subject
-     */
-    actual open fun post(newValue: T) {
-        value = ObservableOptional.Value(newValue)
-    }
-}
-
-/**
- * Simple [Subject] that takes an initial value
- * @param initialValue The initial value of the subject
- */
-class DefaultSubject<T>(initialValue: T) : Subject<T>() {
-
-    init {
-        value = ObservableOptional.Value(initialValue)
-    }
-}
-
-/**
- * [Subject] that matches its value to a [ObservableProperty].
- * While the subject updated the [ObservableProperty], changes to the property are not delegated back to the subject.
- * Use [FlowSubject] if synchronized values are required
- */
-class ObservablePropertySubject<T>(observableProperty: ObservableProperty<T>) : Subject<T>() {
-
-    private var remoteValue by observableProperty
-
-    init {
-        value = ObservableOptional.Value(remoteValue)
-    }
-
-    override fun post(newValue: T) {
-        remoteValue = newValue
-        super.post(newValue)
-    }
-}
-
-/**
- * [Subject] that synchronizes its value to a [HotFlowable]
- * @param flowable The [HotFlowable] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
- */
-class FlowableSubject<T>(private val flowable: HotFlowable<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
-
-    init {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            flowable.flow().collect {
-                super.post(it)
-            }
-        }
-    }
-
-    override fun post(newValue: T) {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            flowable.set(newValue)
-        }
-    }
-}
-
-/**
- * [Subject] that synchronizes its value to a [MutableStateFlow]
- * @param stateFlow The [MutableStateFlow] to synchronize to
- * @param coroutineScope The [CoroutineScope] on which to observe changes to the [HotFlowable]
- */
-class StateFlowSubject<T>(private val stateFlow: MutableStateFlow<T>, private val coroutineScope: CoroutineScope) : Subject<T>() {
-
-    init {
-        coroutineScope.launch(Dispatchers.Main.immediate) {
-            stateFlow.collect {
-                super.post(it)
-            }
-        }
-    }
-
-    override fun post(newValue: T) {
-        stateFlow.value = newValue
-    }
-}
-
-actual fun <T> ReadOnlyProperty<Any?, T>.toObservable(): Observable<T> = ReadOnlyPropertyObservable(this)
-
-actual fun <T> ObservableProperty<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = ObservablePropertySubject(this)
-
-actual fun <T> Flow<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this, coroutineScope)
-
-actual fun <T> HotFlowable<T>.toObservable(coroutineScope: CoroutineScope): Observable<T> = FlowObservable(this.flow(), coroutineScope)
-
-actual fun <T> HotFlowable<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = FlowableSubject(this, coroutineScope)
-
-actual fun <T> MutableStateFlow<T>.toSubject(coroutineScope: CoroutineScope): Subject<T> = StateFlowSubject(this, coroutineScope)
-
-actual fun <T> observableOf(initialValue: T): Observable<T> = DefaultObservable(initialValue)
-
-actual fun <T> subjectOf(initialValue: T, coroutineScope: CoroutineScope): Subject<T> = DefaultSubject(initialValue)

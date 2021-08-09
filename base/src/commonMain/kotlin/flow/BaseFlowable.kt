@@ -19,7 +19,6 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.flow
 
 import co.touchlab.stately.concurrency.AtomicReference
-import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
@@ -33,6 +32,7 @@ import kotlinx.coroutines.flow.first
  * @param T the value type to flow on.
  * @param channelFactory Factory for generating a [BroadcastChannel] on which the data is flown
  */
+@Deprecated("This Channel based implementation is deprecated in favor of SharedFlow or StateFlow")
 abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChannel<T> = { ConflatedBroadcastChannel() }) : Flowable<T> {
 
     private val channel: AtomicReference<BroadcastChannel<T>?> = AtomicReference(null)
@@ -58,12 +58,7 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         }
     }
 
-    override fun setBlocking(value: T) {
-        // if a conflated broadcast channel is used it always accepts input non-blocking (provided the channel is not closed)
-        runBlocking {
-            set(value)
-        }
-    }
-
+    // Note: if the channel is buffered, this could be wrong.
+    // Since Flowable is deprecated this will not be fixed
     protected suspend fun currentValue(): T? = channel.get()?.asFlow()?.first()
 }
