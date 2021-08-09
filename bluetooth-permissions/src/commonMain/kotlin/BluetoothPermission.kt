@@ -19,8 +19,10 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.defaultPermissionContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -39,7 +41,7 @@ interface BaseBluetoothPermissionManagerBuilder : BasePermissionsBuilder {
 /**
  * A builder for creating a [BluetoothPermissionManager]
  */
-expect class BluetoothPermissionManagerBuilder : BaseBluetoothPermissionManagerBuilder
+expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseBluetoothPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [BluetoothPermission]

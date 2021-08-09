@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -39,7 +40,7 @@ actual class MicrophonePermissionManager(repo: MicrophonePermissionStateRepo) : 
     }
 }
 
-actual class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder {
+actual class MicrophonePermissionManagerBuilder actual constructor(context: PermissionContext): BaseMicrophonePermissionManagerBuilder {
 
     override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
         return MicrophonePermissionManager(repo)

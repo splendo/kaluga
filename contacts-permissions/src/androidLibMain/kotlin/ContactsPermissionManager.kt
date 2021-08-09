@@ -19,8 +19,8 @@ package com.splendo.kaluga.permissions.contacts
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -52,9 +52,9 @@ actual class ContactsPermissionManager(
     }
 }
 
-actual class ContactsPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
     override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
-        return ContactsPermissionManager(context, contacts, repo)
+        return ContactsPermissionManager(context.context, contacts, repo)
     }
 }

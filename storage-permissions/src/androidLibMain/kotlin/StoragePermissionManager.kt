@@ -19,8 +19,8 @@ package com.splendo.kaluga.permissions.storage
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -52,9 +52,9 @@ actual class StoragePermissionManager(
     }
 }
 
-actual class StoragePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseStoragePermissionManagerBuilder {
+actual class StoragePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseStoragePermissionManagerBuilder {
 
     override fun create(storage: StoragePermission, repo: StoragePermissionStateRepo): PermissionManager<StoragePermission> {
-        return StoragePermissionManager(context, storage, repo)
+        return StoragePermissionManager(context.context, storage, repo)
     }
 }

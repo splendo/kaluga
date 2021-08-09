@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.notifications
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Notifications.
@@ -27,11 +29,11 @@ import com.splendo.kaluga.permissions.PermissionsBuilder
 data class NotificationsPermission(val options: NotificationOptions? = null) : Permission()
 
 fun PermissionsBuilder.registerNotificationsPermission() =
-    registerNotificationsPermissionBuilder().also { builder ->
-        registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
+    registerNotificationsPermissionBuilder(context).also { builder ->
+        registerPermissionStateRepoBuilder(NotificationsPermission::class) { permission, coroutineContext ->
             NotificationsPermissionStateRepo(permission as NotificationsPermission, builder as BaseNotificationsPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerNotificationsPermissionBuilder() : NotificationsPermissionManagerBuilder
+internal fun PermissionsBuilder.registerNotificationsPermissionBuilder(context: PermissionContext = defaultPermissionContext) : NotificationsPermissionManagerBuilder = register(builder = NotificationsPermissionManagerBuilder(context), permission = NotificationsPermission::class)
 

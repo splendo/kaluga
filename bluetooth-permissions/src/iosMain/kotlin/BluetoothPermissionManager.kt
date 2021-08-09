@@ -23,6 +23,7 @@ import com.splendo.kaluga.permissions.IOSPermissionsHelper
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.logging.error
+import com.splendo.kaluga.permissions.PermissionContext
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -92,12 +93,12 @@ actual class BluetoothPermissionManager(
     }
 }
 
-actual class BluetoothPermissionManagerBuilder(
-    private val bundle: NSBundle = NSBundle.mainBundle
+actual class BluetoothPermissionManagerBuilder actual constructor(
+    private val context: PermissionContext
 ) : BaseBluetoothPermissionManagerBuilder {
 
     override fun create(repo: BluetoothPermissionStateRepo): PermissionManager<BluetoothPermission> {
-        return BluetoothPermissionManager(bundle, repo)
+        return BluetoothPermissionManager(context, repo)
     }
 }
 

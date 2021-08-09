@@ -18,6 +18,7 @@
 package com.splendo.kaluga.test.mock.permissions
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.BaseBluetoothPermissionManagerBuilder
@@ -48,7 +49,9 @@ import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.MockPermissionStateRepo
 import kotlin.coroutines.CoroutineContext
 
-class MockPermissionsBuilder : PermissionsBuilder() {
+expect val mockPermissionContext: PermissionContext
+
+class MockPermissionsBuilder : PermissionsBuilder(mockPermissionContext) {
 
     private val _cameraPMManager = AtomicReference<MockPermissionManager<CameraPermission>?>(null)
     var cameraPMManager: MockPermissionManager<CameraPermission>?
@@ -149,42 +152,42 @@ class MockPermissionsBuilder : PermissionsBuilder() {
 
     fun registerAllPermissionsBuilders() {
         register(bluetoothPMBuilder, BluetoothPermission::class).also { builder ->
-            registerRepoFactory(BluetoothPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(BluetoothPermission::class) { permission, coroutineContext ->
                 MockBluetoothPermissionStateRepo(builder, coroutineContext)
             }
         }
         register(locationPMBuilder, LocationPermission::class).also { builder ->
-            registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(LocationPermission::class) { permission, coroutineContext ->
                 MockLocationPermissionStateRepo(permission as LocationPermission, builder, coroutineContext)
             }
         }
         register(calendarPMBuilder, CalendarPermission::class).also { builder ->
-            registerRepoFactory(CalendarPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(CalendarPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<CalendarPermission>()
             }
         }
         register(storagePMBuilder, StoragePermission::class).also { builder ->
-            registerRepoFactory(StoragePermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(StoragePermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<StoragePermission>()
             }
         }
         register(cameraPMBuilder, CameraPermission::class).also { builder ->
-            registerRepoFactory(CameraPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(CameraPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<CameraPermission>()
             }
         }
         register(contactsPMBuilder, ContactsPermission::class).also { builder ->
-            registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(ContactsPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<ContactsPermission>()
             }
         }
         register(microphonePMBuilder, MicrophonePermission::class).also { builder ->
-            registerRepoFactory(MicrophonePermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(MicrophonePermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<MicrophonePermission>()
             }
         }
         register(notificationsPMBuilder, NotificationsPermission::class).also { builder ->
-            registerRepoFactory(NotificationsPermission::class) { permission, coroutineContext ->
+            registerPermissionStateRepoBuilder(NotificationsPermission::class) { permission, coroutineContext ->
                 MockPermissionStateRepo<NotificationsPermission>()
             }
         }

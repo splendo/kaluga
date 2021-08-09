@@ -20,8 +20,8 @@ package com.splendo.kaluga.permissions.microphone
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -57,9 +57,9 @@ actual class MicrophonePermissionManager(
     }
 }
 
-actual class MicrophonePermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseMicrophonePermissionManagerBuilder {
+actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
     override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
-        return MicrophonePermissionManager(context, repo)
+        return MicrophonePermissionManager(context.context, repo)
     }
 }

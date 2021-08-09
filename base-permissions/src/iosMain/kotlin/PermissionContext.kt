@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,16 +15,10 @@
 
  */
 
-package com.splendo.kaluga.permissions.calendar
+package com.splendo.kaluga.permissions
 
-import android.content.Context
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import platform.Foundation.NSBundle
 
-internal actual fun PermissionsBuilder.registerCalendarPermissionBuilder(context: Any?) =
-    register(
-        builder = when (context) {
-            is Context -> CalendarPermissionManagerBuilder(context)
-            else -> CalendarPermissionManagerBuilder()
-        },
-        permission = CalendarPermission::class
-    )
+actual typealias PermissionContext = NSBundle
+
+actual val defaultPermissionContext get() = NSBundle.mainBundle

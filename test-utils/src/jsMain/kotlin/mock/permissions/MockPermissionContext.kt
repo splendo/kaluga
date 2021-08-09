@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2020. Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 
  */
 
-package com.splendo.kaluga.permissions.notifications
+package com.splendo.kaluga.test.mock.permissions
 
-import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 
-internal actual fun PermissionsBuilder.registerNotificationsPermissionBuilder() = register(builder = NotificationsPermissionManagerBuilder(), permission = NotificationsPermission::class)
+actual val mockPermissionContext = PermissionContext()

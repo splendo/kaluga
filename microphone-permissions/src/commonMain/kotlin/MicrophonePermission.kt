@@ -18,8 +18,10 @@
 package com.splendo.kaluga.permissions.microphone
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.defaultPermissionContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -39,7 +41,7 @@ interface BaseMicrophonePermissionManagerBuilder : BasePermissionsBuilder {
 /**
  * A builder for creating a [MicrophonePermissionManager]
  */
-expect class MicrophonePermissionManagerBuilder : BaseMicrophonePermissionManagerBuilder
+expect class MicrophonePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseMicrophonePermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [MicrophonePermission]

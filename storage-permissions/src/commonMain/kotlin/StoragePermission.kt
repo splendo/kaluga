@@ -18,8 +18,10 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.defaultPermissionContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -48,7 +50,7 @@ interface BaseStoragePermissionManagerBuilder : BasePermissionsBuilder {
 /**
  * A builder for creating a [StoragePermissionManager]
  */
-expect class StoragePermissionManagerBuilder : BaseStoragePermissionManagerBuilder
+expect class StoragePermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseStoragePermissionManagerBuilder
 
 /**
  * Alias for [StoragePermissionManagerBuilder]

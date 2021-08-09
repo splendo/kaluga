@@ -24,7 +24,6 @@ import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import com.splendo.kaluga.permissions.withBundle
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -142,7 +141,7 @@ actual class LocationManager(
 actual class LocationStateRepoBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
     private val locationManager: CLLocationManager = CLLocationManager(),
-    private val permissions: Permissions = Permissions(PermissionsBuilder.withBundle(bundle).apply {
+    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle).apply {
         registerLocationPermission()
     }, Dispatchers.Main)
 ) : LocationStateRepo.Builder {

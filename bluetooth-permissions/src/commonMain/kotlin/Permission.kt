@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.bluetooth
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the Bluetooth scanner
@@ -27,9 +29,12 @@ object BluetoothPermission : Permission()
 
 fun PermissionsBuilder.registerBluetoothPermission() =
     registerBluetoothBuilder(context).also { builder ->
-        registerRepoFactory(BluetoothPermission::class) { _, coroutineContext ->
+        registerPermissionStateRepoBuilder(BluetoothPermission::class) { _, coroutineContext ->
             DefaultBluetoothPermissionStateRepo(builder as BaseBluetoothPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerBluetoothBuilder(context: Any?) : BluetoothPermissionManagerBuilder
+internal fun PermissionsBuilder.registerBluetoothBuilder(context: PermissionContext = defaultPermissionContext) : BluetoothPermissionManagerBuilder = register(
+    builder = BluetoothPermissionManagerBuilder(context),
+    permission = BluetoothPermission::class
+)

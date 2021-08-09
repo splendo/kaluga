@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.camera
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -39,7 +40,7 @@ actual class CameraPermissionManager(repo: CameraPermissionStateRepo) : Permissi
     }
 }
 
-actual class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder {
+actual class CameraPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseCameraPermissionManagerBuilder {
 
     override fun create(repo: CameraPermissionStateRepo): PermissionManager<CameraPermission> {
         return CameraPermissionManager(repo)

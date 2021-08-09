@@ -14,9 +14,8 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.permissions
 
-import android.content.Context
+actual class PermissionContext
 
-fun PermissionsBuilder.Factory.withContext(context: Context) = PermissionsBuilder(context)
+actual val defaultPermissionContext = PermissionContext()

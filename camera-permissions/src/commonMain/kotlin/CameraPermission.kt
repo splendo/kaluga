@@ -18,8 +18,10 @@
 package com.splendo.kaluga.permissions.camera
 
 import com.splendo.kaluga.permissions.BasePermissionsBuilder
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionStateRepo
+import com.splendo.kaluga.permissions.defaultPermissionContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -39,7 +41,7 @@ interface BaseCameraPermissionManagerBuilder : BasePermissionsBuilder {
 /**
  * A builder for creating a [CameraPermissionManager]
  */
-expect class CameraPermissionManagerBuilder : BaseCameraPermissionManagerBuilder
+expect class CameraPermissionManagerBuilder(context: PermissionContext = defaultPermissionContext) : BaseCameraPermissionManagerBuilder
 
 /**
  * A [PermissionStateRepo] for [CameraPermission]

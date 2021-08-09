@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.permissions.microphone
 
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.av.AVPermissionHelper
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
@@ -47,9 +48,9 @@ actual class MicrophonePermissionManager(
     }
 }
 
-actual class MicrophonePermissionManagerBuilder(private val bundle: NSBundle = NSBundle.mainBundle) : BaseMicrophonePermissionManagerBuilder {
+actual class MicrophonePermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseMicrophonePermissionManagerBuilder {
 
     override fun create(repo: MicrophonePermissionStateRepo): PermissionManager<MicrophonePermission> {
-        return MicrophonePermissionManager(bundle, repo)
+        return MicrophonePermissionManager(context, repo)
     }
 }

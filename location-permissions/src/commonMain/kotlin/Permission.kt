@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.location
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Location
@@ -29,9 +31,12 @@ data class LocationPermission(val background: Boolean = false, val precise: Bool
 
 fun PermissionsBuilder.registerLocationPermission()  =
     registerLocationPermissionBuilder(context).also { builder ->
-        registerRepoFactory(LocationPermission::class) { permission, coroutineContext ->
+        registerPermissionStateRepoBuilder(LocationPermission::class) { permission, coroutineContext ->
             DefaultLocationPermissionStateRepo(permission as LocationPermission, builder as BaseLocationPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerLocationPermissionBuilder(context: Any?) : LocationPermissionManagerBuilder
+internal fun PermissionsBuilder.registerLocationPermissionBuilder(context: PermissionContext = defaultPermissionContext) : LocationPermissionManagerBuilder = register(
+    builder = LocationPermissionManagerBuilder(context),
+    permission = LocationPermission::class
+)

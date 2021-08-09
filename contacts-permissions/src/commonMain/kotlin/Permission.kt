@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.contacts
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users Contacts
@@ -28,9 +30,12 @@ data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerContactsPermission() =
     registerContactsPermissionBuilder(context).also { builder ->
-        registerRepoFactory(ContactsPermission::class) { permission, coroutineContext ->
+        registerPermissionStateRepoBuilder(ContactsPermission::class) { permission, coroutineContext ->
             ContactsPermissionStateRepo(permission as  ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerContactsPermissionBuilder(context: Any?) : ContactsPermissionManagerBuilder
+internal fun PermissionsBuilder.registerContactsPermissionBuilder(context: PermissionContext = defaultPermissionContext) : ContactsPermissionManagerBuilder = register(
+builder = ContactsPermissionManagerBuilder(context),
+permission = ContactsPermission::class
+)

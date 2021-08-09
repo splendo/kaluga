@@ -20,6 +20,7 @@ package com.splendo.kaluga.permissions.notifications
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
@@ -83,7 +84,7 @@ actual class NotificationsPermissionManager(
     }
 }
 
-actual class NotificationsPermissionManagerBuilder : BaseNotificationsPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
         return NotificationsPermissionManager(notifications, repo)

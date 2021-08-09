@@ -19,8 +19,8 @@ package com.splendo.kaluga.permissions.location
 
 import android.Manifest
 import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionState
 
@@ -61,9 +61,9 @@ actual class LocationPermissionManager(
     }
 }
 
-actual class LocationPermissionManagerBuilder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationPermissionManagerBuilder {
+actual class LocationPermissionManagerBuilder actual constructor(private val context: PermissionContext) : BaseLocationPermissionManagerBuilder {
 
     override fun create(location: LocationPermission, repo: LocationPermissionStateRepo): PermissionManager<LocationPermission> {
-        return LocationPermissionManager(context, location, repo)
+        return LocationPermissionManager(context.context, location, repo)
     }
 }

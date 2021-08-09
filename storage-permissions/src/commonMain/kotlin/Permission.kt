@@ -18,7 +18,9 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.permissions.Permission
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionsBuilder
+import com.splendo.kaluga.permissions.defaultPermissionContext
 
 /**
  * Permission to access the users device storage.
@@ -29,10 +31,13 @@ data class StoragePermission(val allowWrite: Boolean = false) : Permission()
 
 fun PermissionsBuilder.registerStoragePermission() =
     registerStoragePermissionBuilder(context).also { builder ->
-        registerRepoFactory(StoragePermission::class) { permission, coroutineContext ->
+        registerPermissionStateRepoBuilder(StoragePermission::class) { permission, coroutineContext ->
             StoragePermissionStateRepo(permission as StoragePermission, builder as BaseStoragePermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal expect fun PermissionsBuilder.registerStoragePermissionBuilder(context: Any?) : StoragePermissionManagerBuilder
+internal fun PermissionsBuilder.registerStoragePermissionBuilder(context: PermissionContext = defaultPermissionContext) : StoragePermissionManagerBuilder = register(
+    builder = StoragePermissionManagerBuilder(context),
+    permission = StoragePermission::class
+)
 
