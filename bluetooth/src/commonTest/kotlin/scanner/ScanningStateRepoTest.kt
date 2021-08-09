@@ -35,6 +35,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
 import kotlin.test.fail
 
@@ -43,7 +44,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
     private val deviceFilter = setOf(randomUUID())
 
     override val filter: (Flow<ScanningState>) -> Flow<ScanningState> = {
-        it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new })
+        it.distinctUntilChanged(areEquivalent = { old, new -> (old is Idle && new is Idle) || old == new }).filterNot { state -> state is NotInitialized }
     }
 
     override val flow = suspend {
