@@ -1,5 +1,3 @@
-![https://img.shields.io/maven-central/v/com.splendo.kaluga/base](https://search.maven.org/search?q=com.splendo.kaluga) 
-
 ## Kaluga
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
