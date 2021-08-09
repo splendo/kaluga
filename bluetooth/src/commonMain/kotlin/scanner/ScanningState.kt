@@ -39,7 +39,7 @@ typealias Filter = Set<UUID>
 
 sealed class ScanningState : State() {
 
-    data class Discovered (
+    data class Discovered(
         val devices: List<Device>,
         internal val filter: Filter,
     ) {
@@ -48,7 +48,7 @@ sealed class ScanningState : State() {
         fun copyAndAdd(device: Device): Discovered =
             Discovered(listOf(*devices.toTypedArray(), device), filter)
 
-        fun discoveredForFilter(filter:Filter) =
+        fun discoveredForFilter(filter: Filter) =
             if (this.filter == filter)
                 this
             else
@@ -64,7 +64,7 @@ sealed class ScanningState : State() {
         error.message?.let { com.splendo.kaluga.logging.error(TAG, it) }
     }
 
-    sealed class Initialized(private val scanner: BaseScanner):ScanningState(),HandleBeforeOldStateIsRemoved<ScanningState> {
+    sealed class Initialized(private val scanner: BaseScanner) : ScanningState(), HandleBeforeOldStateIsRemoved<ScanningState> {
 
         override suspend fun beforeOldStateIsRemoved(oldState: ScanningState) {
             if (oldState is NotInitialized) {
@@ -75,7 +75,7 @@ sealed class ScanningState : State() {
             }
         }
 
-        val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner)}
+        val revokePermission = suspend { NoBluetooth.MissingPermissions(scanner) }
 
         sealed class Enabled(
             val discovered: Discovered,
@@ -87,7 +87,7 @@ sealed class ScanningState : State() {
             }
 
             class Idle internal constructor(
-                previouslyDiscovered:Discovered,
+                previouslyDiscovered: Discovered,
                 scanner: BaseScanner
             ) : Enabled(previouslyDiscovered, scanner) {
 
@@ -110,7 +110,8 @@ sealed class ScanningState : State() {
                 discovered: Discovered,
                 scanner: BaseScanner
             ) : Enabled(discovered, scanner),
-                HandleAfterOldStateIsRemoved<ScanningState>, HandleAfterCreating<ScanningState> {
+                HandleAfterOldStateIsRemoved<ScanningState>,
+                HandleAfterCreating<ScanningState> {
 
                 suspend fun discoverDevice(
                     identifier: Identifier,
@@ -156,8 +157,8 @@ sealed class ScanningState : State() {
                 }
 
                 override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                   if (oldState !is Disabled && scanner.autoEnableBluetooth)
-                       scanner.requestBluetoothEnable()
+                    if (oldState !is Disabled && scanner.autoEnableBluetooth)
+                        scanner.requestBluetoothEnable()
                 }
             }
 
@@ -219,7 +220,7 @@ class ScanningStateRepo(
 ) : ColdStateFlowRepo<ScanningState>(
     coroutineContext = coroutineContext,
     initChangeState = { state ->
-        when(state) {
+        when (state) {
             is ScanningState.Initialized.Enabled.Idle ->
                 state.refresh() // check if we now need to start scanning again
             is Scanning,

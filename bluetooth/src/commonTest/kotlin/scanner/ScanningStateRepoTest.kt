@@ -20,7 +20,6 @@ package com.splendo.kaluga.bluetooth.scanner
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.bluetooth.randomUUID
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Idle
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled.Scanning
@@ -29,14 +28,15 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetoot
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.NotInitialized
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.PermissionStateRepo
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.first
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import kotlin.test.fail
 
 class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
@@ -129,7 +129,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
     fun testStartWithBluetoothDisabledNoAutoEnable() = testWithBluetoothFlow(autoEnableBluetooth = false, isEnabled = false) {
         test {
             assertTrue(it is Disabled)
-
         }
 
         mockBaseScanner().startMonitoringPermissionsCompleted.get().await()
@@ -292,7 +291,6 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
         }
 
         mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
-
     }
 
     @Test

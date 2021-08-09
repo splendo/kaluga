@@ -18,13 +18,12 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.bluetooth.device.DeviceState
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothRssiTest: BluetoothFlowTest<Int>() {
+class BluetoothRssiTest : BluetoothFlowTest<Int>() {
 
     override val flow = suspend {
         setup(Setup.DEVICE)

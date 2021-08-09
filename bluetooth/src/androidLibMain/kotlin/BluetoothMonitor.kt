@@ -28,7 +28,7 @@ import com.splendo.kaluga.base.ServiceMonitor
 actual class BluetoothMonitor internal constructor(
     private val bluetoothAdapter: BluetoothAdapter,
     private val applicationContext: Context
-) : ServiceMonitor()  {
+) : ServiceMonitor() {
 
     actual class Builder actual constructor() {
         actual fun create(): BluetoothMonitor {

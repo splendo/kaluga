@@ -18,9 +18,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.example.di
 
+/* ktlint-disable no-wildcard-imports */
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
 import com.splendo.kaluga.example.FeaturesListFragment
@@ -30,6 +32,7 @@ import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.alerts.AlertsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
+import com.splendo.kaluga.example.beacons.BeaconsActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothActivity
 import com.splendo.kaluga.example.bluetooth.BluetoothMoreActivity
 import com.splendo.kaluga.example.datetimepicker.DateTimePickerActivity
@@ -41,13 +44,15 @@ import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
-import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
+import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
+import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
 import com.splendo.kaluga.example.shared.viewmodel.ExampleViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureDetailsViewModel
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
+import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
+import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothDeviceDetailViewModel
 import com.splendo.kaluga.example.shared.viewmodel.bluetooth.BluetoothListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.architecture.InputDetails
 import com.splendo.kaluga.example.shared.viewmodel.datetimepicker.DateTimePickerViewModel
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
@@ -89,11 +94,6 @@ import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import com.splendo.kaluga.bluetooth.*
-import com.splendo.kaluga.example.beacons.BeaconsActivity
-import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
-import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.Info
-import com.splendo.kaluga.example.shared.viewmodel.beacons.BeaconsListViewModel
 import java.net.URL
 
 val utilitiesModule = module {
@@ -124,10 +124,12 @@ val viewModelModule = module {
                 val navigationSpec: NavigationSpec = when (action) {
                     FeatureList -> NavigationSpec.Fragment(
                         R.id.example_fragment,
-                        createFragment = { FeaturesListFragment() })
+                        createFragment = { FeaturesListFragment() }
+                    )
                     Info -> NavigationSpec.Fragment(
                         R.id.example_fragment,
-                        createFragment = { InfoFragment() })
+                        createFragment = { InfoFragment() }
+                    )
                 }
                 navigationSpec
             }
@@ -162,27 +164,33 @@ val viewModelModule = module {
                     is InfoNavigation.Dialog -> {
                         val title = action.bundle?.get(DialogSpecRow.TitleRow) ?: ""
                         val message = action.bundle?.get(DialogSpecRow.MessageRow) ?: ""
-                        NavigationSpec.Dialog(createDialog = {
-                            InfoDialog(title, message)
-                        })
+                        NavigationSpec.Dialog(
+                            createDialog = {
+                                InfoDialog(title, message)
+                            }
+                        )
                     }
                     is InfoNavigation.Link -> NavigationSpec.Browser(
                         URL(action.bundle!!.get(LinkSpecRow.LinkRow)),
                         NavigationSpec.Browser.Type.Normal
                     )
-                    is InfoNavigation.Mail -> NavigationSpec.Email(NavigationSpec.Email.EmailSettings(
-                        to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
-                        subject = action.bundle?.get(MailSpecRow.SubjectRow)
-                    ))
+                    is InfoNavigation.Mail -> NavigationSpec.Email(
+                        NavigationSpec.Email.EmailSettings(
+                            to = action.bundle?.get(MailSpecRow.ToRow) ?: emptyList(),
+                            subject = action.bundle?.get(MailSpecRow.SubjectRow)
+                        )
+                    )
                 }
-            })
+            }
+        )
     }
 
     viewModel {
         PermissionsListViewModel(
             ActivityNavigator {
                 NavigationSpec.Activity(PermissionsDemoActivity::class.java)
-            })
+            }
+        )
     }
 
     viewModel { (permission: Permission) -> PermissionViewModel(get(), permission) }
@@ -198,9 +206,12 @@ val viewModelModule = module {
     }
 
     viewModel { (initialDetail: InputDetails) ->
-        ArchitectureDetailsViewModel(initialDetail, ActivityNavigator {
-            NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
-        })
+        ArchitectureDetailsViewModel(
+            initialDetail,
+            ActivityNavigator {
+                NavigationSpec.Close(ArchitectureDetailsActivity.resultCode)
+            }
+        )
     }
 
     viewModel {
@@ -252,12 +263,15 @@ val viewModelModule = module {
     }
 
     viewModel {
-        BluetoothListViewModel(get(), get(), ActivityNavigator {
-            NavigationSpec.Activity(BluetoothMoreActivity::class.java)
-        })
+        BluetoothListViewModel(
+            get(), get(),
+            ActivityNavigator {
+                NavigationSpec.Activity(BluetoothMoreActivity::class.java)
+            }
+        )
     }
 
-    viewModel { (identifier:  com.splendo.kaluga.bluetooth.device.Identifier) ->
+    viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->
         BluetoothDeviceDetailViewModel(get(), identifier)
     }
 

@@ -33,7 +33,8 @@ class KeyboardManagerActivity : KalugaViewModelActivity<KeyboardViewModel>(R.lay
     override val viewModel: KeyboardViewModel by viewModel {
         parametersOf(
             keyboardManagerBuilder(),
-            AndroidFocusHandler(R.id.edit_field) )
+            AndroidFocusHandler(R.id.edit_field)
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

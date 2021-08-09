@@ -18,6 +18,12 @@
 package com.splendo.kaluga.bluetooth
 
 import co.touchlab.stately.freeze
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.BLUETOOTH
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.CHARACTERISTIC
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
+import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.SERVICE
 import com.splendo.kaluga.bluetooth.device.BaseAdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -25,30 +31,22 @@ import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceState
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
-import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
-import com.splendo.kaluga.test.mock.bluetooth.scanner.MockBaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
+import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.test.MockPermissionManager
-import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.BLUETOOTH
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.CHARACTERISTIC
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.DEVICE
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.SERVICE
-import com.splendo.kaluga.bluetooth.BluetoothFlowTest.Setup.valueOf
-import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.scanner.ScanningStateFlowRepo
-import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.test.FlowTestBlock
+import com.splendo.kaluga.test.MockPermissionManager
 import com.splendo.kaluga.test.SimpleFlowTest
 import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.createServiceWrapper
+import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import com.splendo.kaluga.test.mock.bluetooth.scanner.MockBaseScanner
+import com.splendo.kaluga.test.mock.permissions.MockPermissionsBuilder
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
@@ -58,7 +56,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
-import kotlin.test.fail
 
 abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
@@ -66,12 +63,11 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
     }
 
     var rssi = -100
-    var advertisementData = MockAdvertisementData(name="Name")
+    var advertisementData = MockAdvertisementData(name = "Name")
     var autoRequestPermission: Boolean = true
     var autoEnableBluetooth: Boolean = true
     var isEnabled: Boolean = true
     var permissionState: PermissionState<BluetoothPermission> = PermissionState.Allowed()
-
 
     private val deferredScanningStateFlowRepo: CompletableDeferred<ScanningStateFlowRepo> = CompletableDeferred()
     val scanningStateRepo: ScanningStateFlowRepo
@@ -91,10 +87,10 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         get() {
             return permissionsBuilder.bluetoothPMManager!!
         }
-    
+
     val deferredBaseScanner = CompletableDeferred<MockBaseScanner>()
     protected suspend fun mockBaseScanner() = deferredBaseScanner.await()
-    
+
     protected lateinit var bluetooth: Bluetooth
 
     protected fun setupPermissions() {
@@ -140,9 +136,9 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
 
     fun testWithBluetoothFlow(
         autoRequestPermission: Boolean = this.autoRequestPermission,
-        autoEnableBluetooth:Boolean = this.autoEnableBluetooth,
+        autoEnableBluetooth: Boolean = this.autoEnableBluetooth,
         permissionState: PermissionState<BluetoothPermission> = this.permissionState,
-        isEnabled:Boolean = this.isEnabled,
+        isEnabled: Boolean = this.isEnabled,
         advertisementData: MockAdvertisementData = this.advertisementData,
         rssi: Int = this.rssi,
         block: FlowTestBlock<T, Flow<T>>
@@ -155,8 +151,6 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         this.rssi = rssi
         testWithFlow(block)
     }
-
-
 
     protected enum class Setup {
         BLUETOOTH,
@@ -177,7 +171,6 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         connectionManager = device.peekState().connectionManager as MockDeviceConnectionManager
         if (setup == DEVICE) return
 
-
         serviceWrapper = createServiceWrapper(connectionManager.stateRepo)
         service = Service(serviceWrapper, connectionManager.stateRepo)
 
@@ -185,7 +178,6 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
         characteristic = service.characteristics.first()
         if (setup == CHARACTERISTIC) return
         descriptor = characteristic.descriptors.first()
-
     }
 
     protected suspend fun scanDevice(

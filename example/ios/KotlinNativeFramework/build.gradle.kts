@@ -10,13 +10,13 @@ buildscript {
 plugins {
     kotlin("multiplatform")
     kotlin("xcode-compat") version "0.2.5"
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
 }
-
 
 kotlin {
 
@@ -43,7 +43,7 @@ kotlin {
 }
 
 tasks.create<Delete>("cleanKotlinNativeFrameworkTest") {
-    delete = setOf (
+    delete = setOf(
         "build"
     )
 }

@@ -51,7 +51,7 @@ abstract class BaseLocationManager(
         if (monitoringPermissionsJob.compareAndSet(null, job))
             launch(job) {
                 locationPermissionRepo.collect { state ->
-                    if (state is PermissionState.Denied.Requestable&& autoRequestPermission)
+                    if (state is PermissionState.Denied.Requestable && autoRequestPermission)
                         state.request(permissions.getManager(locationPermission))
                     val hasPermission = state is PermissionState.Allowed
 

@@ -21,17 +21,17 @@ import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
 import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import kotlinx.coroutines.CompletableDeferred
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
@@ -95,7 +95,7 @@ actual class Scanner internal constructor(
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
 
-        fun handlePeripheral(didConnectPeripheral: CBPeripheral, block:suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
+        fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
             scanner.stateRepo.launchUseState { scannerState ->
                 if (scannerState is ScanningState.Initialized.Enabled)
                     scannerState.discovered.devices.find { it.identifier == didConnectPeripheral.identifier }
@@ -118,7 +118,6 @@ actual class Scanner internal constructor(
         }
     }
 
-
     private lateinit var mainCentralManager: CBCentralManager
     private lateinit var checkEnabledCentralManager: CBCentralManager
     private val centralManagers = sharedMutableListOf<CBCentralManager>()
@@ -134,7 +133,7 @@ actual class Scanner internal constructor(
         }
     }
 
-    private suspend fun scan(filter:UUID? = null) {
+    private suspend fun scan(filter: UUID? = null) {
         val centralManager = CBCentralManager(null, dispatch_get_main_queue())
         centralManagers.add(centralManager)
         val awaitPoweredOn = EmptyCompletableDeferred()
@@ -142,7 +141,7 @@ actual class Scanner internal constructor(
         discoveringDelegates.add(delegate)
         centralManager.delegate = delegate
         awaitPoweredOn.await()
-        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter)}, null)
+        centralManager.scanForPeripheralsWithServices(filter?.let { listOf(filter) }, null)
     }
 
     override suspend fun scanForDevices(filter: Set<UUID>) =
@@ -150,7 +149,6 @@ actual class Scanner internal constructor(
             scan()
         else
             filter.forEach { scan(it) }
-
 
     override suspend fun stopScanning() {
         centralManagers.forEach { centralManager ->

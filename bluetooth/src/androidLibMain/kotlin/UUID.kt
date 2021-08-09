@@ -27,4 +27,3 @@ internal actual fun unsafeUUIDFrom(uuidString: String): UUID =
     else UUID.fromString(uuidString)
 
 actual fun randomUUID(): UUID = UUID.randomUUID()
-

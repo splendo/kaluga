@@ -33,7 +33,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermissionStateRepo>() {
-    override val filter:(Flow<PermissionState<DummyPermission>>) -> (Flow<PermissionState<DummyPermission>>) = {
+    override val filter: (Flow<PermissionState<DummyPermission>>) -> (Flow<PermissionState<DummyPermission>>) = {
         it.filterOnlyImportant()
     }
 
@@ -50,7 +50,7 @@ class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermi
             assertTrue(it is Requestable)
         }
         permissionStateRepo.permissionManager.hasStartedMonitoring.await()
-        delay(50) /// wait for init and de-init
+        delay(50) // / wait for init and de-init
         resetFlow()
         permissionStateRepo.permissionManager.hasStoppedMonitoring.await()
     }
@@ -123,7 +123,6 @@ class PermissionStateTest : FlowTest<PermissionState<DummyPermission>, MockPermi
         }
         assertFalse(hasRequested.await())
     }
-
 }
 
 class MockPermissionStateRepo : PermissionStateRepo<DummyPermission>() {

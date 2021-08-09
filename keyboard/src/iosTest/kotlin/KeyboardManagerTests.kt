@@ -25,11 +25,9 @@ class IOSKeyboardManagerTests : KeyboardManagerTests<IOSKeyboardTestContext>() {
         override fun verifyDismiss() {
             // Should test resign First responder
         }
-
     }
 
-
-    override val createTestContext: suspend (scope: CoroutineScope) -> IOSKeyboardTestContext =  { IOSKeyboardTestContext(it) }
+    override val createTestContext: suspend (scope: CoroutineScope) -> IOSKeyboardTestContext = { IOSKeyboardTestContext(it) }
 }
 
 class MockTextField : UITextField(CGRectMake(0.0, 0.0, 0.0, 0.0)) {

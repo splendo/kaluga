@@ -29,5 +29,5 @@ class Service(
 
 expect interface ServiceWrapper {
     val characteristics: List<CharacteristicWrapper>
-    val uuid:UUID
+    val uuid: UUID
 }

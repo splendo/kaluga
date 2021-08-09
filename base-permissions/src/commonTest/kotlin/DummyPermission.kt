@@ -17,4 +17,4 @@
 
 package com.splendo.kaluga.permissions
 
-object DummyPermission: Permission()
+object DummyPermission : Permission()

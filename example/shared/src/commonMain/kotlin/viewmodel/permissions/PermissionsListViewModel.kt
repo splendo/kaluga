@@ -47,16 +47,18 @@ class PermissionsListNavigationAction(permissionView: PermissionView) : Navigati
 
 class PermissionsListViewModel(navigator: Navigator<PermissionsListNavigationAction>) : NavigatingViewModel<PermissionsListNavigationAction>(navigator) {
 
-    val permissions = observableOf(listOf(
-        PermissionView.Bluetooth,
-        PermissionView.Calendar,
-        PermissionView.Camera,
-        PermissionView.Contacts,
-        PermissionView.Location,
-        PermissionView.Microphone,
-        PermissionView.Notifications,
-        PermissionView.Storage
-    ))
+    val permissions = observableOf(
+        listOf(
+            PermissionView.Bluetooth,
+            PermissionView.Calendar,
+            PermissionView.Camera,
+            PermissionView.Contacts,
+            PermissionView.Location,
+            PermissionView.Microphone,
+            PermissionView.Notifications,
+            PermissionView.Storage
+        )
+    )
 
     fun onPermissionPressed(permissionView: PermissionView) {
         navigator.navigate(PermissionsListNavigationAction(permissionView))

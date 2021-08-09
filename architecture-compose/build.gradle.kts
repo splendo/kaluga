@@ -40,10 +40,10 @@ ext["component_type"] = ext["component_type_default"]
 dependencies {
     api(project(":architecture"))
     val ext = (gradle as ExtensionAware).extra
-    implementation("androidx.compose.foundation:foundation:"+ext["androidx_compose_version"])
-    implementation("androidx.compose.ui:ui:"+ext["androidx_compose_version"])
-    implementation("androidx.compose.ui:ui-tooling:"+ext["androidx_compose_version"])
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:"+ext["androidx_lifecycle_viewmodel_compose_version"])
-    implementation("androidx.activity:activity-compose:"+ext["androidx_activity_compose_version"])
+    implementation("androidx.compose.foundation:foundation:" + ext["androidx_compose_version"])
+    implementation("androidx.compose.ui:ui:" + ext["androidx_compose_version"])
+    implementation("androidx.compose.ui:ui-tooling:" + ext["androidx_compose_version"])
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:" + ext["androidx_lifecycle_viewmodel_compose_version"])
+    implementation("androidx.activity:activity-compose:" + ext["androidx_activity_compose_version"])
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")
 }

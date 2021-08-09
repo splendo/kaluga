@@ -27,22 +27,20 @@ import com.splendo.kaluga.base.flow.collectImportantUntilLast
 import com.splendo.kaluga.base.flow.collectUntilLast
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.test.BaseTest
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
-class SpecialFlowValueTest: BaseTest() {
+class SpecialFlowValueTest : BaseTest() {
 
     sealed class Special {
-        object Last:SpecialFlowValue.Last,Special()
-        object Normal:Special()
-        object NotImportant:SpecialFlowValue.NotImportant,Special()
-        object More:Special()
+        object Last : SpecialFlowValue.Last, Special()
+        object Normal : Special()
+        object NotImportant : SpecialFlowValue.NotImportant, Special()
+        object More : Special()
     }
 
     private fun flow() = flowOf(Normal, NotImportant, Last, More)
@@ -92,6 +90,3 @@ class SpecialFlowValueTest: BaseTest() {
         }.join()
     }
 }
-
-
-

@@ -49,17 +49,16 @@ typealias FlowTestBlock<T, F> = suspend FlowTest<T, F>.(F) -> Unit
 abstract class FlowableTest<T> : BaseTest() {
 
     fun testWithFlow(block: FlowTestBlock<T, MutableSharedFlow<T>>) = runBlocking {
-       object:FlowTest<T, MutableSharedFlow<T>>(this@runBlocking) {
-           override val flow = suspend { mutableSharedFlow() }
-       }.testWithFlow(block)
+        object : FlowTest<T, MutableSharedFlow<T>>(this@runBlocking) {
+            override val flow = suspend { mutableSharedFlow() }
+        }.testWithFlow(block)
     }
     abstract fun mutableSharedFlow(): MutableSharedFlow<T>
-
 }
 
-abstract class SimpleFlowTest<T>(scope: CoroutineScope = MainScope()):FlowTest<T, Flow<T>>(scope)
+abstract class SimpleFlowTest<T>(scope: CoroutineScope = MainScope()) : FlowTest<T, Flow<T>>(scope)
 
-abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseFlowTest<EmptyTestContext, T, F>(scope) {
+abstract class FlowTest<T, F : Flow<T>>(scope: CoroutineScope = MainScope()) : BaseFlowTest<EmptyTestContext, T, F>(scope) {
     override val createTestContext: suspend (CoroutineScope) -> EmptyTestContext = { EmptyTestContext.INSTANCE }
 
     override val flowFromTestContext: suspend EmptyTestContext.() -> F =
@@ -73,7 +72,7 @@ abstract class FlowTest<T, F:Flow<T>>(scope: CoroutineScope = MainScope()):BaseF
         }
 }
 
-abstract class BaseKoinFlowTest<TC:KoinUIThreadTest.KoinTestContext, T, F:Flow<T>>:BaseFlowTest<TC, T, F>()
+abstract class BaseKoinFlowTest<TC : KoinUIThreadTest.KoinTestContext, T, F : Flow<T>> : BaseFlowTest<TC, T, F>()
 
 /*
 Context for each tests needs to be created and kept on the main thread for iOS.
@@ -84,7 +83,7 @@ Since the class itself is created in the test thread
 @ThreadLocal // thread local on native, global on non-native, but still accessed from only the main thread.
 val contextMap = mutableMapOf<Long, TestContext>()
 
-private suspend fun <TC: TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
+private suspend fun <TC : TestContext> testContext(cookie: Long, testContext: suspend () -> TC): TC {
     if (!contextMap.containsKey(cookie))
         contextMap[cookie] = testContext()
     return contextMap[cookie] as TC
@@ -93,7 +92,7 @@ private suspend fun <TC: TestContext> testContext(cookie: Long, testContext: sus
 @SharedImmutable
 private val cookieTin = AtomicLong(0L)
 
-abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineScope = MainScope()):UIThreadTest<TC>(), CoroutineScope by scope {
+abstract class BaseFlowTest<TC : TestContext, T, F : Flow<T>>(val scope: CoroutineScope = MainScope()) : UIThreadTest<TC>(), CoroutineScope by scope {
 
     // used for thread local map access to store the testContext
     private val cookie = cookieTin.incrementAndGet()
@@ -148,9 +147,9 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
         }
     }
 
-    private var lateflow:F? = null
+    private var lateflow: F? = null
 
-    fun testWithFlowAndTestContext(createFlowInMainScope:Boolean = true, blockWithContext: FlowTestBlockWithContext<TC, T, F>) {
+    fun testWithFlowAndTestContext(createFlowInMainScope: Boolean = true, blockWithContext: FlowTestBlockWithContext<TC, T, F>) {
 
         runBlocking {
             try {
@@ -172,10 +171,9 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
                         withContext(Dispatchers.Main.immediate) {
                             (flow(testContext(cookie) { createTestContext(scope) })).freeze()
                         }
-                    }
-                    else {
+                    } else {
                         createTestContext.freeze()
-                        flow (
+                        flow(
                             withContext(Dispatchers.Main.immediate) {
                                 (testContext(cookie) { createTestContext(scope) }).freeze()
                             }
@@ -242,7 +240,7 @@ abstract class BaseFlowTest<TC: TestContext, T, F:Flow<T>>(val scope: CoroutineS
         debug("waited for main thread to be launched")
     }
 
-    suspend fun mainAction(action:ScopeActionBlock<TC>) {
+    suspend fun mainAction(action: ScopeActionBlock<TC>) {
         debug("start mainAction")
         awaitTestBlocks()
         val cookie = cookie

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.base.flow
 
 import com.splendo.kaluga.flow.BaseFlowable
-import com.splendo.kaluga.flow.Flowable
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 

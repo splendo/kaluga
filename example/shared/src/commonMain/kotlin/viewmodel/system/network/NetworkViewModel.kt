@@ -41,17 +41,22 @@ class NetworkViewModel(
 
         scope.launch {
             networkRepo.flow().network().collect {
-                when(it) {
-                    is Network.Unknown.WithoutLastNetwork -> _networkState.value =
-                        "Network's state is Unknown and without the last available connection."
-                    is Network.Unknown.WithLastNetwork -> _networkState.value =
-                        "Network's state is Unknown and with last known connection as ${it.lastKnownNetwork}."
-                    is Network.Known.Cellular -> _networkState.value =
-                        "Network's state is Available through Cellular."
-                    is Network.Known.Wifi -> _networkState.value =
-                        "Network's state is Available through WIFI."
-                    is Network.Known.Absent -> _networkState.value =
-                        "Network's state is Absent."
+                when (it) {
+                    is Network.Unknown.WithoutLastNetwork ->
+                        _networkState.value =
+                            "Network's state is Unknown and without the last available connection."
+                    is Network.Unknown.WithLastNetwork ->
+                        _networkState.value =
+                            "Network's state is Unknown and with last known connection as ${it.lastKnownNetwork}."
+                    is Network.Known.Cellular ->
+                        _networkState.value =
+                            "Network's state is Available through Cellular."
+                    is Network.Known.Wifi ->
+                        _networkState.value =
+                            "Network's state is Available through WIFI."
+                    is Network.Known.Absent ->
+                        _networkState.value =
+                            "Network's state is Absent."
                 }
             }
         }

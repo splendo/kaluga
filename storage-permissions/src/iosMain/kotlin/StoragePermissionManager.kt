@@ -18,12 +18,12 @@
 package com.splendo.kaluga.permissions.storage
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.PermissionContext
 import platform.Foundation.NSBundle
 import platform.Photos.PHAuthorizationStatus
 import platform.Photos.PHAuthorizationStatusAuthorized

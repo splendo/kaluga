@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.test.mock.bluetooth
 
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import com.splendo.kaluga.bluetooth.DescriptorWrapper
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 
 class MockBluetoothGattWrapper : BluetoothGattWrapper {

@@ -19,4 +19,4 @@ package com.splendo.kaluga.bluetooth
 
 expect class Value
 
-expect val Value.asBytes:ByteArray
+expect val Value.asBytes: ByteArray

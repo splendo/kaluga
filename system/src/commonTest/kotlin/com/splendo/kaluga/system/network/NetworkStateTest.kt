@@ -27,7 +27,6 @@ import kotlin.test.assertTrue
 
 class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
 
-
     override val flow = suspend { MockNetworkStateRepoBuilder().create() }
 
     private fun testNetworkState(test: FlowTestBlock<NetworkState, NetworkStateRepo>) {
@@ -222,5 +221,4 @@ class NetworkStateTest : FlowTest<NetworkState, NetworkStateRepo>() {
             assertEquals(Network.Unknown.Reason.NOT_CLEAR, (it.networkType as Network.Unknown.WithoutLastNetwork).reason)
         }
     }
-
 }

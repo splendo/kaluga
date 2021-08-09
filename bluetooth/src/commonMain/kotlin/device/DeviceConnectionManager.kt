@@ -117,15 +117,14 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    suspend open fun handleCurrentActionCompleted() = stateRepo.takeAndChangeState { state ->
+    open suspend fun handleCurrentActionCompleted() = stateRepo.takeAndChangeState { state ->
         (
             if (state is DeviceState.Connected.HandlingAction && state.action == currentAction)
                 state.actionCompleted
             else
                 state.remain()
-        ).also { currentAction = null}
+            ).also { currentAction = null }
     }
-
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, onUpdate: ((Characteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.updateValue()

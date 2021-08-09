@@ -35,5 +35,4 @@ fun PermissionsBuilder.registerNotificationsPermission() =
         }
     }
 
-internal fun PermissionsBuilder.registerNotificationsPermissionBuilder(context: PermissionContext = defaultPermissionContext) : NotificationsPermissionManagerBuilder = register(builder = NotificationsPermissionManagerBuilder(context), permission = NotificationsPermission::class)
-
+internal fun PermissionsBuilder.registerNotificationsPermissionBuilder(context: PermissionContext = defaultPermissionContext): NotificationsPermissionManagerBuilder = register(builder = NotificationsPermissionManagerBuilder(context), permission = NotificationsPermission::class)

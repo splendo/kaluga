@@ -25,10 +25,8 @@ import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.Observer
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -73,7 +71,9 @@ class LocationBackgroundService : androidx.lifecycle.LifecycleService(), KoinCom
 
     private fun createChannelIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationService.getNotificationChannel(
-                channelId) == null) {
+                channelId
+            ) == null
+        ) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(channelId, channelName, importance)
             channel.setSound(null, null)

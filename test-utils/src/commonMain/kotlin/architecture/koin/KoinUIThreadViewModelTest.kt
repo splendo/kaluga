@@ -23,7 +23,7 @@ import com.splendo.kaluga.test.koin.KoinUIThreadTest
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing:Boolean = false) :
+abstract class KoinUIThreadViewModelTest<KVMC : KoinUIThreadViewModelTest.KoinViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     KoinUIThreadTest<KVMC>(allowFreezing) {
 
     abstract class KoinViewModelTestContext<VM>(

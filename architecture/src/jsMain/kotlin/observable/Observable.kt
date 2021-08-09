@@ -26,10 +26,10 @@ actual interface WithState<T> {
     actual val valueDelegate: ReadOnlyProperty<Any?, T>
 }
 
-actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual constructor(
+actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind:()-> StateFlow<R?>
-): AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
+    stateFlowToBind: () -> StateFlow<R?>
+) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     final override fun bind(coroutineScope: CoroutineScope, context: CoroutineContext) {
         super.bind(coroutineScope, context)
@@ -38,7 +38,7 @@ actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual con
 
 actual abstract class BaseUninitializedSubject<T> actual constructor(
     observation: ObservationUninitialized<T>
-): AbstractBaseUninitializedSubject<T>(observation) {}
+) : AbstractBaseUninitializedSubject<T>(observation)
 
 actual abstract class BaseInitializedSubject<T> actual constructor(observation: ObservationInitialized<T>) : AbstractBaseInitializedSubject<T>(observation) {
 
@@ -48,7 +48,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     ) : this (ObservationInitialized(initialValue, coroutineContext))
 }
 
-actual abstract class BaseDefaultSubject<R:T?, T> actual constructor(
+actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
     observation: ObservationDefault<R, T?>
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 

@@ -19,10 +19,12 @@ class DateTimePickerViewModel(val dateTimePickerPresenterBuilder: DateTimePicker
         private val formatter = DateFormatter.dateTimeFormat(DateFormatStyle.Long, DateFormatStyle.Long)
     }
 
-    private val selectedDate = MutableStateFlow(Date.now().apply {
-        second = 0
-        millisecond = 0
-    })
+    private val selectedDate = MutableStateFlow(
+        Date.now().apply {
+            second = 0
+            millisecond = 0
+        }
+    )
     val dateLabel = selectedDate.map { formatter.format(it) }.toUninitializedObservable(coroutineScope)
 
     fun onSelectDatePressed() {

@@ -19,25 +19,16 @@ package com.splendo.kaluga.example.link
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
-import com.splendo.kaluga.alerts.Alert
-import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
-import com.splendo.kaluga.architecture.lifecycle.lifecycleManagerObserver
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityLinkBinding
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 import java.net.URL
 
 class LinksActivity : KalugaViewModelActivity<LinksViewModel>(R.layout.activity_link) {
 
-    override val viewModel: LinksViewModel by viewModel ()
+    override val viewModel: LinksViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

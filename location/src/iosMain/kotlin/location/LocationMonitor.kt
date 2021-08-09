@@ -38,7 +38,6 @@ actual class LocationMonitor(private val locationManager: CLLocationManager) : S
         }
     }
 
-
     override val isServiceEnabled: Boolean
         get() = locationManager.locationServicesEnabled()
 

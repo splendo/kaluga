@@ -42,7 +42,6 @@ abstract class KeyboardManagerTests<KTC : KeyboardTestContext> : UIThreadTest<KT
         verifyShow()
     }
 
-
     @Test
     fun testDismiss() = testOnUIThread {
         launch {

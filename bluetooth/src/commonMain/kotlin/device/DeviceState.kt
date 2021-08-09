@@ -188,7 +188,7 @@ sealed class DeviceState(
                 is Connecting,
                 is Reconnecting,
                 is Disconnecting -> {
-                     // do nothing: TODO check all these are correct, e.g. Disconnecting
+                    // do nothing: TODO check all these are correct, e.g. Disconnecting
                 }
             }
         }

@@ -25,7 +25,7 @@ import org.koin.core.context.stopKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration
 
-abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing:Boolean = false) : UIThreadTest<TC>(allowFreezing) {
+abstract class KoinUIThreadTest<TC : KoinUIThreadTest.KoinTestContext>(allowFreezing: Boolean = false) : UIThreadTest<TC>(allowFreezing) {
 
     open class KoinTestContext(
         appDeclaration: KoinAppDeclaration? = null,

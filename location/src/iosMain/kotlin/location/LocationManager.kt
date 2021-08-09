@@ -20,10 +20,10 @@ package com.splendo.kaluga.location
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
-import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
+import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
+import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import kotlinx.coroutines.Dispatchers
 import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
@@ -141,9 +141,12 @@ actual class LocationManager(
 actual class LocationStateRepoBuilder(
     private val bundle: NSBundle = NSBundle.mainBundle,
     private val locationManager: CLLocationManager = CLLocationManager(),
-    private val permissions: Permissions = Permissions(PermissionsBuilder(bundle).apply {
-        registerLocationPermission()
-    }, Dispatchers.Main)
+    private val permissions: Permissions = Permissions(
+        PermissionsBuilder(bundle).apply {
+            registerLocationPermission()
+        },
+        Dispatchers.Main
+    )
 ) : LocationStateRepo.Builder {
 
     override fun create(

@@ -21,6 +21,4 @@ import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
 
 class MockDeviceWrapper(override val name: String?, override val identifier: Identifier) :
-    DeviceWrapper {
-
-}
+    DeviceWrapper

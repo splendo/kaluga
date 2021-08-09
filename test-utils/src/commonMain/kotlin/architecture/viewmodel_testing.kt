@@ -24,7 +24,7 @@ import com.splendo.kaluga.test.UIThreadTest
 import kotlinx.coroutines.CoroutineScope
 import kotlin.test.BeforeTest
 
-abstract class ViewModelTest<VM : ViewModel>(allowFreezing:Boolean = false) : BaseTest() {
+abstract class ViewModelTest<VM : ViewModel>(allowFreezing: Boolean = false) : BaseTest() {
 
     init {
         if (!allowFreezing) ensureNeverFrozen()
@@ -50,7 +50,7 @@ abstract class SimpleUIThreadViewModelTest<VM : ViewModel> :
     abstract fun createViewModel(): VM
 }
 
-abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing:Boolean = false) :
+abstract class UIThreadViewModelTest<VMC : UIThreadViewModelTest.ViewModelTestContext<VM>, VM : ViewModel>(allowFreezing: Boolean = false) :
     UIThreadTest<VMC>(allowFreezing) {
 
     open class LazyViewModelTestContext<VM>(coroutineScope: CoroutineScope, private val createViewModel: () -> VM) :

@@ -45,7 +45,7 @@ actual class NotificationsPermissionManager(
     }
 }
 
-actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext): BaseNotificationsPermissionManagerBuilder {
+actual class NotificationsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseNotificationsPermissionManagerBuilder {
 
     override fun create(notifications: NotificationsPermission, repo: NotificationsPermissionStateRepo): PermissionManager<NotificationsPermission> {
         return NotificationsPermissionManager(notifications, repo)

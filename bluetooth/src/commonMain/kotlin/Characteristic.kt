@@ -42,7 +42,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
 
     override val uuid = wrapper.uuid
 
-    val descriptors:List<Descriptor> = wrapper.descriptors.map { Descriptor(it, stateRepo = stateRepo) }
+    val descriptors: List<Descriptor> = wrapper.descriptors.map { Descriptor(it, stateRepo = stateRepo) }
 
     override fun createReadAction(): DeviceAction.Read.Characteristic {
         return DeviceAction.Read.Characteristic(this)
@@ -59,7 +59,6 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
     override fun getUpdatedValue(): ByteArray? {
         return wrapper.value?.asBytes
     }
-
 }
 
 expect interface CharacteristicWrapper {

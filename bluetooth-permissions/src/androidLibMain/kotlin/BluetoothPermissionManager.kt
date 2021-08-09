@@ -20,7 +20,6 @@ package com.splendo.kaluga.permissions.bluetooth
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.content.Context
-import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.AndroidPermissionsManager
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager

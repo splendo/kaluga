@@ -21,7 +21,6 @@ import com.splendo.kaluga.architecture.navigation.NavigationBundleSpecType
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.navigation.SingleValueNavigationAction
 import com.splendo.kaluga.architecture.observable.InitializedObservable
-import com.splendo.kaluga.architecture.observable.ObservableOptional
 import com.splendo.kaluga.architecture.observable.subjectOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import kotlinx.serialization.Serializable
@@ -44,12 +43,12 @@ class ArchitectureDetailsViewModel(initialDetail: InputDetails, navigator: Navig
     private val _number = subjectOf(initialDetail.number.toString())
     val number: InitializedObservable<String> = _number
 
-    private var nameResult:String by _name.valueDelegate
-    private var numberResult:String by _number.valueDelegate
+    private var nameResult: String by _name.valueDelegate
+    private var numberResult: String by _number.valueDelegate
 
     fun onInversePressed() {
-            nameResult = nameResult.reversed()
-            numberResult = numberResult.reversed()
+        nameResult = nameResult.reversed()
+        numberResult = numberResult.reversed()
     }
 
     fun onClosePressed() {

@@ -19,5 +19,5 @@ package com.splendo.kaluga.bluetooth
 
 actual typealias Value = ByteArray
 
-actual val Value.asBytes:ByteArray
+actual val Value.asBytes: ByteArray
     get() = this

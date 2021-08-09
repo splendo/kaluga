@@ -36,7 +36,6 @@ class InfoFragment : KalugaViewModelFragment<InfoViewModel>(R.layout.fragment_in
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
         super.onViewCreated(view, savedInstanceState)
 
         val adapter = InfoAdapter(viewModel).apply {

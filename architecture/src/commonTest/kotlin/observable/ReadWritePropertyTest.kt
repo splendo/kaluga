@@ -27,9 +27,9 @@ import kotlin.test.Test
 // This indirectly also tests using an alternate dispatcher
 class ReadWritePropertyTest : ObservableBaseTest() {
 
-    var nullableReadWritePropertyValue:String? = null
+    var nullableReadWritePropertyValue: String? = null
 
-    private val nullableReadWriteProperty = object:ReadWriteProperty<Any?, String?> {
+    private val nullableReadWriteProperty = object : ReadWriteProperty<Any?, String?> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String?) {
             nullableReadWritePropertyValue = value
         }
@@ -37,9 +37,9 @@ class ReadWritePropertyTest : ObservableBaseTest() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): String? = nullableReadWritePropertyValue
     }
 
-    var readWritePropertyValue:String = "initial"
+    var readWritePropertyValue: String = "initial"
 
-    private val readWriteProperty = object:ReadWriteProperty<Any?, String> {
+    private val readWriteProperty = object : ReadWriteProperty<Any?, String> {
         override fun setValue(thisRef: Any?, property: KProperty<*>, value: String) {
             readWritePropertyValue = value
         }
@@ -47,13 +47,12 @@ class ReadWritePropertyTest : ObservableBaseTest() {
         override fun getValue(thisRef: Any?, property: KProperty<*>): String = readWritePropertyValue
     }
 
-
     @Test
     fun testReadWritePropertyDefaultObservable() = testReadWritePropertyDefaultObservableWithInitialValue("something", true)
     @Test
-    fun testReadWritePropertyDefaultObservableWithInitialNull()  = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
+    fun testReadWritePropertyDefaultObservableWithInitialNull() = testReadWritePropertyDefaultObservableWithInitialValue(null, false)
 
-    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean ) = runBlocking {
+    private fun testReadWritePropertyDefaultObservableWithInitialValue(initialValue: String?, useSuspendableSetter: Boolean) = runBlocking {
 
         nullableReadWritePropertyValue = initialValue
 
@@ -80,7 +79,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             initialExpected = "initial",
             shortDelayAfterUpdate = false,
             useSuspendableSetter = false,
-            "new" to "new" ,
+            "new" to "new",
             "other" to "other"
         )
     }
@@ -97,7 +96,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to  "other"
+            "other" to "other"
         )
     }
 
@@ -110,7 +109,7 @@ class ReadWritePropertyTest : ObservableBaseTest() {
             useSuspendableSetter = false,
             "new" to "new",
             null to null,
-            "other" to  "other"
+            "other" to "other"
         )
     }
 }

@@ -144,7 +144,7 @@ actual class Scanner internal constructor(
     }
 
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
-    //TODO re-enable this
+    // TODO re-enable this
     // private val locationEnabledMonitor = LocationManager.Builder(applicationContext).create(Permission.Location(precise = true, background = false)) { checkBluetoothEnabledChanged() }
     private var shouldEnableLocation: Boolean = false
 
@@ -182,7 +182,7 @@ actual class Scanner internal constructor(
             shouldEnableLocation = false
             when {
                 isBluetoothEnabled() -> bluetoothEnabled()
-                willEnableLocation -> {}//locationEnabledMonitor.requestLocationEnable()
+                willEnableLocation -> {} // locationEnabledMonitor.requestLocationEnable()
                 else -> bluetoothDisabled()
             }
         }

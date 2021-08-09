@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
-class Beacons (
+class Beacons(
     private val bluetooth: BluetoothService,
     private val timeoutMs: Int = 10_000
 ) {

@@ -33,7 +33,8 @@ class BluetoothMoreActivity : KalugaViewModelActivity<BluetoothDeviceDetailViewM
         val deviceDetailsSpec = DeviceDetailsSpec()
         intent.extras?.toNavigationBundle(deviceDetailsSpec)?.let { bundle ->
             parametersOf(bundle.get(DeviceDetailsSpecRow.UUIDRow))
-        } ?: parametersOf("") }
+        } ?: parametersOf("")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -23,7 +23,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlin.native.concurrent.ensureNeverFrozen
 
-actual open class ViewModel internal actual constructor(val allowFreezing:Boolean) {
+actual open class ViewModel internal actual constructor(val allowFreezing: Boolean) {
 
     init {
         if (!allowFreezing)

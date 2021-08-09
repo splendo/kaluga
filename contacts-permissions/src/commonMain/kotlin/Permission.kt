@@ -31,11 +31,11 @@ data class ContactsPermission(val allowWrite: Boolean = false) : Permission()
 fun PermissionsBuilder.registerContactsPermission() =
     registerContactsPermissionBuilder(context).also { builder ->
         registerPermissionStateRepoBuilder(ContactsPermission::class) { permission, coroutineContext ->
-            ContactsPermissionStateRepo(permission as  ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
+            ContactsPermissionStateRepo(permission as ContactsPermission, builder as BaseContactsPermissionManagerBuilder, coroutineContext)
         }
     }
 
-internal fun PermissionsBuilder.registerContactsPermissionBuilder(context: PermissionContext = defaultPermissionContext) : ContactsPermissionManagerBuilder = register(
-builder = ContactsPermissionManagerBuilder(context),
-permission = ContactsPermission::class
+internal fun PermissionsBuilder.registerContactsPermissionBuilder(context: PermissionContext = defaultPermissionContext): ContactsPermissionManagerBuilder = register(
+    builder = ContactsPermissionManagerBuilder(context),
+    permission = ContactsPermission::class
 )

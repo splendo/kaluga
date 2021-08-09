@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.bluetooth
 
-import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.base.utils.toHexString

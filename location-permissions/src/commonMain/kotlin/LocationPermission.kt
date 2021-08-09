@@ -57,7 +57,7 @@ class DefaultLocationPermissionStateRepo(
     location: LocationPermission,
     builder: BaseLocationPermissionManagerBuilder,
     coroutineContext: CoroutineContext
-) : LocationPermissionStateRepo(coroutineContext = coroutineContext){
+) : LocationPermissionStateRepo(coroutineContext = coroutineContext) {
     override val permissionManager: PermissionManager<LocationPermission> =
         builder.create(location, this)
 }

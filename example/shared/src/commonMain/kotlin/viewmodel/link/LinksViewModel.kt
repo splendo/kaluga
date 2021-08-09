@@ -31,9 +31,6 @@ import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.links.LinksBuilder
 import com.splendo.kaluga.resources.localized
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -57,7 +54,7 @@ class LinksViewModel(
     linkRepoBuilder: LinksBuilder,
     val builder: AlertPresenter.Builder,
     navigator: Navigator<BrowserNavigationActions<BrowserSpecRow>>
-    ) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
+) : NavigatingViewModel<BrowserNavigationActions<BrowserSpecRow>>(navigator) {
 
     val browserButtonText = observableOf("browser_button_text".localized())
     val linksInstructions = observableOf("links_instructions".localized())
@@ -90,7 +87,7 @@ class LinksViewModel(
                     }
                 )
             )
-        }else {
+        } else {
             showAlert(
                 "Error Alert",
                 "URL is invalid.",

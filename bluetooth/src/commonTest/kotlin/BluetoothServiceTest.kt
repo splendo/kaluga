@@ -17,12 +17,11 @@
 
 package com.splendo.kaluga.bluetooth
 
-import kotlinx.coroutines.flow.Flow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothServiceTest: BluetoothFlowTest<Service?>() {
+class BluetoothServiceTest : BluetoothFlowTest<Service?>() {
 
     override val flow = suspend {
         setup(Setup.SERVICE)

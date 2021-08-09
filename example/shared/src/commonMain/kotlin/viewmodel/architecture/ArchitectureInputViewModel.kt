@@ -48,18 +48,23 @@ class ArchitectureInputViewModel(navigator: Navigator<SingleValueNavigationActio
     private val _numberInput = MutableStateFlow("")
     val numberInput = _numberInput.toInitializedSubject(coroutineScope)
 
-    private val _isNameValid: Flow<Boolean> get() { return _nameInput.map {
-        it.isNotEmpty()
-    } }
+    private val _isNameValid: Flow<Boolean> get() {
+        return _nameInput.map {
+            it.isNotEmpty()
+        }
+    }
     val isNameValid = _isNameValid.toUninitializedObservable(coroutineScope)
 
-    private val _isNumberValid: Flow<Boolean> get() { return _numberInput.map {
-        it.toIntOrNull() != null
-    } }
+    private val _isNumberValid: Flow<Boolean> get() {
+        return _numberInput.map {
+            it.toIntOrNull() != null
+        }
+    }
     val isNumberValid = _isNumberValid.toUninitializedObservable(coroutineScope)
 
     private val isValid = combine(_isNameValid, _isNumberValid) {
-            validName, validNumber -> validName && validNumber
+        validName, validNumber ->
+        validName && validNumber
     }
 
     fun onShowDetailsPressed() {

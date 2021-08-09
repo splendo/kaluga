@@ -21,7 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class BluetoothDescriptorValueTest:BluetoothFlowTest<ByteArray?>() {
+class BluetoothDescriptorValueTest : BluetoothFlowTest<ByteArray?>() {
 
     override val flow = suspend {
         setup(Setup.DESCRIPTOR)

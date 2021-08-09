@@ -22,7 +22,7 @@ import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothAdvertisementTest: BluetoothFlowTest<BaseAdvertisementData>() {
+class BluetoothAdvertisementTest : BluetoothFlowTest<BaseAdvertisementData>() {
 
     override val flow = suspend {
         setup(Setup.DEVICE)

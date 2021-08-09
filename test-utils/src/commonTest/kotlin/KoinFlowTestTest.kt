@@ -26,15 +26,15 @@ import org.koin.dsl.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class KoinFlowTestTest:
+class KoinFlowTestTest :
     BaseKoinFlowTest<KoinFlowTestTest.TestContext, Int, MutableStateFlow<Int>>() {
 
-    class TestContext:KoinUIThreadTest.KoinTestContext(
+    class TestContext : KoinUIThreadTest.KoinTestContext(
         module {
-        single { 1 }
-    }
+            single { 1 }
+        }
     ) {
-        val i:Int by inject()
+        val i: Int by inject()
     }
 
     override val flowFromTestContext: suspend TestContext.() -> MutableStateFlow<Int> = {
@@ -53,6 +53,4 @@ class KoinFlowTestTest:
             assertEquals(1, it, "should not be 2 but 1 as injected by Koin")
         }
     }
-
-
 }

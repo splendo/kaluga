@@ -42,7 +42,7 @@ open class SimpleUIThreadTest : UIThreadTest<SimpleUIThreadTest.SimpleTestContex
  * as it eases dealing with immutability and allows a shared context.
  *
  */
-abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing:Boolean = false) : BaseTest() {
+abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing: Boolean = false) : BaseTest() {
 
     init {
         if (!allowFreezing) ensureNeverFrozen()
@@ -52,13 +52,13 @@ abstract class UIThreadTest<TC : UIThreadTest.TestContext>(allowFreezing:Boolean
         fun dispose() {}
     }
 
-    class EmptyTestContext private constructor():TestContext {
+    class EmptyTestContext private constructor() : TestContext {
         companion object {
             val INSTANCE = EmptyTestContext()
         }
     }
 
-    abstract val createTestContext: suspend (scope:CoroutineScope) -> TC
+    abstract val createTestContext: suspend (scope: CoroutineScope) -> TC
 
     private companion object {
         val cancellationException = CancellationException("Scope canceled by testOnUIThread because cancelScopeAfterTest was set to true.")

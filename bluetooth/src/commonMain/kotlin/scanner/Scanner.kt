@@ -27,7 +27,6 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -59,7 +58,7 @@ abstract class BaseScanner constructor(
 
     private val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
 
-    private val _monitoringPermissionsJob = AtomicReference<Job?>( null)
+    private val _monitoringPermissionsJob = AtomicReference<Job?>(null)
     private var monitoringPermissionsJob: Job?
         get() = _monitoringPermissionsJob.get()
         set(value) { _monitoringPermissionsJob.set(value) }
@@ -82,7 +81,7 @@ abstract class BaseScanner constructor(
                                 (scanState as? Initialized)?.revokePermission ?: scanState.remain()
                         }
                         is Initialized.NoBluetooth.MissingPermissions -> if (hasPermission) scanState.permit(isBluetoothEnabled()) else scanState.remain()
-                        else ->  { scanState.remain() }
+                        else -> { scanState.remain() }
                     }
                 }
             }

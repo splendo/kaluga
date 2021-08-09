@@ -34,11 +34,11 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         private const val viewId = 1
     }
 
-    inner class AndroidKeyboardTestContext(coroutineScope:CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
+    inner class AndroidKeyboardTestContext(coroutineScope: CoroutineScope) : KeyboardTestContext(), CoroutineScope by coroutineScope {
         override val focusHandler get() = AndroidFocusHandler(viewId)
         override lateinit var builder: KeyboardManager.Builder
 
-        val mockActivity:Activity = mock(Activity::class.java)
+        val mockActivity: Activity = mock(Activity::class.java)
         var mockView: View = mock(View::class.java)
         var mockWindowToken: IBinder = mock(IBinder::class.java)
         var mockInputMethodManager: InputMethodManager = mock(InputMethodManager::class.java)
@@ -51,7 +51,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
         override fun verifyDismiss() {
             verify(mockInputMethodManager).hideSoftInputFromWindow(eq(mockWindowToken), eq(0))
         }
-
 
         init {
             val mockLifecycleOwner = mock(LifecycleOwner::class.java)
@@ -76,7 +75,6 @@ class AndroidKeyboardManagerTests : KeyboardManagerTests<AndroidKeyboardTestCont
             )
         }
     }
-
 
     override val createTestContext: suspend (scope: CoroutineScope) -> AndroidKeyboardTestContext =
         { AndroidKeyboardTestContext(it) }

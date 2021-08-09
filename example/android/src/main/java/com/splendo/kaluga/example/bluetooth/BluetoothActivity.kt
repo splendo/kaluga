@@ -81,5 +81,3 @@ class BluetoothActivity : KalugaViewModelActivity<BluetoothListViewModel>() {
         }
     }
 }
-
-

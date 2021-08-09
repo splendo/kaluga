@@ -26,12 +26,12 @@ import kotlin.test.assertEquals
 
 // We use the Unconfined dispatcher for observables to keep testing on the same thread.
 // This indirectly also tests using an alternate dispatcher
-class ReadOnlyPropertyTest: ObservableBaseTest() {
+class ReadOnlyPropertyTest : ObservableBaseTest() {
 
     @Test
     fun testReadOnlyPropertyDefaultObservable() = runBlocking {
 
-        var nullableString:String? = null
+        var nullableString: String? = null
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> nullableString }
 
         val observable = ro.toDefaultObservable("default", Dispatchers.Unconfined)
@@ -73,8 +73,8 @@ class ReadOnlyPropertyTest: ObservableBaseTest() {
     fun testReadOnlyNullablePropertyObservableWithInitialValue() = testReadOnlyNullablePropertyObservable("initial")
     @Test
     fun testReadOnlyNullablePropertyObservableWithInitialNull() = testReadOnlyNullablePropertyObservable(null)
-    private fun testReadOnlyNullablePropertyObservable(initial:String?) = runBlocking {
-        var s:String? = initial
+    private fun testReadOnlyNullablePropertyObservable(initial: String?) = runBlocking {
+        var s: String? = initial
         val ro = ReadOnlyProperty<Any?, String?> { _, _ -> s }
 
         testInitializedNullableStringObservable(

@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.flow
 
-import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.FirstCollection
 import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.LaterCollections
+import com.splendo.kaluga.base.flow.SharedFlowCollectionEvent.NoMoreCollections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -80,7 +80,6 @@ sealed class SpecialFlowValue { // TODO: this can be a sealed interface one day
      */
     interface NotImportant
 }
-
 
 fun <T> Flow<T>.takeUntilLast(includeLast: Boolean = true): Flow<T> = transformWhile {
     val notLast = it !is SpecialFlowValue.Last

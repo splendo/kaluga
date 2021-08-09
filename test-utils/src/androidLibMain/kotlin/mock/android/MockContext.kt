@@ -49,7 +49,7 @@ import java.io.InputStream
 
 @Suppress("RedundantNullableReturnType")
 @SuppressLint("MissingPermission")
-class MockContext: Context() {
+class MockContext : Context() {
     override fun getAssets(): AssetManager = error("not implemented")
 
     override fun getResources(): Resources = error("not implemented")

@@ -34,7 +34,7 @@ expect class ContactsPermissionManager : PermissionManager<ContactsPermission> {
     val contacts: ContactsPermission
 }
 
-interface BaseContactsPermissionManagerBuilder: BasePermissionsBuilder {
+interface BaseContactsPermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [ContactsPermissionManager]

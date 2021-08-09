@@ -39,7 +39,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-class ObservationLiveDataTest: BaseTest() {
+class ObservationLiveDataTest : BaseTest() {
 
     @Test
     fun testLiveData() = testBlockingAndCancelScope {
@@ -80,7 +80,6 @@ class ObservationLiveDataTest: BaseTest() {
 
         flow.value = null
         assertNull(channel.receive())
-
     }
 
     @Test
@@ -103,7 +102,6 @@ class ObservationLiveDataTest: BaseTest() {
 
         flow.value = null
         assertEquals("default", channel.receive())
-
     }
 
     @Test
@@ -113,16 +111,13 @@ class ObservationLiveDataTest: BaseTest() {
 
         val liveData = MutableLiveData("value")
 
-
         withContext(Dispatchers.Main) {
             liveData.observeForever(subject.liveDataObserver)
             assertEquals("value", subject.current)
 
-            liveData.value ="foo"
+            liveData.value = "foo"
             assertEquals("foo", subject.current)
         }
-
-
     }
 
     @Test
@@ -142,8 +137,11 @@ class ObservationLiveDataTest: BaseTest() {
         assertFalse(liveData.hasObservers())
         val completedObserving = EmptyCompletableDeferred()
         val job = launch(Dispatchers.Main) {
-            liveData.observeOnCoroutine(this, observer = {
-            })
+            liveData.observeOnCoroutine(
+                this,
+                observer = {
+                }
+            )
             assertTrue(liveData.hasObservers())
             completedObserving.complete()
         }

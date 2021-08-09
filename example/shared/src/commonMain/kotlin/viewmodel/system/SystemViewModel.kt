@@ -43,8 +43,8 @@ class SystemViewModel(
         observableOf(
             listOf(
                 SystemFeatures.Network
+            )
         )
-    )
 
     fun onButtonTapped(systemFeatures: SystemFeatures) {
         when (systemFeatures) {

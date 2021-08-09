@@ -23,9 +23,7 @@ import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 
 /**
@@ -49,7 +47,6 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
         return channel.asFlow().let { flowConfig.apply(it) }
     }
 
-
     override suspend fun set(value: T) {
         channel.get()?.send(value) ?: warn("'$value' offered to Flowable but there is no channel active")
     }
@@ -64,5 +61,4 @@ abstract class BaseFlowable<T>(private val channelFactory: () -> BroadcastChanne
     // Note: if the channel is buffered, this could be wrong.
     // Since Flowable is deprecated this will not be fixed
     protected suspend fun currentValue(): T? = channel.get()?.asFlow()?.first()
-
 }

@@ -35,7 +35,7 @@ fun PermissionsBuilder.registerCalendarPermission() =
         }
     }
 
-internal fun PermissionsBuilder.registerCalendarPermissionBuilder(context: PermissionContext = defaultPermissionContext) : CalendarPermissionManagerBuilder = register(
+internal fun PermissionsBuilder.registerCalendarPermissionBuilder(context: PermissionContext = defaultPermissionContext): CalendarPermissionManagerBuilder = register(
     builder = CalendarPermissionManagerBuilder(context),
     permission = CalendarPermission::class
 )

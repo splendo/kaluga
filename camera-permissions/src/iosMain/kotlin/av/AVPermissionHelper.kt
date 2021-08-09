@@ -17,10 +17,9 @@
 
 package com.splendo.kaluga.permissions.av
 
+import com.splendo.kaluga.permissions.camera.CameraPermission
 import com.splendo.kaluga.permissions.camera.CameraPermissionManager
 import platform.AVFoundation.AVMediaTypeVideo
-import com.splendo.kaluga.permissions.av.AVType
-import com.splendo.kaluga.permissions.camera.CameraPermission
 
 const val NSCameraUsageDescription = "NSCameraUsageDescription"
 const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
@@ -30,4 +29,3 @@ class AVTypeCamera(override val permissionManager: CameraPermissionManager) : AV
     override val avMediaType = AVMediaTypeVideo
     override val declarationName = NSCameraUsageDescription
 }
-

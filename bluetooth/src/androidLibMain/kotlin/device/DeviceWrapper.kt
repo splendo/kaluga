@@ -29,7 +29,7 @@ actual interface DeviceWrapper {
     fun connectGatt(context: Context, autoConnect: Boolean, callback: BluetoothGattCallback): BluetoothGattWrapper
     fun removeBond()
 
-    val device:BluetoothDevice
+    val device: BluetoothDevice
 }
 
 class DefaultDeviceWrapper(override val device: BluetoothDevice) : DeviceWrapper {

@@ -82,7 +82,7 @@ class ThreadingTest {
     fun testThreadingMainThenDefaultObservers() = runBlocking(Dispatchers.Main) {
         val s = subjectOf<Value?>(null)
         val value = Value()
-        val observer:(Value?) -> Unit = { }
+        val observer: (Value?) -> Unit = { }
         val disposable = s.observe(observer)
         assertNotFrozen(value)
         assertNotFrozen(observer)
@@ -91,16 +91,14 @@ class ThreadingTest {
             // due to the context switch the subject itself is frozen
             assertFrozen(s)
             assertFrozen(value)
-            val observer2:(Value?) -> Unit = { }
+            val observer2: (Value?) -> Unit = { }
             val disposable2 = s.observe(observer2)
             assertFrozen(observer2)
 
             disposable2.dispose()
         }
 
-
         assertNotFrozen(observer)
         disposable.dispose()
     }
-
 }

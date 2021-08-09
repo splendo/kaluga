@@ -34,8 +34,7 @@ fun PermissionsBuilder.registerMicrophonePermission() =
         }
     }
 
-internal fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: PermissionContext = defaultPermissionContext) : MicrophonePermissionManagerBuilder = register(
+internal fun PermissionsBuilder.registerMicrophonePermissionBuilder(context: PermissionContext = defaultPermissionContext): MicrophonePermissionManagerBuilder = register(
     builder = MicrophonePermissionManagerBuilder(context),
     permission = MicrophonePermission::class
 )
-

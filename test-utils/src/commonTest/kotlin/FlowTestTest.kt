@@ -63,7 +63,7 @@ class FlowTestTest : FlowTest<String, MutableStateFlow<String>>() {
 
         val scope = MainScope()
         val collectionJob = scope.async {
-            it.collect {  }
+            it.collect { }
         }
 
         it.subscriptionCount.filter { it == 1 }.first()

@@ -30,19 +30,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.jvm.isAccessible
 
 actual interface WithState<T> {
-    actual val stateFlow:StateFlow<T>
+    actual val stateFlow: StateFlow<T>
     actual val valueDelegate: ReadOnlyProperty<Any?, T>
     val liveData: LiveData<T>
-        get()= stateFlow.asLiveData()
+        get() = stateFlow.asLiveData()
 }
 
-val <R:T, T, OO: ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
+val <R : T, T, OO : ObservableOptional<R>> BasicSubject<R, T, OO>.liveDataObserver: Observer<T>
     get() = Observer<T> { this.post(it) }
 
-private fun <B, R:T, T, OO: ObservableOptional<R>> B.mutableLiveData(): MutableLiveData<R> where B : BasicSubject<R, T, OO>, B : WithMutableState<R> {
+private fun <B, R : T, T, OO : ObservableOptional<R>> B.mutableLiveData(): MutableLiveData<R> where B : BasicSubject<R, T, OO>, B : WithMutableState<R> {
     val mediatorLiveData = MediatorLiveData<R>()
     mediatorLiveData.addSource(stateFlow.asLiveData()) { value ->
         mediatorLiveData.postValue(value)
@@ -64,10 +63,10 @@ fun <T> LiveData<T>.observeOnCoroutine(
     }
 }
 
-actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual constructor(
+actual abstract class BaseSubject<R : T, T, OO : ObservableOptional<R>> actual constructor(
     observation: Observation<R, T, OO>,
-    stateFlowToBind:()-> StateFlow<R?>
-): AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
+    stateFlowToBind: () -> StateFlow<R?>
+) : AbstractBaseSubject<R, T, OO>(observation, stateFlowToBind) {
 
     private var coroutineScope: CoroutineScope? = null
     private val mutableLiveDataDelegate = lazy {
@@ -92,7 +91,7 @@ actual abstract class BaseSubject<R:T, T, OO : ObservableOptional<R>> actual con
 
 actual abstract class BaseUninitializedSubject<T> actual constructor(
     observation: ObservationUninitialized<T>
-): AbstractBaseUninitializedSubject<T>(observation) {
+) : AbstractBaseUninitializedSubject<T>(observation) {
 
     override fun createLiveData(): MutableLiveData<T> {
         val mediatorLiveData = MediatorLiveData<T>()
@@ -115,7 +114,7 @@ actual abstract class BaseInitializedSubject<T> actual constructor(observation: 
     ) : this (ObservationInitialized(initialValue, coroutineContext))
 }
 
-actual abstract class BaseDefaultSubject<R:T?, T> actual constructor(
+actual abstract class BaseDefaultSubject<R : T?, T> actual constructor(
     observation: ObservationDefault<R, T?>
 ) : AbstractBaseDefaultSubject<R, T>(observation) {
 

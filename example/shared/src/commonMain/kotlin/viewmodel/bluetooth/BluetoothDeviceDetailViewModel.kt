@@ -37,7 +37,6 @@ import com.splendo.kaluga.bluetooth.state
 import com.splendo.kaluga.bluetooth.updateRssi
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect

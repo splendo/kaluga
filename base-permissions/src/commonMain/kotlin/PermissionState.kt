@@ -29,8 +29,7 @@ import kotlin.coroutines.CoroutineContext
  */
 sealed class PermissionState<P : Permission> : State() {
 
-
-    class Unknown<P:Permission>:PermissionState<P>(),SpecialFlowValue.NotImportant
+    class Unknown<P : Permission> : PermissionState<P>(), SpecialFlowValue.NotImportant
 
     // TODO: consider below states could be wrapped in a sealed Known, and Flows could expose PermissionState.Known where applicable
 
@@ -96,7 +95,7 @@ abstract class PermissionStateRepo<P : Permission>(
             suspend { pm.initializeState() }
         else
             suspend { state }
-    }   ,
+    },
     deinitChangeStateWithRepo = { state, repo ->
         (repo as PermissionStateRepo<P>).permissionManager.stopMonitoring() // TODO: could also be replaced by a state
         null
@@ -110,5 +109,4 @@ abstract class PermissionStateRepo<P : Permission>(
 
     // TODO move to constructor, so no explicit cast is needed in init block
     abstract val permissionManager: PermissionManager<P>
-
 }

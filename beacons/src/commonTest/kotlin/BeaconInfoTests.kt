@@ -31,7 +31,6 @@ import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn

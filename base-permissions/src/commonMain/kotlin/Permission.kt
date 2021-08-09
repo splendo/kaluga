@@ -56,22 +56,21 @@ open class PermissionsBuilder(val context: PermissionContext = defaultPermission
     private val builders = IsoMutableMap<KClassifier, BasePermissionsBuilder>()
     private val repoBuilders = IsoMutableMap<KClassifier, PermissionStateRepoBuilder>()
 
-    fun <T : BasePermissionsBuilder> register(builder: T, permission: KClassifier) : T {
+    fun <T : BasePermissionsBuilder> register(builder: T, permission: KClassifier): T {
         builders[permission] = builder
         return builder
     }
 
-    operator fun get(permission: Permission) : BasePermissionsBuilder =
+    operator fun get(permission: Permission): BasePermissionsBuilder =
         builders[permission::class] ?: throw Error("The Builder for $permission was not registered")
 
     fun registerPermissionStateRepoBuilder(permission: KClassifier, permissionStateRepoBuilder: PermissionStateRepoBuilder) {
         repoBuilders[permission] = permissionStateRepoBuilder
     }
 
-    fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext) : PermissionStateRepo<*> =
-        repoBuilders[permission::class]?.let { it(permission, coroutineContext)  } ?: throw Error("Permission state repo factory was not registered for $permission")
+    fun createPermissionStateRepo(permission: Permission, coroutineContext: CoroutineContext): PermissionStateRepo<*> =
+        repoBuilders[permission::class]?.let { it(permission, coroutineContext) } ?: throw Error("Permission state repo factory was not registered for $permission")
 }
-
 
 /**
  * Manager to request the [PermissionStateRepo] of a given [Permission]

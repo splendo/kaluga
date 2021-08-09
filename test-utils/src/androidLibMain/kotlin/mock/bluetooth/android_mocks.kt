@@ -22,7 +22,6 @@ import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
-import com.splendo.kaluga.bluetooth.randomUUID
 
 const val deviceName = "name"
 const val address = ""

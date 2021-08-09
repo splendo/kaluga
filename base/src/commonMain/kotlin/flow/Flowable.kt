@@ -20,9 +20,6 @@ package com.splendo.kaluga.flow
 
 import com.splendo.kaluga.base.runBlocking
 import kotlinx.coroutines.flow.Flow
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-
 
 /**
  * An object that be turned into a multi channel [Flow]
@@ -58,5 +55,4 @@ interface Flowable<T> {
      * Applies [set] in a blocking coroutine
      */
     fun setBlocking(value: T) = runBlocking { set(value) }
-
 }

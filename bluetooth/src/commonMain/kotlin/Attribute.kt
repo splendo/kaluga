@@ -68,9 +68,9 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
                 is DeviceState.Reconnecting,
                 is DeviceState.Disconnected,
                 is DeviceState.Disconnecting,
-                    -> {
-                        state.remain() // TODO consider an optional buffer
-                    }
+                -> {
+                    state.remain() // TODO consider an optional buffer
+                }
             }
         }
     }

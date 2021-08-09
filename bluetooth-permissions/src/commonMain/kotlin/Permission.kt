@@ -34,7 +34,7 @@ fun PermissionsBuilder.registerBluetoothPermission() =
         }
     }
 
-internal fun PermissionsBuilder.registerBluetoothBuilder(context: PermissionContext = defaultPermissionContext) : BluetoothPermissionManagerBuilder = register(
+internal fun PermissionsBuilder.registerBluetoothBuilder(context: PermissionContext = defaultPermissionContext): BluetoothPermissionManagerBuilder = register(
     builder = BluetoothPermissionManagerBuilder(context),
     permission = BluetoothPermission::class
 )

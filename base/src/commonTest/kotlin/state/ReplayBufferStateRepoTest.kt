@@ -36,7 +36,7 @@ class ReplayBufferStateRepoTest {
         val state4 = object : State() {}
     }
 
-    class Repo: BaseHotStateRepo<State, MutableSharedFlow<State>>() {
+    class Repo : BaseHotStateRepo<State, MutableSharedFlow<State>>() {
         override suspend fun initialValue() = state1
         override val lazyMutableSharedFlow = lazy {
             MutableSharedFlow<State>(3, 0)
@@ -71,7 +71,7 @@ class ReplayBufferStateRepoTest {
             suspend { state4 }
         }
 
-        assertEquals(listOf(state1, state2, state3),  job.await())
+        assertEquals(listOf(state1, state2, state3), job.await())
 
         // replay cache should contain the last 3 states
         assertEquals(listOf(state2, state3, state4), repo.take(3).toList())

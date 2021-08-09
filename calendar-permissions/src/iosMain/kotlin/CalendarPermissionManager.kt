@@ -18,13 +18,13 @@
 package com.splendo.kaluga.permissions.calendar
 
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.logging.debug
+import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.IOSPermissionsHelper
+import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionManager
 import com.splendo.kaluga.permissions.PermissionRefreshScheduler
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.PermissionContext
 import platform.EventKit.EKAuthorizationStatus
 import platform.EventKit.EKAuthorizationStatusAuthorized
 import platform.EventKit.EKAuthorizationStatusDenied

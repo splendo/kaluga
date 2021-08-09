@@ -24,7 +24,7 @@ import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class BluetoothScanTest: BluetoothFlowTest<Boolean>() {
+class BluetoothScanTest : BluetoothFlowTest<Boolean>() {
 
     override val flow = suspend {
         runBlocking {

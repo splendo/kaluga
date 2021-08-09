@@ -24,7 +24,7 @@ import com.splendo.kaluga.test.mock.bluetooth.createDeviceWrapper
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothDevicesTest: BluetoothFlowTest<List<Device>>() {
+class BluetoothDevicesTest : BluetoothFlowTest<List<Device>>() {
 
     init {
         ensureNeverFrozen()

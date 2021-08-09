@@ -18,9 +18,9 @@
 package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
+import no.nordicsemi.android.support.v18.scanner.ScanResult
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import no.nordicsemi.android.support.v18.scanner.ScanResult
 
 actual class AdvertisementData(private val scanResult: ScanResult?) : BaseAdvertisementData {
 

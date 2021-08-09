@@ -82,7 +82,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
 
     private fun <T> deviceStateObservable(mapper: (DeviceState) -> T): UninitializedObservable<T> = device.state().map { mapper(it) }.toUninitializedObservable(coroutineScope)
 
-    fun toggleFoldOut() =  coroutineScope.launch {
+    fun toggleFoldOut() = coroutineScope.launch {
         _isFoldedOut.value = !_isFoldedOut.value
     }
 
@@ -95,11 +95,15 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
     }
 
     fun onMorePressed() =
-        navigator.navigate(BluetoothListNavigation(DeviceDetailsSpec().toBundle { specRow ->
-            when (specRow) {
-                is DeviceDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
-            }
-        }))
+        navigator.navigate(
+            BluetoothListNavigation(
+                DeviceDetailsSpec().toBundle { specRow ->
+                    when (specRow) {
+                        is DeviceDetailsSpecRow.UUIDRow -> specRow.convertValue(identifier.stringValue)
+                    }
+                }
+            )
+        )
 
     private fun parseServiceUUIDs(uuids: List<UUID>): String {
         val uuidString = uuids.fold("") { result, next ->
@@ -122,7 +126,7 @@ class BluetoothListDeviceViewModel(private val identifier: Identifier, bluetooth
         return "bluetooth_service_data".localized().format(dataString)
     }
 
-     public override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
     }
 }

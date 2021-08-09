@@ -36,7 +36,7 @@ class DefaultDescriptorWrapper(private val gattDescriptor: BluetoothGattDescript
         get() = gattDescriptor.uuid
     override val value: ByteArray?
         get() = gattDescriptor.value
-    override fun updateValue(value:ByteArray?) {
+    override fun updateValue(value: ByteArray?) {
         gattDescriptor.value = value
     }
     override val permissions: Int

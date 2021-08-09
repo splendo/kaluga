@@ -27,7 +27,6 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
-import com.splendo.kaluga.base.utils.toHexString
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.containsAnyOf
@@ -44,11 +43,11 @@ internal actual class DeviceConnectionManager(
     connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
     stateRepo: DeviceStateFlowRepo,
-    val mainDispatcher:CoroutineContext = Dispatchers.Main.immediate // can be replaced for testing
+    val mainDispatcher: CoroutineContext = Dispatchers.Main.immediate // can be replaced for testing
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo), CoroutineScope by stateRepo {
 
     private companion object {
-         const val TAG = "Android Bluetooth DeviceConnectionManager"
+        const val TAG = "Android Bluetooth DeviceConnectionManager"
     }
 
     override val coroutineContext: CoroutineContext

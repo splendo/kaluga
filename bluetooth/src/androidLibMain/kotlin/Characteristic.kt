@@ -23,7 +23,7 @@ actual interface CharacteristicWrapper {
 
     actual val uuid: java.util.UUID
     actual val value: ByteArray?
-    fun updateValue(value:ByteArray?)
+    fun updateValue(value: ByteArray?)
 
     val service: ServiceWrapper
     actual val descriptors: List<DescriptorWrapper>

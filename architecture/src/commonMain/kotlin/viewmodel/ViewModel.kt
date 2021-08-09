@@ -26,7 +26,7 @@ import kotlinx.coroutines.cancelChildren
 /**
  * Simple ViewModel class
  */
-expect open class ViewModel internal constructor(allowFreezing:Boolean = false) {
+expect open class ViewModel internal constructor(allowFreezing: Boolean = false) {
     /**
      * [CoroutineScope] of the ViewModel
      */
@@ -41,7 +41,7 @@ expect open class ViewModel internal constructor(allowFreezing:Boolean = false) 
 /**
  * Default [ViewModel] implementation respecting the Lifecycle of the presenting view
  */
-open class BaseViewModel(allowFreezing:Boolean = false) : ViewModel(allowFreezing) {
+open class BaseViewModel(allowFreezing: Boolean = false) : ViewModel(allowFreezing) {
 
     private val resumedJobs = SupervisorJob()
 

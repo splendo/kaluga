@@ -36,11 +36,13 @@ class MockBaseScanner(
     autoRequestPermissions: Boolean,
     autoEnableBluetooth: Boolean,
     stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>
-) : BaseScanner(permissions,
+) : BaseScanner(
+    permissions,
     connectionSettings,
     autoRequestPermissions,
     autoEnableBluetooth,
-    stateRepo) {
+    stateRepo
+) {
 
     val scanForDevicesCompleted = AtomicReference(CompletableDeferred<Set<UUID>?>())
     val stopScanningCompleted = AtomicReference(EmptyCompletableDeferred())

@@ -17,10 +17,10 @@
 
 package com.splendo.kaluga.permissions.microphone.av
 
+import com.splendo.kaluga.permissions.av.AVType
 import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.microphone.MicrophonePermissionManager
 import platform.AVFoundation.AVMediaTypeAudio
-import com.splendo.kaluga.permissions.av.AVType
 
 const val NSMicrophoneUsageDescription = "NSMicrophoneUsageDescription"
 

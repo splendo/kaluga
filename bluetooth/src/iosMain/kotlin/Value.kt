@@ -23,5 +23,5 @@ import platform.Foundation.NSData
 actual typealias Value = NSData
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER") // not relevant from Common
-actual val Value.asBytes:ByteArray
+actual val Value.asBytes: ByteArray
     get() = this.toByteArray()

@@ -80,14 +80,14 @@ class MockDeviceConnectionManager(
         readRssiCompleted.get().complete()
     }
 
-    var waitAfterHandlingAction: MutableMap<KClass<out DeviceAction>,EmptyCompletableDeferred> = sharedMutableMapOf()
+    var waitAfterHandlingAction: MutableMap<KClass<out DeviceAction>, EmptyCompletableDeferred> = sharedMutableMapOf()
 
     override suspend fun performAction(action: DeviceAction) {
         currentAction = action
         debug("Mock Action: $currentAction")
         performActionStarted.get().complete(action)
 
-        when(action) {
+        when (action) {
             is DeviceAction.Read.Characteristic -> launch {
                 handleUpdatedCharacteristic(action.characteristic.uuid) {
                     debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")

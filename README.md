@@ -1,13 +1,14 @@
-## Kaluga
+[https://img.shields.io/maven-central/v/com.splendo.kaluga/base](https://search.maven.org/search?q=com.splendo.kaluga) 
 
+## Kaluga
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
 Its main goal is to provide access to common multiplatform features used in mobile app development, such as MVVM-Architecture, location, permissions, bluetooth etc.
 
 Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
 
-## Installing
-Kaluga is currently only available through bintray. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repository to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
+## Using
+Kaluga is available on maven central. Add `https://dl.bintray.com/kaluga/com.splendo.kaluga/` as a maven repository to your project to import different kaluga modules. For example the Kaluga Alerts can be imported like this:
 
 ```kotlin
 repositories {

@@ -26,11 +26,11 @@ import kotlin.jvm.JvmName
 
 typealias DisposeHandler = () -> Unit
 
-internal expect fun <R:T, T, OO:ObservableOptional<R>> addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit)
+internal expect fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit)
 
-internal expect fun <R:T, T, OO:ObservableOptional<R>> removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit)
+internal expect fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit)
 
-internal expect fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit>
+internal expect fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit>
 
 /**
  * Reference to an object that should be disposed in time
@@ -47,7 +47,7 @@ interface Disposable {
     fun addTo(disposeBag: DisposeBag)
 }
 
-expect class SimpleDisposable(onDispose: DisposeHandler):BaseSimpleDisposable
+expect class SimpleDisposable(onDispose: DisposeHandler) : BaseSimpleDisposable
 
 /**
  * Plain [Disposable] to an object that should be disposed in time
@@ -85,12 +85,12 @@ abstract class BaseSimpleDisposable(onDispose: DisposeHandler) : Disposable {
 /**
  * Container for multiple [Disposable]. Allows nested [DisposeBag].
  */
-class DisposeBag(allowFreezing:Boolean = false) : Disposable {
+class DisposeBag(allowFreezing: Boolean = false) : Disposable {
 
-    constructor():this(false)
+    constructor() : this(false)
 
-    private val disposables:MutableList<Disposable> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
-    private val nestedBags:MutableList<DisposeBag> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
+    private val disposables: MutableList<Disposable> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
+    private val nestedBags: MutableList<DisposeBag> = if (allowFreezing) sharedMutableListOf() else mutableListOf()
 
     init {
         if (!allowFreezing)

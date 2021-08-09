@@ -20,7 +20,6 @@ package com.splendo.kaluga.test.mock.bluetooth
 import com.splendo.kaluga.bluetooth.CharacteristicWrapper
 import java.util.UUID
 
-
 class AndroidMockDescriptorWrapper(override val uuid: UUID = UUID.randomUUID(), override val characteristic: CharacteristicWrapper) : MockDescriptorWrapper {
     override fun updateMockValue(value: ByteArray?) = updateValue(value)
 

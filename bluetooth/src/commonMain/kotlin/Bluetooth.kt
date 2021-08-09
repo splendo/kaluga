@@ -34,7 +34,6 @@ import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
 import com.splendo.kaluga.permissions.Permissions
-import kotlin.jvm.JvmName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.Flow
@@ -50,6 +49,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.transformLatest
+import kotlin.jvm.JvmName
 
 interface BluetoothService {
     fun startScanning(filter: Set<UUID> = emptySet())
@@ -98,7 +98,7 @@ class Bluetooth internal constructor(
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
         when (scanState) {
-            is ScanningState.Initialized.Enabled.Idle -> when(scanMode) {
+            is ScanningState.Initialized.Enabled.Idle -> when (scanMode) {
                 is ScanMode.Scan -> {
                     scanningStateRepo.takeAndChangeState(
                         remainIfStateNot = ScanningState.Initialized.Enabled.Idle::class
@@ -173,44 +173,44 @@ fun Flow<Device?>.state(): Flow<DeviceState> {
 
 fun Flow<Device?>.services(): Flow<List<Service>> {
     return state().transformLatest { deviceState ->
-            emit(
-                when (deviceState) {
-                    is Connected -> {
-                        when (deviceState) {
-                            is Connected.NoServices -> {
-                                deviceState.startDiscovering()
-                                emptyList()
-                            }
-                            is Connected.Idle -> deviceState.services
-                            is Connected.HandlingAction -> deviceState.services
-                            else -> emptyList()
+        emit(
+            when (deviceState) {
+                is Connected -> {
+                    when (deviceState) {
+                        is Connected.NoServices -> {
+                            deviceState.startDiscovering()
+                            emptyList()
                         }
+                        is Connected.Idle -> deviceState.services
+                        is Connected.HandlingAction -> deviceState.services
+                        else -> emptyList()
                     }
-                    else -> emptyList()
                 }
-            )
-        }.distinctUntilChanged()
+                else -> emptyList()
+            }
+        )
+    }.distinctUntilChanged()
 }
 
 suspend fun Flow<Device?>.connect() {
     state().transformLatest { deviceState ->
-            when (deviceState) {
-                is Disconnected -> deviceState.startConnecting()
-                is Connected -> emit(Unit)
-                is Connecting, is Reconnecting, is Disconnecting -> { }
-            }
+        when (deviceState) {
+            is Disconnected -> deviceState.startConnecting()
+            is Connected -> emit(Unit)
+            is Connecting, is Reconnecting, is Disconnecting -> { }
+        }
     }.first()
 }
 
 suspend fun Flow<Device?>.disconnect() {
     state().transformLatest { deviceState ->
-            when (deviceState) {
-                is Connected -> deviceState.startDisconnected()
-                is Connecting -> deviceState.handleCancel()
-                is Reconnecting -> deviceState.handleCancel()
-                is Disconnected -> emit(Unit)
-                is Disconnecting -> {} // just wait
-            }
+        when (deviceState) {
+            is Connected -> deviceState.startDisconnected()
+            is Connecting -> deviceState.handleCancel()
+            is Reconnecting -> deviceState.handleCancel()
+            is Disconnected -> emit(Unit)
+            is Disconnecting -> {} // just wait
+        }
     }.first()
 }
 
@@ -246,13 +246,13 @@ fun Flow<Device?>.distance(environmentalFactor: Double = 2.0, averageOver: Int =
 
 suspend fun Flow<Device?>.updateRssi() {
     state().transformLatest { deviceState ->
-            when (deviceState) {
-                is Connected -> {
-                    deviceState.readRssi()
-                    emit(Unit)
-                }
-                else -> {}
+        when (deviceState) {
+            is Connected -> {
+                deviceState.readRssi()
+                emit(Unit)
             }
+            else -> {}
+        }
     }.first()
 }
 

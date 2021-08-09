@@ -17,8 +17,8 @@
 
 package com.splendo.kaluga.example.ios.beacons
 
-import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
+import com.splendo.kaluga.bluetooth.beacons.Beacons
 import kotlinx.coroutines.MainScope
 
 class KNBeaconsFramework {

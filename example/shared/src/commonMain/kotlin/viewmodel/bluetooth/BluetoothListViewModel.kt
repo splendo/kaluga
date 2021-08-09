@@ -21,7 +21,6 @@ import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.NavigationBundle
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
-import com.splendo.kaluga.architecture.observable.toUninitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
@@ -51,10 +50,12 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, private val monit
 
         monitor.startMonitoring()
         scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
-        scope.launch { bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
-            cleanDevices()
-            _devices.value = devices.sortedByDescending { it.name.currentOrNull }
-        } }
+        scope.launch {
+            bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
+                cleanDevices()
+                _devices.value = devices.sortedByDescending { it.name.currentOrNull }
+            }
+        }
     }
 
     override fun onPause() {

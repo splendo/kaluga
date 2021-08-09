@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 
-actual open class ViewModel internal actual constructor(allowFreezing:Boolean) : androidx.lifecycle.ViewModel() {
+actual open class ViewModel internal actual constructor(allowFreezing: Boolean) : androidx.lifecycle.ViewModel() {
 
     actual val coroutineScope = viewModelScope
 

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.typedList
-import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import platform.CoreBluetooth.CBCharacteristic
 import platform.CoreBluetooth.CBService
 import platform.CoreBluetooth.CBUUID

@@ -22,7 +22,6 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.observable.toInitializedSubject
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
-import com.splendo.kaluga.base.MainQueueDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,11 +48,15 @@ class ExampleViewModel(navigator: Navigator<ExampleTabNavigation>) : NavigatingV
 
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
-        scope.launch(Dispatchers.Main.immediate) { _tab.collect { currentTab ->
-            navigator.navigate(when (currentTab) {
-                is Tab.FeatureList -> ExampleTabNavigation.FeatureList
-                is Tab.Info -> ExampleTabNavigation.Info
-            })
-        } }
+        scope.launch(Dispatchers.Main.immediate) {
+            _tab.collect { currentTab ->
+                navigator.navigate(
+                    when (currentTab) {
+                        is Tab.FeatureList -> ExampleTabNavigation.FeatureList
+                        is Tab.Info -> ExampleTabNavigation.Info
+                    }
+                )
+            }
+        }
     }
 }

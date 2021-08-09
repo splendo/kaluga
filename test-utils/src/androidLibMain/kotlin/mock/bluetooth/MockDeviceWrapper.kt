@@ -20,11 +20,11 @@ package com.splendo.kaluga.test.mock.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCallback
 import android.content.Context
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.bluetooth.device.BluetoothGattWrapper
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Identifier
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
-import com.splendo.kaluga.base.utils.complete
 import kotlinx.coroutines.CompletableDeferred
 
 class MockDeviceWrapper(override val name: String?, override val identifier: Identifier, override val bondState: Int) : DeviceWrapper {

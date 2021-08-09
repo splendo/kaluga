@@ -28,19 +28,19 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-abstract class ObservableBaseTest:BaseTest() {
+abstract class ObservableBaseTest : BaseTest() {
 
     companion object {
         const val DELAY_MS = 30L
     }
 
-    fun <V:String?, O>((O) -> V).asUpdate() = { observable:O -> Value(this(observable))}
-    fun <O>((O) -> String?).asNullableUpdate() = { observable:O -> Value(this(observable))}
+    fun <V : String?, O> ((O) -> V).asUpdate() = { observable: O -> Value(this(observable)) }
+    fun <O> ((O) -> String?).asNullableUpdate() = { observable: O -> Value(this(observable)) }
 
-    suspend fun <O:InitializedObservable<String?>> testInitializedNullableStringObservable(
-        observable:O,
-        initialExpected:String?,
-        shortDelayAfterUpdate:Boolean = false,
+    suspend fun <O : InitializedObservable<String?>> testInitializedNullableStringObservable(
+        observable: O,
+        initialExpected: String?,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> String?
     ) = testObservable(
         observable,
@@ -50,10 +50,10 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asNullableUpdate() }.toTypedArray()
     )
 
-    suspend fun <V:String?, O:InitializedObservable<V>> testInitializedStringObservable(
-        observable:O,
-        initialExpected:V,
-        shortDelayAfterUpdate:Boolean = false,
+    suspend fun <V : String?, O : InitializedObservable<V>> testInitializedStringObservable(
+        observable: O,
+        initialExpected: V,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> V
     ) = testObservable(
         observable,
@@ -63,10 +63,10 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    suspend fun <V:String?, OO:ObservableOptional<V>, S:BasicSubject<V, V, OO>> testStringSubject(
+    suspend fun <V : String?, OO : ObservableOptional<V>, S : BasicSubject<V, V, OO>> testStringSubject(
         subject: S,
-        initialExpected:V,
-        shortDelayAfterUpdate:Boolean = false,
+        initialExpected: V,
+        shortDelayAfterUpdate: Boolean = false,
         useSuspendableSetter: Boolean = false,
         vararg updates: Pair<V, V>
 
@@ -77,9 +77,9 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate<V, OO, S>(useSuspendableSetter) }.toTypedArray()
     )
 
-    suspend fun <V:String?, OO:ObservableOptional<V>, O:BasicObservable<V, V, OO>> testUninitializedStringObservable(
-        observable:O,
-        shortDelayAfterUpdate:Boolean = false,
+    suspend fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> testUninitializedStringObservable(
+        observable: O,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> ObservableOptional<V>
     ) = testObservable(
         observable,
@@ -89,10 +89,10 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates
     )
 
-    suspend fun <O:DefaultObservable<String, String?>> testDefaultStringObservable(
-        observable:O,
+    suspend fun <O : DefaultObservable<String, String?>> testDefaultStringObservable(
+        observable: O,
         initialExpected: String,
-        shortDelayAfterUpdate:Boolean = false,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> String
     ) = testObservable(
         observable,
@@ -102,10 +102,10 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asUpdate() }.toTypedArray()
     )
 
-    suspend fun <R:T, T:String?, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>> testStringObservable(
-        observable:O,
-        initialExpected:T,
-        shortDelayAfterUpdate:Boolean = false,
+    suspend fun <R : T, T : String?, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testStringObservable(
+        observable: O,
+        initialExpected: T,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> ObservableOptional<R>
     ) = testObservable(
         observable,
@@ -115,7 +115,7 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates
     )
 
-    fun <O:BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter:Boolean):(O) -> Value<String> = {
+    fun <O : BasicObservable<String, String?, Value<String>>> Pair<String?, String>.asNullableUpdate(useSetter: Boolean): (O) -> Value<String> = {
         if (useSetter)
             (it as? SuspendableSetter<String?>)?.let { runBlocking { it.set(this@asNullableUpdate.first) } } ?: throw Exception("Could not set value")
         else
@@ -123,7 +123,7 @@ abstract class ObservableBaseTest:BaseTest() {
         Value(this.second)
     }
 
-    fun <V:String?, OO:ObservableOptional<V>,O:BasicObservable<V, V, OO>> Pair<V, V>.asUpdate(useSetter:Boolean):(O) -> Value<V> = {
+    fun <V : String?, OO : ObservableOptional<V>, O : BasicObservable<V, V, OO>> Pair<V, V>.asUpdate(useSetter: Boolean): (O) -> Value<V> = {
         if (useSetter)
             (it as? SuspendableSetter<V>)?.let { runBlocking { it.set(this@asUpdate.first) } } ?: throw Exception("Could not set value")
         else
@@ -132,10 +132,10 @@ abstract class ObservableBaseTest:BaseTest() {
         Value(this.second)
     }
 
-    suspend fun <S:DefaultSubject<String, String?>>testStringDefaultSubject(
+    suspend fun <S : DefaultSubject<String, String?>> testStringDefaultSubject(
         subject: S,
-        initialExpected:String,
-        shortDelayAfterUpdate:Boolean = false,
+        initialExpected: String,
+        shortDelayAfterUpdate: Boolean = false,
         useSuspendableSetter: Boolean = false,
         vararg updates: Pair<String?, String>
 
@@ -146,29 +146,29 @@ abstract class ObservableBaseTest:BaseTest() {
         *updates.map { it.asNullableUpdate<S>(useSuspendableSetter) }.toTypedArray()
     )
 
-    suspend fun <O:DefaultObservable<String, String?>> testStringDefaultObservable(
-        observable:O,
-        initialExpected:String,
-        shortDelayAfterUpdate:Boolean = false,
+    suspend fun <O : DefaultObservable<String, String?>> testStringDefaultObservable(
+        observable: O,
+        initialExpected: String,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> String
     ) = testObservable(
-            observable,
-            "unused",
-            Value(initialExpected),
-            shortDelayAfterUpdate,
-            *updates.map { it.asUpdate() }.toTypedArray()
-        )
+        observable,
+        "unused",
+        Value(initialExpected),
+        shortDelayAfterUpdate,
+        *updates.map { it.asUpdate() }.toTypedArray()
+    )
 
-    private val updateSemaphore=AtomicReference<Semaphore?>(null)
+    private val updateSemaphore = AtomicReference<Semaphore?>(null)
     suspend fun waitForUpdate() {
         updateSemaphore.get()?.acquire() ?: error("call testObservable to collect your flowOfWithDelays instead of doing this directly")
     }
 
-    suspend fun <R:T,T, OO:ObservableOptional<R>, O:BasicObservable<R, T, OO>>testObservable(
-        observable:O,
+    suspend fun <R : T, T, OO : ObservableOptional<R>, O : BasicObservable<R, T, OO>> testObservable(
+        observable: O,
         unusedValue: R,
         initialExpected: OO,
-        shortDelayAfterUpdate:Boolean = false,
+        shortDelayAfterUpdate: Boolean = false,
         vararg updates: (O) -> ObservableOptional<R>
     ) {
         val permits = updates.size + 1 // +1 for initial state
@@ -203,7 +203,7 @@ abstract class ObservableBaseTest:BaseTest() {
         val observedValue = AtomicReference<R?>(unusedValue)
         val disposable = observable.observe { observedValue.set(it) }
 
-        var observedInitializedValue:AtomicReference<R>? = null
+        var observedInitializedValue: AtomicReference<R>? = null
         var disposableInitialized: Disposable? = null
         if (observable is Initialized<*, *>) {
             observedInitializedValue = AtomicReference(unusedValue)
@@ -224,7 +224,7 @@ abstract class ObservableBaseTest:BaseTest() {
 
         updates.forEachIndexed { count, update ->
 
-            val lastUpdate = count == updates.size -1
+            val lastUpdate = count == updates.size - 1
 
             val observedBefore = observedValue.get()
 
@@ -240,7 +240,7 @@ abstract class ObservableBaseTest:BaseTest() {
             assertEquals(expected.valueOrNull, (observable as? WithState<R>)?.stateFlow?.value)
 
             if (observable is DefaultObservable<*, *>) {
-                assertTrue ( expected is Value<*> )
+                assertTrue(expected is Value<*>)
                 val property by observable.valueDelegate
                 assertEquals(expected.value, property)
             }
@@ -253,8 +253,7 @@ abstract class ObservableBaseTest:BaseTest() {
             if (!lastUpdate && observedInitializedValue != null) {
                 assertTrue(expected is Value<*>)
                 assertEquals(expected.value, observedInitializedValue.get())
-            }
-            else if (observedInitializedValue != null) {
+            } else if (observedInitializedValue != null) {
                 assertEquals(observedBefore, observedInitializedValue.get())
             }
 
@@ -264,4 +263,5 @@ abstract class ObservableBaseTest:BaseTest() {
                 delay(DELAY_MS)
             }
         }
-    }}
+    }
+}

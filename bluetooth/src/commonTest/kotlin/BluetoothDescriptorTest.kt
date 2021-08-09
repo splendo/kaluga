@@ -21,7 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothDescriptorTest: BluetoothFlowTest<Descriptor?>() {
+class BluetoothDescriptorTest : BluetoothFlowTest<Descriptor?>() {
 
     override val flow = suspend {
         setup(Setup.DESCRIPTOR)

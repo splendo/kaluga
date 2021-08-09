@@ -34,7 +34,7 @@ expect class CalendarPermissionManager : PermissionManager<CalendarPermission> {
     val calendar: CalendarPermission
 }
 
-interface BaseCalendarPermissionManagerBuilder: BasePermissionsBuilder {
+interface BaseCalendarPermissionManagerBuilder : BasePermissionsBuilder {
 
     /**
      * Creates a [CalendarPermissionManager]

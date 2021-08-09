@@ -40,7 +40,7 @@ internal actual class DeviceConnectionManager(
     private val peripheral: CBPeripheral,
     connectionSettings: ConnectionSettings,
     deviceWrapper: DeviceWrapper,
-    stateRepo: DeviceStateFlowRepo,     
+    stateRepo: DeviceStateFlowRepo,
 ) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
 
     class Builder(private val cbCentralManager: CBCentralManager, private val peripheral: CBPeripheral) : BaseDeviceConnectionManager.Builder {
@@ -176,20 +176,24 @@ internal actual class DeviceConnectionManager(
     }
 
     private fun didDiscoverServices() {
-        discoveringServices.addAll(peripheral.services?.typedList<CBService>()?.map {
-            peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
-            it.UUID
-        } ?: emptyList())
+        discoveringServices.addAll(
+            peripheral.services?.typedList<CBService>()?.map {
+                peripheral.discoverCharacteristics(emptyList<CBUUID>(), it)
+                it.UUID
+            } ?: emptyList()
+        )
 
         checkScanComplete()
     }
 
     private fun didDiscoverCharacteristic(forService: CBService) {
         discoveringServices.remove(forService.UUID)
-        discoveringCharacteristics.addAll(forService.characteristics?.typedList<CBCharacteristic>()?.map {
-            peripheral.discoverDescriptorsForCharacteristic(it)
-            it.UUID
-        } ?: emptyList())
+        discoveringCharacteristics.addAll(
+            forService.characteristics?.typedList<CBCharacteristic>()?.map {
+                peripheral.discoverDescriptorsForCharacteristic(it)
+                it.UUID
+            } ?: emptyList()
+        )
         checkScanComplete()
     }
 

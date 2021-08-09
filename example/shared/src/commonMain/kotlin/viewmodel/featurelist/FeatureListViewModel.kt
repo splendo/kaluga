@@ -54,33 +54,37 @@ sealed class Feature(val title: String) {
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
-    val feature = observableOf(listOf(
-        Feature.Alerts,
-        Feature.Architecture,
-        Feature.Bluetooth,
-        Feature.DateTimePicker,
-        Feature.Keyboard,
-        Feature.Links,
-        Feature.LoadingIndicator,
-        Feature.Location,
-        Feature.Permissions,
-        Feature.System,
-        Feature.Beacons
-    ))
+    val feature = observableOf(
+        listOf(
+            Feature.Alerts,
+            Feature.Architecture,
+            Feature.Bluetooth,
+            Feature.DateTimePicker,
+            Feature.Keyboard,
+            Feature.Links,
+            Feature.LoadingIndicator,
+            Feature.Location,
+            Feature.Permissions,
+            Feature.System,
+            Feature.Beacons
+        )
+    )
 
     fun onFeaturePressed(feature: Feature) {
-        navigator.navigate(when (feature) {
-            is Feature.Alerts -> FeatureListNavigationAction.Alerts
-            is Feature.Architecture -> FeatureListNavigationAction.Architecture
-            is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
-            is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
-            is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
-            is Feature.Links -> FeatureListNavigationAction.Links
-            is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
-            is Feature.Location -> FeatureListNavigationAction.Location
-            is Feature.Permissions -> FeatureListNavigationAction.Permissions
-            Feature.System -> FeatureListNavigationAction.System
-            Feature.Beacons -> FeatureListNavigationAction.Beacons
-        })
+        navigator.navigate(
+            when (feature) {
+                is Feature.Alerts -> FeatureListNavigationAction.Alerts
+                is Feature.Architecture -> FeatureListNavigationAction.Architecture
+                is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
+                is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
+                is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
+                is Feature.Links -> FeatureListNavigationAction.Links
+                is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
+                is Feature.Location -> FeatureListNavigationAction.Location
+                is Feature.Permissions -> FeatureListNavigationAction.Permissions
+                Feature.System -> FeatureListNavigationAction.System
+                Feature.Beacons -> FeatureListNavigationAction.Beacons
+            }
+        )
     }
 }

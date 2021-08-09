@@ -24,7 +24,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
-class BluetoothUUIDTest: BaseTest() {
+class BluetoothUUIDTest : BaseTest() {
 
     @Test
     fun testRandomUUID() {
@@ -68,6 +68,5 @@ class BluetoothUUIDTest: BaseTest() {
         assertEquals("00000000-0000-1000-8000-00805f9b34fb", uuidFromShort("0000").uuidString.lowercase())
         assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12ab").uuidString.lowercase())
         assertEquals("000012ab-0000-1000-8000-00805f9b34fb", uuidFromShort("12AB").uuidString.lowercase())
-
     }
 }

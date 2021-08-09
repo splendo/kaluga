@@ -26,23 +26,23 @@ actual class SimpleDisposable actual constructor(onDispose: DisposeHandler) : Ba
     }
 }
 
-actual fun <R:T, T, OO:ObservableOptional<R>>  addObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
-    val observers = observersForObservation.getOrPut(observation) { mutableListOf()}
+actual fun <R : T, T, OO : ObservableOptional<R>> addObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
+    val observers = observersForObservation.getOrPut(observation) { mutableListOf() }
     observers.add(observer as (Any?) -> Unit)
 }
 
-actual fun <R:T, T, OO:ObservableOptional<R>>  removeObserver(observation:Observation<R,T,OO>, observer:(R)->Unit) {
+actual fun <R : T, T, OO : ObservableOptional<R>> removeObserver(observation: Observation<R, T, OO>, observer: (R) -> Unit) {
     val observers = observersForObservation[observation] ?: return
     observers.remove(observer)
     if (observers.isEmpty())
         observersForObservation.remove(observation)
 }
 
-actual fun <R:T, T, OO:ObservableOptional<R>> observers(observation:Observation<R,T,OO>): List<(R) -> Unit> {
+actual fun <R : T, T, OO : ObservableOptional<R>> observers(observation: Observation<R, T, OO>): List<(R) -> Unit> {
     return observersForObservation[observation] as? List<(R) -> Unit> ?: emptyList()
 }
 
 // Use this to have a thread local reference on iOS that does not get frozen
 // TODO: this can be further improved by using a WeakRef
 @ThreadLocal
-private val observersForObservation = mutableMapOf<Observation<*,*,*>, MutableList<(Any?)->Unit>>()
+private val observersForObservation = mutableMapOf<Observation<*, *, *>, MutableList<(Any?)->Unit>>()

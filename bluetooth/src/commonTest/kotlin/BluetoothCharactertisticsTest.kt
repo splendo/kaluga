@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class BluetoothCharacteristicsTest: BluetoothFlowTest<List<Characteristic>>() {
+class BluetoothCharacteristicsTest : BluetoothFlowTest<List<Characteristic>>() {
 
     override val flow = suspend {
         setup(Setup.SERVICE)

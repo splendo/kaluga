@@ -21,7 +21,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 
 open class Descriptor(
-    val wrapper:DescriptorWrapper,
+    val wrapper: DescriptorWrapper,
     initialValue: ByteArray? = null,
     stateRepo: DeviceStateFlowRepo
 ) : Attribute<DeviceAction.Read.Descriptor, DeviceAction.Write.Descriptor>(initialValue, stateRepo) {
@@ -39,10 +39,9 @@ open class Descriptor(
     override fun getUpdatedValue(): ByteArray? {
         return wrapper.value?.asBytes
     }
-
 }
 
 expect interface DescriptorWrapper {
     val uuid: UUID
-    val value:Value?
+    val value: Value?
 }

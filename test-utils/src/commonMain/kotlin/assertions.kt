@@ -25,13 +25,13 @@ import kotlin.test.assertTrue
 @SharedImmutable
 private val WARNING = "Checking if a Boolean is frozen, did you accidentally add `.isFrozen` in your assert? If intentional add `allowBoolean = true`."
 
-fun assertFrozen(any:Any, message: String? = null, allowBoolean:Boolean = false) {
+fun assertFrozen(any: Any, message: String? = null, allowBoolean: Boolean = false) {
     if (!allowBoolean && any is Boolean)
         error(WARNING)
     assertTrue(any.isFrozen, message)
 }
 
-fun assertNotFrozen(any:Any, message: String? = null, suppressWarning:Boolean = false) {
+fun assertNotFrozen(any: Any, message: String? = null, suppressWarning: Boolean = false) {
     if (!suppressWarning && any is Boolean)
         error(WARNING)
     assertFalse(any.isFrozen, message)

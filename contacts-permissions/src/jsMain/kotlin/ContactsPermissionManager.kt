@@ -40,7 +40,7 @@ actual class ContactsPermissionManager(actual val contacts: ContactsPermission, 
     }
 }
 
-actual class ContactsPermissionManagerBuilder actual constructor(context: PermissionContext): BaseContactsPermissionManagerBuilder {
+actual class ContactsPermissionManagerBuilder actual constructor(context: PermissionContext) : BaseContactsPermissionManagerBuilder {
 
     override fun create(contacts: ContactsPermission, repo: ContactsPermissionStateRepo): PermissionManager<ContactsPermission> {
         return ContactsPermissionManager(contacts, repo)

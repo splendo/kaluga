@@ -31,7 +31,7 @@ class ExampleActivity : KalugaViewModelActivity<ExampleViewModel>(R.layout.activ
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val tabs:TabLayout = findViewById(R.id.tabs)
+        val tabs: TabLayout = findViewById(R.id.tabs)
 
         viewModel.tabs.observeInitialized { exampleTabs ->
             tabs.removeAllTabs()

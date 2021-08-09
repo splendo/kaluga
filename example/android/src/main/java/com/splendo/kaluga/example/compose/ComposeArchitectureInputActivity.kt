@@ -27,21 +27,19 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.splendo.kaluga.architecture.compose.mutableState
+import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.example.architecture.ArchitectureDetailsActivity
 import com.splendo.kaluga.example.architecture.ArchitectureInputActivity
 import com.splendo.kaluga.example.shared.viewmodel.architecture.ArchitectureInputViewModel
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import com.splendo.kaluga.architecture.compose.mutableState
-import com.splendo.kaluga.architecture.compose.state
-import com.splendo.kaluga.architecture.observable.WithMutableState
-import com.splendo.kaluga.architecture.observable.WithState
 
 val LocalAppCompatActivity =
     staticCompositionLocalOf<AppCompatActivity?> { null }
@@ -62,9 +60,7 @@ abstract class KalugaViewModelComposeActivity<VM : BaseViewModel> : AppCompatAct
     protected abstract fun Layout(viewModel: VM)
 
     @Composable
-    protected abstract fun viewModel():VM
-
-
+    protected abstract fun viewModel(): VM
 }
 
 @Composable
@@ -75,12 +71,11 @@ fun LayoutP(viewModel: ArchitectureInputViewModel) {
     val numberHeader by viewModel.numberHeader.state()
     val (numberInput, numberInputDelegate) = viewModel.numberInput.mutableState()
 
-
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         BasicText(nameHeader)
-        BasicTextField (
+        BasicTextField(
             value = nameInput,
             onValueChange = nameInputDelegate,
             modifier = Modifier
@@ -89,21 +84,20 @@ fun LayoutP(viewModel: ArchitectureInputViewModel) {
         )
 
         BasicText(numberHeader)
-        BasicTextField (
+        BasicTextField(
             value = numberInput,
             onValueChange = numberInputDelegate,
             modifier = Modifier
                 .fillMaxWidth(),
             singleLine = true
         )
-
     }
 }
 
 class ComposeArchitectureInputActivity : KalugaViewModelComposeActivity<ArchitectureInputViewModel>() {
 
     @Composable
-    override fun viewModel():ArchitectureInputViewModel = ArchitectureInputViewModel(
+    override fun viewModel(): ArchitectureInputViewModel = ArchitectureInputViewModel(
         ActivityNavigator {
             NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
         }
@@ -116,9 +110,11 @@ class ComposeArchitectureInputActivity : KalugaViewModelComposeActivity<Architec
 @Preview
 @Composable
 fun Preview() {
-    LayoutP(ArchitectureInputViewModel(
-        ActivityNavigator {
-            NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
-        }
-    ))
+    LayoutP(
+        ArchitectureInputViewModel(
+            ActivityNavigator {
+                NavigationSpec.Activity(ArchitectureDetailsActivity::class.java, requestCode = ArchitectureInputActivity.requestCode)
+            }
+        )
+    )
 }

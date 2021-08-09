@@ -25,10 +25,10 @@ actual interface CharacteristicWrapper {
 
 actual interface DescriptorWrapper {
     actual val uuid: UUID
-    actual val value:Value?
+    actual val value: Value?
 }
 
 actual interface ServiceWrapper {
     actual val characteristics: List<CharacteristicWrapper>
-    actual val uuid:UUID
+    actual val uuid: UUID
 }

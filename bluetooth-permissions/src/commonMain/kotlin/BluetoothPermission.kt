@@ -51,7 +51,7 @@ expect class BluetoothPermissionManagerBuilder(context: PermissionContext = defa
 class DefaultBluetoothPermissionStateRepo(
     builder: BaseBluetoothPermissionManagerBuilder,
     coroutineContext: CoroutineContext
-) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext){
+) : BluetoothPermissionStateRepo(coroutineContext = coroutineContext) {
     override val permissionManager: PermissionManager<BluetoothPermission> =
         builder.create(this)
 }

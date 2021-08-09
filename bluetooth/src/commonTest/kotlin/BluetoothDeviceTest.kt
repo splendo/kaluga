@@ -22,7 +22,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-class BluetoothDeviceTest:BluetoothFlowTest<Device?>() {
+class BluetoothDeviceTest : BluetoothFlowTest<Device?>() {
 
     override val flow = suspend {
         setup(Setup.DEVICE)

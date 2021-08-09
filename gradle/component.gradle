@@ -6,7 +6,6 @@ repositories {
 // if the include is made from the example project shared module we need to go up one more directory
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 
-
 kotlin {
 
     targets {
@@ -192,6 +191,10 @@ afterEvaluate {
         tasks.named("linkDebugTestIosx64").configure {
             dependsOn copyResources
         }
+}
+
+ktlint {
+    disabledRules=["no-wildcard-imports","filename"]
 }
 
 apply from: "$path_prefix/gradle/componentskt.gradle.kts"

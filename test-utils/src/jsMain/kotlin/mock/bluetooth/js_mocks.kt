@@ -31,6 +31,3 @@ actual fun createServiceWrapper(
     uuid: UUID,
     characteristics: List<Pair<UUID, List<UUID>>>
 ): ServiceWrapper = TODO()
-
-
-

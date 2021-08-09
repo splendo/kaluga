@@ -25,7 +25,6 @@ dependencies {
     api("androidx.lifecycle:lifecycle-viewmodel-ktx:$androidx_lifecycle_version")
     api("androidx.lifecycle:lifecycle-livedata-ktx:$androidx_lifecycle_version")
     implementation("androidx.browser:browser:$androidx_browser_version")
-
 }
 
 kotlin {
@@ -35,11 +34,11 @@ kotlin {
         val serialization_version: String by ext
 
         // For IDE
-        val ios_primary_arch:String by ext
+        val ios_primary_arch: String by ext
         getByName("${ios_primary_arch}Main") {
-             dependencies {
-                 api(project(":base", ""))
-             }
+            dependencies {
+                api(project(":base", ""))
+            }
         }
 
         getByName("commonMain") {

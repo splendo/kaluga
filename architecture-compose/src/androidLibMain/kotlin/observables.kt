@@ -29,7 +29,7 @@ import com.splendo.kaluga.architecture.observable.WithState
 inline fun <R> WithState<R>.state(): State<R> =
     this.stateFlow.collectAsState()
 
-//@Suppress("NOTHING_TO_INLINE") // inlining currently breaks compilation
+// @Suppress("NOTHING_TO_INLINE") // inlining currently breaks compilation
 @Composable
 fun <R> WithMutableState<R>.mutableState(): MutableState<R> {
     val readState = state()

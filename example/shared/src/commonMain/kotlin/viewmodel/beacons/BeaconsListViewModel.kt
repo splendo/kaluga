@@ -43,16 +43,17 @@ class BeaconsListViewModel(private val service: Beacons) : BaseViewModel() {
                 .collect { _isScanning.value = it }
         }
 
-        scope.launch { service.beacons()
-            .map { beacons ->
-                beacons.map { beacon ->
-                    BeaconsListBeaconViewModel(beacon.identifier, service)
+        scope.launch {
+            service.beacons()
+                .map { beacons ->
+                    beacons.map { beacon ->
+                        BeaconsListBeaconViewModel(beacon.identifier, service)
+                    }
                 }
-            }
-            .collect { beacons ->
-                cleanDevices()
-                _beacons.value = beacons
-            }
+                .collect { beacons ->
+                    cleanDevices()
+                    _beacons.value = beacons
+                }
         }
     }
 

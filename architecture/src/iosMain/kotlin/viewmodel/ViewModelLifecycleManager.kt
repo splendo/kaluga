@@ -33,7 +33,7 @@ import platform.UIKit.willMoveToParentViewController
  * This convenience class is the result of [BaseViewModel.addLifecycleManager].
  * Invoke [unbind] to unbind the Lifecycle from its bound [UIViewController]
  */
-class LifecycleManager internal constructor(allowFreezing:Boolean, clearViewModel: () -> Unit) {
+class LifecycleManager internal constructor(allowFreezing: Boolean, clearViewModel: () -> Unit) {
 
     internal val disposeBag: DisposeBag = DisposeBag(allowFreezing)
     private var onUnbind: (() -> Unit)? = clearViewModel

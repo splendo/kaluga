@@ -20,14 +20,13 @@ import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.test.SimpleFlowTest
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
+class SuperSimpleFlowTestTest : SimpleFlowTest<Int>() {
     override val flow = suspend { flowOf(1, 2, 3) }
 
     @Test
@@ -56,8 +55,7 @@ class SuperSimpleFlowTestTest: SimpleFlowTest<Int>() {
     }
 }
 
-
-class SimpleFlowTestTest: SimpleFlowTest<Int>() {
+class SimpleFlowTestTest : SimpleFlowTest<Int>() {
 
     override val flow = suspend { MutableStateFlow(1) }
 
@@ -82,8 +80,5 @@ class SimpleFlowTestTest: SimpleFlowTest<Int>() {
         test {
             assertEquals(2, it)
         }
-
-
     }
-
 }

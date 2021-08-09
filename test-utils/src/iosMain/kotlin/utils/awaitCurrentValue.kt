@@ -16,4 +16,3 @@
  */
 
 package com.splendo.kaluga.test.utils
-

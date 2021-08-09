@@ -25,7 +25,6 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
-import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

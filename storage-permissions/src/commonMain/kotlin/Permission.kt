@@ -36,8 +36,7 @@ fun PermissionsBuilder.registerStoragePermission() =
         }
     }
 
-internal fun PermissionsBuilder.registerStoragePermissionBuilder(context: PermissionContext = defaultPermissionContext) : StoragePermissionManagerBuilder = register(
+internal fun PermissionsBuilder.registerStoragePermissionBuilder(context: PermissionContext = defaultPermissionContext): StoragePermissionManagerBuilder = register(
     builder = StoragePermissionManagerBuilder(context),
     permission = StoragePermission::class
 )
-

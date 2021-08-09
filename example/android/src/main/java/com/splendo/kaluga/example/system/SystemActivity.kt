@@ -73,5 +73,4 @@ class SystemFeatureAdapter(
     }
 
     override fun getItemCount(): Int = modules.size
-
 }

@@ -49,7 +49,7 @@ actual open class BaseTest {
     // val instantExecutorRule = InstantTaskExecutorRule()
 
     private val mainDispatcher: CoroutineDispatcher by lazy {
-        var mainThread:Thread? = null
+        var mainThread: Thread? = null
         val factory = ThreadFactory { r ->
             Thread(r, "synthetic UI thread").also {
                 it.uncaughtExceptionHandler =
@@ -61,7 +61,7 @@ actual open class BaseTest {
         val executor: ExecutorService = Executors.newSingleThreadExecutor(factory)
         val d = executor.asCoroutineDispatcher()
         // Implement proper immediate support
-        object:CoroutineDispatcher() {
+        object : CoroutineDispatcher() {
             override fun dispatch(context: CoroutineContext, block: Runnable) {
                 d.dispatch(context, block)
             }

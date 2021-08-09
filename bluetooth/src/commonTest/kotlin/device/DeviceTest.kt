@@ -23,13 +23,12 @@ import com.splendo.kaluga.bluetooth.BluetoothFlowTest
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.HandlingAction
 import com.splendo.kaluga.bluetooth.device.DeviceState.Connected.Idle
 import com.splendo.kaluga.test.mock.bluetooth.device.MockDeviceConnectionManager
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import kotlin.test.fail
 
 class DeviceTest : BluetoothFlowTest<DeviceState>() {
@@ -48,12 +47,16 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val rssi = rssi
         val advertisementData = advertisementData
 
-        val deviceStateRepo = Device(connectionSettings, DeviceInfoImpl(deviceWrapper, rssi, advertisementData), object : BaseDeviceConnectionManager.Builder {
+        val deviceStateRepo = Device(
+            connectionSettings, DeviceInfoImpl(deviceWrapper, rssi, advertisementData),
+            object : BaseDeviceConnectionManager.Builder {
 
-            override fun create(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo): BaseDeviceConnectionManager {
-                return MockDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo)
-            }
-        }, coroutineContext)
+                override fun create(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo): BaseDeviceConnectionManager {
+                    return MockDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo)
+                }
+            },
+            coroutineContext
+        )
         this.deviceStateRepo = deviceStateRepo
         connectionManager = deviceStateRepo.peekState().connectionManager as MockDeviceConnectionManager
         deviceStateRepo
@@ -338,7 +341,7 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         val handledActionSecond = connectionManager.handledAction
         test {
             // filter because the second event might not be written yet
-            assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read}.first() is DeviceAction.Write)
+            assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read }.first() is DeviceAction.Write)
             assertTrue(it is HandlingAction)
         }
 
