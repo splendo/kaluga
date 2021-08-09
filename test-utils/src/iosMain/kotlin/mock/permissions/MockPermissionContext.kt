@@ -19,4 +19,4 @@ package com.splendo.kaluga.test.mock.permissions
 
 import platform.Foundation.NSBundle
 
-actual val mockPermissionContext = NSBundle()
+actual val mockPermissionContext get() = NSBundle()
