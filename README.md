@@ -81,7 +81,7 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:alerts:0.2.0")
+    implementation("com.splendo.kaluga:alerts:0.2.1")
 }
 ```
 
