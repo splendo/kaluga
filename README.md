@@ -83,8 +83,9 @@ dependencies {
 To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery templates](https://github.com/splendo/kaluga-swiftui) to generate some Swift code to help get you started.
 
 ### Available Modules
+
 Module | Usage | Artifact Name
---- | --- | --- | ---
+--- | --- | --- 
 [alerts](tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga:alerts
 [architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga:architecture
 [architecture-compose](https://github.com/splendo/kaluga/tree/master/architecture) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
