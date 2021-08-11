@@ -1,9 +1,10 @@
 [![maven version badge](https://maven-badges.herokuapp.com/maven-central/com.splendo.kaluga/base/badge.svg)]([https://search.maven.org/search?q=g:com.splendo.kaluga]) [![Build Status](https://app.bitrise.io/app/14b7d4be75507f70/status.svg?token=KawVB7619B-KRBdIADdplg&branch=master)](https://app.bitrise.io/app/14b7d4be75507f70)<sup>🤖</sup> [![Build Status](https://app.bitrise.io/app/67ee1b576288ad31/status.svg?token=hUq90QsaCPe2nyWxyX1KGg&branch=master)](https://app.bitrise.io/app/67ee1b576288ad31)<sup>🍏</sup>
 
-## kaluga
+![kaluga logo](https://raw.githubusercontent.com/splendo/kaluga/b1198b0427046f7aa3de5f74fd2fcebd461eb6c1/logo/Logo.svg)
+
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
-Its main goal is to provide access to common multiplatform features used in cross-platform mobile app development, separated into modules such as architecture (MVVM), location, permissions, bluetooth etc.
+Kaluga's main goal is to provide access to common features used in cross-platform mobile app development, separated into modules such as architecture (MVVM), location, permissions, bluetooth etc.
 
 To reach this goal it uses Kotlin, specifically [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) which allows running Kotlin code not just on JVM+Android, but also iOS/iPadOS, amongst others (inndeed some kaluga modules also work for Kotlin.js and/or JVM standalone).
 
@@ -13,9 +14,11 @@ While kaluga modules can be used individually, together they form a comprehensiv
 
 ### Short examples
 
-With Kaluga it's possible to do many things from [`commonMain`](https://kotlinlang.org/docs/mpp-dsl-reference.html#predefined-source-sets) sources that would normally take many lines of code even on just one platform. Below are some examples:
+With Kaluga it is possible to create cross-platform functionality in a few lines of code, that would normally take many lines of code even on just one platform. 
 
-Scan for nearby devices with Bluetooth:
+Below are some examples, using a [`commonMain` source-set](https://kotlinlang.org/docs/mpp-dsl-reference.html#predefined-source-sets):
+
+Scanning for nearby devices with Bluetooth LE:
 
 ```kotlin
 // will auto request permissions and try to enable bluetooth
@@ -24,27 +27,29 @@ BluetoothBuilder().create().devices().collect {
 }
 ```
 
-Show a spinner while doing some work:
+Showing a spinner while doing some work:
 
 ```kotlin
 
-suspend fun doWork(hudBuilder: HUD.Builder) 
+suspend fun doWork(hudBuilder: HUD.Builder) {
     hudBuilder.presentDuring { // shows spinner while code in this block is running
-    // simulate doing work
-    delay(1000)
-}    
+        // simulate doing work
+        delay(1000)
+    }
+}
+    
 ```
 
 in this case, since HUD has UI component the builder needs to be configured on the platform side:
 ```kotlin
 val builder = HUD.Builder() // same for iOS and Android
 // ...
-builder.subscribe(activity) // this needs be done in the Android sourceset to bind the HUD to the lifecycle of the Activity
+builder.subscribe(activity) // this needs be done in the Android source-set to bind the HUD to the lifecycle of the Activity
 // ...
 builder.unsubscribe(activity) // when the Activity is stopped
 ```
 
-However kaluga's [architecture module](tree/master/architecture) offers a cross-platform [`ViewModel`](/blob/master/architecture/src/commonMain/kotlin/viewmodel/ViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
+However kaluga's [architecture module](https://github.com/splendo/kaluga/tree/master/architecture) offers a cross-platform [`ViewModel`](https://github.com/splendo/kaluga/blob/master/architecture/src/commonMain/kotlin/viewmodel/ViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
 
 ```kotlin
 // this can just be in the commonMain source
@@ -60,7 +65,7 @@ class HudViewModel: BaseViewModel() {
 ```
 ### More examples
 
-Kaluga contains [an example project](tree/master/example) that is used to test the developed modules.
+Kaluga contains [an example project](https://github.com/splendo/kaluga/tree/master/example) that is used to test the developed modules.
 
 ## Using Kaluga
 
@@ -86,7 +91,7 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 
 Module | Usage | Artifact Name
 --- | --- | --- 
-[alerts](tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga:alerts
+[alerts](alerts/) | Used for Showing Alert Dialogs | com.splendo.kaluga:alerts
 [architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga:architecture
 [architecture-compose](https://github.com/splendo/kaluga/tree/master/architecture) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
 [base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base
