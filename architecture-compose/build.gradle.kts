@@ -19,7 +19,7 @@ plugins {
     id("com.android.library")
     id("kotlin-android")
     id("jacoco")
-    id("maven-publish")
+    id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
