@@ -49,7 +49,7 @@ builder.subscribe(activity) // this needs be done in the Android source-set to b
 builder.unsubscribe(activity) // when the Activity is stopped
 ```
 
-However kaluga's [architecture module](https://github.com/splendo/kaluga/tree/master/architecture) offers a cross-platform [`ViewModel`](https://github.com/splendo/kaluga/blob/master/architecture/src/commonMain/kotlin/viewmodel/ViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
+However kaluga's [architecture module](architecture/) offers a cross-platform [`ViewModel`](architecture/src/commonMain/kotlin/viewmodel/ViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
 
 ```kotlin
 // this can just be in the commonMain source
@@ -65,7 +65,7 @@ class HudViewModel: BaseViewModel() {
 ```
 ### More examples
 
-Kaluga contains [an example project](https://github.com/splendo/kaluga/tree/master/example) that is used to test the developed modules.
+Kaluga contains [an example project](example/) that is used to test the developed modules.
 
 ## Using Kaluga
 
@@ -92,28 +92,28 @@ To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery template
 Module | Usage | Artifact Name
 --- | --- | --- 
 [alerts](alerts/) | Used for Showing Alert Dialogs | com.splendo.kaluga:alerts
-[architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga:architecture
-[architecture-compose](https://github.com/splendo/kaluga/tree/master/architecture) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
-[base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base
-[date-timepicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker
-[hud](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud
-[keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard
-[links](https://github.com/splendo/kaluga/tree/master/links) | Used for decoding url into an object | com.splendo.kaluga.links
-[location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location
-[logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging
-[base-permissions](https://github.com/splendo/kaluga/tree/master/base-permissions) | Managing permissions, used in conjunction with modules below | com.splendo.kaluga:base-permissions
-[bluetooth-permissions](https://github.com/splendo/kaluga/tree/master/bluetooth-permissions) | Managing bluetooth permissions | com.splendo.kaluga:bluetooth-permissions
-[calendar-permissions](https://github.com/splendo/kaluga/tree/master/calendar-permissions) | Managing calendar permissions | com.splendo.kaluga:calendar-permissions
-[camera-permissions](https://github.com/splendo/kaluga/tree/master/camera-permissions) | Managing camera permissions | com.splendo.kaluga:camera-permissions
-[contacts-permissions](https://github.com/splendo/kaluga/tree/master/contacts-permissions) | Managing contacts permissions | com.splendo.kaluga:contacts-permissions
-[location-permissions](https://github.com/splendo/kaluga/tree/master/location-permissions) | Managing location permissions | com.splendo.kaluga:location-permissions
-[microphone-permissions](https://github.com/splendo/kaluga/tree/master/microphone-permissions) | Managing microphone permissions | com.splendo.kaluga:microphone-permissions
-[notifications-permissions](https://github.com/splendo/kaluga/tree/master/notifications-permissions) | Managing notifications permissions | com.splendo.kaluga:notifications-permissions
-[storage-permissions](https://github.com/splendo/kaluga/tree/master/storage-permissions) | Managing storage permissions | com.splendo.kaluga:storage-permissions
-[resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources
-[review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review
-[system](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system
-[test-utils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils
+[architecture](architecture/) | MVVM architecture | com.splendo.kaluga:architecture
+[architecture-compose](architecture-compose/) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
+[base](base/) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base
+[date-timepicker](date-time-picker/) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker
+[hud](hud/) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud
+[keyboard](keyboard/) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard
+[links](links/) | Used for decoding url into an object | com.splendo.kaluga.links
+[location](location/) | Provides the User' geolocation | com.splendo.kaluga.location
+[logging](logging/) | Shared console logging | com.splendo.kaluga.logging
+[base-permissions](base-permissions/) | Managing permissions, used in conjunction with modules below | com.splendo.kaluga:base-permissions
+[bluetooth-permissions](bluetooth-permissions/) | Managing bluetooth permissions | com.splendo.kaluga:bluetooth-permissions
+[calendar-permissions](calendar-permissions/) | Managing calendar permissions | com.splendo.kaluga:calendar-permissions
+[camera-permissions](camera-permissions/) | Managing camera permissions | com.splendo.kaluga:camera-permissions
+[contacts-permissions](contacts-permissions/) | Managing contacts permissions | com.splendo.kaluga:contacts-permissions
+[location-permissions](location-permissions/) | Managing location permissions | com.splendo.kaluga:location-permissions
+[microphone-permissions](microphone-permissions/) | Managing microphone permissions | com.splendo.kaluga:microphone-permissions
+[notifications-permissions](notifications-permissions/) | Managing notifications permissions | com.splendo.kaluga:notifications-permissions
+[storage-permissions](storage-permissions/) | Managing storage permissions | com.splendo.kaluga:storage-permissions
+[resources](resources/) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources
+[review](review/) | Used for requesting the user to review the app | com.splendo.kaluga.review
+[system](system/) | System APIs such as network, audio, battery  | com.splendo.kaluga.system
+[test-utils](test-utils/) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils
 
 ### Friends of kaluga
 
