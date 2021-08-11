@@ -40,7 +40,7 @@ suspend fun doWork(hudBuilder: HUD.Builder) {
     
 ```
 
-in this case, since HUD has UI component the builder needs to be configured on the platform side:
+in this case, since HUD is a UI component the builder needs to be configured on the platform side:
 ```kotlin
 val builder = HUD.Builder() // same for iOS and Android
 // ...
