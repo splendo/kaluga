@@ -2,12 +2,12 @@
 This Base Library for Kaluga contains Data types and accessors for easy use across all Kaluga projects.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Base as follows:
+This library is available on Maven Central. You can import Kaluga Base as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {

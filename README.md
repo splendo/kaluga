@@ -1,14 +1,71 @@
-[![maven version badge](https://maven-badges.herokuapp.com/maven-central/com.splendo.kaluga/base/badge.svg)]([https://search.maven.org/search?q=g:com.splendo.kaluga])[![Build Status](https://app.bitrise.io/app/14b7d4be75507f70/status.svg?token=KawVB7619B-KRBdIADdplg&branch=master)](https://app.bitrise.io/app/14b7d4be75507f70)<sup>🤖</sup>
- [![Build Status](https://app.bitrise.io/app/67ee1b576288ad31/status.svg?token=hUq90QsaCPe2nyWxyX1KGg&branch=master)](https://app.bitrise.io/app/67ee1b576288ad31)<sup>🍏</sup>
+[![maven version badge](https://maven-badges.herokuapp.com/maven-central/com.splendo.kaluga/base/badge.svg)]([https://search.maven.org/search?q=g:com.splendo.kaluga]) [![Build Status](https://app.bitrise.io/app/14b7d4be75507f70/status.svg?token=KawVB7619B-KRBdIADdplg&branch=master)](https://app.bitrise.io/app/14b7d4be75507f70)<sup>🤖</sup> [![Build Status](https://app.bitrise.io/app/67ee1b576288ad31/status.svg?token=hUq90QsaCPe2nyWxyX1KGg&branch=master)](https://app.bitrise.io/app/67ee1b576288ad31)<sup>🍏</sup>
 
-## Kaluga
+## kaluga
 This project is named after the Kaluga, the world's biggest freshwater fish, which is found in the icy Amur river.
 
-Its main goal is to provide access to common multiplatform features used in mobile app development, such as MVVM-Architecture, location, permissions, bluetooth etc.
+Its main goal is to provide access to common multiplatform features used in cross-platform mobile app development, separated into modules such as architecture (MVVM), location, permissions, bluetooth etc.
 
-Where appropriate it uses Coroutines, Channels and Flow. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) from Kotlin code that is shared amongst multiple platforms such as Android and iOS.
+To reach this goal it uses Kotlin, specifically [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) which allows running Kotlin code not just on JVM+Android, but also iOS/iPadOS, amongst others (inndeed some kaluga modules also work for Kotlin.js and/or JVM standalone).
+
+Where appropriate coroutines and `Flow` are used in the API. This enables developers to use [cold streams](https://medium.com/@elizarov/cold-flows-hot-channels-d74769805f9) for a modern and efficient design.
+
+While kaluga modules can be used individually, together they form a comprehensive approach to cross-platform development with [shared native code](https://kotlinlang.org/docs/mpp-share-on-platforms.html) and native UIs, including SwiftUI and Compose. 
+
+### Short examples
+
+With Kaluga it's possible to do many things from [`commonMain`](https://kotlinlang.org/docs/mpp-dsl-reference.html#predefined-source-sets) sources that would normally take many lines of code even on just one platform. Below are some examples:
+
+Scan for nearby devices with Bluetooth:
+
+```kotlin
+// will auto request permissions and try to enable bluetooth
+BluetoothBuilder().create().devices().collect {
+    i("discovered device: $it") // log found device
+}
+```
+
+Show a spinner while doing some work:
+
+```kotlin
+
+suspend fun doWork(hudBuilder: HUD.Builder) 
+    hudBuilder.presentDuring { // shows spinner while code in this block is running
+    // simulate doing work
+    delay(1000)
+}    
+```
+
+in this case, since HUD has UI component the builder needs to be configured on the platform side:
+```kotlin
+val builder = HUD.Builder() // same for iOS and Android
+// ...
+builder.subscribe(activity) // this needs be done in the Android sourceset to bind the HUD to the lifecycle of the Activity
+// ...
+builder.unsubscribe(activity) // when the Activity is stopped
+```
+
+However kaluga's [architecture module](tree/master/architecture) offers a cross-platform [`ViewModel`](/blob/master/architecture/src/commonMain/kotlin/viewmodel/ViewModel.kt) class (which extends `androidx.lifecycle.ViewModel` on Android) that will automatically bind the builder to its lifecycle:
+
+```kotlin
+// this can just be in the commonMain source
+class HudViewModel: BaseViewModel() {
+
+    val hudBuilder = HUD.Builder()
+
+    suspend fun doWork() = 
+        hudBuilder.presentDuring {
+            delay(1000)
+        }
+}
+```
+### More examples
+
+Kaluga contains [an example project](tree/master/example) that is used to test the developed modules.
 
 ## Using Kaluga
+
+For starting a new project based on kaluga see the [kaluga-starter repo](https://github.com/splendo/kaluga-starter), which shows how to do this step by step.
+
 Kaluga is available on Maven Central. For example the Kaluga Alerts can be imported like this:
 
 ```kotlin
@@ -19,125 +76,57 @@ repositories {
 // ...
 dependencies {
     // ...
-    implementation("com.splendo.kaluga:alerts:$kalugaVersion")
+    implementation("com.splendo.kaluga:alerts:0.2.0")
 }
 ```
 
+To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery templates](https://github.com/splendo/kaluga-swiftui) to generate some Swift code to help get you started.
+
 ### Available Modules
-Module | Usage | Library Name | Latest Version
+Module | Usage | Artifact Name
 --- | --- | --- | ---
-[Alerts](https://github.com/splendo/kaluga/tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga.alerts | 0.2.0
-[Architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga.architecture | 0.2.0
-[Base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base | 0.2.0
-[DateTimePicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker | 0.2.0
-[HUD](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud | 0.2.0
-[Keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard | 0.2.0
-[Links](https://github.com/splendo/kaluga/tree/master/links) | Used for decoding url into an object | com.splendo.kaluga.links | 0.2.0
-[Location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location | 0.2.0
-[Logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging | 0.2.0
-[Permissions](https://github.com/splendo/kaluga/tree/master/permissions) | Managing user permissions | com.splendo.kaluga.permissions | 0.2.0
-[Resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources | 0.2.0
-[Review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review | 0.2.0
-[System](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system | 0.2.0
-[TestUtils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils | 0.2.0
+[alerts](tree/master/alerts) | Used for Showing Alert Dialogs | com.splendo.kaluga:alerts
+[architecture](https://github.com/splendo/kaluga/tree/master/architecture) | MVVM architecture | com.splendo.kaluga:architecture
+[architecture-compose](https://github.com/splendo/kaluga/tree/master/architecture) | Compose extensions for architecture | com.splendo.kaluga:architecture-compose
+[base](https://github.com/splendo/kaluga/tree/master/base) | Core components of Kaluga. Contains threading, flowables and localization features | com.splendo.kaluga.base
+[date-timepicker](https://github.com/splendo/kaluga/tree/master/date-time-picker) | Used for showing a Date or Time Picker | com.splendo.kaluga.date-time-picker
+[hud](https://github.com/splendo/kaluga/tree/master/hud) | Used for showing a Loading indicator HUD | com.splendo.kaluga.hud
+[keyboard](https://github.com/splendo/kaluga/tree/master/keyboard) | Used for showing and hiding the keyboard | com.splendo.kaluga.keyboard
+[links](https://github.com/splendo/kaluga/tree/master/links) | Used for decoding url into an object | com.splendo.kaluga.links
+[location](https://github.com/splendo/kaluga/tree/master/location) | Provides the User' geolocation | com.splendo.kaluga.location
+[logging](https://github.com/splendo/kaluga/tree/master/logging) | Shared console logging | com.splendo.kaluga.logging
+[base-permissions](https://github.com/splendo/kaluga/tree/master/base-permissions) | Managing permissions, used in conjunction with modules below | com.splendo.kaluga:base-permissions
+[bluetooth-permissions](https://github.com/splendo/kaluga/tree/master/bluetooth-permissions) | Managing bluetooth permissions | com.splendo.kaluga:bluetooth-permissions
+[calendar-permissions](https://github.com/splendo/kaluga/tree/master/calendar-permissions) | Managing calendar permissions | com.splendo.kaluga:calendar-permissions
+[camera-permissions](https://github.com/splendo/kaluga/tree/master/camera-permissions) | Managing camera permissions | com.splendo.kaluga:camera-permissions
+[contacts-permissions](https://github.com/splendo/kaluga/tree/master/contacts-permissions) | Managing contacts permissions | com.splendo.kaluga:contacts-permissions
+[location-permissions](https://github.com/splendo/kaluga/tree/master/location-permissions) | Managing location permissions | com.splendo.kaluga:location-permissions
+[microphone-permissions](https://github.com/splendo/kaluga/tree/master/microphone-permissions) | Managing microphone permissions | com.splendo.kaluga:microphone-permissions
+[notifications-permissions](https://github.com/splendo/kaluga/tree/master/notifications-permissions) | Managing notifications permissions | com.splendo.kaluga:notifications-permissions
+[storage-permissions](https://github.com/splendo/kaluga/tree/master/storage-permissions) | Managing storage permissions | com.splendo.kaluga:storage-permissions
+[resources](https://github.com/splendo/kaluga/tree/master/resources) | Provides shared Strings, Images, Colors and Fonts | com.splendo.kaluga.resources
+[review](https://github.com/splendo/kaluga/tree/master/review) | Used for requesting the user to review the app | com.splendo.kaluga.review
+[system](https://github.com/splendo/kaluga/tree/master/system) | System APIs such as network, audio, battery  | com.splendo.kaluga.system
+[test-utils](https://github.com/splendo/kaluga/tree/master/test-utils) | Enables easier testing of Kaluga components | com.splendo.kaluga.test-utils
 
-## Build instructions
+### Friends of kaluga
 
-This project uses Android Studio. You might need a canary version at times. 
-______
-Both IDEA and Android Studio (at time of writing 10.09.2019) will report warning about not having the right Kotlin plugin installed. 
+Of course not every possible functionality is provided by kaluga. However, this is often because other good multiplatform libraries that work nicely with kaluga already exist. These use similar patterns such as coroutines and `Flow`, and include the following:
 
-to resolve these issues, go to `Idea`/`Android Studio` -> `Preferences` -> `Languages & Frameworks` -> `Kotlin` and install the latest available plugin.
-______
-Some components use Google Play services. For this you will need to supply your own `google-services.json` file.
-______
-Konan issue:
-```xcrun: error: SDK "iphonesimulator" cannot be located
-xcrun: error: unable to lookup item 'Path' in SDK 'iphonesimulator'
-e: org.jetbrains.kotlin.konan.KonanExternalToolFailure: The /usr/bin/xcrun command returned non-zero exit code: 1.
-```
-Go to `XCode` -> `Preferences` -> `Locations tab` -> `Command Line Tools` dropdown. 
+Project | Usage
+--- | ---
+[kotlin-firebase-sdk](https://github.com/GitLiveApp/firebase-kotlin-sdk) | wraps most of the Firebase SDK APIs
+[multiplatform-settings](https://github.com/russhwolf/multiplatform-settings) | store key/value data 
+[SQLDelight](https://github.com/cashapp/sqldelight) | access SQLite (and other SQL database) 
 
-It should show none selected, so select any item.
-______
-## Tests
+Kaluga also uses some multiplatform libraries itself, so our thanks to:
 
-The main tests are in `commonTest`. These test should be able to run in iOS, Android and JVM scopes. JS is not yet properly supported.
+Project | Usage
+--- | ---
+[kydra](https://github.com/PocketByte/kotlin-kydra-log) | powers the logging module
+[stately](https://github.com/touchlab/Stately) | concurrency
+[Koin](https://insert-koin.io/) | dependency injection
 
-The test classes are `open` so that specific platform tests can extend them to test their own implementations.
+## Developing Kaluga
 
-There is also limited support for code coverage for the common sources by running the `commonTestCoverageReport` task. Some limitations in the current jacoco tools cause it not to find source files (even if coverage data is reported).
-
-### Android tests
-
-Android has two test targets, unit and integration. Both should be able to run the tests defined in the common set.
-
-The integration tests also extends some base test (like for location) to test the specific android implementation. 
-
-To run the location tests, the `Kaluga Tests` app needs to be set as the mock location app in developer settings (on lower platform levels just allowing mock locations might suffice)
-
-If running the tests times out (according to Android Studio), try running the tests in debug mode.
-
-### JVM tests
-
-Consider using a Gradle task configuration to run JVM tests (you can use the `--tests` to filter) if the regular JUnit runner does not work. The test runner UI and debugging will still work.
-
-### iOS tests
-
-iOS tests can be run using the `iosTest` task in gradle which uses XCTest. 
-Make sure you have the Simulator setup with a working target device. For now you can change the target device inside the gradle build file.
-
-The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
- 
-## Architecture
-
-Most of the components within this project use Kotlin coroutines and `Flow` to deliver values from the supported platforms. Backing the `Flow` (by default) is a conflated channel. This pattern (though with a different, framework lever implementation) is currently under consideration for inclusion in the `coroutinesx` library from Jetbrains. If this happens, the API will likely change slightly.
- 
-## Publishing
-
-### Publishing process
-
-1. Bump version at `gradle/ext.gradle`:
-
-```sh
-library_version = 'X.X.X'
-```
-
-2. Publish to local maven:
-
-```sh
-./gradlew publishToMavenLocal
-```
-
-3. Upload and publish on Maven Central:
-
-```sh
-./gradlew publishAllPublicationsToSonatypeRepository -PsigningKeyId=SIGNING_KEY_ID -PsigningPassword=SIGNING_KEY_PASSWORD -PsigningSecretKeyRingFile=SIGNING_KEY_FILE -PossrhUsername=OSSRH_USERNAME -PossrhPassword=OSSRH_PASSWORD
-```
-
-Where `SIGNING_KEY_ID` is the key id associated with the signing key,
-`SIGNING_KEY_PASSWORD` is the password for the signing key,
-`SIGNING_KEY_PASSWORD` is the gpg file used for signing,
-`OSSRH_USERNAME` is the Sonatype user name to upload the repository to,
-and `OSSRH_PASSWORD` is the password for the Sonatype account to upload the repository to.
-
-## Code conventions
-
-The project uses regular Kotlin code conventions. This includes not creating `com/splendo/kaluga` directories, since they are common to all other folders.
-
-### Code style verification
-
-This project uses [ktlint](https://github.com/pinterest/ktlint) Kotlin linter with standard rules.
-Each component should setup ktlint gradle [plugin](https://github.com/jlleitschuh/ktlint-gradle) in `build.gradle.kts` file:
-
-```kotlin
-apply(plugin = "org.jlleitschuh.gradle.ktlint")
-```
-
-You can run `Ktlint Check` configuration from IDE before commit changes to git.
-
-#### Formatting
-
-You can run `Ktlint Format` configuration to reformat source code if needed.
-
-See ktlint and gradle plugin documentation for more details.
+see [DEVELOP](DEVELOP.md).

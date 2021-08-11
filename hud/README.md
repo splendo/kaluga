@@ -3,12 +3,12 @@
 A library allows you to show HUD (e.g. loading indicator) view.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga HUD as follows:
+This library is available on Maven Central. You can import Kaluga HUD as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {

@@ -4,12 +4,12 @@ Both Android and iOS will limit the amount of times this dialog is actually show
 As such, this library will only guarantee that an attempt will be made to show the request review dialog.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Resources as follows:
+This library is available on Maven Central. You can import Kaluga Review as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {

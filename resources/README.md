@@ -4,12 +4,12 @@ Resources are grabbed using a `String` key associated with a resource type.
 Making these resources available on the platform is the responsibility of the platform.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Resources as follows:
+This library is available on Maven Central. You can import Kaluga Resources as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {
