@@ -2,12 +2,12 @@
 Adds a lifecycle aware viewModel solution with support for navigation and observables. Kaluga favours an MVVM based architecture due to its clean delegation between UI and view state.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Architecture as follows:
+This library is available on Maven Central. You can import Kaluga Architecture as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="227px" height="227px" viewBox="0 0 227 227" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect fill="#FFFFFF" x="0" y="0" width="227" height="227"></rect>
+        <g id="Fish" transform="translate(24.000000, 66.000000)">
+            <g transform="translate(0.000000, 0.000000)">
+                <g id="Tail" transform="translate(99.999259, 0.000000)" fill-rule="nonzero">
+                    <polygon id="4" fill="#0095D5" points="29.1666667 95 78.794815 95 53.9807408 52.4615871"></polygon>
+                    <polygon id="3" fill="#3087DB" transform="translate(24.814074, 71.269206) scale(1, -1) translate(-24.814074, -71.269206) " points="2.84217094e-13 92.5384129 49.6281483 92.5384129 24.8140742 50"></polygon>
+                    <polygon id="2" fill="#557CDF" points="2.4158453e-13 45 49.6281483 45 24.8140742 2.46158714"></polygon>
+                    <polygon id="1" fill="#806EE3" transform="translate(53.980741, 21.269206) scale(1, -1) translate(-53.980741, -21.269206) " points="29.1666667 42.5384129 78.794815 42.5384129 53.9807408 2.13162821e-14"></polygon>
+                </g>
+                <g id="Head" transform="translate(0.000000, 6.000000)" fill-rule="nonzero">
+                    <polygon id="6" fill="#F88909" points="51.3333333 39 93.9614817 39 72.6474075 2.46158714"></polygon>
+                    <polygon id="5" fill="#E47550" transform="translate(72.647408, 62.269206) scale(1, -1) translate(-72.647408, -62.269206) " points="72.6474075 44 51.3333333 80.5384129 93.9614817 80.5384129"></polygon>
+                    <polygon id="4" fill="#C757BC" points="25.6666667 82.9999999 68.294815 82.9999999 46.9807408 46.461587"></polygon>
+                    <polygon id="3" fill="#0095D5" transform="translate(21.314074, 62.269206) scale(1, -1) translate(-21.314074, -62.269206) " points="0 80.5384129 42.6281483 80.5384129 21.3140742 44"></polygon>
+                    <polygon id="2" fill="#3087DB" points="7.10542736e-15 39 42.6281483 39 21.3140742 2.46158714"></polygon>
+                    <polygon id="1" fill="#806EE3" transform="translate(46.980741, 18.269206) scale(1, -1) translate(-46.980741, -18.269206) " points="25.6666667 36.5384129 68.294815 36.5384129 46.9807408 -1.42108547e-14"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

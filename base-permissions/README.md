@@ -13,12 +13,12 @@ Supported device features:
  - [Storage](#storagePermission) (aka Photos on iOS)
 
  ## Installing
- To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Permissions as follows:
+ This library is available on Maven Central. You can import Kaluga Permissions as follows:
 
  ```kotlin
  repositories {
      // ...
-     maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+     mavenCentral()
  }
  // ...
  dependencies {
@@ -32,7 +32,7 @@ Permissions can be requested through an instance of the `Permissions` class. Thi
 A custom `PermissionContext` can be provided.
 To be able to use builder, specific permission should be registered. Use `register<feature>Permission()` method of the `PermissionsBuilder`.
 
-Permissions are modelled as a `Flowable` `State`, providing updates should the state change during observation. A permission can either be `Allowed` or `Denied`. A `Denied` permission can in turn be `Locked`, preventing the app from requesting it, or `Requestable`.
+Permissions are modelled as a `Flow` of `State`, providing updates should the state change during observation. A permission can either be `Allowed` or `Denied`. A `Denied` permission can in turn be `Locked`, preventing the app from requesting it, or `Requestable`.
 
 To request a permission, simply call `permissions[$type].request()`, where `$type` is the `Permission` you want to request.
 This function will return true or false when the user has given or explicitly denied the permission.

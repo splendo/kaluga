@@ -4,12 +4,12 @@ A library allows you to show and dismiss the System keyboard.
 It is Activity dependent on Android.
 
 ## Installing
-To import this library add the Kaluga Bintray as a maven dependency `https://dl.bintray.com/kaluga/com.splendo.kaluga/`. You can then import Kaluga Keyboard as follows:
+This library is available on Maven Central. You can import Kaluga Keyboard as follows:
 
 ```kotlin
 repositories {
     // ...
-    maven("https://dl.bintray.com/kaluga/com.splendo.kaluga")
+    mavenCentral()
 }
 // ...
 dependencies {
