@@ -24,6 +24,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.ParcelUuid
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -31,10 +32,14 @@ import com.splendo.kaluga.bluetooth.device.DefaultDeviceWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.permissions.PermissionState
 // import com.splendo.kaluga.location.LocationEnabledMonitor
 import com.splendo.kaluga.permissions.Permissions
+import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
+import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import no.nordicsemi.android.support.v18.scanner.BluetoothLeScannerCompat
 import no.nordicsemi.android.support.v18.scanner.ScanCallback
@@ -130,6 +135,11 @@ actual class Scanner internal constructor(
         }
     }
 
+    private val locationPermissionRepo get() = permissions[LocationPermission(
+        background = false,
+        precise = true
+    )]
+
     private val bluetoothAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
@@ -162,6 +172,10 @@ actual class Scanner internal constructor(
 
     override fun stopMonitoringBluetooth() {
         applicationContext.unregisterReceiver(bluetoothAvailabilityBroadcastReceiver)
+    }
+
+    override suspend fun isPermitted(): Boolean {
+        return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
     override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled == true // && locationEnabledMonitor.isLocationEnabled()

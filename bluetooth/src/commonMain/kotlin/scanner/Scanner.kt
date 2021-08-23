@@ -71,16 +71,15 @@ abstract class BaseScanner constructor(
                     is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(BluetoothPermission))
                     else -> {}
                 }
-                val hasPermission = state is PermissionState.Allowed
                 stateRepo.takeAndChangeState { scanState ->
                     when (scanState) {
                         is Disabled, is Enabled -> {
-                            if (hasPermission)
+                            if (isPermitted())
                                 scanState.remain()
                             else
                                 (scanState as? Initialized)?.revokePermission ?: scanState.remain()
                         }
-                        is Initialized.NoBluetooth.MissingPermissions -> if (hasPermission) scanState.permit(isBluetoothEnabled()) else scanState.remain()
+                        is Initialized.NoBluetooth.MissingPermissions -> if (isPermitted()) scanState.permit(isBluetoothEnabled()) else scanState.remain()
                         else -> { scanState.remain() }
                     }
                 }
@@ -93,7 +92,7 @@ abstract class BaseScanner constructor(
         monitoringPermissionsJob = null
     }
 
-    internal suspend fun isPermitted(): Boolean {
+    internal open suspend fun isPermitted(): Boolean {
         return bluetoothPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 

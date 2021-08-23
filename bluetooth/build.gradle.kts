@@ -17,6 +17,7 @@ dependencies {
     val ext = (gradle as ExtensionAware).extra
     implementation("no.nordicsemi.android.support.v18:scanner:${ext["android_ble_scanner_version"]}")
     implementation(project(":location", ""))
+    implementation(project(":location-permissions", ""))
 }
 
 kotlin {
