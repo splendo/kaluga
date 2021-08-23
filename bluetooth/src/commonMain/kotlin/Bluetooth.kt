@@ -33,6 +33,8 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.bluetooth.scanner.ScanningStateRepo
+import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -97,6 +99,7 @@ class Bluetooth internal constructor(
     private val scanMode = MutableStateFlow<ScanMode>(ScanMode.Stopped)
 
     override fun devices(): Flow<List<Device>> = combine(scanningStateRepo, scanMode) { scanState, scanMode ->
+        info("Bluetooth") { "scanState: $scanState; scanMode: $scanMode" }
         when (scanState) {
             is ScanningState.Initialized.Enabled.Idle -> when (scanMode) {
                 is ScanMode.Scan -> {
@@ -142,10 +145,12 @@ class Bluetooth internal constructor(
     }.distinctUntilChanged()
 
     override fun startScanning(filter: Set<UUID>) {
+        warn("Bluetooth") { "startScanning(called)" }
         scanMode.value = ScanMode.Scan(filter)
     }
 
     override fun stopScanning() {
+        warn("Bluetooth") { "stopScanning(called)" }
         scanMode.value = ScanMode.Stopped
     }
 

@@ -8,6 +8,7 @@ import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.bluetooth.registerBluetoothPermission
+import com.splendo.kaluga.permissions.location.registerLocationPermission
 import kotlinx.coroutines.CoroutineScope
 
 actual class BluetoothBuilder(
@@ -15,6 +16,7 @@ actual class BluetoothBuilder(
     private val permissions: Permissions = Permissions(
         PermissionsBuilder(PermissionContext(applicationContext)).apply {
             registerBluetoothPermission()
+            registerLocationPermission()
         }
     ),
     private val scannerBuilder: Scanner.Builder = Scanner.Builder(applicationContext = applicationContext)

@@ -157,7 +157,7 @@ sealed class ScanningState : State() {
                 }
 
                 override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                    if (oldState !is Disabled && scanner.autoEnableBluetooth)
+                    if (oldState !is Disabled && scanner.autoEnableSensors)
                         scanner.requestBluetoothEnable()
                 }
             }

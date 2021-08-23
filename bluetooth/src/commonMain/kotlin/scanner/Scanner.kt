@@ -42,7 +42,7 @@ abstract class BaseScanner constructor(
     internal val permissions: Permissions,
     private val connectionSettings: ConnectionSettings,
     private val autoRequestPermission: Boolean,
-    internal val autoEnableBluetooth: Boolean,
+    internal val autoEnableSensors: Boolean,
     internal val stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
 ) : CoroutineScope by stateRepo {
 
@@ -51,7 +51,7 @@ abstract class BaseScanner constructor(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
-            autoEnableBluetooth: Boolean,
+            autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo
         ): BaseScanner
     }

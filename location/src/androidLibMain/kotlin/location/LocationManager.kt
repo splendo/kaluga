@@ -127,7 +127,7 @@ actual class LocationManager(
         }
     }
 
-    override suspend fun requestLocationEnable() {
+    public override suspend fun requestLocationEnable() {
         val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
         try {
             LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null

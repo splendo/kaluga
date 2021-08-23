@@ -182,7 +182,7 @@ actual class Scanner internal constructor(
 
     override suspend fun requestBluetoothEnable() {
         // Trigger Enable Bluetooth popup
-        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableBluetooth)
+        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableSensors)
         CBCentralManager(null, dispatch_get_main_queue(), options)
     }
 
