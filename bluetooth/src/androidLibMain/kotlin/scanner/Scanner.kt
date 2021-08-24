@@ -36,18 +36,10 @@ import com.splendo.kaluga.location.LocationManager
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.logging.warn
-import com.splendo.kaluga.logging.error
-import com.splendo.kaluga.permissions.Permission
-import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.location.LocationPermission
-import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.state.StateRepo
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -167,85 +159,78 @@ actual class Scanner internal constructor(
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
 
     private val locationEnabledMonitor = LocationMonitor.Builder().create()
-    // private val locationManager = LocationManager.Builder(applicationContext)
-    //     .create(
-    //         permission = LocationPermission(precise = true, background = false),
-    //         permissions = Permissions(PermissionsBuilder()),
-    //         autoRequestPermission = true,
-    //         autoEnableLocations = true
-    //     ) // { checkBluetoothEnabledChanged() }
 
-
-    val locationStateRepo = LocationStateRepoBuilder().create(
+    private val locationStateRepo = LocationStateRepoBuilder().create(
         locationPermission = LocationPermission(precise = true, background = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
         coroutineContext = stateRepo.coroutineContext
     )
 
-    val locationManager = LocationManager(
+    private val locationManager = LocationManager(
         context = applicationContext,
         locationPermission = LocationPermission(precise = true, background = false),
         autoRequestPermission = true,
         autoEnableLocations = false,
         locationStateRepo = locationStateRepo,
-        permissions = Permissions(
-            PermissionsBuilder(PermissionContext(applicationContext)).apply { registerLocationPermission() },
-            Dispatchers.Main
-        )
+        permissions = permissions
     )
 
-    // private var isLocationEnabled: Boolean = locationEnabledMonitor.isServiceEnabled
-    private var shouldEnableLocation: Boolean = false
-
     override suspend fun scanForDevices(filter: Set<UUID>) {
-        error("KalugaScanner") { "() scanForDevices($filter)" }
         bluetoothScanner.startScan(filter.map {
             ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
         }, scanSettings, callback)
     }
 
     override suspend fun stopScanning() {
-        error("KalugaScanner") { "stopScanning()" }
         bluetoothScanner.stopScan(callback)
     }
 
     override fun startMonitoringBluetooth() {
-        warn("KalugaScanner") { "startMonitoringBluetooth()" }
-        locationEnabledMonitor.startMonitoring()
         applicationContext.registerReceiver(bluetoothAvailabilityBroadcastReceiver, IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED))
+        startMonitoringLocation()
     }
 
     override fun stopMonitoringBluetooth() {
-        warn("KalugaScanner") { "stopMonitoringBluetooth()" }
-        locationEnabledMonitor.stopMonitoring()
         applicationContext.unregisterReceiver(bluetoothAvailabilityBroadcastReceiver)
+        stopMonitoringLocation()
     }
 
-    override suspend fun isPermitted(): Boolean {
-        return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
-    }
+    override suspend fun isPermitted(): Boolean = super.isPermitted() && isPreciseLocationPermitted()
 
     override suspend fun isBluetoothEnabled(): Boolean = bluetoothAdapter?.isEnabled == true && locationEnabledMonitor.isServiceEnabled
 
     override suspend fun requestBluetoothEnable() {
-        shouldEnableLocation = !locationEnabledMonitor.isServiceEnabled
-        if (bluetoothAdapter?.isEnabled != true) {
-            bluetoothAdapter?.enable()
-        } else if (shouldEnableLocation) {
-            shouldEnableLocation = false
-            locationManager.requestLocationEnable()
-            // locationEnabledMonitor.requestLocationEnable()
+        val shouldEnableLocation = !locationEnabledMonitor.isServiceEnabled
+        val shouldEnableBluetooth = bluetoothAdapter?.isEnabled != true
+        info("KalugaScanner") { "requestBluetoothEnable(gps = $shouldEnableLocation, bt = $shouldEnableBluetooth)" }
+        if (shouldEnableBluetooth) bluetoothAdapter?.enable()
+        if (shouldEnableLocation) locationManager.requestLocationEnable()
+    }
+
+    private suspend fun isPreciseLocationPermitted(): Boolean {
+        return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
+    }
+
+    private fun startMonitoringLocation() {
+        locationEnabledMonitor.startMonitoring()
+        launch(stateRepo.coroutineContext) {
+            locationEnabledMonitor.isEnabled.collect {
+                checkBluetoothEnabledChanged()
+            }
         }
+    }
+
+    private fun stopMonitoringLocation() {
+        locationEnabledMonitor.stopMonitoring()
     }
 
     private fun checkBluetoothEnabledChanged() =
         launch(stateRepo.coroutineContext) {
-            val willEnableLocation = shouldEnableLocation
-            shouldEnableLocation = false
+            val shouldEnableLocation = !locationEnabledMonitor.isServiceEnabled
             when {
                 isBluetoothEnabled() -> bluetoothEnabled()
-                // willEnableLocation -> {} locationEnabledMonitor.requestLocationEnable()
+                shouldEnableLocation -> locationManager.requestLocationEnable()
                 else -> bluetoothDisabled()
             }
         }
