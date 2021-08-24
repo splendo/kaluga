@@ -6,12 +6,6 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    google()
-}
-
 apply(from = "../../gradle/component.gradle")
 
 kotlin {

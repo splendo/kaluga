@@ -20,9 +20,10 @@ plugins {
 
 allprojects {
     repositories {
-        google()
         mavenCentral()
-        mavenLocal()
+        google()
+        // only enable temporarily if needed:
+        / * mavenLocal() */
     }
 
     tasks.withType(Test) {
