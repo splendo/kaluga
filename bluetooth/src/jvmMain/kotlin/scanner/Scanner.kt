@@ -53,7 +53,5 @@ actual class Scanner(
 
     override fun stopMonitoringSensors() {}
 
-    override suspend fun areSensorsEnabled(): Boolean = false
-
     override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 }

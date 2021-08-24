@@ -34,6 +34,7 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -158,16 +159,6 @@ actual class Scanner internal constructor(
         centralManagers.clear()
     }
 
-    override suspend fun areSensorsEnabled(): Boolean {
-        initMainManagersIfNeeded()
-        val completable = CompletableDeferred<Boolean>()
-        val delegate = EnabledCBCentralManagerDelegate(completable)
-        checkEnabledCentralManager.delegate = delegate
-        return completable.await().also {
-            checkEnabledCentralManager.delegate = null
-        }
-    }
-
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
         return listOf(
@@ -175,7 +166,7 @@ actual class Scanner internal constructor(
                 val options =
                     mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableSensors)
                 CBCentralManager(null, dispatch_get_main_queue(), options)
-                true
+                bluetoothEnabledMonitor.isEnabled.first { it }
             }
         )
     }

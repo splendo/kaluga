@@ -33,10 +33,8 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.location.EnableLocationActivity
 import com.splendo.kaluga.location.LocationMonitor
-import com.splendo.kaluga.logging.error
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
-import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.Job
@@ -213,12 +211,13 @@ actual class Scanner internal constructor(
         return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
-    override suspend fun areSensorsEnabled(): Boolean = bluetoothAdapter?.isEnabled == true && locationEnabledMonitor.isServiceEnabled
+    override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
                 bluetoothAdapter?.enable() ?: false
+                bluetoothEnabledMonitor.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
                 EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await

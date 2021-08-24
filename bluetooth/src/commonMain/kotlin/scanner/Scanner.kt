@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
+import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -74,6 +75,7 @@ abstract class BaseScanner constructor(
     private var monitoringBluetoothEnabledJob: Job?
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
+    private val enablingSensorsJob = AtomicReference<Job?>(null)
 
     private val enableSensorsActions = sharedMutableListOf<EnableSensorAction>()
 
@@ -130,11 +132,16 @@ abstract class BaseScanner constructor(
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
-    abstract suspend fun areSensorsEnabled(): Boolean
+    open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor.isServiceEnabled
     fun requestSensorsEnable() {
-        val isChecking = enableSensorsActions.isNotEmpty()
+        enablingSensorsJob.get()?.let {
+           if (enablingSensorsJob.compareAndSet(it, null) ) {
+               it.cancel()
+           }
+        }
+        enableSensorsActions.clear()
         enableSensorsActions.addAll(generateEnableSensorsActions())
-        if (isChecking && enableSensorsActions.isNotEmpty()) {
+        if (enableSensorsActions.isNotEmpty()) {
             performNextEnableSensorAction()
         }
     }
@@ -170,9 +177,17 @@ abstract class BaseScanner constructor(
     }
 
     private fun performNextEnableSensorAction() {
-        launch {
-            enableSensorsActions.removeAt(0)()
-            checkSensorsEnabledChanged()
+        if (enablingSensorsJob.get() != null) return // optimization to skip making a job
+
+        val job = Job(this.coroutineContext[Job])
+        if (enablingSensorsJob.compareAndSet(null, job)) {
+            launch(job) {
+                if (enableSensorsActions.isNotEmpty()) {
+                    enableSensorsActions.removeAt(0)()
+                }
+                enablingSensorsJob.compareAndSet(job, null)
+                checkSensorsEnabledChanged()
+            }
         }
     }
 }
