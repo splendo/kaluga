@@ -63,6 +63,15 @@ publishing {
                 password = getExtraString("ossrhPassword")
             }
         }
+
+        maven {
+            name = "snapshots"
+            setUrl("https://oss.sonatype.org/content/repositories/snapshots/")
+            credentials {
+                username = getExtraString("ossrhUsername")
+                password = getExtraString("ossrhPassword")
+            }
+        }
     }
 
     // Configure all publications
