@@ -1,5 +1,24 @@
 println "tasks: $gradle.startParameter.taskNames"
 
+// if the include is made from the example project shared module we need to go up a few directories
+// and depending on when we are included, we can be in the `gradle` folder or not.
+String path_prefix =
+        file("componentskt.gradle.kts").exists() ? "" :
+                file("gradle/componentskt.gradle.kts").exists() ? "gradle/" : "../../../gradle/"
+def f2 = file("${path_prefix}gitBranch.gradle.kts")
+
+apply from: f2.path
+
+def props = new Properties()
+def propFile = file("../local.properties")
+if (propFile.exists()) {
+    propFile.withInputStream { props.load(it) }
+}
+
+String libraryVersionLocalProperties = props["libraryVersion"]
+String exampleAsRootLocalProperties = props["exampleAsRoot"]
+String exampleMavenRepoLocalProperties = props["exampleMavenRepo"]
+
 // set some global variables
 gradle.ext {
     kotlin_version = kotlin_version
@@ -10,7 +29,7 @@ gradle.ext {
     serialization_version = '1.2.1'
     kydra_log_version = '1.1.5'
     android_ble_scanner_version = '1.5.0'
-    library_version = '0.2.1'
+    library_version = libraryVersionLocalProperties ?: "0.2.1${System.properties.kaluga_branch_postfix}"
     android_min_sdk_version = 21
     android_target_sdk_version = 30
     android_build_tools_version = "30.0.2"
@@ -53,21 +72,26 @@ gradle.ext {
 
 if (System.env.containsKey("EXAMPLE_AS_ROOT")) {
     gradle.ext.exampleAsRoot = Boolean.parseBoolean(System.env.EXAMPLE_AS_ROOT)
-    println "System env EXAMPLE_AS_ROOT set to $System.env.EXAMPLE_AS_ROOT, using $gradle.ext.exampleAsRoot"
+    logger.lifecycle "System env EXAMPLE_AS_ROOT set to $System.env.EXAMPLE_AS_ROOT, using $gradle.ext.exampleAsRoot"
 } else {
     // load some more from local.properties or set defaults.
-    def props = new Properties()
-    def propfile = file("../local.properties")
-    if (propfile.exists()) {
-        propfile.withInputStream { props.load(it) }
-        gradle.ext.exampleAsRoot = Boolean.parseBoolean(props["exampleAsRoot"].toString())
-        println "local.properties read (exampleAsRoot=${props['exampleAsRoot']}, using $gradle.ext.exampleAsRoot)"
-    } else {
-        gradle.ext.exampleAsRoot = false
-        println "local.properties not found, using default values (exampleAsRoot=$gradle.ext.exampleAsRoot)"
-    }
+    gradle.ext.exampleAsRoot = exampleAsRootLocalProperties?.toBoolean() ?: false
+    logger.lifecycle "local.properties read (exampleAsRoot=$exampleAsRootLocalProperties, using $gradle.ext.exampleAsRoot)"
 }
 
+if (System.env.containsKey("EXAMPLE_MAVEN_REPO")) {
+    gradle.ext.exampleMavenRepo = System.env.EXAMPLE_MAVEN_REPO
+    logger.lifecycle "System env EXAMPLE_MAVEN_REPO set to $System.env.EXAMPLE_MAVEN_REPO, using $gradle.ext.exampleMavenRepo"
+} else {
+    // load some more from local.properties or set defaults.
+    if (exampleMavenRepoLocalProperties) {
+        gradle.ext.exampleMavenRepo = exampleMavenRepoLocalProperties
+        logger.lifecycle "local.properties read (exampleMavenRepo=$exampleMavenRepoLocalProperties, using $gradle.ext.exampleMavenRepo)"
+    } else {
+        gradle.ext.exampleMavenRepo = "local"
+        logger.lifecycle "local.properties not found, using default values (exampleMavenRepo=$gradle.ext.exampleMavenRepo)"
+    }
+}
 
 // based on https://github.com/Kotlin/xcode-compat/blob/d677a43edc46c50888bca0a7890a81f976a42809/xcode-compat/src/main/kotlin/org/jetbrains/kotlin/xcodecompat/XcodeCompatPlugin.kt#L16
 def sdkName = System.getenv("SDK_NAME") ?: "unknown"
