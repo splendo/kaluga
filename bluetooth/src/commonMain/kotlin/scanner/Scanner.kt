@@ -17,8 +17,10 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -27,6 +29,7 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
+import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
@@ -38,10 +41,12 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+typealias EnableSensorAction = suspend () -> Boolean
+
 abstract class BaseScanner constructor(
     internal val permissions: Permissions,
     private val connectionSettings: ConnectionSettings,
-    private val autoRequestPermission: Boolean,
+    protected val autoRequestPermission: Boolean,
     internal val autoEnableSensors: Boolean,
     internal val stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
 ) : CoroutineScope by stateRepo {
@@ -57,32 +62,44 @@ abstract class BaseScanner constructor(
     }
 
     private val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
+    abstract val bluetoothEnabledMonitor: BluetoothMonitor
 
     private val _monitoringPermissionsJob = AtomicReference<Job?>(null)
     private var monitoringPermissionsJob: Job?
         get() = _monitoringPermissionsJob.get()
         set(value) { _monitoringPermissionsJob.set(value) }
 
+    private val _monitoringBluetoothEnabledJob = AtomicReference<Job?>(null)
+    private var monitoringBluetoothEnabledJob: Job?
+        get() = _monitoringBluetoothEnabledJob.get()
+        set(value) { _monitoringBluetoothEnabledJob.set(value) }
+
+    private val enableSensorsActions = sharedMutableListOf<EnableSensorAction>()
+
     open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
         monitoringPermissionsJob = launch(stateRepo.coroutineContext) {
             bluetoothPermissionRepo.collect { state ->
-                when (state) {
-                    is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(BluetoothPermission))
-                    else -> {}
+                handlePermissionState(state, BluetoothPermission)
+            }
+        }
+    }
+
+    protected suspend fun handlePermissionState(state: PermissionState<*>, permission: Permission) {
+        when (state) {
+            is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(permission))
+            else -> {}
+        }
+        stateRepo.takeAndChangeState { scanState ->
+            when (scanState) {
+                is Disabled, is Enabled -> {
+                    if (isPermitted())
+                        scanState.remain()
+                    else
+                        (scanState as? Initialized)?.revokePermission ?: scanState.remain()
                 }
-                stateRepo.takeAndChangeState { scanState ->
-                    when (scanState) {
-                        is Disabled, is Enabled -> {
-                            if (isPermitted())
-                                scanState.remain()
-                            else
-                                (scanState as? Initialized)?.revokePermission ?: scanState.remain()
-                        }
-                        is Initialized.NoBluetooth.MissingPermissions -> if (isPermitted()) scanState.permit(isBluetoothEnabled()) else scanState.remain()
-                        else -> { scanState.remain() }
-                    }
-                }
+                is Initialized.NoBluetooth.MissingPermissions -> if (isPermitted()) scanState.permit(areSensorsEnabled()) else scanState.remain()
+                else -> { scanState.remain() }
             }
         }
     }
@@ -98,10 +115,29 @@ abstract class BaseScanner constructor(
 
     abstract suspend fun scanForDevices(filter: Set<UUID>)
     abstract suspend fun stopScanning()
-    abstract fun startMonitoringBluetooth()
-    abstract fun stopMonitoringBluetooth()
-    abstract suspend fun isBluetoothEnabled(): Boolean
-    abstract suspend fun requestBluetoothEnable()
+    open fun startMonitoringSensors() {
+        bluetoothEnabledMonitor.startMonitoring()
+        if (monitoringBluetoothEnabledJob != null) return
+        monitoringBluetoothEnabledJob = launch {
+            bluetoothEnabledMonitor.isEnabled.collect {
+                checkSensorsEnabledChanged()
+            }
+        }
+    }
+    open fun stopMonitoringSensors() {
+        bluetoothEnabledMonitor.stopMonitoring()
+        monitoringBluetoothEnabledJob?.cancel()
+        monitoringBluetoothEnabledJob = null
+    }
+    abstract suspend fun areSensorsEnabled(): Boolean
+    fun requestSensorsEnable() {
+        val isChecking = enableSensorsActions.isNotEmpty()
+        enableSensorsActions.addAll(generateEnableSensorsActions())
+        if (isChecking && enableSensorsActions.isNotEmpty()) {
+            performNextEnableSensorAction()
+        }
+    }
+    abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
 
     fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable
@@ -123,6 +159,21 @@ abstract class BaseScanner constructor(
                 }
             }
         }
+
+    internal open suspend fun checkSensorsEnabledChanged() {
+        when {
+            areSensorsEnabled() && enableSensorsActions.isEmpty() -> bluetoothEnabled()
+            enableSensorsActions.isNotEmpty() -> performNextEnableSensorAction()
+            else -> bluetoothDisabled()
+        }
+    }
+
+    private fun performNextEnableSensorAction() {
+        launch {
+            enableSensorsActions.removeAt(0)()
+            checkSensorsEnabledChanged()
+        }
+    }
 }
 
 expect class Scanner : BaseScanner

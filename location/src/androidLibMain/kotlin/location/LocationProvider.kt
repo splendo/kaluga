@@ -15,19 +15,14 @@
 
  */
 
-package com.splendo.kaluga.location
+package location
 
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.location.Location
+import com.splendo.kaluga.permissions.location.LocationPermission
+import kotlinx.coroutines.flow.Flow
 
-actual class LocationMonitor : ServiceMonitor() {
-
-    actual class Builder {
-        actual fun create(): LocationMonitor = LocationMonitor()
-    }
-
-    override val isServiceEnabled: Boolean
-        get() = TODO("Not yet implemented")
-
-    override fun startMonitoring() = TODO("Not yet implemented")
-    override fun stopMonitoring() = TODO("Not yet implemented")
+interface LocationProvider {
+    fun location(permission: LocationPermission): Flow<List<Location>>
+    fun startMonitoringLocation(permission: LocationPermission)
+    fun stopMonitoringLocation(permissions: LocationPermission)
 }

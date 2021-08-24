@@ -18,15 +18,36 @@
 package com.splendo.kaluga.location
 
 import android.app.Activity
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.common.api.ResolvableApiException
+import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
+import kotlinx.coroutines.CompletableDeferred
 
 class EnableLocationActivity : AppCompatActivity() {
+
+    companion object {
+        private const val EXTRA_CALLBACK_ID = "EXTRA_CALLBACK_ID"
+        val enablingHandlers: MutableMap<String, CompletableDeferred<Boolean>> = mutableMapOf()
+
+        fun showEnableLocationActivity(context: Context, identifier: String): CompletableDeferred<Boolean> {
+            val intent = Intent(context, EnableLocationActivity::class.java).apply {
+                putExtra(EXTRA_CALLBACK_ID, identifier)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+
+            val completableDeferred = CompletableDeferred<Boolean>()
+            enablingHandlers[identifier] = completableDeferred
+            context.startActivity(intent)
+            return completableDeferred
+        }
+    }
+
+    private val enableResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        complete(result.resultCode == Activity.RESULT_OK)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,55 +55,13 @@ class EnableLocationActivity : AppCompatActivity() {
         supportActionBar?.hide() // windowActionBar=false
         supportActionBar?.elevation = 0F // windowContentOverlay=@null
 
-        val resolvableApiException = getResolvableApiException(intent)
-
-        resolvableApiException?.let {
-            try {
-                startIntentSenderForResult(it.intentSender, REQUEST_CHECK_SETTINGS, null, 0, 0, 0)
-            } catch (e: IntentSender.SendIntentException) {
-                complete(false)
-            }
-        } ?: run {
-            complete(false)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CHECK_SETTINGS -> {
-                complete(resultCode == Activity.RESULT_OK)
-            }
-        }
+        enableResult.launch(Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS))
     }
 
     private fun complete(success: Boolean) {
-        getLocationManagerId(intent)?.let {
-            LocationManager.enablingHandlers[it]?.complete(false)
+        intent.getStringExtra(EXTRA_CALLBACK_ID)?.let {
+            enablingHandlers[it]?.complete(success)
         }
         finish()
-    }
-
-    companion object {
-        private const val EXTRA_RESOLVABLE_API_EXCEPTION = "EXTRA_RESOLVABLE_API_EXCEPTION"
-        private const val EXTRA_LOCATION_MANAGER_ID = "EXTRA_LOCATION_MANAGER_ID"
-        private const val REQUEST_CHECK_SETTINGS = 12568
-
-        fun intent(context: Context, locationManagerId: String, resolvableApiException: ResolvableApiException): Intent {
-            val intent = Intent(context, EnableLocationActivity::class.java)
-
-            intent.putExtra(EXTRA_LOCATION_MANAGER_ID, locationManagerId)
-            intent.putExtra(EXTRA_RESOLVABLE_API_EXCEPTION, resolvableApiException.resolution)
-
-            return intent
-        }
-
-        fun getResolvableApiException(intent: Intent): PendingIntent? {
-            return intent.getParcelableExtra(EXTRA_RESOLVABLE_API_EXCEPTION)
-        }
-
-        fun getLocationManagerId(intent: Intent): String? {
-            return intent.getStringExtra(EXTRA_LOCATION_MANAGER_ID)
-        }
     }
 }

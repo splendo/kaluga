@@ -24,9 +24,11 @@ import platform.darwin.NSObject
 
 actual class LocationMonitor(private val locationManager: CLLocationManager) : ServiceMonitor() {
 
-    actual class Builder {
+    actual class Builder(
+        val locationManager: CLLocationManager = CLLocationManager()
+    ) {
         actual fun create(): LocationMonitor = LocationMonitor(
-            locationManager = CLLocationManager()
+            locationManager = locationManager
         )
     }
 

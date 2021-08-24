@@ -26,17 +26,18 @@ import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.ServiceMonitor
 
 actual class BluetoothMonitor internal constructor(
-    private val bluetoothAdapter: BluetoothAdapter,
+    private val bluetoothAdapter: BluetoothAdapter?,
     private val applicationContext: Context
 ) : ServiceMonitor() {
 
-    actual class Builder actual constructor() {
+    actual class Builder(
+        private val context: Context = ApplicationHolder.applicationContext,
+        private val adapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+    ) {
         actual fun create(): BluetoothMonitor {
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-                ?: throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
             return BluetoothMonitor(
                 bluetoothAdapter = adapter,
-                applicationContext = ApplicationHolder.applicationContext
+                applicationContext = context
             )
         }
     }
@@ -50,11 +51,7 @@ actual class BluetoothMonitor internal constructor(
     }
 
     override val isServiceEnabled: Boolean
-        get() = if (bluetoothAdapter == null) {
-            false
-        } else {
-            bluetoothAdapter.isEnabled
-        }
+        get() = bluetoothAdapter?.isEnabled ?: false
 
     override fun startMonitoring() {
         super.startMonitoring()

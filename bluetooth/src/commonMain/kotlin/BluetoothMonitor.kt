@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.ServiceMonitor
 
 expect class BluetoothMonitor : ServiceMonitor {
 
-    class Builder constructor() {
+    class Builder {
         fun create(): BluetoothMonitor
     }
 }

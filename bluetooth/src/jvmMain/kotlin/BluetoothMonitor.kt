@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.ServiceMonitor
 
 actual class BluetoothMonitor : ServiceMonitor() {
 
-    actual class Builder actual constructor() {
+    actual class Builder {
         actual fun create() = BluetoothMonitor()
     }
 

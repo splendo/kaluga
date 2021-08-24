@@ -31,14 +31,13 @@ actual class LocationMonitor(
     private val locationManager: LocationManager?
 ) : ServiceMonitor() {
 
-    actual class Builder {
+    actual class Builder(
+        private val applicationContext: Context = ApplicationHolder.applicationContext,
+        private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+    ) {
         actual fun create() = LocationMonitor(
-            applicationContext = ApplicationHolder.applicationContext,
-            locationManager = (
-                ApplicationHolder.applicationContext
-                    .getSystemService(Context.LOCATION_SERVICE) as? LocationManager
-                )
-                ?: throw NullPointerException("LocationManager should not be null, check your device capabilities.")
+            applicationContext = applicationContext,
+            locationManager = locationManager
         )
     }
 

@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.mainContinuation
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
@@ -66,13 +67,6 @@ actual class Scanner internal constructor(
 
     companion object {
         private const val TAG = "IOS Bluetooth Scanner"
-    }
-
-    private val mainCBCentralManagerDelegate = object : NSObject(), CBCentralManagerDelegateProtocol {
-        override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            val isEnabled = central.state == CBCentralManagerStatePoweredOn
-            if (isEnabled) bluetoothEnabled() else bluetoothDisabled()
-        }.invoke()
     }
 
     private class EnabledCBCentralManagerDelegate(private val isCheckEnabledCompleted: CompletableDeferred<Boolean>) : NSObject(), CBCentralManagerDelegateProtocol {
@@ -123,6 +117,10 @@ actual class Scanner internal constructor(
     private val centralManagers = sharedMutableListOf<CBCentralManager>()
     private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
+    override val bluetoothEnabledMonitor: BluetoothMonitor by lazy {
+        initMainManagersIfNeeded()
+        BluetoothMonitor(mainCentralManager)
+    }
 
     private fun initMainManagersIfNeeded() {
         if (!::mainCentralManager.isInitialized) {
@@ -160,17 +158,7 @@ actual class Scanner internal constructor(
         centralManagers.clear()
     }
 
-    override fun startMonitoringBluetooth() {
-        initMainManagersIfNeeded()
-        mainCentralManager.delegate = mainCBCentralManagerDelegate
-    }
-
-    override fun stopMonitoringBluetooth() {
-        initMainManagersIfNeeded()
-        mainCentralManager.delegate = null
-    }
-
-    override suspend fun isBluetoothEnabled(): Boolean {
+    override suspend fun areSensorsEnabled(): Boolean {
         initMainManagersIfNeeded()
         val completable = CompletableDeferred<Boolean>()
         val delegate = EnabledCBCentralManagerDelegate(completable)
@@ -180,10 +168,16 @@ actual class Scanner internal constructor(
         }
     }
 
-    override suspend fun requestBluetoothEnable() {
+    override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
-        val options = mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableSensors)
-        CBCentralManager(null, dispatch_get_main_queue(), options)
+        return listOf(
+            suspend {
+                val options =
+                    mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableSensors)
+                CBCentralManager(null, dispatch_get_main_queue(), options)
+                true
+            }
+        )
     }
 
     private fun discoverPeripheral(central: CBCentralManager, peripheral: CBPeripheral, advertisementDataMap: Map<String, Any>, rssi: Int) {

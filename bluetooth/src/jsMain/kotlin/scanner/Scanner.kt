@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.permissions.Permissions
@@ -26,7 +27,7 @@ actual class Scanner(
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
     autoEnableBluetooth: Boolean,
-    stateRepo: ScanningStateFlowRepo,
+    stateRepo: ScanningStateFlowRepo
 ) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
 
     class Builder : BaseScanner.Builder {
@@ -42,15 +43,17 @@ actual class Scanner(
         }
     }
 
+    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor()
+
     override suspend fun scanForDevices(filter: Set<UUID>) {}
 
     override suspend fun stopScanning() {}
 
-    override fun startMonitoringBluetooth() {}
+    override fun startMonitoringSensors() {}
 
-    override fun stopMonitoringBluetooth() {}
+    override fun stopMonitoringSensors() {}
 
-    override suspend fun isBluetoothEnabled(): Boolean = false
+    override suspend fun areSensorsEnabled(): Boolean = false
 
-    override suspend fun requestBluetoothEnable() {}
+    override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 }

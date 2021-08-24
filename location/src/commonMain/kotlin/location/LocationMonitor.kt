@@ -20,7 +20,7 @@ package com.splendo.kaluga.location
 import com.splendo.kaluga.base.ServiceMonitor
 
 expect class LocationMonitor : ServiceMonitor {
-    class Builder constructor() {
+    class Builder {
         fun create(): LocationMonitor
     }
 }

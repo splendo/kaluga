@@ -41,7 +41,13 @@ abstract class BaseLocationManager(
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
+    abstract val locationMonitor: LocationMonitor
     private var monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
+    private val _monitoringLocationEnabledJob: AtomicReference<Job?> = AtomicReference(null)
+    private var monitoringLocationEnabledJob: Job?
+        get() = _monitoringLocationEnabledJob.get()
+        set(value) { _monitoringLocationEnabledJob.set(value) }
+
 
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob.get() != null) return // optimization to skip making a job
@@ -77,19 +83,30 @@ abstract class BaseLocationManager(
         return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
-    internal abstract suspend fun startMonitoringLocationEnabled()
-    internal abstract suspend fun stopMonitoringLocationEnabled()
-    internal abstract suspend fun isLocationEnabled(): Boolean
+    internal suspend fun startMonitoringLocationEnabled() {
+        locationMonitor.startMonitoring()
+        if (monitoringLocationEnabledJob != null)
+            return
+        monitoringLocationEnabledJob = launch {
+            locationMonitor.isEnabled.collect {
+                handleLocationEnabledChanged()
+            }
+        }
+    }
+    internal fun stopMonitoringLocationEnabled() {
+        locationMonitor.stopMonitoring()
+        monitoringLocationEnabledJob?.cancel()
+        monitoringLocationEnabledJob = null
+    }
+    internal fun isLocationEnabled(): Boolean = locationMonitor.isServiceEnabled
     internal abstract suspend fun requestLocationEnable()
 
-    internal fun handleLocationEnabledChanged() {
-        launch {
-            locationStateRepo.takeAndChangeState { state ->
-                when (state) {
-                    is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
-                    is LocationState.Disabled.NotPermitted -> state.remain()
-                    is LocationState.Enabled -> if (isLocationEnabled()) state.remain() else state.disable
-                }
+    private suspend fun handleLocationEnabledChanged() {
+        locationStateRepo.takeAndChangeState { state ->
+            when (state) {
+                is LocationState.Disabled.NoGPS -> if (isLocationEnabled()) state.enable else state.remain()
+                is LocationState.Disabled.NotPermitted -> state.remain()
+                is LocationState.Enabled -> if (isLocationEnabled()) state.remain() else state.disable
             }
         }
     }

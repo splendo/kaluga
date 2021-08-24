@@ -27,8 +27,10 @@ actual class BluetoothMonitor internal constructor(
     private val centralManager: CBCentralManager
 ) : ServiceMonitor() {
 
-    actual class Builder actual constructor() {
-        actual fun create() = BluetoothMonitor(centralManager = CBCentralManager())
+    actual class Builder(
+        private val centralManager: CBCentralManager = CBCentralManager()
+    ) {
+        actual fun create() = BluetoothMonitor(centralManager = centralManager)
     }
 
     internal class CentralManagerDelegate(

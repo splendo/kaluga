@@ -17,7 +17,6 @@ dependencies {
     val ext = (gradle as ExtensionAware).extra
     implementation("no.nordicsemi.android.support.v18:scanner:${ext["android_ble_scanner_version"]}")
     implementation(project(":location", ""))
-    implementation(project(":location-permissions", ""))
 }
 
 kotlin {
@@ -25,7 +24,7 @@ kotlin {
         commonMain {
             dependencies {
                 val ext = (gradle as ExtensionAware).extra
-                implementation(project(":bluetooth-permissions", ""))
+                api(project(":bluetooth-permissions", ""))
                 implementation(project(":logging", ""))
                 implementation(project(":base", ""))
                 implementation("co.touchlab:stately-concurrency:${ext["stately_version"]}")

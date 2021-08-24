@@ -20,12 +20,9 @@ package com.splendo.kaluga.location
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
-import com.splendo.kaluga.permissions.location.CLAuthorizationStatusKotlin
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import com.splendo.kaluga.permissions.location.toCLAuthorizationStatusKotlin
 import kotlinx.coroutines.Dispatchers
-import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocation
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
@@ -80,46 +77,14 @@ actual class LocationManager(
 
         override fun locationManager(manager: CLLocationManager, didFinishDeferredUpdatesWithError: NSError?) {
         }
-
-        override fun locationManager(manager: CLLocationManager, didChangeAuthorizationStatus: CLAuthorizationStatus) {
-            if (isMonitoringLocationEnable) {
-                handleLocationEnabledChanged()
-            }
-        }
     }
 
-    private val authorizationStatus: CLAuthorizationStatusKotlin get() = CLLocationManager.authorizationStatus().toCLAuthorizationStatusKotlin()
-
-    private var _isMonitoringLocationEnable = AtomicBoolean(false)
-    var isMonitoringLocationEnable
-        get() = _isMonitoringLocationEnable.value
-        set(value) { _isMonitoringLocationEnable.value = value }
+    override val locationMonitor: LocationMonitor = LocationMonitor(CLLocationManager())
 
     private var _isMonitoringLocationUpdate = AtomicBoolean(false)
     var isMonitoringLocationUpdate
         get() = _isMonitoringLocationUpdate.value
         set(value) { _isMonitoringLocationUpdate.value = value }
-
-    override suspend fun startMonitoringLocationEnabled() {
-        isMonitoringLocationEnable = true
-        locationManager.delegate = locationManagerDelegate
-        locationManager.startUpdatingLocation()
-    }
-
-    override suspend fun stopMonitoringLocationEnabled() {
-        locationManager.stopUpdatingLocation()
-        isMonitoringLocationEnable = false
-    }
-
-    override suspend fun isLocationEnabled(): Boolean = when (authorizationStatus) {
-        // Enabled
-        CLAuthorizationStatusKotlin.authorizedAlways,
-        CLAuthorizationStatusKotlin.authorizedWhenInUse -> true
-        // Disabled
-        CLAuthorizationStatusKotlin.restricted,
-        CLAuthorizationStatusKotlin.denied,
-        CLAuthorizationStatusKotlin.notDetermined -> false
-    }
 
     override suspend fun requestLocationEnable() {
         // No access to UIApplication.openSettingsURLString

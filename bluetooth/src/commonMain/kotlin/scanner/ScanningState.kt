@@ -71,7 +71,7 @@ sealed class ScanningState : State() {
                 // Start monitoring Permissions and Bluetooth
                 // Stop will be called from deinitChangeState
                 scanner.startMonitoringPermissions()
-                scanner.startMonitoringBluetooth()
+                scanner.startMonitoringSensors()
             }
         }
 
@@ -158,7 +158,7 @@ sealed class ScanningState : State() {
 
                 override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
                     if (oldState !is Disabled && scanner.autoEnableSensors)
-                        scanner.requestBluetoothEnable()
+                        scanner.requestSensorsEnable()
                 }
             }
 
@@ -175,7 +175,7 @@ sealed class ScanningState : State() {
 
         internal fun stopMonitoring() {
             scanner.stopMonitoringPermissions()
-            scanner.stopMonitoringBluetooth()
+            scanner.stopMonitoringSensors()
         }
     }
 
@@ -199,7 +199,7 @@ sealed class ScanningState : State() {
             )
             return if (!scanner.isPermitted()) {
                 { Initialized.NoBluetooth.MissingPermissions(scanner) }
-            } else if (!scanner.isBluetoothEnabled()) {
+            } else if (!scanner.areSensorsEnabled()) {
                 { Initialized.NoBluetooth.Disabled(scanner) }
             } else {
                 { Initialized.Enabled.Idle(nothingDiscovered, scanner) }

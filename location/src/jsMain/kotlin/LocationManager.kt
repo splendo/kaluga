@@ -43,17 +43,8 @@ actual class LocationManager(
             return LocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
-    override suspend fun startMonitoringLocationEnabled() {
-        TODO("not implemented")
-    }
 
-    override suspend fun stopMonitoringLocationEnabled() {
-        TODO("not implemented")
-    }
-
-    override suspend fun isLocationEnabled(): Boolean {
-        TODO("not implemented")
-    }
+    override val locationMonitor: LocationMonitor = LocationMonitor()
 
     override suspend fun requestLocationEnable() {
         TODO("not implemented")

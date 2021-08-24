@@ -17,42 +17,38 @@
 
 package com.splendo.kaluga.location
 
-import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.os.Looper
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.common.api.ResolvableApiException
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationAvailability
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
 import com.splendo.kaluga.permissions.location.registerLocationPermission
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
+import location.GoogleLocationProvider
+import location.LocationProvider
 import kotlin.coroutines.CoroutineContext
 
 actual class LocationManager(
     private val context: Context,
+    locationManager: android.location.LocationManager?,
     locationPermission: LocationPermission,
     permissions: Permissions,
+    private val locationProvider: LocationProvider,
     autoRequestPermission: Boolean,
     autoEnableLocations: Boolean,
     locationStateRepo: LocationStateRepo
 ) : BaseLocationManager(locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo) {
 
-    class Builder(private val context: Context = ApplicationHolder.applicationContext) : BaseLocationManager.Builder {
+    class Builder(
+        private val context: Context = ApplicationHolder.applicationContext,
+        private val locationManager: android.location.LocationManager? = context.getSystemService(Context.LOCATION_SERVICE) as? android.location.LocationManager,
+        private val locationProvider: LocationProvider = GoogleLocationProvider(context)
+    ) : BaseLocationManager.Builder {
 
         override fun create(
             locationPermission: LocationPermission,
@@ -61,156 +57,38 @@ actual class LocationManager(
             autoEnableLocations: Boolean,
             locationStateRepo: LocationStateRepo
         ): BaseLocationManager {
-            return LocationManager(context, locationPermission, permissions, autoRequestPermission, autoEnableLocations, locationStateRepo)
+            return LocationManager(context, locationManager, locationPermission, permissions, locationProvider, autoRequestPermission, autoEnableLocations, locationStateRepo)
         }
     }
 
-    companion object {
-        val updatingLocationInBackgroundManagers: MutableMap<String, LocationManager> = mutableMapOf()
-        val updatingLocationEnabledInBackgroundManagers: MutableMap<String, LocationManager> = mutableMapOf()
-        val enablingHandlers: MutableMap<String, CompletableDeferred<Boolean>> = mutableMapOf()
-    }
-
-    private val identifier = hashCode().toString()
-
-    private val locationRequest = LocationRequest.create().setInterval(1).setMaxWaitTime(1000).setFastestInterval(1).setPriority(
-        if (locationPermission.precise) LocationRequest.PRIORITY_HIGH_ACCURACY else LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-    )
-    private val fusedLocationProviderClient = FusedLocationProviderClient(context)
-    private val locationEnabledCallback = object : LocationCallback() {
-
-        override fun onLocationAvailability(locationAvailability: LocationAvailability?) {
-            super.onLocationAvailability(locationAvailability)
-
-            handleLocationEnabledChanged()
-        }
-    }
-
-    private val locationCallback = object : LocationCallback() {
-
-        override fun onLocationResult(locationResult: LocationResult?) {
-            super.onLocationResult(locationResult)
-
-            locationResult?.let {
-                handleLocationChanged(it.toKnownLocations())
-            }
-        }
-    }
-
-    private val locationEnabledUpdatedPendingIntent = LocationEnabledUpdatesBroadcastReceiver.intent(context, identifier)
-    private val locationUpdatedPendingIntent = LocationUpdatesBroadcastReceiver.intent(context, identifier)
-
-    override suspend fun startMonitoringLocationEnabled() {
-        if (locationPermission.background) {
-            updatingLocationEnabledInBackgroundManagers[identifier] = this
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationEnabledUpdatedPendingIntent)
-        } else {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationEnabledCallback, Looper.getMainLooper())
-        }
-    }
-
-    override suspend fun stopMonitoringLocationEnabled() {
-        if (locationPermission.background) {
-            updatingLocationEnabledInBackgroundManagers.remove(identifier)
-            fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
-        } else {
-            fusedLocationProviderClient.removeLocationUpdates(locationEnabledCallback)
-        }
-    }
-
-    override suspend fun isLocationEnabled(): Boolean {
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
-        return try {
-            LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null
-        } catch (e: ApiException) {
-            false
-        }
-    }
+    override val locationMonitor: LocationMonitor = LocationMonitor(context, locationManager)
+    private val monitoringLocationJob: AtomicReference<Job?> = AtomicReference(null)
 
     public override suspend fun requestLocationEnable() {
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest).setNeedBle(true).setAlwaysShow(true)
-        try {
-            LocationServices.getSettingsClient(context).checkLocationSettings(builder.build()).await() != null
-        } catch (e: ApiException) {
-            when (e) {
-                is ResolvableApiException -> {
-                    val enablingHandler = CompletableDeferred<Boolean>()
-                    enablingHandlers[identifier] = enablingHandler
+        EnableLocationActivity.showEnableLocationActivity(context, hashCode().toString()).await()
+    }
 
-                    launch(Dispatchers.Main) {
-                        val intent = EnableLocationActivity.intent(context, identifier, e)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        context.startActivity(intent)
-                        enablingHandler.await()
-                        enablingHandlers.remove(identifier)
-                        handleLocationEnabledChanged()
-                    }
+    override suspend fun startMonitoringLocation() {
+        if (monitoringLocationJob.get() != null) return // optimization to skip making a job
+
+        val job = Job(this.coroutineContext[Job])
+
+        if (monitoringLocationJob.compareAndSet(null, job)) {
+            locationProvider.startMonitoringLocation(locationPermission)
+            launch(job) {
+                locationProvider.location(locationPermission).collect {
+                    handleLocationChanged(it)
                 }
             }
         }
     }
 
-    override suspend fun startMonitoringLocation() {
-        if (locationPermission.background) {
-            updatingLocationInBackgroundManagers[identifier] = this
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationUpdatedPendingIntent)
-        } else {
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
-        }
-    }
-
     override suspend fun stopMonitoringLocation() {
-        if (locationPermission.background) {
-            updatingLocationEnabledInBackgroundManagers.remove(identifier)
-            fusedLocationProviderClient.removeLocationUpdates(locationEnabledUpdatedPendingIntent)
-        } else {
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        }
-    }
-}
-
-class LocationUpdatesBroadcastReceiver : BroadcastReceiver() {
-
-    companion object {
-        private const val ACTION_NAME = "com.splendo.kaluga.location.locationupdates.action"
-
-        fun intent(context: Context, locationManagerId: String): PendingIntent {
-            val intent = Intent(context, LocationUpdatesBroadcastReceiver::class.java).apply {
-                action = ACTION_NAME
-                addCategory(locationManagerId)
+        monitoringLocationJob.get()?.let {
+            if (monitoringLocationJob.compareAndSet(it, null)) {
+                locationProvider.stopMonitoringLocation(locationPermission)
+                it.cancel()
             }
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-    }
-
-    override fun onReceive(context: Context, intent: Intent?) {
-        if (intent == null) return
-        val locationResult = LocationResult.extractResult(intent) ?: return
-        intent.categories.forEach { category ->
-            LocationManager.updatingLocationInBackgroundManagers[category]?.handleLocationChanged(locationResult.toKnownLocations())
-        }
-    }
-}
-
-class LocationEnabledUpdatesBroadcastReceiver : BroadcastReceiver() {
-
-    companion object {
-        private const val ACTION_NAME = "com.splendo.kaluga.location.locationenabledupdates.action"
-
-        fun intent(context: Context, locationManagerId: String): PendingIntent {
-            val intent = Intent(context, LocationEnabledUpdatesBroadcastReceiver::class.java).apply {
-                action = ACTION_NAME
-                addCategory(locationManagerId)
-            }
-            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-    }
-
-    override fun onReceive(context: Context, intent: Intent?) {
-        if (intent == null) return
-        LocationAvailability.extractLocationAvailability(intent) ?: return
-        intent.categories.forEach { category ->
-            LocationManager.updatingLocationEnabledInBackgroundManagers[category]?.handleLocationEnabledChanged()
         }
     }
 }
