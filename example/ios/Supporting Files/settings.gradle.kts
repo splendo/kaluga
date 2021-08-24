@@ -123,4 +123,4 @@ project(":KotlinNativeFramework").projectDir = file("../KotlinNativeFramework")
 include(":shared")
 project(":shared").projectDir = file("../../shared")
 
-rootProject.name = file("..").name
+rootProject.name = file("../..").name
