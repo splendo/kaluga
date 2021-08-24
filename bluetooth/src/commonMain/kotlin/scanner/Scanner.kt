@@ -31,6 +31,7 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
+import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.state.StateRepo
@@ -85,7 +86,7 @@ abstract class BaseScanner constructor(
         }
     }
 
-    protected suspend fun handlePermissionState(state: PermissionState<*>, permission: Permission) {
+    protected suspend fun <P : Permission> handlePermissionState(state: PermissionState<P>, permission: P) {
         when (state) {
             is PermissionState.Denied.Requestable -> if (autoRequestPermission) state.request(permissions.getManager(permission))
             else -> {}
