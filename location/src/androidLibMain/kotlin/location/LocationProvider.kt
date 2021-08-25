@@ -15,9 +15,8 @@
 
  */
 
-package location
+package com.splendo.kaluga.location
 
-import com.splendo.kaluga.location.Location
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 

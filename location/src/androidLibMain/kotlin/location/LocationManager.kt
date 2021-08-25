@@ -29,8 +29,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import location.GoogleLocationProvider
-import location.LocationProvider
 import kotlin.coroutines.CoroutineContext
 
 actual class LocationManager(

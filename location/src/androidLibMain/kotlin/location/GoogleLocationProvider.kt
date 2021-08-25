@@ -15,7 +15,7 @@
 
  */
 
-package location
+package com.splendo.kaluga.location
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
@@ -27,8 +27,6 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.splendo.kaluga.location.Location
-import com.splendo.kaluga.location.toKnownLocations
 import com.splendo.kaluga.permissions.location.LocationPermission
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
