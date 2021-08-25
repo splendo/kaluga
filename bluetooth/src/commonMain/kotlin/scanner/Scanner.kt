@@ -39,6 +39,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.fold
 import kotlinx.coroutines.launch
 
 typealias EnableSensorAction = suspend () -> Boolean
@@ -74,9 +76,6 @@ abstract class BaseScanner constructor(
     private var monitoringBluetoothEnabledJob: Job?
         get() = _monitoringBluetoothEnabledJob.get()
         set(value) { _monitoringBluetoothEnabledJob.set(value) }
-    private val enablingSensorsJob = AtomicReference<Job?>(null)
-
-    private val enableSensorsActions = sharedMutableListOf<EnableSensorAction>()
 
     open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob != null) return
@@ -134,16 +133,16 @@ abstract class BaseScanner constructor(
         monitoringBluetoothEnabledJob = null
     }
     open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
-    fun requestSensorsEnable() {
-        enablingSensorsJob.get()?.let {
-            if (enablingSensorsJob.compareAndSet(it, null)) {
-                it.cancel()
+    suspend fun requestSensorsEnable() {
+        val actions = generateEnableSensorsActions()
+        if (actions.isEmpty()) {
+            checkSensorsEnabledChanged()
+        } else if (
+            flowOf(*actions.toTypedArray()).fold(true) { acc, action ->
+                acc && action()
             }
-        }
-        enableSensorsActions.clear()
-        enableSensorsActions.addAll(generateEnableSensorsActions())
-        if (enableSensorsActions.isNotEmpty()) {
-            performNextEnableSensorAction()
+        ) {
+            requestSensorsEnable()
         }
     }
     abstract fun generateEnableSensorsActions(): List<EnableSensorAction>
@@ -171,24 +170,8 @@ abstract class BaseScanner constructor(
 
     internal open suspend fun checkSensorsEnabledChanged() {
         when {
-            areSensorsEnabled() && enableSensorsActions.isEmpty() -> bluetoothEnabled()
-            enableSensorsActions.isNotEmpty() -> performNextEnableSensorAction()
+            areSensorsEnabled() -> bluetoothEnabled()
             else -> bluetoothDisabled()
-        }
-    }
-
-    private fun performNextEnableSensorAction() {
-        if (enablingSensorsJob.get() != null) return // optimization to skip making a job
-
-        val job = Job(this.coroutineContext[Job])
-        if (enablingSensorsJob.compareAndSet(null, job)) {
-            launch(job) {
-                if (enableSensorsActions.isNotEmpty()) {
-                    enableSensorsActions.removeAt(0)()
-                }
-                enablingSensorsJob.compareAndSet(job, null)
-                checkSensorsEnabledChanged()
-            }
         }
     }
 }
