@@ -63,8 +63,9 @@ abstract class BaseScanner constructor(
         ): BaseScanner
     }
 
+    abstract val isSupported: Boolean
     private val bluetoothPermissionRepo get() = permissions[BluetoothPermission]
-    abstract val bluetoothEnabledMonitor: BluetoothMonitor
+    protected abstract val bluetoothEnabledMonitor: BluetoothMonitor?
 
     private val _monitoringPermissionsJob = AtomicReference<Job?>(null)
     private var monitoringPermissionsJob: Job?
@@ -119,6 +120,7 @@ abstract class BaseScanner constructor(
     abstract suspend fun scanForDevices(filter: Set<UUID>)
     abstract suspend fun stopScanning()
     open fun startMonitoringSensors() {
+        val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
         monitoringBluetoothEnabledJob = launch {
@@ -128,11 +130,12 @@ abstract class BaseScanner constructor(
         }
     }
     open fun stopMonitoringSensors() {
+        val bluetoothEnabledMonitor = bluetoothEnabledMonitor ?: return
         bluetoothEnabledMonitor.stopMonitoring()
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
-    open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor.isServiceEnabled
+    open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
     fun requestSensorsEnable() {
         enablingSensorsJob.get()?.let {
            if (enablingSensorsJob.compareAndSet(it, null) ) {

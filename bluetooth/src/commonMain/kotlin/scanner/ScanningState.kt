@@ -171,6 +171,10 @@ sealed class ScanningState : State() {
                     else Disabled(scanner)
                 }
             }
+
+            class NoHardware internal constructor(
+                private val scanner: BaseScanner
+            ) : NoBluetooth(scanner)
         }
 
         internal fun stopMonitoring() {
@@ -197,7 +201,9 @@ sealed class ScanningState : State() {
                 autoEnableBluetooth,
                 scanningStateRepo = repo
             )
-            return if (!scanner.isPermitted()) {
+            return if (!scanner.isSupported) {
+                { Initialized.NoBluetooth.NoHardware(scanner) }
+            } else if (!scanner.isPermitted()) {
                 { Initialized.NoBluetooth.MissingPermissions(scanner) }
             } else if (!scanner.areSensorsEnabled()) {
                 { Initialized.NoBluetooth.Disabled(scanner) }

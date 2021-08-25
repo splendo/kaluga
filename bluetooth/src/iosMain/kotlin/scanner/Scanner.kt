@@ -113,6 +113,7 @@ actual class Scanner internal constructor(
         }
     }
 
+    override val isSupported: Boolean = true
     private lateinit var mainCentralManager: CBCentralManager
     private lateinit var checkEnabledCentralManager: CBCentralManager
     private val centralManagers = sharedMutableListOf<CBCentralManager>()

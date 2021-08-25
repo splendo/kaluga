@@ -38,8 +38,7 @@ class EnableLocationActivity : AppCompatActivity() {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
-            val completableDeferred = CompletableDeferred<Boolean>()
-            enablingHandlers[identifier] = completableDeferred
+            val completableDeferred = enablingHandlers.getOrPut(identifier) { CompletableDeferred() }
             context.startActivity(intent)
             return completableDeferred
         }
@@ -61,6 +60,7 @@ class EnableLocationActivity : AppCompatActivity() {
     private fun complete(success: Boolean) {
         intent.getStringExtra(EXTRA_CALLBACK_ID)?.let {
             enablingHandlers[it]?.complete(success)
+            enablingHandlers.remove(it)
         }
         finish()
     }

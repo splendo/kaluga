@@ -141,8 +141,9 @@ actual class Scanner internal constructor(
 
     private val locationPermissionRepo get() = permissions[locationPermission]
 
+    override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor(bluetoothAdapter, applicationContext)
+    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor(it, applicationContext) }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
     private val monitoringLocationPermissionsJob = AtomicReference<Job?>(null)
@@ -214,10 +215,11 @@ actual class Scanner internal constructor(
     override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
+        if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
-                bluetoothAdapter?.enable() ?: false
-                bluetoothEnabledMonitor.isEnabled.first { it }
+                bluetoothAdapter?.enable()
+                bluetoothEnabledMonitor!!.isEnabled.first { it }
             } else null,
             if (!locationEnabledMonitor.isServiceEnabled) {
                 EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await
