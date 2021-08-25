@@ -43,7 +43,7 @@ actual class Scanner(
         }
     }
 
-    override val isSupported: Boolean = true
+    override val isSupported: Boolean = false
     override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor()
 
     override suspend fun scanForDevices(filter: Set<UUID>) {}

@@ -69,7 +69,6 @@ kotlin {
                     api("com.splendo.kaluga:storage-permissions:$libraryVersion")
                     api("com.splendo.kaluga:notifications-permissions:$libraryVersion")
                     api("com.splendo.kaluga:calendar-permissions:$libraryVersion")
-
                 }
             }
         }

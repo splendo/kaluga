@@ -20,7 +20,7 @@ import KotlinNativeFramework
 
 class BluetoothViewController : UICollectionViewController {
     
-    lazy var viewModel = KNArchitectureFramework().createBluetoothListViewModel(parent: self, bluetooth: KNBluetoothFramework().bluetooth, monitor: KNBluetoothFramework().bluetoothMonitor) { uuid, bluetooth in
+    lazy var viewModel = KNArchitectureFramework().createBluetoothListViewModel(parent: self, bluetooth: KNBluetoothFramework().bluetooth) { uuid, bluetooth in
         return BluetoothDeviceDetailsViewController.create(deviceUuid: uuid, bluetooth: bluetooth)
     }
     

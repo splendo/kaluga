@@ -23,7 +23,6 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.NavigatingViewModel
 import com.splendo.kaluga.bluetooth.Bluetooth
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
@@ -33,12 +32,12 @@ import kotlinx.coroutines.launch
 
 class BluetoothListNavigation(bundle: NavigationBundle<DeviceDetailsSpecRow<*>>) : NavigationAction<DeviceDetailsSpecRow<*>>(bundle)
 
-class BluetoothListViewModel(private val bluetooth: Bluetooth, private val monitor: BluetoothMonitor, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
+class BluetoothListViewModel(private val bluetooth: Bluetooth, navigator: Navigator<BluetoothListNavigation>) : NavigatingViewModel<BluetoothListNavigation>(navigator) {
 
     private val _isScanning = MutableStateFlow(false)
     val isScanning = _isScanning.toInitializedObservable(coroutineScope)
 
-    val title = monitor.isEnabled
+    val title = bluetooth.isEnabled
         .mapLatest { if (it) "Enabled" else "Disabled" }
         .toInitializedObservable("Initializing...", coroutineScope)
 
@@ -48,7 +47,6 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, private val monit
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        monitor.startMonitoring()
         scope.launch { bluetooth.isScanning().collect { _isScanning.value = it } }
         scope.launch {
             bluetooth.devices().map { devices -> devices.map { BluetoothListDeviceViewModel(it.identifier, bluetooth, navigator) } }.collect { devices ->
@@ -56,11 +54,6 @@ class BluetoothListViewModel(private val bluetooth: Bluetooth, private val monit
                 _devices.value = devices.sortedByDescending { it.name.currentOrNull }
             }
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        monitor.stopMonitoring()
     }
 
     fun onScanPressed() {

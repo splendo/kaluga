@@ -50,8 +50,13 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
+    @Suppress("SENSELESS_COMPARISON") // Can still be null on initialization
     override val isServiceEnabled: Boolean
-        get() = bluetoothAdapter.isEnabled
+        get() = if (bluetoothAdapter == null) {
+            false
+        } else {
+            bluetoothAdapter.isEnabled
+        }
 
     override fun startMonitoring() {
         super.startMonitoring()

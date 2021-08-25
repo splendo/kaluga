@@ -48,7 +48,6 @@ abstract class BaseLocationManager(
         get() = _monitoringLocationEnabledJob.get()
         set(value) { _monitoringLocationEnabledJob.set(value) }
 
-
     internal open fun startMonitoringPermissions() {
         if (monitoringPermissionsJob.get() != null) return // optimization to skip making a job
 

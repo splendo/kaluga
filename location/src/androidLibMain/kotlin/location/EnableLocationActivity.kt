@@ -23,7 +23,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import kotlinx.coroutines.CompletableDeferred
 
 class EnableLocationActivity : AppCompatActivity() {

@@ -87,7 +87,6 @@ actual class Scanner internal constructor(
             .setNumOfMatches(ScanSettings.MATCH_NUM_FEW_ADVERTISEMENT)
             .build()
 
-
         private val locationPermission = LocationPermission(background = false, precise = true)
     }
 
@@ -150,9 +149,13 @@ actual class Scanner internal constructor(
     private val monitoringLocationEnabledJob = AtomicReference<Job?>(null)
 
     override suspend fun scanForDevices(filter: Set<UUID>) {
-        bluetoothScanner.startScan(filter.map {
-            ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
-        }, scanSettings, callback)
+        bluetoothScanner.startScan(
+            filter.map {
+                ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
+            },
+            scanSettings,
+            callback
+        )
     }
 
     override suspend fun stopScanning() {

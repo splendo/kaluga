@@ -230,8 +230,7 @@ class ScanningStateRepo(
             is ScanningState.Initialized.Enabled.Idle ->
                 state.refresh() // check if we now need to start scanning again
             is Scanning,
-            is ScanningState.Initialized.NoBluetooth.Disabled,
-            is ScanningState.Initialized.NoBluetooth.MissingPermissions,
+            is ScanningState.Initialized.NoBluetooth,
             is ScanningState.NotInitialized ->
                 state.remain()
         }

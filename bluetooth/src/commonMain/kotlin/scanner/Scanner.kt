@@ -19,7 +19,6 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
-import co.touchlab.stately.concurrency.value
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
@@ -32,7 +31,6 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
-import com.splendo.kaluga.permissions.PermissionStateRepo
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.bluetooth.BluetoothPermission
 import com.splendo.kaluga.state.StateRepo
@@ -138,9 +136,9 @@ abstract class BaseScanner constructor(
     open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.isServiceEnabled ?: false
     fun requestSensorsEnable() {
         enablingSensorsJob.get()?.let {
-           if (enablingSensorsJob.compareAndSet(it, null) ) {
-               it.cancel()
-           }
+            if (enablingSensorsJob.compareAndSet(it, null)) {
+                it.cancel()
+            }
         }
         enableSensorsActions.clear()
         enableSensorsActions.addAll(generateEnableSensorsActions())

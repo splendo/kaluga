@@ -113,7 +113,6 @@ val utilitiesModule = module {
     }
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
-    single { BluetoothMonitor.Builder().create() }
     single { Beacons(get<Bluetooth>()) }
 }
 
@@ -264,7 +263,7 @@ val viewModelModule = module {
 
     viewModel {
         BluetoothListViewModel(
-            get(), get(),
+            get(),
             ActivityNavigator {
                 NavigationSpec.Activity(BluetoothMoreActivity::class.java)
             }
