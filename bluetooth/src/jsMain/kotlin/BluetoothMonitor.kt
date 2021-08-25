@@ -17,13 +17,16 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 
-actual class BluetoothMonitor : ServiceMonitor() {
-
+actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder {
-        actual fun create() = BluetoothMonitor()
+        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor()
     }
+}
+
+class DefaultBluetoothMonitor : DefaultServiceMonitor(), BluetoothMonitor {
 
     override val isServiceEnabled: Boolean
         get() = TODO("Not yet implemented")

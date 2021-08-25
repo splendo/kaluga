@@ -121,7 +121,7 @@ actual class Scanner internal constructor(
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
     override val bluetoothEnabledMonitor: BluetoothMonitor by lazy {
         initMainManagersIfNeeded()
-        BluetoothMonitor(mainCentralManager)
+        BluetoothMonitor.Builder(mainCentralManager).create()
     }
 
     private fun initMainManagersIfNeeded() {

@@ -142,7 +142,7 @@ actual class Scanner internal constructor(
 
     override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
-    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor(it, applicationContext) }
+    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
     private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
 
     private val monitoringLocationPermissionsJob = AtomicReference<Job?>(null)

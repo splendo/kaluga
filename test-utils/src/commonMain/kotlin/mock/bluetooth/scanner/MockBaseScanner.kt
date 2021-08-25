@@ -17,17 +17,19 @@
 
 package com.splendo.kaluga.test.mock.bluetooth.scanner
 
-import co.touchlab.stately.concurrency.AtomicBoolean
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
+import com.splendo.kaluga.bluetooth.scanner.EnableSensorAction
 import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MockBaseScanner(
@@ -35,7 +37,8 @@ class MockBaseScanner(
     connectionSettings: ConnectionSettings,
     autoRequestPermissions: Boolean,
     autoEnableBluetooth: Boolean,
-    stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>
+    stateRepo: StateRepo<ScanningState, MutableStateFlow<ScanningState>>,
+    override val isSupported: Boolean = true
 ) : BaseScanner(
     permissions,
     connectionSettings,
@@ -49,23 +52,30 @@ class MockBaseScanner(
     val startMonitoringPermissionsCompleted = AtomicReference(EmptyCompletableDeferred())
     val stopMonitoringPermissionsCompleted = AtomicReference(EmptyCompletableDeferred())
     val requestEnableCompleted = AtomicReference(EmptyCompletableDeferred())
-    val startMonitoringBluetoothCompleted = AtomicReference(EmptyCompletableDeferred())
-    val stopMonitoringBluetoothCompleted = AtomicReference(EmptyCompletableDeferred())
+    val startMonitoringSensorsCompleted = AtomicReference(EmptyCompletableDeferred())
+    val stopMonitoringSensorsCompleted = AtomicReference(EmptyCompletableDeferred())
 
-    val _isEnabled = AtomicBoolean(false)
-    var isEnabled: Boolean
-        get() = _isEnabled.value
-        set(value) { _isEnabled.value = value }
+    val isEnabled = MutableStateFlow(false)
 
     init {
         reset()
     }
 
+    override val bluetoothEnabledMonitor: BluetoothMonitor = object : BluetoothMonitor {
+        override val isServiceEnabled: Boolean
+            get() = this@MockBaseScanner.isEnabled.value
+        override val isEnabled: Flow<Boolean> = this@MockBaseScanner.isEnabled
+
+        override fun startMonitoring() {}
+
+        override fun stopMonitoring() {}
+    }
+
     fun reset() {
         scanForDevicesCompleted.set(CompletableDeferred())
         stopScanningCompleted.set(EmptyCompletableDeferred())
-        stopMonitoringBluetoothCompleted.set(EmptyCompletableDeferred())
-        startMonitoringBluetoothCompleted.set(EmptyCompletableDeferred())
+        stopMonitoringSensorsCompleted.set(EmptyCompletableDeferred())
+        startMonitoringSensorsCompleted.set(EmptyCompletableDeferred())
         startMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
         stopMonitoringPermissionsCompleted.set(EmptyCompletableDeferred())
         requestEnableCompleted.set(EmptyCompletableDeferred())
@@ -81,6 +91,16 @@ class MockBaseScanner(
         stopMonitoringPermissionsCompleted.get().complete()
     }
 
+    override fun startMonitoringSensors() {
+        super.startMonitoringSensors()
+        startMonitoringSensorsCompleted.get().complete()
+    }
+
+    override fun stopMonitoringSensors() {
+        super.stopMonitoringSensors()
+        stopMonitoringSensorsCompleted.get().complete()
+    }
+
     override suspend fun scanForDevices(filter: Set<UUID>) {
         scanForDevicesCompleted.get().complete(filter)
     }
@@ -89,19 +109,16 @@ class MockBaseScanner(
         stopScanningCompleted.get().complete()
     }
 
-    override fun startMonitoringBluetooth() {
-        startMonitoringBluetoothCompleted.get().complete()
-    }
-
-    override fun stopMonitoringBluetooth() {
-        stopMonitoringBluetoothCompleted.get().complete()
-    }
-
-    override suspend fun isBluetoothEnabled(): Boolean {
-        return isEnabled
-    }
-
-    override suspend fun requestBluetoothEnable() {
-        requestEnableCompleted.get().complete()
+    override fun generateEnableSensorsActions(): List<EnableSensorAction> {
+        return if (requestEnableCompleted.get().isCompleted) {
+            emptyList()
+        } else {
+            listOf(
+                {
+                    requestEnableCompleted.get().complete()
+                    true
+                }
+            )
+        }
     }
 }

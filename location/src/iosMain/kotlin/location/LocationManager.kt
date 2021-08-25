@@ -79,7 +79,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor(CLLocationManager())
+    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
 
     private var _isMonitoringLocationUpdate = AtomicBoolean(false)
     var isMonitoringLocationUpdate

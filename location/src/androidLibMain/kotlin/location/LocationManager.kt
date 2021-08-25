@@ -59,7 +59,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor(context, locationManager)
+    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
     private val monitoringLocationJob: AtomicReference<Job?> = AtomicReference(null)
 
     public override suspend fun requestLocationEnable() {

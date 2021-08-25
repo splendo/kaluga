@@ -17,21 +17,24 @@
 
 package com.splendo.kaluga.bluetooth
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
 import platform.darwin.NSObject
 
-actual class BluetoothMonitor internal constructor(
-    private val centralManager: CBCentralManager
-) : ServiceMonitor() {
-
+actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder(
         private val centralManager: CBCentralManager = CBCentralManager()
     ) {
-        actual fun create() = BluetoothMonitor(centralManager = centralManager)
+        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManager = centralManager)
     }
+}
+
+class DefaultBluetoothMonitor internal constructor(
+    private val centralManager: CBCentralManager
+) : DefaultServiceMonitor(), BluetoothMonitor {
 
     internal class CentralManagerDelegate(
         private val updateEnabledState: () -> Unit

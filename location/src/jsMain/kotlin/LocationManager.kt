@@ -44,7 +44,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor()
+    override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
 
     override suspend fun requestLocationEnable() {
         TODO("not implemented")
