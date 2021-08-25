@@ -67,9 +67,6 @@ actual class Scanner internal constructor(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
     ) : BaseScanner.Builder {
 
-        /**
-         * @param autoEnableSensors note this does not auto enable location at the moment, this is TODO
-         */
         override fun create(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,

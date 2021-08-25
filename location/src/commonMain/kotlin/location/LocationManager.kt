@@ -82,7 +82,7 @@ abstract class BaseLocationManager(
         return locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
-    internal suspend fun startMonitoringLocationEnabled() {
+    internal open suspend fun startMonitoringLocationEnabled() {
         locationMonitor.startMonitoring()
         if (monitoringLocationEnabledJob != null)
             return
@@ -92,7 +92,7 @@ abstract class BaseLocationManager(
             }
         }
     }
-    internal fun stopMonitoringLocationEnabled() {
+    internal open fun stopMonitoringLocationEnabled() {
         locationMonitor.stopMonitoring()
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
