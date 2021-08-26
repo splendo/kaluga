@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
-import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor

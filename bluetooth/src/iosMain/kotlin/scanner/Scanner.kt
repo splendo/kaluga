@@ -49,9 +49,9 @@ actual class Scanner internal constructor(
     permissions: Permissions,
     private val connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
+    autoEnableSensors: Boolean,
     stateRepo: ScanningStateFlowRepo,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
     class Builder : BaseScanner.Builder {
 
@@ -59,10 +59,10 @@ actual class Scanner internal constructor(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
-            autoEnableBluetooth: Boolean,
+            autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
         }
     }
 
@@ -162,13 +162,15 @@ actual class Scanner internal constructor(
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
-        return listOf(
-            suspend {
-                val options =
-                    mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to autoEnableSensors)
-                CBCentralManager(null, dispatch_get_main_queue(), options)
-                bluetoothEnabledMonitor.isEnabled.first { it }
-            }
+        return listOfNotNull(
+            if (!bluetoothEnabledMonitor.isServiceEnabled) {
+                suspend {
+                    val options =
+                        mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
+                    CBCentralManager(null, dispatch_get_main_queue(), options)
+                    bluetoothEnabledMonitor.isEnabled.first { it }
+                }
+            } else null
         )
     }
 

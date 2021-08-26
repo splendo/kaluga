@@ -26,9 +26,9 @@ actual class Scanner(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
+    autoEnableSensors: Boolean,
     stateRepo: ScanningStateFlowRepo
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
     class Builder : BaseScanner.Builder {
 
@@ -36,10 +36,10 @@ actual class Scanner(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
-            autoEnableBluetooth: Boolean,
+            autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
         }
     }
 
