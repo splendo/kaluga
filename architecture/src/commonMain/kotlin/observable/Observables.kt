@@ -215,7 +215,7 @@ open class SharedFlowDefaultSubject<R : T?, T>(
     sharedFlow: MutableSharedFlow<T?>,
     autoBind: Boolean = true,
     observation: ObservationDefault<R, T?> = ObservationDefault(defaultValue, Value(initialValue), context),
-) : BaseDefaultSubject<R, T?> (
+) : BaseDefaultSubject<R, T?>(
     observation
 ),
     SuspendableSetter<T?> by MutableFlowSubjectHelper(
@@ -236,7 +236,7 @@ open class SharedFlowSubject<T>(
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationUninitialized<T> = ObservationUninitialized(context)
-) : BaseUninitializedSubject<T> (
+) : BaseUninitializedSubject<T>(
     observation
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(
@@ -258,7 +258,7 @@ open class SharedFlowInitializedSubject<T>(
     sharedFlow: MutableSharedFlow<T>,
     autoBind: Boolean = true,
     observation: ObservationInitialized<T> = ObservationInitialized(initialValue, context)
-) : BaseInitializedSubject<T> (
+) : BaseInitializedSubject<T>(
     observation
 ),
     SuspendableSetter<T> by MutableFlowSubjectHelper(

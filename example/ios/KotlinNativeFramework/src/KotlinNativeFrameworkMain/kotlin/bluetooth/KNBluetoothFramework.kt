@@ -18,11 +18,9 @@
 package com.splendo.kaluga.example.ios.bluetooth
 
 import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import kotlinx.coroutines.MainScope
 
 class KNBluetoothFramework {
     val mainScope = MainScope()
     val bluetooth = BluetoothBuilder().create(coroutineScope = mainScope)
-    val bluetoothMonitor = BluetoothMonitor.Builder().create()
 }

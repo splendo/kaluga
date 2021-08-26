@@ -82,14 +82,14 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
     private val permissionStateRepos: IsoMutableMap<Permission, PermissionStateRepo<*>> = IsoMutableMap()
 
     private fun <P : Permission> permissionStateRepo(permission: P) =
-        permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }
+        (permissionStateRepos[permission] ?: builder.createPermissionStateRepo(permission, coroutineContext).also { permissionStateRepos[permission] = it }) as PermissionStateRepo<P>
 
     /**
      * Gets a [Flow] of [PermissionState] for a given [Permission]
      * @param permission The [Permission] for which the [PermissionState] flow should be provided
      * @return A [Flow] of [PermissionState] for the given [Permission]
      */
-    operator fun <P : Permission> get(permission: P): Flow<PermissionState<out Permission>> {
+    operator fun <P : Permission> get(permission: P): Flow<PermissionState<P>> {
         return permissionStateRepo(permission)
     }
 
@@ -98,7 +98,7 @@ class Permissions(private val builder: PermissionsBuilder, private val coroutine
      * @param permission The [Permission] for which the [PermissionManager] should be returned
      * @return The [PermissionManager] for the given [Permission]
      */
-    fun <P : Permission> getManager(permission: P): PermissionManager<out Permission> {
+    fun <P : Permission> getManager(permission: P): PermissionManager<P> {
         return permissionStateRepo(permission).permissionManager
     }
 

@@ -71,14 +71,14 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertEquals(PermissionStateRepo.defaultMonitoringInterval, hasStartedMonitoring.getCompleted())
             assertTrue(it is MissingPermissions)
         }
-        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        mockBaseScanner().startMonitoringSensorsCompleted.get().await()
         assertTrue(mockBaseScanner().startMonitoringPermissionsCompleted.get().isCompleted)
 
         action {
             permissionManager.hasRequestedPermission.await()
             permissionManager.setPermissionAllowed()
         }
-        val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringBluetoothCompleted.get()
+        val startMonitoringBluetoothCompleted = mockBaseScanner().startMonitoringSensorsCompleted.get()
         test {
             assertTrue(it is Idle)
             assertEquals(emptySet(), it.discovered.filter)
@@ -97,7 +97,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertEquals(PermissionStateRepo.defaultMonitoringInterval, hasStartedMonitoring.getCompleted())
             assertTrue(it is MissingPermissions)
         }
-        assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringSensorsCompleted.get().isCompleted)
         assertTrue(mockBaseScanner().startMonitoringPermissionsCompleted.get().isCompleted)
 
         assertFalse(permissionManager.hasRequestedPermission.isCompleted)
@@ -110,11 +110,11 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is Disabled)
         }
 
-        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        mockBaseScanner().startMonitoringSensorsCompleted.get().await()
 
         action {
             mockBaseScanner().requestEnableCompleted.get().await()
-            mockBaseScanner().isEnabled = true
+            mockBaseScanner().isEnabled.value = true
             mockBaseScanner().bluetoothEnabled()
         }
 
@@ -132,7 +132,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
         }
 
         mockBaseScanner().startMonitoringPermissionsCompleted.get().await()
-        assertTrue(mockBaseScanner().startMonitoringBluetoothCompleted.get().isCompleted)
+        assertTrue(mockBaseScanner().startMonitoringSensorsCompleted.get().isCompleted)
         assertFalse(mockBaseScanner().requestEnableCompleted.get().isCompleted)
     }
 
@@ -290,7 +290,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is MissingPermissions)
         }
 
-        mockBaseScanner().startMonitoringBluetoothCompleted.get().await()
+        mockBaseScanner().startMonitoringSensorsCompleted.get().await()
     }
 
     @Test
@@ -299,7 +299,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is Idle)
         }
         action {
-            mockBaseScanner().isEnabled = false
+            mockBaseScanner().isEnabled.value = false
             mockBaseScanner().bluetoothDisabled()
         }
 
@@ -351,7 +351,7 @@ class ScanningStateRepoTest : BluetoothFlowTest<ScanningState>() {
             assertTrue(it is Scanning)
         }
         action {
-            mockBaseScanner().isEnabled = false
+            mockBaseScanner().isEnabled.value = false
             mockBaseScanner().bluetoothDisabled()
         }
         val stopScanningCompleted = mockBaseScanner().stopScanningCompleted.get()

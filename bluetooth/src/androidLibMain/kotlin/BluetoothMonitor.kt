@@ -23,23 +23,28 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 
-actual class BluetoothMonitor internal constructor(
-    private val bluetoothAdapter: BluetoothAdapter,
-    private val applicationContext: Context
-) : ServiceMonitor() {
+actual interface BluetoothMonitor : ServiceMonitor {
 
-    actual class Builder actual constructor() {
+    actual class Builder(
+        private val context: Context = ApplicationHolder.applicationContext,
+        private val adapter: BluetoothAdapter
+    ) {
         actual fun create(): BluetoothMonitor {
-            val adapter = BluetoothAdapter.getDefaultAdapter()
-                ?: throw NullPointerException("bluetoothAdapter should not be null, check your device capabilities.")
-            return BluetoothMonitor(
-                bluetoothAdapter = adapter,
-                applicationContext = ApplicationHolder.applicationContext
+            return DefaultBluetoothMonitor(
+                applicationContext = context,
+                bluetoothAdapter = adapter
             )
         }
     }
+}
+
+class DefaultBluetoothMonitor internal constructor(
+    private val applicationContext: Context,
+    private val bluetoothAdapter: BluetoothAdapter
+) : DefaultServiceMonitor(), BluetoothMonitor {
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -49,6 +54,7 @@ actual class BluetoothMonitor internal constructor(
         }
     }
 
+    @Suppress("SENSELESS_COMPARISON") // Can still be null on initialization
     override val isServiceEnabled: Boolean
         get() = if (bluetoothAdapter == null) {
             false

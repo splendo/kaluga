@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.permissions.Permissions
@@ -25,9 +26,9 @@ actual class Scanner(
     permissions: Permissions,
     connectionSettings: ConnectionSettings,
     autoRequestPermission: Boolean,
-    autoEnableBluetooth: Boolean,
-    stateRepo: ScanningStateFlowRepo,
-) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, stateRepo) {
+    autoEnableSensors: Boolean,
+    stateRepo: ScanningStateFlowRepo
+) : BaseScanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, stateRepo) {
 
     class Builder : BaseScanner.Builder {
 
@@ -35,22 +36,23 @@ actual class Scanner(
             permissions: Permissions,
             connectionSettings: ConnectionSettings,
             autoRequestPermission: Boolean,
-            autoEnableBluetooth: Boolean,
+            autoEnableSensors: Boolean,
             scanningStateRepo: ScanningStateFlowRepo,
         ): BaseScanner {
-            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableBluetooth, scanningStateRepo)
+            return Scanner(permissions, connectionSettings, autoRequestPermission, autoEnableSensors, scanningStateRepo)
         }
     }
+
+    override val isSupported: Boolean = false
+    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
 
     override suspend fun scanForDevices(filter: Set<UUID>) {}
 
     override suspend fun stopScanning() {}
 
-    override fun startMonitoringBluetooth() {}
+    override fun startMonitoringSensors() {}
 
-    override fun stopMonitoringBluetooth() {}
+    override fun stopMonitoringSensors() {}
 
-    override suspend fun isBluetoothEnabled(): Boolean = false
-
-    override suspend fun requestBluetoothEnable() {}
+    override fun generateEnableSensorsActions(): List<EnableSensorAction> = emptyList()
 }

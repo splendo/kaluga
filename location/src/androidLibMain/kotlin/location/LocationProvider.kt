@@ -17,10 +17,11 @@
 
 package com.splendo.kaluga.location
 
-import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.permissions.location.LocationPermission
+import kotlinx.coroutines.flow.Flow
 
-expect interface LocationMonitor : ServiceMonitor {
-    class Builder {
-        fun create(): LocationMonitor
-    }
+interface LocationProvider {
+    fun location(permission: LocationPermission): Flow<List<Location>>
+    fun startMonitoringLocation(permission: LocationPermission)
+    fun stopMonitoringLocation(permissions: LocationPermission)
 }
