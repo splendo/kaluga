@@ -29,7 +29,7 @@ gradle.ext {
     serialization_version = '1.2.1'
     kydra_log_version = '1.1.5'
     android_ble_scanner_version = '1.5.0'
-    library_version = libraryVersionLocalProperties ?: "0.2.1${System.properties.kaluga_branch_postfix}"
+    library_version = libraryVersionLocalProperties ?: "0.2.2${System.properties.kaluga_branch_postfix}"
     android_min_sdk_version = 21
     android_target_sdk_version = 30
     android_build_tools_version = "30.0.2"
