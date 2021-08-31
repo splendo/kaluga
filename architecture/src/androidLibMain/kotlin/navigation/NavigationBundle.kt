@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.navigation
 
 import android.os.Bundle
 import com.splendo.kaluga.base.utils.Date
+import kotlinx.serialization.SerializationException
 
 /**
  * Converts a [NavigationBundle] to a [Bundle]

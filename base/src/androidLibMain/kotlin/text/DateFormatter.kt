@@ -23,6 +23,7 @@ import com.splendo.kaluga.base.utils.Locale
 import com.splendo.kaluga.base.utils.TimeZone
 import java.text.DateFormat
 import java.text.DateFormatSymbols
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
@@ -123,9 +124,13 @@ actual class DateFormatter private constructor(private val format: SimpleDateFor
 
     actual fun format(date: Date): String = format.format(date.calendar.time)
     actual fun parse(string: String): Date? {
-        return format.parse(string)?.let { date ->
-            val calendar = format.calendar.clone() as Calendar
-            Date(calendar.apply { time = date })
+        return try {
+            format.parse(string)?.let { date ->
+                val calendar = format.calendar.clone() as Calendar
+                Date(calendar.apply { time = date })
+            }
+        } catch (e: ParseException) {
+            null
         }
     }
 
