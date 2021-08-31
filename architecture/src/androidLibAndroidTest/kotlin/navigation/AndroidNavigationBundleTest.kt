@@ -17,9 +17,11 @@
 
 package com.splendo.kaluga.architecture.navigation
 
+import android.os.Bundle
 import com.splendo.kaluga.base.utils.Date
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class AndroidNavigationBundleTest {
 
@@ -73,5 +75,30 @@ class AndroidNavigationBundleTest {
         assertEquals(optionalFloat, optionalFloatResult)
         assertEquals(dateValue, dateResult)
         assertEquals(dateArray, dateArrayResult)
+    }
+
+    @Test
+    fun testConvertSingleValueBundle() {
+        val serializable = MockSerializable("value")
+        val specType = NavigationBundleSpecType.SerializedType(MockSerializable.serializer())
+        val row = SingleValueNavigationAction(serializable, NavigationBundleSpecType.SerializedType(MockSerializable.serializer()))
+        val bundleValue = row.bundle!!.toBundle().apply {
+            putBoolean(MockSpecRow.BooleanSpecRow.key, false)
+        }.toTypedProperty(specType)
+        assertEquals(serializable, bundleValue)
+    }
+
+    @Test
+    fun testFailToConvertBundle() {
+        assertFailsWith(BundleConversionError::class) { Bundle().toNavigationBundle(MockSpec()) }
+    }
+
+    @Test
+    fun testFailToDeserializeBundle() {
+        val specType = NavigationBundleSpecType.SerializedType(MockSerializable.serializer())
+        val bundle = Bundle().apply {
+            putString(SingleValueNavigationSpec.Row(specType).key, "invalid json")
+        }
+        assertFailsWith(BundleConversionError::class) { bundle.toTypedProperty(specType) }
     }
 }
