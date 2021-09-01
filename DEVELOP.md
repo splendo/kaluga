@@ -20,7 +20,7 @@ If a purely common test does not work, you can make the test's class `open` or `
 
 By extending `BaseTest` you can avoid a lot of boilerplate to make tests behave cross-platform (e.g. enableing the coroutines debugger).
 
-There are specialized test classes in the [`test-utils`](tree/master/test-utils) module, e.g. for testings `Flows`, `ViewModel`s etc. 
+There are specialized test classes in the [`test-utils`](test-utils/) module, e.g. for testings `Flows`, `ViewModel`s etc. 
 
 ### Android tests
 
@@ -39,7 +39,7 @@ Make sure you have the Simulator setup with a working target device. For now you
 
 The `ioTest` task supports the `--tests` flag like other Gradle tasks to filter which tests to run.
 
-Note that for kaluga iOS tests for kaluga run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils`](tree/master/test-utils)
+Note that for kaluga iOS tests for kaluga run on a background thread, in order to have a properly working Main dispatchers (and align better with Android). How this works is described in [`test-utils`](test-utils/)
 
 
 ## Architecture
@@ -73,7 +73,7 @@ If you want to publish with a specific version string, you can override this val
 libraryVersion=0.1.0-special-build
 ```
 
-if this property is not set the version string is a combination of the version number, the current git branch (unless that branch is `master`, `main` or `develop`) and `-SNAPSHOT` (unless the `MAVEN_CENTRAL_RELEASE` environment variable is set to `true`). The exact implementation of this can be found in [gradle/gitBranch.gradle.kts](tree/master/gradle/gitBranch.gradle.kts).
+if this property is not set the version string is a combination of the version number, the current git branch (unless that branch is `master`, `main` or `develop`) and `-SNAPSHOT` (unless the `MAVEN_CENTRAL_RELEASE` environment variable is set to `true`). The exact implementation of this can be found in [gradle/gitBranch.gradle.kts](gradle/gitBranch.gradle.kts).
 
 For example if the version in `ext.gradle` is `1.1` and `feature/123_fix_bug` is the current branch the resulting version will be `1.1-feature-123_fix_bug-SNAPSHOT`.
 
@@ -107,7 +107,7 @@ Projects publishing to Sonatype's release repository need to be manually closed 
 
 #### Increase version after publishing
 
-in case this has not been done yet, bump the version at [gradle/ext.gradle](tree/develop/gradle/ext.gradle) in the `develop` branch to start the next development iteration.
+in case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle) in the `develop` branch to start the next development iteration.
 
 ```sh
 library_version = 'X.X.X'
