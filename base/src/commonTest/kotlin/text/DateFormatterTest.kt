@@ -29,6 +29,7 @@ import com.splendo.kaluga.base.utils.utc
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 class DateFormatterTest {
 
@@ -96,5 +97,11 @@ class DateFormatterTest {
     fun testFormatFixedDate() {
         val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
         assertEquals("1988-03-18T13:37:42.750+0000", formatter.format(March181988))
+    }
+
+    @Test
+    fun testFailToParseInvalidString() {
+        val formatter = DateFormatter.iso8601Pattern(TimeZone.utc)
+        assertNull(formatter.parse("invalid date"))
     }
 }
