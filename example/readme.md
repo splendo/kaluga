@@ -1,9 +1,9 @@
 # Example project
 
 This example project has the following parts:
-- An android app in [android]
-- A shared code module in [shared]. This exposes and android library, and kotlin native sourceset that depends on a common source set. These are then included in the build of the iOS and Android example apps.
-- An iOS app in [iOS]
+- An android app in [android](/example/android)
+- A shared code module in [shared](/example/shared). This exposes and android library, and kotlin native sourceset that depends on a common source set. These are then included in the build of the iOS and Android example apps.
+- An iOS app in [ios](/example/ios)
 
 The example app can load the main components either through your (local) maven repository, or as gradle modules.
 
@@ -35,7 +35,7 @@ To do so the backend must contain in `https://whatever.domain/.well-known` two f
 ## Android
 `assetlinks.json` should have the following format
 
-```json
+```
 [
   {
     "relation": ["delegate_permission/common.handle_all_urls"],
@@ -56,10 +56,10 @@ To do so the backend must contain in `https://whatever.domain/.well-known` two f
 ## iOS
 While `apple-app-site-association` will be
 
-```json
+```
 {
     "applinks": {
-        "apps": [], // This array MUST be empty (for more info check Universal link's doc below).
+        "apps": [], // This array MUST be empty (for more info check Universal link's doc below). -->
         "details": [
             {
                 "appID": "appId",
@@ -76,6 +76,6 @@ While `apple-app-site-association` will be
 
 The iOS app can be opened by either XCode or the KMM plugin of Android Studio. 
 
-The Android app can be opened with Android Studio, at times the latest Beta or Canary release is needed. IntelliJ IDEA might also work but is not officially supported. 
+The Android app can be opened with Android Studio, at times the latest Beta or Canary release is needed (see [DEVELOP](/DEVELOP.md))
 
-This project uses a structure created by Appcode (the Kotlin/Native plugin of Appcode is now unfortunately not recent anymore) , the root `settings.gradle.kts` file is under [ios/Supporting Files], so this is the directory to open with Android studio. 
+This project uses a structure created by Appcode (the Kotlin/Native plugin of Appcode is now unfortunately not recent anymore) , the root `settings.gradle.kts` file is under [Supporting Files](/example/ios/Supporting%20Files/), so this is the directory to open with Android studio. 
