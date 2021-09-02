@@ -124,33 +124,3 @@ fun String.asImage(imageLoader: ImageLoader = ImageLoader(), defaultValue: Image
  * @return The [Font] associated with the identifier represented by this String, or [defaultValue] if no such [Font] could be found.
  */
 suspend fun String.asFont(fontLoader: FontLoader = FontLoader(), defaultValue: Font? = null): Font? = fontLoader.loadFont(this, defaultValue)
-
-/**
- * Attempts to parse a given [String] into a [Color].
- * The string should be formatted as either `#AARRGGBB` or `#RRGGBB` for the parsing to succeed.
- * @param hexString The [String] to parse as a [Color]
- * @return The [Color] associated with [hexString] or `null` if improperly formatted.
- */
-fun colorFrom(hexString: String): Color? {
-    return if (hexString.startsWith('#')) {
-        val hexColor = hexString.substring(1).toLong(16)
-        when (hexString.length) {
-            9 -> {
-                val alpha = hexColor ushr 24
-                val red = (hexColor shr 16) and 0xFF
-                val green = (hexColor shr 8) and 0xFF
-                val blue = hexColor and 0xFF
-                colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
-            }
-            7 -> {
-                val red = hexColor ushr 16
-                val green = (hexColor shr 8) and 0xFF
-                val blue = hexColor and 0xFF
-                colorFrom(red.toInt(), green.toInt(), blue.toInt())
-            }
-            else -> null
-        }
-    } else {
-        null
-    }
-}

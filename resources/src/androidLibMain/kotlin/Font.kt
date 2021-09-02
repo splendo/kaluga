@@ -20,3 +20,8 @@ package com.splendo.kaluga.resources
 import android.graphics.Typeface
 
 actual typealias Font = Typeface
+
+actual val defaultFont: Font get() = Typeface.DEFAULT
+actual val defaultBoldFont: Font get() = Typeface.DEFAULT_BOLD
+actual val defaultItalicFont: Font get() = Typeface.create(Typeface.DEFAULT, Typeface.ITALIC)
+actual val defaultMonospaceFont: Font get() = Typeface.MONOSPACE

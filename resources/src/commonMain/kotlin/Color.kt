@@ -17,9 +17,18 @@
 
 package com.splendo.kaluga.resources
 
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+
 /**
  * Class describing a color
  */
+@Serializable(with = ColorSerializer::class)
 expect class Color
 
 /**
@@ -74,3 +83,61 @@ expect fun colorFrom(red: Double, green: Double, blue: Double, alpha: Double = 1
  * @return The [Color] with the corresponding red, green, blue, and alpha values
  */
 expect fun colorFrom(redInt: Int, greenInt: Int, blueInt: Int, alphaInt: Int = 255): Color
+
+/**
+ * Attempts to parse a given [String] into a [Color].
+ * The string should be formatted as either `#AARRGGBB` or `#RRGGBB` for the parsing to succeed.
+ * @param hexString The [String] to parse as a [Color]
+ * @return The [Color] associated with [hexString] or `null` if improperly formatted.
+ */
+fun colorFrom(hexString: String): Color? {
+    return if (hexString.startsWith('#')) {
+        val hexColor = hexString.substring(1).toLong(16)
+        when (hexString.length) {
+            9 -> {
+                val alpha = hexColor ushr 24
+                val red = (hexColor shr 16) and 0xFF
+                val green = (hexColor shr 8) and 0xFF
+                val blue = hexColor and 0xFF
+                colorFrom(red.toInt(), green.toInt(), blue.toInt(), alpha.toInt())
+            }
+            7 -> {
+                val red = hexColor ushr 16
+                val green = (hexColor shr 8) and 0xFF
+                val blue = hexColor and 0xFF
+                colorFrom(red.toInt(), green.toInt(), blue.toInt())
+            }
+            else -> null
+        }
+    } else {
+        null
+    }
+}
+
+val clearColor = colorFrom(1.0, 1.0, 1.0, 0.0)
+val Color.inverted: Color get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
+val Color.hexString: String
+    get() {
+        return "#${alphaInt.toHex(2)}${redInt.toHex(2)}${greenInt.toHex(2)}${blueInt.toHex(2)}"
+    }
+
+private fun Int.toHex(minSize: Int): String {
+    val hexValue = this.toString(16)
+    val prefix = List(minSize - hexValue.length) { "0" }
+    return listOf(*prefix.toTypedArray(), hexValue).joinToString("")
+}
+
+open class ColorSerializer :
+    KSerializer<Color> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ColorString", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Color) {
+        val string = value.hexString
+        encoder.encodeString(string)
+    }
+
+    override fun deserialize(decoder: Decoder): Color {
+        val string = decoder.decodeString()
+        return colorFrom(string)!!
+    }
+}
