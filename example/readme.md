@@ -1,7 +1,7 @@
 # Example project
 
 This example project has the following parts:
-- An android app in [android](/example/android)
+- An Android app in [android](/example/android)
 - A shared code module in [shared](/example/shared). This exposes and android library, and kotlin native sourceset that depends on a common source set. These are then included in the build of the iOS and Android example apps.
 - An iOS app in [ios](/example/ios)
 
