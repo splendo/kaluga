@@ -42,6 +42,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.resources.ResourcesActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
@@ -68,6 +69,7 @@ import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
@@ -150,6 +152,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
+                    FeatureListNavigationAction.Resources -> NavigationSpec.Activity(ResourcesActivity::class.java)
                 }
             }
         )
@@ -276,5 +279,9 @@ val viewModelModule = module {
 
     viewModel {
         BeaconsListViewModel(get())
+    }
+
+    viewModel {
+        ResourcesViewModel()
     }
 }

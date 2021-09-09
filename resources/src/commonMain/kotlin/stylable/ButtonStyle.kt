@@ -15,11 +15,21 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.resources.stylable
 
-data class TextStyle(
+import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.Font
+
+data class ButtonStyle(
     val font: Font,
-    val color: Color,
-    val size: Float,
-    val allCaps: Boolean = false
+    val textSize: Float,
+    val allCaps: Boolean = false,
+    val defaultStyle: ButtonStateStyle,
+    val pressedStyle: ButtonStateStyle = defaultStyle,
+    val disabledStyle: ButtonStateStyle = defaultStyle
+)
+
+data class ButtonStateStyle(
+    val textColor: Color,
+    val backgroundStyle: BackgroundStyle,
 )

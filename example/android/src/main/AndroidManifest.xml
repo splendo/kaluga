@@ -91,6 +91,8 @@
             android:label="@string/feature_bluetooth"/>
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"/>
+        <activity android:name=".resources.ResourcesActivity"
+            android:label="@string/feature_beacons"/>
 
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
 

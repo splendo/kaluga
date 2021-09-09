@@ -15,22 +15,28 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.resources.stylable
 
-data class ButtonStyle(
-    val textStyle: TextStyle,
-    val foregroundColor: Color = clearColor,
-    val backgroundColor: Color,
-    val cornerRadius: Double = 0.0,
-    val strokeStyle: StrokeStyle = StrokeStyle.None
+import com.splendo.kaluga.resources.Color
+
+data class BackgroundStyle(
+    val fillStyle: FillStyle,
+    val strokeStyle: StrokeStyle = StrokeStyle.None,
+    val shape: Shape = Shape.Rectangle()
 ) {
 
-    companion object {
-        fun flat(textStyle: TextStyle, foregroundColor: Color = clearColor) = ButtonStyle(textStyle, foregroundColor, clearColor)
+    sealed class FillStyle {
+        data class Solid(val color: Color) : FillStyle()
+        data class Gradient(val gradientStyle: GradientStyle) : FillStyle()
+    }
+
+    sealed class Shape {
+        data class Rectangle(val cornerRadius: Float = 0.0f) : Shape()
+        object Oval : Shape()
     }
 
     sealed class StrokeStyle {
         object None : StrokeStyle()
-        data class Stroke(val width: Double, val color: Color) : StrokeStyle()
+        data class Stroke(val width: Float, val color: Color) : StrokeStyle()
     }
 }
