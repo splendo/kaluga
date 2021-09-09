@@ -24,4 +24,4 @@ import com.splendo.kaluga.resources.Image
 
 actual fun mockColor(): Color = 0
 actual fun mockImage(): Image = Image(ColorDrawable(0))
-actual fun mockFont(): Font = Font.DEFAULT
+actual fun mockFont(): Font? = Font.DEFAULT

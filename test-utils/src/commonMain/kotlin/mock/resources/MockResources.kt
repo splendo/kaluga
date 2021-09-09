@@ -83,4 +83,5 @@ class MockFontLoader private constructor (
 
 expect fun mockColor(): Color
 expect fun mockImage(): Image
-expect fun mockFont(): Font
+// NOTE: returns null in Android unit tests
+expect fun mockFont(): Font?
