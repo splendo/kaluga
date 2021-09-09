@@ -35,5 +35,5 @@ class AndroidStringsTest : StringsTests() {
         }
     }
 
-    override val stringLoader by lazy { StringLoader(activity) }
+    override val stringLoader by lazy { DefaultStringLoader(activity) }
 }

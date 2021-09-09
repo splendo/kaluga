@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,8 +15,13 @@
 
  */
 
-package com.splendo.kaluga.resources
+package com.splendo.kaluga.test.mock.resources
 
-class IOSStringsTest : StringsTests() {
-    override val stringLoader: StringLoader = DefaultStringLoader()
-}
+import android.graphics.drawable.ColorDrawable
+import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.Font
+import com.splendo.kaluga.resources.Image
+
+actual fun mockColor(): Color = 0
+actual fun mockImage(): Image = Image(ColorDrawable(0))
+actual fun mockFont(): Font = Font.DEFAULT
