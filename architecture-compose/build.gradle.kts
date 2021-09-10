@@ -17,7 +17,7 @@
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
+    kotlin("android")
     id("jacoco")
     id("convention.publication")
     id("org.jlleitschuh.gradle.ktlint")

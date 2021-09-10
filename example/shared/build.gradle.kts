@@ -14,7 +14,7 @@ kotlin {
             val ext = (gradle as ExtensionAware).extra
 
             dependencies {
-                if (!(ext["exampleAsRoot"] as Boolean)) {
+                if (!(ext["example_as_root"] as Boolean)) {
                     api(project(":alerts", ""))
                     api(project(":architecture", ""))
                     api(project(":base", ""))

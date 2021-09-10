@@ -5,17 +5,16 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_gradle_plugin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath "com.google.gms:google-services:4.3.9"
+        // mostly migrated to new style plugin declarations, but some cross plugin interaction still requires this
+        classpath "com.android.tools.build:gradle:${project.'kaluga.androidGradlePluginVersion'}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${project.'kaluga.kotlinVersion'}"
     }
 }
 
 plugins {
     id "convention.publication"
-    id 'org.jlleitschuh.gradle.ktlint' version '10.1.0'
-    id 'org.jlleitschuh.gradle.ktlint-idea' version '10.1.0'
+    id 'org.jlleitschuh.gradle.ktlint'
+    id 'org.jlleitschuh.gradle.ktlint-idea'
 }
 
 allprojects {
