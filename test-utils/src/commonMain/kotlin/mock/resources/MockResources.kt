@@ -26,59 +26,46 @@ import com.splendo.kaluga.resources.Image
 import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.StringLoader
 
-class MockStringLoader private constructor (
-    private val string: String?,
-    private val quantityString: String?,
+class MockStringLoader (
     private val stringMap: Map<String, String?>,
     private val quantityStringMap: Map<String, String?>
 ): StringLoader {
     constructor(string: String? = null, quantityString: String? = null):
-        this(string, quantityString, emptyMap(), emptyMap())
-    constructor(stringMap: Map<String, String?>, quantityStringMap: Map<String, String?>):
-        this(null, null, stringMap, quantityStringMap)
+        this(
+            emptyMap<String, String?>().withDefault { string },
+            emptyMap<String, String?>().withDefault { quantityString }
+        )
 
     override fun loadString(identifier: String, defaultValue: String): String =
-        stringMap[identifier] ?: string ?: defaultValue
+        stringMap[identifier] ?: defaultValue
 
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
         defaultValue: String
     ): String =
-        (quantityStringMap[identifier] ?: quantityString)?.format(quantity) ?: defaultValue
+        quantityStringMap[identifier]?.format(quantity) ?: defaultValue
 }
 
-class MockColorLoader private constructor (
-    private val color: Color?,
-    private val colorMap: Map<String, Color?>
-): ColorLoader {
-    constructor(color: Color? = null): this(color, emptyMap())
-    constructor(colorMap: Map<String, Color?>): this(null, colorMap)
+class MockColorLoader(private val colorMap: Map<String, Color?>): ColorLoader {
+    constructor(color: Color? = null): this(emptyMap<String, Color?>().withDefault { color })
 
     override fun loadColor(identifier: String, defaultValue: Color?): Color? =
-        colorMap[identifier] ?: color ?: defaultValue
+        colorMap[identifier] ?: defaultValue
 }
 
-class MockImageLoader private constructor (
-    private val image: Image?,
-    private val imageMap: Map<String, Image?>
-): ImageLoader {
-    constructor(image: Image? = null): this(image, emptyMap())
-    constructor(imageMap: Map<String, Image?>): this(null, imageMap)
+class MockImageLoader(private val imageMap: Map<String, Image?>): ImageLoader {
+    constructor(image: Image? = null): this(emptyMap<String, Image?>().withDefault { image })
 
     override fun loadImage(identifier: String, defaultValue: Image?): Image? =
-        imageMap[identifier] ?: image ?: defaultValue
+        imageMap[identifier] ?: defaultValue
 }
 
-class MockFontLoader private constructor (
-    private val font: Font?,
-    private val fontMap: Map<String, Font?>
-): FontLoader {
-    constructor(font: Font? = null): this(font, emptyMap())
-    constructor(fontMap: Map<String, Font?>): this(null, fontMap)
+class MockFontLoader(private val fontMap: Map<String, Font?>): FontLoader {
+    constructor(font: Font? = null): this(emptyMap<String, Font?>().withDefault { font })
 
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
-        fontMap[identifier] ?: font ?: defaultValue
+        fontMap[identifier] ?: defaultValue
 }
 
 expect fun mockColor(): Color
