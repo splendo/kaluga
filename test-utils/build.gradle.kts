@@ -51,7 +51,9 @@ kotlin {
                 implementation(project(":calendar-permissions", ""))
                 implementation(project(":resources", ""))
                 implementation("io.insert-koin:koin-core:" + ext["koin_version"])
-                implementation("org.mockito:mockito-core:" + ext["mockito_version"])
+                implementation("org.mockito:mockito-core:" + ext["mockito_version"]) {
+                    exclude(group = "net.bytebuddy")
+                }
             }
         }
 
