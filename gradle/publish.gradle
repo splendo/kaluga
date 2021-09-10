@@ -4,7 +4,7 @@ String type = gradle.ext.component_type
 afterEvaluate {
     publishing {
         publications {
-            logger.lifecycle("publish type: $gradle.ext.component_type")
+            logger.lifecycle("This project module will be published as: $gradle.ext.component_type")
             if (type.contains("compose")) {
                 release(MavenPublication) {
                     from components.release

@@ -75,15 +75,24 @@ Kaluga is available on Maven Central. For example the Kaluga Alerts can be impor
 
 ```kotlin
 repositories {
-    // ...
     mavenCentral()
 }
-// ...
 dependencies {
-    // ...
     implementation("com.splendo.kaluga:alerts:0.2.1")
 }
 ```
+
+You can also use the `SNAPSHOT` version based on the latest in the `develop` branch:
+
+```kotlin
+repositories {
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+}
+dependencies {
+    implementation("com.splendo.kaluga:alerts:0.2.2-SNAPSHOT")
+}
+```
+
 
 To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery templates](https://github.com/splendo/kaluga-swiftui) to generate some Swift code to help get you started.
 
