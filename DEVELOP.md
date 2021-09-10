@@ -100,7 +100,7 @@ If these values are present as environment variables they will also be picked up
 
 #### Publishing via CI
 
-BitRise automatically publishes every branch to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). This is done using a (private) BitRise project. A Maven Central release can be done by manually starting the `publisMavenCentralRelease` workflow for the appropriate release branch.
+Bitrise automatically publishes every branch to the Sonatype snapshot repository (`https://oss.sonatype.org/content/repositories/snapshots/`). This is done using a (private) Bitrise project. A Maven Central release can be done by manually starting the `publisMavenCentralRelease` workflow for the appropriate release branch.
 
 #### Releasing to Maven Central
 
