@@ -108,7 +108,7 @@ Projects publishing to Sonatype's release repository need to be manually closed 
 
 #### Increase version after publishing
 
-in case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle) in the `develop` branch to start the next development iteration.
+In case this has not been done yet, bump the version at [gradle/ext.gradle](gradle/ext.gradle) in the `develop` branch to start the next development iteration.
 
 ```sh
 library_version = 'X.X.X'
