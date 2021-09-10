@@ -24,4 +24,4 @@ import platform.UIKit.UIColor
 
 actual fun mockColor(): Color = Color(UIColor.blackColor())
 actual fun mockImage(): Image = Image()
-actual fun mockFont(): Font? = Font()
+actual fun mockFont(): Font = Font()

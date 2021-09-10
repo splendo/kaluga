@@ -21,7 +21,9 @@ import android.graphics.drawable.ColorDrawable
 import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.Font
 import com.splendo.kaluga.resources.Image
+import org.mockito.Mockito
 
 actual fun mockColor(): Color = 0
 actual fun mockImage(): Image = Image(ColorDrawable(0))
-actual fun mockFont(): Font? = Font.DEFAULT
+actual fun mockFont(): Font = Font.DEFAULT ?: Mockito.mock(Font::class.java)
+
