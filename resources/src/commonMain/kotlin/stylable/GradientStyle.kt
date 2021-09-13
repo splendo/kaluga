@@ -18,12 +18,13 @@
 package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.Color
+import kotlin.jvm.JvmName
 
 sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
     data class ColorPoint(val color: Color, val offset: Float)
     data class CenterPoint(val x: Float, val y: Float)
 
-    class Linear(colorPoints: List<ColorPoint>, val orientation: Orientation = Orientation.LEFT_RIGHT) : GradientStyle(colorPoints) {
+    class Linear private constructor (colorPoints: List<ColorPoint>, val orientation: Orientation) : GradientStyle(colorPoints) {
         enum class Orientation {
             BOTTOM_LEFT_TOP_RIGHT,
             BOTTOM_TOP,
@@ -34,18 +35,39 @@ sealed class GradientStyle(val colorPoints: List<ColorPoint>) {
             TOP_BOTTOM,
             BOTTOM_RIGHT_TOP_LEFT
         }
+
+        companion object {
+            @JvmName("fromColors")
+            operator fun invoke(colors: List<Color>, orientation: Orientation = Orientation.LEFT_RIGHT) = Linear(colors.colorPoints, orientation)
+            @JvmName("fromColorPoints")
+            operator fun invoke(colorPoints: List<ColorPoint>, orientation: Orientation = Orientation.LEFT_RIGHT) = Linear(colorPoints, orientation)
+        }
     }
 
     class Radial(
         colorPoints: List<ColorPoint>,
         val radius: Float,
         val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)
-    ) : GradientStyle(colorPoints)
+    ) : GradientStyle(colorPoints) {
+        companion object {
+            @JvmName("fromColors")
+            operator fun invoke(colors: List<Color>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colors.colorPoints, radius, centerPoint)
+            @JvmName("fromColorPoints")
+            operator fun invoke(colorPoints: List<ColorPoint>, radius: Float, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Radial(colorPoints, radius, centerPoint)
+        }
+    }
 
     class Angular(
         colorPoints: List<ColorPoint>,
         val centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)
-    ) : GradientStyle(colorPoints)
+    ) : GradientStyle(colorPoints) {
+        companion object {
+            @JvmName("fromColors")
+            operator fun invoke(colors: List<Color>, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Angular(colors.colorPoints, centerPoint)
+            @JvmName("fromColorPoints")
+            operator fun invoke(colorPoints: List<ColorPoint>, centerPoint: CenterPoint = CenterPoint(0.5f, 0.5f)) = Angular(colorPoints, centerPoint)
+        }
+    }
 }
 
 val List<Color>.colorPoints: List<GradientStyle.ColorPoint> get() {
