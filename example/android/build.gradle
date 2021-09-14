@@ -56,7 +56,7 @@ android {
 kotlin {
     sourceSets.all {
         languageSettings {
-            useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+            optIn 'kotlin.ExperimentalStdlibApi'
         }
     }
 }
