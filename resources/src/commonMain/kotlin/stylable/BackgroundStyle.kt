@@ -31,7 +31,21 @@ data class BackgroundStyle(
     }
 
     sealed class Shape {
-        data class Rectangle(val cornerRadius: Float = 0.0f) : Shape()
+        data class Rectangle(
+            val cornerRadiusX: Float,
+            val cornerRadiusY: Float,
+            val roundedCorners: Set<Corner> = Corner.values().toSet()
+        ) : Shape() {
+
+            enum class Corner {
+                TOP_LEFT,
+                TOP_RIGHT,
+                BOTTOM_LEFT,
+                BOTTOM_RIGHT
+            }
+
+            constructor(cornerRadius: Float = 0.0f, roundedCorners: Set<Corner> = Corner.values().toSet()) : this(cornerRadius, cornerRadius, roundedCorners)
+        }
         object Oval : Shape()
     }
 

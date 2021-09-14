@@ -23,6 +23,5 @@ import com.splendo.kaluga.resources.Font
 data class TextStyle(
     val font: Font,
     val color: Color,
-    val size: Float,
-    val allCaps: Boolean = false
+    val size: Float
 )

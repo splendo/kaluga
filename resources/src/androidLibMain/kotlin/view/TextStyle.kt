@@ -8,5 +8,5 @@ fun TextView.applyTextStyle(textStyle: TextStyle) {
     typeface = textStyle.font
     textSize = textStyle.size
     setTextColor(ColorStateList(arrayOf(intArrayOf()), intArrayOf(textStyle.color)))
-    isAllCaps = textStyle.allCaps
+    isAllCaps = false
 }

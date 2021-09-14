@@ -16,7 +16,7 @@ sealed class RippleStyle {
 
 fun Button.applyButtonStyle(style: ButtonStyle, rippleStyle: RippleStyle = RippleStyle.ForegroundRipple) {
     typeface = style.font
-    isAllCaps = style.allCaps
+    isAllCaps = false
     textSize = style.textSize
     setTextColor(
         ColorStateList(

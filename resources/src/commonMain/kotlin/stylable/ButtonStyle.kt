@@ -23,7 +23,6 @@ import com.splendo.kaluga.resources.Font
 data class ButtonStyle(
     val font: Font,
     val textSize: Float,
-    val allCaps: Boolean = false,
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
     val disabledStyle: ButtonStateStyle = defaultStyle
