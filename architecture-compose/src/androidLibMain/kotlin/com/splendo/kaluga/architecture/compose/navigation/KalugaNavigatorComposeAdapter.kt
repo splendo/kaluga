@@ -34,12 +34,12 @@ fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg argumen
  */
 open class KalugaNavigatorComposeAdapter<A : NavigationAction<*>>(
     protected val navController: NavHostController,
-    private val navigationMapper: (A) -> String?,
+    private val navigationMapper: (A) -> String,
     private val parentNavigator: KalugaNavigatorComposeAdapter<*>? = null
 ) : Navigator<A> {
 
     override fun navigate(action: A) {
-        val newRoute = navigationMapper(action)!!
+        val newRoute = navigationMapper(action)
         if (isNewRoute(newRoute)) {
             if (newRoute == BACK_ROUTE) {
                 back()
