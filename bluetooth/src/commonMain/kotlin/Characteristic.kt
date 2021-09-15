@@ -53,7 +53,8 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
     }
 
     fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
-        return DeviceAction.Notification(this, enabled)
+        return if (enabled) DeviceAction.Notification.Enable(this)
+        else DeviceAction.Notification.Disable(this)
     }
 
     override fun getUpdatedValue(): ByteArray? {

@@ -126,16 +126,18 @@ abstract class BaseDeviceConnectionManager(
             ).also { currentAction = null }
     }
 
-    suspend fun handleUpdatedCharacteristic(uuid: UUID, onUpdate: ((Characteristic) -> Unit)? = null) {
+    suspend fun handleUpdatedCharacteristic(uuid: UUID, failed: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
         notifyingCharacteristics[uuid.uuidString]?.updateValue()
         val characteristicToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
+                    if (failed) action.onFailure()
                     action.characteristic
                 } else null
             }
             is DeviceAction.Write.Characteristic -> {
                 if (action.characteristic.uuid.uuidString == uuid.uuidString) {
+                    if (failed) action.onFailure()
                     action.characteristic
                 } else null
             }
@@ -149,15 +151,17 @@ abstract class BaseDeviceConnectionManager(
         }
     }
 
-    suspend fun handleUpdatedDescriptor(uuid: UUID, onUpdate: ((Descriptor) -> Unit)? = null) {
+    suspend fun handleUpdatedDescriptor(uuid: UUID, failed: Boolean, onUpdate: ((Descriptor) -> Unit)? = null) {
         val descriptorToUpdate = when (val action = currentAction) {
             is DeviceAction.Read.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
+                    if (failed) action.onFailure()
                     action.descriptor
                 } else null
             }
             is DeviceAction.Write.Descriptor -> {
                 if (action.descriptor.uuid.uuidString == uuid.uuidString) {
+                    if (failed) action.onFailure()
                     action.descriptor
                 } else null
             }

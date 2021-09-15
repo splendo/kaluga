@@ -53,6 +53,7 @@ class MockDeviceConnectionManager(
     val performActionStarted = AtomicReference(CompletableDeferred<DeviceAction>())
     private val _handledAction = MutableSharedFlow<DeviceAction>(replay = 16, onBufferOverflow = BufferOverflow.DROP_OLDEST)
     val handledAction = _handledAction.asSharedFlow()
+    val willActionFail = false
 
     fun reset() {
         connectCompleted.set(EmptyCompletableDeferred())
@@ -89,18 +90,18 @@ class MockDeviceConnectionManager(
 
         when (action) {
             is DeviceAction.Read.Characteristic -> launch {
-                handleUpdatedCharacteristic(action.characteristic.uuid) {
+                handleUpdatedCharacteristic(action.characteristic.uuid, failed = willActionFail) {
                     debug("Mock Read: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
                 _handledAction.emit(action)
             }
             is DeviceAction.Read.Descriptor -> launch {
-                handleUpdatedDescriptor(action.descriptor.uuid)
+                handleUpdatedDescriptor(action.descriptor.uuid, failed = willActionFail)
                 _handledAction.emit(action)
             }
             is DeviceAction.Write.Characteristic -> launch {
                 (action.characteristic.wrapper as MockCharacteristicWrapper).updateMockValue(action.newValue)
-                handleUpdatedCharacteristic(action.characteristic.uuid) {
+                handleUpdatedCharacteristic(action.characteristic.uuid, failed = willActionFail) {
                     debug("Mock Write: ${action.characteristic.uuid} value ${action.characteristic.wrapper.value?.asBytes?.toHexString()}")
                 }
                 debug("Will emit write action")
@@ -109,7 +110,7 @@ class MockDeviceConnectionManager(
             }
             is DeviceAction.Write.Descriptor -> launch {
                 (action.descriptor.wrapper as MockDescriptorWrapper).updateMockValue(action.newValue)
-                handleUpdatedDescriptor(action.descriptor.uuid)
+                handleUpdatedDescriptor(action.descriptor.uuid, failed = willActionFail)
                 _handledAction.emit(action)
             }
             is DeviceAction.Notification -> launch {

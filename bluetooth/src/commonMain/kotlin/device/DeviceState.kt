@@ -28,16 +28,23 @@ import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
+
+    val onFailure: () -> Unit = { }
+
     sealed class Read : DeviceAction() {
         class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Read()
         class Descriptor(val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Read()
     }
+
     sealed class Write(val newValue: ByteArray?) : DeviceAction() {
         class Characteristic(newValue: ByteArray?, val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Write(newValue)
         class Descriptor(newValue: ByteArray?, val descriptor: com.splendo.kaluga.bluetooth.Descriptor) : Write(newValue)
     }
 
-    data class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic, val enable: Boolean) : DeviceAction()
+    sealed class Notification(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : DeviceAction() {
+        class Enable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic)
+        class Disable(characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Notification(characteristic)
+    }
 }
 
 typealias DeviceStateFlowRepo = StateRepo<DeviceState, MutableStateFlow<DeviceState>>
@@ -117,10 +124,8 @@ sealed class DeviceState(
                     is DeviceAction.Read.Descriptor -> action.descriptor.updateValue()
                     is DeviceAction.Write.Characteristic -> action.characteristic.updateValue()
                     is DeviceAction.Write.Descriptor -> action.descriptor.updateValue()
-                    is DeviceAction.Notification -> {
-                        if (action.enable)
-                            action.characteristic.updateValue()
-                    }
+                    is DeviceAction.Notification.Enable -> action.characteristic.updateValue()
+                    is DeviceAction.Notification.Disable -> { }
                 }
                 if (nextActions.isEmpty()) {
                     Idle(services, deviceInfo, connectionManager)

@@ -86,19 +86,19 @@ internal actual class DeviceConnectionManager(
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            updateCharacteristic(didUpdateValueForCharacteristic)
+            updateCharacteristic(didUpdateValueForCharacteristic, error)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForCharacteristic: CBCharacteristic, error: NSError?) {
-            updateCharacteristic(didWriteValueForCharacteristic)
+            updateCharacteristic(didWriteValueForCharacteristic, error)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didUpdateValueForDescriptor: CBDescriptor, error: NSError?) {
-            updateDescriptor(didUpdateValueForDescriptor)
+            updateDescriptor(didUpdateValueForDescriptor, error)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didWriteValueForDescriptor: CBDescriptor, error: NSError?) {
-            updateDescriptor(didWriteValueForDescriptor)
+            updateDescriptor(didWriteValueForDescriptor, error)
         }
 
         override fun peripheral(peripheral: CBPeripheral, didDiscoverCharacteristicsForService: CBService, error: NSError?) {
@@ -153,25 +153,28 @@ internal actual class DeviceConnectionManager(
                     action.descriptor.wrapper.writeValue(it, peripheral)
                 }
             }
-            is DeviceAction.Notification -> {
+            is DeviceAction.Notification.Enable -> {
                 val uuid = action.characteristic.uuid.uuidString
-                if (action.enable) {
-                    notifyingCharacteristics[uuid] = action.characteristic
-                } else notifyingCharacteristics.remove(uuid)
-                action.characteristic.wrapper.setNotificationValue(action.enable, peripheral)
+                notifyingCharacteristics[uuid] = action.characteristic
+                action.characteristic.wrapper.setNotificationValue(true, peripheral)
+            }
+            is DeviceAction.Notification.Disable -> {
+                val uuid = action.characteristic.uuid.uuidString
+                notifyingCharacteristics.remove(uuid)
+                action.characteristic.wrapper.setNotificationValue(false, peripheral)
             }
         }
     }
 
-    private fun updateCharacteristic(characteristic: CBCharacteristic) {
+    private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
         launch {
-            handleUpdatedCharacteristic(characteristic.UUID)
+            handleUpdatedCharacteristic(characteristic.UUID, failed = error != null)
         }
     }
 
-    private fun updateDescriptor(descriptor: CBDescriptor) {
+    private fun updateDescriptor(descriptor: CBDescriptor, error: NSError?) {
         launch {
-            handleUpdatedDescriptor(descriptor.UUID)
+            handleUpdatedDescriptor(descriptor.UUID, failed = error != null)
         }
     }
 

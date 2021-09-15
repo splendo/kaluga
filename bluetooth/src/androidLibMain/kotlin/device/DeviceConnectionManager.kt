@@ -19,6 +19,7 @@ package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGatt.GATT_SUCCESS
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattCharacteristic.PROPERTY_INDICATE
@@ -27,11 +28,13 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
 import com.splendo.kaluga.bluetooth.Service
+import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
 import com.splendo.kaluga.bluetooth.uuidString
-import com.splendo.kaluga.logging.w
+import com.splendo.kaluga.logging.warn
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +51,7 @@ internal actual class DeviceConnectionManager(
 
     private companion object {
         const val TAG = "Android Bluetooth DeviceConnectionManager"
+        val CLIENT_CONFIGURATION = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
     override val coroutineContext: CoroutineContext
@@ -63,7 +67,7 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    private val device: android.bluetooth.BluetoothDevice = deviceWrapper.device
+    private val device: BluetoothDevice = deviceWrapper.device
     private var gatt: CompletableDeferred<BluetoothGattWrapper> = CompletableDeferred()
     private val callback = object : BluetoothGattCallback() {
 
@@ -75,12 +79,12 @@ internal actual class DeviceConnectionManager(
 
         override fun onCharacteristicRead(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            updateCharacteristic(characteristic)
+            updateCharacteristic(characteristic, status)
         }
 
         override fun onCharacteristicWrite(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int) {
             characteristic ?: return
-            updateCharacteristic(characteristic)
+            updateCharacteristic(characteristic, status)
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
@@ -92,17 +96,17 @@ internal actual class DeviceConnectionManager(
 
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            updateDescriptor(descriptor)
+            updateDescriptor(descriptor, status)
         }
 
         override fun onCharacteristicChanged(gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?) {
             characteristic ?: return
-            updateCharacteristic(characteristic)
+            updateCharacteristic(characteristic, status = GATT_SUCCESS)
         }
 
         override fun onDescriptorRead(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             descriptor ?: return
-            updateDescriptor(descriptor)
+            updateDescriptor(descriptor, status)
         }
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
@@ -176,41 +180,54 @@ internal actual class DeviceConnectionManager(
     override suspend fun performAction(action: DeviceAction) {
         currentAction = action
         val shouldWait = when (action) {
-            is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
-            is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.wrapper)
+            is DeviceAction.Read.Characteristic -> {
+                gatt.await().readCharacteristic(action.characteristic.wrapper).also { result ->
+                    if (!result) {
+                        action.onFailure()
+                    }
+                }
+            }
+            is DeviceAction.Read.Descriptor -> {
+                gatt.await().readDescriptor(action.descriptor.wrapper).also { result ->
+                    if (!result) {
+                        action.onFailure()
+                    }
+                }
+            }
             is DeviceAction.Write.Characteristic -> {
                 action.characteristic.wrapper.updateValue(action.newValue)
-                gatt.await().writeCharacteristic(action.characteristic.wrapper)
+                gatt.await().writeCharacteristic(action.characteristic.wrapper).also { result ->
+                    if (!result) {
+                        action.onFailure()
+                    }
+                }
             }
             is DeviceAction.Write.Descriptor -> {
                 action.descriptor.wrapper.updateValue(action.newValue)
-                gatt.await().writeDescriptor(action.descriptor.wrapper)
-            }
-            is DeviceAction.Notification -> {
-                val uuid = action.characteristic.uuid.uuidString
-                if (action.enable) {
-                    notifyingCharacteristics[uuid] = action.characteristic
-                } else notifyingCharacteristics.remove(uuid)
-                gatt.await().setCharacteristicNotification(action.characteristic.wrapper, action.enable)
-
-                when {
-                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) -> BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) -> BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
-                    !action.enable && action.characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) -> BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
-                    else -> {
-                        w(TAG) { "(${action.characteristic.uuid.uuidString}) Failed attempt to perform notification action. neither NOTIFICATION nor INDICATION is supported. Supported properties: ${action.characteristic.wrapper.properties}" }
-                        null
-                    }
-                }?.let { value ->
-                    action.characteristic.descriptors.forEach { descriptor ->
-                        descriptor.wrapper.updateValue(value)
-                        gatt.await().writeDescriptor(descriptor.wrapper)
+                gatt.await().writeDescriptor(action.descriptor.wrapper).also { result ->
+                    if (!result) {
+                        action.onFailure()
                     }
                 }
-
+            }
+            is DeviceAction.Notification.Enable -> {
+                setNotification(action.characteristic, true).also { result ->
+                    if (!result) {
+                        action.onFailure()
+                    }
+                }
+                false
+            }
+            is DeviceAction.Notification.Disable -> {
+                setNotification(action.characteristic, false).also { result ->
+                    if (!result) {
+                        action.onFailure()
+                    }
+                }
                 false
             }
         }
+
         // Action Failed or Already Completed
         if (!shouldWait) {
             launch(mainDispatcher) {
@@ -219,17 +236,50 @@ internal actual class DeviceConnectionManager(
         }
     }
 
-    private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic) {
+    private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
+        val uuid = characteristic.uuid.uuidString
+        if (enable) notifyingCharacteristics[uuid] = characteristic
+        else notifyingCharacteristics.remove(uuid)
+        if (!gatt.await().setCharacteristicNotification(characteristic.wrapper, enable)) {
+            return false
+        }
+
+        val writeValue = when {
+            enable && characteristic.wrapper.containsAnyOf(PROPERTY_NOTIFY) ->
+                BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+            enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE) ->
+                BluetoothGattDescriptor.ENABLE_INDICATION_VALUE
+            !enable && characteristic.wrapper.containsAnyOf(PROPERTY_INDICATE, PROPERTY_NOTIFY) ->
+                BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+            else -> null
+        }
+
+        return if (writeValue != null) {
+            characteristic.descriptors.firstOrNull { it.uuid == CLIENT_CONFIGURATION }?.let { descriptor ->
+                descriptor.wrapper.updateValue(writeValue)
+                gatt.await().writeDescriptor(descriptor.wrapper)
+            } ?: false
+        } else {
+            warn(TAG) {
+                "(${characteristic.uuid.uuidString}) Failed attempt to perform set notification action. " +
+                    "neither NOTIFICATION nor INDICATION is supported. " +
+                    "Supported properties: ${characteristic.wrapper.properties}"
+            }
+            false
+        }
+    }
+
+    private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, status: Int) {
         launch(mainDispatcher) {
-            handleUpdatedCharacteristic(characteristic.uuid) {
+            handleUpdatedCharacteristic(characteristic.uuid, failed = status != GATT_SUCCESS) {
                 it.wrapper.updateValue(characteristic.value)
             }
         }
     }
 
-    private fun updateDescriptor(descriptor: BluetoothGattDescriptor) {
+    private fun updateDescriptor(descriptor: BluetoothGattDescriptor, status: Int) {
         launch(mainDispatcher) {
-            handleUpdatedDescriptor(descriptor.uuid) {
+            handleUpdatedDescriptor(descriptor.uuid, failed = status != GATT_SUCCESS) {
                 it.wrapper.updateValue(descriptor.value)
             }
         }
