@@ -18,5 +18,5 @@
 package com.splendo.kaluga.resources
 
 class IOSStringsTest : StringsTests() {
-    override val stringLoader: StringLoader = StringLoader()
+    override val stringLoader: StringLoader = DefaultStringLoader()
 }

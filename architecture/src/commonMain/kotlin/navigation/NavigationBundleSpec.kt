@@ -19,6 +19,7 @@ package com.splendo.kaluga.architecture.navigation
 
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 /**
@@ -162,8 +163,12 @@ sealed class NavigationBundleSpecType<T> {
             return NavigationBundleValue.SerializedValue(serializer, value)
         }
 
-        fun generateValue(stringValue: String): NavigationBundleValue<T> {
-            return NavigationBundleValue.SerializedValue(serializer, json.decodeFromString(serializer, stringValue))
+        fun generateValue(stringValue: String): NavigationBundleValue<T>? {
+            return try {
+                NavigationBundleValue.SerializedValue(serializer, json.decodeFromString(serializer, stringValue))
+            } catch (e: SerializationException) {
+                null
+            }
         }
     }
 

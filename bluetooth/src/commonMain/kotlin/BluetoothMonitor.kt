@@ -19,9 +19,9 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.ServiceMonitor
 
-expect class BluetoothMonitor : ServiceMonitor {
+expect interface BluetoothMonitor : ServiceMonitor {
 
-    class Builder constructor() {
+    class Builder {
         fun create(): BluetoothMonitor
     }
 }

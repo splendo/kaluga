@@ -32,11 +32,11 @@ val ossrhUsername: String? by project
 val ossrhPassword: String? by project
 
 // Stub secrets to let the project sync and build without the publication values set up
-ext["signing.keyId"] = signingKeyId
-ext["signing.password"] = signingPassword
-ext["signing.secretKeyRingFile"] = signingSecretKeyRingFile
-ext["ossrhUsername"] = ossrhUsername
-ext["ossrhPassword"] = ossrhPassword
+ext["signing.keyId"] = signingKeyId ?: System.getenv("SIGNING_KEY_ID")
+ext["signing.password"] = signingPassword ?: System.getenv("SIGNING_PASSWORD")
+ext["signing.secretKeyRingFile"] = signingSecretKeyRingFile ?: System.getenv("SIGNING_SECRET_KEY_RING_FILE")
+ext["ossrhUsername"] = ossrhUsername ?: System.getenv("OSSRH_USERNAME")
+ext["ossrhPassword"] = ossrhPassword ?: System.getenv("OSSRH_PASSWORD")
 
 signing {
     setRequired(
@@ -58,6 +58,15 @@ publishing {
         maven {
             name = "sonatype"
             setUrl("https://oss.sonatype.org/service/local/staging/deploy/maven2/")
+            credentials {
+                username = getExtraString("ossrhUsername")
+                password = getExtraString("ossrhPassword")
+            }
+        }
+
+        maven {
+            name = "snapshots"
+            setUrl("https://oss.sonatype.org/content/repositories/snapshots/")
             credentials {
                 username = getExtraString("ossrhUsername")
                 password = getExtraString("ossrhPassword")

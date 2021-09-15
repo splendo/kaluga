@@ -19,8 +19,8 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
 
-expect class LocationMonitor : ServiceMonitor {
-    class Builder constructor() {
+expect interface LocationMonitor : ServiceMonitor {
+    class Builder {
         fun create(): LocationMonitor
     }
 }

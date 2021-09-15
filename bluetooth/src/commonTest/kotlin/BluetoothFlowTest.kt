@@ -121,7 +121,7 @@ abstract class BluetoothFlowTest<T> : SimpleFlowTest<T>() {
                     autoEnableBluetooth,
                     scanningStateRepo
                 )
-                scanner.isEnabled = isEnabled
+                scanner.isEnabled.value = isEnabled
                 deferredBaseScanner.complete(scanner)
                 return scanner
             }

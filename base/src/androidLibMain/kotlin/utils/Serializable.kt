@@ -14,7 +14,6 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.base.utils
 import java.io.Serializable
 

@@ -71,7 +71,7 @@ sealed class ScanningState : State() {
                 // Start monitoring Permissions and Bluetooth
                 // Stop will be called from deinitChangeState
                 scanner.startMonitoringPermissions()
-                scanner.startMonitoringBluetooth()
+                scanner.startMonitoringSensors()
             }
         }
 
@@ -157,8 +157,8 @@ sealed class ScanningState : State() {
                 }
 
                 override suspend fun afterOldStateIsRemoved(oldState: ScanningState) {
-                    if (oldState !is Disabled && scanner.autoEnableBluetooth)
-                        scanner.requestBluetoothEnable()
+                    if (oldState !is Disabled && scanner.autoEnableSensors)
+                        scanner.requestSensorsEnable()
                 }
             }
 
@@ -171,11 +171,15 @@ sealed class ScanningState : State() {
                     else Disabled(scanner)
                 }
             }
+
+            class NoHardware internal constructor(
+                private val scanner: BaseScanner
+            ) : NoBluetooth(scanner)
         }
 
         internal fun stopMonitoring() {
             scanner.stopMonitoringPermissions()
-            scanner.stopMonitoringBluetooth()
+            scanner.stopMonitoringSensors()
         }
     }
 
@@ -197,9 +201,11 @@ sealed class ScanningState : State() {
                 autoEnableBluetooth,
                 scanningStateRepo = repo
             )
-            return if (!scanner.isPermitted()) {
+            return if (!scanner.isSupported) {
+                { Initialized.NoBluetooth.NoHardware(scanner) }
+            } else if (!scanner.isPermitted()) {
                 { Initialized.NoBluetooth.MissingPermissions(scanner) }
-            } else if (!scanner.isBluetoothEnabled()) {
+            } else if (!scanner.areSensorsEnabled()) {
                 { Initialized.NoBluetooth.Disabled(scanner) }
             } else {
                 { Initialized.Enabled.Idle(nothingDiscovered, scanner) }
@@ -224,8 +230,7 @@ class ScanningStateRepo(
             is ScanningState.Initialized.Enabled.Idle ->
                 state.refresh() // check if we now need to start scanning again
             is Scanning,
-            is ScanningState.Initialized.NoBluetooth.Disabled,
-            is ScanningState.Initialized.NoBluetooth.MissingPermissions,
+            is ScanningState.Initialized.NoBluetooth,
             is ScanningState.NotInitialized ->
                 state.remain()
         }

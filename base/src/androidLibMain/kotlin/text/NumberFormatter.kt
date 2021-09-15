@@ -20,6 +20,7 @@ package com.splendo.kaluga.base.text
 import com.splendo.kaluga.base.utils.Locale
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
+import java.text.ParseException
 import java.util.Currency
 
 @ExperimentalUnsignedTypes
@@ -143,7 +144,7 @@ actual class NumberFormatter actual constructor(actual val locale: Locale, style
         set(value) { format.multiplier = value }
 
     actual fun format(number: Number): String = format.format(number.toDouble())
-    actual fun parse(string: String): Number? = format.parse(string)
+    actual fun parse(string: String): Number? = try { format.parse(string) } catch (e: ParseException) { null }
     private fun applySymbols(apply: (DecimalFormatSymbols) -> Unit) {
         val symbols = format.decimalFormatSymbols
         apply(symbols)

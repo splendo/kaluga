@@ -27,9 +27,9 @@ import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 import kotlinx.coroutines.CompletableDeferred
 
-actual class StringLoader(private val context: Context?) {
+actual class DefaultStringLoader(private val context: Context?): StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    actual fun loadString(identifier: String, defaultValue: String): String {
+    override fun loadString(identifier: String, defaultValue: String): String {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "string", context.packageName)
@@ -39,7 +39,7 @@ actual class StringLoader(private val context: Context?) {
             defaultValue
         }
     }
-    actual fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "plurals", context.packageName)
@@ -51,9 +51,9 @@ actual class StringLoader(private val context: Context?) {
     }
 }
 
-actual class ColorLoader(private val context: Context?) {
+actual class DefaultColorLoader(private val context: Context?): ColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    actual fun loadColor(identifier: String, defaultValue: Color?): Color? {
+    override fun loadColor(identifier: String, defaultValue: Color?): Color? {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "color", context.packageName)
@@ -65,9 +65,9 @@ actual class ColorLoader(private val context: Context?) {
     }
 }
 
-actual class ImageLoader(private val context: Context?) {
+actual class DefaultImageLoader(private val context: Context?): ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-    actual fun loadImage(identifier: String, defaultValue: Image?): Image? {
+    override fun loadImage(identifier: String, defaultValue: Image?): Image? {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "drawable", context.packageName)
@@ -79,9 +79,9 @@ actual class ImageLoader(private val context: Context?) {
     }
 }
 
-actual class FontLoader(private val context: Context?, private val handler: Handler?) {
+actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?): FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
-    actual suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
+    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "font", context.packageName)
