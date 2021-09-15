@@ -25,24 +25,35 @@ inline fun <reified ViewModel : BaseViewModel> getViewModel(vararg params: Any?)
     }
 }
 
-/** Composable which manages [viewModel] lifecycle. */
+/**
+ * Composable which manages [viewModel] lifecycle and optionally adds it to local [ViewModelStore].
+ * @param viewModel view model to manage
+ * @param store whether to add the [viewModel] a local [ViewModelStore]. Use if the [viewModel]
+ * was created manually and is not located in Activity/Fragment [ViewModelStore].
+ * @param content content based on [viewModel]
+ */
 @Composable
 fun <ViewModel : BaseViewModel> ViewModelComposable(
     viewModel: ViewModel,
-    isViewModelStoreElement: Boolean,
+    store: Boolean = false,
     content: @Composable ((ViewModel) -> Unit)? = null
 ) {
-    if (!isViewModelStoreElement) {
-        handleLocalViewModelStore(viewModel)
-    }
-
+    viewModel.store()
     viewModel.linkLifecycle()
-
     content?.invoke(viewModel)
 }
 
+/**
+ * Stores a view model in the local [ViewModelStore]. Use if the view model
+ * was created manually and is not located in Activity/Fragment [ViewModelStore].
+ */
+@Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM = provider().store()
+
 @Composable
-private fun <ViewModel : BaseViewModel> handleLocalViewModelStore(viewModel: ViewModel) {
+private fun <VM : BaseViewModel> VM.store() = this.also { handleLocalViewModelStore(it) }
+
+@Composable
+private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM) {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
     val viewModelStoreOwner = rememberComposableViewModelStoreOwner(viewModel)
 
