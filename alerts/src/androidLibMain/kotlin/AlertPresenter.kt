@@ -19,6 +19,10 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
@@ -40,11 +44,12 @@ actual class AlertPresenter(
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseAlertPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
+        actual override fun create(coroutineScope: CoroutineScope) =
+            AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {
-        fun transform(style: Alert.Action.Style): Int = when (style) {
+        fun transform(alertStyle: Alert.Action.Style): Int = when (alertStyle) {
             Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> AlertDialog.BUTTON_POSITIVE
             Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> AlertDialog.BUTTON_NEUTRAL
             Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> AlertDialog.BUTTON_NEGATIVE
@@ -52,7 +57,12 @@ actual class AlertPresenter(
     }
 
     private sealed class DialogPresentation {
-        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit) : DialogPresentation()
+        data class Showing(
+            val animated: Boolean,
+            val afterHandler: (Alert.Action?) -> Unit,
+            val completion: () -> Unit
+        ) : DialogPresentation()
+
         object Hidden : DialogPresentation()
     }
 
@@ -61,11 +71,16 @@ actual class AlertPresenter(
 
     init {
         launch {
-            combine(lifecycleManagerObserver.managerState, presentation) { managerState, dialogPresentation ->
+            combine(
+                lifecycleManagerObserver.managerState,
+                presentation
+            ) { managerState, dialogPresentation ->
                 Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
                 when (val dialogPresentation = contextPresentation.second) {
-                    is DialogPresentation.Showing -> contextPresentation.first?.activity?.let { presentDialog(it, dialogPresentation) } ?: run { alertDialog = null }
+                    is DialogPresentation.Showing -> contextPresentation.first?.activity?.let {
+                        presentDialog(it, dialogPresentation)
+                    } ?: run { alertDialog = null }
                     is DialogPresentation.Hidden -> alertDialog?.dismiss()
                 }
             }
@@ -96,6 +111,43 @@ actual class AlertPresenter(
                 }
             }
             .create()
+            .applyIf(alert.style == Alert.Style.TEXT_INPUT) {
+                val input = EditText(context)
+                alert.textInputAction?.let { textInputAction ->
+                    textInputAction.hint?.let { input.hint = it }
+                    input.inputType = InputType.TYPE_CLASS_TEXT
+                    input.addTextChangedListener(object : TextWatcher {
+                        override fun beforeTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
+                            // Do nothing
+                        }
+
+                        override fun onTextChanged(
+                            s: CharSequence?,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
+                            // Do nothing
+                        }
+
+                        override fun afterTextChanged(s: Editable?) {
+                            textInputAction.textWatcher(s.toString())
+                        }
+                    })
+                    setView(input)
+                }
+                alert.actions.forEach { action ->
+                    setButton(transform(action.style), action.title) { _, _ ->
+                        action.handler()
+                        presentation.afterHandler(action)
+                    }
+                }
+            }
             .applyIf(alert.style == Alert.Style.ALERT) {
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->

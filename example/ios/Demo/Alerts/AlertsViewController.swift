@@ -39,7 +39,8 @@ class AlertsViewController: UITableViewController {
         switch indexPath.row {
         case 0: viewModel.showAlert()
         case 1: viewModel.showAndDismissAfter(timeSecs: 3)
-        case 2: viewModel.showList()
+        case 2: viewModel.showAlertWithList()
+        case 3: viewModel.showAlertWithInput()
         default: ()
         }
     }

@@ -18,6 +18,7 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 
 package com.splendo.kaluga.alerts
 
+import kotlinx.cinterop.ObjCAction
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.NSString
 import platform.Foundation.localizedStringWithFormat
@@ -30,12 +31,31 @@ import platform.UIKit.UIAlertController
 import platform.UIKit.UIAlertControllerStyle
 import platform.UIKit.UIAlertControllerStyleActionSheet
 import platform.UIKit.UIAlertControllerStyleAlert
+import platform.UIKit.UIControlEventEditingChanged
+import platform.UIKit.UITextField
 import platform.UIKit.UIViewController
+import platform.objc.sel_registerName
 
 actual class AlertPresenter(
     private val alert: Alert,
     private val parent: UIViewController
 ) : BaseAlertPresenter(alert) {
+
+    /** Ref to alert's [UITextField] of type [Alert.Style.TEXT_INPUT] */
+    private var textField: UITextField? = null
+
+    /** Callback called from [UITextField] for action of type [UIControlEventEditingChanged]
+     * for alerts of type [Alert.Style.TEXT_INPUT]
+     *
+     * The callback does not pass the text back so we have to extract it from the
+     * [textField] ref and invoke the [alert]'s [Alert.TextInputAction.textWatcher]
+     * */
+    @ObjCAction
+    fun textDidChange() {
+        textField?.text?.let {
+            alert.textInputAction?.textWatcher?.invoke(it)
+        }
+    }
 
     private companion object {
         fun transform(style: Alert.Action.Style): UIAlertActionStyle = when (style) {
@@ -46,9 +66,11 @@ actual class AlertPresenter(
             Alert.Action.Style.CANCEL,
             Alert.Action.Style.NEGATIVE -> UIAlertActionStyleCancel
         }
+
         fun transform(style: Alert.Style): UIAlertControllerStyle = when (style) {
             Alert.Style.ALERT -> UIAlertControllerStyleAlert
             Alert.Style.ACTION_LIST -> UIAlertControllerStyleActionSheet
+            Alert.Style.TEXT_INPUT -> UIAlertControllerStyleAlert
         }
     }
 
@@ -94,6 +116,18 @@ actual class AlertPresenter(
                         afterHandler(null)
                     }
                 )
+            } else if (alert.style == Alert.Style.TEXT_INPUT) {
+                alert.textInputAction?.let { textInputAction ->
+                    addTextFieldWithConfigurationHandler { textField ->
+                        textField?.placeholder = textInputAction.hint
+                        textField?.addTarget(
+                            target = this@AlertPresenter,
+                            action = sel_registerName("textDidChange"),
+                            forControlEvents = UIControlEventEditingChanged
+                        )
+                        this@AlertPresenter.textField = textField
+                    }
+                }
             }
         }.run {
             parent.presentViewController(this, animated, completion)
