@@ -198,7 +198,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
             placeholder: String?,
             textObserver: AlertTextObserver
         ) = apply {
-            addTextInputAction(Alert.TextInputAction(text, placeholder, textObserver))
+            setTextInputAction(Alert.TextInputAction(text, placeholder, textObserver))
         }
 
         /**
@@ -234,7 +234,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          *
          * @param action The action object
          */
-        private fun addTextInputAction(action: Alert.TextInputAction) =
+        private fun setTextInputAction(action: Alert.TextInputAction) =
             apply { this.textInputAction = action }
 
         /**
