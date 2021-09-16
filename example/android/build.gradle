@@ -14,7 +14,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 android {
 
-    compileSdkVersion gradle.android_target_sdk_version
+    compileSdkVersion gradle.android_compile_sdk_version
     buildToolsVersion gradle.android_build_tools_version
     defaultConfig {
         applicationId "com.splendo.kaluga.example"
