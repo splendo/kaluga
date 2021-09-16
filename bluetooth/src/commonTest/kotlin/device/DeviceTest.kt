@@ -304,10 +304,12 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class] = EmptyCompletableDeferred()
         connectionManager.waitAfterHandlingAction[DeviceAction.Write.Descriptor::class] = EmptyCompletableDeferred()
 
+        val readAction = DeviceAction.Read.Characteristic(characteristic)
+
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is Idle -> deviceState.handleAction(DeviceAction.Read.Characteristic(characteristic))
+                    is Idle -> deviceState.handleAction(readAction)
                     else -> fail("unexpected state")
                 }
             }
@@ -315,10 +317,13 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
         connectionManager.performActionStarted.get().await()
 
+        val writeAction = DeviceAction.Write.Descriptor(null, descriptor)
+        connectionManager.willActionSucceed.value = false
+
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is HandlingAction -> deviceState.addAction(DeviceAction.Write.Descriptor(null, descriptor))
+                    is HandlingAction -> deviceState.addAction(writeAction)
                     else -> fail("unexpected device state $deviceState")
                 }
             }
@@ -332,6 +337,8 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         test {
             assertTrue(it is HandlingAction)
             assertTrue(handledAction.first() is DeviceAction.Read)
+            // Read action should succeed
+            assertTrue(readAction.completed.await())
         }
 
         action {
@@ -343,11 +350,16 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             // filter because the second event might not be written yet
             assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read }.first() is DeviceAction.Write)
             assertTrue(it is HandlingAction)
+            // However write action should fail
+            assertFalse(writeAction.completed.await())
         }
 
         test {
             assertTrue(it is Idle)
         }
+
+        // Reset default behaviour
+        connectionManager.willActionSucceed.value = true
     }
 
     private suspend fun getDisconnectedState() {
