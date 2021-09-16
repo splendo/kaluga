@@ -59,7 +59,7 @@ class KalugaModalBottomSheetNavigator(
     private val coroutineScope: CoroutineScope,
     private val modalBottomSheetState: ModalBottomSheetState,
     navController: NavHostController,
-    navigationMapper: (NavigationAction<*>) -> String?
+    navigationMapper: (NavigationAction<*>) -> String
 ) : KalugaNavigatorComposeAdapter<NavigationAction<*>>(navController, navigationMapper) {
 
     override fun navigate(action: NavigationAction<*>) {
