@@ -49,7 +49,7 @@ actual class AlertPresenter(
     }
 
     private companion object {
-        fun transform(alertStyle: Alert.Action.Style): Int = when (alertStyle) {
+        fun transform(style: Alert.Action.Style): Int = when (style) {
             Alert.Action.Style.DEFAULT, Alert.Action.Style.POSITIVE -> AlertDialog.BUTTON_POSITIVE
             Alert.Action.Style.DESTRUCTIVE, Alert.Action.Style.NEUTRAL -> AlertDialog.BUTTON_NEUTRAL
             Alert.Action.Style.CANCEL, Alert.Action.Style.NEGATIVE -> AlertDialog.BUTTON_NEGATIVE
@@ -114,7 +114,7 @@ actual class AlertPresenter(
             .applyIf(alert.style == Alert.Style.TEXT_INPUT) {
                 val input = EditText(context)
                 alert.textInputAction?.let { textInputAction ->
-                    textInputAction.hint?.let { input.hint = it }
+                    textInputAction.placeholder?.let { input.hint = it }
                     input.inputType = InputType.TYPE_CLASS_TEXT
                     input.addTextChangedListener(object : TextWatcher {
                         override fun beforeTextChanged(
@@ -136,7 +136,7 @@ actual class AlertPresenter(
                         }
 
                         override fun afterTextChanged(s: Editable?) {
-                            textInputAction.textWatcher(s.toString())
+                            textInputAction.textObserver(s.toString())
                         }
                     })
                     setView(input)

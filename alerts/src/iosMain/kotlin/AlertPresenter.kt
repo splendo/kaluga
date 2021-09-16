@@ -48,12 +48,12 @@ actual class AlertPresenter(
      * for alerts of type [Alert.Style.TEXT_INPUT]
      *
      * The callback does not pass the text back so we have to extract it from the
-     * [textField] ref and invoke the [alert]'s [Alert.TextInputAction.textWatcher]
+     * [textField] ref and invoke the [alert]'s [Alert.TextInputAction.textObserver]
      * */
     @ObjCAction
     fun textDidChange() {
         textField?.text?.let {
-            alert.textInputAction?.textWatcher?.invoke(it)
+            alert.textInputAction?.textObserver?.invoke(it)
         }
     }
 
@@ -106,7 +106,7 @@ actual class AlertPresenter(
             val cancelButtonIndex = alert.actions.indexOfFirst {
                 (it.style == Alert.Action.Style.CANCEL) or (it.style == Alert.Action.Style.NEGATIVE)
             }
-            // If there is no Cancel action inject it by default
+            // If there is no Cancel action inject it by default for alerts if type ACTION_LIST
             if (alert.style == Alert.Style.ACTION_LIST && cancelButtonIndex == -1) {
                 addAction(
                     UIAlertAction.actionWithTitle(
@@ -119,7 +119,7 @@ actual class AlertPresenter(
             } else if (alert.style == Alert.Style.TEXT_INPUT) {
                 alert.textInputAction?.let { textInputAction ->
                     addTextFieldWithConfigurationHandler { textField ->
-                        textField?.placeholder = textInputAction.hint
+                        textField?.placeholder = textInputAction.placeholder
                         textField?.addTarget(
                             target = this@AlertPresenter,
                             action = sel_registerName("textDidChange"),

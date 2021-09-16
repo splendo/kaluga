@@ -26,7 +26,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
-typealias AlertTextWatcher = (String) -> Unit
+typealias AlertTextObserver = (String) -> Unit
 
 /**
  * An object that represents an alert with title and/or message and actions (button)
@@ -77,11 +77,11 @@ data class Alert(
      * An action that represents an input field in the alert
      *
      * @property hint The hint of the input field
-     * @property textWatcher The block to execute when the user edits the text in the input field
+     * @property textObserver The block to execute when the user edits the text in the input field
      */
     data class TextInputAction(
-        val hint: String?,
-        val textWatcher: AlertTextWatcher
+        val placeholder: String?,
+        val textObserver: AlertTextObserver
     )
 }
 
@@ -188,10 +188,10 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
          * Initializes alert's input field
          *
          * @param hint The input field hint
-         * @param textWatcher The callback for text change events of inout field
+         * @param textObserver The callback for text change events of inout field
          */
-        fun addTextInput(hint: String?, textWatcher: AlertTextWatcher) = apply {
-            addTextInputAction(Alert.TextInputAction(hint, textWatcher))
+        fun addTextInput(hint: String?, textObserver: AlertTextObserver) = apply {
+            addTextInputAction(Alert.TextInputAction(hint, textObserver))
         }
 
         /**
