@@ -23,21 +23,29 @@ import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 
 open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
-    val _isNotifying = AtomicBoolean(false)
+    private val _isNotifying = AtomicBoolean(false)
     var isNotifying: Boolean
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }
 
-    suspend fun enableNotification() {
-        if (!isNotifying)
-            addAction(createNotificationAction(true))
+    suspend fun enableNotification(): DeviceAction? {
+        if (!isNotifying) {
+            val action = createNotificationAction(true)
+            addAction(action)
+            return action
+        }
         isNotifying = true
+        return null
     }
 
-    suspend fun disableNotification() {
-        if (isNotifying)
-            addAction(createNotificationAction(false))
+    suspend fun disableNotification(): DeviceAction? {
+        if (isNotifying) {
+            val action = createNotificationAction(false)
+            addAction(action)
+            return action
+        }
         isNotifying = false
+        return null
     }
 
     override val uuid = wrapper.uuid
@@ -52,7 +60,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return DeviceAction.Write.Characteristic(newValue, this)
     }
 
-    fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
+    private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
         return if (enabled) DeviceAction.Notification.Enable(this)
         else DeviceAction.Notification.Disable(this)
     }

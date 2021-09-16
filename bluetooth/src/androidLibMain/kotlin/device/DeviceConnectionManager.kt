@@ -30,6 +30,7 @@ import android.content.Context
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.Characteristic
 import com.splendo.kaluga.bluetooth.DefaultGattServiceWrapper
+import com.splendo.kaluga.bluetooth.Descriptor
 import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.containsAnyOf
@@ -51,7 +52,7 @@ internal actual class DeviceConnectionManager(
 
     private companion object {
         const val TAG = "Android Bluetooth DeviceConnectionManager"
-        val CLIENT_CONFIGURATION = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+        val CLIENT_CONFIGURATION: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
     }
 
     override val coroutineContext: CoroutineContext
@@ -179,61 +180,31 @@ internal actual class DeviceConnectionManager(
 
     override suspend fun performAction(action: DeviceAction) {
         currentAction = action
-        val shouldWait = when (action) {
-            is DeviceAction.Read.Characteristic -> {
-                gatt.await().readCharacteristic(action.characteristic.wrapper).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-            }
-            is DeviceAction.Read.Descriptor -> {
-                gatt.await().readDescriptor(action.descriptor.wrapper).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-            }
-            is DeviceAction.Write.Characteristic -> {
-                action.characteristic.wrapper.updateValue(action.newValue)
-                gatt.await().writeCharacteristic(action.characteristic.wrapper).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-            }
-            is DeviceAction.Write.Descriptor -> {
-                action.descriptor.wrapper.updateValue(action.newValue)
-                gatt.await().writeDescriptor(action.descriptor.wrapper).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-            }
-            is DeviceAction.Notification.Enable -> {
-                setNotification(action.characteristic, true).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-                false
-            }
-            is DeviceAction.Notification.Disable -> {
-                setNotification(action.characteristic, false).also { result ->
-                    if (!result) {
-                        action.onFailure()
-                    }
-                }
-                false
-            }
+        val succeeded = when (action) {
+            is DeviceAction.Read.Characteristic -> gatt.await().readCharacteristic(action.characteristic.wrapper)
+            is DeviceAction.Read.Descriptor -> gatt.await().readDescriptor(action.descriptor.wrapper)
+            is DeviceAction.Write.Characteristic -> writeCharacteristic(action.characteristic, action.newValue)
+            is DeviceAction.Write.Descriptor -> writeDescriptor(action.descriptor, action.newValue)
+            is DeviceAction.Notification.Enable -> setNotification(action.characteristic, true)
+            is DeviceAction.Notification.Disable -> setNotification(action.characteristic, false)
         }
 
         // Action Failed or Already Completed
-        if (!shouldWait) {
+        if (!succeeded) {
             launch(mainDispatcher) {
-                handleCurrentActionCompleted()
+                handleCurrentActionCompleted(succeeded)
             }
         }
+    }
+
+    private suspend fun writeCharacteristic(characteristic: Characteristic, value: ByteArray?): Boolean {
+        characteristic.wrapper.updateValue(value)
+        return gatt.await().writeCharacteristic(characteristic.wrapper)
+    }
+
+    private suspend fun writeDescriptor(descriptor: Descriptor, value: ByteArray?): Boolean {
+        descriptor.wrapper.updateValue(value)
+        return gatt.await().writeDescriptor(descriptor.wrapper)
     }
 
     private suspend fun setNotification(characteristic: Characteristic, enable: Boolean): Boolean {
@@ -271,7 +242,7 @@ internal actual class DeviceConnectionManager(
 
     private fun updateCharacteristic(characteristic: BluetoothGattCharacteristic, status: Int) {
         launch(mainDispatcher) {
-            handleUpdatedCharacteristic(characteristic.uuid, failed = status != GATT_SUCCESS) {
+            handleUpdatedCharacteristic(characteristic.uuid, succeeded = status == GATT_SUCCESS) {
                 it.wrapper.updateValue(characteristic.value)
             }
         }
@@ -279,7 +250,12 @@ internal actual class DeviceConnectionManager(
 
     private fun updateDescriptor(descriptor: BluetoothGattDescriptor, status: Int) {
         launch(mainDispatcher) {
-            handleUpdatedDescriptor(descriptor.uuid, failed = status != GATT_SUCCESS) {
+            val succeeded = status == GATT_SUCCESS
+            // Notification enable/disable done by client configuration descriptor write
+            if (descriptor.uuid == CLIENT_CONFIGURATION && currentAction is DeviceAction.Notification) {
+                handleCurrentActionCompleted(succeeded)
+            }
+            handleUpdatedDescriptor(descriptor.uuid, succeeded) {
                 it.wrapper.updateValue(descriptor.value)
             }
         }

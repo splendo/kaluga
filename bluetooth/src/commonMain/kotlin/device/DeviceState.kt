@@ -22,6 +22,7 @@ import com.splendo.kaluga.state.HandleAfterOldStateIsRemoved
 import com.splendo.kaluga.state.HotStateFlowRepo
 import com.splendo.kaluga.state.State
 import com.splendo.kaluga.state.StateRepo
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
 
-    val onFailure: () -> Unit = { }
+    val completed = CompletableDeferred<Boolean>()
 
     sealed class Read : DeviceAction() {
         class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Read()

@@ -78,7 +78,7 @@ internal actual class DeviceConnectionManager(
                 is DeviceAction.Notification -> {
                     if (action.characteristic.wrapper.uuid == didUpdateNotificationStateForCharacteristic.UUID) {
                         launch {
-                            handleCurrentActionCompleted()
+                            handleCurrentActionCompleted(succeeded = error == null)
                         }
                     }
                 }
@@ -168,13 +168,13 @@ internal actual class DeviceConnectionManager(
 
     private fun updateCharacteristic(characteristic: CBCharacteristic, error: NSError?) {
         launch {
-            handleUpdatedCharacteristic(characteristic.UUID, failed = error != null)
+            handleUpdatedCharacteristic(characteristic.UUID, succeeded = error == null)
         }
     }
 
     private fun updateDescriptor(descriptor: CBDescriptor, error: NSError?) {
         launch {
-            handleUpdatedDescriptor(descriptor.UUID, failed = error != null)
+            handleUpdatedDescriptor(descriptor.UUID, succeeded = error == null)
         }
     }
 
