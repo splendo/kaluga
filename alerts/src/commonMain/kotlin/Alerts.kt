@@ -74,12 +74,14 @@ data class Alert(
     }
 
     /**
-     * An action that represents an input field in the alert
+     * An action that represents an input field in the alert and its initial state
      *
-     * @property hint The hint of the input field
-     * @property textObserver The block to execute when the user edits the text in the input field
+     * @param text The initial text of the input field
+     * @param placeholder The hint of the input field
+     * @param textObserver The block to execute when the user edits the text in the input field
      */
     data class TextInputAction(
+        val text: String?,
         val placeholder: String?,
         val textObserver: AlertTextObserver
     )
@@ -187,11 +189,16 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         /**
          * Initializes alert's input field
          *
-         * @param hint The input field hint
+         * @param text The initial text of the input field
+         * @param placeholder The input field hint
          * @param textObserver The callback for text change events of inout field
          */
-        fun addTextInput(hint: String?, textObserver: AlertTextObserver) = apply {
-            addTextInputAction(Alert.TextInputAction(hint, textObserver))
+        fun setTextInput(
+            text: String? = null,
+            placeholder: String?,
+            textObserver: AlertTextObserver
+        ) = apply {
+            addTextInputAction(Alert.TextInputAction(text, placeholder, textObserver))
         }
 
         /**

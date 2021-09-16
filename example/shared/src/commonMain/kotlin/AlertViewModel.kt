@@ -69,7 +69,7 @@ class AlertViewModel(val builder: BaseAlertPresenter.Builder) : BaseViewModel() 
                 setTitle("Hello, Kaluga 🐟")
                 setMessage("Type something!")
                 addActions(okAction, cancelAction)
-                addTextInput("This is a sample hint..") {
+                setTextInput(placeholder = "This is a sample hint..") {
                     debug("Input value changed to: $it")
                 }
             }

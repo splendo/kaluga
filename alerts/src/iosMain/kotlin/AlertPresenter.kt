@@ -119,13 +119,7 @@ actual class AlertPresenter(
             } else if (alert.style == Alert.Style.TEXT_INPUT) {
                 alert.textInputAction?.let { textInputAction ->
                     addTextFieldWithConfigurationHandler { textField ->
-                        textField?.placeholder = textInputAction.placeholder
-                        textField?.addTarget(
-                            target = this@AlertPresenter,
-                            action = sel_registerName("textDidChange"),
-                            forControlEvents = UIControlEventEditingChanged
-                        )
-                        this@AlertPresenter.textField = textField
+                        initializeUITextField(textField, textInputAction)
                     }
                 }
             }
@@ -133,4 +127,20 @@ actual class AlertPresenter(
             parent.presentViewController(this, animated, completion)
         }
     }
+
+    private fun initializeUITextField(textField: UITextField?, textInputAction: Alert.TextInputAction) {
+        textField?.placeholder = textInputAction.placeholder
+        textField?.addTarget(
+            target = this,
+            action = sel_registerName("textDidChange"),
+            forControlEvents = UIControlEventEditingChanged
+        )
+        textInputAction.text?.let {
+            textField?.text = it
+            textInputAction.textObserver.invoke(it)
+        }
+        this.textField = textField
+    }
+
 }
+
