@@ -10,35 +10,18 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import org.koin.androidx.viewmodel.ViewModelOwner
-import org.koin.androidx.viewmodel.koin.getViewModel
-import org.koin.core.parameter.parametersOf
-import org.koin.java.KoinJavaComponent.getKoin
-
-@Composable
-inline fun <reified ViewModel : BaseViewModel> getViewModel(vararg params: Any?): ViewModel {
-    val owner = ViewModelOwner.from(LocalViewModelStoreOwner.current!!)
-    return getKoin().getViewModel(owner = { owner }) {
-        parametersOf(*params)
-    }
-}
 
 /**
  * Composable which manages [viewModel] lifecycle and optionally adds it to local [ViewModelStore].
  * @param viewModel view model to manage
- * @param store whether to add the [viewModel] a local [ViewModelStore]. Use if the [viewModel]
- * was created manually and is not located in Activity/Fragment [ViewModelStore].
  * @param content content based on [viewModel]
  */
 @Composable
 fun <ViewModel : BaseViewModel> ViewModelComposable(
     viewModel: ViewModel,
-    store: Boolean = false,
     content: @Composable ((ViewModel) -> Unit)? = null
 ) {
-    viewModel.store()
     viewModel.linkLifecycle()
     content?.invoke(viewModel)
 }

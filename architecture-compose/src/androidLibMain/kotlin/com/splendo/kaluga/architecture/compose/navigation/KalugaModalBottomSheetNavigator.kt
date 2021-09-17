@@ -15,19 +15,7 @@ import com.splendo.kaluga.architecture.navigation.NavigationAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-operator fun ((NavigationAction<*>) -> String?).plus(otherMapper: (NavigationAction<*>) -> String?): (NavigationAction<*>) -> String? {
-    return CombinedNavigationMapper(this, otherMapper)::map
-}
-
-private class CombinedNavigationMapper(
-    private val firstMapper: (NavigationAction<*>) -> String?,
-    private val secondMapper: (NavigationAction<*>) -> String?
-) {
-    fun map(action: NavigationAction<*>): String? = firstMapper(action) ?: secondMapper(action)
-}
-
 /** A [composable] that also expands bottom sheet upon re-composition. */
-@ExperimentalMaterialApi
 fun NavGraphBuilder.bottomSheetComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),

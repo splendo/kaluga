@@ -19,7 +19,8 @@ dependencies {
 ## Usage
 ###Examples
 
-Inject view model with Koin and link it to lifecycle callbacks and a hardware back button
+Create a local view model, save in a local ViewModelStore (to ensure cleanup) and 
+link it to lifecycle callbacks and a hardware back button
 
 ```kotlin
 @Composable
@@ -27,7 +28,11 @@ fun ContactDetailsLayout(
     contactDetails: ContactDetails,
     navigator: Navigator<ContactDetailsNavigation<*>>
 ) {
-    val viewModel = getViewModel<ContactDetailsViewModel>(navigator, contactDetails)
+    val viewModel = store { 
+        remember {
+            ContactDetailsViewModel(contactDetails)
+        }
+    }
 
     ViewModelComposable(viewModel) { vm ->
         linkHwBackButtonNavigation {

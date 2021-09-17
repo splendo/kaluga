@@ -39,6 +39,14 @@ dependencies {
 
 }
 
+kotlin {
+    sourceSets.all {
+        languageSettings {
+            useExperimentalAnnotation 'androidx.compose.material.ExperimentalMaterialApi'
+        }
+    }
+}
+
 if (!gradle.ext.component_type.toLowerCase().contains("app")) {
     apply from: "$path_prefix/gradle/publish.gradle"
 }

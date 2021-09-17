@@ -42,6 +42,5 @@ dependencies {
     val ext = (gradle as ExtensionAware).extra
     implementation("androidx.compose.material:material:" + ext["androidx_compose_version"])
     implementation("androidx.navigation:navigation-compose:" + ext["androidx_navigation_compose"])
-    implementation("io.insert-koin:koin-android:" + ext["koin_version"])
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${ext["kotlinx_coroutines_version"]}!!")
 }
