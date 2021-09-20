@@ -23,18 +23,21 @@ import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 
 open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
+    private val isBusy = AtomicBoolean(false)
     private val _isNotifying = AtomicBoolean(false)
     var isNotifying: Boolean
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }
 
     suspend fun enableNotification(): DeviceAction? {
-        return if (!isNotifying) {
+        return if (!isBusy.value && !isNotifying) {
+            isBusy.value = true
             val action = createNotificationAction(true)
             addAction(action)
             action.completed.invokeOnCompletion {
                 if (it == null && action.completed.getCompleted()) {
                     isNotifying =  true
+                    isBusy.value = false
                 }
             }
             action
@@ -44,12 +47,14 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
     }
 
     suspend fun disableNotification(): DeviceAction? {
-        return if (isNotifying) {
+        return if (!isBusy.value && isNotifying) {
+            isBusy.value = true
             val action = createNotificationAction(false)
             addAction(action)
             action.completed.invokeOnCompletion {
                 if (it == null && action.completed.getCompleted()) {
                     isNotifying = false
+                    isBusy.value = false
                 }
             }
             action
