@@ -93,6 +93,8 @@ dependencies {
 }
 ```
 
+**Please mind** that in order for kaluga to work properly on iOS it declares a [strict dependency](https://docs.gradle.org/7.0.2/userguide/rich_versions.html#sec:strict-version) on the [`native-mt` version of the `kotlinx.coroutines` library](https://github.com/Kotlin/kotlinx.coroutines/tree/287a931d3b8ce#native). If you want to use a different version make your own strict dependency declaration. This can be done simply by adding `!!`, for example: `implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt!!")`
+
 
 To use kaluga with SwiftUI and/or Combine we have a [repo with Sourcery templates](https://github.com/splendo/kaluga-swiftui) to generate some Swift code to help get you started.
 
