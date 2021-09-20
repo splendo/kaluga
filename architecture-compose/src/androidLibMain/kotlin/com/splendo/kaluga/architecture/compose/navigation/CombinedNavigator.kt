@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.architecture.compose.navigation
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscriber
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
@@ -48,3 +50,10 @@ class CombinedNavigator<A : NavigationAction<*>>(
         }
     }
 }
+
+@Composable
+fun <A : NavigationAction<*>> rememberCombinedNavigator(
+    navigatorForAction: CombinedNavigator<A>.(A) -> Navigator<A>
+): Navigator<A> =
+    remember { CombinedNavigator(navigatorForAction) }
+        .apply { bind() }

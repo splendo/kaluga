@@ -73,19 +73,17 @@ val routeNavigator = KalugaNavigatorComposeAdapter(
     rememberNavController(),
     ::routeMapper
 )
-val combinedNavigator = remember {
-    CombinedNavigator { action: ContactsNavigation<*> ->
-        when(action) {
-            is ContactsNavigation.ContactDetailsNavigation.CallNumber ->
-                ::activityMapper.toActivityNavigator()
-            is ContactsNavigation.ContactListNavigation.Close,
-            is ContactsNavigation.ContactListNavigation.ShowContactDetails,
-            is ContactsNavigation.ContactDetailsNavigation.Close, 
-            is ContactsNavigation.ShowContacts ->
-                routeNavigator
-        }
+val combinedNavigator = rememberCombinedNavigator {action: ContactsNavigation<*> ->
+    when(action) {
+        is ContactsNavigation.ContactDetailsNavigation.CallNumber ->
+            ::activityMapper.toActivityNavigator()
+        is ContactsNavigation.ContactListNavigation.Close,
+        is ContactsNavigation.ContactListNavigation.ShowContactDetails,
+        is ContactsNavigation.ContactDetailsNavigation.Close, 
+        is ContactsNavigation.ShowContacts ->
+            routeNavigator
     }
-}.apply { bind() }
+}
 
 // set up nav host with routes
 contactsNavigator.SetupNavHost(
