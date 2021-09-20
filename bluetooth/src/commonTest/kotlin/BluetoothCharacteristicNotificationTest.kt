@@ -49,9 +49,12 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>()
         connect()
         discover()
 
-        val characteristic = enableNotifications()
-        assertNull(characteristic.enableNotification())
-        assertTrue(characteristic.isNotifying)
+        enableNotifications()
+        val characteristic = characteristic
+        action {
+            assertNull(characteristic.enableNotification())
+            assertTrue(characteristic.isNotifying)
+        }
     }
 
     @Test
