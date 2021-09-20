@@ -29,23 +29,27 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         set(value) { _isNotifying.value = value }
 
     suspend fun enableNotification(): DeviceAction? {
-        if (!isNotifying) {
+        return if (!isNotifying) {
             val action = createNotificationAction(true)
             addAction(action)
-            return action
+            action
+        } else {
+            null
+        }.also {
+            isNotifying = true
         }
-        isNotifying = true
-        return null
     }
 
     suspend fun disableNotification(): DeviceAction? {
-        if (isNotifying) {
+        return if (isNotifying) {
             val action = createNotificationAction(false)
             addAction(action)
-            return action
+            action
+        } else {
+            null
+        }.also {
+            isNotifying = false
         }
-        isNotifying = false
-        return null
     }
 
     override val uuid = wrapper.uuid

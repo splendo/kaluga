@@ -302,7 +302,6 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             assertEquals(listOf(service), it.services)
         }
 
-        connectionManager.willActionSucceed.value = true
         connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class] = EmptyCompletableDeferred()
         connectionManager.waitAfterHandlingAction[DeviceAction.Write.Descriptor::class] = EmptyCompletableDeferred()
 
@@ -331,7 +330,6 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         }
 
         action {
-            connectionManager.willActionSucceed.value = false
             connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class]?.complete()
         }
 
@@ -339,8 +337,6 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         test {
             assertTrue(it is HandlingAction)
             assertTrue(handledAction.first() is DeviceAction.Read)
-            // Read action should succeed
-            assertTrue(readAction.completed.await())
         }
 
         action {
@@ -352,16 +348,11 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
             // filter because the second event might not be written yet
             assertTrue(handledActionSecond.filter { action -> action !is DeviceAction.Read }.first() is DeviceAction.Write)
             assertTrue(it is HandlingAction)
-            // However write action should fail
-            assertFalse(writeAction.completed.await())
         }
 
         test {
             assertTrue(it is Idle)
         }
-
-        // Reset default behaviour
-        connectionManager.willActionSucceed.value = true
     }
 
     private suspend fun getDisconnectedState() {
