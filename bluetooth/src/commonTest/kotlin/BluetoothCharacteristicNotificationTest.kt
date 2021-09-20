@@ -33,6 +33,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>()
 
     override val flow = suspend {
         setup(Setup.CHARACTERISTIC)
+        connectionManager.willActionSucceed.value = true
         device
     }
 
@@ -71,6 +72,26 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>()
         }
         test {
             assertIs<DeviceState.Connected.Idle>(it)
+        }
+    }
+
+    @Test
+    fun testFailedToEnableNotification() = testWithFlow {
+        connect()
+        discover()
+
+        val characteristic = characteristic
+        assertFalse(characteristic.isNotifying)
+        connectionManager.willActionSucceed.value = false
+        action {
+            characteristic.enableNotification()
+        }
+        val handledAction = connectionManager.handledAction
+        test {
+            val action = handledAction.firstInstance<DeviceAction.Notification.Enable>()
+            assertNotNull(action)
+            assertFalse(action.completed.await())
+            assertFalse(characteristic.isNotifying)
         }
     }
 

@@ -32,11 +32,14 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return if (!isNotifying) {
             val action = createNotificationAction(true)
             addAction(action)
+            action.completed.invokeOnCompletion {
+                if (it == null && action.completed.getCompleted()) {
+                    isNotifying =  true
+                }
+            }
             action
         } else {
             null
-        }.also {
-            isNotifying = true
         }
     }
 
@@ -44,11 +47,14 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return if (isNotifying) {
             val action = createNotificationAction(false)
             addAction(action)
+            action.completed.invokeOnCompletion {
+                if (it == null && action.completed.getCompleted()) {
+                    isNotifying = false
+                }
+            }
             action
         } else {
             null
-        }.also {
-            isNotifying = false
         }
     }
 
