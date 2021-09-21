@@ -192,7 +192,7 @@ internal actual class DeviceConnectionManager(
         // Action Failed or Already Completed
         if (!succeeded) {
             launch(mainDispatcher) {
-                handleCurrentActionCompleted(succeeded)
+                handleCurrentActionCompleted(succeeded = false)
             }
         }
     }
