@@ -39,55 +39,42 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Resources : FeatureListNavigationAction()
 }
 
-sealed class Feature(val title: String) {
-    object Alerts : Feature("feature_alerts".localized())
-    object Architecture : Feature("feature_architecture".localized())
-    object Bluetooth : Feature("feature_bluetooth".localized())
-    object DateTimePicker : Feature("feature_date_time_picker".localized())
-    object Keyboard : Feature("feature_keyboard".localized())
-    object LoadingIndicator : Feature("feature_hud".localized())
-    object Location : Feature("feature_location".localized())
-    object Permissions : Feature("feature_permissions".localized())
-    object Links : Feature("feature_links".localized())
-    object System : Feature("feature_system".localized())
-    object Beacons : Feature("feature_beacons".localized())
-    object Resources : Feature("feature_resources".localized())
+enum class Feature(private val titleKey: String) {
+    ALERTS("feature_alerts"),
+    ARCHITECTURE("feature_architecture"),
+    BLUETOOTH("feature_bluetooth"),
+    DATE_TIME_PICKER("feature_date_time_picker"),
+    KEYBOARD("feature_keyboard"),
+    LOADING_INDICATOR("feature_hud"),
+    LOCATION("feature_location"),
+    PERMISSIONS("feature_permissions"),
+    LINKS("feature_links"),
+    SYSTEM("feature_system"),
+    BEACONS("feature_beacons"),
+    RESOURCES("feature_resources");
+
+    val title: String get() = titleKey.localized()
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
-    val feature = observableOf(
-        listOf(
-            Feature.Alerts,
-            Feature.Architecture,
-            Feature.Bluetooth,
-            Feature.DateTimePicker,
-            Feature.Keyboard,
-            Feature.Links,
-            Feature.LoadingIndicator,
-            Feature.Location,
-            Feature.Permissions,
-            Feature.System,
-            Feature.Beacons,
-            Feature.Resources
-        )
-    )
+    val feature = observableOf(Feature.values().toList())
 
     fun onFeaturePressed(feature: Feature) {
         navigator.navigate(
             when (feature) {
-                is Feature.Alerts -> FeatureListNavigationAction.Alerts
-                is Feature.Architecture -> FeatureListNavigationAction.Architecture
-                is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
-                is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
-                is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
-                is Feature.Links -> FeatureListNavigationAction.Links
-                is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
-                is Feature.Location -> FeatureListNavigationAction.Location
-                is Feature.Permissions -> FeatureListNavigationAction.Permissions
-                Feature.System -> FeatureListNavigationAction.System
-                Feature.Beacons -> FeatureListNavigationAction.Beacons
-                is Feature.Resources -> FeatureListNavigationAction.Resources
+                Feature.ALERTS -> FeatureListNavigationAction.Alerts
+                Feature.ARCHITECTURE -> FeatureListNavigationAction.Architecture
+                Feature.BLUETOOTH -> FeatureListNavigationAction.Bluetooth
+                Feature.DATE_TIME_PICKER -> FeatureListNavigationAction.DateTimePicker
+                Feature.KEYBOARD -> FeatureListNavigationAction.Keyboard
+                Feature.LINKS -> FeatureListNavigationAction.Links
+                Feature.LOADING_INDICATOR -> FeatureListNavigationAction.LoadingIndicator
+                Feature.LOCATION -> FeatureListNavigationAction.Location
+                Feature.PERMISSIONS -> FeatureListNavigationAction.Permissions
+                Feature.SYSTEM -> FeatureListNavigationAction.System
+                Feature.BEACONS -> FeatureListNavigationAction.Beacons
+                Feature.RESOURCES -> FeatureListNavigationAction.Resources
             }
         )
     }

@@ -15,18 +15,25 @@
 
  */
 
-package com.splendo.kaluga.resources.uikit
+package com.splendo.kaluga.resources.view
 
+import com.splendo.kaluga.resources.StyledString
+import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
-import platform.UIKit.UILabel
-import platform.UIKit.UITextField
 
-fun UILabel.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
-    textColor = textStyle.color.uiColor
-}
+sealed class Label<T> {
+    abstract val text: T
+    abstract val style: TextStyle
+    abstract val alignment: TextAlignment
 
-fun UITextField.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
-    textColor = textStyle.color.uiColor
+    data class Plain(
+        override val text: String,
+        override val style: TextStyle,
+        override val alignment: TextAlignment = TextAlignment.NORMAL
+    ) : Label<String>()
+    data class Styled(
+        override val text: StyledString,
+        override val style: TextStyle,
+        override val alignment: TextAlignment = TextAlignment.NORMAL
+    ) : Label<StyledString>()
 }

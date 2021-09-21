@@ -69,7 +69,7 @@ import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
-import com.splendo.kaluga.example.shared.viewmodel.resources.ResourcesViewModel
+import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.network.NetworkViewModel
@@ -282,6 +282,6 @@ val viewModelModule = module {
     }
 
     viewModel {
-        ResourcesViewModel()
+        ButtonViewModel()
     }
 }

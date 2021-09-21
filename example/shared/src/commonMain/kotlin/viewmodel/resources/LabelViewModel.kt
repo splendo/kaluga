@@ -15,18 +15,9 @@
 
  */
 
-package com.splendo.kaluga.resources.uikit
+package com.splendo.kaluga.example.shared.viewmodel.resources
 
-import com.splendo.kaluga.resources.stylable.TextStyle
-import platform.UIKit.UILabel
-import platform.UIKit.UITextField
+import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 
-fun UILabel.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
-    textColor = textStyle.color.uiColor
-}
-
-fun UITextField.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
-    textColor = textStyle.color.uiColor
+class LabelViewModel : BaseViewModel() {
 }

@@ -19,6 +19,7 @@ package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.Font
+import com.splendo.kaluga.resources.clearColor
 
 data class ButtonStyle(
     val font: Font,
@@ -31,4 +32,18 @@ data class ButtonStyle(
 data class ButtonStateStyle(
     val textColor: Color,
     val backgroundStyle: BackgroundStyle,
-)
+) {
+    constructor(textColor: Color) : this(
+        textColor,
+        BackgroundStyle(
+            BackgroundStyle.FillStyle.Solid(clearColor)
+        )
+    )
+
+    constructor(textColor: Color, backgroundColor: Color) : this(
+        textColor,
+        BackgroundStyle(
+            BackgroundStyle.FillStyle.Solid(backgroundColor)
+        )
+    )
+}
