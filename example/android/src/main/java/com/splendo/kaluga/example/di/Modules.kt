@@ -19,9 +19,11 @@ Copyright 2019 Splendo Consulting B.V. The Netherlands
 package com.splendo.kaluga.example.di
 
 /* ktlint-disable no-wildcard-imports */
+import android.bluetooth.BluetoothAdapter
 import com.splendo.kaluga.alerts.AlertPresenter
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.bluetooth.*
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.datetimepicker.DateTimePickerPresenter
@@ -40,6 +42,7 @@ import com.splendo.kaluga.example.keyboard.KeyboardManagerActivity
 import com.splendo.kaluga.example.link.LinksActivity
 import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
+import com.splendo.kaluga.example.monitor.ServiceMonitorActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
@@ -66,6 +69,7 @@ import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.monitor.ServiceMonitorViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
@@ -114,6 +118,7 @@ val utilitiesModule = module {
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
     single { Beacons(get<Bluetooth>()) }
+    single { BluetoothMonitor.Builder(ApplicationHolder.applicationContext, BluetoothAdapter.getDefaultAdapter()).create() }
 }
 
 val viewModelModule = module {
@@ -147,6 +152,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.Architecture -> NavigationSpec.Activity(ArchitectureInputActivity::class.java)
                     FeatureListNavigationAction.Keyboard -> NavigationSpec.Activity(KeyboardManagerActivity::class.java)
                     FeatureListNavigationAction.Links -> NavigationSpec.Activity(LinksActivity::class.java)
+                    FeatureListNavigationAction.ServiceMonitor -> NavigationSpec.Activity(ServiceMonitorActivity::class.java)
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
@@ -269,6 +275,9 @@ val viewModelModule = module {
             }
         )
     }
+
+    viewModel {
+        ServiceMonitorViewModel(get()) }
 
     viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->
         BluetoothDeviceDetailViewModel(get(), identifier)

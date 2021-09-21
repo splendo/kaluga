@@ -4,14 +4,15 @@
     <string name="feature_alerts">Alerts</string>
     <string name="feature_architecture">Architecture</string>
     <string name="feature_date_time_picker">Date Time Picker</string>
+    <string name="feature_beacons">Beacons</string>
     <string name="feature_bluetooth">Bluetooth</string>
     <string name="feature_hud">Loading Indicator</string>
     <string name="feature_keyboard">Keyboard</string>
     <string name="feature_links">Links</string>
     <string name="feature_location">Location</string>
     <string name="feature_permissions">Permissions</string>
+    <string name="feature_service_monitor">Service Monitor</string>
     <string name="feature_system">System</string>
-    <string name="feature_beacons">Beacons</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
@@ -94,5 +95,10 @@
     <string name="bluetooth_permissions_write">Write</string>
     <string name="bluetooth_permissions_read_encrypted">Read Encrypted</string>
     <string name="bluetooth_permissions_write_encrypted">Write Encrypted</string>
+
+    <string name="monitor_blt_services_title">Bluetooth Monitor: </string>
+    <string name="monitor_services_status_enabled">✅ Enabled</string>
+    <string name="monitor_services_status_disabled">⚠️ Disabled</string>
+    <string name="monitor_services_status_not_initialized">❌ Not initialized</string>
 
 </resources>

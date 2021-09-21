@@ -35,6 +35,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Keyboard : FeatureListNavigationAction()
     object Links : FeatureListNavigationAction()
     object System : FeatureListNavigationAction()
+    object ServiceMonitor : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
 }
 
@@ -49,6 +50,7 @@ sealed class Feature(val title: String) {
     object Permissions : Feature("feature_permissions".localized())
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
+    object ServiceMonitor : Feature("feature_service_monitor".localized())
     object Beacons : Feature("feature_beacons".localized())
 }
 
@@ -65,6 +67,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.LoadingIndicator,
             Feature.Location,
             Feature.Permissions,
+            Feature.ServiceMonitor,
             Feature.System,
             Feature.Beacons
         )
@@ -75,6 +78,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             when (feature) {
                 is Feature.Alerts -> FeatureListNavigationAction.Alerts
                 is Feature.Architecture -> FeatureListNavigationAction.Architecture
+                is Feature.Beacons -> FeatureListNavigationAction.Beacons
                 is Feature.Bluetooth -> FeatureListNavigationAction.Bluetooth
                 is Feature.DateTimePicker -> FeatureListNavigationAction.DateTimePicker
                 is Feature.Keyboard -> FeatureListNavigationAction.Keyboard
@@ -82,8 +86,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
                 is Feature.Location -> FeatureListNavigationAction.Location
                 is Feature.Permissions -> FeatureListNavigationAction.Permissions
-                Feature.System -> FeatureListNavigationAction.System
-                Feature.Beacons -> FeatureListNavigationAction.Beacons
+                is Feature.ServiceMonitor -> FeatureListNavigationAction.ServiceMonitor
+                is Feature.System -> FeatureListNavigationAction.System
             }
         )
     }
