@@ -131,7 +131,7 @@ abstract class BaseDeviceConnectionManager(
             } else {
                 state.remain()
             }
-        ).also { currentAction = null }
+            ).also { currentAction = null }
     }
 
     suspend fun handleUpdatedCharacteristic(uuid: UUID, succeeded: Boolean, onUpdate: ((Characteristic) -> Unit)? = null) {
