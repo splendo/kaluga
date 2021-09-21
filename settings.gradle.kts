@@ -24,15 +24,15 @@ pluginManagement {
                 "org.jetbrains.kotlin.plugin.serialization",
                 "org.jetbrains.kotlin.android",
                 "org.jetbrains.kotlin.kapt",
-                    -> useVersion("$kalugaKotlinVersion")
+                -> useVersion("$kalugaKotlinVersion")
                 "com.android.library",
                 "com.android.application",
-                    -> useVersion("$kalugaAndroidGradlePluginVersion")
+                -> useVersion("$kalugaAndroidGradlePluginVersion")
                 "org.jlleitschuh.gradle.ktlint",
                 "org.jlleitschuh.gradle.ktlint-idea",
-                    -> useVersion("$kalugaKtLintGradlePluginVersion")
+                -> useVersion("$kalugaKtLintGradlePluginVersion")
                 "com.google.gms:google-services"
-                    -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
+                -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
             }
         }
     }
