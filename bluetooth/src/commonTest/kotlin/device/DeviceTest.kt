@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.first
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -305,12 +304,10 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
         connectionManager.waitAfterHandlingAction[DeviceAction.Read.Characteristic::class] = EmptyCompletableDeferred()
         connectionManager.waitAfterHandlingAction[DeviceAction.Write.Descriptor::class] = EmptyCompletableDeferred()
 
-        val readAction = DeviceAction.Read.Characteristic(characteristic)
-
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is Idle -> deviceState.handleAction(readAction)
+                    is Idle -> deviceState.handleAction(DeviceAction.Read.Characteristic(characteristic))
                     else -> fail("unexpected state")
                 }
             }
@@ -318,12 +315,10 @@ class DeviceTest : BluetoothFlowTest<DeviceState>() {
 
         connectionManager.performActionStarted.get().await()
 
-        val writeAction = DeviceAction.Write.Descriptor(null, descriptor)
-
         action {
             deviceStateRepo.takeAndChangeState { deviceState ->
                 when (deviceState) {
-                    is HandlingAction -> deviceState.addAction(writeAction)
+                    is HandlingAction -> deviceState.addAction(DeviceAction.Write.Descriptor(null, descriptor))
                     else -> fail("unexpected device state $deviceState")
                 }
             }
