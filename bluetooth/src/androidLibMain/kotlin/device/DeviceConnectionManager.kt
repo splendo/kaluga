@@ -189,7 +189,7 @@ internal actual class DeviceConnectionManager(
             is DeviceAction.Notification.Disable -> setNotification(action.characteristic, false)
         }
 
-        // Action Failed or Already Completed
+        // Action Failed
         if (!succeeded) {
             launch(mainDispatcher) {
                 handleCurrentActionCompleted(succeeded = false)

@@ -30,7 +30,6 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         set(value) { _isNotifying.value = value }
 
     suspend fun enableNotification(): DeviceAction? {
-
         return if (isBusy.compareAndSet(expected = false, new = true) && !isNotifying) {
             val action = createNotificationAction(true)
             addAction(action)
