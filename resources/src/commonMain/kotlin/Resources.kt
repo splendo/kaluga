@@ -41,7 +41,7 @@ interface StringLoader {
 }
 
 /** Default implementation of a [StringLoader]. */
-expect class DefaultStringLoader(): StringLoader
+expect class DefaultStringLoader() : StringLoader
 
 /**
  * Loads a [Color] based on a provided identifier.
@@ -57,7 +57,7 @@ interface ColorLoader {
 }
 
 /** Default implementation of a [ColorLoader]. */
-expect class DefaultColorLoader(): ColorLoader
+expect class DefaultColorLoader() : ColorLoader
 
 /**
  * Loads an [Image] based on a provided identifier.
@@ -73,7 +73,7 @@ interface ImageLoader {
 }
 
 /** Default implementation of a [ImageLoader]. */
-expect class DefaultImageLoader(): ImageLoader
+expect class DefaultImageLoader() : ImageLoader
 
 /**
  * Loads a [Font] based on a provided identifier.
@@ -89,7 +89,7 @@ interface FontLoader {
 }
 
 /** Default implementation of a [FontLoader]. */
-expect class DefaultFontLoader(): FontLoader
+expect class DefaultFontLoader() : FontLoader
 
 /**
  * Treats this string as a resource identifier for a [String] and grabs the associated [String]
