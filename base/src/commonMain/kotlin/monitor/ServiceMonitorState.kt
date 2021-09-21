@@ -19,7 +19,6 @@ package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.logging.debug
 import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.State
 import kotlinx.coroutines.flow.collect
@@ -34,7 +33,6 @@ sealed class ServiceMonitorState : State() {
         val notInitialized : suspend () -> NotInitialized = { NotInitialized(monitor) }
 
         fun deinitialize(): suspend () -> NotInitialized {
-            debug("ServiceMonitorState") { "Initialized.deinitialize" }
             monitor.stopMonitoring()
             return notInitialized
         }
@@ -54,7 +52,6 @@ sealed class ServiceMonitorState : State() {
         val initializedDisabled : suspend () -> Initialized = { Initialized.Disabled(monitor) }
 
         fun initialize(): suspend () -> Initialized {
-            debug("ServiceMonitorState") { "NotInitialized.initialize" }
             monitor.startMonitoring()
             return if (monitor.isServiceEnabled) {
                 initialized
@@ -71,7 +68,6 @@ class ServiceMonitorStateRepo(
 ) : ColdStateFlowRepo<ServiceMonitorState>(
     coroutineContext = coroutineContext,
     initChangeState = { state ->
-        debug("ServiceMonitorStateRepo") { "ServiceMonitorStateRepo.initChangeState with $state" }
         when (state) {
             is ServiceMonitorState.Initialized -> {
                 { state }
@@ -82,14 +78,12 @@ class ServiceMonitorStateRepo(
         }
     },
     deinitChangeState = { state ->
-        debug("ServiceMonitorStateRepo") { "ServiceMonitorStateRepo.deinitChangeState with $state" }
         when (state) {
             is ServiceMonitorState.Initialized -> state.deinitialize()
             is ServiceMonitorState.NotInitialized -> state.remain()
         }
     },
     firstState = {
-        debug("ServiceMonitorStateRepo") { "ServiceMonitorStateRepo.firstState" }
         ServiceMonitorState.NotInitialized(
             monitor = monitor
         )
@@ -99,8 +93,6 @@ class ServiceMonitorStateRepo(
         launch {
             monitor.isEnabled.collect { isEnabled ->
                 takeAndChangeState { currentState ->
-                    println("monitor.isEnabled.collect: isEnabled = $isEnabled")
-                    println("takeAndChangeState: currentState = $currentState")
                     when (currentState) {
                         is ServiceMonitorState.Initialized.Enabled -> {
                             if (isEnabled) {
