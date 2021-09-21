@@ -31,7 +31,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
 
     suspend fun enableNotification(): DeviceAction? {
         return if (isBusy.compareAndSet(expected = false, new = true) && !isNotifying) {
-            val action = createNotificationAction(true)
+            val action = createNotificationAction(enabled = true)
             addAction(action)
             action.completed.invokeOnCompletion {
                 if (it == null && action.completed.getCompleted()) {
@@ -47,7 +47,7 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
 
     suspend fun disableNotification(): DeviceAction? {
         return if (isBusy.compareAndSet(expected = false, new = true) && isNotifying) {
-            val action = createNotificationAction(false)
+            val action = createNotificationAction(enabled =false)
             addAction(action)
             action.completed.invokeOnCompletion {
                 if (it == null && action.completed.getCompleted()) {

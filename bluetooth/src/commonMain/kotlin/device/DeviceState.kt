@@ -30,6 +30,11 @@ import kotlin.coroutines.CoroutineContext
 
 sealed class DeviceAction {
 
+    /**
+     * A Deferred that will be completed with
+     * `true` if `DeviceAction` was succeeded, or
+     * `false` if `DeviceAction` was failed
+     * */
     val completed = CompletableDeferred<Boolean>()
 
     sealed class Read : DeviceAction() {
