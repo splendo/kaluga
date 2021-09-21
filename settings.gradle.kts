@@ -1,3 +1,9 @@
+/***********************************************
+ *
+ * Changes made to this file should also be reflected in the `settings.gradle` under [example/ios/Supporting Files]
+ *
+ ***********************************************/
+
 pluginManagement {
 
     repositories {
@@ -8,33 +14,34 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
 
-            val android_gradle_plugin_version: String by settings
-            val kotlin_version: String by settings
+            val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
+            val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
+            val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
+            val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
 
             when (requested.id.id) {
-                "org.jetbrains.kotlin.multiplatform" ->
-                    useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
-                "org.jetbrains.kotlin.plugin.serialization" ->
-                    useModule("org.jetbrains.kotlin:kotlin-serialization-plugin:$kotlin_version")
-                "com.android.library" ->
-                    useModule("com.android.tools.build:gradle:$android_gradle_plugin_version")
-                "com.android.application" ->
-                    useModule("com.android.tools.build:gradle:$android_gradle_plugin_version")
+                "org.jetbrains.kotlin.multiplatform",
+                "org.jetbrains.kotlin.plugin.serialization",
+                "org.jetbrains.kotlin.android",
+                "org.jetbrains.kotlin.kapt",
+                    -> useVersion("$kalugaKotlinVersion")
+                "com.android.library",
+                "com.android.application",
+                    -> useVersion("$kalugaAndroidGradlePluginVersion")
+                "org.jlleitschuh.gradle.ktlint",
+                "org.jlleitschuh.gradle.ktlint-idea",
+                    -> useVersion("$kalugaKtLintGradlePluginVersion")
+                "com.google.gms:google-services"
+                    -> useVersion("com.google.gms:google-services:$kalugaGoogleServicesGradlePluginVersion")
             }
         }
     }
 }
 
-/***********************************************
- *
- * Changes made to this file should also be reflected in the `settings.gradle` under [example/ios/Supporting Files]
- *
- ***********************************************/
-
 apply("gradle/ext.gradle")
+includeBuild("convention-plugins")
 
 rootProject.name = "Kaluga"
-includeBuild("convention-plugins")
 
 include(":base")
 include(":beacons")
