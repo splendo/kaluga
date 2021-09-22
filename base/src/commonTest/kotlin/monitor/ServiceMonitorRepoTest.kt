@@ -35,6 +35,7 @@ import kotlinx.coroutines.launch
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class ServiceMonitorRepoTest : BaseTest() {
@@ -70,16 +71,14 @@ class ServiceMonitorRepoTest : BaseTest() {
     @Test
     fun test_first_state_is_not_initialized() = runBlockingWithStubMonitor(StubMonitor(false)) { _, monitorRepo ->
         val firstValue = monitorRepo.first()
-        assertTrue { firstValue is ServiceMonitorState.NotInitialized }
+        assertIs<ServiceMonitorState.NotInitialized>(firstValue)
     }
 
     @Test
     fun test_init_state_is_initialized_enabled() = runBlockingWithStubMonitor(StubMonitor(true)) { _, monitorRepo ->
         val job = launch { monitorRepo.collect() }
         delay(SERVICE_MONITOR_TIMEOUT)
-        monitorRepo.useState {
-            assertTrue { it is ServiceMonitorState.Initialized.Enabled }
-        }
+        monitorRepo.useState { assertIs<ServiceMonitorState.Initialized.Enabled>(it) }
         job.cancel()
     }
 
@@ -87,9 +86,7 @@ class ServiceMonitorRepoTest : BaseTest() {
     fun test_init_state_is_initialized_disabled() = runBlockingWithStubMonitor(StubMonitor()) { _, monitorRepo ->
         val job = launch { monitorRepo.collect() }
         delay(SERVICE_MONITOR_TIMEOUT)
-        monitorRepo.useState {
-            assertTrue { it is ServiceMonitorState.Initialized.Disabled }
-        }
+        monitorRepo.useState { assertIs<ServiceMonitorState.Initialized.Disabled>(it) }
         job.cancel()
     }
 
@@ -117,7 +114,7 @@ class ServiceMonitorRepoTest : BaseTest() {
         delay(SERVICE_MONITOR_TIMEOUT)
         monitorRepo.useState {
             stateHolder.value = it
-            assertTrue { it is ServiceMonitorState.Initialized.Enabled }
+            assertIs<ServiceMonitorState.Initialized.Enabled>(it)
         }
 
         // emit same value
@@ -140,7 +137,7 @@ class ServiceMonitorRepoTest : BaseTest() {
         delay(SERVICE_MONITOR_TIMEOUT)
         monitorRepo.useState {
             stateHolder.value = it
-            assertTrue { it is ServiceMonitorState.Initialized.Enabled }
+            assertIs<ServiceMonitorState.Initialized.Enabled>(it)
         }
 
         delay(SERVICE_MONITOR_TIMEOUT)
@@ -148,7 +145,7 @@ class ServiceMonitorRepoTest : BaseTest() {
         delay(SERVICE_MONITOR_TIMEOUT)
         monitorRepo.useState {
             stateHolder.value = it
-            assertTrue { it is ServiceMonitorState.Initialized.Disabled }
+            assertIs<ServiceMonitorState.Initialized.Disabled>(it)
         }
         job.cancel()
     }
@@ -157,9 +154,7 @@ class ServiceMonitorRepoTest : BaseTest() {
     fun test_last_state_is_not_initialized() = runBlockingWithStubMonitor(StubMonitor()) { stubMonitor, monitorRepo ->
         assertFalse { stubMonitor.stopMonitoringDeferred.isCompleted }
         monitorRepo.launchJobCollectAndCancel()
-        monitorRepo.useState {
-            assertTrue { it is ServiceMonitorState.NotInitialized }
-        }
+        monitorRepo.useState { assertIs<ServiceMonitorState.NotInitialized>(it) }
     }
 
     private suspend fun ServiceMonitorStateRepo.launchJobCollectAndCancel() = coroutineScope {
