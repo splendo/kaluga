@@ -29,6 +29,17 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }
 
+    /**
+     * Enables notification or indication for this [Characteristic].
+     *
+     * Creates and puts [DeviceAction.Notification.Enable] into queue to be executed.
+     * Sets [isNotifying] to `true` after action completed successfully.
+     *
+     * @return [DeviceAction] if action was added to the queue, or
+     * `null` if notification is already enabled or previous action is not completed yet.
+     * @see [disableNotification]
+     * @see [isNotifying]
+     */
     suspend fun enableNotification(): DeviceAction? {
         return if (isBusy.compareAndSet(expected = false, new = true) && !isNotifying) {
             val action = createNotificationAction(enabled = true)
@@ -45,6 +56,17 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         }
     }
 
+    /**
+     * Disables notification or indication for this [Characteristic]
+     *
+     * Creates and puts [DeviceAction.Notification.Disable] into queue to be executed.
+     * Sets [isNotifying] to `false` after action completed successfully.
+     *
+     * @return [DeviceAction] if action was added to the queue, or
+     * `null` if notification is already disabled or previous action is not completed yet.
+     * @see [enableNotification]
+     * @see [isNotifying]
+     */
     suspend fun disableNotification(): DeviceAction? {
         return if (isBusy.compareAndSet(expected = false, new = true) && isNotifying) {
             val action = createNotificationAction(enabled = false)
