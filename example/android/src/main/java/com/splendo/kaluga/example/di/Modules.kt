@@ -277,7 +277,8 @@ val viewModelModule = module {
     }
 
     viewModel {
-        ServiceMonitorViewModel(get()) }
+        ServiceMonitorViewModel(get())
+    }
 
     viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->
         BluetoothDeviceDetailViewModel(get(), identifier)
