@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /** A [composable] that also expands bottom sheet upon re-composition. */
-fun NavGraphBuilder.bottomSheetComposable(
+fun NavGraphBuilder.BottomSheetComposable(
     route: String,
     arguments: List<NamedNavArgument> = emptyList(),
     modalBottomSheetState: ModalBottomSheetState,
@@ -26,9 +26,7 @@ fun NavGraphBuilder.bottomSheetComposable(
         arguments = arguments,
         deepLinks = emptyList()
     ) {
-        linkHwBackButtonNavigation {
-            modalBottomSheetState.hide()
-        }
+        HardwareBackButtonNavigation(modalBottomSheetState::hide)
 
         content(it)
 

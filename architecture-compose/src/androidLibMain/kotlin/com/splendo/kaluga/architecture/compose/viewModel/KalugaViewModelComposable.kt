@@ -30,13 +30,11 @@ fun <ViewModel : BaseViewModel> ViewModelComposable(
  * Stores a view model in the local [ViewModelStore]. Use if the view model
  * was created manually and is not located in Activity/Fragment [ViewModelStore].
  */
-@Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM = provider().store()
+@Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM =
+    handleLocalViewModelStore(viewModel = provider())
 
 @Composable
-private fun <VM : BaseViewModel> VM.store() = this.also { handleLocalViewModelStore(it) }
-
-@Composable
-private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM) {
+private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {
     // we delegate VM cleanup to the ViewModelStore, which lives in scope of the current @Composable
     val viewModelStoreOwner = rememberComposableViewModelStoreOwner(viewModel)
 
@@ -53,6 +51,8 @@ private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM) {
     }
     // actual injection of the VM into the ViewModelStore
     viewModelProvider.get(viewModel::class.java)
+
+    return viewModel
 }
 
 @Composable
@@ -71,7 +71,7 @@ private fun rememberComposableViewModelStoreOwner(viewModel: BaseViewModel): Vie
 }
 
 @Composable
-private fun <VM : BaseViewModel> VM.linkLifecycle() {
+private fun <VM : BaseViewModel> VM.linkLifecycle(): VM {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
         val lifecycleObserver = object : LifecycleObserver {
@@ -90,4 +90,5 @@ private fun <VM : BaseViewModel> VM.linkLifecycle() {
             lifecycle.removeObserver(lifecycleObserver)
         }
     }
+    return this
 }

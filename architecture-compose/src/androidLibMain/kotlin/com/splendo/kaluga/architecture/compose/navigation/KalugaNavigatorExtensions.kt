@@ -33,7 +33,7 @@ private class ComposeOnBackPressedCallback(
  * Current implementation expects [KalugaViewModelComposeActivity] to be a host since it provides [LocalAppCompatActivity].
  */
 @Composable
-fun LifecycleSubscribable.bind() {
+fun LifecycleSubscribable.bind(): LifecycleSubscribable {
     LocalAppCompatActivity.current?.let {
         DisposableEffect(Unit) {
             subscribe(it)
@@ -43,11 +43,11 @@ fun LifecycleSubscribable.bind() {
             }
         }
     }
-
+    return this
 }
 
 @Composable
-fun linkHwBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
+fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
     LocalOnBackPressedDispatcherOwner.current?.let {
         val onBackPressedDispatcher = it.onBackPressedDispatcher
         val lifecycle = LocalLifecycleOwner.current.lifecycle
