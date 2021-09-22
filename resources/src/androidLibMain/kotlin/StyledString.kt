@@ -10,7 +10,9 @@ import android.text.style.BackgroundColorSpan
 import android.text.style.CharacterStyle
 import android.text.style.ForegroundColorSpan
 import android.text.style.LeadingMarginSpan
+import android.text.style.LineBackgroundSpan
 import android.text.style.LineHeightSpan
+import android.text.style.MetricAffectingSpan
 import android.text.style.ParagraphStyle
 import android.text.style.ReplacementSpan
 import android.text.style.StrikethroughSpan
@@ -20,6 +22,8 @@ import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.resources.view.alignment
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 
@@ -40,7 +44,7 @@ actual class StyledStringBuilder actual constructor(string: String) {
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
         builder.setSpan(
             when (attribute) {
-                is StringStyleAttribute.CharacterStyleAttribute -> attribute.characterStyle
+                is StringStyleAttribute.CharacterStyleAttribute -> attribute.characterStyle(range)
                 is StringStyleAttribute.ParagraphStyleAttribute -> attribute.paragraphStyle
                 is StringStyleAttribute.Link -> URLSpan(attribute.url)
             },
@@ -50,7 +54,7 @@ actual class StyledStringBuilder actual constructor(string: String) {
         )
     }
 
-    private val StringStyleAttribute.CharacterStyleAttribute.characterStyle: CharacterStyle get() = when(this) {
+    private fun StringStyleAttribute.CharacterStyleAttribute.characterStyle(range: IntRange): CharacterStyle = when(this) {
         is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> BackgroundColorSpan(color)
         is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(color)
         is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
@@ -70,59 +74,58 @@ actual class StyledStringBuilder actual constructor(string: String) {
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> SubscriptSpan()
         is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> SuperscriptSpan()
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> UnderlineSpan()
-        is StringStyleAttribute.CharacterStyleAttribute.Stroke -> object : ReplacementSpan() {
-            override fun draw(
+        is StringStyleAttribute.CharacterStyleAttribute.Stroke -> object : MetricAffectingSpan(), LineBackgroundSpan {
+            override fun updateMeasureState(textPaint: TextPaint) {
+                textPaint.style = Paint.Style.FILL_AND_STROKE
+                textPaint.strokeWidth = width
+            }
+
+            override fun updateDrawState(tp: TextPaint?) {
+                val textPaint = tp ?: return
+                textPaint.style = Paint.Style.FILL
+                textPaint.strokeWidth = width
+            }
+
+            override fun drawBackground(
                 canvas: Canvas,
-                text: CharSequence?,
+                paint: Paint,
+                left: Int,
+                right: Int,
+                top: Int,
+                baseline: Int,
+                bottom: Int,
+                text: CharSequence,
                 start: Int,
                 end: Int,
-                x: Float,
-                top: Int,
-                y: Int,
-                bottom: Int,
-                paint: Paint
+                lineNumber: Int
             ) {
-                text?.let {
-                    val fillPaint = TextPaint(paint).apply {
-                        style = Paint.Style.FILL_AND_STROKE
-                        strokeWidth = width
-                    }
-                    val strokePaint = TextPaint(paint).apply {
+                val strokePaint = TextPaint(paint).apply {
                         style = Paint.Style.STROKE
                         strokeWidth = width
                         color = this@characterStyle.color
                     }
 
+                if (start < range.first) {
+                    val offset = paint.measureText(text, start, range.first)
                     canvas.drawText(
-                        it,
-                        start,
-                        end,
-                        x,
-                        y.toFloat(),
-                        fillPaint
+                        text,
+                        range.first,
+                        min(range.last + 1, end),
+                        left.toFloat() + offset,
+                        baseline.toFloat(),
+                        strokePaint
                     )
+                } else {
                     canvas.drawText(
-                        it,
+                        text,
                         start,
-                        end,
-                        x,
-                        y.toFloat(),
+                        min(range.last + 1, end),
+                        left.toFloat(),
+                        baseline.toFloat(),
                         strokePaint
                     )
                 }
             }
-
-            override fun getSize(
-                paint: Paint,
-                text: CharSequence?,
-                start: Int,
-                end: Int,
-                fm: Paint.FontMetricsInt?
-            ): Int = Paint(paint).apply {
-                style = Paint.Style.FILL_AND_STROKE
-            }
-                .measureText(text, start, end)
-                .roundToInt()
         }
     }
 

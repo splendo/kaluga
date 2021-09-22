@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.databinding.ActivityResourcesBinding
+import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
@@ -36,7 +37,9 @@ class ResourcesActivity : KalugaViewModelActivity<ResourcesListViewModel>() {
 
 class ResourcesAdapter(private val viewModel: ResourcesListViewModel) : RecyclerView.Adapter<ResourcesAdapter.ResourceViewHolder>() {
 
-    class ResourceViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
+    class ResourceViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
+        val button = binding.button
+    }
 
     var resources: List<Resource> = emptyList()
         set(newValue) {
@@ -45,8 +48,8 @@ class ResourcesAdapter(private val viewModel: ResourcesListViewModel) : Recycler
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourceViewHolder {
-        val button = AppCompatButton(parent.context)
-        return ResourceViewHolder(button)
+        val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ResourceViewHolder(binding)
     }
 
     override fun getItemCount(): Int = resources.size

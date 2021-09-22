@@ -19,11 +19,15 @@ package com.splendo.kaluga.example.resources
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesBinding
 import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.ButtonViewModel
+import com.splendo.kaluga.example.view.HorizontalSpaceItemDecoration
+import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
+import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.bindButton
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -42,10 +46,13 @@ class ButtonActivity : KalugaViewModelActivity<ButtonViewModel>() {
             binding.resourcesList.adapter = this
         }
         viewModel.buttons.observeInitialized { adapter.buttons = it }
+        binding.resourcesList.layoutManager = GridLayoutManager(this, 2)
+        binding.resourcesList.addItemDecoration(VerticalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
+        binding.resourcesList.addItemDecoration(HorizontalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
     }
 }
 
-class ButtonAdapter() : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
+class ButtonAdapter : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
 
     class ButtonViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
         val button = binding.button

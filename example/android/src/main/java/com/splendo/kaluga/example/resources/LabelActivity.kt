@@ -24,6 +24,8 @@ import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelActivity
 import com.splendo.kaluga.example.databinding.ActivityResourcesBinding
 import com.splendo.kaluga.example.databinding.ViewListTextViewBinding
 import com.splendo.kaluga.example.shared.viewmodel.resources.LabelViewModel
+import com.splendo.kaluga.example.view.VerticalSpaceItemDecoration
+import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -41,11 +43,12 @@ class LabelActivity : KalugaViewModelActivity<LabelViewModel>() {
 
             binding.resourcesList.adapter = this
         }
+        binding.resourcesList.addItemDecoration(VerticalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
         viewModel.labels.observeInitialized { adapter.labels = it }
     }
 }
 
-class LabelAdapter() : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
+class LabelAdapter : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
 
     class LabelViewHolder(val binding: ViewListTextViewBinding) : RecyclerView.ViewHolder(binding.root) {
         val label = binding.label

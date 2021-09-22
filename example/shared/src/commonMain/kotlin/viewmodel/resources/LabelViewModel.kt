@@ -80,7 +80,7 @@ class LabelViewModel : BaseViewModel() {
             KalugaLabel.Styled("Background Styled text".styled(StringStyleAttribute.CharacterStyleAttribute.BackgroundColor(DefaultColors.deepSkyBlue)), TextStyles.whiteText),
             KalugaLabel.Styled("Partial Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.TextStyle(TextStyles.redText), IntRange(0, 13)) }), TextStyles.defaultText),
             KalugaLabel.Styled("Font Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Font(defaultBoldFont, 12.0f), IntRange(0, 10)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Stroke Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Stroke(1.0f, DefaultColors.limeGreen), IntRange(0, 12)) }), TextStyles.defaultText),
+            KalugaLabel.Styled("Stroke Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Stroke(2.0f, DefaultColors.limeGreen), IntRange(0, 12)) }), TextStyles.defaultText),
             KalugaLabel.Styled("Subscript Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.SubScript, IntRange(0, 15)) }), TextStyles.defaultText),
             KalugaLabel.Styled("Superscript Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.SuperScript, IntRange(0, 17)) }), TextStyles.defaultText),
             KalugaLabel.Styled("Shadow Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Shadow(DefaultColors.dimGray, 2.0f, 2.0f, 5.0f), IntRange(0, 12)) }), TextStyles.defaultText),

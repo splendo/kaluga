@@ -210,8 +210,6 @@ private fun Color.blend(source: Color, mode: BlendMode): Color {
 }
 
 infix fun Color.normal(source: Color) = blend(source, BlendMode.Normal)
-infix operator fun Color.plus(source: Color) = blend(source, BlendMode.Normal)
-infix operator fun Color.times(source: Color) = blend(source, BlendMode.Multiply)
 infix fun Color.multiply(source: Color) = blend(source, BlendMode.Multiply)
 infix fun Color.screen(source: Color) = blend(source, BlendMode.Screen)
 infix fun Color.overlay(source: Color) = blend(source, BlendMode.Overlay)
@@ -222,7 +220,6 @@ infix fun Color.softLight(source: Color) = blend(source, BlendMode.SoftLight)
 infix fun Color.dodge(source: Color) = blend(source, BlendMode.ColorDodge)
 infix fun Color.burn(source: Color) = blend(source, BlendMode.ColorBurn)
 infix fun Color.difference(source: Color) = blend(source, BlendMode.Difference)
-infix operator fun Color.minus(source: Color) = blend(source, BlendMode.Difference)
 infix fun Color.exclude(source: Color) = blend(source, BlendMode.Exclusion)
 infix fun Color.hue(source: Color) = blend(source, BlendMode.Hue)
 infix fun Color.saturate(source: Color) = blend(source, BlendMode.Saturation)
