@@ -30,7 +30,7 @@ sealed class ServiceMonitorState : State() {
     sealed class Initialized(
         private val monitor: ServiceMonitor
     ) : ServiceMonitorState() {
-        val notInitialized : suspend () -> NotInitialized = { NotInitialized(monitor) }
+        val notInitialized: suspend () -> NotInitialized = { NotInitialized(monitor) }
 
         fun deinitialize(): suspend () -> NotInitialized {
             monitor.stopMonitoring()
@@ -38,18 +38,18 @@ sealed class ServiceMonitorState : State() {
         }
 
         class Enabled(monitor: ServiceMonitor) : Initialized(monitor) {
-            val disabled : suspend () -> Disabled = { Disabled(monitor) }
+            val disabled: suspend () -> Disabled = { Disabled(monitor) }
         }
         class Disabled(monitor: ServiceMonitor) : Initialized(monitor) {
-            val enabled : suspend () -> Enabled = { Enabled(monitor) }
+            val enabled: suspend () -> Enabled = { Enabled(monitor) }
         }
     }
 
     class NotInitialized(
         private val monitor: ServiceMonitor
     ) : ServiceMonitorState(), SpecialFlowValue.NotImportant {
-        val initialized : suspend () -> Initialized = { Initialized.Enabled(monitor) }
-        val initializedDisabled : suspend () -> Initialized = { Initialized.Disabled(monitor) }
+        val initialized: suspend () -> Initialized = { Initialized.Enabled(monitor) }
+        val initializedDisabled: suspend () -> Initialized = { Initialized.Disabled(monitor) }
 
         fun initialize(): suspend () -> Initialized {
             monitor.startMonitoring()

@@ -50,7 +50,6 @@ class ServiceMonitorRepoTest : BaseTest() {
 
     private val stateHolder: MutableStateFlow<ServiceMonitorState?> = MutableStateFlow(null)
 
-
     internal class StubMonitor(initialValue: Boolean = false) : ServiceMonitor {
 
         var output = MutableStateFlow(initialValue)
