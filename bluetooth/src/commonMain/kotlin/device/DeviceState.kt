@@ -35,7 +35,7 @@ sealed class DeviceAction {
      * `true` if `DeviceAction` was succeeded, or
      * `false` if `DeviceAction` was failed
      * */
-    val completed = CompletableDeferred<Boolean>()
+    val completedSuccessfully = CompletableDeferred<Boolean>()
 
     sealed class Read : DeviceAction() {
         class Characteristic(val characteristic: com.splendo.kaluga.bluetooth.Characteristic) : Read()

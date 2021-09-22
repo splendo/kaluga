@@ -93,7 +93,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>()
         test {
             val action = handledAction.firstInstance<DeviceAction.Notification.Enable>()
             assertNotNull(action)
-            assertFalse(action.completed.await())
+            assertFalse(action.completedSuccessfully.await())
             assertFalse(characteristic.isNotifying)
         }
     }

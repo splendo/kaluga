@@ -125,7 +125,7 @@ abstract class BaseDeviceConnectionManager(
     open suspend fun handleCurrentActionCompleted(succeeded: Boolean) = stateRepo.takeAndChangeState { state ->
         (
             if (state is DeviceState.Connected.HandlingAction && state.action == currentAction) {
-                state.action.completed.complete(succeeded)
+                state.action.completedSuccessfully.complete(succeeded)
                 debug(TAG) { "Action $currentAction has been succeeded: $succeeded" }
                 state.actionCompleted
             } else {

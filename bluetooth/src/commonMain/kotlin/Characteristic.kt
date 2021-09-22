@@ -33,8 +33,8 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return if (isBusy.compareAndSet(expected = false, new = true) && !isNotifying) {
             val action = createNotificationAction(enabled = true)
             addAction(action)
-            action.completed.invokeOnCompletion {
-                if (it == null && action.completed.getCompleted()) {
+            action.completedSuccessfully.invokeOnCompletion {
+                if (it == null && action.completedSuccessfully.getCompleted()) {
                     isNotifying = true
                     isBusy.value = false
                 }
@@ -49,8 +49,8 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return if (isBusy.compareAndSet(expected = false, new = true) && isNotifying) {
             val action = createNotificationAction(enabled = false)
             addAction(action)
-            action.completed.invokeOnCompletion {
-                if (it == null && action.completed.getCompleted()) {
+            action.completedSuccessfully.invokeOnCompletion {
+                if (it == null && action.completedSuccessfully.getCompleted()) {
                     isNotifying = false
                     isBusy.value = false
                 }
