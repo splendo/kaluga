@@ -20,10 +20,12 @@ package com.splendo.kaluga.bluetooth
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
-    private val isBusy = AtomicBoolean(false)
+    private val isBusy = MutableStateFlow(false)
     private val _isNotifying = AtomicBoolean(false)
     var isNotifying: Boolean
         get() = _isNotifying.value
@@ -36,24 +38,23 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
      * Sets [isNotifying] to `true` after action completed successfully.
      *
      * @return [DeviceAction] if action was added to the queue, or
-     * `null` if notification is already enabled or previous action is not completed yet.
+     * `null` if notification is already enabled.
      * @see [disableNotification]
      * @see [isNotifying]
      */
     suspend fun enableNotification(): DeviceAction? {
-        return if (isBusy.compareAndSet(expected = false, new = true) && !isNotifying) {
-            val action = createNotificationAction(enabled = true)
-            addAction(action)
-            action.completedSuccessfully.invokeOnCompletion {
-                if (it == null && action.completedSuccessfully.getCompleted()) {
-                    isNotifying = true
-                    isBusy.value = false
-                }
+        isBusy.first { !it }
+        if (isNotifying) return null
+        isBusy.compareAndSet(expect = false, update = true)
+        val action = createNotificationAction(enabled = true)
+        addAction(action)
+        action.completedSuccessfully.invokeOnCompletion {
+            if (it == null && action.completedSuccessfully.getCompleted()) {
+                isNotifying = true
             }
-            action
-        } else {
-            null
+            isBusy.compareAndSet(expect = true, update = false)
         }
+        return action
     }
 
     /**
@@ -63,24 +64,23 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
      * Sets [isNotifying] to `false` after action completed successfully.
      *
      * @return [DeviceAction] if action was added to the queue, or
-     * `null` if notification is already disabled or previous action is not completed yet.
+     * `null` if notification is already disabled.
      * @see [enableNotification]
      * @see [isNotifying]
      */
     suspend fun disableNotification(): DeviceAction? {
-        return if (isBusy.compareAndSet(expected = false, new = true) && isNotifying) {
-            val action = createNotificationAction(enabled = false)
-            addAction(action)
-            action.completedSuccessfully.invokeOnCompletion {
-                if (it == null && action.completedSuccessfully.getCompleted()) {
-                    isNotifying = false
-                    isBusy.value = false
-                }
+        isBusy.first { !it }
+        if (!isNotifying) return null
+        isBusy.compareAndSet(expect = false, update = true)
+        val action = createNotificationAction(enabled = false)
+        addAction(action)
+        action.completedSuccessfully.invokeOnCompletion {
+            if (it == null && action.completedSuccessfully.getCompleted()) {
+                isNotifying = false
             }
-            action
-        } else {
-            null
+            isBusy.compareAndSet(expect = true, update = false)
         }
+        return action
     }
 
     override val uuid = wrapper.uuid
