@@ -17,34 +17,63 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
+import co.touchlab.stately.ensureNeverFrozen
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class Beacons(
     private val bluetooth: BluetoothService,
     private val timeoutMs: Int = 10_000
 ) {
 
-    fun startMonitoring() = bluetooth.startScanning()
-    fun stopMonitoring() = bluetooth.stopScanning()
+    private val beaconsCache = MutableStateFlow(emptySet<BeaconInfo>())
+
+    init { ensureNeverFrozen() }
+
+    fun startMonitoring() {
+        beaconsCache.value = emptySet()
+        bluetooth.startScanning()
+    }
+
+    fun stopMonitoring() {
+        bluetooth.stopScanning()
+        beaconsCache.value = emptySet()
+    }
+
     suspend fun isMonitoring() = bluetooth.isScanning()
 
-    fun beacons(): Flow<List<BeaconInfo>> = bluetooth.devices().map { devices ->
-        devices.mapNotNull { createBeaconWith(it) }
+    fun beacons() = bluetooth.devices().map { devices ->
+        mergeFoundBeacons(
+            devices.mapNotNull { createBeaconWith(it) }
+        )
     }
 
     fun isAnyInRange(beaconIds: List<String>) = beacons().map { list ->
-        list.filter { beaconIds.containsLowerCased(it.fullID()) }
-            .any { it.seenMs() <= timeoutMs }
+        list.any { beaconIds.containsLowerCased(it.identifier) }
+    }
+
+    private fun mergeFoundBeacons(list: List<BeaconInfo>): Set<BeaconInfo> {
+        println("found $list")
+        val beacons = list + beaconsCache.value.filter { it.seenMs() <= timeoutMs }
+        return beacons.toSet().also {
+            beaconsCache.value = it
+            println("cached $it")
+        }
     }
 
     private fun List<String>.containsLowerCased(element: String): Boolean =
-        this.map(String::toLowerCase).contains(element.toLowerCase())
+        this.map(String::lowercase).contains(element.lowercase())
 
     private suspend fun createBeaconWith(device: Device): BeaconInfo? {
         val serviceData = device.map { it.advertisementData.serviceData }.firstOrNull() ?: return null
@@ -52,10 +81,11 @@ class Beacons(
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
         val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: Date.now()
-        return BeaconInfo(device.identifier, frame.uid, frame.txPower, rssi, lastSeen)
+        val identifier = frame.uid.namespace + frame.uid.instance
+        return BeaconInfo(identifier, frame.uid, frame.txPower, rssi, lastSeen)
     }
 }
 
-operator fun Flow<List<BeaconInfo>>.get(identifier: Identifier) = map { beacons ->
+operator fun Flow<List<BeaconInfo>>.get(identifier: String) = map { beacons ->
     beacons.firstOrNull { it.identifier == identifier }
 }

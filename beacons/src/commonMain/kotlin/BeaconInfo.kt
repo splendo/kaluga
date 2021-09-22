@@ -18,18 +18,31 @@
 package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.base.utils.Date
-import com.splendo.kaluga.bluetooth.device.Identifier
 
 typealias BeaconID = Eddystone.UID
 typealias TxPower = Int
 typealias RSSI = Int
 
 data class BeaconInfo(
-    var identifier: Identifier,
+    var identifier: String,
     var beaconID: BeaconID,
     var txPower: TxPower,
     var RSSI: RSSI,
     var lastSeen: Date
+) {
+    override fun equals(other: Any?) = when (other) {
+        is BeaconInfo -> other.beaconID == this.beaconID
+        else -> false
+    }
+
+    override fun hashCode(): Int {
+        return beaconID.hashCode()
+    }
+}
+
+@Deprecated(
+    message = "Replaced with identifier",
+    replaceWith = ReplaceWith(expression = "identifier")
 )
 
 fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance

@@ -22,4 +22,14 @@ package com.splendo.kaluga.base.utils
  * @param separator The separator to use between elements
  * @return The String representing the [ByteArray]s hexadecimal value
  */
-fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray().joinToString(separator) { it.toString(16).padStart(2, '0') }
+fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray()
+    .joinToString(separator) { it.toString(16).padStart(2, '0') }
+
+/**
+ * Converts a hex [String] to [ByteArray]
+ * @return The [ByteArray] or `null` if length is not even
+ */
+fun String.decodeHex(): ByteArray? {
+    if (length % 2 != 0) return null
+    return chunked(2) { it.toString().toInt(16).toByte() }.toByteArray()
+}
