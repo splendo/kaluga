@@ -1,6 +1,5 @@
 package com.splendo.kaluga.architecture.compose.navigation
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
@@ -42,7 +41,6 @@ fun NavGraphBuilder.bottomSheetComposable(
 object CloseBottomSheetNavigationAction : NavigationAction<Nothing>(null)
 
 /** Navigator for [ModalBottomSheetLayout]. */
-@ExperimentalMaterialApi
 class KalugaModalBottomSheetNavigator(
     private val coroutineScope: CoroutineScope,
     private val modalBottomSheetState: ModalBottomSheetState,
