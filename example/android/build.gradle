@@ -102,5 +102,5 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_coroutines_version!!"
     
     implementation("androidx.compose.material:material:$gradle.androidx_compose_version")
-    implementation("androidx.navigation:navigation-compose:$gradle.androidx_navigation_compose")
+    implementation("androidx.navigation:navigation-compose:$gradle.androidx_navigation_compose_version")
 }
