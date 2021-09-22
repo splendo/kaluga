@@ -13,14 +13,14 @@ const val BACK_ROUTE = "back"
 private const val EMPTY_ROUTE = "empty"
 
 /** @return a route represented by the [NavigationAction]. */
-inline fun <reified T: NavigationAction<*>> route(vararg arguments: String?): String =
-    route(T::class, * arguments)
+inline fun <reified T: NavigationAction<*>> route(vararg arguments: String): String =
+    route(T::class, *arguments)
 
 /** @return a route represented by this [NavigationAction]. */
-fun NavigationAction<*>.route(vararg arguments: String?): String = route(this::class, *arguments)
+fun NavigationAction<*>.route(vararg arguments: String): String = route(this::class, *arguments)
 
 /** @return a route represented by [navigationActionClass] and [arguments]. */
-fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg arguments: String?): String {
+fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg arguments: String): String {
     var route = navigationActionClass.simpleName!!
     for (argument in arguments) {
         route += "/$argument"
@@ -32,10 +32,10 @@ fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg argumen
 /**
  * Routes [Navigator] calls to [NavHostController].
  */
-open class KalugaNavigatorComposeAdapter<A : NavigationAction<*>>(
+open class RouteNavigator<A : NavigationAction<*>>(
     protected val navController: NavHostController,
     private val navigationMapper: (A) -> String,
-    private val parentNavigator: KalugaNavigatorComposeAdapter<*>? = null
+    private val parentNavigator: RouteNavigator<*>? = null
 ) : Navigator<A> {
 
     override fun navigate(action: A) {

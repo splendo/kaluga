@@ -20,7 +20,7 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 @Composable
 fun <ViewModel : BaseViewModel> ViewModelComposable(
     viewModel: ViewModel,
-    content: @Composable ((ViewModel) -> Unit)? = null
+    content: @Composable (ViewModel.() -> Unit)? = null
 ) {
     viewModel.linkLifecycle()
     content?.invoke(viewModel)
@@ -31,7 +31,7 @@ fun <ViewModel : BaseViewModel> ViewModelComposable(
  * was created manually and is not located in Activity/Fragment [ViewModelStore].
  */
 @Composable fun <VM : BaseViewModel> store(provider: @Composable () -> VM): VM =
-    handleLocalViewModelStore(viewModel = provider())
+    provider().also { handleLocalViewModelStore(it) }
 
 @Composable
 private fun <VM : BaseViewModel> handleLocalViewModelStore(viewModel: VM): VM {

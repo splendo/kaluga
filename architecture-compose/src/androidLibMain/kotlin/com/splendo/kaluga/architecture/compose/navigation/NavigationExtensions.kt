@@ -16,27 +16,14 @@ import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-private class ComposeOnBackPressedCallback(
-    private val coroutineScope: CoroutineScope,
-    private val onBackButtonClickHandler: suspend () -> Unit
-) : OnBackPressedCallback(true) {
-
-    override fun handleOnBackPressed() {
-        coroutineScope.launch {
-            onBackButtonClickHandler()
-        }
-    }
-
-}
-
 /**
  * Current implementation expects [KalugaViewModelComposeActivity] to be a host since it provides [LocalAppCompatActivity].
  */
 @Composable
 fun LifecycleSubscribable.bind(): LifecycleSubscribable {
-    LocalAppCompatActivity.current?.let {
+    LocalAppCompatActivity.current?.let { activity ->
         DisposableEffect(Unit) {
-            subscribe(it)
+            subscribe(activity)
 
             onDispose {
                 unsubscribe()
@@ -46,6 +33,9 @@ fun LifecycleSubscribable.bind(): LifecycleSubscribable {
     return this
 }
 
+/**
+ * Adds a handler for a hardware back button
+ */
 @Composable
 fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
     LocalOnBackPressedDispatcherOwner.current?.let {
@@ -75,4 +65,17 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
             }
         }
     }
+}
+
+private class ComposeOnBackPressedCallback(
+    private val coroutineScope: CoroutineScope,
+    private val onBackButtonClickHandler: suspend () -> Unit
+) : OnBackPressedCallback(true) {
+
+    override fun handleOnBackPressed() {
+        coroutineScope.launch {
+            onBackButtonClickHandler()
+        }
+    }
+
 }

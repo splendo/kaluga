@@ -15,16 +15,6 @@
 
  */
 
-repositories {
-    jcenter {
-        content {
-            // https://youtrack.jetbrains.com/issue/IDEA-261387
-            includeModule("org.jetbrains.trove4j", "trove4j")
-            includeModule("org.jetbrains.kotlinx", "kotlinx-collections-immutable-jvm")
-        }
-    }
-}
-
 // if the include is made from the example project shared module we need to go up one more directory
 String path_prefix = file("../gradle/componentskt.gradle.kts").exists() ? ".." : "../.."
 

@@ -36,15 +36,16 @@ fun NavGraphBuilder.BottomSheetComposable(
     }
 }
 
+/** Closes the [ModalBottomSheetLayout]. */
 object CloseBottomSheetNavigationAction : NavigationAction<Nothing>(null)
 
 /** Navigator for [ModalBottomSheetLayout]. */
-class KalugaModalBottomSheetNavigator(
+class ModalBottomSheetNavigator(
     private val coroutineScope: CoroutineScope,
     private val modalBottomSheetState: ModalBottomSheetState,
     navController: NavHostController,
     navigationMapper: (NavigationAction<*>) -> String
-) : KalugaNavigatorComposeAdapter<NavigationAction<*>>(navController, navigationMapper) {
+) : RouteNavigator<NavigationAction<*>>(navController, navigationMapper) {
 
     override fun navigate(action: NavigationAction<*>) {
         if (action is CloseBottomSheetNavigationAction) {

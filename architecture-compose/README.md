@@ -19,8 +19,7 @@ dependencies {
 ## Usage
 ###Examples
 
-Create a local view model, save in a local ViewModelStore (to ensure cleanup) and 
-link it to lifecycle callbacks and a hardware back button
+#### Display contact details using a local view model 
 
 ```kotlin
 @Composable
@@ -28,16 +27,18 @@ fun ContactDetailsLayout(
     contactDetails: ContactDetails,
     navigator: Navigator<ContactDetailsNavigation<*>>
 ) {
-    val viewModel = store { 
+    // Create a view model and store it in a local ViewModelStore to ensure cleanup
+    val viewModel = store {
         remember {
             ContactDetailsViewModel(contactDetails)
         }
     }
 
     ViewModelComposable(viewModel) { vm ->
-        linkHwBackButtonNavigation {
-            vm.onBackPressed()
-        }
+        // Add a hardware back button handler  
+        HardwareBackButtonNavigation(vm::onBackPressed)
+        
+        // Add the rest of content
         Column {
             //...
         }
