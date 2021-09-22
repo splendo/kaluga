@@ -46,7 +46,6 @@ class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor) : BaseViewModel() {
 
         coroutineScope.launch {
             bltMonitorRepo.collect {
-                println("ServiceMonitorViewModel: state is $it")
                 _bluetoothServiceStatusText.value = when (it) {
                     is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
                     is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
