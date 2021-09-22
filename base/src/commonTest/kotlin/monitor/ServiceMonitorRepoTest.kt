@@ -15,11 +15,9 @@
 
  */
 
-package monitor
+package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateRepo
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
