@@ -69,7 +69,7 @@ class ServiceMonitorStateRepo(
     initChangeState = { state ->
         when (state) {
             is ServiceMonitorState.Initialized -> {
-                { state }
+                state.remain()
             }
             is ServiceMonitorState.NotInitialized -> {
                 state.initialize()
@@ -91,25 +91,17 @@ class ServiceMonitorStateRepo(
     init {
         launch {
             monitor.isEnabled.collect { isEnabled ->
-                takeAndChangeState { currentState ->
-                    when (currentState) {
-                        is ServiceMonitorState.Initialized.Enabled -> {
-                            if (isEnabled) {
-                                currentState.remain()
-                            } else {
-                                currentState.disabled
-                            }
-                        }
-                        is ServiceMonitorState.Initialized.Disabled -> {
-                            if (isEnabled) {
-                                currentState.enabled
-                            } else {
-                                currentState.remain()
-                            }
-                        }
-                        is ServiceMonitorState.NotInitialized -> {
-                            currentState.remain()
-                        }
+                if (isEnabled) {
+                    takeAndChangeState(
+                        remainIfStateNot = ServiceMonitorState.Initialized.Disabled::class
+                    ) { currentState ->
+                        currentState.enabled
+                    }
+                } else {
+                    takeAndChangeState(
+                        remainIfStateNot = ServiceMonitorState.Initialized.Enabled::class
+                    ) { currentState ->
+                        currentState.disabled
                     }
                 }
             }
