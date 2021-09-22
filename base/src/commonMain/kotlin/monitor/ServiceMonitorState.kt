@@ -30,11 +30,10 @@ sealed class ServiceMonitorState : State() {
     sealed class Initialized(
         private val monitor: ServiceMonitor
     ) : ServiceMonitorState() {
-        val notInitialized: suspend () -> NotInitialized = { NotInitialized(monitor) }
 
         fun deinitialize(): suspend () -> NotInitialized {
             monitor.stopMonitoring()
-            return notInitialized
+            return { NotInitialized(monitor) }
         }
 
         class Enabled(monitor: ServiceMonitor) : Initialized(monitor) {
@@ -48,15 +47,15 @@ sealed class ServiceMonitorState : State() {
     class NotInitialized(
         private val monitor: ServiceMonitor
     ) : ServiceMonitorState(), SpecialFlowValue.NotImportant {
-        val initialized: suspend () -> Initialized = { Initialized.Enabled(monitor) }
-        val initializedDisabled: suspend () -> Initialized = { Initialized.Disabled(monitor) }
 
         fun initialize(): suspend () -> Initialized {
             monitor.startMonitoring()
-            return if (monitor.isServiceEnabled) {
-                initialized
-            } else {
-                initializedDisabled
+            return {
+                if (monitor.isServiceEnabled) {
+                    Initialized.Enabled(monitor)
+                } else {
+                    Initialized.Disabled(monitor)
+                }
             }
         }
     }
@@ -96,7 +95,7 @@ class ServiceMonitorStateRepo(
                     when (currentState) {
                         is ServiceMonitorState.Initialized.Enabled -> {
                             if (isEnabled) {
-                                { currentState }
+                                currentState.remain()
                             } else {
                                 currentState.disabled
                             }
@@ -105,11 +104,11 @@ class ServiceMonitorStateRepo(
                             if (isEnabled) {
                                 currentState.enabled
                             } else {
-                                { currentState }
+                                currentState.remain()
                             }
                         }
                         is ServiceMonitorState.NotInitialized -> {
-                            { currentState }
+                            currentState.remain()
                         }
                     }
                 }
