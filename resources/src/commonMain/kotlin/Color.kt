@@ -115,7 +115,6 @@ fun colorFrom(hexString: String): Color? {
     }
 }
 
-val clearColor = colorFrom(1.0, 1.0, 1.0, 0.0)
 val Color.inverted: Color get() = colorFrom(1.0 - red, 1.0 - green, 1.0 - blue, alpha)
 val Color.hexString: String
     get() {

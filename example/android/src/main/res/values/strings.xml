@@ -12,6 +12,10 @@
     <string name="feature_permissions">Permissions</string>
     <string name="feature_system">System</string>
     <string name="feature_beacons">Beacons</string>
+    <string name="feature_resources">Resources</string>
+    <string name="feature_resources_color">Color</string>
+    <string name="feature_resources_button">Button</string>
+    <string name="feature_resources_label">Label</string>
 
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>

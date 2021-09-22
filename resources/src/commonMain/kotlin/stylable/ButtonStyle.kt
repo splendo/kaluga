@@ -18,8 +18,8 @@
 package com.splendo.kaluga.resources.stylable
 
 import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.Font
-import com.splendo.kaluga.resources.clearColor
 
 data class ButtonStyle(
     val font: Font,
@@ -27,23 +27,43 @@ data class ButtonStyle(
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
     val disabledStyle: ButtonStateStyle = defaultStyle
-)
+) {
+    constructor(
+        textStyle: TextStyle,
+        backgroundColor: Color = DefaultColors.clear,
+        pressedBackgroundColor: Color = backgroundColor,
+        disabledBackgroundColor: Color = backgroundColor,
+        shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
+        textStyle.font,
+        textStyle.size,
+        ButtonStateStyle(
+            textStyle.color,
+            backgroundColor,
+            shape
+        ),
+        ButtonStateStyle(
+            textStyle.color,
+            pressedBackgroundColor,
+            shape
+        ),
+        ButtonStateStyle(
+            textStyle.color,
+            disabledBackgroundColor,
+            shape
+        )
+    )
+}
 
 data class ButtonStateStyle(
     val textColor: Color,
     val backgroundStyle: BackgroundStyle,
 ) {
-    constructor(textColor: Color) : this(
-        textColor,
-        BackgroundStyle(
-            BackgroundStyle.FillStyle.Solid(clearColor)
-        )
-    )
 
-    constructor(textColor: Color, backgroundColor: Color) : this(
+    constructor(textColor: Color, backgroundColor: Color = DefaultColors.clear, shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
         textColor,
         BackgroundStyle(
-            BackgroundStyle.FillStyle.Solid(backgroundColor)
+            BackgroundStyle.FillStyle.Solid(backgroundColor),
+            shape = shape
         )
     )
 }

@@ -20,8 +20,11 @@ package com.splendo.kaluga.resources
 import android.content.Context
 import android.util.TypedValue
 
-fun Float.pixelValue(context: Context): Float = TypedValue.applyDimension(
-        TypedValue.COMPLEX_UNIT_DIP,
-        this,
-        context.resources.displayMetrics
-    )
+fun Float.dpToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_DIP, context)
+fun Float.spToPixel(context: Context): Float = toPixel(TypedValue.COMPLEX_UNIT_SP, context)
+
+private fun Float.toPixel(unit: Int, context: Context): Float = TypedValue.applyDimension(
+    unit,
+    this,
+    context.resources.displayMetrics
+)

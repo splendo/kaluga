@@ -25,8 +25,8 @@ import com.splendo.kaluga.architecture.observable.InitializedObservable
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.resources.Color
+import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.burn
-import com.splendo.kaluga.resources.clearColor
 import com.splendo.kaluga.resources.colorBlend
 import com.splendo.kaluga.resources.colorFrom
 import com.splendo.kaluga.resources.darken
@@ -50,7 +50,7 @@ import com.splendo.kaluga.resources.stylable.BackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 import com.splendo.kaluga.resources.times
-import com.splendo.kaluga.resources.view.Button
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -103,7 +103,7 @@ class ColorViewModel(
             SelectableBlendMode.LUMINATE -> backdrop luminate source
             SelectableBlendMode.COLOR_BLEND -> backdrop colorBlend source
         }
-    }.stateIn(coroutineScope, SharingStarted.Lazily, clearColor)
+    }.stateIn(coroutineScope, SharingStarted.Lazily, DefaultColors.clear)
 
     val backdropColorBackground = backdropColor.backgroundStyleObservable
     val sourceColorBackground = sourceColor.backgroundStyleObservable
@@ -197,7 +197,7 @@ class ColorViewModel(
     }
 
     val blendModeButton = blendMode.map { currentlySelectedBlendMode ->
-        Button.Plain(
+        KalugaButton.Plain(
             currentlySelectedBlendMode.name,
             ButtonStyle(
                 defaultFont,
@@ -216,7 +216,7 @@ class ColorViewModel(
             }.showAsync()
         }
     }
-    val flipButton = Button.Plain(
+    val flipButton = KalugaButton.Plain(
         "Flip",
         ButtonStyle(
             defaultFont,
@@ -243,5 +243,5 @@ class ColorViewModel(
         BackgroundStyle(
             BackgroundStyle.FillStyle.Solid(it)
         )
-    }.toInitializedObservable(BackgroundStyle(BackgroundStyle.FillStyle.Solid(clearColor)), coroutineScope)
+    }.toInitializedObservable(BackgroundStyle(BackgroundStyle.FillStyle.Solid(DefaultColors.clear)), coroutineScope)
 }

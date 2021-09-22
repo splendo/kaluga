@@ -2,14 +2,18 @@ package com.splendo.kaluga.resources.view
 
 import android.content.res.ColorStateList
 import android.text.Layout
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.TextView
 import com.splendo.kaluga.resources.stylable.TextStyle
 
-fun TextView.bindLabel(label: Label<*>) {
+fun TextView.bindLabel(label: KalugaLabel<*>) {
     text = when (label) {
-        is Label.Plain -> label.text
-        is Label.Styled -> label.text.spannable
+        is KalugaLabel.Plain -> label.text
+        is KalugaLabel.Styled -> {
+            movementMethod = LinkMovementMethod.getInstance()
+            label.text.spannable
+        }
     }
     applyTextStyle(label.style)
     textAlignment = when (label.alignment.alignment) {

@@ -21,7 +21,7 @@ import com.splendo.kaluga.resources.StyledString
 import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 
-sealed class Label<T> {
+sealed class KalugaLabel<T> {
     abstract val text: T
     abstract val style: TextStyle
     abstract val alignment: TextAlignment
@@ -30,10 +30,10 @@ sealed class Label<T> {
         override val text: String,
         override val style: TextStyle,
         override val alignment: TextAlignment = TextAlignment.NORMAL
-    ) : Label<String>()
+    ) : KalugaLabel<String>()
     data class Styled(
         override val text: StyledString,
         override val style: TextStyle,
         override val alignment: TextAlignment = TextAlignment.NORMAL
-    ) : Label<StyledString>()
+    ) : KalugaLabel<StyledString>()
 }

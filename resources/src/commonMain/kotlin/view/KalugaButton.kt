@@ -20,7 +20,7 @@ package com.splendo.kaluga.resources.view
 import com.splendo.kaluga.resources.StyledString
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 
-sealed class Button<T> {
+sealed class KalugaButton<T> {
     abstract val text: T
     abstract val style: ButtonStyle
     abstract val isEnabled: Boolean
@@ -30,12 +30,12 @@ sealed class Button<T> {
         override val style: ButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
-    ) : Button<String>()
+    ) : KalugaButton<String>()
 
     data class Styled(
         override val text: StyledString,
         override val style: ButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
-    ) : Button<StyledString>()
+    ) : KalugaButton<StyledString>()
 }

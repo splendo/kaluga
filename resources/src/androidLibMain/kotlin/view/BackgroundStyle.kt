@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.view.View
-import com.splendo.kaluga.resources.pixelValue
+import com.splendo.kaluga.resources.dpToPixel
 import com.splendo.kaluga.resources.stylable.BackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 
@@ -38,8 +38,8 @@ fun BackgroundStyle.createDrawable(context: Context): Drawable {
 private fun GradientDrawable.applyShape(shape: BackgroundStyle.Shape, context: Context) {
     this.shape = when (shape) {
         is BackgroundStyle.Shape.Rectangle -> {
-            val radiusX = shape.cornerRadiusX.pixelValue(context)
-            val radiusY = shape.cornerRadiusY.pixelValue(context)
+            val radiusX = shape.cornerRadiusX.dpToPixel(context)
+            val radiusY = shape.cornerRadiusY.dpToPixel(context)
             cornerRadii = floatArrayOf(
                 if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusX else 0.0f,
                 if (shape.roundedCorners.contains(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT)) radiusY else 0.0f,
@@ -94,7 +94,7 @@ private fun GradientDrawable.applyGradientStyle(gradientStyle: GradientStyle, co
         }
         is GradientStyle.Radial -> {
             gradientType = GradientDrawable.RADIAL_GRADIENT
-            gradientRadius = gradientStyle.radius.pixelValue(context)
+            gradientRadius = gradientStyle.radius.dpToPixel(context)
             setGradientCenter(gradientStyle.centerPoint.x, gradientStyle.centerPoint.y)
         }
         is GradientStyle.Angular -> {
@@ -107,7 +107,7 @@ private fun GradientDrawable.applyGradientStyle(gradientStyle: GradientStyle, co
 private fun GradientDrawable.applyStrokeStyle(strokeStyle: BackgroundStyle.StrokeStyle, context: Context) {
     when (strokeStyle) {
         is BackgroundStyle.StrokeStyle.Stroke -> {
-            setStroke(strokeStyle.width.pixelValue(context).toInt(), ColorStateList(arrayOf(intArrayOf()), intArrayOf(strokeStyle.color)))
+            setStroke(strokeStyle.width.dpToPixel(context).toInt(), ColorStateList(arrayOf(intArrayOf()), intArrayOf(strokeStyle.color)))
         }
         is BackgroundStyle.StrokeStyle.None -> {}
     }

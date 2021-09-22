@@ -25,10 +25,10 @@ import android.util.StateSet
 import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 
-fun android.widget.Button.bindButton(button: Button<*>) {
+fun android.widget.Button.bindButton(button: KalugaButton<*>) {
     text = when (button) {
-        is Button.Plain -> button.text
-        is Button.Styled -> button.text.spannable
+        is KalugaButton.Plain -> button.text
+        is KalugaButton.Styled -> button.text.spannable
     }
     applyButtonStyle(button.style)
     isAllCaps = false

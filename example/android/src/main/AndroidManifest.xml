@@ -92,7 +92,13 @@
         <activity android:name=".beacons.BeaconsActivity"
             android:label="@string/feature_beacons"/>
         <activity android:name=".resources.ResourcesActivity"
-            android:label="@string/feature_beacons"/>
+            android:label="@string/feature_resources"/>
+        <activity android:name=".resources.ColorActivity"
+            android:label="@string/feature_resources_color"/>
+        <activity android:name=".resources.LabelActivity"
+            android:label="@string/feature_resources_label"/>
+        <activity android:name=".resources.ButtonActivity"
+            android:label="@string/feature_resources_button"/>
 
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
 

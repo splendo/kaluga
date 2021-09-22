@@ -25,6 +25,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
 import androidx.recyclerview.widget.RecyclerView
 import com.splendo.kaluga.architecture.viewmodel.KalugaViewModelFragment
+import com.splendo.kaluga.example.databinding.ViewListButtonBinding
 import com.splendo.kaluga.example.shared.viewmodel.featureList.Feature
 import com.splendo.kaluga.example.shared.viewmodel.featureList.FeatureListViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -46,7 +47,9 @@ class FeaturesListFragment : KalugaViewModelFragment<FeatureListViewModel>(R.lay
 
 class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerView.Adapter<FeaturesAdapter.FeatureViewHolder>() {
 
-    class FeatureViewHolder(val button: AppCompatButton) : RecyclerView.ViewHolder(button)
+    class FeatureViewHolder(val binding: ViewListButtonBinding) : RecyclerView.ViewHolder(binding.root) {
+        val button = binding.button
+    }
 
     var features: List<Feature> = emptyList()
         set(newValue) {
@@ -55,8 +58,8 @@ class FeaturesAdapter(private val viewModel: FeatureListViewModel) : RecyclerVie
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeatureViewHolder {
-        val button = LayoutInflater.from(parent.context).inflate(R.layout.view_feature_button, parent, false) as AppCompatButton
-        return FeatureViewHolder(button)
+        val binding = ViewListButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FeatureViewHolder(binding)
     }
 
     override fun getItemCount(): Int = features.size

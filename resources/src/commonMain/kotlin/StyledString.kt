@@ -30,11 +30,28 @@ expect class StyledStringBuilder constructor(string: String) {
 
 expect val StyledString.rawString: String
 
-fun String.styled(attributes: List<Pair<StringStyleAttribute, IntRange>>) = StyledStringBuilder(this).apply {
-    attributes.forEach {
-        addStyleAttribute(it.first, it.second)
+fun String.styled(vararg attributes: StringStyleAttribute) = styled(
+    *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
+        { attributeSubstring(this, attribute) }
+    }.toTypedArray()
+)
+fun String.styled(vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = StyledStringBuilder(this).apply {
+    attributes.forEach { attribute ->
+        attribute()?.let {
+            addStyleAttribute(it.first, it.second)
+        }
     }
 }.create()
+fun String.attributeSubstring(substring: String, attribute: StringStyleAttribute): Pair<StringStyleAttribute, IntRange>? {
+    return indexOf(substring).let {
+        if (it >= 0) {
+            val range = IntRange(it, it + substring.length - 1)
+            Pair(attribute, range)
+        } else {
+            null
+        }
+    }
+}
 
 sealed class StringStyleAttribute {
     sealed class CharacterStyleAttribute : StringStyleAttribute() {

@@ -18,8 +18,10 @@ import android.text.style.SubscriptSpan
 import android.text.style.SuperscriptSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
+import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.resources.view.alignment
 import kotlin.math.roundToInt
+
 
 actual class StyledString(val spannable: Spannable)
 
@@ -42,8 +44,8 @@ actual class StyledStringBuilder actual constructor(string: String) {
                 is StringStyleAttribute.ParagraphStyleAttribute -> attribute.paragraphStyle
                 is StringStyleAttribute.Link -> URLSpan(attribute.url)
             },
-            range.start,
-            range.endInclusive + 1,
+            range.first,
+            range.last + 1,
             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
         )
     }
@@ -53,12 +55,12 @@ actual class StyledStringBuilder actual constructor(string: String) {
         is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(color)
         is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
             typeface = font
-            textSize = size
+            textSize = size.spToPixel(ApplicationHolder.applicationContext)
         }
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> CustomCharacterStyle { letterSpacing = kern }
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> CustomCharacterStyle {
             typeface = textStyle.font
-            textSize = textStyle.size
+            textSize = textStyle.size.spToPixel(ApplicationHolder.applicationContext)
             color = textStyle.color
         }
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
@@ -81,27 +83,31 @@ actual class StyledStringBuilder actual constructor(string: String) {
                 paint: Paint
             ) {
                 text?.let {
+                    val fillPaint = TextPaint(paint).apply {
+                        style = Paint.Style.FILL_AND_STROKE
+                        strokeWidth = width
+                    }
+                    val strokePaint = TextPaint(paint).apply {
+                        style = Paint.Style.STROKE
+                        strokeWidth = width
+                        color = this@characterStyle.color
+                    }
+
                     canvas.drawText(
                         it,
                         start,
                         end,
                         x,
-                        top.toFloat(),
-                        Paint(paint).apply {
-                            style = Paint.Style.FILL_AND_STROKE
-                        }
+                        y.toFloat(),
+                        fillPaint
                     )
                     canvas.drawText(
                         it,
                         start,
                         end,
                         x,
-                        top.toFloat(),
-                        Paint(paint).apply {
-                            style = Paint.Style.STROKE
-                            strokeWidth = width
-                            color = this@characterStyle.color
-                        }
+                        y.toFloat(),
+                        strokePaint
                     )
                 }
             }
@@ -131,28 +137,23 @@ actual class StyledStringBuilder actual constructor(string: String) {
                 lineHeight: Int,
                 fm: Paint.FontMetricsInt?
             ) {
-                val originHeight = fm!!.descent - fm.ascent
-                // If original height is not positive, do nothing.
-                // If original height is not positive, do nothing.
-                if (originHeight <= 0) {
-                    return
-                }
-                val ratio: Float = spacing / originHeight
-                fm.descent = (fm.descent * ratio).roundToInt()
-                fm.ascent = fm.descent - spacing.toInt()
+                val fontMetrics = fm ?: return
+                val halfLineSpacing = (spacing * 0.5f).spToPixel(ApplicationHolder.applicationContext).roundToInt()
+                fontMetrics.descent = fontMetrics.bottom + halfLineSpacing
+                fontMetrics.ascent = fontMetrics.top - halfLineSpacing
                 if (paragraphSpacing > 0.0) {
-                    val line = text.substring(start, end).toRegex()
-                    if (line.findAll("\n").last().range.first == end - start - 1) {
-                        fm.descent = fm.descent + paragraphSpacing.toInt()
+                    if (text[end-1] == '\n') {
+                        fm.descent = fm.descent + paragraphSpacing.spToPixel(ApplicationHolder.applicationContext).toInt()
                     }
+
                 }
                 if (paragraphSpacingBefore > 0.0) {
+                    val sizedParagraphSpacing = paragraphSpacingBefore.spToPixel(ApplicationHolder.applicationContext).toInt()
                     if (start == 0) {
-                        fm.ascent = fm.ascent + paragraphSpacingBefore.toInt()
+                        fm.ascent = fm.ascent - sizedParagraphSpacing
                     } else {
-                        val line = text.substring(0, start).toRegex()
-                        if (line.findAll("\n").last().range.first == end - start - 1) {
-                            fm.ascent = fm.ascent + paragraphSpacingBefore.toInt()
+                        if (text[start -1] == '\n') {
+                            fm.ascent = fm.ascent - sizedParagraphSpacing
                         }
                     }
                 }
