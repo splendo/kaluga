@@ -17,59 +17,94 @@
 
 package com.splendo.kaluga.bluetooth.beacons
 
-import co.touchlab.stately.ensureNeverFrozen
+import co.touchlab.stately.collections.IsoMutableMap
+import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
-import com.splendo.kaluga.bluetooth.device.Identifier
+import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class Beacons(
     private val bluetooth: BluetoothService,
-    private val timeoutMs: Int = 10_000
+    private val timeoutMs: Long = 10_000,
 ) {
 
-    private val beaconsCache = MutableStateFlow(emptySet<BeaconInfo>())
+    private companion object { const val TAG = "Beacons" }
 
-    init { ensureNeverFrozen() }
+    private val cache = IsoMutableMap<String, Pair<BeaconInfo, Job>>()
+    private val cacheJob = Job()
+    private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
 
-    fun startMonitoring() {
-        beaconsCache.value = emptySet()
+    private val _monitoringJob = AtomicReference<Job?>(null)
+    private var monitoringJob: Job?
+        get() = _monitoringJob.get()
+        set(value) = _monitoringJob.set(value)
+
+    private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
+    val beacons: StateFlow<Set<BeaconInfo>>
+        get() = _beacons.asStateFlow()
+
+    fun startMonitoring(coroutineScope: CoroutineScope) {
+        debug(TAG, "Start monitoring")
         bluetooth.startScanning()
+        _beacons.value = emptySet()
+        monitoringJob = coroutineScope.launch {
+            bluetooth.devices().collect { list ->
+                debug(TAG, "Total Bluetooth devices discovered: ${list.size}")
+                updateBeacons(list.mapNotNull { createBeaconWith(it) })
+            }
+        }
     }
 
     fun stopMonitoring() {
+        debug(TAG, "Stop monitoring")
+        monitoringJob?.cancel()
         bluetooth.stopScanning()
-        beaconsCache.value = emptySet()
+        _beacons.value = emptySet()
     }
 
     suspend fun isMonitoring() = bluetooth.isScanning()
 
-    fun beacons() = bluetooth.devices().map { devices ->
-        mergeFoundBeacons(
-            devices.mapNotNull { createBeaconWith(it) }
-        )
-    }
-
-    fun isAnyInRange(beaconIds: List<String>) = beacons().map { list ->
+    fun isAnyInRange(beaconIds: List<String>) = beacons.map { list ->
         list.any { beaconIds.containsLowerCased(it.identifier) }
     }
 
-    private fun mergeFoundBeacons(list: List<BeaconInfo>): Set<BeaconInfo> {
-        println("found $list")
-        val beacons = list + beaconsCache.value.filter { it.seenMs() <= timeoutMs }
-        return beacons.toSet().also {
-            beaconsCache.value = it
-            println("cached $it")
+    private suspend fun updateBeacons(discovered: List<BeaconInfo>) {
+        debug(TAG, "Total Beacons discovered: ${discovered.size}")
+        discovered.forEach { beacon ->
+            if (cache.containsKey(beacon.identifier)) {
+                debug(TAG, "[Found] $beacon")
+                cache.remove(beacon.identifier)?.second?.cancel()
+                debug(TAG, "[Removed] $beacon")
+            } else {
+                debug(TAG, "[New] $beacon")
+            }
+            cache[beacon.identifier] = beacon to coroutineScope.launch {
+                debug(TAG, "[Added] $beacon")
+                delay(timeoutMs)
+                debug(TAG, "[Lost] $beacon")
+                cache.remove(beacon.identifier)
+                updateList()
+            }
         }
+        updateList()
+    }
+
+    private fun updateList() = _beacons.update {
+        cache.values.map(Pair<BeaconInfo, Job>::first).toSet()
     }
 
     private fun List<String>.containsLowerCased(element: String): Boolean =

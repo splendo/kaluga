@@ -29,21 +29,11 @@ data class BeaconInfo(
     var txPower: TxPower,
     var RSSI: RSSI,
     var lastSeen: Date
-) {
-    override fun equals(other: Any?) = when (other) {
-        is BeaconInfo -> other.beaconID == this.beaconID
-        else -> false
-    }
-
-    override fun hashCode(): Int {
-        return beaconID.hashCode()
-    }
-}
+)
 
 @Deprecated(
     message = "Replaced with identifier",
     replaceWith = ReplaceWith(expression = "identifier")
 )
-
 fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
 fun BeaconInfo.seenMs() = Date.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch

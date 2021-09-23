@@ -23,7 +23,7 @@ import kotlin.test.fail
 
 fun dataOf(vararg elements: Int) = elements.map { it.toByte() }.toByteArray()
 
-class EddystoneUnpackTests {
+class BeaconUnpackTest {
 
     companion object {
 
@@ -37,12 +37,12 @@ class EddystoneUnpackTests {
     }
 
     @Test
-    fun invalidBeaconReturnsNull() {
+    fun testInvalidBeaconReturnsNull() {
         assertNull(Eddystone.unpack(EmptyFrame))
     }
 
     @Test
-    fun validEddystoneBeaconCreated() {
+    fun testValidEddystoneBeaconCreated() {
         val frame = Eddystone.unpack(EddystoneUIDFrame) ?: fail("Invalid Eddystone frame")
         assertEquals("f7826da6bc5b71e0893e", frame.uid.namespace)
         assertEquals("4e4161460102", frame.uid.instance)
