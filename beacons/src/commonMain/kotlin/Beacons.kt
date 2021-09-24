@@ -22,6 +22,7 @@ import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.utils.Date
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.logging.debug
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,16 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.reflect.KProperty
+
+private typealias BeaconJob = Pair<BeaconInfo, Job>
+private typealias BeaconsMap = IsoMutableMap<BeaconID, BeaconJob>
+
+private class AtomicReferenceDelegate<T> {
+    private val reference = AtomicReference<T?>(null)
+    operator fun getValue(thisRef: Any?, property: KProperty<*>) = reference.get()
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) = reference.set(value)
+}
 
 class Beacons(
     private val bluetooth: BluetoothService,
@@ -44,14 +55,10 @@ class Beacons(
 
     private companion object { const val TAG = "Beacons" }
 
-    private val cache = IsoMutableMap<String, Pair<BeaconInfo, Job>>()
+    private val cache = BeaconsMap()
     private val cacheJob = Job()
     private val coroutineScope = CoroutineScope(Dispatchers.Default + cacheJob)
-
-    private val _monitoringJob = AtomicReference<Job?>(null)
-    private var monitoringJob: Job?
-        get() = _monitoringJob.get()
-        set(value) = _monitoringJob.set(value)
+    private var monitoringJob: Job? by AtomicReferenceDelegate()
 
     private val _beacons = MutableStateFlow(emptySet<BeaconInfo>())
     val beacons: StateFlow<Set<BeaconInfo>>
@@ -59,8 +66,8 @@ class Beacons(
 
     fun startMonitoring(coroutineScope: CoroutineScope) {
         debug(TAG, "Start monitoring")
-        bluetooth.startScanning()
         _beacons.value = emptySet()
+        bluetooth.startScanning()
         monitoringJob = coroutineScope.launch {
             bluetooth.devices().collect { list ->
                 debug(TAG, "Total Bluetooth devices discovered: ${list.size}")
@@ -71,32 +78,33 @@ class Beacons(
 
     fun stopMonitoring() {
         debug(TAG, "Stop monitoring")
-        monitoringJob?.cancel()
         bluetooth.stopScanning()
+        monitoringJob?.cancel()
+        monitoringJob = null
         _beacons.value = emptySet()
     }
 
     suspend fun isMonitoring() = bluetooth.isScanning()
 
     fun isAnyInRange(beaconIds: List<String>) = beacons.map { list ->
-        list.any { beaconIds.containsLowerCased(it.identifier) }
+        list.any { beaconIds.containsLowerCased(it.beaconID.asString()) }
     }
 
     private suspend fun updateBeacons(discovered: List<BeaconInfo>) {
         debug(TAG, "Total Beacons discovered: ${discovered.size}")
         discovered.forEach { beacon ->
-            if (cache.containsKey(beacon.identifier)) {
+            if (cache.containsKey(beacon.beaconID)) {
                 debug(TAG, "[Found] $beacon")
-                cache.remove(beacon.identifier)?.second?.cancel()
+                cache.remove(beacon.beaconID)?.second?.cancel()
                 debug(TAG, "[Removed] $beacon")
             } else {
                 debug(TAG, "[New] $beacon")
             }
-            cache[beacon.identifier] = beacon to coroutineScope.launch {
+            cache[beacon.beaconID] = beacon to coroutineScope.launch {
                 debug(TAG, "[Added] $beacon")
                 delay(timeoutMs)
                 debug(TAG, "[Lost] $beacon")
-                cache.remove(beacon.identifier)
+                cache.remove(beacon.beaconID)
                 updateList()
             }
         }
@@ -104,7 +112,7 @@ class Beacons(
     }
 
     private fun updateList() = _beacons.update {
-        cache.values.map(Pair<BeaconInfo, Job>::first).toSet()
+        cache.values.map(BeaconJob::first).toSet()
     }
 
     private fun List<String>.containsLowerCased(element: String): Boolean =
@@ -116,11 +124,10 @@ class Beacons(
         val frame = Eddystone.unpack(data) ?: return null
         val rssi = device.map { it.rssi }.firstOrNull() ?: 0
         val lastSeen = device.map { it.updatedAt }.firstOrNull() ?: Date.now()
-        val identifier = frame.uid.namespace + frame.uid.instance
-        return BeaconInfo(identifier, frame.uid, frame.txPower, rssi, lastSeen)
+        return BeaconInfo(device.identifier, frame.uid, frame.txPower, rssi, lastSeen)
     }
 }
 
-operator fun Flow<List<BeaconInfo>>.get(identifier: String) = map { beacons ->
+operator fun Flow<Set<BeaconInfo>>.get(identifier: Identifier) = map { beacons ->
     beacons.firstOrNull { it.identifier == identifier }
 }

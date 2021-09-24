@@ -92,7 +92,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
             // One beacon has been found
             assertEquals(1, it.size)
             // Last found cached
-            assertEquals("f7826da6bc5b71e0893e4e4161460222", it.first().identifier)
+            assertEquals("f7826da6bc5b71e0893e4e4161460222", it.first().beaconID.asString())
         }
 
         action {

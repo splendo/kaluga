@@ -17,19 +17,29 @@
 
 package com.splendo.kaluga.base.utils
 
+object ByteUtils {
+    const val HEX_RADIX = 16
+    const val BYTE_STRING_LENGTH = 2
+}
 /**
  * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
  * @param separator The separator to use between elements
  * @return The String representing the [ByteArray]s hexadecimal value
  */
-fun ByteArray.toHexString(separator: CharSequence = "") = asUByteArray()
-    .joinToString(separator) { it.toString(16).padStart(2, '0') }
+fun ByteArray.toHexString(separator: CharSequence = ""): String {
+    return asUByteArray().joinToString(separator) {
+        it.toString(ByteUtils.HEX_RADIX).padStart(ByteUtils.BYTE_STRING_LENGTH, '0')
+    }
+}
 
 /**
  * Converts a hex [String] to [ByteArray]
  * @return The [ByteArray] or `null` if length is not even
  */
 fun String.decodeHex(): ByteArray? {
-    if (length % 2 != 0) return null
-    return chunked(2) { it.toString().toInt(16).toByte() }.toByteArray()
+    if (length.rem(ByteUtils.BYTE_STRING_LENGTH) != 0) return null
+
+    return chunked(ByteUtils.BYTE_STRING_LENGTH) {
+        it.toString().toInt(ByteUtils.HEX_RADIX).toByte()
+    }.toByteArray()
 }

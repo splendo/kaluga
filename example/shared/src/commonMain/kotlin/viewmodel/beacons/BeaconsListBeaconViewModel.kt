@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.map
 
 class BeaconsListBeaconViewModel(identifier: Identifier, service: Beacons) : BaseViewModel() {
 
-    private val beacon = service.beacons()[identifier]
+    private val beacon = service.beacons[identifier]
 
     private fun <T> beaconInfoObservable(mapper: (BeaconInfo?) -> T) = beacon
         .map { mapper(it) }

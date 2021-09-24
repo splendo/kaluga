@@ -17,7 +17,6 @@
 
 import BeaconMock.mockBeaconDevice
 import BeaconMock.mockGenericDevice
-import com.splendo.kaluga.bluetooth.beacons.BeaconInfo
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -42,7 +41,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
         test {
             assertEquals(1, it.size)
-            assertEquals("f7826da6bc5b71e0893e4e4161460111", it.first().identifier)
+            assertEquals("f7826da6bc5b71e0893e4e4161460111", it.first().beaconID.asString())
         }
 
         action {
@@ -80,7 +79,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
             assertEquals(2, it.size)
             assertContentEquals(
                 listOf("f7826da6bc5b71e0893e4e4161460111", "f7826da6bc5b71e0893e4e4161460222"),
-                it.map(BeaconInfo::identifier)
+                it.map { beacon -> beacon.beaconID.asString() }
             )
         }
 
