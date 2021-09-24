@@ -15,6 +15,7 @@
   
  */
 
+@file:JvmName("AndroidFont")
 package com.splendo.kaluga.resources
 
 import android.graphics.Typeface

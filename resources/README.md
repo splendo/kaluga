@@ -31,6 +31,10 @@ You can treat any `String` as a key to a `Color` value.
 By default, this loads the Color in the `Color Assets` (iOS) or `color.xml` (Android) files declared in the main project scope.
 A `ColorLoader` class is provided to overwrite this behaviour.
 
+Default web colors are available through `DefaultColors`
+
+Colors can also be modified easily. Blend colors by using blend methods such as `backdropColor burn sourceColor ` or change their luminance using `darkenBy` or `lightenBy`. Use `hsl` to get a `HSLColor` instance of the color.
+
 ### Image
 The `Image` class is associated with `UIImage` (iOS) and `Drawable` (Android).
 You can treat any `String` as a key to a `Image` value.
@@ -44,3 +48,10 @@ By default, this loads the Font with the same name on iOS and the font resource 
 A `FontLoader` class is provided to overwrite this behaviour.
 
 Unlike the other resources, Font loading may be suspended.
+
+### KalugaLabel and TextStyle
+
+### BackgroundStyle
+
+### KalugaButton and ButtonStyle
+

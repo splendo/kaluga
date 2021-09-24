@@ -19,7 +19,12 @@ package com.splendo.kaluga.resources
 
 actual data class StyledString(val string: String, val attributed: List<Pair<StringStyleAttribute, IntRange>>)
 
-actual class StyledStringBuilder actual constructor(string: String) {
+actual class StyledStringBuilder constructor(string: String) {
+
+    actual class Provider {
+        actual fun provide(string: String) = StyledStringBuilder(string)
+    }
+
     var styledString = StyledString(string, emptyList())
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
         styledString = styledString.copy(

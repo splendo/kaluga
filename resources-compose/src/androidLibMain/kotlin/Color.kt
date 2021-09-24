@@ -15,22 +15,8 @@
 
  */
 
-package com.splendo.kaluga.resources.view
+package com.splendo.kaluga.resources.compose
 
-import com.splendo.kaluga.resources.StyledString
-import com.splendo.kaluga.resources.stylable.TextAlignment
-import com.splendo.kaluga.resources.stylable.TextStyle
+import androidx.compose.ui.graphics.Color
 
-sealed class KalugaLabel<T> {
-    abstract val text: T
-    abstract val style: TextStyle
-
-    data class Plain(
-        override val text: String,
-        override val style: TextStyle
-    ) : KalugaLabel<String>()
-    data class Styled(
-        override val text: StyledString,
-        override val style: TextStyle
-    ) : KalugaLabel<StyledString>()
-}
+val com.splendo.kaluga.resources.Color.composable get() = Color(this)

@@ -1,5 +1,5 @@
 /*
- Copyright 2021 Splendo Consulting B.V. The Netherlands
+ Copyright 2020 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -14,15 +14,8 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.resources.compose
 
-package com.splendo.kaluga.resources.stylable
+import androidx.appcompat.app.AppCompatActivity
 
-import com.splendo.kaluga.resources.Color
-import com.splendo.kaluga.resources.Font
-
-data class TextStyle(
-    val font: Font,
-    val color: Color,
-    val size: Float,
-    val alignment: TextAlignment = TextAlignment.NORMAL
-)
+class TestActivity : AppCompatActivity()

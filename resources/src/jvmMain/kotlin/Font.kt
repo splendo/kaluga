@@ -14,7 +14,7 @@
     limitations under the License.
   
  */
-
+@file:JvmName("JvmFont")
 package com.splendo.kaluga.resources
 
 actual class Font

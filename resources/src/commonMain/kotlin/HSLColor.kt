@@ -29,7 +29,7 @@ data class HSLColor(
     val alpha: Double = 1.0
 )
 
-fun Color.toHSL(): HSLColor {
+val Color.hsl: HSLColor get() {
     val max = max(red, max(green, blue))
     val min = min(red, min(green, blue))
     val lightness = (max + min) / 2.0
@@ -56,7 +56,7 @@ fun Color.toHSL(): HSLColor {
     }
 }
 
-fun HSLColor.toColor(): Color {
+val HSLColor.color: Color get() {
     return if (saturation == 0.0) {
         colorFrom(lightness, lightness, lightness)
     } else {
@@ -85,10 +85,10 @@ fun HSLColor.toColor(): Color {
     }
 }
 
-fun Color.lightenBy(value: Double): Color = toHSL().let {
-    return it.copy(lightness = ((1.0 - it.lightness) * value) + it.lightness).toColor()
+fun Color.lightenBy(value: Double): Color = hsl.let {
+    return it.copy(lightness = ((1.0 - it.lightness) * value) + it.lightness).color
 }
 
-fun Color.darkenBy(value: Double): Color = toHSL().let {
-    return it.copy(lightness = (it.lightness - (it.lightness) * value)).toColor()
+fun Color.darkenBy(value: Double): Color = hsl.let {
+    return it.copy(lightness = (it.lightness - (it.lightness) * value)).color
 }

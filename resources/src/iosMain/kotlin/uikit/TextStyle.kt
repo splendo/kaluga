@@ -18,15 +18,26 @@
 package com.splendo.kaluga.resources.uikit
 
 import com.splendo.kaluga.resources.stylable.TextStyle
+import com.splendo.kaluga.resources.view.KalugaLabel
 import platform.UIKit.UILabel
 import platform.UIKit.UITextField
+
+fun UILabel.bindLabel(label: KalugaLabel<*>) {
+    when (label) {
+        is KalugaLabel.Plain -> text = label.text
+        is KalugaLabel.Styled -> attributedText = label.text
+    }
+    applyTextStyle(label.style)
+}
 
 fun UILabel.applyTextStyle(textStyle: TextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
+    textAlignment = textStyle.alignment.nsTextAlignment
 }
 
 fun UITextField.applyTextStyle(textStyle: TextStyle) {
     setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
     textColor = textStyle.color.uiColor
+    textAlignment = textStyle.alignment.nsTextAlignment
 }

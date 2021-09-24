@@ -19,11 +19,13 @@ package com.splendo.kaluga.resources.uikit
 
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.QuartzCore.CALayer
 import platform.UIKit.UIButton
+import platform.UIKit.UIControlEventTouchUpInside
 import platform.UIKit.UIControlState
 import platform.UIKit.UIControlStateDisabled
 import platform.UIKit.UIControlStateHighlighted
@@ -33,9 +35,29 @@ import platform.UIKit.UIGraphicsEndImageContext
 import platform.UIKit.UIGraphicsGetCurrentContext
 import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.setFont
+import platform.darwin.NSObject
+import platform.objc.sel_registerName
+
+class UIControlClosure(private val action: () -> Unit) : NSObject() {
+    fun invoke() {
+        action()
+    }
+}
+
+fun UIButton.bindButton(button: KalugaButton<*>) {
+    when (button) {
+        is KalugaButton.Plain -> setTitle(button.text, UIControlStateNormal)
+        is KalugaButton.Styled -> setAttributedTitle(button.text, UIControlStateNormal)
+    }
+    setEnabled(button.isEnabled)
+    val wrappedAction = UIControlClosure(button.action)
+    addTarget(wrappedAction, sel_registerName("UIControlClosure.invoke"), UIControlEventTouchUpInside)
+    applyStyle(button.style)
+}
 
 fun UIButton.applyStyle(buttonStyle: ButtonStyle) {
     setFont(buttonStyle.font.fontWithSize(buttonStyle.textSize.toDouble() as CGFloat))
+    setContentHorizontalAlignment(buttonStyle.textAlignment.contentHorizontalAlignment)
     applyButtonStateStyle(buttonStyle.defaultStyle, UIControlStateNormal)
     applyButtonStateStyle(buttonStyle.pressedStyle, UIControlStateHighlighted)
     applyButtonStateStyle(buttonStyle.disabledStyle, UIControlStateDisabled)

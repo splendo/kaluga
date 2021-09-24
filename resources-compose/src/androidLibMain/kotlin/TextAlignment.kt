@@ -15,22 +15,16 @@
 
  */
 
-package com.splendo.kaluga.resources.view
+package com.splendo.kaluga.resources.compose
 
-import com.splendo.kaluga.resources.StyledString
+import androidx.compose.ui.text.style.TextAlign
 import com.splendo.kaluga.resources.stylable.TextAlignment
-import com.splendo.kaluga.resources.stylable.TextStyle
 
-sealed class KalugaLabel<T> {
-    abstract val text: T
-    abstract val style: TextStyle
-
-    data class Plain(
-        override val text: String,
-        override val style: TextStyle
-    ) : KalugaLabel<String>()
-    data class Styled(
-        override val text: StyledString,
-        override val style: TextStyle
-    ) : KalugaLabel<StyledString>()
+val TextAlignment.composable: TextAlign
+    get() = when (this) {
+    TextAlignment.CENTER -> TextAlign.Center
+    TextAlignment.LEFT -> TextAlign.Left
+    TextAlignment.NORMAL -> TextAlign.Start
+    TextAlignment.OPPOSITE -> TextAlign.End
+    TextAlignment.RIGHT -> TextAlign.Right
 }

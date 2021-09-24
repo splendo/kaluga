@@ -19,6 +19,7 @@ package com.splendo.kaluga.resources.view
 
 import com.splendo.kaluga.resources.StyledString
 import com.splendo.kaluga.resources.stylable.ButtonStyle
+import com.splendo.kaluga.resources.stylable.TextAlignment
 
 sealed class KalugaButton<T> {
     abstract val text: T

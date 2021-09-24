@@ -23,19 +23,23 @@ import kotlin.jvm.JvmName
 
 expect class StyledString
 
-expect class StyledStringBuilder constructor(string: String) {
+expect class StyledStringBuilder {
+    class Provider {
+        fun provide(string: String): StyledStringBuilder
+    }
     fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange)
     fun create(): StyledString
 }
 
 expect val StyledString.rawString: String
 
-fun String.styled(vararg attributes: StringStyleAttribute) = styled(
+fun String.styled(provider: StyledStringBuilder.Provider, vararg attributes: StringStyleAttribute) = styled(
+    provider,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
         { attributeSubstring(this, attribute) }
     }.toTypedArray()
 )
-fun String.styled(vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = StyledStringBuilder(this).apply {
+fun String.styled(provider: StyledStringBuilder.Provider, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = provider.provide(this).apply {
     attributes.forEach { attribute ->
         attribute()?.let {
             addStyleAttribute(it.first, it.second)

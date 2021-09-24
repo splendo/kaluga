@@ -24,6 +24,7 @@ import com.splendo.kaluga.resources.Font
 data class ButtonStyle(
     val font: Font,
     val textSize: Float,
+    val textAlignment: TextAlignment = TextAlignment.CENTER,
     val defaultStyle: ButtonStateStyle,
     val pressedStyle: ButtonStateStyle = defaultStyle,
     val disabledStyle: ButtonStateStyle = defaultStyle
@@ -31,11 +32,13 @@ data class ButtonStyle(
     constructor(
         textStyle: TextStyle,
         backgroundColor: Color = DefaultColors.clear,
+        textAlignment: TextAlignment = TextAlignment.CENTER,
         pressedBackgroundColor: Color = backgroundColor,
         disabledBackgroundColor: Color = backgroundColor,
         shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
         textStyle.font,
         textStyle.size,
+        textAlignment,
         ButtonStateStyle(
             textStyle.color,
             backgroundColor,
@@ -52,6 +55,16 @@ data class ButtonStyle(
             shape
         )
     )
+
+    fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): ButtonStateStyle {
+        return if (!isEnabled) {
+            disabledStyle
+        } else if (isPressed) {
+            pressedStyle
+        } else {
+            defaultStyle
+        }
+    }
 }
 
 data class ButtonStateStyle(

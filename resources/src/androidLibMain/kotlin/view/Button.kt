@@ -46,6 +46,7 @@ fun android.widget.Button.applyButtonStyle(style: ButtonStyle, rippleStyle: Ripp
     typeface = style.font
     isAllCaps = false
     textSize = style.textSize
+    textAlignment = style.textAlignment.alignment(context).viewAlignment
     setTextColor(
         ColorStateList(
             arrayOf(

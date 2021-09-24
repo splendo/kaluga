@@ -1,5 +1,6 @@
 package com.splendo.kaluga.resources
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.Spannable
@@ -31,7 +32,11 @@ actual class StyledString(val spannable: Spannable)
 
 actual val StyledString.rawString: String get() = spannable.toString()
 
-actual class StyledStringBuilder actual constructor(string: String) {
+actual class StyledStringBuilder constructor(string: String, private val context: Context) {
+
+    actual class Provider(private val context: Context = ApplicationHolder.applicationContext) {
+        actual fun provide(string: String) = StyledStringBuilder(string, context)
+    }
 
     private class CustomCharacterStyle(val modify: TextPaint.() -> Unit) : CharacterStyle() {
         override fun updateDrawState(tp: TextPaint?) {
@@ -59,12 +64,12 @@ actual class StyledStringBuilder actual constructor(string: String) {
         is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> ForegroundColorSpan(color)
         is StringStyleAttribute.CharacterStyleAttribute.Font -> CustomCharacterStyle {
             typeface = font
-            textSize = size.spToPixel(ApplicationHolder.applicationContext)
+            textSize = size.spToPixel(context)
         }
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> CustomCharacterStyle { letterSpacing = kern }
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> CustomCharacterStyle {
             typeface = textStyle.font
-            textSize = textStyle.size.spToPixel(ApplicationHolder.applicationContext)
+            textSize = textStyle.size.spToPixel(context)
             color = textStyle.color
         }
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
@@ -141,17 +146,17 @@ actual class StyledStringBuilder actual constructor(string: String) {
                 fm: Paint.FontMetricsInt?
             ) {
                 val fontMetrics = fm ?: return
-                val halfLineSpacing = (spacing * 0.5f).spToPixel(ApplicationHolder.applicationContext).roundToInt()
+                val halfLineSpacing = (spacing * 0.5f).spToPixel(context).roundToInt()
                 fontMetrics.descent = fontMetrics.bottom + halfLineSpacing
                 fontMetrics.ascent = fontMetrics.top - halfLineSpacing
                 if (paragraphSpacing > 0.0) {
                     if (text[end-1] == '\n') {
-                        fm.descent = fm.descent + paragraphSpacing.spToPixel(ApplicationHolder.applicationContext).toInt()
+                        fm.descent = fm.descent + paragraphSpacing.spToPixel(context).toInt()
                     }
 
                 }
                 if (paragraphSpacingBefore > 0.0) {
-                    val sizedParagraphSpacing = paragraphSpacingBefore.spToPixel(ApplicationHolder.applicationContext).toInt()
+                    val sizedParagraphSpacing = paragraphSpacingBefore.spToPixel(context).toInt()
                     if (start == 0) {
                         fm.ascent = fm.ascent - sizedParagraphSpacing
                     } else {
@@ -162,7 +167,7 @@ actual class StyledStringBuilder actual constructor(string: String) {
                 }
             }
         }
-        is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> AlignmentSpan.Standard(alignment.alignment)
+        is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> AlignmentSpan.Standard(alignment.alignment(context))
     }
 
     actual fun create(): StyledString {

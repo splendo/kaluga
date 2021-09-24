@@ -20,7 +20,6 @@ package com.splendo.kaluga.resources
 import com.splendo.kaluga.base.utils.nsRange
 import com.splendo.kaluga.base.utils.range
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
-import kotlinx.cinterop.AutofreeScope
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
@@ -49,7 +48,11 @@ actual typealias StyledString = NSAttributedString
 
 actual val StyledString.rawString: String get() = string
 
-actual class StyledStringBuilder actual constructor(string: String) {
+actual class StyledStringBuilder constructor(string: String) {
+
+    actual class Provider {
+        actual fun provide(string: String) = StyledStringBuilder(string)
+    }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
 
