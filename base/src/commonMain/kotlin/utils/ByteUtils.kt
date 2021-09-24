@@ -21,6 +21,12 @@ object ByteUtils {
     const val HEX_RADIX = 16
     const val BYTE_STRING_LENGTH = 2
 }
+
+/**
+ * Returns [ByteArray] for given bytes
+ */
+fun bytesOf(vararg bytes: Int) = bytes.map(Int::toByte).toByteArray()
+
 /**
  * Converts a [ByteArray] to a String representing the bytes as their hexadecimal value
  * @param separator The separator to use between elements

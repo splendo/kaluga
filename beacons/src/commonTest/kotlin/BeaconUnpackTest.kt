@@ -15,20 +15,19 @@
 
  */
 
+import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.bluetooth.beacons.Eddystone
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.fail
 
-fun dataOf(vararg elements: Int) = elements.map { it.toByte() }.toByteArray()
-
 class BeaconUnpackTest {
 
     companion object {
 
-        private val EmptyFrame = dataOf()
-        private val EddystoneUIDFrame = dataOf(
+        private val EmptyFrame = bytesOf()
+        private val EddystoneUIDFrame = bytesOf(
             0x00, // Type
             0xdc, // Tx Power
             0xf7, 0x82, 0x6d, 0xa6, 0xbc, 0x5b, 0x71, 0xe0, 0x89, 0x3e, // Name Space ID
