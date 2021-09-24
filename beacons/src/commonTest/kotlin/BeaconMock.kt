@@ -15,6 +15,7 @@
 
  */
 
+import com.splendo.kaluga.base.utils.bytesOf
 import com.splendo.kaluga.base.utils.decodeHex
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.beacons.BeaconID
@@ -34,7 +35,7 @@ typealias ServiceData = Map<UUID, ByteArray?>
 
 object BeaconMock {
 
-    private fun BeaconID.asByteArray() = dataOf(0x00, 0xdc) +
+    private fun BeaconID.asByteArray() = bytesOf(0x00, 0xdc) +
         namespace.decodeHex()!! +
         instance.decodeHex()!!
 
