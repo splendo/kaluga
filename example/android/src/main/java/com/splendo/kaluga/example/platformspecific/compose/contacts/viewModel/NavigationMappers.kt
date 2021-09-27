@@ -24,6 +24,7 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewM
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+/** Maps a navigation action to a route string. */
 internal fun contactsNavigationRouteMapper(action: ContactsNavigation<*>): String {
     return when (action) {
         is ContactsNavigation.ContactsListNavigation.Close -> BACK_ROUTE
@@ -36,6 +37,7 @@ internal fun contactsNavigationRouteMapper(action: ContactsNavigation<*>): Strin
     }
 }
 
+/** Maps a navigation action to a NavigationSpec. */
 internal fun contactsNavigationActivityMapper(action: ContactsNavigation<*>): NavigationSpec {
     return when (action) {
         is ContactsNavigation.ContactDetailsNavigation.SendEmail -> NavigationSpec.Email(

@@ -17,19 +17,31 @@
 
 package com.splendo.kaluga.example.platformspecific.compose.contacts.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsListViewModel
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
@@ -44,11 +56,13 @@ fun ContactsListLayout(navigator: Navigator<ContactsNavigation<*>>) {
 
     ViewModelComposable(viewModel) {
         val items by contacts.state()
-        LazyColumn {
+        LazyColumn(modifier = Modifier.padding(8.dp)) {
             items(items) { contactDetails ->
                 ListItem(contactDetails) {
                     onContactClick(contactDetails)
                 }
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
@@ -59,11 +73,25 @@ private fun ListItem(
     contactDetails: ContactDetails,
     onClickHandler: () -> Unit
 ) {
-    Text(
-        modifier = Modifier.clickable(onClick = onClickHandler),
-        text = contactDetails.name
+    Row(
+        modifier = Modifier.clickable(onClick = onClickHandler)
+            .fillMaxWidth()
+    ) {
+        val image = painterResource(id = R.drawable.ic_account)
+        Image(
+            modifier = Modifier.size(48.dp),
+            painter = image,
+            contentDescription = ""
+        )
 
-    )
+        DefaultSpacer()
+
+        Text(
+            modifier = Modifier.align(CenterVertically),
+            text = contactDetails.name,
+            fontSize = 24.sp
+        )
+    }
 }
 
 @Composable

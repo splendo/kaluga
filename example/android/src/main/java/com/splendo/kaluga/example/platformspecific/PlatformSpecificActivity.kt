@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
@@ -53,16 +54,19 @@ private fun navigationMapper(action: PlatformFeatureListNavigationAction): Navig
 
 @Composable
 private fun PlatformSpecificFeaturesLayout(viewModel: PlatformSpecificFeaturesViewModel) {
-    ViewModelComposable(viewModel) {
-        val features by feature.state()
-        LazyColumn {
-            items(features) { item ->
-                Button(
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(16.dp),
-                    onClick = { onFeaturePressed(item) },
-                ) {
-                    Text(text = item.title.uppercase())
+    MdcTheme {
+        ViewModelComposable(viewModel) {
+            val features by feature.state()
+            LazyColumn {
+                items(features) { item ->
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                        onClick = { onFeaturePressed(item) },
+                    ) {
+                        Text(text = item.title.uppercase())
+                    }
                 }
             }
         }

@@ -17,15 +17,29 @@
 
 package com.splendo.kaluga.example.platformspecific.compose.contacts.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.architecture.navigation.Navigator
+import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsViewModel
@@ -39,12 +53,40 @@ fun ContactDetailsLayout(contactDetails: ContactDetails, navigator: Navigator<Co
     }
     ViewModelComposable(viewModel) {
         HardwareBackButtonNavigation(::back)
-        Column {
-            Text(text = contactDetails.name)
-            Text(text = contactDetails.email)
 
-            Button(onClick = ::sendEmail) {
-                Text(text = sendEmailButtonText)
+        Column {
+            val image = painterResource(id = R.drawable.ic_account)
+            Image(
+                modifier = Modifier
+                    .size(320.dp)
+                    .align(CenterHorizontally),
+                painter = image,
+                contentDescription = ""
+            )
+
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp)
+                    .fillMaxWidth()
+            ) {
+
+
+                Text(
+                    text = "Name:",
+                    fontSize = 24.sp
+                )
+                Text(text = contactDetails.name)
+                DefaultSpacer()
+
+                Text(
+                    text = "Email:",
+                    fontSize = 24.sp
+                )
+                Text(text = contactDetails.email)
+                DefaultSpacer()
+
+                Button(onClick = ::sendEmail) {
+                    Text(text = sendEmailButtonText)
+                }
             }
         }
     }
