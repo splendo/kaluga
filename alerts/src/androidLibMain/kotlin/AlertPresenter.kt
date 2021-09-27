@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import android.util.TypedValue
 
 actual class AlertPresenter(
     private val alert: Alert,
@@ -165,7 +166,8 @@ actual class AlertPresenter(
         val editText = EditText(context)
         editText.layoutParams = layoutParams
         linearLayout.addView(editText)
-        linearLayout.setPaddingRelative(16, 0, 16, 0)
+        val padding = context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPx(context)
+        linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(
@@ -209,3 +211,11 @@ fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder =
     getOrPutAndRemoveOnDestroyFromCache {
         AlertPresenter.Builder(lifecycleManagerObserver())
     }
+
+fun Float.dpToPx(context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this,
+        context.resources.displayMetrics
+    ).toInt()
+}
