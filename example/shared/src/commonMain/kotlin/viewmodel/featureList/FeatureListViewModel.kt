@@ -36,6 +36,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object Links : FeatureListNavigationAction()
     object System : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
+    object PlatformSpecific: FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
@@ -50,12 +51,13 @@ sealed class Feature(val title: String) {
     object Links : Feature("feature_links".localized())
     object System : Feature("feature_system".localized())
     object Beacons : Feature("feature_beacons".localized())
+    object PlatformSpecific: Feature("feature_platform_specific".localized())
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
     val feature = observableOf(
-        listOf(
+        listOfNotNull(
             Feature.Alerts,
             Feature.Architecture,
             Feature.Bluetooth,
@@ -66,7 +68,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Location,
             Feature.Permissions,
             Feature.System,
-            Feature.Beacons
+            Feature.Beacons,
+            Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
         )
     )
 
@@ -82,8 +85,9 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.LoadingIndicator -> FeatureListNavigationAction.LoadingIndicator
                 is Feature.Location -> FeatureListNavigationAction.Location
                 is Feature.Permissions -> FeatureListNavigationAction.Permissions
-                Feature.System -> FeatureListNavigationAction.System
-                Feature.Beacons -> FeatureListNavigationAction.Beacons
+                is Feature.System -> FeatureListNavigationAction.System
+                is Feature.Beacons -> FeatureListNavigationAction.Beacons
+                is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
             }
         )
     }

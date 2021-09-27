@@ -46,6 +46,46 @@ fun ContactDetailsLayout(
 }
 ```
 
+#### Set up NavHost navigation
+
+```kotlin
+// Define an action mapper for a route navigator
+fun routeMapper(action: ContactsNavigation<*>): String = 
+    when (action) {
+        is Close -> BACK_ROUTE
+        is ShowContactsList -> action.route()
+        is ShowContactDetails -> {
+            val contactId = Json.encodeToString(action.bundle!!.get(action.type))
+            action.route(detailsAsJson)
+        }
+        //...
+    }
+
+// Construct a route navigator
+val routeNavigator = RouteNavigator(
+    rememberNavController(),
+    ::routeMapper
+)
+
+// set up nav host with routes
+contactsNavigator.SetupNavHost(
+    startDestination = route<ShowContactsList>(),
+    builder = {
+        composable(route<ShowContactsList>()) { 
+            // Display a contacts list
+            ContactsListLayout() 
+        }
+        composable(route<ShowContactDetails>("{json}")) {
+            // Extract contact details from route arguments
+            val details: ContactDetails = Json.decodeFromString(it.arguments!!.getString("json")!!)
+            // Display contact details 
+            ContactDetailsLayout(person, combinedNavigator)
+        }
+        // other routes
+    }
+)
+```
+
 Set up NavHost navigation in combination with activity navigation
 
 ```kotlin

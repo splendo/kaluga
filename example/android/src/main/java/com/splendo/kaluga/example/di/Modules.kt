@@ -42,6 +42,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity
 import com.splendo.kaluga.example.shared.AlertViewModel
 import com.splendo.kaluga.example.shared.HudViewModel
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation.FeatureList
@@ -150,6 +151,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.System -> NavigationSpec.Activity(SystemActivity::class.java)
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
+                    FeatureListNavigationAction.PlatformSpecific -> NavigationSpec.Activity(PlatformSpecificActivity::class.java)
                 }
             }
         )
