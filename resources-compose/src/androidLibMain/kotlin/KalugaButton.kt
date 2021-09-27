@@ -62,6 +62,7 @@ fun KalugaButton<*>.composable(
     val interactionSource: MutableInteractionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val stateStyle = style.getStateStyle(isEnabled, pressed)
+    val textStyle = style.getStateTextStyle(isEnabled, pressed)
     Button(
         modifier = modifier,
         enabled = isEnabled,
@@ -78,10 +79,9 @@ fun KalugaButton<*>.composable(
                 .padding(contentPadding)
                 .then(modifier)
         ) {
-            val textStyle = TextStyle(style.font, stateStyle.textColor, style.textSize, style.textAlignment)
             when (this@composable) {
                 is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
-                is KalugaButton.Styled -> KalugaLabel.Styled(text, textStyle)
+                is KalugaButton.Styled -> KalugaLabel.Styled(text)
                 else -> error("Weird")
             }.composable(modifier = modifier)
         }
@@ -117,6 +117,7 @@ fun PreviewKalugaButton() {
         KalugaButton.Styled(
             "Styled Text".styled(
                 StyledStringBuilder.Provider(LocalContext.current),
+                buttonStyle.getStateTextStyle(isEnabled = true, isPressed = false),
                 {
                     Pair(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue), IntRange(0, 5))
                 }),

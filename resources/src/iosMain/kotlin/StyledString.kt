@@ -19,6 +19,7 @@ package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.base.utils.nsRange
 import com.splendo.kaluga.base.utils.range
+import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
@@ -27,16 +28,19 @@ import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSAttributedString
 import platform.Foundation.NSAttributedStringKey
 import platform.Foundation.NSMakeRange
 import platform.Foundation.NSMutableAttributedString
+import platform.Foundation.NSNotFound
 import platform.Foundation.NSRange
 import platform.Foundation.NSURL
 import platform.Foundation.addAttribute
 import platform.Foundation.attribute
 import platform.Foundation.create
+import platform.Foundation.length
 import platform.Foundation.removeAttribute
 import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
@@ -44,14 +48,14 @@ import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
 import kotlin.math.max
 
-actual typealias StyledString = NSAttributedString
+actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle)
 
-actual val StyledString.rawString: String get() = string
+actual val StyledString.rawString: String get() = attributeString.string
 
-actual class StyledStringBuilder constructor(string: String) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle) {
 
     actual class Provider {
-        actual fun provide(string: String) = StyledStringBuilder(string)
+        actual fun provide(string: String, defaultTextStyle: TextStyle) = StyledStringBuilder(string, defaultTextStyle)
     }
 
     private val attributedString = NSMutableAttributedString.Companion.create(string)
@@ -73,31 +77,37 @@ actual class StyledStringBuilder constructor(string: String) {
             }
             is StringStyleAttribute.Link -> {
                 NSURL.Companion.URLWithString(attribute.url)?.let {
-                    attributedString.addAttribute("link", it, nsRange)
+                    attributedString.addAttribute("NSLink", it, nsRange)
                 }
             }
         }
     }
 
     private val StringStyleAttribute.CharacterStyleAttribute.characterAttributes: Map<NSAttributedStringKey, Any> get() = when (this) {
-        is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> mapOf("foregroundColor" to color.uiColor)
-        is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> mapOf("backgroundColor" to color.uiColor)
+        is StringStyleAttribute.CharacterStyleAttribute.ForegroundColor -> mapOf("NSColor" to color.uiColor)
+        is StringStyleAttribute.CharacterStyleAttribute.BackgroundColor -> mapOf("NSBackgroundColor" to color.uiColor)
         is StringStyleAttribute.CharacterStyleAttribute.Stroke -> mapOf(
-            "strokeColor" to color.uiColor,
-            "strokeWidth" to width
+            "NSStrokeColor" to color.uiColor,
+            "NSStrokeWidth" to -1.0 * width
         )
-        is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> mapOf("superscript" to 1)
-        is StringStyleAttribute.CharacterStyleAttribute.SubScript -> mapOf("superscript" to -1)
-        is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("underlineStyle" to NSUnderlineStyleSingle)
-        is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("strikethroughStyle" to NSUnderlineStyleSingle)
-        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("font" to font.fontWithSize(size.toDouble()))
+        is StringStyleAttribute.CharacterStyleAttribute.SuperScript -> {
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            mapOf("NSBaselineOffset" to offset)
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.SubScript -> {
+            val offset = defaultTextStyle.font.fontWithSize(defaultTextStyle.size.toDouble() as CGFloat).ascender / 2.0
+            mapOf("NSBaselineOffset" to (-1.0 * offset))
+        }
+        is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("NSUnderline" to NSUnderlineStyleSingle)
+        is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("NSStrikethrough" to NSUnderlineStyleSingle)
+        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
-            "font" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
-            "foregroundColor" to textStyle.color.uiColor
+            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
+            "NSColor" to textStyle.color.uiColor
         )
-        is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("kern" to kern)
+        is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
-            "shadow" to NSShadow().apply {
+            "NSShadow" to NSShadow().apply {
                 shadowColor = color.uiColor
                 shadowBlurRadius = blurRadius.toDouble()
                 shadowOffset = CGSizeMake(xOffset.toDouble(), yOffset.toDouble())
@@ -107,14 +117,14 @@ actual class StyledStringBuilder constructor(string: String) {
 
     private fun StringStyleAttribute.ParagraphStyleAttribute.updateParagraphAttribute(range: CValue<NSRange>) {
         var rangeToProcess = range
-        while (rangeToProcess.range.last <= range.range.last) {
+        while (rangeToProcess.useContents { length } > 0UL && rangeToProcess.range.last <= range.range.last) {
             memScoped {
                 val location = rangeToProcess.useContents { location }
                 val matchedRange = nativeHeap.alloc<NSRange>()
                 val paragraphStyle = NSMutableParagraphStyle().apply {
                     setParagraphStyle(
                         attributedString.attribute(
-                            "paragraphStyle",
+                            "NSParagraphStyle",
                             location,
                             matchedRange.ptr,
                             rangeToProcess
@@ -122,7 +132,7 @@ actual class StyledStringBuilder constructor(string: String) {
                     )
                 }
 
-                attributedString.removeAttribute("paragraphStyle", matchedRange.readValue())
+                attributedString.removeAttribute("NSParagraphStyle", matchedRange.readValue())
 
                 when (this@updateParagraphAttribute) {
                     is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
@@ -138,12 +148,58 @@ actual class StyledStringBuilder constructor(string: String) {
                         paragraphStyle.setAlignment(alignment.nsTextAlignment)
                     }
                 }
-                attributedString.addAttribute("paragraphStyle", paragraphStyle, matchedRange.readValue())
-                rangeToProcess = NSMakeRange(matchedRange.location + matchedRange.length, max(0UL, range.useContents { length } - (matchedRange.location + matchedRange.length)))
+                attributedString.addAttribute("NSParagraphStyle", paragraphStyle, matchedRange.readValue())
+                rangeToProcess = if (matchedRange.location != NSNotFound.toULong()) {
+                    val nextStart = matchedRange.location + matchedRange.length
+                    NSMakeRange(
+                        nextStart,
+                        max(
+                            0L,
+                            range.useContents { this.length.toLong() } - nextStart.toLong()
+                        ).toULong()
+                    )
+                } else {
+                    NSMakeRange((range.range.last + 1).toULong(), 0)
+                }
             }
 
         }
     }
 
-    actual fun create(): StyledString = NSAttributedString.Companion.create(attributedString)
+    actual fun create(): StyledString = StyledString(attributedString, defaultTextStyle)
+}
+
+val NSAttributedString.urlRanges: List<Pair<NSRange, NSURL>> get() {
+    val range = IntRange(0, length.toInt() - 1).nsRange
+    var rangeToProcess = range
+    val result = mutableListOf<Pair<NSRange, NSURL>>()
+    while (rangeToProcess.useContents { length } > 0UL && rangeToProcess.range.last <= range.range.last) {
+        memScoped {
+            val location = rangeToProcess.useContents { location }
+            val matchedRange = nativeHeap.alloc<NSRange>()
+            val url = attribute(
+                "NSLink",
+                location,
+                matchedRange.ptr,
+                rangeToProcess
+            ) as? NSURL
+            url?.let {
+                result.add(Pair(matchedRange, it))
+            }
+
+            rangeToProcess = if (matchedRange.location != NSNotFound.toULong()) {
+                val nextStart = matchedRange.location + matchedRange.length
+                NSMakeRange(
+                    nextStart,
+                    max(
+                        0L,
+                        range.useContents { this.length.toLong() } - nextStart.toLong()
+                    ).toULong()
+                )
+            } else {
+                NSMakeRange((range.range.last + 1).toULong(), 0)
+            }
+        }
+    }
+    return result
 }

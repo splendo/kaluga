@@ -30,7 +30,8 @@ sealed class KalugaLabel<T> {
         override val style: TextStyle
     ) : KalugaLabel<String>()
     data class Styled(
-        override val text: StyledString,
-        override val style: TextStyle
-    ) : KalugaLabel<StyledString>()
+        override val text: StyledString
+    ) : KalugaLabel<StyledString>() {
+        override val style: TextStyle = text.defaultTextStyle
+    }
 }

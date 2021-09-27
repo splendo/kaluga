@@ -5,6 +5,7 @@ import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.defaultFont
 import com.splendo.kaluga.resources.defaultItalicFont
 import com.splendo.kaluga.resources.defaultMonospaceFont
+import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 
 object TextStyles {
@@ -29,5 +30,8 @@ object TextStyles {
     }
     val redText by lazy {
         TextStyle(defaultFont, DefaultColors.red, 12.0f)
+    }
+    val oppositeText by lazy {
+        TextStyle(defaultFont, DefaultColors.dimGray, 12.0f, TextAlignment.OPPOSITE)
     }
 }

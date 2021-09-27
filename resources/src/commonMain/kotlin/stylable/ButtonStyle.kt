@@ -31,8 +31,8 @@ data class ButtonStyle(
 ) {
     constructor(
         textStyle: TextStyle,
-        backgroundColor: Color = DefaultColors.clear,
         textAlignment: TextAlignment = TextAlignment.CENTER,
+        backgroundColor: Color = DefaultColors.clear,
         pressedBackgroundColor: Color = backgroundColor,
         disabledBackgroundColor: Color = backgroundColor,
         shape: BackgroundStyle.Shape = BackgroundStyle.Shape.Rectangle()) : this(
@@ -56,6 +56,7 @@ data class ButtonStyle(
         )
     )
 
+    fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) = TextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
     fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): ButtonStateStyle {
         return if (!isEnabled) {
             disabledStyle

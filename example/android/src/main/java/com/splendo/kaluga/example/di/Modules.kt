@@ -99,6 +99,7 @@ import com.splendo.kaluga.permissions.location.registerLocationPermission
 import com.splendo.kaluga.permissions.microphone.registerMicrophonePermission
 import com.splendo.kaluga.permissions.notifications.registerNotificationsPermission
 import com.splendo.kaluga.permissions.storage.registerStoragePermission
+import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.review.ReviewManager
 import com.splendo.kaluga.system.network.state.NetworkStateRepoBuilder
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -305,10 +306,10 @@ val viewModelModule = module {
     }
 
     viewModel {
-        LabelViewModel()
+        LabelViewModel(StyledStringBuilder.Provider())
     }
 
     viewModel {
-        ButtonViewModel(AlertPresenter.Builder())
+        ButtonViewModel(StyledStringBuilder.Provider(), AlertPresenter.Builder())
     }
 }

@@ -76,10 +76,10 @@ fun PreviewKalugaLabel() {
         KalugaLabel.Styled(
             "Styled Text".styled(
                 StyledStringBuilder.Provider(LocalContext.current),
+                textStyle,
                 {
                 Pair(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.darkBlue), IntRange(0, 5))
             }),
-            textStyle
         ).composable(
             modifier = Modifier.fillMaxWidth()
         )

@@ -22,20 +22,20 @@ import android.text.style.SuperscriptSpan
 import android.text.style.URLSpan
 import android.text.style.UnderlineSpan
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.view.alignment
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-
-actual class StyledString(val spannable: Spannable)
+actual class StyledString(val spannable: Spannable, actual val defaultTextStyle: TextStyle)
 
 actual val StyledString.rawString: String get() = spannable.toString()
 
-actual class StyledStringBuilder constructor(string: String, private val context: Context) {
+actual class StyledStringBuilder constructor(string: String, private val defaultTextStyle: TextStyle, private val context: Context) {
 
     actual class Provider(private val context: Context = ApplicationHolder.applicationContext) {
-        actual fun provide(string: String) = StyledStringBuilder(string, context)
+        actual fun provide(string: String, defaultTextStyle: TextStyle) = StyledStringBuilder(string, defaultTextStyle, context)
     }
 
     private class CustomCharacterStyle(val modify: TextPaint.() -> Unit) : CharacterStyle() {
@@ -73,7 +73,7 @@ actual class StyledStringBuilder constructor(string: String, private val context
             color = textStyle.color
         }
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> CustomCharacterStyle {
-            setShadowLayer(blurRadius, xOffset, yOffset, color)
+            setShadowLayer(blurRadius.spToPixel(context), xOffset.spToPixel(context), yOffset.spToPixel(context), color)
         }
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> StrikethroughSpan()
         is StringStyleAttribute.CharacterStyleAttribute.SubScript -> SubscriptSpan()
@@ -171,6 +171,6 @@ actual class StyledStringBuilder constructor(string: String, private val context
     }
 
     actual fun create(): StyledString {
-        return StyledString(builder)
+        return StyledString(builder, defaultTextStyle)
     }
 }

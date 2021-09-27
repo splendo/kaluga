@@ -17,15 +17,17 @@
 
 package com.splendo.kaluga.resources
 
-actual data class StyledString(val string: String, val attributed: List<Pair<StringStyleAttribute, IntRange>>)
+import com.splendo.kaluga.resources.stylable.TextStyle
 
-actual class StyledStringBuilder constructor(string: String) {
+actual data class StyledString(val string: String, actual val defaultTextStyle: TextStyle, val attributed: List<Pair<StringStyleAttribute, IntRange>>)
+
+actual class StyledStringBuilder constructor(string: String, defaultTextStyle: TextStyle) {
 
     actual class Provider {
-        actual fun provide(string: String) = StyledStringBuilder(string)
+        actual fun provide(string: String, defaultTextStyle: TextStyle) = StyledStringBuilder(string, defaultTextStyle)
     }
 
-    var styledString = StyledString(string, emptyList())
+    var styledString = StyledString(string, defaultTextStyle, emptyList())
     actual fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange) {
         styledString = styledString.copy(
             attributed = styledString.attributed.toMutableList().apply {

@@ -19,13 +19,16 @@
 package com.splendo.kaluga.resources
 
 import com.splendo.kaluga.resources.stylable.TextAlignment
+import com.splendo.kaluga.resources.stylable.TextStyle
 import kotlin.jvm.JvmName
 
-expect class StyledString
+expect class StyledString {
+    val defaultTextStyle: TextStyle
+}
 
 expect class StyledStringBuilder {
     class Provider {
-        fun provide(string: String): StyledStringBuilder
+        fun provide(string: String, defaultTextStyle: TextStyle): StyledStringBuilder
     }
     fun addStyleAttribute(attribute: StringStyleAttribute, range: IntRange)
     fun create(): StyledString
@@ -33,13 +36,14 @@ expect class StyledStringBuilder {
 
 expect val StyledString.rawString: String
 
-fun String.styled(provider: StyledStringBuilder.Provider, vararg attributes: StringStyleAttribute) = styled(
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: TextStyle, vararg attributes: StringStyleAttribute) = styled(
     provider,
+    defaultTextStyle,
     *attributes.map<StringStyleAttribute, String.() -> Pair<StringStyleAttribute, IntRange>?> { attribute ->
         { attributeSubstring(this, attribute) }
     }.toTypedArray()
 )
-fun String.styled(provider: StyledStringBuilder.Provider, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = provider.provide(this).apply {
+fun String.styled(provider: StyledStringBuilder.Provider, defaultTextStyle: TextStyle, vararg attributes: String.() -> Pair<StringStyleAttribute, IntRange>?) = provider.provide(this, defaultTextStyle).apply {
     attributes.forEach { attribute ->
         attribute()?.let {
             addStyleAttribute(it.first, it.second)

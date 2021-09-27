@@ -22,13 +22,14 @@ import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.example.shared.stylable.TextStyles
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
+import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.attributeSubstring
 import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaLabel
 
-class LabelViewModel : BaseViewModel() {
+class LabelViewModel(styledStringBuilderProvider: StyledStringBuilder.Provider) : BaseViewModel() {
 
     companion object {
         val loremIpsumParagraph0 = listOf(
@@ -75,37 +76,44 @@ class LabelViewModel : BaseViewModel() {
             KalugaLabel.Plain("Italic Text", TextStyles.defaultItalicText),
             KalugaLabel.Plain("Monospace Text", TextStyles.defaultMonospaceText),
             KalugaLabel.Plain("Red Text", TextStyles.redText),
-            KalugaLabel.Plain("Opposite Aligned Text", TextStyles.defaultText, TextAlignment.OPPOSITE),
-            KalugaLabel.Styled("Foreground Styled text".styled(StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.deepSkyBlue)), TextStyles.defaultText),
-            KalugaLabel.Styled("Background Styled text".styled(StringStyleAttribute.CharacterStyleAttribute.BackgroundColor(DefaultColors.deepSkyBlue)), TextStyles.whiteText),
-            KalugaLabel.Styled("Partial Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.TextStyle(TextStyles.redText), IntRange(0, 13)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Font Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Font(defaultBoldFont, 12.0f), IntRange(0, 10)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Stroke Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Stroke(2.0f, DefaultColors.limeGreen), IntRange(0, 12)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Subscript Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.SubScript, IntRange(0, 15)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Superscript Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.SuperScript, IntRange(0, 17)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Shadow Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Shadow(DefaultColors.dimGray, 2.0f, 2.0f, 5.0f), IntRange(0, 12)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Kerning Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Kerning(0.5f), IntRange(0, 13)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Underline Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Underline, IntRange(0, 15)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Strikethrough Styled text".styled({ Pair(StringStyleAttribute.CharacterStyleAttribute.Strikethrough, IntRange(0, 20)) }), TextStyles.defaultText),
-            KalugaLabel.Styled("Link Styled text".styled({ Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) }), TextStyles.defaultText),
-            KalugaLabel.Styled(loremIpsum.styled(StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(5.0f, 10.0f, 6.0f)), TextStyles.defaultText),
+            KalugaLabel.Plain("Opposite Aligned Text", TextStyles.oppositeText),
+            KalugaLabel.Styled("Foreground Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, StringStyleAttribute.CharacterStyleAttribute.ForegroundColor(DefaultColors.deepSkyBlue))),
+            KalugaLabel.Styled("Background Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, StringStyleAttribute.CharacterStyleAttribute.BackgroundColor(DefaultColors.deepSkyBlue))),
+            KalugaLabel.Styled("Partial Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.TextStyle(TextStyles.redText), IntRange(0, 13)) })),
+            KalugaLabel.Styled("Font Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Font(defaultBoldFont, 12.0f), IntRange(0, 10)) })),
+            KalugaLabel.Styled("Stroke Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Stroke(2.0f, DefaultColors.limeGreen), IntRange(0, 12)) })),
+            KalugaLabel.Styled("Subscript Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.SubScript, IntRange(0, 15)) })),
+            KalugaLabel.Styled("Superscript Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.SuperScript, IntRange(0, 17)) })),
+            KalugaLabel.Styled("Shadow Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Shadow(DefaultColors.dimGray, 2.0f, 2.0f, 5.0f), IntRange(0, 12)) })),
+            KalugaLabel.Styled("Kerning Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Kerning(0.08f), IntRange(0, 13)) })),
+            KalugaLabel.Styled("Underline Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Underline, IntRange(0, 15)) })),
+            KalugaLabel.Styled("Strikethrough Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.CharacterStyleAttribute.Strikethrough, IntRange(0, 20)) })),
+            KalugaLabel.Styled("Link Styled text".styled(styledStringBuilderProvider, TextStyles.defaultText, { Pair(StringStyleAttribute.Link("https://kaluga.splendo.com"), IntRange(0, 10)) })),
+            KalugaLabel.Styled(loremIpsum.styled(styledStringBuilderProvider, TextStyles.defaultText, StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(5.0f, 10.0f, 6.0f))),
             KalugaLabel.Styled(
-                loremIpsum.styled({ attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f)) }),
-                TextStyles.defaultText
-            ),
-            KalugaLabel.Styled(
-                loremIpsum.styled({ attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(TextAlignment.OPPOSITE)) }),
-                TextStyles.defaultText
+                loremIpsum.styled(
+                    styledStringBuilderProvider,
+                    TextStyles.defaultText,
+                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f)) }
+                ),
             ),
             KalugaLabel.Styled(
                 loremIpsum.styled(
+                    styledStringBuilderProvider,
+                    TextStyles.defaultText,
+                    { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(TextAlignment.OPPOSITE)) }
+                ),
+            ),
+            KalugaLabel.Styled(
+                loremIpsum.styled(
+                    styledStringBuilderProvider,
+                    TextStyles.defaultText,
                     { attributeSubstring(this, StringStyleAttribute.ParagraphStyleAttribute.LineSpacing(2.0f, 4.0f, 1.0f)) },
                     { attributeSubstring(loremIpsumParagraph0, StringStyleAttribute.CharacterStyleAttribute.BackgroundColor(DefaultColors.deepSkyBlue)) },
                     { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent(10.0f)) },
                     { attributeSubstring(loremIpsumParagraph1, StringStyleAttribute.ParagraphStyleAttribute.Alignment(TextAlignment.OPPOSITE)) },
-                    { attributeSubstring(loremIpsumParagraph2, StringStyleAttribute.CharacterStyleAttribute.Kerning(0.4f)) }
+                    { attributeSubstring(loremIpsumParagraph2, StringStyleAttribute.CharacterStyleAttribute.Kerning(0.08f)) }
                 ),
-                TextStyles.defaultText
             )
         )
     )

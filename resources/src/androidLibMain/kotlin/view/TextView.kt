@@ -2,6 +2,7 @@ package com.splendo.kaluga.resources.view
 
 import android.content.res.ColorStateList
 import android.text.method.LinkMovementMethod
+import android.text.style.URLSpan
 import android.widget.TextView
 import com.splendo.kaluga.resources.stylable.TextStyle
 
@@ -9,7 +10,9 @@ fun TextView.bindLabel(label: KalugaLabel<*>) {
     text = when (label) {
         is KalugaLabel.Plain -> label.text
         is KalugaLabel.Styled -> {
-            movementMethod = LinkMovementMethod.getInstance()
+            if (label.text.spannable.getSpans(0, label.text.spannable.length, URLSpan::class.java).isNotEmpty()) {
+                movementMethod = LinkMovementMethod.getInstance()
+            }
             label.text.spannable
         }
     }

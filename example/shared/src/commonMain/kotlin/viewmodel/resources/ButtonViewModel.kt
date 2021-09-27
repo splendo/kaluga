@@ -23,12 +23,14 @@ import com.splendo.kaluga.architecture.observable.observableOf
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.example.shared.stylable.ButtonStyles
 import com.splendo.kaluga.resources.StringStyleAttribute
+import com.splendo.kaluga.resources.StyledStringBuilder
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import kotlinx.coroutines.launch
 
 class ButtonViewModel(
+    styledStringBuilderProvider: StyledStringBuilder.Provider,
     val alertPresenterBuilder: AlertPresenter.Builder
 ) : BaseViewModel() {
 
@@ -45,7 +47,12 @@ class ButtonViewModel(
             "Radial Gradient Button".toButton(ButtonStyles.radialGradientButton),
             "Angular Gradient Button".toButton(ButtonStyles.angularGradientButton),
             listOf(
-                KalugaButton.Styled("Styled Button".styled(StringStyleAttribute.CharacterStyleAttribute.Strikethrough), ButtonStyles.textButton) {
+                KalugaButton.Styled("Styled Button".styled(
+                    styledStringBuilderProvider,
+                    ButtonStyles.textButton.getStateTextStyle(isEnabled = true, isPressed = false),
+                    StringStyleAttribute.CharacterStyleAttribute.Strikethrough),
+                    ButtonStyles.textButton
+                ) {
                     showAlert("Styled Button")
                 }
             )

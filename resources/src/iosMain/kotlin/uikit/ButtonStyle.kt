@@ -45,14 +45,14 @@ class UIControlClosure(private val action: () -> Unit) : NSObject() {
 }
 
 fun UIButton.bindButton(button: KalugaButton<*>) {
+    applyStyle(button.style)
     when (button) {
         is KalugaButton.Plain -> setTitle(button.text, UIControlStateNormal)
-        is KalugaButton.Styled -> setAttributedTitle(button.text, UIControlStateNormal)
+        is KalugaButton.Styled -> setAttributedTitle(button.text.attributeString, UIControlStateNormal)
     }
     setEnabled(button.isEnabled)
     val wrappedAction = UIControlClosure(button.action)
     addTarget(wrappedAction, sel_registerName("UIControlClosure.invoke"), UIControlEventTouchUpInside)
-    applyStyle(button.style)
 }
 
 fun UIButton.applyStyle(buttonStyle: ButtonStyle) {

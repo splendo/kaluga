@@ -13,31 +13,36 @@ object ButtonStyles {
         ButtonStyle(TextStyles.redText)
     }
     val redButton by lazy {
-        ButtonStyle(TextStyles.whiteText, DefaultColors.red, DefaultColors.maroon, DefaultColors.lightGray)
+        ButtonStyle(
+            TextStyles.whiteText,
+            backgroundColor = DefaultColors.red,
+            pressedBackgroundColor = DefaultColors.maroon,
+            disabledBackgroundColor = DefaultColors.lightGray
+        )
     }
     val roundedButton by lazy {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, BackgroundStyle.Shape.Rectangle(10.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))),
-            ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, BackgroundStyle.Shape.Rectangle(5.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))),
-            ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, BackgroundStyle.Shape.Rectangle(10.0f))
+            defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, BackgroundStyle.Shape.Rectangle(10.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))),
+            pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, BackgroundStyle.Shape.Rectangle(5.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))),
+            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, BackgroundStyle.Shape.Rectangle(10.0f))
         )
     }
     val ovalButton by lazy {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, BackgroundStyle.Shape.Oval),
-            ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, BackgroundStyle.Shape.Oval),
-            ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, BackgroundStyle.Shape.Oval)
+            defaultStyle = ButtonStateStyle(DefaultColors.white, DefaultColors.deepSkyBlue, BackgroundStyle.Shape.Oval),
+            pressedStyle = ButtonStateStyle(DefaultColors.azure, DefaultColors.lightSkyBlue, BackgroundStyle.Shape.Oval),
+            disabledStyle = ButtonStateStyle(DefaultColors.black, DefaultColors.lightGray, BackgroundStyle.Shape.Oval)
         )
     }
     val redButtonWithStroke by lazy {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.red),
@@ -45,7 +50,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.maroon),
@@ -53,7 +58,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
@@ -67,7 +72,7 @@ object ButtonStyles {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
@@ -75,7 +80,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle(10.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_LEFT))
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
@@ -83,7 +88,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle(5.0f, setOf(BackgroundStyle.Shape.Rectangle.Corner.TOP_LEFT, BackgroundStyle.Shape.Rectangle.Corner.BOTTOM_RIGHT))
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
@@ -97,7 +102,7 @@ object ButtonStyles {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.deepSkyBlue),
@@ -105,7 +110,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Oval
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.lightSkyBlue),
@@ -113,7 +118,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Oval
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Solid(DefaultColors.lightGray),
@@ -128,7 +133,7 @@ object ButtonStyles {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
@@ -136,7 +141,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
@@ -144,7 +149,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Linear(listOf(DefaultColors.lightGray, DefaultColors.gray), GradientStyle.Linear.Orientation.LEFT_RIGHT)),
@@ -159,7 +164,7 @@ object ButtonStyles {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), 50.0f, GradientStyle.CenterPoint(0.3f, 0.3f))),
@@ -167,7 +172,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), 25.0f, GradientStyle.CenterPoint(0.6f, 0.6f))),
@@ -175,7 +180,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Radial(listOf(DefaultColors.lightGray, DefaultColors.gray), 50.0f)),
@@ -190,7 +195,7 @@ object ButtonStyles {
         ButtonStyle(
             defaultFont,
             12.0f,
-            ButtonStateStyle(
+            defaultStyle = ButtonStateStyle(
                 DefaultColors.white,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.deepSkyBlue, DefaultColors.lightSkyBlue), GradientStyle.CenterPoint(0.3f, 0.3f))),
@@ -198,7 +203,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            pressedStyle = ButtonStateStyle(
                 DefaultColors.azure,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.midnightBlue, DefaultColors.deepSkyBlue), GradientStyle.CenterPoint(0.6f, 0.6f))),
@@ -206,7 +211,7 @@ object ButtonStyles {
                     BackgroundStyle.Shape.Rectangle()
                 )
             ),
-            ButtonStateStyle(
+            disabledStyle = ButtonStateStyle(
                 DefaultColors.black,
                 BackgroundStyle(
                     BackgroundStyle.FillStyle.Gradient(GradientStyle.Angular(listOf(DefaultColors.lightGray, DefaultColors.gray))),
