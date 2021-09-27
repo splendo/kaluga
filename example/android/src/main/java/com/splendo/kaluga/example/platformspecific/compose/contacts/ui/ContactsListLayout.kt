@@ -20,13 +20,12 @@ package com.splendo.kaluga.example.platformspecific.compose.contacts.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +35,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
@@ -56,13 +54,13 @@ fun ContactsListLayout(navigator: Navigator<ContactsNavigation<*>>) {
 
     ViewModelComposable(viewModel) {
         val items by contacts.state()
-        LazyColumn(modifier = Modifier.padding(8.dp)) {
+        LazyColumn(modifier = Modifier.padding(Padding.default)) {
             items(items) { contactDetails ->
                 ListItem(contactDetails) {
                     onContactClick(contactDetails)
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                DefaultSpacer()
             }
         }
     }
@@ -74,7 +72,8 @@ private fun ListItem(
     onClickHandler: () -> Unit
 ) {
     Row(
-        modifier = Modifier.clickable(onClick = onClickHandler)
+        modifier = Modifier
+            .clickable(onClick = onClickHandler)
             .fillMaxWidth()
     ) {
         val image = painterResource(id = R.drawable.ic_account)
@@ -89,7 +88,7 @@ private fun ListItem(
         Text(
             modifier = Modifier.align(CenterVertically),
             text = contactDetails.name,
-            fontSize = 24.sp
+            style = MaterialTheme.typography.h5
         )
     }
 }

@@ -19,22 +19,18 @@ package com.splendo.kaluga.example.platformspecific.compose.contacts.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.splendo.kaluga.architecture.compose.navigation.HardwareBackButtonNavigation
 import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.compose.viewModel.store
@@ -65,27 +61,19 @@ fun ContactDetailsLayout(contactDetails: ContactDetails, navigator: Navigator<Co
             )
 
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = Padding.x2)
                     .fillMaxWidth()
             ) {
-
-
-                Text(
-                    text = "Name:",
-                    fontSize = 24.sp
-                )
-                Text(text = contactDetails.name)
+                Text(text = "Name:", style = MaterialTheme.typography.h6)
+                Text(text = contactDetails.name, style = MaterialTheme.typography.body1)
                 DefaultSpacer()
 
-                Text(
-                    text = "Email:",
-                    fontSize = 24.sp
-                )
-                Text(text = contactDetails.email)
+                Text(text = "Email:", style = MaterialTheme.typography.h6)
+                Text(text = contactDetails.email, style = MaterialTheme.typography.body1)
                 DefaultSpacer()
 
                 Button(onClick = ::sendEmail) {
-                    Text(text = sendEmailButtonText)
+                    Text(text = sendEmailButtonText, style = MaterialTheme.typography.button)
                 }
             }
         }

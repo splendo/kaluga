@@ -22,12 +22,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.google.android.material.composethemeadapter.MdcTheme
 import com.splendo.kaluga.architecture.compose.state
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
@@ -35,6 +35,7 @@ import com.splendo.kaluga.architecture.compose.viewModel.ViewModelComposable
 import com.splendo.kaluga.architecture.navigation.ActivityNavigator
 import com.splendo.kaluga.architecture.navigation.NavigationSpec
 import com.splendo.kaluga.example.platformspecific.compose.contacts.ContactsActivity
+import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformFeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformSpecificFeaturesViewModel
 
@@ -62,10 +63,13 @@ private fun PlatformSpecificFeaturesLayout(viewModel: PlatformSpecificFeaturesVi
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(Padding.default),
                         onClick = { onFeaturePressed(item) },
                     ) {
-                        Text(text = item.title.uppercase())
+                        Text(
+                            text = item.title.uppercase(),
+                            style = MaterialTheme.typography.button,
+                        )
                     }
                 }
             }

@@ -74,21 +74,30 @@ private fun rememberComposableViewModelStoreOwner(viewModel: BaseViewModel): Vie
 private fun <VM : BaseViewModel> VM.linkLifecycle(): VM {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     DisposableEffect(Unit) {
-        val lifecycleObserver = object : LifecycleObserver {
+        val observer = VmObserver(this@linkLifecycle)
 
-            @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-            fun onResume() = didResume()
-
-            @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-            fun onPause() = didPause()
-
-        }
-
-        lifecycle.addObserver(lifecycleObserver)
+        lifecycle.addObserver(observer)
 
         onDispose {
-            lifecycle.removeObserver(lifecycleObserver)
+            lifecycle.removeObserver(observer)
+            observer.onDispose()
         }
     }
     return this
+}
+
+private class VmObserver<VM: BaseViewModel>(private val viewModel: VM) : LifecycleObserver {
+    private var resumed = false
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onResume() = viewModel.didResume().also { resumed = true }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun onPause() = viewModel.didPause().also { resumed = false }
+
+    fun onDispose() {
+        if (resumed) {
+            viewModel.didPause()
+        }
+    }
 }
