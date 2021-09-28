@@ -43,9 +43,12 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
      * @see [isNotifying]
      */
     suspend fun enableNotification(): DeviceAction? {
-        isBusy.first { !it }
-        if (isNotifying) return null
-        isBusy.compareAndSet(expect = false, update = true)
+
+        do {
+            isBusy.first { !it }
+            if (isNotifying) return null
+        } while (!isBusy.compareAndSet(expect = false, update = true))
+
         val action = createNotificationAction(enabled = true)
         addAction(action)
         action.completedSuccessfully.invokeOnCompletion {
@@ -69,9 +72,12 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
      * @see [isNotifying]
      */
     suspend fun disableNotification(): DeviceAction? {
-        isBusy.first { !it }
-        if (!isNotifying) return null
-        isBusy.compareAndSet(expect = false, update = true)
+
+        do {
+            isBusy.first { !it }
+            if (!isNotifying) return null
+        } while (!isBusy.compareAndSet(expect = false, update = true))
+
         val action = createNotificationAction(enabled = false)
         addAction(action)
         action.completedSuccessfully.invokeOnCompletion {
