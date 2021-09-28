@@ -15,7 +15,6 @@
 
  */
 
-import BeaconMock.mockBeaconDevice
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.coroutines.delay
 import kotlin.test.Test
@@ -33,7 +32,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         action {
             start(scope)
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 
@@ -42,7 +41,7 @@ class BeaconUpdateTest : BeaconFlowTest() {
         action {
             delay(1_000)
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 

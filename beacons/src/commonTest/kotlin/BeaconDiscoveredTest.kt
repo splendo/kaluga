@@ -15,8 +15,6 @@
 
  */
 
-import BeaconMock.mockBeaconDevice
-import BeaconMock.mockGenericDevice
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -34,8 +32,8 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
         action {
             start(scope)
             discoverDevices(
-                mockGenericDevice("AXA", scope.coroutineContext),
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockGenericDevice("AXA", scope.coroutineContext),
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 
@@ -59,7 +57,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
         action {
             start(scope)
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 
@@ -70,7 +68,7 @@ class BeaconDiscoveredTest : BeaconFlowTest() {
 
         action {
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
             )
         }
 

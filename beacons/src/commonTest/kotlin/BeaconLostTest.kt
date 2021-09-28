@@ -15,7 +15,6 @@
 
  */
 
-import BeaconMock.mockBeaconDevice
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlin.test.Test
@@ -34,7 +33,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             start(MainScope())
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 
@@ -63,7 +62,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             start(scope)
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460111", scope.coroutineContext)
             )
         }
 
@@ -75,7 +74,7 @@ class BeaconLostTest : BeaconFlowTest(timeoutMs = 2_000) {
         action {
             delay(1_000)
             discoverDevices(
-                mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
+                BeaconMock.mockBeaconDevice("f7826da6bc5b71e0893e4e4161460222", scope.coroutineContext)
             )
         }
 
