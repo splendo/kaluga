@@ -31,10 +31,10 @@ class MockStringLoader private constructor (
     private val quantityString: String?,
     private val stringMap: Map<String, String?>,
     private val quantityStringMap: Map<String, String?>
-): StringLoader {
-    constructor(string: String? = null, quantityString: String? = null):
+) : StringLoader {
+    constructor(string: String? = null, quantityString: String? = null) :
         this(string, quantityString, emptyMap(), emptyMap())
-    constructor(stringMap: Map<String, String?>, quantityStringMap: Map<String, String?>):
+    constructor(stringMap: Map<String, String?>, quantityStringMap: Map<String, String?>) :
         this(null, null, stringMap, quantityStringMap)
 
     override fun loadString(identifier: String, defaultValue: String): String =
@@ -51,9 +51,9 @@ class MockStringLoader private constructor (
 class MockColorLoader private constructor (
     private val color: Color?,
     private val colorMap: Map<String, Color?>
-): ColorLoader {
-    constructor(color: Color? = null): this(color, emptyMap())
-    constructor(colorMap: Map<String, Color?>): this(null, colorMap)
+) : ColorLoader {
+    constructor(color: Color? = null) : this(color, emptyMap())
+    constructor(colorMap: Map<String, Color?>) : this(null, colorMap)
 
     override fun loadColor(identifier: String, defaultValue: Color?): Color? =
         colorMap[identifier] ?: color ?: defaultValue
@@ -62,9 +62,9 @@ class MockColorLoader private constructor (
 class MockImageLoader private constructor (
     private val image: Image?,
     private val imageMap: Map<String, Image?>
-): ImageLoader {
-    constructor(image: Image? = null): this(image, emptyMap())
-    constructor(imageMap: Map<String, Image?>): this(null, imageMap)
+) : ImageLoader {
+    constructor(image: Image? = null) : this(image, emptyMap())
+    constructor(imageMap: Map<String, Image?>) : this(null, imageMap)
 
     override fun loadImage(identifier: String, defaultValue: Image?): Image? =
         imageMap[identifier] ?: image ?: defaultValue
@@ -73,9 +73,9 @@ class MockImageLoader private constructor (
 class MockFontLoader private constructor (
     private val font: Font?,
     private val fontMap: Map<String, Font?>
-): FontLoader {
-    constructor(font: Font? = null): this(font, emptyMap())
-    constructor(fontMap: Map<String, Font?>): this(null, fontMap)
+) : FontLoader {
+    constructor(font: Font? = null) : this(font, emptyMap())
+    constructor(fontMap: Map<String, Font?>) : this(null, fontMap)
 
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
         fontMap[identifier] ?: font ?: defaultValue

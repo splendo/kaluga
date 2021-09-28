@@ -27,7 +27,7 @@ import com.splendo.kaluga.base.ApplicationHolder.Companion.application
 import com.splendo.kaluga.base.ApplicationHolder.Companion.applicationContext
 import kotlinx.coroutines.CompletableDeferred
 
-actual class DefaultStringLoader(private val context: Context?): StringLoader {
+actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadString(identifier: String, defaultValue: String): String {
         if (context == null)
@@ -51,7 +51,7 @@ actual class DefaultStringLoader(private val context: Context?): StringLoader {
     }
 }
 
-actual class DefaultColorLoader(private val context: Context?): ColorLoader {
+actual class DefaultColorLoader(private val context: Context?) : ColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadColor(identifier: String, defaultValue: Color?): Color? {
         if (context == null)
@@ -65,7 +65,7 @@ actual class DefaultColorLoader(private val context: Context?): ColorLoader {
     }
 }
 
-actual class DefaultImageLoader(private val context: Context?): ImageLoader {
+actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
     override fun loadImage(identifier: String, defaultValue: Image?): Image? {
         if (context == null)
@@ -79,7 +79,7 @@ actual class DefaultImageLoader(private val context: Context?): ImageLoader {
     }
 }
 
-actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?): FontLoader {
+actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
         if (context == null)
