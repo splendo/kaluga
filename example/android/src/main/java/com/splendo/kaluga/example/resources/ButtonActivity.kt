@@ -46,9 +46,7 @@ class ButtonActivity : KalugaViewModelActivity<ButtonViewModel>() {
             binding.resourcesList.adapter = this
         }
         viewModel.buttons.observeInitialized { adapter.buttons = it }
-        binding.resourcesList.layoutManager = GridLayoutManager(this, 2)
         binding.resourcesList.addItemDecoration(VerticalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
-        binding.resourcesList.addItemDecoration(HorizontalSpaceItemDecoration(10.0f.dpToPixel(this).toInt()))
     }
 }
 

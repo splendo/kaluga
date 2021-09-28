@@ -11,6 +11,8 @@
 		20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */; };
 		205747572397C9C400CDE25E /* KeyboardManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */; };
 		205AF6562488F017001BD99E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 205AF6542488F017001BD99E /* Localizable.strings */; };
+		2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0EF270303B3002CB856 /* ButtonViewController.swift */; };
+		2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073D0F127032B5B002CB856 /* ColorViewController.swift */; };
 		209471E124C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */; };
 		209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E324C07EAD001426CD /* BluetoothViewController.swift */; };
 		209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */; };
@@ -86,6 +88,8 @@
 		20524A23257BEA1E0054B57E /* DateTimePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateTimePickerViewController.swift; sourceTree = "<group>"; };
 		205747562397C9C400CDE25E /* KeyboardManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardManagerViewController.swift; sourceTree = "<group>"; };
 		205AF6552488F017001BD99E /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Demo/Base.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2073D0EF270303B3002CB856 /* ButtonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonViewController.swift; sourceTree = "<group>"; };
+		2073D0F127032B5B002CB856 /* ColorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewController.swift; sourceTree = "<group>"; };
 		209471E024C07DF4001426CD /* FittingWidthAutomaticHeightCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FittingWidthAutomaticHeightCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		209471E324C07EAD001426CD /* BluetoothViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothViewController.swift; sourceTree = "<group>"; };
 		209471E524C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDeviceDetailsViewController.swift; sourceTree = "<group>"; };
@@ -233,6 +237,8 @@
 			children = (
 				20D8CD3626FE8FE200D14AC9 /* ResourcesListViewController.swift */,
 				20D8CD3826FF550100D14AC9 /* LabelViewController.swift */,
+				2073D0EF270303B3002CB856 /* ButtonViewController.swift */,
+				2073D0F127032B5B002CB856 /* ColorViewController.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -625,6 +631,7 @@
 				2017B1C52400175C00F9072A /* PermissionListViewController.swift in Sources */,
 				978348A7235DF586005B140B /* PermissionViewController.swift in Sources */,
 				641CC0DC25CACAAD001E1CD1 /* LinksViewController.swift in Sources */,
+				2073D0F227032B5B002CB856 /* ColorViewController.swift in Sources */,
 				20524A24257BEA1E0054B57E /* DateTimePickerViewController.swift in Sources */,
 				20C7D1CF24699A6C00C9A63F /* UIControl+Closure.swift in Sources */,
 				4BC0CBDF269F1D25000512A9 /* BeaconsViewController.swift in Sources */,
@@ -642,6 +649,7 @@
 				209471E624C07ED9001426CD /* BluetoothDeviceDetailsViewController.swift in Sources */,
 				209471E424C07EAD001426CD /* BluetoothViewController.swift in Sources */,
 				4B54CB212369DA6600B69B2D /* AlertsViewController.swift in Sources */,
+				2073D0F0270303B3002CB856 /* ButtonViewController.swift in Sources */,
 				20C7D1CC246968AA00C9A63F /* ExampleViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

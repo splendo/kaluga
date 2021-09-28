@@ -46,6 +46,7 @@ class ButtonViewModel(
             "Linear Gradient Button".toButton(ButtonStyles.linearGradientButton),
             "Radial Gradient Button".toButton(ButtonStyles.radialGradientButton),
             "Angular Gradient Button".toButton(ButtonStyles.angularGradientButton),
+            "Disabled Button".toButton(ButtonStyles.redButton, false),
             listOf(
                 KalugaButton.Styled("Styled Button".styled(
                     styledStringBuilderProvider,
@@ -69,12 +70,9 @@ class ButtonViewModel(
         }
     }
 
-    private fun String.toButton(style: ButtonStyle): List<KalugaButton.Plain> = listOf(
-        KalugaButton.Plain(this, style, true) {
+    private fun String.toButton(style: ButtonStyle, isEnabled: Boolean = true): List<KalugaButton.Plain> = listOf(
+        KalugaButton.Plain(this, style, isEnabled) {
             showAlert(this)
-        },
-        KalugaButton.Plain("Disabled $this", style, false) {
-            showAlert("Disabled $this")
         }
     )
 }

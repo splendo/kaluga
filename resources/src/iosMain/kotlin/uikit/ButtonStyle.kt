@@ -20,9 +20,13 @@ package com.splendo.kaluga.resources.uikit
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 import com.splendo.kaluga.resources.view.KalugaButton
+import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGSizeMake
+import platform.Foundation.NSMapTable
+import platform.Foundation.NSPointerFunctionsStrongMemory
+import platform.Foundation.NSPointerFunctionsWeakMemory
 import platform.QuartzCore.CALayer
 import platform.UIKit.UIButton
 import platform.UIKit.UIControlEventTouchUpInside
@@ -39,6 +43,13 @@ import platform.darwin.NSObject
 import platform.objc.sel_registerName
 
 class UIControlClosure(private val action: () -> Unit) : NSObject() {
+
+    @ThreadLocal
+    object Registry {
+        val registeredUIControl = NSMapTable(NSPointerFunctionsWeakMemory, NSPointerFunctionsStrongMemory, 0)
+    }
+
+    @ObjCAction
     fun invoke() {
         action()
     }
@@ -52,7 +63,8 @@ fun UIButton.bindButton(button: KalugaButton<*>) {
     }
     setEnabled(button.isEnabled)
     val wrappedAction = UIControlClosure(button.action)
-    addTarget(wrappedAction, sel_registerName("UIControlClosure.invoke"), UIControlEventTouchUpInside)
+    UIControlClosure.Registry.registeredUIControl.setObject(wrappedAction, this)
+    addTarget(wrappedAction, sel_registerName("invoke"), UIControlEventTouchUpInside)
 }
 
 fun UIButton.applyStyle(buttonStyle: ButtonStyle) {

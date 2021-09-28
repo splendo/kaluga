@@ -21,13 +21,19 @@ import com.splendo.kaluga.resources.stylable.BackgroundStyle
 import com.splendo.kaluga.resources.stylable.GradientStyle
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.useContents
+import platform.CoreFoundation.CFRetain
+import platform.CoreGraphics.CGColorRef
 import platform.CoreGraphics.CGPathRef
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGRect
 import platform.CoreGraphics.CGSizeMake
+import platform.Foundation.CFBridgingRelease
 import platform.QuartzCore.CAGradientLayer
 import platform.QuartzCore.CALayer
 import platform.QuartzCore.CAShapeLayer
+import platform.QuartzCore.kCAGradientLayerAxial
+import platform.QuartzCore.kCAGradientLayerConic
+import platform.QuartzCore.kCAGradientLayerRadial
 import platform.UIKit.UIBezierPath
 import platform.UIKit.UIColor
 import platform.UIKit.UIRectCornerBottomLeft
@@ -67,12 +73,15 @@ private fun CALayer.applyFillStyle(fillStyle: BackgroundStyle.FillStyle, bounds:
         frame = bounds
         when (fillStyle) {
             is BackgroundStyle.FillStyle.Solid -> {
-                type = "axial"
-                colors = listOf(fillStyle.color.uiColor.CGColor)
+                type = kCAGradientLayerAxial
+                colors = listOfNotNull(
+                    fillStyle.color.uiColor.CGColor,
+                    fillStyle.color.uiColor.CGColor
+                ).mapToCGColor()
             }
             is BackgroundStyle.FillStyle.Gradient -> {
                 val sortedColorPoints = fillStyle.gradientStyle.colorPoints.sortedBy { it.offset }
-                colors = sortedColorPoints.map { it.color.uiColor.CGColor }
+                colors = sortedColorPoints.mapNotNull { it.color.uiColor.CGColor }.mapToCGColor()
                 locations = sortedColorPoints.map { it.offset }
                 applyGradientStyle(fillStyle.gradientStyle, bounds)
             }
@@ -80,9 +89,13 @@ private fun CALayer.applyFillStyle(fillStyle: BackgroundStyle.FillStyle, bounds:
     })
 }
 
+fun List<CGColorRef>.mapToCGColor() = map {
+    CFBridgingRelease(CFRetain(it))
+}
+
 private fun CAGradientLayer.applyGradientStyle(gradientStyle: GradientStyle, bounds: CValue<CGRect>) = when (gradientStyle) {
     is GradientStyle.Linear -> {
-        type = "axial"
+        type = kCAGradientLayerAxial
         val startAndEndPoint = when (gradientStyle.orientation) {
             GradientStyle.Linear.Orientation.TOP_LEFT_BOTTOM_RIGHT -> Pair(CGPointMake(0.0, 0.0), CGPointMake(1.0, 1.0))
             GradientStyle.Linear.Orientation.TOP_RIGHT_BOTTOM_LEFT -> Pair(CGPointMake(1.0, 0.0), CGPointMake(0.0, 0.0))
@@ -97,7 +110,7 @@ private fun CAGradientLayer.applyGradientStyle(gradientStyle: GradientStyle, bou
         endPoint = startAndEndPoint.second
     }
     is GradientStyle.Radial -> {
-        type = "radial"
+        type = kCAGradientLayerRadial
         startPoint = CGPointMake(gradientStyle.centerPoint.x.toDouble(), gradientStyle.centerPoint.y.toDouble())
         endPoint = CGPointMake(
             gradientStyle.centerPoint.x.toDouble() + (gradientStyle.radius / bounds.useContents { size.width }),
@@ -105,14 +118,14 @@ private fun CAGradientLayer.applyGradientStyle(gradientStyle: GradientStyle, bou
         )
     }
     is GradientStyle.Angular -> {
-        type = "conic"
+        type = kCAGradientLayerConic
         startPoint = CGPointMake(gradientStyle.centerPoint.x.toDouble(), gradientStyle.centerPoint.y.toDouble())
         endPoint = CGPointMake(1.0, gradientStyle.centerPoint.y.toDouble())
     }
 }
 
 private fun CALayer.applyStroke(strokeStyle: BackgroundStyle.StrokeStyle, path: CGPathRef?, bounds: CValue<CGRect>) {
-    addSublayer( CAShapeLayer(this).apply {
+    addSublayer(CAShapeLayer(this).apply {
         frame = bounds
         this.path = path
         when (strokeStyle) {

@@ -161,9 +161,9 @@ class ColorViewModel(
                 )
             }.showAsync()
         }
-    }.toInitializedObservable(KalugaButton.Plain("", ButtonStyles.redButton, false) {}, coroutineScope)
+    }.toInitializedObservable<KalugaButton<*>>(KalugaButton.Plain("", ButtonStyles.redButton, false) {}, coroutineScope)
 
-    val flipButton = KalugaButton.Plain(
+    val flipButton: KalugaButton<*> = KalugaButton.Plain(
         "Flip",
         ButtonStyles.textButton
     ) {

@@ -17,12 +17,12 @@
 import UIKit
 import KotlinNativeFramework
 
-class LabelViewController : UITableViewController {
+class ButtonViewController : UITableViewController {
     
-    private lazy var viewModel: LabelViewModel = KNArchitectureFramework().createLabelViewModel()
+    private lazy var viewModel: ButtonViewModel = KNArchitectureFramework().createButtonViewModel(parent: self)
     private var lifecycleManager: LifecycleManager!
 
-    private var labels = [KalugaLabel<AnyObject>]()
+    private var buttons = [KalugaButton<AnyObject>]()
     
     deinit {
         lifecycleManager.unbind()
@@ -30,13 +30,12 @@ class LabelViewController : UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.allowsSelection = false
         lifecycleManager = KNArchitectureFramework().bind(viewModel: viewModel, to: self) { [weak self] in
             guard let viewModel = self?.viewModel else { return [] }
             return [
-                viewModel.labels.observe { labels in
-                    self?.labels = labels?.compactMap { $0 as?  KalugaLabel<AnyObject> } ?? []
+                viewModel.buttons.observe { labels in
+                    self?.buttons = labels?.compactMap { $0 as?  KalugaButton<AnyObject> } ?? []
                     self?.tableView.reloadData()
                 }
             ]
@@ -48,22 +47,22 @@ class LabelViewController : UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return labels.count
+        return buttons.count
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: LabelListCell.Const.identifier, for: indexPath) as! LabelListCell
-        TextStyleKt.bindLabel(cell.label, label: labels[indexPath.row])
+        let cell = tableView.dequeueReusableCell(withIdentifier: ButtonListCell.Const.identifier, for: indexPath) as! ButtonListCell
+        ButtonStyleKt.bindButton(cell.button, button: buttons[indexPath.row])
         return cell
     }
 }
 
-class LabelListCell : UITableViewCell {
+class ButtonListCell : UITableViewCell {
     
     struct Const {
-        static let identifier = "LabelListCell"
+        static let identifier = "ButtonListCell"
     }
     
-    @IBOutlet weak var label: UILabel!
+    @IBOutlet weak var button: UIButton!
     
 }
