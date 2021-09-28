@@ -1,4 +1,4 @@
-package  com.splendo.kaluga.architecture.compose.navigation
+package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
@@ -9,8 +9,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeActivity
+import com.splendo.kaluga.architecture.compose.viewModel.LocalAppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
 import com.splendo.kaluga.architecture.lifecycle.subscribe
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +55,6 @@ fun HardwareBackButtonNavigation(onBackButtonClickHandler: suspend () -> Unit) {
                     onBackPressedCallback.remove()
                     onBackPressedDispatcher.addCallback(onBackPressedCallback)
                 }
-
             }
             lifecycle.addObserver(lifecycleObserver)
 
@@ -77,5 +76,4 @@ private class ComposeOnBackPressedCallback(
             onBackButtonClickHandler()
         }
     }
-
 }

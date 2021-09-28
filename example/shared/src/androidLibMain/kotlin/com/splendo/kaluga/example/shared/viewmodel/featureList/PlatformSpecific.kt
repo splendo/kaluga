@@ -30,7 +30,7 @@ sealed class PlatformFeatureListNavigationAction : NavigationAction<Nothing>(nul
 }
 
 sealed class PlatformFeature(val title: String) {
-    object Compose: PlatformFeature("feature_platform_specific_compose".localized())
+    object Compose : PlatformFeature("feature_platform_specific_compose".localized())
 }
 
 class PlatformSpecificFeaturesViewModel(

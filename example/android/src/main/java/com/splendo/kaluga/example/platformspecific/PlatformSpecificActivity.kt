@@ -39,7 +39,7 @@ import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.Padding
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformFeatureListNavigationAction
 import com.splendo.kaluga.example.shared.viewmodel.featureList.PlatformSpecificFeaturesViewModel
 
-class PlatformSpecificActivity: KalugaViewModelComposeActivity<PlatformSpecificFeaturesViewModel>() {
+class PlatformSpecificActivity : KalugaViewModelComposeActivity<PlatformSpecificFeaturesViewModel>() {
     override val viewModel = PlatformSpecificFeaturesViewModel(ActivityNavigator(::navigationMapper))
 
     @Composable
@@ -49,7 +49,7 @@ class PlatformSpecificActivity: KalugaViewModelComposeActivity<PlatformSpecificF
 }
 
 private fun navigationMapper(action: PlatformFeatureListNavigationAction): NavigationSpec =
-    when(action) {
+    when (action) {
         is PlatformFeatureListNavigationAction.Compose -> NavigationSpec.Activity(ContactsActivity::class.java)
     }
 

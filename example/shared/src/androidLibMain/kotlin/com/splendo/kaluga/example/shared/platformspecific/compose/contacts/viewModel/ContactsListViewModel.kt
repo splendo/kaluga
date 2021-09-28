@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 
 class ContactsListViewModel(
     navigator: Navigator<ContactsNavigation<*>>
-): NavigatingViewModel<ContactsNavigation<*>>(navigator) {
+) : NavigatingViewModel<ContactsNavigation<*>>(navigator) {
     val contacts: FlowInitializedObservable<List<ContactDetails>> =
         MutableStateFlow(emptyList<ContactDetails>())
             .also {

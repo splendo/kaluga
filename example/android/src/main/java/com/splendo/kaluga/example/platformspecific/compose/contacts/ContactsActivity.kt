@@ -22,7 +22,7 @@ import com.splendo.kaluga.architecture.compose.viewModel.KalugaViewModelComposeA
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.example.platformspecific.compose.contacts.ui.ContactsLayout
 
-class ContactsActivity: KalugaViewModelComposeActivity<BaseViewModel>() {
+class ContactsActivity : KalugaViewModelComposeActivity<BaseViewModel>() {
     override val viewModel = BaseViewModel()
 
     @Composable

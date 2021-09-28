@@ -52,5 +52,4 @@ abstract class KalugaViewModelComposeActivity<VM : BaseViewModel> : KalugaViewMo
 
     @Composable
     protected abstract fun Layout(viewModel: VM)
-
 }

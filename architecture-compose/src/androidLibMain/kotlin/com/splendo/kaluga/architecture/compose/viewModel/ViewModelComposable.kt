@@ -86,7 +86,7 @@ private fun <VM : BaseViewModel> VM.linkLifecycle(): VM {
     return this
 }
 
-private class VmObserver<VM: BaseViewModel>(private val viewModel: VM) : LifecycleObserver {
+private class VmObserver<VM : BaseViewModel>(private val viewModel: VM) : LifecycleObserver {
     private var resumed = false
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

@@ -17,5 +17,4 @@
 
 package com.splendo.kaluga.example.shared.viewmodel.featureList
 
-
 expect val showPlatformSpecificFeatures: Boolean

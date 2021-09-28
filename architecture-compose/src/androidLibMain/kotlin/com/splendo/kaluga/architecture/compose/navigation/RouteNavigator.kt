@@ -1,4 +1,4 @@
-package  com.splendo.kaluga.architecture.compose.navigation
+package com.splendo.kaluga.architecture.compose.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
@@ -13,7 +13,7 @@ const val BACK_ROUTE = "back"
 private const val EMPTY_ROUTE = "empty"
 
 /** @return a route represented by the [NavigationAction]. */
-inline fun <reified T: NavigationAction<*>> route(vararg arguments: String): String =
+inline fun <reified T : NavigationAction<*>> route(vararg arguments: String): String =
     route(T::class, *arguments)
 
 /** @return a route represented by this [NavigationAction]. */

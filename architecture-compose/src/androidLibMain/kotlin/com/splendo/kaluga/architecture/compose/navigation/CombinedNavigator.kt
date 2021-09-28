@@ -29,7 +29,7 @@ import com.splendo.kaluga.architecture.navigation.Navigator
 /** Routes navigation actions to underlying navigators defined by [navigatorForAction]. */
 class CombinedNavigator<A : NavigationAction<*>>(
     private val navigatorForAction: CombinedNavigator<A>.(A) -> Navigator<A>
-): Navigator<A>, LifecycleSubscribable by LifecycleSubscriber() {
+) : Navigator<A>, LifecycleSubscribable by LifecycleSubscriber() {
 
     /** @return [ActivityNavigator] constructed with this navigation mapper.*/
     fun ((A) -> NavigationSpec).toActivityNavigator() = ActivityNavigator(this)
@@ -39,7 +39,7 @@ class CombinedNavigator<A : NavigationAction<*>>(
         if (navigator is LifecycleSubscribable && navigator.manager == null) {
             // navigator depends on the lifecycle but was not subscribed yet
             manager?.let { manager ->
-                with (navigator) {
+                with(navigator) {
                     subscribe(manager)
                     navigate(action)
                     unsubscribe()

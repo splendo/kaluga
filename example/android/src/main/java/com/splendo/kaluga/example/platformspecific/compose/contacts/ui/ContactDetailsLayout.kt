@@ -37,8 +37,8 @@ import com.splendo.kaluga.architecture.compose.viewModel.store
 import com.splendo.kaluga.architecture.navigation.Navigator
 import com.splendo.kaluga.example.R
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model.ContactDetails
-import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
 import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactDetailsViewModel
+import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.viewModel.ContactsNavigation
 
 @Composable
 fun ContactDetailsLayout(contactDetails: ContactDetails, navigator: Navigator<ContactsNavigation<*>>) {

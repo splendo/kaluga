@@ -83,5 +83,4 @@ class ModalBottomSheetNavigator(
     private fun syncHiddenState() {
         navigate(CloseBottomSheetNavigationAction)
     }
-
 }

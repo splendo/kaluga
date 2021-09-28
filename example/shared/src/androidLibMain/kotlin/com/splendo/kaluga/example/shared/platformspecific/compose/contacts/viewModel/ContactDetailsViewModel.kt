@@ -24,7 +24,7 @@ import com.splendo.kaluga.example.shared.platformspecific.compose.contacts.model
 class ContactDetailsViewModel(
     val contactDetails: ContactDetails,
     navigator: Navigator<ContactsNavigation<*>>
-): NavigatingViewModel<ContactsNavigation<*>>(navigator) {
+) : NavigatingViewModel<ContactsNavigation<*>>(navigator) {
 
     val sendEmailButtonText = "Send email"
 
