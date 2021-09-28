@@ -22,20 +22,22 @@ dependencies {
 #### Display content using a local data model 
 
 ```kotlin
+// View model that expose contact details fields and handle user actions
 class ContactDetailsViewModel(
     //...
 ) {
-    val contactEmail: String get() = { /*  ...  */ }
+    val contactEmail: String // ...
     
     fun sendEmail() {
-        //...    
+        // send an email    
     }
     
     fun onBackPressed() {
-        //...
+        // handle the back button 
     }
 }
 
+// Contact details UI
 @Composable
 fun ContactDetailsLayout(
     contactDetails: ContactDetails, 
@@ -73,9 +75,9 @@ fun routeMapper(action: ContactsNavigation<*>): String =
     when (action) {
         is Close -> BACK_ROUTE 
         is ShowContactsList -> action.route() // route with no parameters
-        is ShowContactDetails -> { // route with contact id as a parameter 
-            val contactId = Json.encodeToString(action.bundle!!.get(action.type))
-            action.route(contactId)
+        is ShowContactDetails -> { // route with encoded contact details as a parameter 
+            val json = Json.encodeToString(action.bundle!!.get(action.type))
+            action.route(json)
         }
         //...
     }
@@ -114,13 +116,12 @@ fun ContactsLayout() {
 Sometimes it's necessary to mix a route navigation within the same activity and navigate to 
 other activities
 
-```
+```kotlin
 internal fun activityMapper(action: ContactsNavigation<*>): NavigationSpec =
     when (action) {
         is SendEmail -> NavigationSpec.Email(/* ... */)
         //...
     }
-}
 
 @Composable
 fun ContactsLayout() { 
