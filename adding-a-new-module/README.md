@@ -2,7 +2,7 @@
 This **project** includes all common dependencies and settings for kaluga module.
 
 # Steps for adding a new module
-1. Run gradle task: `./gradlew -q createNewModule -P module_name=<your-module>` from the root directory.
+1. Run gradle task: `./gradlew createNewModule -P module_name=<your-module>` from the root directory.
 1. Include your module to kaluga project edit `kaluga/settings.gradle.kts` by adding: `include(":<your-module>")`.
 1. Add Unit tests
     * [Common Unit Tests](#commonTests)

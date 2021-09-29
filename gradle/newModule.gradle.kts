@@ -68,9 +68,9 @@ abstract class NewModule : DefaultTask() {
         } else {
             throw GradleException("`$module` is not valid module name!")
         }
-        println("New module `$module` has been created:")
+        logger.lifecycle("New module `$module` has been created:")
         outputDir.asFileTree.visit {
-            println(this.file)
+            logger.lifecycle(this.file.canonicalPath)
         }
     }
 
