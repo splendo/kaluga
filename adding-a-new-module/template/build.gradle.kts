@@ -22,9 +22,14 @@ dependencies {
 
 kotlin {
     sourceSets {
-        getByName("commonMain") {
+        commonMain {
             dependencies {
-                implementation(project(":base", ""))
+                implementation(project(":base"))
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(project(":test-utils"))
             }
         }
     }
