@@ -42,6 +42,9 @@ abstract class NewModule : DefaultTask() {
 
     @TaskAction
     fun create() {
+        if (!outputDir.isPresent) {
+            throw GradleException("No module name provided! Use -P module_name=my-awesome-module")
+        }
         val outputDir = outputDir.get()
         val file = outputDir.asFile
         val module = file.name
@@ -84,7 +87,5 @@ tasks.register<NewModule>("createNewModule") {
     group = "utils"
     if (project.hasProperty("module_name")) {
         outputDir.set(file(project.property("module_name").toString()))
-    } else {
-        throw GradleException("No module name provided! Use -P module_name=my-awesome-module")
     }
 }
