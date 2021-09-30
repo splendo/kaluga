@@ -15,6 +15,8 @@
 
  */
 
+package com.splendo.kaluga.bluetooth.beacons
+
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals

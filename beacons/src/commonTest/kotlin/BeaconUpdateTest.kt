@@ -15,6 +15,8 @@
 
  */
 
+package com.splendo.kaluga.bluetooth.beacons
+
 import com.splendo.kaluga.base.utils.Date
 import kotlinx.coroutines.delay
 import kotlin.test.Test

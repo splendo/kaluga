@@ -15,6 +15,8 @@
 
  */
 
+package com.splendo.kaluga.bluetooth.beacons
+
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.Device

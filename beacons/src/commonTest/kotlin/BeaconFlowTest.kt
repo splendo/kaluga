@@ -15,8 +15,8 @@
 
  */
 
-import com.splendo.kaluga.bluetooth.beacons.BeaconInfo
-import com.splendo.kaluga.bluetooth.beacons.Beacons
+package com.splendo.kaluga.bluetooth.beacons
+
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.SimpleFlowTest
 import kotlinx.coroutines.CoroutineScope
