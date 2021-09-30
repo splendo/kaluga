@@ -44,7 +44,7 @@ class BeaconsListViewModel(private val service: Beacons) : BaseViewModel() {
         }
 
         scope.launch {
-            service.beacons()
+            service.beacons
                 .map { beacons ->
                     beacons.map { beacon ->
                         BeaconsListBeaconViewModel(beacon.identifier, service)
@@ -61,7 +61,7 @@ class BeaconsListViewModel(private val service: Beacons) : BaseViewModel() {
         if (_isScanning.value) {
             service.stopMonitoring()
         } else {
-            service.startMonitoring()
+            service.startMonitoring(coroutineScope)
         }
     }
 

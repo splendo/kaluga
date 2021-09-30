@@ -20,24 +20,73 @@ package com.splendo.kaluga.bluetooth
 import co.touchlab.stately.concurrency.AtomicBoolean
 import com.splendo.kaluga.bluetooth.device.DeviceAction
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: ByteArray? = null, stateRepo: DeviceStateFlowRepo) : Attribute<DeviceAction.Read.Characteristic, DeviceAction.Write.Characteristic>(initialValue, stateRepo) {
 
-    val _isNotifying = AtomicBoolean(false)
+    private val isBusy = MutableStateFlow(false)
+    private val _isNotifying = AtomicBoolean(false)
     var isNotifying: Boolean
         get() = _isNotifying.value
         set(value) { _isNotifying.value = value }
 
-    suspend fun enableNotification() {
-        if (!isNotifying)
-            addAction(createNotificationAction(true))
-        isNotifying = true
+    /**
+     * Enables notification or indication for this [Characteristic].
+     *
+     * Creates and puts [DeviceAction.Notification.Enable] into queue to be executed.
+     * Sets [isNotifying] to `true` after action completed successfully.
+     *
+     * @return [DeviceAction] if action was added to the queue, or
+     * `null` if notification is already enabled.
+     * @see [disableNotification]
+     * @see [isNotifying]
+     */
+    suspend fun enableNotification(): DeviceAction? {
+
+        do {
+            isBusy.first { !it }
+            if (isNotifying) return null
+        } while (!isBusy.compareAndSet(expect = false, update = true))
+
+        val action = createNotificationAction(enabled = true)
+        addAction(action)
+        action.completedSuccessfully.invokeOnCompletion {
+            if (it == null && action.completedSuccessfully.getCompleted()) {
+                isNotifying = true
+            }
+            isBusy.compareAndSet(expect = true, update = false)
+        }
+        return action
     }
 
-    suspend fun disableNotification() {
-        if (isNotifying)
-            addAction(createNotificationAction(false))
-        isNotifying = false
+    /**
+     * Disables notification or indication for this [Characteristic]
+     *
+     * Creates and puts [DeviceAction.Notification.Disable] into queue to be executed.
+     * Sets [isNotifying] to `false` after action completed successfully.
+     *
+     * @return [DeviceAction] if action was added to the queue, or
+     * `null` if notification is already disabled.
+     * @see [enableNotification]
+     * @see [isNotifying]
+     */
+    suspend fun disableNotification(): DeviceAction? {
+
+        do {
+            isBusy.first { !it }
+            if (!isNotifying) return null
+        } while (!isBusy.compareAndSet(expect = false, update = true))
+
+        val action = createNotificationAction(enabled = false)
+        addAction(action)
+        action.completedSuccessfully.invokeOnCompletion {
+            if (it == null && action.completedSuccessfully.getCompleted()) {
+                isNotifying = false
+            }
+            isBusy.compareAndSet(expect = true, update = false)
+        }
+        return action
     }
 
     override val uuid = wrapper.uuid
@@ -52,8 +101,9 @@ open class Characteristic(val wrapper: CharacteristicWrapper, initialValue: Byte
         return DeviceAction.Write.Characteristic(newValue, this)
     }
 
-    fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
-        return DeviceAction.Notification(this, enabled)
+    private fun createNotificationAction(enabled: Boolean): DeviceAction.Notification {
+        return if (enabled) DeviceAction.Notification.Enable(this)
+        else DeviceAction.Notification.Disable(this)
     }
 
     override fun getUpdatedValue(): ByteArray? {

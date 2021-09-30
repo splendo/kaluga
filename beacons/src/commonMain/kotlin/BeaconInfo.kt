@@ -32,5 +32,9 @@ data class BeaconInfo(
     var lastSeen: Date
 )
 
+@Deprecated(
+    message = "Replaced with beaconId.asString()",
+    replaceWith = ReplaceWith(expression = "beaconID.asString()")
+)
 fun BeaconInfo.fullID() = this.beaconID.namespace + this.beaconID.instance
 fun BeaconInfo.seenMs() = Date.now().millisecondSinceEpoch - lastSeen.millisecondSinceEpoch

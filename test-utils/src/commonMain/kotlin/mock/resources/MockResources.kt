@@ -26,7 +26,7 @@ import com.splendo.kaluga.resources.Image
 import com.splendo.kaluga.resources.ImageLoader
 import com.splendo.kaluga.resources.StringLoader
 
-class MockStringLoader private constructor(
+class MockStringLoader private constructor (
     private val string: String?,
     private val quantityString: String?,
     private val stringMap: Map<String, String?>,
@@ -34,7 +34,6 @@ class MockStringLoader private constructor(
 ) : StringLoader {
     constructor(string: String? = null, quantityString: String? = null) :
         this(string, quantityString, emptyMap(), emptyMap())
-
     constructor(stringMap: Map<String, String?>, quantityStringMap: Map<String, String?>) :
         this(null, null, stringMap, quantityStringMap)
 
@@ -49,7 +48,7 @@ class MockStringLoader private constructor(
         (quantityStringMap[identifier] ?: quantityString)?.format(quantity) ?: defaultValue
 }
 
-class MockColorLoader private constructor(
+class MockColorLoader private constructor (
     private val color: Color?,
     private val colorMap: Map<String, Color?>
 ) : ColorLoader {
@@ -60,7 +59,7 @@ class MockColorLoader private constructor(
         colorMap[identifier] ?: color ?: defaultValue
 }
 
-class MockImageLoader private constructor(
+class MockImageLoader private constructor (
     private val image: Image?,
     private val imageMap: Map<String, Image?>
 ) : ImageLoader {
@@ -71,7 +70,7 @@ class MockImageLoader private constructor(
         imageMap[identifier] ?: image ?: defaultValue
 }
 
-class MockFontLoader private constructor(
+class MockFontLoader private constructor (
     private val font: Font?,
     private val fontMap: Map<String, Font?>
 ) : FontLoader {

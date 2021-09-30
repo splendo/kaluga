@@ -19,6 +19,7 @@ kotlin {
             dependencies {
                 implementation(project(":base"))
                 api(project(":bluetooth"))
+                api(project(":logging", ""))
             }
         }
         commonTest {

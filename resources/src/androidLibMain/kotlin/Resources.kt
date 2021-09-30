@@ -29,7 +29,6 @@ import kotlinx.coroutines.CompletableDeferred
 
 actual class DefaultStringLoader(private val context: Context?) : StringLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-
     override fun loadString(identifier: String, defaultValue: String): String {
         if (context == null)
             return defaultValue
@@ -40,12 +39,7 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
             defaultValue
         }
     }
-
-    override fun loadQuantityString(
-        identifier: String,
-        quantity: Int,
-        defaultValue: String
-    ): String {
+    override fun loadQuantityString(identifier: String, quantity: Int, defaultValue: String): String {
         if (context == null)
             return defaultValue
         val id = context.resources.getIdentifier(identifier, "plurals", context.packageName)
@@ -59,7 +53,6 @@ actual class DefaultStringLoader(private val context: Context?) : StringLoader {
 
 actual class DefaultColorLoader(private val context: Context?) : ColorLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-
     override fun loadColor(identifier: String, defaultValue: Color?): Color? {
         if (context == null)
             return defaultValue
@@ -74,7 +67,6 @@ actual class DefaultColorLoader(private val context: Context?) : ColorLoader {
 
 actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     actual constructor() : this(if (application != null) applicationContext else null)
-
     override fun loadImage(identifier: String, defaultValue: Image?): Image? {
         if (context == null)
             return defaultValue
@@ -87,10 +79,8 @@ actual class DefaultImageLoader(private val context: Context?) : ImageLoader {
     }
 }
 
-actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) :
-    FontLoader {
+actual class DefaultFontLoader(private val context: Context?, private val handler: Handler?) : FontLoader {
     actual constructor() : this(if (application != null) applicationContext else null, null)
-
     override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? {
         if (context == null)
             return defaultValue
