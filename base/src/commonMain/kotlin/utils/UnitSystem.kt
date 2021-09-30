@@ -22,12 +22,14 @@ enum class UnitSystem {
     METRIC, MIXED, IMPERIAL;
 
     companion object {
+        // FIXME IMPERIAL and US customary seem reversed
         fun withRawValue(value: String): UnitSystem = when (value) {
             "U.S." -> IMPERIAL
             "U.K." -> MIXED
             else -> METRIC
         }
 
+        // FIXME IMPERIAL and US customary seem reversed
         fun withCountryCode(code: String): UnitSystem = when {
             listOf("GB", "MM", "LR").contains(code) -> MIXED
             "US" == code -> IMPERIAL
