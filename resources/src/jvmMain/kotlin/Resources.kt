@@ -24,7 +24,10 @@ actual class DefaultStringLoader(
     private val formatter: (String, Int) -> String?
 ) : StringLoader {
     actual constructor() : this({ it }, { format, value -> format.format(value) })
-    override fun loadString(identifier: String, defaultValue: String): String = transformer(identifier) ?: defaultValue
+
+    override fun loadString(identifier: String, defaultValue: String): String =
+        transformer(identifier) ?: defaultValue
+
     override fun loadQuantityString(
         identifier: String,
         quantity: Int,
@@ -34,15 +37,21 @@ actual class DefaultStringLoader(
 
 actual class DefaultColorLoader(private val transformer: (String) -> Color?) : ColorLoader {
     actual constructor() : this({ null })
-    override fun loadColor(identifier: String, defaultValue: Color?): Color? = transformer(identifier) ?: defaultValue
+
+    override fun loadColor(identifier: String, defaultValue: Color?): Color? =
+        transformer(identifier) ?: defaultValue
 }
 
 actual class DefaultImageLoader(private val transformer: (String) -> Image?) : ImageLoader {
     actual constructor() : this({ null })
-    override fun loadImage(identifier: String, defaultValue: Image?): Image? = transformer(identifier) ?: defaultValue
+
+    override fun loadImage(identifier: String, defaultValue: Image?): Image? =
+        transformer(identifier) ?: defaultValue
 }
 
 actual class DefaultFontLoader(private val transformer: suspend (String) -> Font?) : FontLoader {
     actual constructor() : this({ null })
-    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? = transformer(identifier) ?: defaultValue
+
+    override suspend fun loadFont(identifier: String, defaultValue: Font?): Font? =
+        transformer(identifier) ?: defaultValue
 }

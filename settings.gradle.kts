@@ -14,10 +14,12 @@ pluginManagement {
     resolutionStrategy {
         eachPlugin {
 
-            val kalugaAndroidGradlePluginVersion = settings.extra["kaluga.androidGradlePluginVersion"]
+            val kalugaAndroidGradlePluginVersion =
+                settings.extra["kaluga.androidGradlePluginVersion"]
             val kalugaKotlinVersion = settings.extra["kaluga.kotlinVersion"]
             val kalugaKtLintGradlePluginVersion = settings.extra["kaluga.ktLintGradlePluginVersion"]
-            val kalugaGoogleServicesGradlePluginVersion = settings.extra["kaluga.googleServicesGradlePluginVersion"]
+            val kalugaGoogleServicesGradlePluginVersion =
+                settings.extra["kaluga.googleServicesGradlePluginVersion"]
 
             when (requested.id.id) {
                 "org.jetbrains.kotlin.multiplatform",
