@@ -26,4 +26,3 @@ import org.mockito.Mockito
 actual fun mockColor(): Color = 0
 actual fun mockImage(): Image = Image(ColorDrawable(0))
 actual fun mockFont(): Font = Font.DEFAULT ?: Mockito.mock(Font::class.java)
-

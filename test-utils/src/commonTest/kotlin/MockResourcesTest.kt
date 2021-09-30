@@ -45,10 +45,10 @@ class MockResourcesTest {
     fun testMockStringLoaderGeneric() {
         val loader = MockStringLoader("abc", "abc %s")
         assertEquals("abc", ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ID.quantity( 1, stringLoader = loader))
+        assertEquals("abc 1", ID.quantity(1, stringLoader = loader))
 
         assertEquals("abc", ANOTHER_ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ANOTHER_ID.quantity( 1, stringLoader = loader))
+        assertEquals("abc 1", ANOTHER_ID.quantity(1, stringLoader = loader))
     }
 
     @Test
@@ -58,10 +58,10 @@ class MockResourcesTest {
             mapOf(ID to "abc %s")
         )
         assertEquals("abc", ID.localized(stringLoader = loader))
-        assertEquals("abc 1", ID.quantity( 1, stringLoader = loader))
+        assertEquals("abc 1", ID.quantity(1, stringLoader = loader))
 
         assertEquals(ANOTHER_ID, ANOTHER_ID.localized(stringLoader = loader))
-        assertEquals(ANOTHER_ID, ANOTHER_ID.quantity( 1, stringLoader = loader))
+        assertEquals(ANOTHER_ID, ANOTHER_ID.quantity(1, stringLoader = loader))
     }
 
     @Test

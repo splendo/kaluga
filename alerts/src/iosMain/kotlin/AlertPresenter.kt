@@ -141,6 +141,4 @@ actual class AlertPresenter(
         }
         this.textField = textField
     }
-
 }
-
