@@ -22,6 +22,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -36,7 +37,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import android.util.TypedValue
 
 actual class AlertPresenter(
     private val alert: Alert,
@@ -166,7 +166,8 @@ actual class AlertPresenter(
         val editText = EditText(context)
         editText.layoutParams = layoutParams
         linearLayout.addView(editText)
-        val padding = context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPx(context)
+        val padding =
+            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPx(context)
         linearLayout.setPaddingRelative(padding, 0, padding, 0)
         editText.inputType = InputType.TYPE_CLASS_TEXT
         editText.addTextChangedListener(object : TextWatcher {
