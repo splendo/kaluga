@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -15,16 +15,23 @@
 
  */
 
-package com.splendo.kaluga.example.ios.beacons
+import com.splendo.kaluga.base.AtomicReferenceDelegate
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
-import com.splendo.kaluga.bluetooth.BluetoothBuilder
-import com.splendo.kaluga.bluetooth.beacons.Beacons
-import kotlinx.coroutines.MainScope
+class AtomicReferenceTest {
 
-class KNBeaconsFramework {
-    private val mainScope = MainScope()
-    val service = Beacons(
-        BluetoothBuilder().create(coroutineScope = mainScope),
-        timeoutMs = 60_000
-    )
+    @Test
+    fun testAtomicReferenceDelegate() {
+
+        data class Class(val property: Int)
+
+        var reference: Class? by AtomicReferenceDelegate(Class(0))
+        assertEquals(0, reference?.property)
+        reference = Class(1)
+        assertEquals(1, reference?.property)
+        reference = null
+        assertNull(reference)
+    }
 }
