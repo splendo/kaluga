@@ -100,5 +100,5 @@
     <string name="monitor_services_status_enabled">✅ Enabled</string>
     <string name="monitor_services_status_disabled">⚠️ Disabled</string>
     <string name="monitor_services_status_not_initialized">❌ Not initialized</string>
-
+    <string name="monitor_services_status_not_supported">❌ Not supported</string>
 </resources>
