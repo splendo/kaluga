@@ -20,7 +20,6 @@ package com.splendo.kaluga.example.shared.viewmodel.monitor
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
-import com.splendo.kaluga.base.monitor.ServiceMonitorStateRepo
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
@@ -28,12 +27,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor) : BaseViewModel() {
+class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor.Builder) : BaseViewModel() {
 
-    private val bltMonitorRepo = ServiceMonitorStateRepo(
-        coroutineContext = coroutineScope.coroutineContext,
-        monitor = bltMonitor
-    )
+    private val bltMonitorRepo = bltMonitor.create(coroutineScope.coroutineContext)
 
     val bluetoothServiceTitleText = "monitor_blt_services_title".localized()
 
@@ -50,6 +46,7 @@ class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor) : BaseViewModel() {
                     is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
                     is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
                     is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
+                    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
                 }
             }
         }   
