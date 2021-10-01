@@ -118,7 +118,7 @@ val utilitiesModule = module {
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
     single { Beacons(get<Bluetooth>()) }
-    single { BluetoothMonitor.Builder(ApplicationHolder.applicationContext, BluetoothAdapter.getDefaultAdapter()).create() }
+    single { BluetoothMonitor.Builder(ApplicationHolder.applicationContext, BluetoothAdapter.getDefaultAdapter()) }
 }
 
 val viewModelModule = module {
