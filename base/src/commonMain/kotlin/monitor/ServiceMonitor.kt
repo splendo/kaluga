@@ -37,7 +37,9 @@ abstract class DefaultServiceMonitor(
         }
         debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
         when (state) {
-            is ServiceMonitorState -> state.remain()
+            is ServiceMonitorState.Initialized,
+            is ServiceMonitorState.NotInitialized,
+            is ServiceMonitorState.NotSupported -> state.remain()
             else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null")
         }
     },
@@ -47,8 +49,8 @@ abstract class DefaultServiceMonitor(
         }
         when (state) {
             is ServiceMonitorState.Initialized -> state.deinitialize()
-            is ServiceMonitorState.NotInitialized -> state.remain()
-            ServiceMonitorState.NotSupported -> state.remain()
+            is ServiceMonitorState.NotInitialized,
+            is ServiceMonitorState.NotSupported -> state.remain()
         }
     },
     firstState = { ServiceMonitorState.NotInitialized() }
