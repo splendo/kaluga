@@ -22,20 +22,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import android.os.Build
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.logging.debug
 import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
 
     actual class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
-        private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
+        private val locationManager: LocationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     ) {
-        actual fun create(coroutineContext: CoroutineContext): LocationMonitor = DefaultLocationMonitor(
+        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
             locationManager = locationManager,
             coroutineContext = coroutineContext
@@ -45,15 +47,20 @@ actual interface LocationMonitor : ServiceMonitor {
 
 class DefaultLocationMonitor(
     private val applicationContext: Context,
-    private val locationManager: LocationManager?,
+    private val locationManager: LocationManager,
     coroutineContext: CoroutineContext
 ) : DefaultServiceMonitor(coroutineContext), LocationMonitor {
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
-               val isLocationEnabled = intent.getBooleanExtra("EXTRA_LOCATION_ENABLED", false)
-               launchTakeAndChangeState {
+                val isLocationEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    intent.getBooleanExtra(LocationManager.EXTRA_LOCATION_ENABLED, false)
+                } else {
+                    locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                }
+                debug(TAG) { "location state is $isLocationEnabled" }
+                launchTakeAndChangeState {
                    {
                        if (isLocationEnabled) {
                            ServiceMonitorState.Initialized.Enabled
@@ -75,7 +82,13 @@ class DefaultLocationMonitor(
 
         launchTakeAndChangeState {
             {
-                if (LocationManagerCompat.isLocationEnabled(locationManager!!)) {
+                val isLocationEnabled = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    locationManager.isLocationEnabled
+                } else {
+                    LocationManagerCompat.isLocationEnabled(locationManager)
+                }
+                debug(TAG) { "(startMonitoring) Location isEnabled $isLocationEnabled" }
+                if (isLocationEnabled) {
                     ServiceMonitorState.Initialized.Enabled
                 } else {
                     ServiceMonitorState.Initialized.Disabled

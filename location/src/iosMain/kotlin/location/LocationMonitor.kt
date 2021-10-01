@@ -19,6 +19,7 @@ package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.ServiceMonitorState
 import platform.CoreLocation.CLLocationManager
 import platform.CoreLocation.CLLocationManagerDelegateProtocol
 import platform.darwin.NSObject
@@ -27,7 +28,7 @@ actual interface LocationMonitor : ServiceMonitor {
     actual class Builder(
         val locationManager: CLLocationManager = CLLocationManager()
     ) {
-        actual fun create(): LocationMonitor = DefaultLocationMonitor(
+        actual fun create(): DefaultServiceMonitor = DefaultLocationMonitor(
             locationManager = locationManager
         )
     }
@@ -43,12 +44,18 @@ class DefaultLocationMonitor(private val locationManager: CLLocationManager) : D
         }
     }
 
-    override val isServiceEnabled: Boolean
-        get() = locationManager.locationServicesEnabled()
-
     override fun startMonitoring() {
         super.startMonitoring()
         locationManager.delegate = LocationManagerDelegate(::updateState)
+        launchTakeAndChangeState {
+            {
+                if (locationManager.locationServicesEnabled()) {
+                    ServiceMonitorState.Initialized.Enabled
+                } else {
+                    ServiceMonitorState.Initialized.Disabled
+                }
+            }
+        }
     }
 
     override fun stopMonitoring() {
