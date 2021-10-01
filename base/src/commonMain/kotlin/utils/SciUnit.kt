@@ -35,6 +35,7 @@ sealed class SciUnit {
         object Grams : Weight()
         object Kilograms : Weight()
         object Tones : Weight()
+        object Grains : Weight()
         object Ounces : Weight()
         object Pounds : Weight()
         object Stones : Weight()
@@ -74,11 +75,12 @@ sealed class SciUnit {
         private const val MILLIGRAMS_IN_KILOGRAM = 1000000
         private const val GRAMS_IN_KILOGRAM = 1000
         private const val TONES_IN_KILOGRAM = 0.001
-        private const val OUNCES_IN_KILOGRAM = 35.274
-        private const val POUNDS_IN_KILOGRAM = 2.20462
-        private const val STONES_IN_KILOGRAM = 0.157473
-        private const val UK_TONES_IN_KILOGRAM = 0.000984207
-        private const val US_TONES_IN_KILOGRAM = 0.00110231
+        private const val GRAINS_IN_KILOGRAM = 15432.358352941432
+        private const val OUNCES_IN_KILOGRAM = 35.27396194958041
+        private const val POUNDS_IN_KILOGRAM = 2.204622621848776
+        private const val STONES_IN_KILOGRAM = 0.1574730444177697
+        private const val UK_TONES_IN_KILOGRAM = 0.000984206527611
+        private const val US_TONES_IN_KILOGRAM = 0.001102311310924
 
         private const val MILLILITERS_IN_LITER = 1000
         private const val UK_FLUID_OUNCES_IN_LITER = 35.1951
@@ -113,6 +115,7 @@ sealed class SciUnit {
                 Weight.Grams -> value / GRAMS_IN_KILOGRAM
                 Weight.Kilograms -> value
                 Weight.Tones -> value / TONES_IN_KILOGRAM
+                Weight.Grains -> value / GRAINS_IN_KILOGRAM
                 Weight.Ounces -> value / OUNCES_IN_KILOGRAM
                 Weight.Pounds -> value / POUNDS_IN_KILOGRAM
                 Weight.Stones -> value / STONES_IN_KILOGRAM
@@ -154,6 +157,7 @@ sealed class SciUnit {
                 Weight.Grams -> value * GRAMS_IN_KILOGRAM
                 Weight.Kilograms -> value
                 Weight.Tones -> value * TONES_IN_KILOGRAM
+                Weight.Grains -> value * GRAINS_IN_KILOGRAM
                 Weight.Ounces -> value * OUNCES_IN_KILOGRAM
                 Weight.Pounds -> value * POUNDS_IN_KILOGRAM
                 Weight.Stones -> value * STONES_IN_KILOGRAM
@@ -161,7 +165,7 @@ sealed class SciUnit {
                 Weight.USTones -> value * US_TONES_IN_KILOGRAM
                 Temperature.Celsius -> value - KELVIN_FREEZING
                 Temperature.Kelvin -> value
-                Temperature.Fahrenheit -> (value * 9 / 5) - KELVIN_FREEZING
+                Temperature.Fahrenheit -> (value - KELVIN_FREEZING) * 9 / 5 + FAHRENHEIT_FREEZING
                 Volume.Milliliters -> value * MILLILITERS_IN_LITER
                 Volume.Liters -> value
                 Volume.UKFluidOunces -> value * UK_FLUID_OUNCES_IN_LITER
