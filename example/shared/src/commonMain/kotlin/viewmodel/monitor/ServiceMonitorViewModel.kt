@@ -21,20 +21,31 @@ import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor.Builder) : BaseViewModel() {
+class ServiceMonitorViewModel(
+    bltMonitorBuilder: BluetoothMonitor.Builder,
+    locationMonitorBuilder: LocationMonitor.Builder
+) : BaseViewModel() {
 
-    private val bltMonitorRepo = bltMonitor.create(coroutineScope.coroutineContext)
+    private val bltMonitorRepo = bltMonitorBuilder.create(coroutineScope.coroutineContext)
+    private val locationMonitorRepo = locationMonitorBuilder.create(coroutineScope.coroutineContext)
 
     val bluetoothServiceTitleText = "monitor_blt_services_title".localized()
+    val locationServiceTitleText = "monitor_location_services_title".localized()
+
 
     private val _bluetoothServiceStatusText = MutableStateFlow("monitor_services_status_not_initialized".localized())
     val bluetoothServiceStatusText = _bluetoothServiceStatusText
+        .toInitializedObservable(coroutineScope)
+
+    private val _locationServiceStatusText = MutableStateFlow("monitor_services_status_not_initialized".localized())
+    val locationServiceStatusText = _locationServiceStatusText
         .toInitializedObservable(coroutineScope)
 
     override fun onResume(scope: CoroutineScope) {
@@ -49,6 +60,17 @@ class ServiceMonitorViewModel(bltMonitor: BluetoothMonitor.Builder) : BaseViewMo
                     ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
                 }
             }
-        }   
+        }
+
+        coroutineScope.launch {
+            locationMonitorRepo.collect {
+                _locationServiceStatusText.value = when (it) {
+                    is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
+                    is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
+                    is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
+                    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
+                }
+            }
+        }
     }
 }

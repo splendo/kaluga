@@ -81,6 +81,7 @@ import com.splendo.kaluga.hud.HUD
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -119,6 +120,8 @@ val utilitiesModule = module {
     single { BluetoothBuilder().create() }
     single { Beacons(get<Bluetooth>()) }
     single { BluetoothMonitor.Builder(ApplicationHolder.applicationContext, BluetoothAdapter.getDefaultAdapter()) }
+    single { LocationMonitor.Builder(ApplicationHolder.applicationContext) }
+
 }
 
 val viewModelModule = module {
@@ -277,7 +280,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        ServiceMonitorViewModel(get())
+        ServiceMonitorViewModel(get(), get())
     }
 
     viewModel { (identifier: com.splendo.kaluga.bluetooth.device.Identifier) ->

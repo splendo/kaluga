@@ -16,7 +16,8 @@
 
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
@@ -29,25 +30,50 @@
         android:orientation="horizontal"
         android:layout_margin="2dp">
 
-        <TextView
-            android:id="@+id/bluetoothServiceTitleStatusText"
-            android:layout_width="wrap_content"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/bltMonitorLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/bluetoothServiceStatusText"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="@{viewModel.bluetoothServiceTitleText}"/>
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/bluetoothServiceStatusText"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/bluetoothServiceTitleStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{viewModel.bluetoothServiceTitleText}" />
+
+            <TextView
+                android:id="@+id/bluetoothServiceStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{viewModel.bluetoothServiceStatusText.stateFlow}"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/locationMonitorLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@id/bluetoothServiceTitleStatusText"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:text="@{viewModel.bluetoothServiceStatusText.stateFlow}"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bltMonitorLayout">
+            <TextView
+                android:id="@+id/locationServiceTitleStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{viewModel.locationServiceTitleText}" />
+
+            <TextView
+                android:id="@+id/locationServiceStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{viewModel.locationServiceStatusText.stateFlow}" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

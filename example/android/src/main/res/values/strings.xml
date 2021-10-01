@@ -97,6 +97,8 @@
     <string name="bluetooth_permissions_write_encrypted">Write Encrypted</string>
 
     <string name="monitor_blt_services_title">Bluetooth Monitor: </string>
+    <string name="monitor_location_services_title">Location Monitor: </string>
+
     <string name="monitor_services_status_enabled">✅ Enabled</string>
     <string name="monitor_services_status_disabled">⚠️ Disabled</string>
     <string name="monitor_services_status_not_initialized">❌ Not initialized</string>
