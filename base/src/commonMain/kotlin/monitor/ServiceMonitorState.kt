@@ -17,94 +17,34 @@
 
 package com.splendo.kaluga.base.monitor
 
-import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.flow.SpecialFlowValue
-import com.splendo.kaluga.state.ColdStateFlowRepo
 import com.splendo.kaluga.state.State
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 sealed class ServiceMonitorState : State() {
 
-    sealed class Initialized(
-        private val monitor: ServiceMonitor
-    ) : ServiceMonitorState() {
+    sealed class Initialized : ServiceMonitorState() {
 
         fun deinitialize(): suspend () -> NotInitialized {
-            monitor.stopMonitoring()
-            return { NotInitialized(monitor) }
+            return { NotInitialized() }
         }
 
-        class Enabled(monitor: ServiceMonitor) : Initialized(monitor) {
-            val disabled: suspend () -> Disabled = { Disabled(monitor) }
-        }
-        class Disabled(monitor: ServiceMonitor) : Initialized(monitor) {
-            val enabled: suspend () -> Enabled = { Enabled(monitor) }
-        }
+        object Enabled : Initialized()
+        object Disabled : Initialized()
     }
 
-    class NotInitialized(
-        private val monitor: ServiceMonitor
-    ) : ServiceMonitorState(), SpecialFlowValue.NotImportant {
+    class NotInitialized : ServiceMonitorState(), SpecialFlowValue.NotImportant {
 
-        fun initialize(): suspend () -> Initialized {
-            monitor.startMonitoring()
+        fun initialize(state: ServiceMonitorState): suspend () -> ServiceMonitorState {
             return {
-                if (monitor.isServiceEnabled) {
-                    Initialized.Enabled(monitor)
-                } else {
-                    Initialized.Disabled(monitor)
+                when (state) {
+                    is Initialized.Enabled -> Initialized.Enabled
+                    is Initialized.Disabled -> Initialized.Disabled
+                    is NotInitialized -> NotInitialized()
+                    NotSupported -> NotSupported
                 }
             }
         }
     }
-}
 
-class ServiceMonitorStateRepo(
-    monitor: ServiceMonitor,
-    override val coroutineContext: CoroutineContext
-) : ColdStateFlowRepo<ServiceMonitorState>(
-    coroutineContext = coroutineContext,
-    initChangeState = { state ->
-        when (state) {
-            is ServiceMonitorState.Initialized -> {
-                state.remain()
-            }
-            is ServiceMonitorState.NotInitialized -> {
-                state.initialize()
-            }
-        }
-    },
-    deinitChangeState = { state ->
-        when (state) {
-            is ServiceMonitorState.Initialized -> state.deinitialize()
-            is ServiceMonitorState.NotInitialized -> state.remain()
-        }
-    },
-    firstState = {
-        ServiceMonitorState.NotInitialized(
-            monitor = monitor
-        )
-    }
-) {
-    init {
-        launch {
-            monitor.isEnabled.collect { isEnabled ->
-                if (isEnabled) {
-                    takeAndChangeState(
-                        remainIfStateNot = ServiceMonitorState.Initialized.Disabled::class
-                    ) { currentState ->
-                        currentState.enabled
-                    }
-                } else {
-                    takeAndChangeState(
-                        remainIfStateNot = ServiceMonitorState.Initialized.Enabled::class
-                    ) { currentState ->
-                        currentState.disabled
-                    }
-                }
-            }
-        }
-    }
+    object NotSupported : ServiceMonitorState()
 }

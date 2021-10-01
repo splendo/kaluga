@@ -17,36 +17,54 @@
 
 package com.splendo.kaluga.base
 
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.logging.debug
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.splendo.kaluga.state.ColdStateFlowRepo
+import kotlin.coroutines.CoroutineContext
 
 interface ServiceMonitor {
-    val isServiceEnabled: Boolean
-    val isEnabled: Flow<Boolean>
     fun startMonitoring()
     fun stopMonitoring()
 }
 
-abstract class DefaultServiceMonitor : ServiceMonitor {
+abstract class DefaultServiceMonitor(
+    coroutineContext: CoroutineContext
+) : ColdStateFlowRepo<ServiceMonitorState>(
+    coroutineContext = coroutineContext,
+    initChangeStateWithRepo = { state, repo ->
+        (repo as ServiceMonitor).run {
+            startMonitoring()
+        }
+        debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
+        when (state) {
+            is ServiceMonitorState.Initialized -> state.remain()
+            is ServiceMonitorState.NotInitialized -> { state.initialize(state) }
+            ServiceMonitorState.NotSupported -> state.remain()
+            else -> throw IllegalStateException("ServiceMonitorStateRepo's state cannot be null")
+
+        }
+    },
+    deinitChangeStateWithRepo = { state, repo ->
+        (repo as ServiceMonitor).run {
+            stopMonitoring()
+        }
+        when (state) {
+            is ServiceMonitorState.Initialized -> state.deinitialize()
+            is ServiceMonitorState.NotInitialized -> state.remain()
+            ServiceMonitorState.NotSupported -> state.remain()
+        }
+    },
+    firstState = { ServiceMonitorState.NotInitialized() }
+) {
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
-    protected val _isEnabled = MutableStateFlow(isServiceEnabled)
-    override val isEnabled = _isEnabled.asStateFlow()
+    open fun startMonitoring() {
+        debug(TAG) { "Start monitoring service state (${stateFlow.value})" }
 
-    override fun startMonitoring() {
-        debug(TAG) { "Start monitoring service state ($isServiceEnabled)" }
-        updateState()
-    }
-    override fun stopMonitoring() {
-        debug(TAG) { "Stop monitoring service state ($isServiceEnabled)" }
-        updateState()
     }
 
-    protected fun updateState() {
-        debug(TAG) { "updateState isLocationEnabled = $isServiceEnabled" }
-        _isEnabled.value = isServiceEnabled
+    open fun stopMonitoring() {
+        debug(TAG) { "Stop monitoring service state (${stateFlow.value})" }
     }
 }
