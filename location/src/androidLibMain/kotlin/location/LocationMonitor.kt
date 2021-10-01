@@ -26,6 +26,8 @@ import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
 
@@ -33,32 +35,36 @@ actual interface LocationMonitor : ServiceMonitor {
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val locationManager: LocationManager? = applicationContext.getSystemService(Context.LOCATION_SERVICE) as? LocationManager
     ) {
-        actual fun create(): LocationMonitor = DefaultLocationMonitor(
+        actual fun create(coroutineContext: CoroutineContext): LocationMonitor = DefaultLocationMonitor(
             applicationContext = applicationContext,
-            locationManager = locationManager
+            locationManager = locationManager,
+            coroutineContext = coroutineContext
         )
     }
 }
 
 class DefaultLocationMonitor(
     private val applicationContext: Context,
-    private val locationManager: LocationManager?
-) : DefaultServiceMonitor(), LocationMonitor {
+    private val locationManager: LocationManager?,
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext), LocationMonitor {
 
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
-                updateState()
+               val isLocationEnabled = intent.getBooleanExtra("EXTRA_LOCATION_ENABLED", false)
+               launchTakeAndChangeState {
+                   {
+                       if (isLocationEnabled) {
+                           ServiceMonitorState.Initialized.Enabled
+                       } else {
+                           ServiceMonitorState.Initialized.Disabled
+                       }
+                   }
+               }
             }
         }
     }
-
-    override val isServiceEnabled: Boolean
-        get() = if (locationManager == null) {
-            false
-        } else {
-            LocationManagerCompat.isLocationEnabled(locationManager)
-        }
 
     override fun startMonitoring() {
         super.startMonitoring()
@@ -66,6 +72,16 @@ class DefaultLocationMonitor(
             locationAvailabilityBroadcastReceiver,
             IntentFilter(LocationManager.MODE_CHANGED_ACTION)
         )
+
+        launchTakeAndChangeState {
+            {
+                if (LocationManagerCompat.isLocationEnabled(locationManager!!)) {
+                    ServiceMonitorState.Initialized.Enabled
+                } else {
+                    ServiceMonitorState.Initialized.Disabled
+                }
+            }
+        }
     }
 
     override fun stopMonitoring() {

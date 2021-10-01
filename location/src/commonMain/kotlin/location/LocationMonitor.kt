@@ -18,9 +18,10 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.ServiceMonitor
+import kotlin.coroutines.CoroutineContext
 
 expect interface LocationMonitor : ServiceMonitor {
     class Builder {
-        fun create(): LocationMonitor
+        fun create(coroutineContext: CoroutineContext): LocationMonitor
     }
 }

@@ -18,7 +18,9 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.location.LocationPermission
@@ -41,7 +43,7 @@ abstract class BaseLocationManager(
     }
 
     private val locationPermissionRepo get() = permissions[locationPermission]
-    abstract val locationMonitor: LocationMonitor
+    abstract val locationMonitor: DefaultServiceMonitor
     private var monitoringPermissionsJob: AtomicReference<Job?> = AtomicReference(null)
     private val _monitoringLocationEnabledJob: AtomicReference<Job?> = AtomicReference(null)
     private var monitoringLocationEnabledJob: Job?
@@ -87,7 +89,7 @@ abstract class BaseLocationManager(
         if (monitoringLocationEnabledJob != null)
             return
         monitoringLocationEnabledJob = launch {
-            locationMonitor.isEnabled.collect {
+            locationMonitor.collect {
                 handleLocationEnabledChanged()
             }
         }
@@ -97,7 +99,7 @@ abstract class BaseLocationManager(
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
     }
-    internal fun isLocationEnabled(): Boolean = locationMonitor.isServiceEnabled
+    internal fun isLocationEnabled(): Boolean = locationMonitor.stateFlow.value is ServiceMonitorState.Initialized.Enabled
     internal abstract suspend fun requestLocationEnable()
 
     private suspend fun handleLocationEnabledChanged() {

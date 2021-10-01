@@ -20,6 +20,7 @@ package com.splendo.kaluga.location
 import android.content.Context
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.permissions.PermissionContext
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
@@ -59,7 +60,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(context, locationManager).create()
+    override val locationMonitor: DefaultServiceMonitor = LocationMonitor.Builder(context, locationManager).create(coroutineContext) as DefaultServiceMonitor
     private val monitoringLocationJob: AtomicReference<Job?> = AtomicReference(null)
 
     public override suspend fun requestLocationEnable() {
