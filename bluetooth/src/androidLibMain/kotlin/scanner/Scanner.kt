@@ -22,7 +22,9 @@ import android.content.Context
 import android.os.ParcelUuid
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.ApplicationHolder
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
@@ -139,8 +141,8 @@ actual class Scanner internal constructor(
 
     override val isSupported: Boolean = bluetoothAdapter != null
     private val deviceConnectionManagerBuilder = DeviceConnectionManager.Builder(applicationContext)
-    override val bluetoothEnabledMonitor: BluetoothMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create() }
-    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create()
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor? = bluetoothAdapter?.let { BluetoothMonitor.Builder(applicationContext, it).create(coroutineContext) }
+    private val locationEnabledMonitor = LocationMonitor.Builder(applicationContext).create(coroutineContext) as DefaultServiceMonitor
 
     private val monitoringLocationPermissionsJob = AtomicReference<Job?>(null)
     private val monitoringLocationEnabledJob = AtomicReference<Job?>(null)
@@ -192,7 +194,7 @@ actual class Scanner internal constructor(
         if (monitoringLocationEnabledJob.compareAndSet(null, job)) {
             locationEnabledMonitor.startMonitoring()
             launch(job) {
-                locationEnabledMonitor.isEnabled.collect {
+                locationEnabledMonitor.collect {
                     checkSensorsEnabledChanged()
                 }
             }
@@ -212,16 +214,16 @@ actual class Scanner internal constructor(
         return super.isPermitted() && locationPermissionRepo.filterOnlyImportant().first() is PermissionState.Allowed
     }
 
-    override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.isServiceEnabled
+    override suspend fun areSensorsEnabled(): Boolean = super.areSensorsEnabled() && locationEnabledMonitor.stateFlow.value is ServiceMonitorState.Initialized.Enabled
 
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         if (!isSupported) return emptyList()
         return listOfNotNull(
             if (bluetoothAdapter?.isEnabled != true) suspend {
                 bluetoothAdapter?.enable()
-                bluetoothEnabledMonitor!!.isEnabled.first { it }
+                bluetoothEnabledMonitor!!.stateFlow.value is ServiceMonitorState.Initialized.Enabled
             } else null,
-            if (!locationEnabledMonitor.isServiceEnabled) {
+            if (locationEnabledMonitor.stateFlow.value !is ServiceMonitorState.Initialized.Enabled) {
                 EnableLocationActivity.showEnableLocationActivity(applicationContext, hashCode().toString())::await
             } else null
         )
