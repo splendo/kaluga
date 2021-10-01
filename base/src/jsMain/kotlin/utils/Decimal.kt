@@ -21,25 +21,25 @@ import java.math.BigDecimal
 
 actual typealias Decimal = Double
 
-actual fun Decimal.plus(value: Decimal): Decimal = this.plus(value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = this.plus(value)
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.plus(value)
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.plus(value)
 
-actual fun Decimal.minus(value: Decimal): Decimal = this.minus(value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = this.minus(value)
 actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.minus(value)
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.minus(value)
 
-actual fun Decimal.divide(value: Decimal): Decimal = this.divide(value)
-actual fun Decimal.divide(value: Decimal, scale: Int): Decimal = this.divide(value)
-actual fun Decimal.divide(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.divide(value)
+actual operator fun Decimal.div(value: Decimal): Decimal = this.div(value)
+actual fun Decimal.div(value: Decimal, scale: Int): Decimal = this.div(value)
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+    this.div(value)
 
-actual fun Decimal.multiply(value: Decimal): Decimal = this.multiply(value)
-actual fun Decimal.multiply(value: Decimal, scale: Int): Decimal = this.multiply(value)
-actual fun Decimal.multiply(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.multiply(value)
+actual operator fun Decimal.times(value: Decimal): Decimal = this.times(value)
+actual fun Decimal.times(value: Decimal, scale: Int): Decimal = this.times(value)
+actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+    this.times(value)
 
 actual object Decimals {
     actual val ROUND_DOWN: Int
@@ -48,4 +48,12 @@ actual object Decimals {
         get() = BigDecimal.ROUND_HALF_EVEN
     actual val ROUND_UP: Int
         get() = BigDecimal.ROUND_UP
+
+    actual fun decimalFrom(value: Double): Decimal {
+        TODO("Not yet implemented")
+    }
+
+    actual fun Double.toDecimal(): Decimal {
+        TODO("Not yet implemented")
+    }
 }

@@ -19,23 +19,28 @@ package com.splendo.kaluga.base.utils
 
 expect class Decimal
 
-expect fun Decimal.plus(value: Decimal): Decimal
+expect operator fun Decimal.plus(value: Decimal): Decimal
 expect fun Decimal.plus(value: Decimal, scale: Int): Decimal
 expect fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal
 
-expect fun Decimal.minus(value: Decimal): Decimal
+expect operator fun Decimal.minus(value: Decimal): Decimal
 expect fun Decimal.minus(value: Decimal, scale: Int): Decimal
 expect fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal
 
-expect fun Decimal.divide(value: Decimal): Decimal
-expect fun Decimal.divide(value: Decimal, scale: Int): Decimal
-expect fun Decimal.divide(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect operator fun Decimal.div(value: Decimal): Decimal
+expect fun Decimal.div(value: Decimal, scale: Int): Decimal
+expect fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal
 
-expect fun Decimal.multiply(value: Decimal): Decimal
-expect fun Decimal.multiply(value: Decimal, scale: Int): Decimal
-expect fun Decimal.multiply(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect operator fun Decimal.times(value: Decimal): Decimal
+expect fun Decimal.times(value: Decimal, scale: Int): Decimal
+expect fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal
 
 expect object Decimals {
+
+    fun decimalFrom(value: Double): Decimal
+
+    fun Double.toDecimal(): Decimal
+
     // Rounding mode to round towards zero.
     val ROUND_DOWN: Int
 

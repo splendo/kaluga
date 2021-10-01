@@ -21,27 +21,34 @@ import java.math.BigDecimal
 
 actual typealias Decimal = BigDecimal
 
-actual fun Decimal.plus(value: Decimal): Decimal = this.add(value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = this.add(value)
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.add(value).setScale(scale)
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.add(value).setScale(scale, roundingMode)
 
-actual fun Decimal.minus(value: Decimal): Decimal = this.subtract(value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = this.subtract(value)
 actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.subtract(value).setScale(scale)
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.subtract(value).setScale(scale, roundingMode)
 
-actual fun Decimal.divide(value: Decimal): Decimal = this.divide(value)
-actual fun Decimal.divide(value: Decimal, scale: Int): Decimal = this.divide(value).setScale(scale)
-actual fun Decimal.divide(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual operator fun Decimal.div(value: Decimal): Decimal = this.divide(value)
+actual fun Decimal.div(value: Decimal, scale: Int): Decimal = this.divide(value).setScale(scale)
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.divide(value).setScale(scale, roundingMode)
 
-actual fun Decimal.multiply(value: Decimal): Decimal = this.multiply(value)
-actual fun Decimal.multiply(value: Decimal, scale: Int): Decimal = this.multiply(value).setScale(scale)
-actual fun Decimal.multiply(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual operator fun Decimal.times(value: Decimal): Decimal = this.multiply(value)
+actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
+    this.multiply(value).setScale(scale)
+
+actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     this.multiply(value).setScale(scale, roundingMode)
 
 actual object Decimals {
+
+    actual fun decimalFrom(value: Double): Decimal = BigDecimal(value)
+
+    actual fun Double.toDecimal() = BigDecimal(this)
+
     actual val ROUND_DOWN: Int
         get() = BigDecimal.ROUND_DOWN
     actual val ROUND_HALF_EVEN: Int

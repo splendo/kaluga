@@ -24,13 +24,14 @@ import platform.Foundation.NSRoundingMode
 @Suppress("CONFLICTING_OVERLOADS")
 actual typealias Decimal = NSDecimalNumber
 
-actual fun Decimal.plus(value: Decimal): Decimal = decimalNumberByAdding(value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = decimalNumberByAdding(value)
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal =
     decimalNumberByAdding(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
         }
     })
+
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByAdding(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
@@ -42,13 +43,14 @@ actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal 
         }
     })
 
-actual fun Decimal.minus(value: Decimal): Decimal = decimalNumberBySubtracting(value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = decimalNumberBySubtracting(value)
 actual fun Decimal.minus(value: Decimal, scale: Int): Decimal =
     decimalNumberBySubtracting(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
         }
     })
+
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberBySubtracting(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
@@ -60,14 +62,15 @@ actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal
         }
     })
 
-actual fun Decimal.divide(value: Decimal): Decimal = decimalNumberByDividingBy(value)
-actual fun Decimal.divide(value: Decimal, scale: Int): Decimal =
+actual operator fun Decimal.div(value: Decimal): Decimal = decimalNumberByDividingBy(value)
+actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
     decimalNumberByDividingBy(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
         }
     })
-actual fun Decimal.divide(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByDividingBy(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
@@ -78,14 +81,15 @@ actual fun Decimal.divide(value: Decimal, scale: Int, roundingMode: Int): Decima
         }
     })
 
-actual fun Decimal.multiply(value: Decimal): Decimal = decimalNumberByMultiplyingBy(value)
-actual fun Decimal.multiply(value: Decimal, scale: Int): Decimal =
+actual operator fun Decimal.times(value: Decimal): Decimal = decimalNumberByMultiplyingBy(value)
+actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
     decimalNumberByMultiplyingBy(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
         }
     })
-actual fun Decimal.multiply(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+
+actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByMultiplyingBy(value, object : NSDecimalNumberHandler() {
         override fun scale(): Short {
             return scale.toShort()
@@ -97,6 +101,11 @@ actual fun Decimal.multiply(value: Decimal, scale: Int, roundingMode: Int): Deci
     })
 
 actual object Decimals {
+
+    actual fun decimalFrom(value: Double): Decimal = NSDecimalNumber(value)
+
+    actual fun Double.toDecimal() = NSDecimalNumber(this)
+
     actual val ROUND_DOWN: Int
         get() = NSRoundingMode.NSRoundDown.ordinal
     actual val ROUND_HALF_EVEN: Int
