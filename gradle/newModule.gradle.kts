@@ -60,7 +60,7 @@ abstract class NewModule : DefaultTask() {
                     val from = outputDir.file("../$TEMPLATE_PATH/src/${pair.first}/$it").asFile
                     val to = dir.file(it).asFile
                     from.copyRecursively(to)
-                    replaceVariable(to, module)
+                    setModuleName(to, module)
                 }
             }
             val buildGradleFile = outputDir.file("../$TEMPLATE_PATH/$BUILD_GRADLE_KTS").asFile
@@ -74,11 +74,13 @@ abstract class NewModule : DefaultTask() {
         }
     }
 
-    private fun replaceVariable(template: File, value: String) {
+    private fun setModuleName(template: File, module: String) {
+        val safeModule = module.replace("-", ".")
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR).toString()
         val content = template
             .readText()
-            .replace("%MODULE%", value)
-            .replace("%YEAR%", "${Calendar.getInstance().get(Calendar.YEAR)}")
+            .replace("%MODULE%", safeModule)
+            .replace("%YEAR%", currentYear)
         template.writeText(content)
     }
 }
