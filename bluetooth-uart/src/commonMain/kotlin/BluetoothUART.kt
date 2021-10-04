@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.transformLatest
 import kotlinx.coroutines.launch
+import kotlin.jvm.JvmName
 
 interface BluetoothUARTInterface {
     /** Represents data (as [Flow] of [ByteArray]?) received from TX Characteristic */
@@ -54,8 +55,10 @@ fun Device.hasUART() = mapLatest {
     it.advertisementData.serviceUUIDs.contains(uuidFrom(BluetoothUART.UART_SERVICE_UUID))
 }
 /** Returns [Flow] of UART Service */
+@JvmName("jvmDeviceUartService")
 fun Flow<Device?>.uartService() = services()[uuidFrom(BluetoothUART.UART_SERVICE_UUID)]
 /** Returns [Flow] of UART Service */
+@JvmName("jvmDeviceStateUartService")
 fun Flow<DeviceState>.uartService() = transformLatest {
     emit(
         when (it) {
@@ -67,15 +70,19 @@ fun Flow<DeviceState>.uartService() = transformLatest {
     )
 }
 /** Returns [Flow] of UART RX Characteristic */
+@JvmName("jvmDeviceRxCharacteristic")
 fun Flow<Device?>.rxCharacteristic() = uartService()
     .characteristics()[uuidFrom(BluetoothUART.UART_RX_UUID)]
 /** Returns [Flow] of UART RX Characteristic */
+@JvmName("jvmDeviceStateRxCharacteristic")
 fun Flow<DeviceState>.rxCharacteristic() = uartService()
     .characteristics()[uuidFrom(BluetoothUART.UART_RX_UUID)]
 /** Returns [Flow] of UART TX Characteristic */
+@JvmName("jvmDeviceTxCharacteristic")
 fun Flow<Device?>.txCharacteristic() = uartService()
     .characteristics()[uuidFrom(BluetoothUART.UART_TX_UUID)]
 /** Returns [Flow] of UART TX Characteristic */
+@JvmName("jvmDeviceStateTxCharacteristic")
 fun Flow<DeviceState>.txCharacteristic() = uartService()
     .characteristics()[uuidFrom(BluetoothUART.UART_TX_UUID)]
 

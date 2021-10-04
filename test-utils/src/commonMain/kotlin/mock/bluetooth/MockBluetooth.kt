@@ -23,12 +23,15 @@ import com.splendo.kaluga.bluetooth.device.Device
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlin.js.JsName
 
 class MockBluetooth(
     private val coroutineScope: CoroutineScope
 ) : BluetoothService {
 
+    @JsName("jsDevice")
     val devices = MutableStateFlow(emptyList<Device>())
+    @JsName("jsIsScanning")
     val isScanning = MutableStateFlow(false)
 
     override val isEnabled = MutableStateFlow(true)
