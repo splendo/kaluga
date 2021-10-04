@@ -58,9 +58,7 @@ fun createDevice(
     rssi: Int = -78,
     serviceUUIDs: List<UUID> = emptyList(),
     serviceData: ServiceData = emptyMap(),
-    connectionSettings: ConnectionSettings = ConnectionSettings(
-        ConnectionSettings.ReconnectionSettings.Always
-    ),
+    connectionSettings: ConnectionSettings = ConnectionSettings(),
     connectionManagerBuilder: BaseDeviceConnectionManager.Builder = object : BaseDeviceConnectionManager.Builder {
         override fun create(
             connectionSettings: ConnectionSettings,

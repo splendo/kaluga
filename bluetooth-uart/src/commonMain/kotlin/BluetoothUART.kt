@@ -49,7 +49,10 @@ fun Flow<Device?>.hasUART() = advertisement()
     .mapLatest {
         it.serviceUUIDs.contains(uuidFrom(BluetoothUART.UART_SERVICE_UUID))
     }
-
+/** Returns [Flow] of [Boolean] set to `true` if [Device] has UART Service */
+fun Device.hasUART() = mapLatest {
+    it.advertisementData.serviceUUIDs.contains(uuidFrom(BluetoothUART.UART_SERVICE_UUID))
+}
 /** Returns [Flow] of UART Service */
 fun Flow<Device?>.uartService() = services()[uuidFrom(BluetoothUART.UART_SERVICE_UUID)]
 /** Returns [Flow] of UART Service */
