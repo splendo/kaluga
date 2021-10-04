@@ -20,7 +20,7 @@ package com.splendo.kaluga.bluetooth.scanner
 import co.touchlab.stately.concurrency.AtomicReference
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.flow.filterOnlyImportant
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -132,7 +132,8 @@ abstract class BaseScanner constructor(
         monitoringBluetoothEnabledJob?.cancel()
         monitoringBluetoothEnabledJob = null
     }
-    open suspend fun areSensorsEnabled(): Boolean = bluetoothEnabledMonitor?.stateFlow is Enabled
+    open suspend fun areSensorsEnabled(): Boolean =
+        bluetoothEnabledMonitor?.filterOnlyImportant()?.first() is ServiceMonitorState.Initialized.Enabled
     suspend fun requestSensorsEnable() {
         val actions = generateEnableSensorsActions()
         if (actions.isEmpty()) {
