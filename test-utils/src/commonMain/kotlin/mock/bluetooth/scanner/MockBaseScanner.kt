@@ -18,9 +18,10 @@
 package com.splendo.kaluga.test.mock.bluetooth.scanner
 
 import co.touchlab.stately.concurrency.AtomicReference
+import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.scanner.BaseScanner
@@ -29,8 +30,9 @@ import com.splendo.kaluga.bluetooth.scanner.ScanningState
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.state.StateRepo
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class MockBaseScanner(
     permissions: Permissions,
@@ -46,7 +48,6 @@ class MockBaseScanner(
     autoEnableBluetooth,
     stateRepo
 ) {
-
     val scanForDevicesCompleted = AtomicReference(CompletableDeferred<Set<UUID>?>())
     val stopScanningCompleted = AtomicReference(EmptyCompletableDeferred())
     val startMonitoringPermissionsCompleted = AtomicReference(EmptyCompletableDeferred())
@@ -61,13 +62,22 @@ class MockBaseScanner(
         reset()
     }
 
-    override val bluetoothEnabledMonitor: BluetoothMonitor = object : BluetoothMonitor {
-        override val isServiceEnabled: Boolean
-            get() = this@MockBaseScanner.isEnabled.value
-        override val isEnabled: Flow<Boolean> = this@MockBaseScanner.isEnabled
-
-        override fun startMonitoring() {}
-
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor = object : DefaultServiceMonitor(coroutineContext) {
+        override fun startMonitoring() {
+            launch {
+                isEnabled.collect { _isEnabled ->
+                    launchTakeAndChangeState {
+                        {
+                            if (_isEnabled) {
+                                ServiceMonitorState.Initialized.Enabled
+                            } else {
+                                ServiceMonitorState.Initialized.Disabled
+                            }
+                        }
+                    }
+                }
+            }
+        }
         override fun stopMonitoring() {}
     }
 
