@@ -17,7 +17,10 @@
 
 package com.splendo.kaluga.base.utils
 
+import com.splendo.kaluga.base.utils.Decimals.toDecimal
+import com.splendo.kaluga.base.utils.Decimals.toDouble
 import com.splendo.kaluga.base.utils.SciUnit.Companion.convert
+import com.splendo.kaluga.base.utils.SciUnit.Length
 import com.splendo.kaluga.base.utils.SciUnit.Length.Centimeters
 import com.splendo.kaluga.base.utils.SciUnit.Length.Feet
 import com.splendo.kaluga.base.utils.SciUnit.Length.Inches
@@ -26,9 +29,13 @@ import com.splendo.kaluga.base.utils.SciUnit.Length.Meters
 import com.splendo.kaluga.base.utils.SciUnit.Length.Miles
 import com.splendo.kaluga.base.utils.SciUnit.Length.Millimeters
 import com.splendo.kaluga.base.utils.SciUnit.Length.Yards
+import com.splendo.kaluga.base.utils.SciUnit.Temperature
 import com.splendo.kaluga.base.utils.SciUnit.Temperature.Celsius
 import com.splendo.kaluga.base.utils.SciUnit.Temperature.Fahrenheit
 import com.splendo.kaluga.base.utils.SciUnit.Temperature.Kelvin
+import com.splendo.kaluga.base.utils.SciUnit.Volume
+import com.splendo.kaluga.base.utils.SciUnit.Weight
+import com.splendo.kaluga.base.utils.SciUnit.Weight.Drams
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Grains
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Grams
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Kilograms
@@ -37,202 +44,175 @@ import com.splendo.kaluga.base.utils.SciUnit.Weight.Ounces
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Pounds
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Stones
 import com.splendo.kaluga.base.utils.SciUnit.Weight.Tones
-import com.splendo.kaluga.base.utils.SciUnit.Weight.UKTones
-import com.splendo.kaluga.base.utils.SciUnit.Weight.USTones
+import com.splendo.kaluga.base.utils.SciUnit.Weight.LongTons
+import com.splendo.kaluga.base.utils.SciUnit.Weight.ShortTons
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class SciUnitTest {
 
+    private val unitTranslationErrorTolerance = 0.000001
+
     @Test
     fun weighConversionTest() {
-        assertEquals(convert(1.0, Milligrams, Milligrams), 1.0)
-        assertEquals(convert(1.0, Milligrams, Grams), 0.001)
-        assertEquals(convert(1.0, Milligrams, Kilograms), 1e-6)
-        assertEquals(convert(1.0, Milligrams, Tones), 1e-9)
-        assertEquals(convert(1.0, Milligrams, Grains), 0.015432358352941431)
-        assertEquals(convert(100.0, Milligrams, Ounces), 0.0035273961949580414)
-        assertEquals(convert(1000.0, Milligrams, Pounds), 0.0022046226218487763)
-        assertEquals(convert(10000.0, Milligrams, Stones), 0.0015747304441776969)
-        assertEquals(convert(10000.0, Milligrams, UKTones), 0.00000984206527611)
-        assertEquals(convert(10000.0, Milligrams, USTones), 0.00001102311310924)
 
-        assertEquals(convert(1.0, Grams, Milligrams), 1000.0)
-        assertEquals(convert(1.0, Grams, Grams), 1.0)
-        assertEquals(convert(1.0, Grams, Kilograms), 0.001)
-        assertEquals(convert(1.0, Grams, Tones), 1e-6)
-        assertEquals(convert(1.0, Grams, Grains), 15.432358352941431)
-        assertEquals(convert(1.0, Grams, Ounces), 0.035273961949580414)
-        assertEquals(convert(1.0, Grams, Pounds), 0.0022046226218487763)
-        assertEquals(convert(1000.0, Grams, Stones), 0.1574730444177697)
-        assertEquals(convert(1000.0, Grams, UKTones), 0.000984206527611)
-        assertEquals(convert(1000.0, Grams, USTones), 0.001102311310924)
+        assertFor(1000, Milligrams, Grams, 0.001)
+        assertFor(1000, Milligrams, Grains, 0.015432358352941431, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Kilograms, Milligrams), 1e+6)
-        assertEquals(convert(1.0, Kilograms, Grams), 1000.0)
-        assertEquals(convert(1.0, Kilograms, Kilograms), 1.0)
-        assertEquals(convert(1.0, Kilograms, Tones), 0.001)
-        assertEquals(convert(1.0, Kilograms, Grains), 15432.358352941432)
-        assertEquals(convert(1.0, Kilograms, Ounces), 35.27396194958041)
-        assertEquals(convert(1.0, Kilograms, Pounds), 2.204622621848776)
-        assertEquals(convert(1.0, Kilograms, Stones), 0.1574730444177697)
-        assertEquals(convert(1.0, Kilograms, UKTones), 0.000984206527611)
-        assertEquals(convert(1.0, Kilograms, USTones), 0.001102311310924)
+        assertFor(1000, Grams, Milligrams, 1000.0)
+        assertFor(1000, Grams, Kilograms, 0.001, unitTranslationErrorTolerance)
+        assertFor(1000, Grams, Grains, 15.432358352941431, unitTranslationErrorTolerance)
+        assertFor(1000, Grams, Drams, 0.5643833911932866, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Tones, Milligrams), 1e+9)
-        assertEquals(convert(1.0, Tones, Grams), 1e+6)
-        assertEquals(convert(1.0, Tones, Kilograms), 1000.0)
-        assertEquals(convert(1.0, Tones, Tones), 1.0)
-        assertEquals(convert(0.01, Tones, Grains), 154323.58352941432)
-        assertEquals(convert(0.01, Tones, Ounces), 352.7396194958041) // Calculator yields 352.73961949580405 - 0.00000000000005 error
-        assertEquals(convert(1.0, Tones, Pounds), 2204.622621848776)
-        assertEquals(convert(1.0, Tones, Stones), 157.4730444177697)
-        assertEquals(convert(1.0, Tones, UKTones), 0.9842065276110001)
-        assertEquals(convert(1.0, Tones, USTones), 1.102311310924)
+        assertFor(1000, Kilograms, Grams, 1000.0)
+        assertFor(1000, Kilograms, Tones, 0.001)
+        assertFor(1000, Kilograms, Ounces, 35.27396194958041, unitTranslationErrorTolerance)
+        assertFor(1000, Kilograms, Pounds, 2.204622621848776, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Ounces, Milligrams), 28349.523125)
-        assertEquals(convert(1.0, Ounces, Grams), 28.349523125)
-        assertEquals(convert(1.0, Ounces, Kilograms), 0.028349523125)
-        assertEquals(convert(100.0, Ounces, Tones), 0.0028349523125000002) // Calculator yields 0.0028349523125
-        assertEquals(convert(1.0, Ounces, Grains), 437.50000000000006)
-        assertEquals(convert(1.0, Ounces, Ounces), 1.0)
-        assertEquals(convert(1.0, Ounces, Pounds), 0.06250000000000001)
-        assertEquals(convert(100.0, Ounces, Stones), 0.4464285714285714)
-        assertEquals(convert(100.0, Ounces, UKTones), 0.0027901785714283998) // Calculator yields 0.0027901785714284
-        assertEquals(convert(100.0, Ounces, USTones), 0.0031249999999989004) // Calculator yields 0.003124999999998901
+        assertFor(1000, Tones, Kilograms, 1000.0)
+        assertFor(1000, Tones, Stones, 157.4730444177697, unitTranslationErrorTolerance)
+        assertFor(1000, Tones, LongTons, 0.9842065276110001, unitTranslationErrorTolerance)
+        assertFor(1000, Tones, ShortTons, 1.102311310924, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Pounds, Milligrams), 453592.36999999994) // Calculator yields 453592.37
-        assertEquals(convert(1.0, Pounds, Grams), 453.5923699999999) // Calculator yields 453.59237
-        assertEquals(convert(1.0, Pounds, Kilograms), 0.4535923699999999) // Calculator yields 0.45359237
-        assertEquals(convert(10.0, Pounds, Tones), 0.0045359237)
-        assertEquals(convert(1.0, Pounds, Grains), 6999.999999999999) // Calculator yields 7000.000000000001
-        assertEquals(convert(1.0, Pounds, Ounces), 15.999999999999996) // Calculator yields 16
-        assertEquals(convert(1.0, Pounds, Pounds), 1.0)
-        assertEquals(convert(1.0, Pounds, Stones), 0.7142857142857143)
-        assertEquals(convert(10.0, Pounds, UKTones), 0.004999999999998241)
-        assertEquals(convert(10.0, Pounds, USTones), 0.008482142857142336)
+        assertFor(1000, Drams, Grams, 1.7718451953125, unitTranslationErrorTolerance)
+        assertFor(1000, Drams, Grains, 27.343750000000004, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Stones, Milligrams), 6350293.18)
-        assertEquals(convert(1.0, Stones, Grams), 6350.29318)
-        assertEquals(convert(1.0, Stones, Kilograms), 6.35029318)
-        assertEquals(convert(1.0, Stones, Tones), 1.0)
-        assertEquals(convert(1.0, Stones, Grains), 0.0154324)
-        assertEquals(convert(1.0, Stones, Ounces), 1.0)
-        assertEquals(convert(1.0, Stones, Pounds), 1.0)
-        assertEquals(convert(1.0, Stones, Stones), 1.0)
-        assertEquals(convert(1.0, Stones, UKTones), 1.0)
-        assertEquals(convert(1.0, Stones, USTones), 1.0)
+        assertFor(1000, Grains, Grams, 0.06479891, unitTranslationErrorTolerance)
+        assertFor(1000, Grains, Drams, 0.03657142857142857, unitTranslationErrorTolerance)
+        assertFor(1000, Grains, Ounces, 0.002285714285714286, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, USTones, Milligrams), 1.0)
-        assertEquals(convert(1.0, USTones, Grams), 1.0)
-        assertEquals(convert(1.0, USTones, Kilograms), 1.0)
-        assertEquals(convert(1.0, USTones, Tones), 1.0)
-        assertEquals(convert(1.0, USTones, Grains), 0.0154324)
-        assertEquals(convert(1.0, USTones, Ounces), 1.0)
-        assertEquals(convert(1.0, USTones, Pounds), 1.0)
-        assertEquals(convert(1.0, USTones, Stones), 1.0)
-        assertEquals(convert(1.0, USTones, UKTones), 1.0)
-        assertEquals(convert(1.0, USTones, USTones), 1.0)
+        assertFor(1000, Ounces, Grams, 28.349523125, unitTranslationErrorTolerance)
+        assertFor(1000, Ounces, Kilograms, 0.028349523125, unitTranslationErrorTolerance)
+        assertFor(1000, Ounces, Grains, 437.50000000000006, unitTranslationErrorTolerance)
+        assertFor(1000, Ounces, Pounds, 0.0625, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, UKTones, Milligrams), 1.0)
-        assertEquals(convert(1.0, UKTones, Grams), 1.0)
-        assertEquals(convert(1.0, UKTones, Kilograms), 1.0)
-        assertEquals(convert(1.0, UKTones, Tones), 1.0)
-        assertEquals(convert(1.0, UKTones, Grains), 0.0154324)
-        assertEquals(convert(1.0, UKTones, Ounces), 1.0)
-        assertEquals(convert(1.0, UKTones, Pounds), 1.0)
-        assertEquals(convert(1.0, UKTones, Stones), 1.0)
-        assertEquals(convert(1.0, UKTones, UKTones), 1.0)
-        assertEquals(convert(1.0, UKTones, USTones), 1.0)
+        assertFor(1000, Pounds, Grams, 453.59237, unitTranslationErrorTolerance)
+        assertFor(1000, Pounds, Kilograms, 0.45359237, unitTranslationErrorTolerance)
+        assertFor(1000, Pounds, Grains, 7000.0, unitTranslationErrorTolerance)
+        assertFor(1000, Pounds, Ounces, 16.0, unitTranslationErrorTolerance)
+        assertFor(1000, Pounds, Stones, 0.07142857142857142, unitTranslationErrorTolerance)
+
+        assertFor(1000, Stones, Kilograms, 6.35029318, unitTranslationErrorTolerance)
+        assertFor(1000, Stones, Ounces, 224.0, unitTranslationErrorTolerance)
+        assertFor(1000, Stones, Pounds, 14.0, unitTranslationErrorTolerance)
+
+        assertFor(1000, ShortTons, Kilograms, 907.18474, unitTranslationErrorTolerance)
+        assertFor(1000, ShortTons, Tones, 0.90718474, unitTranslationErrorTolerance)
+        assertFor(1000, ShortTons, Pounds, 2000.0, unitTranslationErrorTolerance)
+        assertFor(1000, ShortTons, Stones, 142.85714285714286, unitTranslationErrorTolerance)
+        assertFor(1000, ShortTons, LongTons, 0.892857142857088, unitTranslationErrorTolerance)
+
+        assertFor(1000, LongTons, Kilograms, 1016.0469088, unitTranslationErrorTolerance)
+        assertFor(1000, LongTons, Tones, 1.0160469088, unitTranslationErrorTolerance)
+        assertFor(1000, LongTons, Stones, 160.0, unitTranslationErrorTolerance)
+        assertFor(1000, LongTons, ShortTons, 1.1199999999, unitTranslationErrorTolerance)
     }
 
     @Test
     fun temperatureConversionTest() {
-        assertEquals(convert(0.0, Celsius, Fahrenheit), 32.0)
-        assertEquals(convert(0.0, Celsius, Kelvin), 273.15)
-        assertEquals(convert(0.0, Celsius, Celsius), 0.0)
+        assertEquals(convert(0.0, Celsius, Fahrenheit), 32.0, unitTranslationErrorTolerance)
+        assertEquals(convert(0.0, Celsius, Kelvin), 273.15, unitTranslationErrorTolerance)
+        assertEquals(convert(0.0, Celsius, Celsius), 0.0, unitTranslationErrorTolerance)
 
-        assertEquals(convert(0.0, Fahrenheit, Fahrenheit).roundTo(3), 0.0)
-        assertEquals(convert(0.0, Fahrenheit, Kelvin).roundTo(3), 255.372)
-        assertEquals(convert(0.0, Fahrenheit, Celsius).roundTo(4), -17.7778)
+        assertEquals(convert(0.0, Fahrenheit, Fahrenheit), 0.0, unitTranslationErrorTolerance)
+        assertEquals(convert(0.0, Fahrenheit, Kelvin), 255.372222, unitTranslationErrorTolerance)
+        assertEquals(convert(0.0, Fahrenheit, Celsius), -17.777778, unitTranslationErrorTolerance)
 
-        assertEquals(convert(0.0, Kelvin, Fahrenheit).roundTo(2), -459.67)
+        assertEquals(convert(0.0, Kelvin, Fahrenheit), -459.67, unitTranslationErrorTolerance)
         assertEquals(convert(0.0, Kelvin, Kelvin), 0.0)
-        assertEquals(convert(0.0, Kelvin, Celsius), -273.15)
+        assertEquals(convert(0.0, Kelvin, Celsius), -273.15, unitTranslationErrorTolerance)
     }
 
     @Test
     fun lengthConversionTest() {
-        assertEquals(convert(1.0, Millimeters, Millimeters), 1.0)
-        assertEquals(convert(1.0, Millimeters, Centimeters), 0.1)
-        assertEquals(convert(1.0, Millimeters, Meters), 0.001)
-        assertEquals(convert(1.0, Millimeters, Kilometers), 0.000001)
-        assertEquals(convert(1.0, Millimeters, Inches).roundTo(10), 0.0393700787)
-        assertEquals(convert(1.0, Millimeters, Feet).roundTo(10), 0.0032808399)
-        assertEquals(convert(1.0, Millimeters, Yards).roundTo(10), 0.0010936133)
-        assertEquals(convert(10.0, Millimeters, Miles).roundTo(10), 0.0000062137)
+        assertFor(1000, Millimeters, Centimeters, 0.1, unitTranslationErrorTolerance)
+        assertFor(1000, Millimeters, Meters, 0.001, unitTranslationErrorTolerance)
+        assertFor(1000, Millimeters, Inches, 0.0393700787, unitTranslationErrorTolerance)
+        assertFor(1000, Millimeters, Feet, 0.0032808399, unitTranslationErrorTolerance)
+        assertFor(1000, Millimeters, Yards, 0.0010936133, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Centimeters, Millimeters), 10.0)
-        assertEquals(convert(1.0, Centimeters, Centimeters), 1.0)
-        assertEquals(convert(1.0, Centimeters, Meters), 0.010)
-        assertEquals(convert(1.0, Centimeters, Kilometers), 0.00001)
-        assertEquals(convert(1.0, Centimeters, Inches), 0.3937007874)
-        assertEquals(convert(1.0, Centimeters, Feet).roundTo(10), 0.032808399)
-        assertEquals(convert(1.0, Centimeters, Yards).roundTo(10), 0.010936133)
-        assertEquals(convert(1.0, Centimeters, Miles).roundTo(10), 0.0000062137)
+        assertFor(1000, Centimeters, Millimeters, 10.0)
+        assertFor(1000, Centimeters, Meters, 0.01)
+        assertFor(1000, Centimeters, Inches, 0.3937007874, unitTranslationErrorTolerance)
+        assertFor(1000, Centimeters, Feet, 0.032808399, unitTranslationErrorTolerance)
+        assertFor(1000, Centimeters, Yards, 0.010936133, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Meters, Millimeters), 1000.0)
-        assertEquals(convert(1.0, Meters, Centimeters), 100.0)
-        assertEquals(convert(1.0, Meters, Meters), 1.0)
-        assertEquals(convert(1.0, Meters, Kilometers), 0.001)
-        assertEquals(convert(1.0, Meters, Inches), 39.37007874)
-        assertEquals(convert(1.0, Meters, Feet), 3.280839895)
-        assertEquals(convert(1.0, Meters, Yards), 1.0936132983)
-        assertEquals(convert(1.0, Meters, Miles), 0.0006213712)
+        assertFor(1000, Meters, Millimeters, 1000.0)
+        assertFor(1000, Meters, Centimeters, 100.0)
+        assertFor(1000, Meters, Kilometers, 0.001)
+        assertFor(1000, Meters, Inches, 39.37007874, unitTranslationErrorTolerance)
+        assertFor(1000, Meters, Feet, 3.280839895, unitTranslationErrorTolerance)
+        assertFor(1000, Meters, Yards, 1.0936132983, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Kilometers, Millimeters), 1000000.0)
-        assertEquals(convert(1.0, Kilometers, Centimeters), 100000.0)
-        assertEquals(convert(1.0, Kilometers, Meters), 1000.0)
-        assertEquals(convert(1.0, Kilometers, Kilometers), 1.0)
-        assertEquals(convert(1.0, Kilometers, Inches), 39370.07874)
-        assertEquals(convert(1.0, Kilometers, Feet), 3280.839895)
-        assertEquals(convert(1.0, Kilometers, Yards), 1093.6132983)
-        assertEquals(convert(1.0, Kilometers, Miles), 0.6213712)
+        assertFor(1000, Kilometers, Meters, 1000.0)
+        assertFor(1000, Kilometers, Feet, 3280.8398950131236, unitTranslationErrorTolerance)
+        assertFor(1000, Kilometers, Yards, 1093.6132983377079, unitTranslationErrorTolerance)
+        assertFor(1000, Kilometers, Miles, 0.6213711922, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Inches, Millimeters).roundTo(3), 25.400)
-        assertEquals(convert(1.0, Inches, Centimeters).roundTo(3), 2.540)
-        assertEquals(convert(1.0, Inches, Meters).roundTo(3), 0.025)
-        assertEquals(convert(1.0, Inches, Kilometers).roundTo(7), 0.0000254)
-        assertEquals(convert(1.0, Inches, Inches), 1.0)
-        assertEquals(convert(1.0, Inches, Feet).roundTo(7), 0.0833333)
-        assertEquals(convert(1.0, Inches, Yards).roundTo(7), 0.0277778)
-        assertEquals(convert(1.0, Inches, Miles).roundTo(10), 0.0000157828)
+        assertFor(1000, Inches, Millimeters, 25.400, unitTranslationErrorTolerance)
+        assertFor(1000, Inches, Centimeters, 2.540, unitTranslationErrorTolerance)
+        assertFor(1000, Inches, Meters, 0.0254, unitTranslationErrorTolerance)
+        assertFor(1000, Inches, Feet, 0.08333333333333333, unitTranslationErrorTolerance)
+        assertFor(1000, Inches, Yards, 0.027777777777777776, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Feet, Millimeters).roundTo(3), 304.800)
-        assertEquals(convert(1.0, Feet, Centimeters).roundTo(3), 30.480)
-        assertEquals(convert(1.0, Feet, Meters).roundTo(4), 0.3048)
-        assertEquals(convert(1.0, Feet, Kilometers).roundTo(7), 0.0003048)
-        assertEquals(convert(1.0, Feet, Inches), 12.0)
-        assertEquals(convert(1.0, Feet, Feet), 1.0)
-        assertEquals(convert(1.0, Feet, Yards).roundTo(6), 0.333333)
-        assertEquals(convert(1.0, Feet, Miles).roundTo(10), 0.0001893939)
+        assertFor(1000, Feet, Centimeters, 30.480, unitTranslationErrorTolerance)
+        assertFor(1000, Feet, Millimeters, 304.800, unitTranslationErrorTolerance)
+        assertFor(1000, Feet, Meters, 0.3048, unitTranslationErrorTolerance)
+        assertFor(1000, Feet, Inches, 12.0, unitTranslationErrorTolerance)
+        assertFor(1000, Feet, Yards, 0.333333333333, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Yards, Millimeters).roundTo(3), 914.400)
-        assertEquals(convert(1.0, Yards, Centimeters).roundTo(3), 91.440)
-        assertEquals(convert(1.0, Yards, Meters).roundTo(4), 0.9144)
-        assertEquals(convert(1.0, Yards, Kilometers).roundTo(7), 0.0009144)
-        assertEquals(convert(1.0, Yards, Inches).roundTo(3), 36.000)
-        assertEquals(convert(1.0, Yards, Feet).roundTo(3), 3.000)
-        assertEquals(convert(1.0, Yards, Yards), 1.0)
-        assertEquals(convert(1.0, Yards, Miles).roundTo(10), 0.0005681818)
+        assertFor(1000, Yards, Centimeters, 91.440, unitTranslationErrorTolerance)
+        assertFor(1000, Yards, Meters, 0.9144, unitTranslationErrorTolerance)
+        assertFor(1000, Yards, Kilometers, 0.0009144, unitTranslationErrorTolerance)
+        assertFor(1000, Yards, Inches, 36.000, unitTranslationErrorTolerance)
+        assertFor(1000, Yards, Feet, 3.000, unitTranslationErrorTolerance)
+        assertFor(1000, Yards, Miles, 0.0005681818, unitTranslationErrorTolerance)
 
-        assertEquals(convert(1.0, Miles, Millimeters).roundTo(1), 1609344.0)
-        assertEquals(convert(1.0, Miles, Centimeters).roundTo(2), 160934.4)
-        assertEquals(convert(1.0, Miles, Meters).roundTo(3), 1609.344)
-        assertEquals(convert(1.0, Miles, Kilometers).roundTo(6), 1.609344)
-        assertEquals(convert(1.0, Miles, Inches).roundTo(1), 63360.0)
-        assertEquals(convert(1.0, Miles, Feet).roundTo(1), 5280.0)
-        assertEquals(convert(1.0, Miles, Yards).roundTo(1), 1760.0)
-        assertEquals(convert(1.0, Miles, Miles), 1.0)
+        assertFor(1000, Miles, Meters, 1609.344, unitTranslationErrorTolerance)
+        assertFor(1000, Miles, Kilometers, 1.609344, unitTranslationErrorTolerance)
+        assertFor(1000, Miles, Feet, 5280.0, unitTranslationErrorTolerance)
+        assertFor(1000, Miles, Yards, 1760.0, unitTranslationErrorTolerance)
+    }
+}
+
+fun assertFor(
+    max: Int,
+    inputUnit: SciUnit,
+    outputUnit: SciUnit,
+    inputToOutputRatio: Double,
+    tolerance: Double = 0.0
+) {
+    for (i in 1..max) {
+        val actual = (inputToOutputRatio.toDecimal() * i.toDouble().toDecimal()).toDouble()
+        when (inputUnit) {
+            is Weight -> {
+                assertEquals(
+                    convert(i.toDouble(), inputUnit, outputUnit as Weight),
+                    actual,
+                    tolerance
+                )
+            }
+            is Temperature -> {
+                assertEquals(
+                    convert(i.toDouble(), inputUnit, outputUnit as Temperature),
+                    actual,
+                    tolerance
+                )
+            }
+            is Length -> {
+                assertEquals(
+                    convert(i.toDouble(), inputUnit, outputUnit as Length),
+                    actual,
+                    tolerance
+                )
+            }
+            is Volume -> {
+                assertEquals(
+                    convert(i.toDouble(), inputUnit, outputUnit as Volume),
+                    actual,
+                    tolerance
+                )
+            }
+        }
     }
 }

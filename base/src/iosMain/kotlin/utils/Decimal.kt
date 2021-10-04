@@ -25,86 +25,64 @@ import platform.Foundation.NSRoundingMode
 actual typealias Decimal = NSDecimalNumber
 
 actual operator fun Decimal.plus(value: Decimal): Decimal = decimalNumberByAdding(value)
+
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal =
     decimalNumberByAdding(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
+        override fun scale(): Short = scale.toShort()
     })
 
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByAdding(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
-
-        override fun roundingMode(): NSRoundingMode {
-            return NSRoundingMode.byValue(roundingMode.toULong())
-        }
+        override fun scale(): Short = scale.toShort()
+        override fun roundingMode(): NSRoundingMode = NSRoundingMode.byValue(roundingMode.toULong())
     })
 
 actual operator fun Decimal.minus(value: Decimal): Decimal = decimalNumberBySubtracting(value)
+
 actual fun Decimal.minus(value: Decimal, scale: Int): Decimal =
     decimalNumberBySubtracting(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
+        override fun scale(): Short = scale.toShort()
     })
 
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberBySubtracting(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
-
-        override fun roundingMode(): NSRoundingMode {
-            return NSRoundingMode.byValue(roundingMode.toULong())
-        }
+        override fun scale(): Short = scale.toShort()
+        override fun roundingMode(): NSRoundingMode = NSRoundingMode.byValue(roundingMode.toULong())
     })
 
 actual operator fun Decimal.div(value: Decimal): Decimal = decimalNumberByDividingBy(value)
+
 actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
     decimalNumberByDividingBy(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
+        override fun scale(): Short = scale.toShort()
     })
 
 actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByDividingBy(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
-
-        override fun roundingMode(): NSRoundingMode {
-            return NSRoundingMode.byValue(roundingMode.toULong())
-        }
+        override fun scale(): Short = scale.toShort()
+        override fun roundingMode(): NSRoundingMode = NSRoundingMode.byValue(roundingMode.toULong())
     })
 
 actual operator fun Decimal.times(value: Decimal): Decimal = decimalNumberByMultiplyingBy(value)
+
 actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
     decimalNumberByMultiplyingBy(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
+        override fun scale(): Short = scale.toShort()
     })
 
 actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
     decimalNumberByMultiplyingBy(value, object : NSDecimalNumberHandler() {
-        override fun scale(): Short {
-            return scale.toShort()
-        }
-
-        override fun roundingMode(): NSRoundingMode {
-            return NSRoundingMode.byValue(roundingMode.toULong())
-        }
+        override fun scale(): Short = scale.toShort()
+        override fun roundingMode(): NSRoundingMode = NSRoundingMode.byValue(roundingMode.toULong())
     })
 
 actual object Decimals {
 
-    actual fun decimalFrom(value: Double): Decimal = NSDecimalNumber(value)
-
     actual fun Double.toDecimal() = NSDecimalNumber(this)
+    actual fun String.toDecimal() = NSDecimalNumber(this)
+
+    actual fun Decimal.toDouble(): Double = this.doubleValue
+    actual fun Decimal.toString(): String = this.stringValue
 
     actual val ROUND_DOWN: Int
         get() = NSRoundingMode.NSRoundDown.ordinal

@@ -18,42 +18,61 @@
 package com.splendo.kaluga.base.utils
 
 import java.math.BigDecimal
+import java.math.MathContext
+import java.math.RoundingMode
 
-actual typealias Decimal = Double
+actual typealias Decimal = BigDecimal
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = this.plus(value)
-actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.plus(value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = this.add(value)
+
+actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.add(value).setScale(scale)
+
 actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.plus(value)
+    this.add(value).setScale(scale, roundingMode)
 
-actual operator fun Decimal.minus(value: Decimal): Decimal = this.minus(value)
-actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.minus(value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = this.subtract(value)
+
+actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.subtract(value).setScale(scale)
+
 actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.minus(value)
+    this.subtract(value).setScale(scale, roundingMode)
 
-actual operator fun Decimal.div(value: Decimal): Decimal = this.div(value)
-actual fun Decimal.div(value: Decimal, scale: Int): Decimal = this.div(value)
+actual operator fun Decimal.div(value: Decimal): Decimal =
+    this.divide(value, MathContext.DECIMAL128)
+
+actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
+    this.divide(value, MathContext.DECIMAL128).setScale(scale, MathContext.DECIMAL128.getRoundingMode())
+
 actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.div(value)
+    this.divide(
+        value,
+        MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.valueOf(roundingMode))
+    ).setScale(scale, roundingMode)
 
-actual operator fun Decimal.times(value: Decimal): Decimal = this.times(value)
-actual fun Decimal.times(value: Decimal, scale: Int): Decimal = this.times(value)
+actual operator fun Decimal.times(value: Decimal): Decimal =
+    this.multiply(value, MathContext.DECIMAL128)
+
+actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
+    this.multiply(value, MathContext.DECIMAL128).setScale(scale)
+
 actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
-    this.times(value)
+    this.multiply(
+        value,
+        MathContext(MathContext.DECIMAL128.getPrecision(), RoundingMode.valueOf(roundingMode))
+    ).setScale(scale, roundingMode)
 
 actual object Decimals {
+
+    actual fun Double.toDecimal() = BigDecimal(this)
+    actual fun String.toDecimal() = BigDecimal(this)
+
+    actual fun Decimal.toDouble(): Double = this.toDouble()
+    actual fun Decimal.toString(): String = this.toString()
+
     actual val ROUND_DOWN: Int
         get() = BigDecimal.ROUND_DOWN
     actual val ROUND_HALF_EVEN: Int
         get() = BigDecimal.ROUND_HALF_EVEN
     actual val ROUND_UP: Int
         get() = BigDecimal.ROUND_UP
-
-    actual fun decimalFrom(value: Double): Decimal {
-        TODO("Not yet implemented")
-    }
-
-    actual fun Double.toDecimal(): Decimal {
-        TODO("Not yet implemented")
-    }
 }

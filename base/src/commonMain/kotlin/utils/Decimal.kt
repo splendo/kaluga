@@ -21,25 +21,43 @@ expect class Decimal
 
 expect operator fun Decimal.plus(value: Decimal): Decimal
 expect fun Decimal.plus(value: Decimal, scale: Int): Decimal
-expect fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect fun Decimal.plus(
+    value: Decimal,
+    scale: Int = 10,
+    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+): Decimal
 
 expect operator fun Decimal.minus(value: Decimal): Decimal
 expect fun Decimal.minus(value: Decimal, scale: Int): Decimal
-expect fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect fun Decimal.minus(
+    value: Decimal,
+    scale: Int = 10,
+    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+): Decimal
 
 expect operator fun Decimal.div(value: Decimal): Decimal
 expect fun Decimal.div(value: Decimal, scale: Int): Decimal
-expect fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect fun Decimal.div(
+    value: Decimal,
+    scale: Int,
+    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+): Decimal
 
 expect operator fun Decimal.times(value: Decimal): Decimal
 expect fun Decimal.times(value: Decimal, scale: Int): Decimal
-expect fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal
+expect fun Decimal.times(
+    value: Decimal,
+    scale: Int,
+    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+): Decimal
 
 expect object Decimals {
 
-    fun decimalFrom(value: Double): Decimal
-
     fun Double.toDecimal(): Decimal
+    fun String.toDecimal(): Decimal
+
+    fun Decimal.toDouble(): Double
+    fun Decimal.toString(): String
 
     // Rounding mode to round towards zero.
     val ROUND_DOWN: Int
@@ -50,4 +68,3 @@ expect object Decimals {
     // Rounding mode to round away from zero.
     val ROUND_UP: Int
 }
-
