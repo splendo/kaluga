@@ -19,9 +19,16 @@ package com.splendo.kaluga.test.mock.bluetooth
 
 import com.splendo.kaluga.bluetooth.ServiceWrapper
 import com.splendo.kaluga.bluetooth.UUID
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
+import com.splendo.kaluga.bluetooth.device.ConnectionSettings
+import com.splendo.kaluga.bluetooth.device.Device
+import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.bluetooth.device.DeviceStateFlowRepo
 import com.splendo.kaluga.bluetooth.device.DeviceWrapper
+import com.splendo.kaluga.bluetooth.device.ServiceData
 import com.splendo.kaluga.bluetooth.randomUUID
+import com.splendo.kaluga.test.mock.bluetooth.device.MockAdvertisementData
+import kotlin.coroutines.CoroutineContext
 
 expect fun createDeviceWrapper(deviceName: String? = null): DeviceWrapper
 
@@ -34,3 +41,39 @@ expect fun createServiceWrapper(
 interface CanUpdateMockValue {
     fun updateMockValue(value: ByteArray?)
 }
+
+fun createDeviceInfo(
+    name: String = "DeviceName",
+    rssi: Int = -78,
+    serviceUUIDs: List<UUID> = emptyList(),
+    serviceData: ServiceData = emptyMap()
+) = DeviceInfoImpl(
+    createDeviceWrapper(name),
+    rssi,
+    MockAdvertisementData(name, serviceUUIDs = serviceUUIDs, serviceData = serviceData)
+)
+
+fun createDevice(
+    name: String = "DeviceName",
+    rssi: Int = -78,
+    serviceUUIDs: List<UUID> = emptyList(),
+    serviceData: ServiceData = emptyMap(),
+    connectionSettings: ConnectionSettings = ConnectionSettings(
+        ConnectionSettings.ReconnectionSettings.Always
+    ),
+    connectionManagerBuilder: BaseDeviceConnectionManager.Builder = object : BaseDeviceConnectionManager.Builder {
+        override fun create(
+            connectionSettings: ConnectionSettings,
+            deviceWrapper: DeviceWrapper,
+            stateRepo: DeviceStateFlowRepo
+        ): BaseDeviceConnectionManager {
+            return create(connectionSettings, deviceWrapper, stateRepo)
+        }
+    },
+    coroutineContext: CoroutineContext
+) = Device(
+    connectionSettings,
+    createDeviceInfo(name, rssi = rssi, serviceUUIDs = serviceUUIDs, serviceData = serviceData),
+    connectionManagerBuilder,
+    coroutineContext
+)

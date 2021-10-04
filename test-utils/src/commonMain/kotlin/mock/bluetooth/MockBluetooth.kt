@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.bluetooth.beacons
+package com.splendo.kaluga.test.mock.bluetooth
 
 import com.splendo.kaluga.bluetooth.BluetoothService
 import com.splendo.kaluga.bluetooth.UUID
@@ -23,19 +23,18 @@ import com.splendo.kaluga.bluetooth.device.Device
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
 
-class BluetoothMock(
+class MockBluetooth(
     private val coroutineScope: CoroutineScope
 ) : BluetoothService {
 
     val devices = MutableStateFlow(emptyList<Device>())
+    val isScanning = MutableStateFlow(false)
 
-    override val isEnabled = flowOf(true)
+    override val isEnabled = MutableStateFlow(true)
 
-    override fun startScanning(filter: Set<UUID>) { }
-    override fun stopScanning() { }
+    override fun startScanning(filter: Set<UUID>) { isScanning.value = true }
+    override fun stopScanning() { isScanning.value = false }
     override fun devices() = devices.asStateFlow()
-    override suspend fun isScanning() = flowOf(true).stateIn(coroutineScope)
+    override suspend fun isScanning() = isScanning.asStateFlow()
 }

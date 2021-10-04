@@ -19,13 +19,14 @@ package com.splendo.kaluga.bluetooth.beacons
 
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.test.SimpleFlowTest
+import com.splendo.kaluga.test.mock.bluetooth.MockBluetooth
 import kotlinx.coroutines.CoroutineScope
 
 open class BeaconFlowTest(
     timeoutMs: Long = 3_000
 ) : SimpleFlowTest<Set<BeaconInfo>>() {
 
-    private val bluetooth = BluetoothMock(scope)
+    private val bluetooth = MockBluetooth(coroutineScope = scope)
     private val beacons = Beacons(bluetooth, timeoutMs = timeoutMs)
 
     override val flow = suspend { beacons.beacons }

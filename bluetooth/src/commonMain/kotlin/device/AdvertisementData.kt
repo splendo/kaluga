@@ -19,12 +19,14 @@ package com.splendo.kaluga.bluetooth.device
 
 import com.splendo.kaluga.bluetooth.UUID
 
+typealias ServiceData = Map<UUID, ByteArray?>
+
 interface BaseAdvertisementData {
     val name: String?
     val manufacturerId: Int?
     val manufacturerData: ByteArray?
     val serviceUUIDs: List<UUID>
-    val serviceData: Map<UUID, ByteArray?>
+    val serviceData: ServiceData
     val txPowerLevel: Int
     val isConnectible: Boolean
 }
