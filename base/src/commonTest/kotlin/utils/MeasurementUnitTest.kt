@@ -69,10 +69,10 @@ class SciUnitTest {
 
     @Test
     fun lengthConversionTest() {
-        assertFor(1000, Millimeter, Meter, 0.1)
-        assertFor(1000, Centimeter, Meter, 100.0)
-        assertFor(1000, Decimeter, Meter, 0.0)
-        assertFor(1000, Decameter, Meter, 0.0)
+        assertFor(1000, Millimeter, Meter, 0.001)
+        assertFor(1000, Centimeter, Meter, 0.01)
+        assertFor(1000, Decimeter, Meter, 0.1)
+        assertFor(1000, Decameter, Meter, 10.0)
         assertFor(1000, Hectometer, Meter, 100.0)
         assertFor(1000, Kilometer, Meter, 1000.0)
         assertFor(1000, Inch, Meter, 0.0254, unitTranslationErrorTolerance)
@@ -81,14 +81,14 @@ class SciUnitTest {
         assertFor(1000, Mile, Meter, 1609.344, unitTranslationErrorTolerance)
 
         assertFor(1000, Meter, Millimeter, 1000.0)
-        assertFor(1000, Meter, Centimeter, 1000.0)
-        assertFor(1000, Meter, Decimeter, 1000.0)
-        assertFor(1000, Meter, Hectometer, 100.0)
+        assertFor(1000, Meter, Centimeter, 100.0)
+        assertFor(1000, Meter, Decimeter, 10.0)
+        assertFor(1000, Meter, Hectometer, 0.01)
         assertFor(1000, Meter, Kilometer, 0.001)
         assertFor(1000, Meter, Inch, 39.37007874, unitTranslationErrorTolerance)
         assertFor(1000, Meter, Foot, 3.280839895, unitTranslationErrorTolerance)
         assertFor(1000, Meter, Yard, 1.0936132983, unitTranslationErrorTolerance)
-        assertFor(1000, Meter, Mile, 0.0, unitTranslationErrorTolerance)
+        assertFor(1000, Meter, Mile, 0.000621371, unitTranslationErrorTolerance)
     }
 
     @Test
