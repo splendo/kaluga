@@ -23,8 +23,10 @@ import com.splendo.kaluga.resources.urlRanges
 import com.splendo.kaluga.resources.view.KalugaLabel
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ObjCAction
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
+import platform.CoreGraphics.CGFloat
 import platform.CoreGraphics.CGPointMake
 import platform.CoreGraphics.CGSizeMake
 import platform.Foundation.NSLocationInRange
@@ -74,9 +76,9 @@ class UILinkTapGesture(private val label: UILabel) : NSObject() {
         }
         val textContainer = NSTextContainer(labelSize).apply {
             // Configure textContainer
-            lineFragmentPadding = 0.0
-            lineBreakMode = label.lineBreakMode
-            maximumNumberOfLines = label.numberOfLines.toULong()
+            lineFragmentPadding = 0.0 as CGFloat
+            lineBreakMode = label.lineBreakMode.convert()
+            maximumNumberOfLines = label.numberOfLines.convert()
 
         }
         val layoutManager = NSLayoutManager().apply {
@@ -98,8 +100,8 @@ class UILinkTapGesture(private val label: UILabel) : NSObject() {
         val locationOfTouchInLabel = gesture.locationInView(label)
         val textBoundingBox = layoutManager.usedRectForTextContainer(textContainer)
         val textContainerOffset = CGPointMake(
-            ((labelSize.useContents { width } - textBoundingBox.useContents { size.width }) * alignmentOffset) - textBoundingBox.useContents { origin.x },
-            ((labelSize.useContents { height } - textBoundingBox.useContents { size.height }) * alignmentOffset) - textBoundingBox.useContents { origin.y }
+            (((labelSize.useContents { width } - textBoundingBox.useContents { size.width }) * alignmentOffset) - textBoundingBox.useContents { origin.x }) as CGFloat,
+            (((labelSize.useContents { height } - textBoundingBox.useContents { size.height }) * alignmentOffset) - textBoundingBox.useContents { origin.y }) as CGFloat
         ).useContents { this }
         val locationOfTouchInTextContainer = CGPointMake(locationOfTouchInLabel.useContents { x } - textContainerOffset.x,
             locationOfTouchInLabel.useContents { y } - textContainerOffset.y);
@@ -186,20 +188,20 @@ fun UITextView.bindTextView(label: KalugaLabel<*>) {
 }
 
 fun UILabel.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
-    numberOfLines = 0L
+    numberOfLines = 0
 }
 
 fun UITextView.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }
 
 fun UITextField.applyTextStyle(textStyle: TextStyle) {
-    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble()))
+    setFont(textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat))
     textColor = textStyle.color.uiColor
     textAlignment = textStyle.alignment.nsTextAlignment
 }

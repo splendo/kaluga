@@ -23,6 +23,7 @@ import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.uikit.nsTextAlignment
 import kotlinx.cinterop.CValue
 import kotlinx.cinterop.alloc
+import kotlinx.cinterop.convert
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.nativeHeap
 import kotlinx.cinterop.ptr
@@ -46,6 +47,7 @@ import platform.UIKit.NSMutableParagraphStyle
 import platform.UIKit.NSParagraphStyle
 import platform.UIKit.NSShadow
 import platform.UIKit.NSUnderlineStyleSingle
+import platform.darwin.NSUInteger
 import kotlin.math.max
 
 actual data class StyledString(val attributeString: NSAttributedString, actual val defaultTextStyle: TextStyle)
@@ -100,17 +102,17 @@ actual class StyledStringBuilder constructor(string: String, private val default
         }
         is StringStyleAttribute.CharacterStyleAttribute.Underline -> mapOf("NSUnderline" to NSUnderlineStyleSingle)
         is StringStyleAttribute.CharacterStyleAttribute.Strikethrough -> mapOf("NSStrikethrough" to NSUnderlineStyleSingle)
-        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble()))
+        is StringStyleAttribute.CharacterStyleAttribute.Font -> mapOf("NSFont" to font.fontWithSize(size.toDouble() as CGFloat))
         is StringStyleAttribute.CharacterStyleAttribute.TextStyle -> mapOf(
-            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble()),
+            "NSFont" to textStyle.font.fontWithSize(textStyle.size.toDouble() as CGFloat),
             "NSColor" to textStyle.color.uiColor
         )
         is StringStyleAttribute.CharacterStyleAttribute.Kerning -> mapOf("NSKern" to kern * defaultTextStyle.size)
         is StringStyleAttribute.CharacterStyleAttribute.Shadow -> mapOf(
             "NSShadow" to NSShadow().apply {
                 shadowColor = color.uiColor
-                shadowBlurRadius = blurRadius.toDouble()
-                shadowOffset = CGSizeMake(xOffset.toDouble(), yOffset.toDouble())
+                shadowBlurRadius = blurRadius.toDouble() as CGFloat
+                shadowOffset = CGSizeMake(xOffset.toDouble() as CGFloat, yOffset.toDouble() as CGFloat)
             }
         )
     }
@@ -136,30 +138,30 @@ actual class StyledStringBuilder constructor(string: String, private val default
 
                 when (this@updateParagraphAttribute) {
                     is StringStyleAttribute.ParagraphStyleAttribute.LeadingIndent -> {
-                        paragraphStyle.setHeadIndent(indent.toDouble())
-                        paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble())
+                        paragraphStyle.setHeadIndent(indent.toDouble() as CGFloat)
+                        paragraphStyle.setFirstLineHeadIndent(firstLineIndent.toDouble() as CGFloat)
                     }
                     is StringStyleAttribute.ParagraphStyleAttribute.LineSpacing -> {
-                        paragraphStyle.setLineSpacing(spacing.toDouble())
-                        paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble())
-                        paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble())
+                        paragraphStyle.setLineSpacing(spacing.toDouble() as CGFloat)
+                        paragraphStyle.setParagraphSpacing(paragraphSpacing.toDouble() as CGFloat)
+                        paragraphStyle.setParagraphSpacingBefore(paragraphSpacingBefore.toDouble() as CGFloat)
                     }
                     is StringStyleAttribute.ParagraphStyleAttribute.Alignment -> {
                         paragraphStyle.setAlignment(alignment.nsTextAlignment)
                     }
                 }
                 attributedString.addAttribute("NSParagraphStyle", paragraphStyle, matchedRange.readValue())
-                rangeToProcess = if (matchedRange.location != NSNotFound.toULong()) {
+                rangeToProcess = if (matchedRange.location != NSNotFound.toULong() as NSUInteger) {
                     val nextStart = matchedRange.location + matchedRange.length
                     NSMakeRange(
-                        nextStart,
+                        nextStart.convert(),
                         max(
                             0L,
                             range.useContents { this.length.toLong() } - nextStart.toLong()
-                        ).toULong()
+                        ).convert()
                     )
                 } else {
-                    NSMakeRange((range.range.last + 1).toULong(), 0)
+                    NSMakeRange((range.range.last + 1).convert(), 0)
                 }
             }
 
@@ -187,17 +189,17 @@ val NSAttributedString.urlRanges: List<Pair<NSRange, NSURL>> get() {
                 result.add(Pair(matchedRange, it))
             }
 
-            rangeToProcess = if (matchedRange.location != NSNotFound.toULong()) {
+            rangeToProcess = if (matchedRange.location != NSNotFound.toULong() as NSUInteger) {
                 val nextStart = matchedRange.location + matchedRange.length
                 NSMakeRange(
-                    nextStart,
+                    nextStart.convert(),
                     max(
                         0L,
                         range.useContents { this.length.toLong() } - nextStart.toLong()
-                    ).toULong()
+                    ).convert()
                 )
             } else {
-                NSMakeRange((range.range.last + 1).toULong(), 0)
+                NSMakeRange((range.range.last + 1).convert(), 0)
             }
         }
     }
