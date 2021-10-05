@@ -143,7 +143,7 @@ object Kilometer : ScientificUnit.MetricLength("km"), Serializable {
     const val KILOMETERS_IN_METER = 0.001
 }
 
-// Imperial Lenght
+// Imperial Length
 
 object Inch : ScientificUnit.ImperialLength("\'"), Serializable {
     const val INCHES_IN_METER = 39.37007874015748
