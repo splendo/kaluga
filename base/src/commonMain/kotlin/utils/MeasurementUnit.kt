@@ -42,9 +42,9 @@ import com.splendo.kaluga.base.utils.Yard.YARDS_IN_METER
 
 sealed interface MeasurementSystem {
     interface Metric : MeasurementSystem
-    interface USImperial : MeasurementSystem
+    interface USCustomary : MeasurementSystem
     interface UKImperial : MeasurementSystem
-    interface Imperial : USImperial, UKImperial
+    interface Imperial : USCustomary, UKImperial
 }
 
 sealed interface MeasurementType {
@@ -70,229 +70,625 @@ sealed class ScientificUnit<System : MeasurementSystem, Type : MeasurementType> 
         ScientificUnit<System, MeasurementType.Volume>(), Serializable
 
     sealed class MetricLength(override val symbol: String) :
-        Length<MeasurementSystem.Metric>(),
-        Serializable
+        Length<MeasurementSystem.Metric>(), Serializable {
+        abstract fun toMetric(value: Double, outUnit: MetricLength): Double
+        abstract fun toImperial(value: Double, outUnit: ImperialLength): Double
+    }
 
     sealed class ImperialLength(override val symbol: String) :
-        Length<MeasurementSystem.Imperial>(),
-        Serializable
+        Length<MeasurementSystem.Imperial>(), Serializable {
+        abstract fun toMetric(value: Double, outUnit: MetricLength): Double
+        abstract fun toImperial(value: Double, outUnit: ImperialLength): Double
+    }
 
     sealed class MetricTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.Metric>(), Serializable
+        Temperature<MeasurementSystem.Metric>(), Serializable {
+        abstract fun toMetric(value: Double, outUnit: MetricTemperature): Double
+        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
+        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
+    }
 
-    sealed class USImperialTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.USImperial>(), Serializable
+    sealed class USCustomaryTemperature(override val symbol: String) :
+        Temperature<MeasurementSystem.USCustomary>(), Serializable {
+        abstract fun toMetric(value: Double, outUnit: MetricTemperature): Double
+        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
+        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
+    }
 
     sealed class UKImperialTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.UKImperial>(), Serializable
+        Temperature<MeasurementSystem.UKImperial>(), Serializable {
+        abstract fun toMetric(value: Double, outUnit: MetricTemperature)
+        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
+        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
+    }
 
     sealed class MetricWeight(override val symbol: String) :
-        Weight<MeasurementSystem.Metric>(),
-        Serializable
+        Weight<MeasurementSystem.Metric>(), Serializable {
+        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
+        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
+        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
+        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
+    }
 
     sealed class ImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.Imperial>(),
-        Serializable
+        Weight<MeasurementSystem.Imperial>(), Serializable {
+        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
+        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
+        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
+        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
+    }
 
     sealed class USImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.USImperial>(), Serializable
+        Weight<MeasurementSystem.USCustomary>(), Serializable {
+        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
+        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
+        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
+        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
+    }
 
     sealed class UKImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.UKImperial>(), Serializable
+        Weight<MeasurementSystem.UKImperial>(), Serializable {
+        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
+        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
+        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
+        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
+    }
 
     sealed class MetricVolume(override val symbol: String) :
-        Volume<MeasurementSystem.Metric>(),
-        Serializable
+        Volume<MeasurementSystem.Metric>(), Serializable {
+        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
+        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
+        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
+    }
 
     sealed class USImperialVolume(override val symbol: String) :
-        Volume<MeasurementSystem.USImperial>(), Serializable
+        Volume<MeasurementSystem.USCustomary>(), Serializable {
+        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
+        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
+        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
+    }
 
     sealed class UKImperialVolume(override val symbol: String) :
-        Volume<MeasurementSystem.UKImperial>(), Serializable
+        Volume<MeasurementSystem.UKImperial>(), Serializable {
+        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
+        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
+        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
+    }
 }
 
 // Metric Length
 
 object Millimeter : ScientificUnit.MetricLength("mm"), Serializable {
     const val MILLIMETERS_IN_METER = 1000.0
+    override fun toMetric(value: Double, outUnit: MetricLength) =
+        convert(value, Millimeter, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength) =
+        convert(value, Millimeter, outUnit)
 }
 
 object Centimeter : ScientificUnit.MetricLength("cm"), Serializable {
     const val CENTIMETERS_IN_METER = 100.0
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Centimeter, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Centimeter, outUnit)
 }
 
 object Decimeter : ScientificUnit.MetricLength("dm"), Serializable {
     const val DECIMETERS_IN_METER = 10.0
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Decimeter, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Decimeter, outUnit)
 }
 
-object Meter : ScientificUnit.MetricLength("m"), Serializable
+object Meter : ScientificUnit.MetricLength("m"), Serializable {
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Meter, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Meter, outUnit)
+}
 
 object Decameter : ScientificUnit.MetricLength("dam"), Serializable {
     const val DECAMETERS_IN_METER = 0.1
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Decameter, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Decameter, outUnit)
 }
 
 object Hectometer : ScientificUnit.MetricLength("hm"), Serializable {
     const val HECTOMETERS_IN_METER = 0.01
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Hectometer, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Hectometer, outUnit)
 }
 
 object Kilometer : ScientificUnit.MetricLength("km"), Serializable {
     const val KILOMETERS_IN_METER = 0.001
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Kilometer, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Kilometer, outUnit)
 }
 
 // Imperial Length
 
 object Inch : ScientificUnit.ImperialLength("\'"), Serializable {
     const val INCHES_IN_METER = 39.37007874015748
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Inch, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Inch, outUnit)
 }
 
 object Foot : ScientificUnit.ImperialLength("\""), Serializable {
     const val FEET_IN_METER = 3.280839895013123
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Foot, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Foot, outUnit)
 }
 
 object Yard : ScientificUnit.ImperialLength("yd"), Serializable {
     const val YARDS_IN_METER = 1.0936132983377078
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Yard, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Yard, outUnit)
 }
 
 object Mile : ScientificUnit.ImperialLength("mi"), Serializable {
     const val MILES_IN_METER = 0.000621371192237334
+    override fun toMetric(value: Double, outUnit: MetricLength): Double =
+        convert(value, Mile, outUnit)
+
+    override fun toImperial(value: Double, outUnit: ImperialLength): Double =
+        convert(value, Mile, outUnit)
 }
 
 // Temperature
 
-object Celsius : ScientificUnit.MetricTemperature("°C"), Serializable
+object Celsius : ScientificUnit.MetricTemperature("°C"), Serializable {
+    override fun toMetric(value: Double, outUnit: MetricTemperature) =
+        convert(value, Celsius, outUnit)
+
+    override fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double =
+        convert(value, Celsius, outUnit)
+
+    override fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double =
+        convert(value, Celsius, outUnit)
+}
 
 object Kelvin : ScientificUnit.MetricTemperature("K"), Serializable {
     const val KELVIN_FREEZING = 273.15
+    override fun toMetric(value: Double, outUnit: MetricTemperature) =
+        convert(value, Kelvin, outUnit)
+
+    override fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double =
+        convert(value, Kelvin, outUnit)
+
+    override fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double =
+        convert(value, Kelvin, outUnit)
 }
 
-object Fahrenheit : ScientificUnit.USImperialTemperature("°F"), Serializable {
+object Fahrenheit : ScientificUnit.USCustomaryTemperature("°F"), Serializable {
     const val FAHRENHEIT_FREEZING = 32.00
+    override fun toMetric(value: Double, outUnit: MetricTemperature): Double =
+        convert(value, Fahrenheit, outUnit)
+
+    override fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double =
+        convert(value, Fahrenheit, outUnit)
+
+    override fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double =
+        convert(value, Fahrenheit, outUnit)
 }
 
 // Metric Weight
 
 object Microgram : ScientificUnit.MetricWeight("mcg"), Serializable {
     const val MICROGRAMS_IN_KILOGRAM = 1000000000.0
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Microgram, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Microgram, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Microgram, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Microgram, outUnit)
 }
 
 object Milligram : ScientificUnit.MetricWeight("mg"), Serializable {
     const val MILLIGRAMS_IN_KILOGRAM = 1000000.0
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Milligram, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Milligram, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Milligram, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Milligram, outUnit)
 }
 
 object Gram : ScientificUnit.MetricWeight("g"), Serializable {
     const val GRAMS_IN_KILOGRAM = 1000.0
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Gram, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Gram, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Gram, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Gram, outUnit)
 }
 
-object Kilogram : ScientificUnit.MetricWeight("kg"), Serializable
+object Kilogram : ScientificUnit.MetricWeight("kg"), Serializable {
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Kilogram, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Kilogram, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Kilogram, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Kilogram, outUnit)
+}
 
 object Tonne : ScientificUnit.MetricWeight("t"), Serializable {
     const val TONES_IN_KILOGRAM = 0.001
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Tonne, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Tonne, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Tonne, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Tonne, outUnit)
 }
 
 // Imperial Weight
 
 object Grain : ScientificUnit.ImperialWeight("gr"), Serializable {
     const val GRAINS_IN_KILOGRAM = 15432.358352941432
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Grain, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Grain, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Grain, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Grain, outUnit)
 }
 
 object Dram : ScientificUnit.ImperialWeight("dr"), Serializable {
     const val DRAMS_IN_KILOGRAM = 564.3833911932866
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Dram, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Dram, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Dram, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Dram, outUnit)
 }
 
 object Ounce : ScientificUnit.ImperialWeight("oz"), Serializable {
     const val OUNCES_IN_KILOGRAM = 35.27396194958041
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Ounce, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Ounce, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Ounce, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Ounce, outUnit)
 }
 
 object Pound : ScientificUnit.ImperialWeight("lb"), Serializable {
     const val POUNDS_IN_KILOGRAM = 2.204622621848776
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Pound, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Pound, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Pound, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Pound, outUnit)
 }
 
 object Stone : ScientificUnit.ImperialWeight("st"), Serializable {
     const val STONES_IN_KILOGRAM = 0.1574730444177697
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, Stone, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, Stone, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, Stone, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, Stone, outUnit)
 }
 
 // also long ton
 object ImperialTon : ScientificUnit.UKImperialWeight("ton"), Serializable {
     const val LONG_TONES_IN_KILOGRAM = 0.000984206527611
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, ImperialTon, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, ImperialTon, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, ImperialTon, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, ImperialTon, outUnit)
 }
 
 // also short ton
 object UsTon : ScientificUnit.USImperialWeight("ton"), Serializable {
     const val SHORT_TONES_IN_KILOGRAM = 0.001102311310924
+    override fun toMetricWeight(value: Double, outUnit: MetricWeight): Double =
+        convert(value, UsTon, outUnit)
+
+    override fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double =
+        convert(value, UsTon, outUnit)
+
+    override fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double =
+        convert(value, UsTon, outUnit)
+
+    override fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double =
+        convert(value, UsTon, outUnit)
 }
 
 // Metric Volume
 
-object CubicMeter : ScientificUnit.MetricVolume("cu m"), Serializable
+object CubicMeter : ScientificUnit.MetricVolume("cu m"), Serializable {
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, CubicMeter, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, CubicMeter, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, CubicMeter, outUnit)
+}
 
 object Liter : ScientificUnit.MetricVolume("l"), Serializable {
     const val LITERS_IN_CUBIC_METER = 1000.0
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, Liter, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, Liter, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, Liter, outUnit)
 }
 
 object Milliliter : ScientificUnit.MetricVolume("ml"), Serializable {
     const val MILLILITERS_IN_CUBIC_METER = 1000000.0
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, Milliliter, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, Milliliter, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, Milliliter, outUnit)
 }
 
 // Imperial
 
 object CubicInch : ScientificUnit.UKImperialVolume("cu in"), Serializable {
     const val CUBIC_INCHES_IN_CUBIC_METER = 61023.74409473229
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, CubicInch, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, CubicInch, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, CubicInch, outUnit)
 }
 
 object CubicFoot : ScientificUnit.UKImperialVolume("cu ft"), Serializable {
     const val CUBIC_FEET_IN_CUBIC_METER = 35.31466672148859
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, CubicFoot, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, CubicFoot, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, CubicFoot, outUnit)
 }
 
 // US Imperial
 
 object UsFluidDram : ScientificUnit.USImperialVolume("fl dr"), Serializable {
     const val US_FLUID_DRAM_IN_CUBIC_METER = 270512.18161474395
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsFluidDram, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsFluidDram, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsFluidDram, outUnit)
 }
 
 object UsFluidOunce : ScientificUnit.USImperialVolume("fl oz"), Serializable {
     const val US_FLUID_OUNCES_IN_LITER = 33814.022701842994
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsFluidOunce, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsFluidOunce, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsFluidOunce, outUnit)
 }
 
 object UsLegalCup : ScientificUnit.USImperialVolume("cup"), Serializable {
     const val US_LEGAL_CUPS_IN_CUBIC_METER = 4226.752837730375
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsLegalCup, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsLegalCup, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsLegalCup, outUnit)
 }
 
 object UsLiquidPint : ScientificUnit.USImperialVolume("pint"), Serializable {
     const val US_PINTS_IN_CUBIC_METER = 2113.376418865187
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsLiquidPint, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsLiquidPint, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsLiquidPint, outUnit)
 }
 
 object UsLiquidQuart : ScientificUnit.USImperialVolume("qt"), Serializable {
     const val US_QUARTS_IN_CUBIC_METER = 1056.688209432594
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsLiquidQuart, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsLiquidQuart, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsLiquidQuart, outUnit)
 }
 
 object UsLiquidGallon : ScientificUnit.USImperialVolume("gal"), Serializable {
     const val US_LIQUID_GALLONS_IN_CUBIC_METER = 264.1720523581484
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, UsLiquidGallon, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, UsLiquidGallon, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, UsLiquidGallon, outUnit)
 }
 
 // UK Imperial
 
 object ImperialFluidDram : ScientificUnit.UKImperialVolume("fl dr"), Serializable {
     const val IMPERIAL_FLUID_DRAM_IN_CUBIC_METER = 281560.63782283233
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialFluidDram, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialFluidDram, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialFluidDram, outUnit)
 }
 
 object ImperialFluidOunce : ScientificUnit.UKImperialVolume("fl oz"), Serializable {
     const val IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER = 35195.07972785405
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialFluidOunce, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialFluidOunce, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialFluidOunce, outUnit)
 }
 
 object ImperialCup : ScientificUnit.UKImperialVolume("cup"), Serializable {
     const val IMPERIAL_CUPS_IN_CUBIC_METER = 4000.0
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialCup, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialCup, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialCup, outUnit)
 }
 
 object ImperialPint : ScientificUnit.UKImperialVolume("pt"), Serializable {
     const val IMPERIAL_PINTS_IN_CUBIC_METER = 1759.753986392702
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialPint, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialPint, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialPint, outUnit)
 }
 
 object ImperialQuart : ScientificUnit.UKImperialVolume("qt"), Serializable {
     const val IMPERIAL_QUARTS_IN_CUBIC_METER = 879.8769931963512
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialQuart, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialQuart, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialQuart, outUnit)
 }
 
 object ImperialGallon : ScientificUnit.UKImperialVolume("gal"), Serializable {
     const val IMPERIAL_GALLONS_IN_CUBIC_METER = 219.96924829908778
+    override fun toMetricVolume(value: Double, outUnit: MetricVolume): Double =
+        convert(value, ImperialGallon, outUnit)
+
+    override fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double =
+        convert(value, ImperialGallon, outUnit)
+
+    override fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double =
+        convert(value, ImperialGallon, outUnit)
 }
 
 /**
