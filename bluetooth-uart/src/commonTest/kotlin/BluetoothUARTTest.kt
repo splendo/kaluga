@@ -53,7 +53,7 @@ class BluetoothUARTTest : BluetoothUARTFlowTest() {
         action {
             discoverDevices(
                 createDevice(
-                    name  = "Non-UART Device",
+                    name = "Non-UART Device",
                     connectionManagerBuilder = builder,
                     coroutineContext = scope.coroutineContext
                 )
@@ -65,7 +65,6 @@ class BluetoothUARTTest : BluetoothUARTFlowTest() {
         }
     }
 
-
     @Test
     fun testHasUARTTrue() = testWithFlow {
 
@@ -76,7 +75,7 @@ class BluetoothUARTTest : BluetoothUARTFlowTest() {
         action {
             discoverDevices(
                 createDevice(
-                    name  = "UART Device",
+                    name = "UART Device",
                     serviceUUIDs = listOf(uuidFrom(BluetoothUART.UART_SERVICE_UUID)),
                     connectionManagerBuilder = builder,
                     coroutineContext = scope.coroutineContext
