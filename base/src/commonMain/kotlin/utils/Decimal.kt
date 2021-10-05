@@ -57,11 +57,14 @@ sealed class RoundingMode {
     object RoundUp : RoundingMode()
 }
 
-expect fun toPlatformSpecificRoundCode(roundingMode: RoundingMode): Int
+expect fun Decimal.round(scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal
+
+expect fun RoundingMode.toNativeRoundCode(): Int
 
 expect fun Double.toDecimal(): Decimal
+expect fun Int.toDecimal(): Decimal
 expect fun String.toDecimal(): Decimal
 
 expect fun Decimal.toDouble(): Double
 expect fun Decimal.toString(): String
-
+expect fun Decimal.toInt(): Int

@@ -17,10 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
-import com.splendo.kaluga.base.utils.RoundingMode.RoundHalfEven
-import com.splendo.kaluga.base.utils.RoundingMode.RoundUp
-
 actual typealias Decimal = Double
 
 actual operator fun Decimal.plus(value: Decimal): Decimal = this + value
@@ -63,10 +59,14 @@ actual fun Decimal.times(
     roundingMode: RoundingMode
 ): Decimal = this * value
 
-actual fun Double.toDecimal() : Decimal = TODO()
-actual fun String.toDecimal() : Decimal= TODO()
+actual fun Decimal.round(scale: Int, roundingMode: RoundingMode): Decimal = this
+
+actual fun Double.toDecimal(): Decimal = this
+actual fun Int.toDecimal(): Decimal = this.toDouble()
+actual fun String.toDecimal(): Decimal = this.toDouble()
 
 actual fun Decimal.toDouble(): Double = this
+actual fun Decimal.toInt(): Int = this.toInt()
 actual fun Decimal.toString(): String = this.toString()
 
-actual fun toPlatformSpecificRoundCode(roundingMode: RoundingMode): Int = TODO()
+actual fun RoundingMode.toNativeRoundCode(): Int = TODO()

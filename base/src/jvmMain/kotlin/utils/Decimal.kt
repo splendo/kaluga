@@ -22,79 +22,80 @@ import com.splendo.kaluga.base.utils.RoundingMode.RoundHalfEven
 import com.splendo.kaluga.base.utils.RoundingMode.RoundUp
 import java.math.BigDecimal
 import java.math.MathContext
-import java.math.RoundingMode
+import java.math.RoundingMode as NativeRoundingMode
 
 actual typealias Decimal = BigDecimal
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = this.add(value)
+actual operator fun Decimal.plus(value: Decimal) = this.add(value)
 
-actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.add(value).setScale(scale)
+actual fun Decimal.plus(value: Decimal, scale: Int) = this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
 actual fun Decimal.plus(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.add(value).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+) = this.add(value).setScale(scale, roundingMode.toNativeRoundCode())
 
-actual operator fun Decimal.minus(value: Decimal): Decimal = this.subtract(value)
+actual operator fun Decimal.minus(value: Decimal) = this.subtract(value)
 
-actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.subtract(value).setScale(scale)
+actual fun Decimal.minus(value: Decimal, scale: Int) =
+    this.subtract(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
 actual fun Decimal.minus(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.subtract(value).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+) = this.subtract(value).setScale(scale, roundingMode.toNativeRoundCode())
 
-actual operator fun Decimal.div(value: Decimal): Decimal =
-    this.divide(value, MathContext.DECIMAL128)
+actual operator fun Decimal.div(value: Decimal) = this.divide(value, MathContext.DECIMAL128)
 
-actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
-    this.divide(value, MathContext.DECIMAL128).setScale(scale, MathContext.DECIMAL128.roundingMode)
+actual fun Decimal.div(value: Decimal, scale: Int) =
+    this.divide(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.divide(
-        value,
-        MathContext(
-            MathContext.DECIMAL128.precision,
-            RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode))
-        )
-    ).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+) = this.divide(
+    value,
+    MathContext(
+        MathContext.DECIMAL128.precision,
+        NativeRoundingMode.valueOf(roundingMode.toNativeRoundCode())
+    )
+).setScale(scale, roundingMode.toNativeRoundCode())
 
-actual operator fun Decimal.times(value: Decimal): Decimal =
+actual operator fun Decimal.times(value: Decimal) =
     this.multiply(value, MathContext.DECIMAL128)
 
-actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
-    this.multiply(value, MathContext.DECIMAL128).setScale(scale)
+actual fun Decimal.times(value: Decimal, scale: Int) =
+    this.multiply(value, MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
 actual fun Decimal.times(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.multiply(
-        value,
-        MathContext(
-            MathContext.DECIMAL128.precision,
-            RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode))
-        )
-    ).setScale(scale, RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode)))
+    roundingMode: RoundingMode
+) = this.multiply(
+    value,
+    MathContext(
+        MathContext.DECIMAL128.precision,
+        NativeRoundingMode.valueOf(roundingMode.toNativeRoundCode())
+    )
+).setScale(scale, NativeRoundingMode.valueOf(roundingMode.toNativeRoundCode()))
 
-actual fun Double.toDecimal(): BigDecimal = BigDecimal.valueOf(this)
+actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
+    this.round(MathContext(scale + this.toInt().length(), NativeRoundingMode.valueOf(roundingMode.toNativeRoundCode())))
+
+actual fun Double.toDecimal() = BigDecimal.valueOf(this)
+actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
 actual fun String.toDecimal() = BigDecimal(this)
 
-actual fun Decimal.toDouble(): Double = this.toDouble()
-actual fun Decimal.toString(): String = this.stripTrailingZeros().toString()
+actual fun Decimal.toDouble() = this.toDouble()
+actual fun Decimal.toInt() = this.toInt()
+actual fun Decimal.toString() = this.stripTrailingZeros().toString()
 
-actual fun toPlatformSpecificRoundCode(roundingMode: com.splendo.kaluga.base.utils.RoundingMode) =
-    when (roundingMode) {
-        RoundDown -> RoundingMode.DOWN.ordinal
-        RoundHalfEven -> RoundingMode.HALF_EVEN.ordinal
-        RoundUp -> RoundingMode.UP.ordinal
+actual fun RoundingMode.toNativeRoundCode() =
+    when (this) {
+        RoundDown -> NativeRoundingMode.DOWN.ordinal
+        RoundHalfEven -> NativeRoundingMode.HALF_EVEN.ordinal
+        RoundUp -> NativeRoundingMode.UP.ordinal
     }
