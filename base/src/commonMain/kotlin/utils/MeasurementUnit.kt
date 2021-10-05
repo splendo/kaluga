@@ -57,6 +57,9 @@ sealed interface MeasurementType {
 sealed class ScientificUnit<System : MeasurementSystem, Type : MeasurementType> : Serializable {
     abstract val symbol: String
 
+    abstract fun toSIUnit(value: Decimal): Decimal
+    abstract fun fromSIUnit(value: Decimal): Decimal
+
     sealed class Length<System : MeasurementSystem> :
         ScientificUnit<System, MeasurementType.Length>(), Serializable
 
@@ -70,101 +73,48 @@ sealed class ScientificUnit<System : MeasurementSystem, Type : MeasurementType> 
         ScientificUnit<System, MeasurementType.Volume>(), Serializable
 
     sealed class MetricLength(override val symbol: String) :
-        Length<MeasurementSystem.Metric>(), Serializable {
-        abstract fun toMetric(value: Double, outUnit: MetricLength): Double
-        abstract fun toImperial(value: Double, outUnit: ImperialLength): Double
-    }
+        Length<MeasurementSystem.Metric>(), Serializable
 
     sealed class ImperialLength(override val symbol: String) :
-        Length<MeasurementSystem.Imperial>(), Serializable {
-        abstract fun toMetric(value: Double, outUnit: MetricLength): Double
-        abstract fun toImperial(value: Double, outUnit: ImperialLength): Double
-    }
+        Length<MeasurementSystem.Imperial>(), Serializable
 
     sealed class MetricTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.Metric>(), Serializable {
-        abstract fun toMetric(value: Double, outUnit: MetricTemperature): Double
-        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
-        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
-    }
+        Temperature<MeasurementSystem.Metric>(), Serializable
 
     sealed class USCustomaryTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.USCustomary>(), Serializable {
-        abstract fun toMetric(value: Double, outUnit: MetricTemperature): Double
-        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
-        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
-    }
+        Temperature<MeasurementSystem.USCustomary>(), Serializable
 
     sealed class UKImperialTemperature(override val symbol: String) :
-        Temperature<MeasurementSystem.UKImperial>(), Serializable {
-        abstract fun toMetric(value: Double, outUnit: MetricTemperature)
-        abstract fun toUSCustomary(value: Double, outUnit: USCustomaryTemperature): Double
-        abstract fun toUKImperialTemperature(value: Double, outUnit: UKImperialTemperature): Double
-    }
+        Temperature<MeasurementSystem.UKImperial>(), Serializable
 
     sealed class MetricWeight(override val symbol: String) :
-        Weight<MeasurementSystem.Metric>(), Serializable {
-        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
-        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
-        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
-        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
-    }
+        Weight<MeasurementSystem.Metric>(), Serializable
 
     sealed class ImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.Imperial>(), Serializable {
-        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
-        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
-        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
-        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
-    }
+        Weight<MeasurementSystem.Imperial>(), Serializable
 
     sealed class USImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.USCustomary>(), Serializable {
-        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
-        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
-        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
-        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
-    }
+        Weight<MeasurementSystem.USCustomary>(), Serializable
 
     sealed class UKImperialWeight(override val symbol: String) :
-        Weight<MeasurementSystem.UKImperial>(), Serializable {
-        abstract fun toMetricWeight(value: Double, outUnit: MetricWeight): Double
-        abstract fun toImperialWeight(value: Double, outUnit: ImperialWeight): Double
-        abstract fun toUSCustomaryWeight(value: Double, outUnit: USImperialWeight): Double
-        abstract fun toUKImperialWeight(value: Double, outUnit: UKImperialWeight): Double
-    }
+        Weight<MeasurementSystem.UKImperial>(), Serializable
 
     sealed class MetricVolume(override val symbol: String) :
-        Volume<MeasurementSystem.Metric>(), Serializable {
-        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
-        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
-        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
-    }
+        Volume<MeasurementSystem.Metric>(), Serializable
 
     sealed class USImperialVolume(override val symbol: String) :
-        Volume<MeasurementSystem.USCustomary>(), Serializable {
-        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
-        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
-        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
-    }
+        Volume<MeasurementSystem.USCustomary>(), Serializable
 
     sealed class UKImperialVolume(override val symbol: String) :
-        Volume<MeasurementSystem.UKImperial>(), Serializable {
-        abstract fun toMetricVolume(value: Double, outUnit: MetricVolume): Double
-        abstract fun toUSImperialVolume(value: Double, outUnit: USImperialVolume): Double
-        abstract fun toUKImperialVolume(value: Double, outUnit: UKImperialVolume): Double
-    }
+        Volume<MeasurementSystem.UKImperial>(), Serializable
 }
 
 // Metric Length
 
 object Millimeter : ScientificUnit.MetricLength("mm"), Serializable {
     const val MILLIMETERS_IN_METER = 1000.0
-    override fun toMetric(value: Double, outUnit: MetricLength) =
-        convert(value, Millimeter, outUnit)
-
-    override fun toImperial(value: Double, outUnit: ImperialLength) =
-        convert(value, Millimeter, outUnit)
+    override fun fromSIUnit(value: Decimal): Decimal = value * MILLIMETERS_IN_METER.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / MILLIMETERS_IN_METER.toDecimal()
 }
 
 object Centimeter : ScientificUnit.MetricLength("cm"), Serializable {
@@ -691,128 +641,135 @@ object ImperialGallon : ScientificUnit.UKImperialVolume("gal"), Serializable {
         convert(value, ImperialGallon, outUnit)
 }
 
-/**
- * Translates from other systems to base SI
- *
- * @param value The non SI value to translate
- * @param inUnit The type of the input [value] we are translating from
- */
-private fun toBaseSi(value: Decimal, inUnit: ScientificUnit<*, *>): Decimal {
-    return when (inUnit) {
-        Decimeter -> value / DECIMETERS_IN_METER.toDecimal()
-        Centimeter -> value / CENTIMETERS_IN_METER.toDecimal()
-        Millimeter -> value / MILLIMETERS_IN_METER.toDecimal()
-        Decameter -> value / DECAMETERS_IN_METER.toDecimal()
-        Hectometer -> value / HECTOMETERS_IN_METER.toDecimal()
-        Kilometer -> value / KILOMETERS_IN_METER.toDecimal()
-        Meter -> value
-        Inch -> value / INCHES_IN_METER.toDecimal()
-        Foot -> value / FEET_IN_METER.toDecimal()
-        Yard -> value / YARDS_IN_METER.toDecimal()
-        Mile -> value / MILES_IN_METER.toDecimal()
-        Celsius -> value + KELVIN_FREEZING.toDecimal()
-        Kelvin -> value
-        Fahrenheit -> (value - FAHRENHEIT_FREEZING.toDecimal()) * 5.0.toDecimal() / 9.0.toDecimal() + KELVIN_FREEZING.toDecimal()
-        Tonne -> value / TONES_IN_KILOGRAM.toDecimal()
-        Kilogram -> value
-        Gram -> value / GRAMS_IN_KILOGRAM.toDecimal()
-        Milligram -> value / MILLIGRAMS_IN_KILOGRAM.toDecimal()
-        Microgram -> value / MICROGRAMS_IN_KILOGRAM.toDecimal()
-        Stone -> value / STONES_IN_KILOGRAM.toDecimal()
-        Pound -> value / POUNDS_IN_KILOGRAM.toDecimal()
-        Ounce -> value / OUNCES_IN_KILOGRAM.toDecimal()
-        Dram -> value / DRAMS_IN_KILOGRAM.toDecimal()
-        Grain -> value / GRAINS_IN_KILOGRAM.toDecimal()
-        UsTon -> value / SHORT_TONES_IN_KILOGRAM.toDecimal()
-        ImperialTon -> value / LONG_TONES_IN_KILOGRAM.toDecimal()
-        CubicMeter -> value
-        Liter -> value / LITERS_IN_CUBIC_METER.toDecimal()
-        Milliliter -> value / MILLILITERS_IN_CUBIC_METER.toDecimal()
-        UsLiquidGallon -> value / US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
-        UsLiquidQuart -> value / US_QUARTS_IN_CUBIC_METER.toDecimal()
-        UsLiquidPint -> value / US_PINTS_IN_CUBIC_METER.toDecimal()
-        UsLegalCup -> value / US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
-        UsFluidOunce -> value / US_FLUID_OUNCES_IN_LITER.toDecimal()
-        UsFluidDram -> value / US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-        ImperialGallon -> value / IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
-        ImperialQuart -> value / IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
-        ImperialPint -> value / IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
-        ImperialCup -> value / IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
-        ImperialFluidOunce -> value / IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
-        ImperialFluidDram -> value / IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-        CubicFoot -> value / CUBIC_FEET_IN_CUBIC_METER.toDecimal()
-        CubicInch -> value / CUBIC_INCHES_IN_CUBIC_METER.toDecimal()
-    }
+fun <Unit : MeasurementType> ScientificUnit<*, Unit>.convert(value: Decimal, to: ScientificUnit<*, Unit>): Decimal = to.fromSIUnit(toSIUnit(value))
+fun <Unit : MeasurementType> ScientificUnit<MeasurementSystem.Metric, Unit>.toUSCustomary(value: Decimal, to: ScientificUnit<MeasurementSystem.USCustomary, Unit>): Decimal { return value }
+
+fun test() {
+    Meter.convert((10.0).toDecimal(), Fahrenheit)
 }
 
-/**
- * Translates from base SI to other systems
- *
- * @param value Value in base SI system
- * @param toUnit The type of the return value
- */
-private fun fromBaseSi(value: Decimal, toUnit: ScientificUnit<*, *>): Double {
-    return when (toUnit) {
-        Decimeter -> value * DECIMETERS_IN_METER.toDecimal()
-        Centimeter -> value * CENTIMETERS_IN_METER.toDecimal()
-        Millimeter -> value * MILLIMETERS_IN_METER.toDecimal()
-        Decameter -> value * DECAMETERS_IN_METER.toDecimal()
-        Hectometer -> value * HECTOMETERS_IN_METER.toDecimal()
-        Kilometer -> value * KILOMETERS_IN_METER.toDecimal()
-        Meter -> value
-        Inch -> value * INCHES_IN_METER.toDecimal()
-        Foot -> value * FEET_IN_METER.toDecimal()
-        Yard -> value * YARDS_IN_METER.toDecimal()
-        Mile -> value * MILES_IN_METER.toDecimal()
-        Celsius -> value - KELVIN_FREEZING.toDecimal()
-        Kelvin -> value
-        Fahrenheit -> (value - KELVIN_FREEZING.toDecimal()) * 9.0.toDecimal() / 5.0.toDecimal() + FAHRENHEIT_FREEZING.toDecimal()
-        Tonne -> value * TONES_IN_KILOGRAM.toDecimal()
-        Kilogram -> value
-        Gram -> value * GRAMS_IN_KILOGRAM.toDecimal()
-        Milligram -> value * MILLIGRAMS_IN_KILOGRAM.toDecimal()
-        Microgram -> value * MICROGRAMS_IN_KILOGRAM.toDecimal()
-        Stone -> value * STONES_IN_KILOGRAM.toDecimal()
-        Pound -> value * POUNDS_IN_KILOGRAM.toDecimal()
-        Ounce -> value * OUNCES_IN_KILOGRAM.toDecimal()
-        Dram -> value * DRAMS_IN_KILOGRAM.toDecimal()
-        Grain -> value * GRAINS_IN_KILOGRAM.toDecimal()
-        UsTon -> value * SHORT_TONES_IN_KILOGRAM.toDecimal()
-        ImperialTon -> value * LONG_TONES_IN_KILOGRAM.toDecimal()
-        CubicMeter -> value
-        Liter -> value * LITERS_IN_CUBIC_METER.toDecimal()
-        Milliliter -> value * MILLILITERS_IN_CUBIC_METER.toDecimal()
-        UsLiquidGallon -> value * US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
-        UsLiquidQuart -> value * US_QUARTS_IN_CUBIC_METER.toDecimal()
-        UsLiquidPint -> value * US_PINTS_IN_CUBIC_METER.toDecimal()
-        UsLegalCup -> value * US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
-        UsFluidOunce -> value * US_FLUID_OUNCES_IN_LITER.toDecimal()
-        UsFluidDram -> value * US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-        ImperialGallon -> value * IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
-        ImperialQuart -> value * IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
-        ImperialPint -> value * IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
-        ImperialCup -> value * IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
-        ImperialFluidOunce -> value * IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
-        ImperialFluidDram -> value * IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-        CubicFoot -> value * CUBIC_FEET_IN_CUBIC_METER.toDecimal()
-        CubicInch -> value * CUBIC_INCHES_IN_CUBIC_METER.toDecimal()
-    }.toDouble()
-}
-
-private fun fromTo(
-    value: Decimal,
-    inputType: ScientificUnit<*, *>,
-    outputType: ScientificUnit<*, *>
-) = fromBaseSi(toBaseSi(value, inputType), outputType)
-
-fun convert(value: Double, from: ScientificUnit.Length<*>, to: ScientificUnit.Length<*>) =
-    fromTo(value.toDecimal(), from, to)
-
-fun convert(value: Double, from: ScientificUnit.Weight<*>, to: ScientificUnit.Weight<*>) =
-    fromTo(value.toDecimal(), from, to)
-
-fun convert(value: Double, from: ScientificUnit.Temperature<*>, to: ScientificUnit.Temperature<*>) =
-    fromTo(value.toDecimal(), from, to)
-
-fun convert(value: Double, from: ScientificUnit.Volume<*>, to: ScientificUnit.Volume<*>) =
-    fromTo(value.toDecimal(), from, to)
+// /**
+//  * Translates from other systems to base SI
+//  *
+//  * @param value The non SI value to translate
+//  * @param inUnit The type of the input [value] we are translating from
+//  */
+// private fun toBaseSi(value: Decimal, inUnit: ScientificUnit<*, *>): Decimal {
+//     return when (inUnit) {
+//         Decimeter -> value / DECIMETERS_IN_METER.toDecimal()
+//         Centimeter -> value / CENTIMETERS_IN_METER.toDecimal()
+//         Millimeter -> value / MILLIMETERS_IN_METER.toDecimal()
+//         Decameter -> value / DECAMETERS_IN_METER.toDecimal()
+//         Hectometer -> value / HECTOMETERS_IN_METER.toDecimal()
+//         Kilometer -> value / KILOMETERS_IN_METER.toDecimal()
+//         Meter -> value
+//         Inch -> value / INCHES_IN_METER.toDecimal()
+//         Foot -> value / FEET_IN_METER.toDecimal()
+//         Yard -> value / YARDS_IN_METER.toDecimal()
+//         Mile -> value / MILES_IN_METER.toDecimal()
+//         Celsius -> value + KELVIN_FREEZING.toDecimal()
+//         Kelvin -> value
+//         Fahrenheit -> (value - FAHRENHEIT_FREEZING.toDecimal()) * 5.0.toDecimal() / 9.0.toDecimal() + KELVIN_FREEZING.toDecimal()
+//         Tonne -> value / TONES_IN_KILOGRAM.toDecimal()
+//         Kilogram -> value
+//         Gram -> value / GRAMS_IN_KILOGRAM.toDecimal()
+//         Milligram -> value / MILLIGRAMS_IN_KILOGRAM.toDecimal()
+//         Microgram -> value / MICROGRAMS_IN_KILOGRAM.toDecimal()
+//         Stone -> value / STONES_IN_KILOGRAM.toDecimal()
+//         Pound -> value / POUNDS_IN_KILOGRAM.toDecimal()
+//         Ounce -> value / OUNCES_IN_KILOGRAM.toDecimal()
+//         Dram -> value / DRAMS_IN_KILOGRAM.toDecimal()
+//         Grain -> value / GRAINS_IN_KILOGRAM.toDecimal()
+//         UsTon -> value / SHORT_TONES_IN_KILOGRAM.toDecimal()
+//         ImperialTon -> value / LONG_TONES_IN_KILOGRAM.toDecimal()
+//         CubicMeter -> value
+//         Liter -> value / LITERS_IN_CUBIC_METER.toDecimal()
+//         Milliliter -> value / MILLILITERS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidGallon -> value / US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidQuart -> value / US_QUARTS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidPint -> value / US_PINTS_IN_CUBIC_METER.toDecimal()
+//         UsLegalCup -> value / US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
+//         UsFluidOunce -> value / US_FLUID_OUNCES_IN_LITER.toDecimal()
+//         UsFluidDram -> value / US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+//         ImperialGallon -> value / IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
+//         ImperialQuart -> value / IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
+//         ImperialPint -> value / IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
+//         ImperialCup -> value / IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
+//         ImperialFluidOunce -> value / IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
+//         ImperialFluidDram -> value / IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+//         CubicFoot -> value / CUBIC_FEET_IN_CUBIC_METER.toDecimal()
+//         CubicInch -> value / CUBIC_INCHES_IN_CUBIC_METER.toDecimal()
+//     }
+// }
+//
+// /**
+//  * Translates from base SI to other systems
+//  *
+//  * @param value Value in base SI system
+//  * @param toUnit The type of the return value
+//  */
+// private fun fromBaseSi(value: Decimal, toUnit: ScientificUnit<*, *>): Double {
+//     return when (toUnit) {
+//         Decimeter -> value * DECIMETERS_IN_METER.toDecimal()
+//         Centimeter -> value * CENTIMETERS_IN_METER.toDecimal()
+//         Millimeter -> value * MILLIMETERS_IN_METER.toDecimal()
+//         Decameter -> value * DECAMETERS_IN_METER.toDecimal()
+//         Hectometer -> value * HECTOMETERS_IN_METER.toDecimal()
+//         Kilometer -> value * KILOMETERS_IN_METER.toDecimal()
+//         Meter -> value
+//         Inch -> value * INCHES_IN_METER.toDecimal()
+//         Foot -> value * FEET_IN_METER.toDecimal()
+//         Yard -> value * YARDS_IN_METER.toDecimal()
+//         Mile -> value * MILES_IN_METER.toDecimal()
+//         Celsius -> value - KELVIN_FREEZING.toDecimal()
+//         Kelvin -> value
+//         Fahrenheit -> (value - KELVIN_FREEZING.toDecimal()) * 9.0.toDecimal() / 5.0.toDecimal() + FAHRENHEIT_FREEZING.toDecimal()
+//         Tonne -> value * TONES_IN_KILOGRAM.toDecimal()
+//         Kilogram -> value
+//         Gram -> value * GRAMS_IN_KILOGRAM.toDecimal()
+//         Milligram -> value * MILLIGRAMS_IN_KILOGRAM.toDecimal()
+//         Microgram -> value * MICROGRAMS_IN_KILOGRAM.toDecimal()
+//         Stone -> value * STONES_IN_KILOGRAM.toDecimal()
+//         Pound -> value * POUNDS_IN_KILOGRAM.toDecimal()
+//         Ounce -> value * OUNCES_IN_KILOGRAM.toDecimal()
+//         Dram -> value * DRAMS_IN_KILOGRAM.toDecimal()
+//         Grain -> value * GRAINS_IN_KILOGRAM.toDecimal()
+//         UsTon -> value * SHORT_TONES_IN_KILOGRAM.toDecimal()
+//         ImperialTon -> value * LONG_TONES_IN_KILOGRAM.toDecimal()
+//         CubicMeter -> value
+//         Liter -> value * LITERS_IN_CUBIC_METER.toDecimal()
+//         Milliliter -> value * MILLILITERS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidGallon -> value * US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidQuart -> value * US_QUARTS_IN_CUBIC_METER.toDecimal()
+//         UsLiquidPint -> value * US_PINTS_IN_CUBIC_METER.toDecimal()
+//         UsLegalCup -> value * US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
+//         UsFluidOunce -> value * US_FLUID_OUNCES_IN_LITER.toDecimal()
+//         UsFluidDram -> value * US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+//         ImperialGallon -> value * IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
+//         ImperialQuart -> value * IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
+//         ImperialPint -> value * IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
+//         ImperialCup -> value * IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
+//         ImperialFluidOunce -> value * IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
+//         ImperialFluidDram -> value * IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+//         CubicFoot -> value * CUBIC_FEET_IN_CUBIC_METER.toDecimal()
+//         CubicInch -> value * CUBIC_INCHES_IN_CUBIC_METER.toDecimal()
+//     }.toDouble()
+// }
+//
+// private fun fromTo(
+//     value: Decimal,
+//     inputType: ScientificUnit<*, *>,
+//     outputType: ScientificUnit<*, *>
+// ) = fromBaseSi(toBaseSi(value, inputType), outputType)
+//
+// fun convert(value: Double, from: ScientificUnit.Length<*>, to: ScientificUnit.Length<*>) =
+//     fromTo(value.toDecimal(), from, to)
+//
+// fun convert(value: Double, from: ScientificUnit.Weight<*>, to: ScientificUnit.Weight<*>) =
+//     fromTo(value.toDecimal(), from, to)
+//
+// fun convert(value: Double, from: ScientificUnit.Temperature<*>, to: ScientificUnit.Temperature<*>) =
+//     fromTo(value.toDecimal(), from, to)
+//
+// fun convert(value: Double, from: ScientificUnit.Volume<*>, to: ScientificUnit.Volume<*>) =
+//     fromTo(value.toDecimal(), from, to)
