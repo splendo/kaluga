@@ -4,8 +4,6 @@ import com.splendo.kaluga.base.utils.Centimeter.CENTIMETERS_IN_METER
 import com.splendo.kaluga.base.utils.CubicFoot.CUBIC_FEET_IN_CUBIC_METER
 import com.splendo.kaluga.base.utils.CubicInch.CUBIC_INCHES_IN_CUBIC_METER
 import com.splendo.kaluga.base.utils.Decameter.DECAMETERS_IN_METER
-import com.splendo.kaluga.base.utils.Decimals.toDecimal
-import com.splendo.kaluga.base.utils.Decimals.toDouble
 import com.splendo.kaluga.base.utils.Decimeter.DECIMETERS_IN_METER
 import com.splendo.kaluga.base.utils.Dram.DRAMS_IN_KILOGRAM
 import com.splendo.kaluga.base.utils.Fahrenheit.FAHRENHEIT_FREEZING

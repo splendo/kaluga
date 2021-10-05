@@ -23,16 +23,16 @@ expect operator fun Decimal.plus(value: Decimal): Decimal
 expect fun Decimal.plus(value: Decimal, scale: Int): Decimal
 expect fun Decimal.plus(
     value: Decimal,
-    scale: Int = 10,
-    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+    scale: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
 expect operator fun Decimal.minus(value: Decimal): Decimal
 expect fun Decimal.minus(value: Decimal, scale: Int): Decimal
 expect fun Decimal.minus(
     value: Decimal,
-    scale: Int = 10,
-    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+    scale: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
 expect operator fun Decimal.div(value: Decimal): Decimal
@@ -40,7 +40,7 @@ expect fun Decimal.div(value: Decimal, scale: Int): Decimal
 expect fun Decimal.div(
     value: Decimal,
     scale: Int,
-    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
 expect operator fun Decimal.times(value: Decimal): Decimal
@@ -48,23 +48,20 @@ expect fun Decimal.times(value: Decimal, scale: Int): Decimal
 expect fun Decimal.times(
     value: Decimal,
     scale: Int,
-    roundingMode: Int = Decimals.ROUND_HALF_EVEN
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
-expect object Decimals {
-
-    fun Double.toDecimal(): Decimal
-    fun String.toDecimal(): Decimal
-
-    fun Decimal.toDouble(): Double
-    fun Decimal.toString(): String
-
-    // Rounding mode to round towards zero.
-    val ROUND_DOWN: Int
-
-    // Rounding mode to round towards the "nearest neighbor" unless both neighbors are equidistant, in which case, round towards the even neighbor.
-    val ROUND_HALF_EVEN: Int
-
-    // Rounding mode to round away from zero.
-    val ROUND_UP: Int
+sealed class RoundingMode {
+    object RoundDown : RoundingMode()
+    object RoundHalfEven : RoundingMode()
+    object RoundUp : RoundingMode()
 }
+
+expect fun toPlatformSpecificRoundCode(roundingMode: RoundingMode): Int
+
+expect fun Double.toDecimal(): Decimal
+expect fun String.toDecimal(): Decimal
+
+expect fun Decimal.toDouble(): Double
+expect fun Decimal.toString(): String
+

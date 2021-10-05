@@ -39,11 +39,11 @@ actual fun Decimal.plus(value: Decimal, scale: Int): Decimal =
         )
     )
 
-actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode): Decimal =
     decimalNumberByAdding(
         value,
         NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.byValue(roundingMode.toULong()),
+            roundingMode = toNSRoundingMode(roundingMode),
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -67,11 +67,11 @@ actual fun Decimal.minus(value: Decimal, scale: Int): Decimal =
         )
     )
 
-actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode): Decimal =
     decimalNumberBySubtracting(
         value,
         NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.byValue(roundingMode.toULong()),
+            roundingMode = toNSRoundingMode(roundingMode),
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -95,11 +95,11 @@ actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
         )
     )
 
-actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode): Decimal =
     decimalNumberByDividingBy(
         value,
         NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.byValue(roundingMode.toULong()),
+            roundingMode = toNSRoundingMode(roundingMode),
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -123,11 +123,11 @@ actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
         )
     )
 
-actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal =
+actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode): Decimal =
     decimalNumberByMultiplyingBy(
         value,
         NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.byValue(roundingMode.toULong()),
+            roundingMode = toNSRoundingMode(roundingMode),
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -136,18 +136,18 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: Int): Decimal
         )
     )
 
-actual object Decimals {
+actual fun Double.toDecimal() = NSDecimalNumber(this)
+actual fun String.toDecimal() = NSDecimalNumber(this)
 
-    actual fun Double.toDecimal() = NSDecimalNumber(this)
-    actual fun String.toDecimal() = NSDecimalNumber(this)
+actual fun Decimal.toDouble(): Double = this.doubleValue
+actual fun Decimal.toString(): String = this.stringValue
 
-    actual fun Decimal.toDouble(): Double = this.doubleValue
-    actual fun Decimal.toString(): String = this.stringValue
+actual fun toPlatformSpecificRoundCode(roundingMode: RoundingMode) =
+    when (roundingMode) {
+        RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown.ordinal
+        RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers.ordinal
+        RoundingMode.RoundUp -> NSRoundingMode.NSRoundUp.ordinal
+    }
 
-    actual val ROUND_DOWN: Int
-        get() = NSRoundingMode.NSRoundDown.ordinal
-    actual val ROUND_HALF_EVEN: Int
-        get() = NSRoundingMode.NSRoundBankers.ordinal
-    actual val ROUND_UP: Int
-        get() = NSRoundingMode.NSRoundUp.ordinal
-}
+fun toNSRoundingMode(roundingMode: RoundingMode): NSRoundingMode =
+    NSRoundingMode.byValue(toPlatformSpecificRoundCode(roundingMode).toULong())

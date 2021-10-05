@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.Decimals.toDecimal
-import com.splendo.kaluga.base.utils.Decimals.toDouble
 import com.splendo.kaluga.base.utils.ScientificUnit.Length
 import com.splendo.kaluga.base.utils.ScientificUnit.Temperature
 import com.splendo.kaluga.base.utils.ScientificUnit.Volume
@@ -99,10 +97,28 @@ class SciUnitTest {
         assertFor(1000, Liter, CubicMeter, 0.001)
         assertFor(1000, CubicInch, CubicMeter, 0.000016387064, unitTranslationErrorTolerance)
         assertFor(1000, CubicFoot, CubicMeter, 0.028316846592, unitTranslationErrorTolerance)
-        assertFor(1000, UsFluidDram, CubicMeter, 0.000003696691195313, unitTranslationErrorTolerance)
-        assertFor(1000, ImperialFluidDram, CubicMeter, 0.0000035516328125, unitTranslationErrorTolerance)
+        assertFor(
+            1000,
+            UsFluidDram,
+            CubicMeter,
+            0.000003696691195313,
+            unitTranslationErrorTolerance
+        )
+        assertFor(
+            1000,
+            ImperialFluidDram,
+            CubicMeter,
+            0.0000035516328125,
+            unitTranslationErrorTolerance
+        )
         assertFor(1000, UsFluidOunce, CubicMeter, 0.0000295735295625, unitTranslationErrorTolerance)
-        assertFor(1000, ImperialFluidOunce, CubicMeter, 0.0000284130625, unitTranslationErrorTolerance)
+        assertFor(
+            1000,
+            ImperialFluidOunce,
+            CubicMeter,
+            0.0000284130625,
+            unitTranslationErrorTolerance
+        )
         assertFor(1000, UsLegalCup, CubicMeter, 0.0002365882365, unitTranslationErrorTolerance)
         assertFor(1000, ImperialCup, CubicMeter, 0.00025, unitTranslationErrorTolerance)
         assertFor(1000, UsLiquidPint, CubicMeter, 0.000473176473, unitTranslationErrorTolerance)
@@ -117,17 +133,41 @@ class SciUnitTest {
         assertFor(1000, CubicMeter, CubicInch, 61023.74409473229, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, CubicFoot, 35.31466672148859, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, UsFluidDram, 270512.18161474395, unitTranslationErrorTolerance)
-        assertFor(1000, CubicMeter, ImperialFluidDram, 281560.63782283233, unitTranslationErrorTolerance)
+        assertFor(
+            1000,
+            CubicMeter,
+            ImperialFluidDram,
+            281560.63782283233,
+            unitTranslationErrorTolerance
+        )
         assertFor(1000, CubicMeter, UsFluidOunce, 33814.022701842994, unitTranslationErrorTolerance)
-        assertFor(1000, CubicMeter, ImperialFluidOunce, 35195.07972785405, unitTranslationErrorTolerance)
+        assertFor(
+            1000,
+            CubicMeter,
+            ImperialFluidOunce,
+            35195.07972785405,
+            unitTranslationErrorTolerance
+        )
         assertFor(1000, CubicMeter, UsLegalCup, 4226.752837730375, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, ImperialCup, 4000.0, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, UsLiquidPint, 2113.376418865187, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, ImperialPint, 1759.753986392702, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, UsLiquidQuart, 1056.688209432594, unitTranslationErrorTolerance)
         assertFor(1000, CubicMeter, ImperialQuart, 879.8769931963512, unitTranslationErrorTolerance)
-        assertFor(1000, CubicMeter, UsLiquidGallon, 264.1720523581484, unitTranslationErrorTolerance)
-        assertFor(1000, CubicMeter, ImperialGallon, 219.96924829908778, unitTranslationErrorTolerance)
+        assertFor(
+            1000,
+            CubicMeter,
+            UsLiquidGallon,
+            264.1720523581484,
+            unitTranslationErrorTolerance
+        )
+        assertFor(
+            1000,
+            CubicMeter,
+            ImperialGallon,
+            219.96924829908778,
+            unitTranslationErrorTolerance
+        )
     }
 }
 
