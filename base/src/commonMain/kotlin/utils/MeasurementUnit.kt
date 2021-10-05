@@ -73,9 +73,7 @@ sealed class ScientificUnit<System : MeasurementSystem, Type : MeasurementType> 
 
     sealed class MetricLength(override val symbol: String) :
         Length<MeasurementSystem.Metric>(),
-        Serializable {
-
-    }
+        Serializable
 
     sealed class ImperialLength(override val symbol: String) :
         Length<MeasurementSystem.Imperial>(),

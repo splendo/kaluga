@@ -32,130 +32,109 @@ class SciUnitTest {
 
     @Test
     fun weighConversionTest() {
+        assertFor(1000, Microgram, Kilogram, 1e-9)
+        assertFor(1000, Milligram, Kilogram, 1e-6)
+        assertFor(1000, Gram, Kilogram, 0.001)
+        assertFor(1000, Tonne, Kilogram, 1000.0)
+        assertFor(1000, Dram, Kilogram, 0.0017718451953125, unitTranslationErrorTolerance)
+        assertFor(1000, Grain, Kilogram, 0.00006479891, unitTranslationErrorTolerance)
+        assertFor(1000, Ounce, Kilogram, 0.028349523125, unitTranslationErrorTolerance)
+        assertFor(1000, Pound, Kilogram, 0.45359237, unitTranslationErrorTolerance)
+        assertFor(1000, Stone, Kilogram, 6.35029318, unitTranslationErrorTolerance)
+        assertFor(1000, UsTon, Kilogram, 907.18474, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialTon, Kilogram, 1016.0469088, unitTranslationErrorTolerance)
 
-        assertFor(1000, Milligram, Gram, 0.001)
-        assertFor(1000, Milligram, Grain, 0.015432358352941431, unitTranslationErrorTolerance)
-
-        assertFor(1000, Gram, Milligram, 1000.0)
-        assertFor(1000, Gram, Kilogram, 0.001, unitTranslationErrorTolerance)
-        assertFor(1000, Gram, Grain, 15.432358352941431, unitTranslationErrorTolerance)
-        assertFor(1000, Gram, Dram, 0.5643833911932866, unitTranslationErrorTolerance)
-
+        assertFor(1000, Kilogram, Microgram, 1.0E9)
+        assertFor(1000, Kilogram, Milligram, 1000000.0)
         assertFor(1000, Kilogram, Gram, 1000.0)
         assertFor(1000, Kilogram, Tonne, 0.001)
+        assertFor(1000, Kilogram, Dram, 564.3833911932866, unitTranslationErrorTolerance)
+        assertFor(1000, Kilogram, Grain, 15432.358352941432, unitTranslationErrorTolerance)
         assertFor(1000, Kilogram, Ounce, 35.27396194958041, unitTranslationErrorTolerance)
         assertFor(1000, Kilogram, Pound, 2.204622621848776, unitTranslationErrorTolerance)
-
-        assertFor(1000, Tonne, Kilogram, 1000.0)
-        assertFor(1000, Tonne, Stone, 157.4730444177697, unitTranslationErrorTolerance)
-        assertFor(1000, Tonne, ImperialTon, 0.9842065276110001, unitTranslationErrorTolerance)
-        assertFor(1000, Tonne, UsTon, 1.102311310924, unitTranslationErrorTolerance)
-
-        assertFor(1000, Dram, Gram, 1.7718451953125, unitTranslationErrorTolerance)
-        assertFor(1000, Dram, Grain, 27.343750000000004, unitTranslationErrorTolerance)
-
-        assertFor(1000, Grain, Gram, 0.06479891, unitTranslationErrorTolerance)
-        assertFor(1000, Grain, Dram, 0.03657142857142857, unitTranslationErrorTolerance)
-        assertFor(1000, Grain, Ounce, 0.002285714285714286, unitTranslationErrorTolerance)
-
-        assertFor(1000, Ounce, Gram, 28.349523125, unitTranslationErrorTolerance)
-        assertFor(1000, Ounce, Kilogram, 0.028349523125, unitTranslationErrorTolerance)
-        assertFor(1000, Ounce, Grain, 437.50000000000006, unitTranslationErrorTolerance)
-        assertFor(1000, Ounce, Pound, 0.0625, unitTranslationErrorTolerance)
-
-        assertFor(1000, Pound, Gram, 453.59237, unitTranslationErrorTolerance)
-        assertFor(1000, Pound, Kilogram, 0.45359237, unitTranslationErrorTolerance)
-        assertFor(1000, Pound, Grain, 7000.0, unitTranslationErrorTolerance)
-        assertFor(1000, Pound, Ounce, 16.0, unitTranslationErrorTolerance)
-        assertFor(1000, Pound, Stone, 0.07142857142857142, unitTranslationErrorTolerance)
-
-        assertFor(1000, Stone, Kilogram, 6.35029318, unitTranslationErrorTolerance)
-        assertFor(1000, Stone, Ounce, 224.0, unitTranslationErrorTolerance)
-        assertFor(1000, Stone, Pound, 14.0, unitTranslationErrorTolerance)
-
-        assertFor(1000, UsTon, Kilogram, 907.18474, unitTranslationErrorTolerance)
-        assertFor(1000, UsTon, Tonne, 0.90718474, unitTranslationErrorTolerance)
-        assertFor(1000, UsTon, Pound, 2000.0, unitTranslationErrorTolerance)
-        assertFor(1000, UsTon, Stone, 142.85714285714286, unitTranslationErrorTolerance)
-        assertFor(1000, UsTon, ImperialTon, 0.892857142857088, unitTranslationErrorTolerance)
-
-        assertFor(1000, ImperialTon, Kilogram, 1016.0469088, unitTranslationErrorTolerance)
-        assertFor(1000, ImperialTon, Tonne, 1.0160469088, unitTranslationErrorTolerance)
-        assertFor(1000, ImperialTon, Stone, 160.0, unitTranslationErrorTolerance)
-        assertFor(1000, ImperialTon, UsTon, 1.1199999999, unitTranslationErrorTolerance)
+        assertFor(1000, Kilogram, Stone, 0.1574730444177697, unitTranslationErrorTolerance)
+        assertFor(1000, Kilogram, UsTon, 0.001102311310924, unitTranslationErrorTolerance)
+        assertFor(1000, Kilogram, ImperialTon, 0.000984206527611, unitTranslationErrorTolerance)
     }
 
     @Test
     fun temperatureConversionTest() {
         assertEquals(convert(0.0, Celsius, Fahrenheit), 32.0, unitTranslationErrorTolerance)
         assertEquals(convert(0.0, Celsius, Kelvin), 273.15, unitTranslationErrorTolerance)
-        assertEquals(convert(0.0, Celsius, Celsius), 0.0, unitTranslationErrorTolerance)
 
-        assertEquals(convert(0.0, Fahrenheit, Fahrenheit), 0.0, unitTranslationErrorTolerance)
         assertEquals(convert(0.0, Fahrenheit, Kelvin), 255.372222, unitTranslationErrorTolerance)
         assertEquals(convert(0.0, Fahrenheit, Celsius), -17.777778, unitTranslationErrorTolerance)
 
         assertEquals(convert(0.0, Kelvin, Fahrenheit), -459.67, unitTranslationErrorTolerance)
-        assertEquals(convert(0.0, Kelvin, Kelvin), 0.0)
         assertEquals(convert(0.0, Kelvin, Celsius), -273.15, unitTranslationErrorTolerance)
     }
 
     @Test
     fun lengthConversionTest() {
-        assertFor(1000, Millimeter, Centimeter, 0.1, unitTranslationErrorTolerance)
-        assertFor(1000, Millimeter, Meter, 0.001, unitTranslationErrorTolerance)
-        assertFor(1000, Millimeter, Inch, 0.0393700787, unitTranslationErrorTolerance)
-        assertFor(1000, Millimeter, Foot, 0.0032808399, unitTranslationErrorTolerance)
-        assertFor(1000, Millimeter, Yard, 0.0010936133, unitTranslationErrorTolerance)
-
-        assertFor(1000, Centimeter, Millimeter, 10.0)
-        assertFor(1000, Centimeter, Meter, 0.01)
-        assertFor(1000, Centimeter, Inch, 0.3937007874, unitTranslationErrorTolerance)
-        assertFor(1000, Centimeter, Foot, 0.032808399, unitTranslationErrorTolerance)
-        assertFor(1000, Centimeter, Yard, 0.010936133, unitTranslationErrorTolerance)
+        assertFor(1000, Millimeter, Meter, 0.1)
+        assertFor(1000, Centimeter, Meter, 100.0)
+        assertFor(1000, Decimeter, Meter, 0.0)
+        assertFor(1000, Decameter, Meter, 0.0)
+        assertFor(1000, Hectometer, Meter, 100.0)
+        assertFor(1000, Kilometer, Meter, 1000.0)
+        assertFor(1000, Inch, Meter, 0.0254, unitTranslationErrorTolerance)
+        assertFor(1000, Foot, Meter, 0.3048, unitTranslationErrorTolerance)
+        assertFor(1000, Yard, Meter, 0.9144, unitTranslationErrorTolerance)
+        assertFor(1000, Mile, Meter, 1609.344, unitTranslationErrorTolerance)
 
         assertFor(1000, Meter, Millimeter, 1000.0)
-        assertFor(1000, Meter, Centimeter, 100.0)
+        assertFor(1000, Meter, Centimeter, 1000.0)
+        assertFor(1000, Meter, Decimeter, 1000.0)
+        assertFor(1000, Meter, Hectometer, 100.0)
         assertFor(1000, Meter, Kilometer, 0.001)
         assertFor(1000, Meter, Inch, 39.37007874, unitTranslationErrorTolerance)
         assertFor(1000, Meter, Foot, 3.280839895, unitTranslationErrorTolerance)
         assertFor(1000, Meter, Yard, 1.0936132983, unitTranslationErrorTolerance)
+        assertFor(1000, Meter, Mile, 0.0, unitTranslationErrorTolerance)
+    }
 
-        assertFor(1000, Kilometer, Meter, 1000.0)
-        assertFor(1000, Kilometer, Foot, 3280.8398950131236, unitTranslationErrorTolerance)
-        assertFor(1000, Kilometer, Yard, 1093.6132983377079, unitTranslationErrorTolerance)
-        assertFor(1000, Kilometer, Mile, 0.6213711922, unitTranslationErrorTolerance)
+    @Test
+    fun volumeConversionTest() {
+        assertFor(1000, Milliliter, CubicMeter, 1e-6)
+        assertFor(1000, Liter, CubicMeter, 0.001)
+        assertFor(1000, CubicInch, CubicMeter, 0.000016387064, unitTranslationErrorTolerance)
+        assertFor(1000, CubicFoot, CubicMeter, 0.028316846592, unitTranslationErrorTolerance)
+        assertFor(1000, UsFluidDram, CubicMeter, 0.000003696691195313, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialFluidDram, CubicMeter, 0.0000035516328125, unitTranslationErrorTolerance)
+        assertFor(1000, UsFluidOunce, CubicMeter, 0.0000295735295625, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialFluidOunce, CubicMeter, 0.0000284130625, unitTranslationErrorTolerance)
+        assertFor(1000, UsLegalCup, CubicMeter, 0.0002365882365, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialCup, CubicMeter, 0.00025, unitTranslationErrorTolerance)
+        assertFor(1000, UsLiquidPint, CubicMeter, 0.000473176473, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialPint, CubicMeter, 0.00056826125, unitTranslationErrorTolerance)
+        assertFor(1000, UsLiquidQuart, CubicMeter, 0.000946352946, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialQuart, CubicMeter, 0.0011365225, unitTranslationErrorTolerance)
+        assertFor(1000, UsLiquidGallon, CubicMeter, 0.003785411784, unitTranslationErrorTolerance)
+        assertFor(1000, ImperialGallon, CubicMeter, 0.00454609, unitTranslationErrorTolerance)
 
-        assertFor(1000, Inch, Millimeter, 25.400, unitTranslationErrorTolerance)
-        assertFor(1000, Inch, Centimeter, 2.540, unitTranslationErrorTolerance)
-        assertFor(1000, Inch, Meter, 0.0254, unitTranslationErrorTolerance)
-        assertFor(1000, Inch, Foot, 0.08333333333333333, unitTranslationErrorTolerance)
-        assertFor(1000, Inch, Yard, 0.027777777777777776, unitTranslationErrorTolerance)
-
-        assertFor(1000, Foot, Centimeter, 30.480, unitTranslationErrorTolerance)
-        assertFor(1000, Foot, Millimeter, 304.800, unitTranslationErrorTolerance)
-        assertFor(1000, Foot, Meter, 0.3048, unitTranslationErrorTolerance)
-        assertFor(1000, Foot, Inch, 12.0, unitTranslationErrorTolerance)
-        assertFor(1000, Foot, Yard, 0.333333333333, unitTranslationErrorTolerance)
-
-        assertFor(1000, Yard, Centimeter, 91.440, unitTranslationErrorTolerance)
-        assertFor(1000, Yard, Meter, 0.9144, unitTranslationErrorTolerance)
-        assertFor(1000, Yard, Kilometer, 0.0009144, unitTranslationErrorTolerance)
-        assertFor(1000, Yard, Inch, 36.000, unitTranslationErrorTolerance)
-        assertFor(1000, Yard, Foot, 3.000, unitTranslationErrorTolerance)
-        assertFor(1000, Yard, Mile, 0.0005681818, unitTranslationErrorTolerance)
-
-        assertFor(1000, Mile, Meter, 1609.344, unitTranslationErrorTolerance)
-        assertFor(1000, Mile, Kilometer, 1.609344, unitTranslationErrorTolerance)
-        assertFor(1000, Mile, Foot, 5280.0, unitTranslationErrorTolerance)
-        assertFor(1000, Mile, Yard, 1760.0, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, Milliliter, 1e+6)
+        assertFor(1000, CubicMeter, Liter, 1000.0)
+        assertFor(1000, CubicMeter, CubicInch, 61023.74409473229, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, CubicFoot, 35.31466672148859, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsFluidDram, 270512.18161474395, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialFluidDram, 281560.63782283233, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsFluidOunce, 33814.022701842994, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialFluidOunce, 35195.07972785405, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsLegalCup, 4226.752837730375, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialCup, 4000.0, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsLiquidPint, 2113.376418865187, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialPint, 1759.753986392702, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsLiquidQuart, 1056.688209432594, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialQuart, 879.8769931963512, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, UsLiquidGallon, 264.1720523581484, unitTranslationErrorTolerance)
+        assertFor(1000, CubicMeter, ImperialGallon, 219.96924829908778, unitTranslationErrorTolerance)
     }
 }
 
 fun assertFor(
     max: Int,
-    inputUnit: ScientificUnit<*,*>,
-    outputUnit: ScientificUnit<*,*>,
+    inputUnit: ScientificUnit<*, *>,
+    outputUnit: ScientificUnit<*, *>,
     inputToOutputRatio: Double,
     tolerance: Double = 0.0
 ) {

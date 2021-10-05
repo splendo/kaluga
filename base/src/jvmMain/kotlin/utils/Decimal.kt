@@ -17,8 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.utils.Decimals.toDecimal
-import com.splendo.kaluga.base.utils.Decimals.toString
 import java.math.BigDecimal
 import java.math.MathContext
 import java.math.RoundingMode
