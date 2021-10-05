@@ -97,5 +97,4 @@ actual fun toPlatformSpecificRoundCode(roundingMode: com.splendo.kaluga.base.uti
         RoundDown -> RoundingMode.DOWN.ordinal
         RoundHalfEven -> RoundingMode.HALF_EVEN.ordinal
         RoundUp -> RoundingMode.UP.ordinal
-        else -> RoundingMode.HALF_EVEN.ordinal
     }

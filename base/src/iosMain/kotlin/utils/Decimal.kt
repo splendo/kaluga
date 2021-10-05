@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
+import kotlinx.cinterop.convert
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
@@ -150,4 +151,4 @@ actual fun toPlatformSpecificRoundCode(roundingMode: RoundingMode) =
     }
 
 fun toNSRoundingMode(roundingMode: RoundingMode): NSRoundingMode =
-    NSRoundingMode.byValue(toPlatformSpecificRoundCode(roundingMode).toULong())
+    NSRoundingMode.byValue(toPlatformSpecificRoundCode(roundingMode).convert())

@@ -20,82 +20,53 @@ package com.splendo.kaluga.base.utils
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown
 import com.splendo.kaluga.base.utils.RoundingMode.RoundHalfEven
 import com.splendo.kaluga.base.utils.RoundingMode.RoundUp
-import java.math.BigDecimal
-import java.math.MathContext
-import java.math.RoundingMode
 
-actual typealias Decimal = BigDecimal
+actual typealias Decimal = Double
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = this.add(value)
+actual operator fun Decimal.plus(value: Decimal): Decimal = this + value
 
-actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this.add(value).setScale(scale)
+actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this + value
 
 actual fun Decimal.plus(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.add(value).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+): Decimal = this + value
 
-actual operator fun Decimal.minus(value: Decimal): Decimal = this.subtract(value)
+actual operator fun Decimal.minus(value: Decimal): Decimal = this - value
 
-actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this.subtract(value).setScale(scale)
+actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this - value
 
 actual fun Decimal.minus(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.subtract(value).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+): Decimal = this - value
 
-actual operator fun Decimal.div(value: Decimal): Decimal =
-    this.divide(value, MathContext.DECIMAL128)
+actual operator fun Decimal.div(value: Decimal): Decimal = this / value
 
-actual fun Decimal.div(value: Decimal, scale: Int): Decimal =
-    this.divide(value, MathContext.DECIMAL128).setScale(scale, MathContext.DECIMAL128.getRoundingMode())
+actual fun Decimal.div(value: Decimal, scale: Int): Decimal = this / value
 
 actual fun Decimal.div(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.divide(
-        value,
-        MathContext(
-            MathContext.DECIMAL128.getPrecision(),
-            RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode))
-        )
-    ).setScale(scale, toPlatformSpecificRoundCode(roundingMode))
+    roundingMode: RoundingMode
+): Decimal = this / value
 
-actual operator fun Decimal.times(value: Decimal): Decimal =
-    this.multiply(value, MathContext.DECIMAL128)
+actual operator fun Decimal.times(value: Decimal): Decimal = this * value
 
-actual fun Decimal.times(value: Decimal, scale: Int): Decimal =
-    this.multiply(value, MathContext.DECIMAL128).setScale(scale)
+actual fun Decimal.times(value: Decimal, scale: Int): Decimal = this * value
 
 actual fun Decimal.times(
     value: Decimal,
     scale: Int,
-    roundingMode: com.splendo.kaluga.base.utils.RoundingMode
-): Decimal =
-    this.multiply(
-        value,
-        MathContext(
-            MathContext.DECIMAL128.getPrecision(),
-            RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode))
-        )
-    ).setScale(scale, RoundingMode.valueOf(toPlatformSpecificRoundCode(roundingMode)))
+    roundingMode: RoundingMode
+): Decimal = this * value
 
-actual fun Double.toDecimal(): BigDecimal = BigDecimal.valueOf(this)
-actual fun String.toDecimal() = BigDecimal(this)
+actual fun Double.toDecimal() : Decimal = TODO()
+actual fun String.toDecimal() : Decimal= TODO()
 
-actual fun Decimal.toDouble(): Double = this.toDouble()
-actual fun Decimal.toString(): String = this.stripTrailingZeros().toString()
+actual fun Decimal.toDouble(): Double = this
+actual fun Decimal.toString(): String = this.toString()
 
-actual fun toPlatformSpecificRoundCode(roundingMode: com.splendo.kaluga.base.utils.RoundingMode) =
-    when (roundingMode) {
-        RoundDown -> RoundingMode.DOWN.ordinal
-        RoundHalfEven -> RoundingMode.HALF_EVEN.ordinal
-        RoundUp -> RoundingMode.UP.ordinal
-        else -> RoundingMode.HALF_EVEN.ordinal
-    }
+actual fun toPlatformSpecificRoundCode(roundingMode: RoundingMode): Int = TODO()
