@@ -99,7 +99,8 @@ abstract class BaseLocationManager(
         monitoringLocationEnabledJob?.cancel()
         monitoringLocationEnabledJob = null
     }
-    internal fun isLocationEnabled(): Boolean = locationMonitor.stateFlow.value is ServiceMonitorState.Initialized.Enabled
+    internal suspend fun isLocationEnabled(): Boolean =
+        locationMonitor.filterOnlyImportant().first() is ServiceMonitorState.Initialized.Enabled
     internal abstract suspend fun requestLocationEnable()
 
     private suspend fun handleLocationEnabledChanged() {

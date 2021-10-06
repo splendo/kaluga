@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
 import com.splendo.kaluga.permissions.PermissionState
@@ -32,8 +34,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.AfterTest
 import kotlin.test.Ignore
@@ -607,14 +610,22 @@ class MockLocationManager(
     val startMonitoringLocationCompleted = EmptyCompletableDeferred()
     val stopMonitoringLocationCompleted = EmptyCompletableDeferred()
 
-    override val locationMonitor: LocationMonitor = object : LocationMonitor {
-        override val isServiceEnabled: Boolean
-            get() = locationEnabled.value
-
-        override val isEnabled: Flow<Boolean>
-            get() = locationEnabled
-
-        override fun startMonitoring() {}
+    override val locationMonitor: DefaultServiceMonitor = object : DefaultServiceMonitor(coroutineContext) {
+        override fun startMonitoring() {
+            launch {
+                locationEnabled.collect { _isEnabled ->
+                    launchTakeAndChangeState {
+                        {
+                            if (_isEnabled) {
+                                ServiceMonitorState.Initialized.Enabled
+                            } else {
+                                ServiceMonitorState.Initialized.Disabled
+                            }
+                        }
+                    }
+                }
+            }
+        }
         override fun stopMonitoring() {}
     }
 
