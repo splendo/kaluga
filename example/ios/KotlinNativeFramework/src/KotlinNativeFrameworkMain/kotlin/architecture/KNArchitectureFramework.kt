@@ -28,6 +28,7 @@ import com.splendo.kaluga.architecture.viewmodel.LifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.addLifecycleManager
 import com.splendo.kaluga.architecture.viewmodel.onLifeCycleChanged
 import com.splendo.kaluga.bluetooth.Bluetooth
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.beacons.Beacons
 import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.example.shared.viewmodel.ExampleTabNavigation
@@ -53,9 +54,11 @@ import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewMod
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
+import com.splendo.kaluga.example.shared.viewmodel.monitor.ServiceMonitorViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -68,6 +71,8 @@ import com.splendo.kaluga.permissions.microphone.MicrophonePermission
 import com.splendo.kaluga.permissions.notifications.*
 import com.splendo.kaluga.permissions.storage.StoragePermission
 import com.splendo.kaluga.review.ReviewManager
+import platform.CoreBluetooth.CBCentralManager
+import platform.CoreLocation.CLLocationManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUUID
 import platform.UIKit.*
@@ -108,10 +113,11 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.LoadingIndicator -> "showHUD"
                         is FeatureListNavigationAction.Architecture -> "showArchitecture"
                         is FeatureListNavigationAction.Keyboard -> "showKeyboard"
-                        FeatureListNavigationAction.System -> "showSystem"
-                        FeatureListNavigationAction.Links -> "showLinks"
-                        FeatureListNavigationAction.Bluetooth -> "showBluetooth"
-                        FeatureListNavigationAction.Beacons -> "showBeacons"
+                        is FeatureListNavigationAction.ServiceMonitor -> "showMonitors"
+                        is FeatureListNavigationAction.System -> "showSystem"
+                        is FeatureListNavigationAction.Links -> "showLinks"
+                        is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
+                        is FeatureListNavigationAction.Beacons -> "showBeacons"
                     }
                 )
             }
@@ -275,6 +281,13 @@ class KNArchitectureFramework {
                     )
                 }
             }
+        )
+    }
+
+    fun createMonitorViewModel(): ServiceMonitorViewModel {
+        return ServiceMonitorViewModel(
+            BluetoothMonitor.Builder(CBCentralManager()),
+            LocationMonitor.Builder(CLLocationManager())
         )
     }
 }
