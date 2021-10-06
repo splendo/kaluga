@@ -17,6 +17,7 @@
     <string name="show_alert">Show Alert</string>
     <string name="dismissible_alert">Dismissible Alert</string>
     <string name="alert_list">Show Alert List</string>
+    <string name="alert_input">Show Alert with input</string>
     <string name="show_loading_indicator_system">Show Loading Indicator (System)</string>
     <string name="show_loading_indicator_custom">Show Loading Indicator (Custom)</string>
 

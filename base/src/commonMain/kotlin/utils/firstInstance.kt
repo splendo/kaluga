@@ -15,20 +15,18 @@
 
  */
 
-package com.splendo.kaluga.location
+package com.splendo.kaluga.base.utils
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
-import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.firstOrNull
 
-actual interface LocationMonitor : ServiceMonitor {
+/**
+ * Returns first element that is instance of specific type parameter [R], or `null` if not found
+ */
+inline fun <reified R> Sequence<*>.firstInstance(): R? = filterIsInstance<R>().firstOrNull()
 
-    actual class Builder {
-        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
-            DefaultLocationMonitor(coroutineContext)
-    }
-}
-
-class DefaultLocationMonitor(
-    coroutineContext: CoroutineContext
-) : DefaultServiceMonitor(coroutineContext), LocationMonitor
+/**
+ * Returns first element that is instance of specific type parameter [R], or `null` if not found
+ */
+suspend inline fun <reified R> Flow<*>.firstInstance(): R? = filterIsInstance<R>().firstOrNull()

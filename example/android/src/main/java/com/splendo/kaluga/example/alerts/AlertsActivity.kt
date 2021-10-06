@@ -36,6 +36,7 @@ class AlertsActivity : KalugaViewModelActivity<AlertViewModel>(R.layout.activity
 
         findViewById<AppCompatButton>(R.id.btn_simple_alert).setOnClickListener { viewModel.showAlert() }
         findViewById<AppCompatButton>(R.id.btn_dismissible_alert).setOnClickListener { viewModel.showAndDismissAfter(3) }
-        findViewById<AppCompatButton>(R.id.btn_alert_list).setOnClickListener { viewModel.showList() }
+        findViewById<AppCompatButton>(R.id.btn_alert_list).setOnClickListener { viewModel.showAlertWithList() }
+        findViewById<AppCompatButton>(R.id.btn_alert_input_field).setOnClickListener { viewModel.showAlertWithInput() }
     }
 }

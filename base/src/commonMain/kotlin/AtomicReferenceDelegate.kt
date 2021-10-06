@@ -15,20 +15,23 @@
 
  */
 
-package com.splendo.kaluga.location
+package com.splendo.kaluga.base
 
-import com.splendo.kaluga.base.DefaultServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitor
-import kotlin.coroutines.CoroutineContext
+import co.touchlab.stately.concurrency.AtomicReference
+import kotlin.reflect.KProperty
 
-actual interface LocationMonitor : ServiceMonitor {
-
-    actual class Builder {
-        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
-            DefaultLocationMonitor(coroutineContext)
-    }
+/**
+ * Multiplatform [AtomicReference] property wrapper.
+ *
+ * Example:
+ * ```
+ * val atomicJobRef: Job? by AtomicReferenceDelegate()
+ * atomicJobRef = Job()
+ * atomicJobRef = null
+ * ```
+ */
+class AtomicReferenceDelegate<T>(initialValue: T? = null) {
+    private val reference = AtomicReference(initialValue)
+    operator fun getValue(thisRef: Any?, property: KProperty<*>) = reference.get()
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) = reference.set(value)
 }
-
-class DefaultLocationMonitor(
-    coroutineContext: CoroutineContext
-) : DefaultServiceMonitor(coroutineContext), LocationMonitor

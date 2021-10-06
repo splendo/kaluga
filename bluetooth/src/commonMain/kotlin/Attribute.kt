@@ -34,14 +34,18 @@ abstract class Attribute<R : DeviceAction.Read, W : DeviceAction.Write>(initialV
     // TODO make configurable
     private val sharedFlow = MutableSharedFlow<ByteArray?>(0, 256, BufferOverflow.DROP_OLDEST).also { it.tryEmit(initialValue) }
 
-    suspend fun readValue() {
-        addAction(createReadAction())
+    suspend fun readValue(): DeviceAction {
+        val action = createReadAction()
+        addAction(action)
+        return action
     }
 
     internal abstract fun createReadAction(): R
 
-    suspend fun writeValue(newValue: ByteArray?) {
-        addAction(createWriteAction(newValue))
+    suspend fun writeValue(newValue: ByteArray?): DeviceAction {
+        val action = createWriteAction(newValue)
+        addAction(action)
+        return action
     }
 
     internal abstract fun createWriteAction(newValue: ByteArray?): W

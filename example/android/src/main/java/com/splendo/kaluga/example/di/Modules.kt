@@ -118,10 +118,9 @@ val utilitiesModule = module {
     }
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
-    single { Beacons(get<Bluetooth>()) }
+    single { Beacons(get<Bluetooth>(), timeoutMs = 60_000) }
     single { BluetoothMonitor.Builder(ApplicationHolder.applicationContext, BluetoothAdapter.getDefaultAdapter()) }
     single { LocationMonitor.Builder(ApplicationHolder.applicationContext) }
-
 }
 
 val viewModelModule = module {
