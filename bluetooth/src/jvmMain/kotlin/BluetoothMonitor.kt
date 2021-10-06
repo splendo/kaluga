@@ -23,6 +23,11 @@ import kotlin.coroutines.CoroutineContext
 
 actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder {
+        /**
+         * Builder's create method.
+         * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.
+         * @return [DefaultServiceMonitor]
+         */
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor = DefaultBluetoothMonitor(coroutineContext)
     }
 }

@@ -25,9 +25,18 @@ import platform.CoreLocation.CLLocationManager
 import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
+    /**
+     * Builder for [LocationMonitor].
+     * @param locationManager [CLLocationManager] used to get info about locations' state.
+     */
     actual class Builder(
-        val locationManager: CLLocationManager = CLLocationManager()
+        private val locationManager: CLLocationManager = CLLocationManager()
     ) {
+        /**
+         * Builder's create method.
+         * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.
+         * @return [DefaultServiceMonitor]
+         */
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
             DefaultLocationMonitor(
                 locationManager = locationManager,

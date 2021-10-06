@@ -33,6 +33,11 @@ import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
 
+    /**
+     * Builder for [LocationMonitor].
+     * @param applicationContext [Context] used to register a [BroadcastReceiver] and receive response from callback when the service state is changed.
+     * @param locationManager [LocationManager] used to get info about locations' status.
+     */
     actual class Builder(
         private val applicationContext: Context = ApplicationHolder.applicationContext,
         private val locationManager: LocationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager

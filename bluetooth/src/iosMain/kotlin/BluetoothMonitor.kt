@@ -29,9 +29,18 @@ import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
 
 actual interface BluetoothMonitor : ServiceMonitor {
+    /**
+     * Builder for [BluetoothMonitor].
+     * @param centralManager [CBCentralManager] used to set/unset a delegate and get info about bluetooth service status.
+     */
     actual class Builder(
         private val centralManager: CBCentralManager = CBCentralManager()
     ) {
+        /**
+         * Builder's create method.
+         * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.
+         * @return [DefaultServiceMonitor]
+         */
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
             DefaultBluetoothMonitor(
                 centralManager = centralManager,

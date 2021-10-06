@@ -22,6 +22,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.location.LocationManager
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
@@ -31,10 +32,21 @@ import kotlin.coroutines.CoroutineContext
 
 actual interface BluetoothMonitor : ServiceMonitor {
 
+    /**
+     * Builder for [BluetoothMonitor]. When is used from simulator, [LocationManager] is returned as **null**.
+     * In that case the state will be emitted as [ServiceMonitorState.NotSupported] and no [BroadcastReceiver] will be registered.
+     * @param context [Context] used to register the [BroadcastReceiver].
+     * @param adapter [BluetoothAdapter] in order to define whether the service is active or not, or if service is not supported at all.
+     */
     actual class Builder(
         private val context: Context = ApplicationHolder.applicationContext,
         private val adapter: BluetoothAdapter?
     ) {
+        /**
+         * Builder's create method.
+         * @param coroutineContext [CoroutineContext] used to define the coroutine context where code will run.
+         * @return [DefaultServiceMonitor]
+         */
         actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor {
             return DefaultBluetoothMonitor(
                 applicationContext = context,
