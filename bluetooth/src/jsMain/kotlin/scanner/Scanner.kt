@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.bluetooth.scanner
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
@@ -44,7 +45,7 @@ actual class Scanner(
     }
 
     override val isSupported: Boolean = false
-    override val bluetoothEnabledMonitor: BluetoothMonitor = BluetoothMonitor.Builder().create()
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor = BluetoothMonitor.Builder().create(coroutineContext)
 
     override suspend fun scanForDevices(filter: Set<UUID>) {}
 
