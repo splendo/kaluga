@@ -38,12 +38,16 @@ class ServiceMonitorViewController : UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        self.bltMonitorTitle.text = self.viewModel.bluetoothServiceTitleText as String
-//        self.locationMonitorTitle.text = self.viewModel.locationServiceTitleText as String
+        initialize()
+    }
+    
+    private func initialize() {
+        self.bltMonitorTitle.text = self.viewModel.bluetoothServiceTitleText
+        self.locationMonitorTitle.text = self.viewModel.locationServiceTitleText
         lifecycleManager = knArchitectureFramework.bind(viewModel: viewModel, to: self) {
             [
-                self.viewModel.bluetoothServiceStatusText.observe { buttonText in
-                    self.bltMonitorText.text = buttonText as String?
+                self.viewModel.bluetoothServiceStatusText.observe { text in
+                    self.bltMonitorText.text = text as String?
                 },
                 self.viewModel.locationServiceStatusText.observe { text in
                     self.locationMonitorText.text = text as String?
