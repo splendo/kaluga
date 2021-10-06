@@ -28,7 +28,8 @@ actual typealias Decimal = BigDecimal
 
 actual operator fun Decimal.plus(value: Decimal) = this.add(value)
 
-actual fun Decimal.plus(value: Decimal, scale: Int) = this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun Decimal.plus(value: Decimal, scale: Int) =
+    this.add(value).setScale(scale, NativeRoundingMode.HALF_EVEN)
 
 actual fun Decimal.plus(
     value: Decimal,
@@ -83,7 +84,12 @@ actual fun Decimal.times(
 ).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.round(MathContext(scale + this.toInt().length(), NativeRoundingMode.valueOf(roundingMode.java)))
+    this.round(
+        MathContext(
+            scale + this.toInt().length(),
+            NativeRoundingMode.valueOf(roundingMode.java)
+        )
+    )
 
 actual fun Double.toDecimal() = BigDecimal.valueOf(this)
 actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
@@ -93,7 +99,8 @@ actual fun Decimal.toDouble() = this.toDouble()
 actual fun Decimal.toInt() = this.toInt()
 actual fun Decimal.toString() = this.stripTrailingZeros().toString()
 
-val RoundingMode.java get() = when (this) {
+val RoundingMode.java
+    get() = when (this) {
         RoundDown -> NativeRoundingMode.DOWN.ordinal
         RoundHalfEven -> NativeRoundingMode.HALF_EVEN.ordinal
         RoundUp -> NativeRoundingMode.UP.ordinal

@@ -144,18 +144,20 @@ actual fun Decimal.toDouble() = this.doubleValue
 actual fun Decimal.toInt() = this.intValue
 actual fun Decimal.toString() = this.stringValue
 
-actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = decimalNumberByRoundingAccordingToBehavior(
-    NSDecimalNumberHandler(
-        roundingMode = roundingMode.nsRoundingMode,
-        scale = scale.toShort(),
-        raiseOnExactness = false,
-        raiseOnOverflow = false,
-        raiseOnUnderflow = false,
-        raiseOnDivideByZero = true
+actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
+    decimalNumberByRoundingAccordingToBehavior(
+        NSDecimalNumberHandler(
+            roundingMode = roundingMode.nsRoundingMode,
+            scale = scale.toShort(),
+            raiseOnExactness = false,
+            raiseOnOverflow = false,
+            raiseOnUnderflow = false,
+            raiseOnDivideByZero = true
+        )
     )
-)
 
-val RoundingMode.nsRoundingMode get() = when (this) {
+val RoundingMode.nsRoundingMode
+    get() = when (this) {
         RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown
         RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers
         RoundingMode.RoundUp -> NSRoundingMode.NSRoundUp
