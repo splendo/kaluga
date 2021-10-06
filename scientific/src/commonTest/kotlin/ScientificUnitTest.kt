@@ -14,13 +14,15 @@
     limitations under the License.
 
  */
+package com.splendo.kaluga.scientific
 
-package com.splendo.kaluga.base.utils
-
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.utils.toDouble
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class SciUnitTest {
+class ScientificUnitTest {
 
     private val unitTranslationErrorTolerance = 0.000001
 
