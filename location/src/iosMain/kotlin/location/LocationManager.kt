@@ -18,6 +18,7 @@
 package com.splendo.kaluga.location
 
 import co.touchlab.stately.concurrency.AtomicBoolean
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
@@ -79,7 +80,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder(CLLocationManager()).create()
+    override val locationMonitor: DefaultServiceMonitor = LocationMonitor.Builder(CLLocationManager()).create(coroutineContext)
 
     private var _isMonitoringLocationUpdate = AtomicBoolean(false)
     var isMonitoringLocationUpdate

@@ -19,42 +19,63 @@ package com.splendo.kaluga.bluetooth
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
+import platform.CoreBluetooth.CBCentralManagerStatePoweredOff
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
+import platform.CoreBluetooth.CBManagerState
 import platform.darwin.NSObject
+import kotlin.coroutines.CoroutineContext
 
 actual interface BluetoothMonitor : ServiceMonitor {
     actual class Builder(
         private val centralManager: CBCentralManager = CBCentralManager()
     ) {
-        actual fun create(): BluetoothMonitor = DefaultBluetoothMonitor(centralManager = centralManager)
+        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
+            DefaultBluetoothMonitor(
+                centralManager = centralManager,
+                coroutineContext = coroutineContext
+            )
     }
 }
 
 class DefaultBluetoothMonitor internal constructor(
-    private val centralManager: CBCentralManager
-) : DefaultServiceMonitor(), BluetoothMonitor {
+    private val centralManager: CBCentralManager,
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext), BluetoothMonitor {
 
     internal class CentralManagerDelegate(
-        private val updateEnabledState: () -> Unit
+        private val updateState: (CBManagerState) -> Unit
     ) : NSObject(), CBCentralManagerDelegateProtocol {
         override fun centralManagerDidUpdateState(central: CBCentralManager) {
-            updateEnabledState()
+            updateState(central.state)
         }
     }
 
     private val centralManagerDelegate = CentralManagerDelegate(::updateState)
-    override val isServiceEnabled: Boolean
-        get() = centralManager.state == CBCentralManagerStatePoweredOn
 
     override fun startMonitoring() {
         super.startMonitoring()
         centralManager.delegate = centralManagerDelegate
+
+        updateState(centralManager.state)
     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
         centralManager.delegate = null
+    }
+    
+    private fun updateState(status: CBManagerState) {
+        launchTakeAndChangeState {
+            {
+                when (status) {
+                    CBCentralManagerStatePoweredOn -> ServiceMonitorState.Initialized.Enabled
+                    CBCentralManagerStatePoweredOff -> ServiceMonitorState.Initialized.Disabled
+                    else -> ServiceMonitorState.NotSupported
+                }
+            }
+        }
     }
 }

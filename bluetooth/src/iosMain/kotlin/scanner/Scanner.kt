@@ -19,7 +19,9 @@ package com.splendo.kaluga.bluetooth.scanner
 
 import co.touchlab.stately.collections.sharedMutableListOf
 import co.touchlab.stately.collections.sharedMutableSetOf
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.mainContinuation
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import com.splendo.kaluga.base.typedMap
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -34,7 +36,6 @@ import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.flow.first
 import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerOptionShowPowerAlertKey
@@ -119,9 +120,9 @@ actual class Scanner internal constructor(
     private val centralManagers = sharedMutableListOf<CBCentralManager>()
     private val discoveringDelegates = sharedMutableListOf<CBCentralManagerDelegateProtocol>()
     private val activeDelegates = sharedMutableSetOf<CBCentralManagerDelegateProtocol>()
-    override val bluetoothEnabledMonitor: BluetoothMonitor by lazy {
+    override val bluetoothEnabledMonitor: DefaultServiceMonitor by lazy {
         initMainManagersIfNeeded()
-        BluetoothMonitor.Builder(mainCentralManager).create()
+        BluetoothMonitor.Builder(mainCentralManager).create(coroutineContext)
     }
 
     private fun initMainManagersIfNeeded() {
@@ -163,12 +164,12 @@ actual class Scanner internal constructor(
     override fun generateEnableSensorsActions(): List<EnableSensorAction> {
         // Trigger Enable Bluetooth popup
         return listOfNotNull(
-            if (!bluetoothEnabledMonitor.isServiceEnabled) {
+            if (bluetoothEnabledMonitor.stateFlow.value is ServiceMonitorState.Initialized.Disabled) {
                 suspend {
                     val options =
                         mapOf<Any?, Any>(CBCentralManagerOptionShowPowerAlertKey to true)
                     CBCentralManager(null, dispatch_get_main_queue(), options)
-                    bluetoothEnabledMonitor.isEnabled.first { it }
+                    bluetoothEnabledMonitor.stateFlow.value is ServiceMonitorState.Initialized.Enabled
                 }
             } else null
         )
