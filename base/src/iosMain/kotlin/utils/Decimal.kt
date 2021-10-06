@@ -156,7 +156,7 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = decimalNumber
     )
 )
 
-actual fun RoundingMode.toNativeRoundCode() =
+private fun RoundingMode.toNativeRoundCode() =
     when (this) {
         RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown.ordinal
         RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers.ordinal

@@ -93,7 +93,7 @@ actual fun Decimal.toDouble() = this.toDouble()
 actual fun Decimal.toInt() = this.toInt()
 actual fun Decimal.toString() = this.stripTrailingZeros().toString()
 
-actual fun RoundingMode.toNativeRoundCode() =
+private fun RoundingMode.toNativeRoundCode() =
     when (this) {
         RoundDown -> NativeRoundingMode.DOWN.ordinal
         RoundHalfEven -> NativeRoundingMode.HALF_EVEN.ordinal
