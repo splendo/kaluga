@@ -53,24 +53,21 @@ class ServiceMonitorViewModel(
 
         coroutineScope.launch {
             bltMonitorRepo.collect {
-                _bluetoothServiceStatusText.value = when (it) {
-                    is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
-                    is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
-                    is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
-                    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
-                }
+                _bluetoothServiceStatusText.value = it.toStringValues()
             }
         }
 
         coroutineScope.launch {
             locationMonitorRepo.collect {
-                _locationServiceStatusText.value = when (it) {
-                    is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
-                    is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
-                    is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
-                    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
-                }
+                _locationServiceStatusText.value = it.toStringValues()
             }
         }
     }
+}
+
+fun ServiceMonitorState.toStringValues(): String = when (this) {
+    is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
+    is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
+    is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
+    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
 }
