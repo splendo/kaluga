@@ -1,5 +1,6 @@
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
     id("jacoco")
     id("convention.publication")
     id("com.android.library")
@@ -17,6 +18,7 @@ kotlin {
     sourceSets {
 
         val ext = (gradle as ExtensionAware).extra
+        val serialization_version: String by ext
 
         getByName("commonMain") {
             dependencies {
@@ -25,6 +27,8 @@ kotlin {
                 api("co.touchlab:stately-isolate:${ext["stately_isolate_version"]}")
                 api("co.touchlab:stately-iso-collections:${ext["stately_isolate_version"]}")
                 api("co.touchlab:stately-concurrency:${ext["stately_version"]}")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
         getByName("commonTest") {

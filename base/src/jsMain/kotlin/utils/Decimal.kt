@@ -68,4 +68,3 @@ actual fun String.toDecimal(): Decimal = this.toDouble()
 actual fun Decimal.toDouble(): Double = this
 actual fun Decimal.toInt(): Int = this.toInt()
 actual fun Decimal.toString(): String = this.toString()
-

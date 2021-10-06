@@ -138,7 +138,7 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 
 actual fun Double.toDecimal() = NSDecimalNumber(this)
-actual fun Int.toDecimal() = NSDecimalNumber(this)
+actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())
 actual fun String.toDecimal() = NSDecimalNumber(this)
 
 actual fun Decimal.toDouble() = this.doubleValue
@@ -156,7 +156,7 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = decimalNumber
     )
 )
 
-private fun RoundingMode.toNativeRoundCode() =
+private fun RoundingMode.toNativeRoundingCode() =
     when (this) {
         RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown.ordinal
         RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers.ordinal
@@ -164,4 +164,4 @@ private fun RoundingMode.toNativeRoundCode() =
     }
 
 private fun toNSRoundingMode(roundingMode: RoundingMode) =
-    NSRoundingMode.byValue(roundingMode.toNativeRoundCode().convert())
+    NSRoundingMode.byValue(roundingMode.toNativeRoundingCode().convert())
