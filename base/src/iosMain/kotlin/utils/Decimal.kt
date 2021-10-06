@@ -17,7 +17,6 @@
 
 package com.splendo.kaluga.base.utils
 
-import kotlinx.cinterop.convert
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
@@ -44,7 +43,7 @@ actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) 
     decimalNumberByAdding(
         decimalNumber = value,
         withBehavior = NSDecimalNumberHandler(
-            roundingMode = toNSRoundingMode(roundingMode),
+            roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -72,7 +71,7 @@ actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode)
     decimalNumberBySubtracting(
         decimalNumber = value,
         withBehavior = NSDecimalNumberHandler(
-            roundingMode = toNSRoundingMode(roundingMode),
+            roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -100,7 +99,7 @@ actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) =
     decimalNumberByDividingBy(
         decimalNumber = value,
         withBehavior = NSDecimalNumberHandler(
-            roundingMode = toNSRoundingMode(roundingMode),
+            roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -128,7 +127,7 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     decimalNumberByMultiplyingBy(
         decimalNumber = value,
         withBehavior = NSDecimalNumberHandler(
-            roundingMode = toNSRoundingMode(roundingMode),
+            roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
             raiseOnOverflow = false,
@@ -138,7 +137,7 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 
 actual fun Double.toDecimal() = NSDecimalNumber(this)
-actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())
+actual fun Int.toDecimal() = NSDecimalNumber(this)
 actual fun String.toDecimal() = NSDecimalNumber(this)
 
 actual fun Decimal.toDouble() = this.doubleValue
@@ -147,7 +146,7 @@ actual fun Decimal.toString() = this.stringValue
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = decimalNumberByRoundingAccordingToBehavior(
     NSDecimalNumberHandler(
-        roundingMode = toNSRoundingMode(roundingMode),
+        roundingMode = roundingMode.nsRoundingMode,
         scale = scale.toShort(),
         raiseOnExactness = false,
         raiseOnOverflow = false,
@@ -156,12 +155,8 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = decimalNumber
     )
 )
 
-private fun RoundingMode.toNativeRoundingCode() =
-    when (this) {
-        RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown.ordinal
-        RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers.ordinal
-        RoundingMode.RoundUp -> NSRoundingMode.NSRoundUp.ordinal
+val RoundingMode.nsRoundingMode get() = when (this) {
+        RoundingMode.RoundDown -> NSRoundingMode.NSRoundDown
+        RoundingMode.RoundHalfEven -> NSRoundingMode.NSRoundBankers
+        RoundingMode.RoundUp -> NSRoundingMode.NSRoundUp
     }
-
-private fun toNSRoundingMode(roundingMode: RoundingMode) =
-    NSRoundingMode.byValue(roundingMode.toNativeRoundingCode().convert())

@@ -34,7 +34,7 @@ actual fun Decimal.plus(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-) = this.add(value).setScale(scale, roundingMode.toNativeRoundingCode())
+) = this.add(value).setScale(scale, roundingMode.java)
 
 actual operator fun Decimal.minus(value: Decimal) = this.subtract(value)
 
@@ -45,7 +45,7 @@ actual fun Decimal.minus(
     value: Decimal,
     scale: Int,
     roundingMode: RoundingMode
-) = this.subtract(value).setScale(scale, roundingMode.toNativeRoundingCode())
+) = this.subtract(value).setScale(scale, roundingMode.java)
 
 actual operator fun Decimal.div(value: Decimal) = this.divide(value, MathContext.DECIMAL128)
 
@@ -60,9 +60,9 @@ actual fun Decimal.div(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        NativeRoundingMode.valueOf(roundingMode.toNativeRoundingCode())
+        NativeRoundingMode.valueOf(roundingMode.java)
     )
-).setScale(scale, roundingMode.toNativeRoundingCode())
+).setScale(scale, roundingMode.java)
 
 actual operator fun Decimal.times(value: Decimal) =
     this.multiply(value, MathContext.DECIMAL128)
@@ -78,12 +78,12 @@ actual fun Decimal.times(
     value,
     MathContext(
         MathContext.DECIMAL128.precision,
-        NativeRoundingMode.valueOf(roundingMode.toNativeRoundingCode())
+        NativeRoundingMode.valueOf(roundingMode.java)
     )
-).setScale(scale, NativeRoundingMode.valueOf(roundingMode.toNativeRoundingCode()))
+).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    this.round(MathContext(scale + this.toInt().length(), NativeRoundingMode.valueOf(roundingMode.toNativeRoundingCode())))
+    this.round(MathContext(scale + this.toInt().length(), NativeRoundingMode.valueOf(roundingMode.java)))
 
 actual fun Double.toDecimal() = BigDecimal.valueOf(this)
 actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
@@ -93,8 +93,7 @@ actual fun Decimal.toDouble() = this.toDouble()
 actual fun Decimal.toInt() = this.toInt()
 actual fun Decimal.toString() = this.stripTrailingZeros().toString()
 
-private fun RoundingMode.toNativeRoundingCode() =
-    when (this) {
+val RoundingMode.java get() = when (this) {
         RoundDown -> NativeRoundingMode.DOWN.ordinal
         RoundHalfEven -> NativeRoundingMode.HALF_EVEN.ordinal
         RoundUp -> NativeRoundingMode.UP.ordinal
