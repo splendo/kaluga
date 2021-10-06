@@ -25,10 +25,17 @@ import android.util.StateSet
 import com.splendo.kaluga.resources.Color
 import com.splendo.kaluga.resources.stylable.ButtonStyle
 
-fun android.widget.Button.bindButton(button: KalugaButton<*>) {
+/**
+ * Binds kaluga button
+ *
+ * @throws IllegalArgumentException in case a unknown button type
+ */
+fun android.widget.Button.bindButton(button: KalugaButton) {
     text = when (button) {
         is KalugaButton.Plain -> button.text
         is KalugaButton.Styled -> button.text.spannable
+        else -> error("unknown button type")
+
     }
     applyButtonStyle(button.style)
     isAllCaps = false

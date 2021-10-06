@@ -22,7 +22,7 @@ class ButtonViewController : UITableViewController {
     private lazy var viewModel: ButtonViewModel = KNArchitectureFramework().createButtonViewModel(parent: self)
     private var lifecycleManager: LifecycleManager!
 
-    private var buttons = [KalugaButton<AnyObject>]()
+    private var buttons = [KalugaButton]()
     
     deinit {
         lifecycleManager.unbind()
@@ -35,7 +35,7 @@ class ButtonViewController : UITableViewController {
             guard let viewModel = self?.viewModel else { return [] }
             return [
                 viewModel.buttons.observe { labels in
-                    self?.buttons = labels?.compactMap { $0 as?  KalugaButton<AnyObject> } ?? []
+                    self?.buttons = labels?.compactMap { $0 as?  KalugaButton } ?? []
                     self?.tableView.reloadData()
                 }
             ]

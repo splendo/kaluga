@@ -19,24 +19,22 @@ package com.splendo.kaluga.resources.view
 
 import com.splendo.kaluga.resources.StyledString
 import com.splendo.kaluga.resources.stylable.ButtonStyle
-import com.splendo.kaluga.resources.stylable.TextAlignment
 
-sealed class KalugaButton<T> {
-    abstract val text: T
+sealed class KalugaButton {
     abstract val style: ButtonStyle
     abstract val isEnabled: Boolean
     abstract val action: () -> Unit
     data class Plain(
-        override val text: String,
+        val text: String,
         override val style: ButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
-    ) : KalugaButton<String>()
+    ) : KalugaButton()
 
     data class Styled(
-        override val text: StyledString,
+        val text: StyledString,
         override val style: ButtonStyle,
         override val isEnabled: Boolean = true,
         override val action: () -> Unit
-    ) : KalugaButton<StyledString>()
+    ) : KalugaButton()
 }

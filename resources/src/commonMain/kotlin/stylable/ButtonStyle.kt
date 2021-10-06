@@ -56,7 +56,9 @@ data class ButtonStyle(
         )
     )
 
-    fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) = TextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
+    fun getStateTextStyle(isEnabled: Boolean, isPressed: Boolean) =
+        TextStyle(font, getStateStyle(isEnabled, isPressed).textColor, textSize, textAlignment)
+
     fun getStateStyle(isEnabled: Boolean, isPressed: Boolean): ButtonStateStyle {
         return if (!isEnabled) {
             disabledStyle

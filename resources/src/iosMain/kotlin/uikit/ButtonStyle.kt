@@ -55,7 +55,7 @@ class UIControlClosure(private val action: () -> Unit) : NSObject() {
     }
 }
 
-fun UIButton.bindButton(button: KalugaButton<*>) {
+fun UIButton.bindButton(button: KalugaButton) {
     applyStyle(button.style)
     when (button) {
         is KalugaButton.Plain -> setTitle(button.text, UIControlStateNormal)

@@ -18,7 +18,6 @@
 package com.splendo.kaluga.resources.compose
 
 import android.graphics.Typeface
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -30,31 +29,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ButtonElevation
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.splendo.kaluga.resources.DefaultColors
 import com.splendo.kaluga.resources.StringStyleAttribute
 import com.splendo.kaluga.resources.StyledStringBuilder
-import com.splendo.kaluga.resources.defaultBoldFont
 import com.splendo.kaluga.resources.stylable.BackgroundStyle
 import com.splendo.kaluga.resources.stylable.ButtonStateStyle
 import com.splendo.kaluga.resources.stylable.ButtonStyle
-import com.splendo.kaluga.resources.stylable.TextAlignment
-import com.splendo.kaluga.resources.stylable.TextStyle
 import com.splendo.kaluga.resources.styled
 import com.splendo.kaluga.resources.view.KalugaButton
 import com.splendo.kaluga.resources.view.KalugaLabel
 
 @Composable
-fun KalugaButton<*>.composable(
+fun KalugaButton.Composable(
     modifier: Modifier,
     elevation: ButtonElevation = ButtonDefaults.elevation(),
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding
@@ -79,10 +73,10 @@ fun KalugaButton<*>.composable(
                 .padding(contentPadding)
                 .then(modifier)
         ) {
-            when (this@composable) {
+            when (this@Composable) {
                 is KalugaButton.Plain -> KalugaLabel.Plain(text, textStyle)
                 is KalugaButton.Styled -> KalugaLabel.Styled(text)
-                else -> error("Weird")
+                else -> error("unknown button type")
             }.composable(modifier = modifier)
         }
     }
@@ -111,7 +105,7 @@ fun PreviewKalugaButton() {
         )
     )
     Column(modifier = Modifier.size(100.dp)) {
-        KalugaButton.Plain("Plain Text", buttonStyle, true) {}.composable(
+        KalugaButton.Plain("Plain Text", buttonStyle, true) {}.Composable(
             modifier = Modifier.fillMaxWidth()
         )
         KalugaButton.Styled(
@@ -123,7 +117,7 @@ fun PreviewKalugaButton() {
                 }),
             buttonStyle,
             true
-        ) {}.composable(
+        ) {}.Composable(
             modifier = Modifier.fillMaxWidth()
         )
     }

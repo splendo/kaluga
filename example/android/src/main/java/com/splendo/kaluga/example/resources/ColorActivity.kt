@@ -109,7 +109,7 @@ object ResourcesBinding {
 
     @BindingAdapter("button")
     @JvmStatic
-    fun bindButton(view: Button, button: KalugaButton<*>?) {
+    fun bindButton(view: Button, button: KalugaButton?) {
         button?.let {
             view.bindButton(it)
         }

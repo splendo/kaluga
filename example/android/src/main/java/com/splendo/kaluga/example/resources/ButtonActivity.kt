@@ -56,7 +56,7 @@ class ButtonAdapter : RecyclerView.Adapter<ButtonAdapter.ButtonViewHolder>() {
         val button = binding.button
     }
 
-    var buttons: List<KalugaButton<*>> = emptyList()
+    var buttons: List<KalugaButton> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()
