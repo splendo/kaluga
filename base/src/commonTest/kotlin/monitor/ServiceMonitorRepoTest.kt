@@ -40,7 +40,7 @@ import kotlin.test.assertTrue
 class ServiceMonitorRepoTest : BaseTest() {
 
     companion object {
-        const val SERVICE_MONITOR_TIMEOUT = 200L
+        const val SERVICE_MONITOR_TIMEOUT = 1L
     }
 
     private val testCoroutine = SupervisorJob()
@@ -168,13 +168,20 @@ class ServiceMonitorRepoTest : BaseTest() {
             assertFalse { repo.stopMonitoringDeferred.isCompleted }
             repo.launchJobCollectAndCancel()
             repo.useState { assertIs<ServiceMonitorState.NotInitialized>(it) }
+            assertTrue { repo.stopMonitoringDeferred.isCompleted }
         }
     }
 
     @Test
-    fun test_initialise_method_is_called() {
+    fun test_emit_not_supported() {
         runBlocking {
-
+            repo.useState {
+                assertIs<ServiceMonitorState.NotInitialized>(it)
+            }
+            repo.takeAndChangeState { { ServiceMonitorState.NotSupported } }
+            repo.useState {
+                assertIs<ServiceMonitorState.NotSupported>(it)
+            }
         }
     }
 
