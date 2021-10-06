@@ -10,6 +10,9 @@
 "feature_permissions" = "Permissions";
 "feature_links" = "Links";
 "feature_beacons" = "Beacons";
+"feature_service_monitor" = "Service Monitor";
+"feature_system" = "System";
+
 
 "show_alert" = "Show Alert";
 "dismissible_alert" = "Dismissible Alert";
@@ -94,5 +97,12 @@
 There you can find a button that if tapped will bring you back to the app passing a query.
 That query will be deserialized into a object and shown in an alert.";
 
-"feature_system" = "System";
 "network_feature" = "Network";
+
+"monitor_blt_services_title" = "Bluetooth Monitor:";
+"monitor_location_services_title" = "Location Monitor:";
+
+"monitor_services_status_enabled" = "✅ Enabled";
+"monitor_services_status_disabled" = "⚠️ Disabled";
+"monitor_services_status_not_initialized" = "❌ Not initialized";
+"monitor_services_status_not_supported" = "❌ Not supported";
