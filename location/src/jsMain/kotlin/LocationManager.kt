@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.location
 
+import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.permissions.Permissions
 import com.splendo.kaluga.permissions.PermissionsBuilder
 import com.splendo.kaluga.permissions.location.LocationPermission
@@ -44,7 +45,7 @@ actual class LocationManager(
         }
     }
 
-    override val locationMonitor: LocationMonitor = LocationMonitor.Builder().create()
+    override val locationMonitor: DefaultServiceMonitor = LocationMonitor.Builder().create(coroutineContext)
 
     override suspend fun requestLocationEnable() {
         TODO("not implemented")
