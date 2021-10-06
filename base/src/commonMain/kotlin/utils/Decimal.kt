@@ -59,8 +59,6 @@ sealed class RoundingMode {
 
 expect fun Decimal.round(scale: Int, roundingMode: RoundingMode = RoundingMode.RoundHalfEven): Decimal
 
-expect fun RoundingMode.toNativeRoundCode(): Int
-
 expect fun Double.toDecimal(): Decimal
 expect fun Int.toDecimal(): Decimal
 expect fun String.toDecimal(): Decimal

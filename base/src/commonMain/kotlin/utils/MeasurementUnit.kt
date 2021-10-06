@@ -378,6 +378,11 @@ object ImperialGallon : ScientificUnit.UKImperialVolume("gal"), Serializable {
 }
 
 fun <Unit : MeasurementType> ScientificUnit<*, Unit>.convert(
+    value: Double,
+    to: ScientificUnit<*, Unit>
+): Double = convert(value.toDecimal(), to).toDouble()
+
+fun <Unit : MeasurementType> ScientificUnit<*, Unit>.convert(
     value: Decimal,
     to: ScientificUnit<*, Unit>
 ): Decimal = to.fromSIUnit(toSIUnit(value))
