@@ -53,7 +53,7 @@ abstract class DefaultServiceMonitor(
             is ServiceMonitorState.NotSupported -> state.remain()
         }
     },
-    firstState = { ServiceMonitorState.NotInitialized() }
+    firstState = { ServiceMonitorState.NotInitialized }
 ), ServiceMonitor {
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"

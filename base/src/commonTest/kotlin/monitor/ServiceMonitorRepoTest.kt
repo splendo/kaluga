@@ -171,6 +171,13 @@ class ServiceMonitorRepoTest : BaseTest() {
         }
     }
 
+    @Test
+    fun test_initialise_method_is_called() {
+        runBlocking {
+
+        }
+    }
+
     private suspend fun DefaultServiceMonitor.launchJobCollectAndCancel() = coroutineScope {
         val job = launch {
             collect()

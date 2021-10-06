@@ -25,26 +25,13 @@ sealed class ServiceMonitorState : State() {
     sealed class Initialized : ServiceMonitorState() {
 
         fun deinitialize(): suspend () -> NotInitialized {
-            return { NotInitialized() }
+            return { NotInitialized }
         }
 
         object Enabled : Initialized()
         object Disabled : Initialized()
     }
 
-    class NotInitialized : ServiceMonitorState(), SpecialFlowValue.NotImportant {
-
-        fun initialize(state: ServiceMonitorState): suspend () -> ServiceMonitorState {
-            return {
-                when (state) {
-                    is Initialized.Enabled -> Initialized.Enabled
-                    is Initialized.Disabled -> Initialized.Disabled
-                    is NotInitialized -> NotInitialized()
-                    NotSupported -> NotSupported
-                }
-            }
-        }
-    }
-
+    object NotInitialized : ServiceMonitorState(), SpecialFlowValue.NotImportant
     object NotSupported : ServiceMonitorState()
 }
