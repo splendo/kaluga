@@ -127,3 +127,57 @@ It's possible to format to and from some data types using Kaluga.
 - `Date` can be formatted and parsed using a `DateFormatter`
 - `Number` can be formatted and parsed using a `NumberFormatter`
 - `String` can be formatted to include different data types using `StringFormatter`
+
+
+### Monitors
+Monitors are cold flow service that monitor the status for a particular system service. In your app before you do something you may need to check whether that service is **on** or **off**,  you can do so by observing a `ServiceMonitorRepo`. You will need to setup a builder per platform and pass it to the common ViewModel to actually create the repo. The builder parameters depends on the platform and on the service. 
+Once the builder are available in the ViewModel, the repo is created by calling the `create()` method from the `Builder` which will take a `coroutineContext`. 
+
+At the moment the repo available are Bluetooth and Location and are used as following:
+```kotlin
+// Android code somewhere
+val vm = SomeViewModel(
+    BluetoothMonitor.Builder(applicationContext, BluetoothAdapter.getDefaultAdapter()),
+    LocationMonitor.Builder(applicationContext)
+)
+```
+```
+// iOS code somewhere
+let vm = ServiceMonitorViewModel(
+        BluetoothMonitor.Builder(CBCentralManager()),
+LocationMonitor.Builder(CLLocationManager())
+)
+```
+
+```kotlin
+// Common VM
+class SomeViewModel(
+    bltMonitorBuilder: BluetoothMonitor.Builder, 
+    locationMonitorBuilder: LocationMonitor.Builder
+) : BaseViewModel() {
+    
+    private val bltRepo = bltMonitorBuilder.create(coroutineScope.coroutineContext)
+    private val locationRepo = locationMonitorBuilder.create(coroutineScope.coroutineContext)
+    
+    override fun onResume(scope: CoroutineScope) {
+        super.onResume(scope)
+
+        coroutineScope.launch {
+            locationMonitorRepo.collect(::mapValues)
+        }
+
+        coroutineScope.launch {
+            locationMonitorRepo.collect(::mapValues)
+        }
+    }
+
+    private fun mapValues(state: ServiceMonitorState) {
+        when (state) {
+            is ServiceMonitorState.Initialized.Disabled -> "Service is disabled"
+            is ServiceMonitorState.Initialized.Enabled -> "Service is enabled"
+            is ServiceMonitorState.NotInitialized -> "Service status was not initialized yet"
+            ServiceMonitorState.NotSupported -> "Service is not supported (simulator)"
+        }
+    }
+}
+```
