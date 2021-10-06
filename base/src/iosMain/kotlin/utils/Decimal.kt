@@ -137,7 +137,7 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
     )
 
 actual fun Double.toDecimal() = NSDecimalNumber(this)
-actual fun Int.toDecimal() = NSDecimalNumber(this)
+actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())
 actual fun String.toDecimal() = NSDecimalNumber(this)
 
 actual fun Decimal.toDouble() = this.doubleValue
