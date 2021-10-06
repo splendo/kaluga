@@ -18,45 +18,51 @@
 package com.splendo.kaluga.location
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
+import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.ServiceMonitor
-import com.splendo.kaluga.base.ServiceMonitorState
+import com.splendo.kaluga.base.monitor.ServiceMonitorState
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.CLLocationManagerDelegateProtocol
-import platform.darwin.NSObject
+import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
     actual class Builder(
         val locationManager: CLLocationManager = CLLocationManager()
     ) {
-        actual fun create(): DefaultServiceMonitor = DefaultLocationMonitor(
-            locationManager = locationManager
-        )
+        actual fun create(coroutineContext: CoroutineContext): DefaultServiceMonitor =
+            DefaultLocationMonitor(
+                locationManager = locationManager,
+                coroutineContext = coroutineContext
+            )
     }
 }
 
-class DefaultLocationMonitor(private val locationManager: CLLocationManager) : DefaultServiceMonitor(), LocationMonitor {
-
-    internal class LocationManagerDelegate(
-        private val updateState: () -> Unit
-    ) : NSObject(), CLLocationManagerDelegateProtocol {
-        override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
-            updateState()
-        }
-    }
+class DefaultLocationMonitor(
+    private val locationManager: CLLocationManager,
+    coroutineContext: CoroutineContext
+) : DefaultServiceMonitor(coroutineContext), LocationMonitor {
 
     override fun startMonitoring() {
         super.startMonitoring()
-        locationManager.delegate = LocationManagerDelegate(::updateState)
-        launchTakeAndChangeState {
-            {
-                if (locationManager.locationServicesEnabled()) {
-                    ServiceMonitorState.Initialized.Enabled
-                } else {
-                    ServiceMonitorState.Initialized.Disabled
-                }
-            }
+
+        locationManager.delegate = if (IOSVersion.systemVersion >= IOSVersion(14)) {
+            LocationManagerDelegate.NewLocationManagerDelegate(::updateState).delegate
+        } else {
+            LocationManagerDelegate.OldLocationManagerDelegate(::updateState).delegate
         }
+        updateState()
     }
+
+     private fun updateState() {
+         launchTakeAndChangeState {
+             {
+                 if (locationManager.locationServicesEnabled) {
+                     ServiceMonitorState.Initialized.Enabled
+                 } else {
+                     ServiceMonitorState.Initialized.Disabled
+                 }
+             }
+         }
+     }
 
     override fun stopMonitoring() {
         super.stopMonitoring()
