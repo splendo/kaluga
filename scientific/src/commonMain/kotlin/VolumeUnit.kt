@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.math.pow
 
 @Serializable
 sealed class Volume<System : MeasurementSystem> :
@@ -39,11 +40,57 @@ sealed class USImperialVolume(override val symbol: String) :
 sealed class UKImperialVolume(override val symbol: String) :
     Volume<MeasurementSystem.UKImperial>()
 
+@Serializable
+sealed class ImperialVolume(override val symbol: String) :
+    Volume<MeasurementSystem.Imperial>()
+
 // Metric Volume
 @Serializable
 object CubicMeter : MetricVolume("cu m") {
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
+}
+
+@Serializable
+object CubicDecimeter : MetricVolume("cu dm") {
+    val CUBIC_DECIMETER_IN_CUBIC_METER = Decimeter.DECIMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_DECIMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_DECIMETER_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object CubicCentimeter : MetricVolume("cc") {
+    val CUBIC_CENTIMETER_IN_CUBIC_METER = Centimeter.CENTIMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_CENTIMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_CENTIMETER_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object CubicMillimeter : MetricVolume("cu mm") {
+    val CUBIC_MILLIMETER_IN_CUBIC_METER = Millimeter.MILLIMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_MILLIMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_MILLIMETER_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object CubicDecameter : MetricVolume("cu dam") {
+    val CUBIC_DECAMETER_IN_CUBIC_METER = Decameter.DECAMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_DECAMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_DECAMETER_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object CubicHectometer : MetricVolume("cu hm") {
+    val CUBIC_HECTOMETER_IN_CUBIC_METER = Hectometer.HECTOMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_HECTOMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_HECTOMETER_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object CubicKilometer : MetricVolume("cu km") {
+    val CUBIC_KILOMETER_IN_CUBIC_METER = Kilometer.KILOMETERS_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_KILOMETER_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_KILOMETER_IN_CUBIC_METER.toDecimal()
 }
 
 @Serializable
@@ -54,6 +101,22 @@ object Liter : MetricVolume("l") {
 }
 
 @Serializable
+object Deciliter : MetricVolume("dl") {
+    const val DECILITERS_IN_CUBIC_METER = 10000.0
+    override fun toSIUnit(value: Decimal): Decimal = value / DECILITERS_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * DECILITERS_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object Centiliter : MetricVolume("cl") {
+    const val CENTILITERS_IN_CUBIC_METER = 100000.0
+    override fun toSIUnit(value: Decimal): Decimal = value / CENTILITERS_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * CENTILITERS_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
 object Milliliter : MetricVolume("ml") {
     const val MILLILITERS_IN_CUBIC_METER = 1000000.0
     override fun toSIUnit(value: Decimal): Decimal = value / MILLILITERS_IN_CUBIC_METER.toDecimal()
@@ -61,9 +124,31 @@ object Milliliter : MetricVolume("ml") {
         value * MILLILITERS_IN_CUBIC_METER.toDecimal()
 }
 
+@Serializable
+object Decaliter : MetricVolume("dal") {
+    const val DECALITERS_IN_CUBIC_METER = 100.0
+    override fun toSIUnit(value: Decimal): Decimal = value / DECALITERS_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * DECALITERS_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object Hectoliter : MetricVolume("hl") {
+    const val HECTOLITERS_IN_CUBIC_METER = 10.0
+    override fun toSIUnit(value: Decimal): Decimal = value / HECTOLITERS_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * HECTOLITERS_IN_CUBIC_METER.toDecimal()
+}
+
+@Serializable
+object Kiloliter : MetricVolume("kl") {
+    override fun toSIUnit(value: Decimal): Decimal = value
+    override fun fromSIUnit(value: Decimal): Decimal = value
+}
+
 // Imperial
 @Serializable
-object CubicInch : UKImperialVolume("cu in") {
+object CubicInch : ImperialVolume("cu in") {
     const val CUBIC_INCHES_IN_CUBIC_METER = 61023.74409473229
     override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_INCHES_IN_CUBIC_METER.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal =
@@ -71,13 +156,29 @@ object CubicInch : UKImperialVolume("cu in") {
 }
 
 @Serializable
-object CubicFoot : UKImperialVolume("cu ft") {
+object CubicFoot : ImperialVolume("cu ft") {
     const val CUBIC_FEET_IN_CUBIC_METER = 35.31466672148859
     override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_FEET_IN_CUBIC_METER.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * CUBIC_FEET_IN_CUBIC_METER.toDecimal()
 }
 
+@Serializable
+object CubicMile : ImperialVolume("cu in") {
+    val CUBIC_MILES_IN_CUBIC_METER = Mile.MILES_IN_METER.pow(3)
+    override fun toSIUnit(value: Decimal): Decimal = value / CUBIC_MILES_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * CUBIC_MILES_IN_CUBIC_METER.toDecimal()
+}
+
 // US Imperial
+
+@Serializable
+object AcreFoot : USImperialVolume("ac ft") {
+    val ACRE_FOOT_IN_CUBIC_METER = 0.000810713193789913
+    override fun toSIUnit(value: Decimal): Decimal = value / ACRE_FOOT_IN_CUBIC_METER.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal =
+        value * ACRE_FOOT_IN_CUBIC_METER.toDecimal()
+}
 
 @Serializable
 object UsFluidDram : USImperialVolume("fl dr") {
@@ -189,4 +290,14 @@ object ImperialGallon : UKImperialVolume("gal") {
 
     override fun fromSIUnit(value: Decimal): Decimal =
         value * IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
+}
+
+fun Volume<*>.volumeFrom(width: Decimal, depth: Decimal, height: Decimal, lengthUnit: Length<*>): Decimal {
+    val volume = lengthUnit.toSIUnit(width) * lengthUnit.toSIUnit(depth) * lengthUnit.toSIUnit(height)
+    return CubicMeter.convert(volume, this)
+}
+
+fun Volume<*>.volumeFrom(area: Decimal, areaUnit: Area<*>, height: Decimal, lengthUnit: Length<*>): Decimal {
+    val volume = areaUnit.toSIUnit(area) * lengthUnit.toSIUnit(height)
+    return CubicMeter.convert(volume, this)
 }

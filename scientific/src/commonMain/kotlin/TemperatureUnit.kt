@@ -59,3 +59,9 @@ object Fahrenheit : USCustomaryTemperature("°F") {
     override fun fromSIUnit(value: Decimal): Decimal =
         (value - Kelvin.KELVIN_FREEZING.toDecimal()) * 9.0.toDecimal() / 5.0.toDecimal() + FAHRENHEIT_FREEZING.toDecimal()
 }
+
+@Serializable
+object Rankine : USCustomaryTemperature("°R") {
+    override fun toSIUnit(value: Decimal): Decimal = value * 5.0.toDecimal() / 9.0.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * 9.0.toDecimal() / 5.0.toDecimal()
+}

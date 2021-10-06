@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific
 
 sealed interface MeasurementType {
+    interface Area : MeasurementType
     interface Length : MeasurementType
     interface Temperature : MeasurementType
     interface Weight : MeasurementType
