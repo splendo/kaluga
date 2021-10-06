@@ -30,7 +30,6 @@ class ServiceMonitorActivity : KalugaViewModelActivity<ServiceMonitorViewModel>(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(setUpBindings())
-
     }
 
     private fun setUpBindings(): View {
