@@ -52,4 +52,3 @@ sealed class LocationManagerDelegate {
         }
     }
 }
-
