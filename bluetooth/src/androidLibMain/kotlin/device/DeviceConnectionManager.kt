@@ -14,7 +14,6 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.bluetooth.device
 
 import android.bluetooth.BluetoothDevice

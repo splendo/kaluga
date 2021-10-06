@@ -14,7 +14,6 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.bluetooth.device
 
 internal actual class DeviceConnectionManager(connectionSettings: ConnectionSettings, deviceWrapper: DeviceWrapper, stateRepo: DeviceStateFlowRepo) : BaseDeviceConnectionManager(connectionSettings, deviceWrapper, stateRepo) {
