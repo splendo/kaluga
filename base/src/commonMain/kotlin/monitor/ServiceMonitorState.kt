@@ -20,8 +20,15 @@ package com.splendo.kaluga.base.monitor
 import com.splendo.kaluga.base.flow.SpecialFlowValue
 import com.splendo.kaluga.state.State
 
+/**
+ * State for [DefaultServiceMonitor].
+ */
 sealed class ServiceMonitorState : State() {
 
+    /**
+     * Wheter the status is on/off.
+     * At this point all system callbacks are registered and repo is listening for changes.
+     */
     sealed class Initialized : ServiceMonitorState() {
 
         fun deinitialize(): suspend () -> NotInitialized {
@@ -32,6 +39,14 @@ sealed class ServiceMonitorState : State() {
         object Disabled : Initialized()
     }
 
+    /**
+     * First and last state when system callbacks are unregistered and repo scope is cancelled.
+     */
     object NotInitialized : ServiceMonitorState(), SpecialFlowValue.NotImportant
+
+    /**
+     * When the platform where the module is used is uncapable of providing this info,
+     * an example is when [BluetoothMonitor] runs on simulators.
+     */
     object NotSupported : ServiceMonitorState()
 }
