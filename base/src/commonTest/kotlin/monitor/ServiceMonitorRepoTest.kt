@@ -19,6 +19,7 @@ package com.splendo.kaluga.base.monitor
 
 import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.ServiceMonitor
+import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.base.runBlocking
 import com.splendo.kaluga.base.utils.EmptyCompletableDeferred
 import com.splendo.kaluga.base.utils.complete
@@ -33,14 +34,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertIs
+import kotlin.test.assertIsNot
 import kotlin.test.assertTrue
 
 class ServiceMonitorRepoTest : BaseTest() {
 
     companion object {
-        const val SERVICE_MONITOR_TIMEOUT = 1L
+        const val SERVICE_MONITOR_TIMEOUT = 50L
     }
 
     private val testCoroutine = SupervisorJob()
@@ -118,6 +121,20 @@ class ServiceMonitorRepoTest : BaseTest() {
         }
     }
 
+    @Test
+    fun test_not_initilized_emitted_when_flow_is_cancelled() {
+        runBlocking {
+            val job = launch { repo.collect() }
+            delay(SERVICE_MONITOR_TIMEOUT)
+            repo.takeAndChangeState { { ServiceMonitorState.Initialized.Enabled } }
+            job.cancel()
+            delay(SERVICE_MONITOR_TIMEOUT)
+            val state = repo.first()
+            assertIs<ServiceMonitorState.NotInitialized>(state)
+            assertTrue { repo.stopMonitoringDeferred.isCompleted }
+        }
+    }
+
 
     @Test
     fun test_emit_current_state_with_same_state_emission_ignored() {
@@ -135,6 +152,8 @@ class ServiceMonitorRepoTest : BaseTest() {
             repo.useState {
                 assertIs<ServiceMonitorState.Initialized.Enabled>(it)
             }
+            assertEquals(1, repo.stateFlow.replayCache.size)
+
             job.cancel()
         }
     }
@@ -143,7 +162,6 @@ class ServiceMonitorRepoTest : BaseTest() {
     fun test_emit_disabled_when_state_is_enabled() {
         runBlocking {
             val job = launch { repo.collect() }
-            delay(SERVICE_MONITOR_TIMEOUT)
 
             delay(SERVICE_MONITOR_TIMEOUT)
             repo.takeAndChangeState { { ServiceMonitorState.Initialized.Enabled } }
@@ -182,6 +200,28 @@ class ServiceMonitorRepoTest : BaseTest() {
             repo.useState {
                 assertIs<ServiceMonitorState.NotSupported>(it)
             }
+        }
+    }
+
+    @Test
+    fun test_filter_out_not_initiliazed() {
+        runBlocking {
+            val job = launch {
+                repo.filterOnlyImportant().collect {
+                    assertIsNot<ServiceMonitorState.NotInitialized>(it)
+                }
+            }
+            delay(SERVICE_MONITOR_TIMEOUT)
+            repo.takeAndChangeState {
+                { ServiceMonitorState.Initialized.Enabled }
+            }
+
+            repo.takeAndChangeState {
+                { ServiceMonitorState.NotInitialized }
+            }
+
+            delay(SERVICE_MONITOR_TIMEOUT)
+            job.cancel()
         }
     }
 
