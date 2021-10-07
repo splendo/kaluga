@@ -18,9 +18,12 @@
 package com.splendo.kaluga.scientific
 
 sealed interface MeasurementType {
+    interface Acceleration : MeasurementType
     interface Area : MeasurementType
     interface Length : MeasurementType
+    interface Speed : MeasurementType
     interface Temperature : MeasurementType
-    interface Weight : MeasurementType
+    interface Time : MeasurementType
     interface Volume : MeasurementType
+    interface Weight : MeasurementType
 }

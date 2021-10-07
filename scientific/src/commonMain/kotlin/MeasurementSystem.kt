@@ -22,4 +22,5 @@ sealed interface MeasurementSystem {
     interface USCustomary : MeasurementSystem
     interface UKImperial : MeasurementSystem
     interface Imperial : USCustomary, UKImperial
+    interface Global : Imperial, Metric
 }

@@ -292,12 +292,12 @@ object ImperialGallon : UKImperialVolume("gal") {
         value * IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
 }
 
-fun Volume<*>.volumeFrom(width: Decimal, depth: Decimal, height: Decimal, lengthUnit: Length<*>): Decimal {
+fun <System : MeasurementSystem, VolumeType : Volume<System>> VolumeType.volumeFrom(width: Decimal, depth: Decimal, height: Decimal, lengthUnit: Length<*>): ScientificValue<System, MeasurementType.Volume, VolumeType> {
     val volume = lengthUnit.toSIUnit(width) * lengthUnit.toSIUnit(depth) * lengthUnit.toSIUnit(height)
-    return CubicMeter.convert(volume, this)
+    return ScientificValue(volume, CubicMeter).convert(this)
 }
 
-fun Volume<*>.volumeFrom(area: Decimal, areaUnit: Area<*>, height: Decimal, lengthUnit: Length<*>): Decimal {
+fun <System : MeasurementSystem, VolumeType : Volume<System>> VolumeType.volumeFrom(area: Decimal, areaUnit: Area<*>, height: Decimal, lengthUnit: Length<*>): ScientificValue<System, MeasurementType.Volume, VolumeType> {
     val volume = areaUnit.toSIUnit(area) * lengthUnit.toSIUnit(height)
-    return CubicMeter.convert(volume, this)
+    return ScientificValue(volume, CubicMeter).convert(this)
 }

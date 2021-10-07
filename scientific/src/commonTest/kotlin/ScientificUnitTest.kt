@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ScientificUnitTest {
 
@@ -135,6 +136,14 @@ class ScientificUnitTest {
         assertScientificUnit(1000, CubicMeter, ImperialQuart, 879.8769931963512, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, UsLiquidGallon, 264.1720523581484, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, ImperialGallon, 219.96924829908778, unitTranslationErrorTolerance)
+    }
+
+    @Test
+    fun testSpeed() {
+        val speed = ScientificValue(10.0.toDecimal(), Kilometer) per ScientificValue(1.0, Hour)
+        val meterPerSecond = (Meter per Second)
+        speed.convert(meterPerSecond)
+        assertEquals(2.77777778, speed.convert(meterPerSecond).value.toDouble(), 0.0001)
     }
 }
 
