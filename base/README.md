@@ -141,7 +141,8 @@ val vm = SomeViewModel(
     LocationMonitor.Builder(applicationContext)
 )
 ```
-```
+
+```swift
 // iOS code somewhere
 let vm = ServiceMonitorViewModel(
     BluetoothMonitor.Builder(CBCentralManager()),
@@ -163,7 +164,7 @@ class SomeViewModel(
         super.onResume(scope)
 
         coroutineScope.launch {
-            locationMonitorRepo.collect(::mapValues)
+            bltRepo.collect(::mapValues)
         }
 
         coroutineScope.launch {
