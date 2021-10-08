@@ -48,13 +48,13 @@ import com.splendo.kaluga.example.shared.viewmodel.link.BrowserNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.link.BrowserSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.link.LinksViewModel
 import com.splendo.kaluga.example.shared.viewmodel.location.LocationViewModel
+import com.splendo.kaluga.example.shared.viewmodel.monitor.ServiceMonitorViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionNavigationBundleSpecRow
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionView
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionViewModel
 import com.splendo.kaluga.example.shared.viewmodel.permissions.PermissionsListViewModel
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemNavigationActions
 import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
-import com.splendo.kaluga.example.shared.viewmodel.monitor.ServiceMonitorViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
