@@ -86,12 +86,12 @@ actual operator fun Decimal.div(value: Decimal) = decimalNumberByDividingBy(valu
 actual fun Decimal.div(value: Decimal, scale: Int) =
     decimalNumberByDividingBy(
         decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.NSRoundPlain,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
+        withBehavior = NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+            NSRoundingMode.NSRoundBankers,
+            scale.toShort(),
+            raiseOnExactness = true,
+            raiseOnOverflow = true,
+            raiseOnUnderflow = true,
             raiseOnDivideByZero = true
         )
     )
@@ -169,13 +169,13 @@ actual fun Double.toDecimal() = NSDecimalNumber(this)
 actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())
 actual fun String.toDecimal() = NSDecimalNumber(this)
 
-actual fun Decimal.toDouble() = this.doubleValue
+actual fun Decimal.toDouble() = this.toString().toDouble()
 actual fun Decimal.toInt() = this.intValue
 actual fun Decimal.toString() = this.stringValue
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
     decimalNumberByRoundingAccordingToBehavior(
-        NSDecimalNumberHandler(
+        NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
             roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,

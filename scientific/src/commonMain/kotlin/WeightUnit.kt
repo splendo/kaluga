@@ -136,9 +136,3 @@ object UsTon : USImperialWeight("ton") {
     override fun toSIUnit(value: Decimal): Decimal = value / SHORT_TONES_IN_KILOGRAM.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * SHORT_TONES_IN_KILOGRAM.toDecimal()
 }
-
-@Serializable
-data class USCustomaryImperial(val imperial: ImperialWeight) : USImperialWeight(imperial.symbol) {
-    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
-    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
-}
