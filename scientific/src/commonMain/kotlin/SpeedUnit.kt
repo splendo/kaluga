@@ -48,13 +48,30 @@ infix fun Length<*>.per(time: Time) = when (this) {
 inline infix fun <
     System : MeasurementSystem,
     LengthUnit : Length<System>,
-    TimeUnit : Time,
     reified SpeedUnit : Speed<System, LengthUnit>,
     > ScientificValue<
     System,
     MeasurementType.Length,
     LengthUnit,
-    >.per(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, TimeUnit>): ScientificValue<System, MeasurementType.Speed, SpeedUnit> {
+    >.per(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Speed, SpeedUnit> {
     val speedUnit = (unit per time.unit) as SpeedUnit
     return ScientificValue(value / time.value, speedUnit)
+}
+
+infix operator fun <
+    System : MeasurementSystem,
+    LengthUnit : Length<System>,
+    SpeedUnit : Speed<System, LengthUnit>
+    >  ScientificValue<System, MeasurementType.Speed, SpeedUnit>.times(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>) : ScientificValue<System, MeasurementType.Length, LengthUnit> {
+        return ScientificValue(value * time.convertValue(unit.per), unit.distance)
+    }
+
+infix operator fun <
+    LengthSystem : MeasurementSystem,
+    LengthUnit : Length<LengthSystem>,
+    SpeedSystem : MeasurementSystem,
+    SpeedLengthUnit : Length<SpeedSystem>,
+    SpeedUnit : Speed<SpeedSystem, SpeedLengthUnit>
+    >  ScientificValue<LengthSystem, MeasurementType.Length, LengthUnit>.div(speed: ScientificValue<SpeedSystem, MeasurementType.Speed, SpeedUnit>) : ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time> {
+    return ScientificValue(convertValue(speed.unit.distance) / speed.value, speed.unit.per)
 }

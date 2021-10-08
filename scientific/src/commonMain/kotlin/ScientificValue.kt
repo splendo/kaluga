@@ -36,5 +36,14 @@ fun <
     TargetSystem : MeasurementSystem,
     TargetUnit : ScientificUnit<TargetSystem, Type>
     > ScientificValue<*, Type, Unit>.convert(target: TargetUnit) : ScientificValue<TargetSystem, Type,  TargetUnit> {
-    return ScientificValue(unit.convert(value, target), target)
+    return ScientificValue(convertValue(target), target)
+}
+
+fun <
+    Type : MeasurementType,
+    Unit : ScientificUnit<*, Type>,
+    TargetSystem : MeasurementSystem,
+    TargetUnit : ScientificUnit<TargetSystem, Type>
+    > ScientificValue<*, Type, Unit>.convertValue(target: TargetUnit) : Decimal {
+    return unit.convert(value, target)
 }

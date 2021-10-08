@@ -19,11 +19,9 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.pow
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.math.pow
 
 @Serializable
 sealed class Area<System : MeasurementSystem> :
@@ -104,7 +102,61 @@ object Acre : ImperialArea() {
     override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
 }
 
-fun Area<*>.areaFrom(width: Decimal, depth: Decimal, lengthUnit: Length<*>): Decimal {
-    val area = lengthUnit.toSIUnit(width) * lengthUnit.toSIUnit(depth)
-    return SquareMeter.convert(area, this)
+fun <
+    LengthSystem : MeasurementSystem,
+    LengthUnit : Length<LengthSystem>,
+    WidthSystem : MeasurementSystem,
+    WidthUnit : Length<WidthSystem>,
+    AreaSystem : MeasurementSystem,
+    AreaUnit : Area<AreaSystem>
+    > AreaUnit.area(
+    length: ScientificValue<LengthSystem, MeasurementType.Length, LengthUnit>,
+    width: ScientificValue<WidthSystem, MeasurementType.Length, WidthUnit>
+) : ScientificValue<AreaSystem, MeasurementType.Area, AreaUnit> {
+        val lengthInMeter = length.convertValue(Meter)
+        val widthInMeter = width.convertValue(Meter)
+        return ScientificValue(lengthInMeter * widthInMeter, SquareMeter).convert(this)
+    }
+
+fun <
+    LengthSystem : MeasurementSystem,
+    LengthUnit : Length<LengthSystem>,
+    WidthSystem : MeasurementSystem,
+    WidthUnit : Length<WidthSystem>,
+    AreaSystem : MeasurementSystem,
+    AreaUnit : Area<AreaSystem>
+    > WidthUnit.fromArea(
+    area: ScientificValue<AreaSystem, MeasurementType.Area, AreaUnit>,
+    length: ScientificValue<LengthSystem, MeasurementType.Length, LengthUnit>
+) : ScientificValue<WidthSystem, MeasurementType.Length, WidthUnit> {
+    val areaInLengthSquared = area.convertValue(Square(length.unit))
+    return ScientificValue(areaInLengthSquared / length.value, length.unit).convert(this)
 }
+
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>) = SquareMeter.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>) = SquareNanometer.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>) = SquareMicrometer.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>) = SquareMillimeter.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>) = SquareCentimeter.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>) = SquareDecimeter.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>) = SquareDecameter.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>) = SquareHectometer.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>) = SquareKilometer.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>) = SquareInch.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = SquareFoot.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>) = SquareYard.area(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>) = SquareMile.area(this, other)
+
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>) = Meter.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareNanometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>) = Nanometer.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMicrometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>) = Micrometer.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMillimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>) = Millimeter.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareCentimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>) = Centimeter.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>) = Decimeter.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecameter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>) = Decameter.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareHectometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>) = Hectometer.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareKilometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>) = Kilometer.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareInch>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>) = Inch.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareFoot>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = Foot.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareYard>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>) = Yard.fromArea(this, other)
+operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareMile>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>) = Mile.fromArea(this, other)

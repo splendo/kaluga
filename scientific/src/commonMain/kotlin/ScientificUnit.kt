@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import kotlinx.serialization.Serializable
 
-interface ScientificUnit<System : MeasurementSystem, Type : MeasurementType> {
+sealed interface ScientificUnit<System : MeasurementSystem, Type : MeasurementType> {
     val symbol: String
 
     fun toSIUnit(value: Decimal): Decimal
