@@ -32,10 +32,10 @@ abstract class DefaultServiceMonitor(
 ) : ColdStateFlowRepo<ServiceMonitorState>(
     coroutineContext = coroutineContext,
     initChangeStateWithRepo = { state, repo ->
+        debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
         (repo as ServiceMonitor).run {
             startMonitoring()
         }
-        debug("DefaultServiceMonitor") { "initChangeStateWithRepo with $state" }
         when (state) {
             is ServiceMonitorState.Initialized,
             is ServiceMonitorState.NotInitialized,
@@ -44,6 +44,7 @@ abstract class DefaultServiceMonitor(
         }
     },
     deinitChangeStateWithRepo = { state, repo ->
+        debug("DefaultServiceMonitor") { "deinitChangeStateWithRepo with $state" }
         (repo as ServiceMonitor).run {
             stopMonitoring()
         }
