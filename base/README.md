@@ -144,8 +144,8 @@ val vm = SomeViewModel(
 ```
 // iOS code somewhere
 let vm = ServiceMonitorViewModel(
-        BluetoothMonitor.Builder(CBCentralManager()),
-LocationMonitor.Builder(CLLocationManager())
+    BluetoothMonitor.Builder(CBCentralManager()),
+    LocationMonitor.Builder(CLLocationManager())
 )
 ```
 
