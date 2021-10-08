@@ -30,7 +30,8 @@ sealed class LocationManagerDelegate {
     class NewLocationManagerDelegate(
         override val updateState: () -> Unit
     ) : LocationManagerDelegate() {
-        override val delegate: CLLocationManagerDelegateProtocol = object : NSObject(),
+        override val delegate: CLLocationManagerDelegateProtocol = object :
+            NSObject(),
             CLLocationManagerDelegateProtocol {
             override fun locationManagerDidChangeAuthorization(manager: CLLocationManager) {
                 updateState()
@@ -41,7 +42,8 @@ sealed class LocationManagerDelegate {
     class OldLocationManagerDelegate(
         override val updateState: () -> Unit
     ) : LocationManagerDelegate() {
-        override val delegate: CLLocationManagerDelegateProtocol = object : NSObject(),
+        override val delegate: CLLocationManagerDelegateProtocol = object :
+            NSObject(),
             CLLocationManagerDelegateProtocol {
             override fun locationManager(
                 manager: CLLocationManager,

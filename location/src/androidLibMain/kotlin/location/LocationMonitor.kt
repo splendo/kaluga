@@ -66,14 +66,14 @@ class DefaultLocationMonitor(
                 }
                 debug(TAG) { "location state is $isLocationEnabled" }
                 launchTakeAndChangeState {
-                   {
-                       if (isLocationEnabled) {
-                           ServiceMonitorState.Initialized.Enabled
-                       } else {
-                           ServiceMonitorState.Initialized.Disabled
-                       }
-                   }
-               }
+                    {
+                        if (isLocationEnabled) {
+                            ServiceMonitorState.Initialized.Enabled
+                        } else {
+                            ServiceMonitorState.Initialized.Disabled
+                        }
+                    }
+                }
             }
         }
     }

@@ -54,13 +54,13 @@ abstract class DefaultServiceMonitor(
         }
     },
     firstState = { ServiceMonitorState.NotInitialized }
-), ServiceMonitor {
+),
+    ServiceMonitor {
 
     protected val TAG: String = this::class.simpleName ?: "ServiceMonitor"
 
     override fun startMonitoring() {
         debug(TAG) { "Start monitoring service state (${stateFlow.value})" }
-
     }
 
     override fun stopMonitoring() {

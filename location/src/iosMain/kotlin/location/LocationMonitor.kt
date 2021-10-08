@@ -61,17 +61,17 @@ class DefaultLocationMonitor(
         updateState()
     }
 
-     private fun updateState() {
-         launchTakeAndChangeState {
-             {
-                 if (locationManager.locationServicesEnabled) {
-                     ServiceMonitorState.Initialized.Enabled
-                 } else {
-                     ServiceMonitorState.Initialized.Disabled
-                 }
-             }
-         }
-     }
+    private fun updateState() {
+        launchTakeAndChangeState {
+            {
+                if (locationManager.locationServicesEnabled) {
+                    ServiceMonitorState.Initialized.Enabled
+                } else {
+                    ServiceMonitorState.Initialized.Disabled
+                }
+            }
+        }
+    }
 
     override fun stopMonitoring() {
         super.stopMonitoring()

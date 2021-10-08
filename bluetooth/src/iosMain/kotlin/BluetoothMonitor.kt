@@ -75,7 +75,7 @@ class DefaultBluetoothMonitor internal constructor(
         super.stopMonitoring()
         centralManager.delegate = null
     }
-    
+
     private fun updateState(status: CBManagerState) {
         launchTakeAndChangeState {
             {

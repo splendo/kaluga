@@ -75,19 +75,19 @@ class ServiceMonitorRepoTest : BaseTest() {
     }
 
     @Test
-    fun test_state_is_initialized_enabled()  {
+    fun test_state_is_initialized_enabled() {
         runBlocking {
             test_init_state_is_not_initialized()
             repo.takeAndChangeState { { ServiceMonitorState.Initialized.Enabled } }
             val job = launch {
                 repo.collect {
-                    assertIs<ServiceMonitorState.Initialized.Enabled>(it) }
+                    assertIs<ServiceMonitorState.Initialized.Enabled>(it)
                 }
+            }
             delay(SERVICE_MONITOR_TIMEOUT)
             job.cancel()
         }
     }
-
 
     @Test
     fun test_state_is_initialized_disabled() {
@@ -96,7 +96,8 @@ class ServiceMonitorRepoTest : BaseTest() {
             repo.takeAndChangeState { { ServiceMonitorState.Initialized.Disabled } }
             val job = launch {
                 repo.collect {
-                    assertIs<ServiceMonitorState.Initialized.Disabled>(it) }
+                    assertIs<ServiceMonitorState.Initialized.Disabled>(it)
+                }
             }
             delay(SERVICE_MONITOR_TIMEOUT)
             job.cancel()
@@ -134,7 +135,6 @@ class ServiceMonitorRepoTest : BaseTest() {
             assertTrue { repo.stopMonitoringDeferred.isCompleted }
         }
     }
-
 
     @Test
     fun test_emit_current_state_with_same_state_emission_ignored() {
