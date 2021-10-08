@@ -121,7 +121,7 @@ abstract class BaseScanner constructor(
         bluetoothEnabledMonitor.startMonitoring()
         if (monitoringBluetoothEnabledJob != null) return
         monitoringBluetoothEnabledJob = launch {
-            bluetoothEnabledMonitor.stateFlow.collect {
+            bluetoothEnabledMonitor.collect {
                 checkSensorsEnabledChanged()
             }
         }
