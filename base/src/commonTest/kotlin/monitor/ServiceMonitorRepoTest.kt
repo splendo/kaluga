@@ -194,6 +194,7 @@ class ServiceMonitorRepoTest : BaseTest() {
     fun test_state_on_deinitialization_when_is_enabled() {
         runBlocking {
             val firstJob = launch { repo.collect() }
+            delay(SERVICE_MONITOR_TIMEOUT)
             repo.useState {
                 assertIs<ServiceMonitorState.NotInitialized>(it)
             }
