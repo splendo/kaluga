@@ -25,10 +25,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Weight<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Weight>()
+    AbstractScientificUnit<System, MeasurementType.Weight>()
 
 @Serializable
-sealed class MetricWeight(override val symbol: String) :
+sealed class MetricWeight :
     Weight<MeasurementSystem.Metric>()
 
 @Serializable
@@ -44,35 +44,42 @@ sealed class UKImperialWeight(override val symbol: String) :
     Weight<MeasurementSystem.UKImperial>()
 
 // Metric Weight
-@Serializable
-object Microgram : MetricWeight("mcg") {
-    const val MICROGRAMS_IN_KILOGRAM = 1000000000.0
-    override fun toSIUnit(value: Decimal): Decimal = value / MICROGRAMS_IN_KILOGRAM.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * MICROGRAMS_IN_KILOGRAM.toDecimal()
-}
 
 @Serializable
-object Milligram : MetricWeight("mg") {
-    const val MILLIGRAMS_IN_KILOGRAM = 1000000.0
-    override fun toSIUnit(value: Decimal): Decimal = value / MILLIGRAMS_IN_KILOGRAM.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * MILLIGRAMS_IN_KILOGRAM.toDecimal()
-}
-
-@Serializable
-object Gram : MetricWeight("g") {
+object Gram : MetricWeight(), BaseMetricUnit<MeasurementType.Weight, MeasurementSystem.Metric> {
+    override val symbol: String = "g"
     const val GRAMS_IN_KILOGRAM = 1000.0
     override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * GRAMS_IN_KILOGRAM.toDecimal()
 }
 
 @Serializable
-object Kilogram : MetricWeight("kg") {
-    override fun toSIUnit(value: Decimal): Decimal = value
-    override fun fromSIUnit(value: Decimal): Decimal = value
-}
+object Nanogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Nano(Gram)
 
 @Serializable
-object Tonne : MetricWeight("t") {
+object Microgram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Micro(Gram)
+
+@Serializable
+object Milligram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Milli(Gram)
+
+@Serializable
+object Centigram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Centi(Gram)
+
+@Serializable
+object Decigram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deci(Gram)
+
+@Serializable
+object Decagram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deca(Gram)
+
+@Serializable
+object Hectogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Hecto(Gram)
+
+@Serializable
+object Kilogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Kilo(Gram)
+
+@Serializable
+object Tonne : MetricWeight() {
+    override val symbol: String = "t"
     const val TONES_IN_KILOGRAM = 0.001
     override fun toSIUnit(value: Decimal): Decimal = value / TONES_IN_KILOGRAM.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * TONES_IN_KILOGRAM.toDecimal()

@@ -24,45 +24,36 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Time(override val symbol: String) : ScientificUnit<MeasurementSystem.Global, MeasurementType.Time>()
+sealed class Time : AbstractScientificUnit<MeasurementSystem.Global, MeasurementType.Time>()
 
 @Serializable
-object Second : Time("s") {
+object Second : Time(), BaseMetricUnit<MeasurementType.Time, MeasurementSystem.Global> {
+    override val symbol = "s"
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object MilliSecond : Time("ms") {
-    const val MILLISECOND_PER_SECOND = 1000.0
-    override fun fromSIUnit(value: Decimal): Decimal = value * MILLISECOND_PER_SECOND.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / MILLISECOND_PER_SECOND.toDecimal()
-}
+object MilliSecond : Time(), ScientificUnit<MeasurementSystem.Global, MeasurementType.Time> by Milli(Second)
 
 @Serializable
-object MicroSecond : Time("μs") {
-    const val MICROSECOND_PER_SECOND = 1000000.0
-    override fun fromSIUnit(value: Decimal): Decimal = value * MICROSECOND_PER_SECOND.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / MICROSECOND_PER_SECOND.toDecimal()
-}
+object MicroSecond : Time(), ScientificUnit<MeasurementSystem.Global, MeasurementType.Time> by Micro(Second)
 
 @Serializable
-object NanoSecond : Time("ns") {
-    const val NANOSECOND_PER_SECOND = 1000000000.0
-    override fun fromSIUnit(value: Decimal): Decimal = value * NANOSECOND_PER_SECOND.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value / NANOSECOND_PER_SECOND.toDecimal()
-}
+object NanoSecond : Time(), ScientificUnit<MeasurementSystem.Global, MeasurementType.Time> by Nano(Second)
 
 @Serializable
-object Minute : Time("min") {
+object Minute : Time() {
     const val SECOND_PER_MINUTE = 60.0
+    override val symbol: String = "min"
     override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_MINUTE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_MINUTE.toDecimal()
 }
 
 @Serializable
-object Hour : Time("h") {
+object Hour : Time() {
     const val HOUR_PER_MINUTE = 3600.0
+    override val symbol: String = "h"
     override fun fromSIUnit(value: Decimal): Decimal = value / HOUR_PER_MINUTE.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value * HOUR_PER_MINUTE.toDecimal()
 }

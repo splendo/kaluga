@@ -19,12 +19,15 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.base.utils.toDouble
 
 data class ScientificValue<System : MeasurementSystem, Type : MeasurementType, Unit : ScientificUnit<System, Type>>(
     val value: Decimal,
     val unit: Unit
 ) {
     constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
+
+    val doubleValue: Double get() = value.toDouble()
 }
 
 fun <

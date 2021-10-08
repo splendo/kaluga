@@ -20,6 +20,7 @@ package com.splendo.kaluga.base.utils
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
+import java.math.MathContext
 
 @Suppress("CONFLICTING_OVERLOADS")
 actual typealias Decimal = NSDecimalNumber
@@ -135,6 +136,34 @@ actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode)
             raiseOnDivideByZero = true
         )
     )
+
+actual infix fun Decimal.pow(n: UInt): Decimal = decimalNumberByRaisingToPower(n.toULong())
+actual fun Decimal.pow(n: UInt, scale: Int): Decimal = decimalNumberByRaisingToPower(
+    n.toULong(),
+    NSDecimalNumberHandler(
+        roundingMode = NSRoundingMode.NSRoundPlain,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+actual fun Decimal.pow(
+    n: UInt,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = decimalNumberByRaisingToPower(
+    n.toULong(),
+    withBehavior = NSDecimalNumberHandler(
+        roundingMode = roundingMode.nsRoundingMode,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
 
 actual fun Double.toDecimal() = NSDecimalNumber(this)
 actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())

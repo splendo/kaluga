@@ -27,7 +27,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Temperature<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Temperature>()
+    AbstractScientificUnit<System, MeasurementType.Temperature>()
 
 @Serializable
 sealed class MetricTemperature(override val symbol: String) :

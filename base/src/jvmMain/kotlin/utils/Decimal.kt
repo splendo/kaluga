@@ -91,6 +91,20 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
         )
     )
 
+actual infix fun Decimal.pow(n: UInt): Decimal = this.pow(n.toInt(), MathContext.DECIMAL128)
+actual fun Decimal.pow(n: UInt, scale: Int): Decimal = this.pow(n.toInt(), MathContext.DECIMAL128).setScale(scale, NativeRoundingMode.HALF_EVEN)
+actual fun Decimal.pow(
+    n: UInt,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = this.pow(
+    n.toInt(),
+    MathContext(
+        MathContext.DECIMAL128.precision,
+        NativeRoundingMode.valueOf(roundingMode.java)
+    )
+).setScale(scale, NativeRoundingMode.valueOf(roundingMode.java))
+
 actual fun Double.toDecimal() = BigDecimal.valueOf(this)
 actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
 actual fun String.toDecimal() = BigDecimal(this)

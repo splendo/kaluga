@@ -51,6 +51,15 @@ expect fun Decimal.times(
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
+expect infix fun Decimal.pow(n: UInt): Decimal
+expect fun Decimal.pow(n: UInt, scale: Int): Decimal
+expect fun Decimal.pow(
+    n: UInt,
+    scale: Int,
+    roundingMode: RoundingMode = RoundingMode.RoundHalfEven
+): Decimal
+
+
 sealed class RoundingMode {
     object RoundDown : RoundingMode()
     object RoundHalfEven : RoundingMode()

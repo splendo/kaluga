@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class ScientificUnitTest {
 
@@ -140,10 +139,10 @@ class ScientificUnitTest {
 
     @Test
     fun testSpeed() {
-        val speed = ScientificValue(10.0.toDecimal(), Kilometer) per ScientificValue(1.0, Hour)
+        val speed = ScientificValue(10.0, Kilometer) per ScientificValue(1.0, Hour)
         val meterPerSecond = (Meter per Second)
         speed.convert(meterPerSecond)
-        assertEquals(2.77777778, speed.convert(meterPerSecond).value.toDouble(), 0.0001)
+        assertEquals(2.77777778, speed.convert(meterPerSecond).doubleValue, 0.0001)
     }
 }
 

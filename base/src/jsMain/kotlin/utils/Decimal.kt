@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.base.utils
 
+import kotlin.math.pow
+
 actual data class Decimal(val double: Double)
 
 actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(this.double + value.double)
@@ -58,6 +60,14 @@ actual fun Decimal.times(
     scale: Int,
     roundingMode: RoundingMode
 ): Decimal = this * value
+
+actual infix fun Decimal.pow(n: UInt): Decimal = Decimal(this.double.pow(n.toInt()))
+actual fun Decimal.pow(n: UInt, scale: Int): Decimal = this pow n
+actual fun Decimal.pow(
+    n: UInt,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = this pow n
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode): Decimal = this
 

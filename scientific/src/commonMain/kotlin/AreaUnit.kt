@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.pow
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
@@ -26,112 +27,81 @@ import kotlin.math.pow
 
 @Serializable
 sealed class Area<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Area>()
+    AbstractScientificUnit<System, MeasurementType.Area>()
 
 @Serializable
-sealed class MetricArea(override val symbol: String) :
+sealed class MetricArea :
     Area<MeasurementSystem.Metric>()
 
 @Serializable
-sealed class USImperialArea(override val symbol: String) :
-    Area<MeasurementSystem.USCustomary>()
-
-@Serializable
-sealed class UKImperialArea(override val symbol: String) :
-    Area<MeasurementSystem.UKImperial>()
-
-@Serializable
-sealed class ImperialArea(override val symbol: String) :
+sealed class ImperialArea :
     Area<MeasurementSystem.Imperial>()
+
+class Square<S : MeasurementSystem, U : ScientificUnit<S, MeasurementType.Length>>(private val unit : U) : ScientificUnit<S, MeasurementType.Area> {
+    override val symbol: String = "${unit.symbol}2"
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(unit.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(unit.toSIUnit(value))
+}
 
 // Metric Volume
 @Serializable
-object SquareMeter : MetricArea("m2") {
-    override fun toSIUnit(value: Decimal): Decimal = value
-    override fun fromSIUnit(value: Decimal): Decimal = value
+object SquareMeter : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Meter)
+
+@Serializable
+object SquareDecimeter : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Deci(Meter))
+
+@Serializable
+object SquareCentimeter : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Centi(Meter))
+
+@Serializable
+object SquareMillimeter : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Milli(Meter))
+
+@Serializable
+object SquareMicrometer : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Micro(Meter))
+
+@Serializable
+object SquareNanometer : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Nano(Meter))
+
+@Serializable
+object SquareDecameter : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Deca(Meter))
+
+@Serializable
+object SquareHectometer : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Hecto(Meter))
+
+@Serializable
+object Hectare : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Hecto(Meter)) {
+    override val symbol: String = "ha"
 }
 
 @Serializable
-object SquareDecimeter : MetricArea("dm2") {
-    val SQUARE_DECIMETER_IN_SQUARE_METER = Decimeter.DECIMETERS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_DECIMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_DECIMETER_IN_SQUARE_METER.toDecimal()
+object SquareKilometer : MetricArea(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Kilo(Meter))
+
+@Serializable
+object SquareMile : ImperialArea(), ScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Mile) {
+    override val symbol: String = "sq. mi"
 }
 
 @Serializable
-object SquareCentimeter : MetricArea("cm2") {
-    val SQUARE_CENTIMETER_IN_SQUARE_METER = Centimeter.CENTIMETERS_IN_METER.pow(3)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_CENTIMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_CENTIMETER_IN_SQUARE_METER.toDecimal()
+object SquareYard : ImperialArea(), ScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Yard) {
+    override val symbol: String = "sq. yd"
 }
 
 @Serializable
-object SquareMillimeter : MetricArea("mm2") {
-    val SQUARE_MILLIMETER_IN_SQUARE_METER = Millimeter.MILLIMETERS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_MILLIMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_MILLIMETER_IN_SQUARE_METER.toDecimal()
+object SquareFoot : ImperialArea(), ScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Foot) {
+    override val symbol: String = "sq. fr"
 }
 
 @Serializable
-object SquareDecameter : MetricArea("dam2") {
-    val SQUARE_DECAMETER_IN_SQUARE_METER = Decameter.DECAMETERS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_DECAMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_DECAMETER_IN_SQUARE_METER.toDecimal()
+object SquareInch : ImperialArea(), ScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Inch) {
+    override val symbol: String = "sq. in"
 }
 
 @Serializable
-object SquareHectometer : MetricArea("hm2") {
-    val SQUARE_HECTOMETER_IN_SQUARE_METER = Hectometer.HECTOMETERS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_HECTOMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_HECTOMETER_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object Hectare : MetricArea("ha") {
-    override fun toSIUnit(value: Decimal): Decimal = Hectometer.toSIUnit(value)
-    override fun fromSIUnit(value: Decimal): Decimal = Hectometer.fromSIUnit(value)
-}
-
-@Serializable
-object SquareKilometer : MetricArea("km2") {
-    val SQUARE_KILOMETER_IN_SQUARE_METER = Kilometer.KILOMETERS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_KILOMETER_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_KILOMETER_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object SquareMile : ImperialArea("sq. mi") {
-    val SQUARE_MILE_IN_SQUARE_METER = Mile.MILES_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_MILE_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_MILE_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object SquareYard : ImperialArea("sq. yd") {
-    val SQUARE_YARD_IN_SQUARE_METER = Yard.YARDS_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_YARD_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_YARD_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object SquareFoot : ImperialArea("sq. ft") {
-    val SQUARE_FEET_IN_SQUARE_METER = Foot.FEET_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_FEET_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_FEET_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object SquareInch : ImperialArea("sq. ft") {
-    val SQUARE_INCHES_IN_SQUARE_METER = Inch.INCHES_IN_METER.pow(2)
-    override fun toSIUnit(value: Decimal): Decimal = value / SQUARE_INCHES_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * SQUARE_INCHES_IN_SQUARE_METER.toDecimal()
-}
-
-@Serializable
-object Acre : ImperialArea("acre") {
-    val ACRES_IN_SQUARE_METER = 640.0 * SquareMile.SQUARE_MILE_IN_SQUARE_METER
-    override fun toSIUnit(value: Decimal): Decimal = value / ACRES_IN_SQUARE_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * ACRES_IN_SQUARE_METER.toDecimal()
+object Acre : ImperialArea() {
+    override val symbol: String = "acre"
+    val ACRES_IN_SQUARE_MILE = 640.0
+    override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
 }
 
 fun Area<*>.areaFrom(width: Decimal, depth: Decimal, lengthUnit: Length<*>): Decimal {

@@ -24,7 +24,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Speed<System : MeasurementSystem, LengthUnit : Length<System>> : ScientificUnit<System, MeasurementType.Speed>() {
+sealed class Speed<System : MeasurementSystem, LengthUnit : Length<System>> : AbstractScientificUnit<System, MeasurementType.Speed>() {
     abstract val distance: LengthUnit
     abstract val per: Time
     override val symbol: String by lazy { "${distance.symbol} / ${per.symbol}" }
