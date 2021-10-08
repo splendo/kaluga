@@ -19,8 +19,8 @@ package com.splendo.kaluga.example.shared.viewmodel.monitor
 
 import com.splendo.kaluga.architecture.observable.toInitializedObservable
 import com.splendo.kaluga.architecture.viewmodel.BaseViewModel
-import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.location.LocationMonitor
 import com.splendo.kaluga.resources.localized
 import kotlinx.coroutines.CoroutineScope
@@ -38,7 +38,6 @@ class ServiceMonitorViewModel(
 
     val bluetoothServiceTitleText = "monitor_blt_services_title".localized()
     val locationServiceTitleText = "monitor_location_services_title".localized()
-
 
     private val _bluetoothServiceStatusText = MutableStateFlow("monitor_services_status_not_initialized".localized())
     val bluetoothServiceStatusText = _bluetoothServiceStatusText
