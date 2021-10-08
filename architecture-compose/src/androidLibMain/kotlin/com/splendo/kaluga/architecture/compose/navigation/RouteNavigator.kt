@@ -9,8 +9,9 @@ import com.splendo.kaluga.architecture.navigation.NavigationAction
 import com.splendo.kaluga.architecture.navigation.Navigator
 import kotlin.reflect.KClass
 
-const val BACK_ROUTE = "back"
-private const val EMPTY_ROUTE = "empty"
+/** Reserved route name for the back button navigation. */
+const val BACK_ROUTE = "com.splendo.kaluga.architecture.compose.navigation.back_route"
+private const val EMPTY_ROUTE = "com.splendo.kaluga.architecture.compose.navigation.empty_route"
 
 /** @return a route represented by the [NavigationAction]. */
 inline fun <reified T : NavigationAction<*>> route(vararg arguments: String): String =
@@ -20,14 +21,10 @@ inline fun <reified T : NavigationAction<*>> route(vararg arguments: String): St
 fun NavigationAction<*>.route(vararg arguments: String): String = route(this::class, *arguments)
 
 /** @return a route represented by [navigationActionClass] and [arguments]. */
-fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg arguments: String): String {
-    var route = navigationActionClass.simpleName!!
-    for (argument in arguments) {
-        route += "/$argument"
-    }
-
-    return route
-}
+fun route(navigationActionClass: KClass<out NavigationAction<*>>, vararg arguments: String): String =
+    arguments.takeIf(Array<*>::isNotEmpty)
+        ?.joinToString(separator = "/", prefix = "${navigationActionClass.simpleName!!}/")
+        ?: navigationActionClass.simpleName!!
 
 /**
  * Routes [Navigator] calls to [NavHostController].
@@ -49,9 +46,7 @@ open class RouteNavigator<A : NavigationAction<*>>(
         }
     }
 
-    fun back() {
-        parentNavigator?.back() ?: navigate(EMPTY_ROUTE)
-    }
+    fun back(): Boolean = navController.popBackStack() || parentNavigator?.back() ?: false
 
     @Composable
     open fun SetupNavHost(builder: NavGraphBuilder.() -> Unit) {
