@@ -21,11 +21,13 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 
-data class ScientificValue<System : MeasurementSystem, Type : MeasurementType, Unit : ScientificUnit<System, Type>>(
+data class ScientificValue<System : MeasurementSystem, Type : MeasurementType, Unit : ScientificUnit<System, Type>> (
     val value: Decimal,
     val unit: Unit
-) {
+) : Comparable<ScientificValue<*, Type, *>> {
     constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
+
+    override fun compareTo(other: ScientificValue<*, Type, *>): Int = unit.toSIUnit(value).compareTo(other.unit.toSIUnit(other.value))
 
     val doubleValue: Double get() = value.toDouble()
 }

@@ -20,16 +20,18 @@ package com.splendo.kaluga.base.utils
 import platform.Foundation.NSDecimalNumber
 import platform.Foundation.NSDecimalNumberHandler
 import platform.Foundation.NSRoundingMode
-import java.math.MathContext
+import kotlin.math.absoluteValue
 
-@Suppress("CONFLICTING_OVERLOADS")
-actual typealias Decimal = NSDecimalNumber
+actual data class Decimal(val nsDecimal: NSDecimalNumber) : Comparable<Decimal> {
+    override fun compareTo(other: Decimal): Int = nsDecimal.compare(other.nsDecimal).toInt()
+}
 
-actual operator fun Decimal.plus(value: Decimal) = decimalNumberByAdding(value)
+actual operator fun Decimal.plus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByAdding(value.nsDecimal))
 
 actual fun Decimal.plus(value: Decimal, scale: Int) =
-    decimalNumberByAdding(
-        decimalNumber = value,
+    copy(nsDecimal =
+    nsDecimal.decimalNumberByAdding(
+        decimalNumber = value.nsDecimal,
         withBehavior = NSDecimalNumberHandler(
             roundingMode = NSRoundingMode.NSRoundPlain,
             scale = scale.toShort(),
@@ -39,122 +41,11 @@ actual fun Decimal.plus(value: Decimal, scale: Int) =
             raiseOnDivideByZero = true
         )
     )
-
-actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) =
-    decimalNumberByAdding(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = roundingMode.nsRoundingMode,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
     )
 
-actual operator fun Decimal.minus(value: Decimal) = decimalNumberBySubtracting(value)
-
-actual fun Decimal.minus(value: Decimal, scale: Int) =
-    decimalNumberBySubtracting(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.NSRoundPlain,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode) =
-    decimalNumberBySubtracting(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = roundingMode.nsRoundingMode,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual operator fun Decimal.div(value: Decimal) = decimalNumberByDividingBy(value)
-
-actual fun Decimal.div(value: Decimal, scale: Int) =
-    decimalNumberByDividingBy(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
-            NSRoundingMode.NSRoundBankers,
-            scale.toShort(),
-            raiseOnExactness = true,
-            raiseOnOverflow = true,
-            raiseOnUnderflow = true,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) =
-    decimalNumberByDividingBy(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = roundingMode.nsRoundingMode,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual operator fun Decimal.times(value: Decimal) = decimalNumberByMultiplyingBy(value)
-
-actual fun Decimal.times(value: Decimal, scale: Int) =
-    decimalNumberByMultiplyingBy(
-        decimalNumber = value,
-        NSDecimalNumberHandler(
-            roundingMode = NSRoundingMode.NSRoundPlain,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode) =
-    decimalNumberByMultiplyingBy(
-        decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler(
-            roundingMode = roundingMode.nsRoundingMode,
-            scale = scale.toShort(),
-            raiseOnExactness = false,
-            raiseOnOverflow = false,
-            raiseOnUnderflow = false,
-            raiseOnDivideByZero = true
-        )
-    )
-
-actual infix fun Decimal.pow(n: UInt): Decimal = decimalNumberByRaisingToPower(n.toULong())
-actual fun Decimal.pow(n: UInt, scale: Int): Decimal = decimalNumberByRaisingToPower(
-    n.toULong(),
-    NSDecimalNumberHandler(
-        roundingMode = NSRoundingMode.NSRoundPlain,
-        scale = scale.toShort(),
-        raiseOnExactness = false,
-        raiseOnOverflow = false,
-        raiseOnUnderflow = false,
-        raiseOnDivideByZero = true
-    )
-)
-actual fun Decimal.pow(
-    n: UInt,
-    scale: Int,
-    roundingMode: RoundingMode
-): Decimal = decimalNumberByRaisingToPower(
-    n.toULong(),
+actual fun Decimal.plus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(nsDecimal =
+nsDecimal.decimalNumberByAdding(
+    decimalNumber = value.nsDecimal,
     withBehavior = NSDecimalNumberHandler(
         roundingMode = roundingMode.nsRoundingMode,
         scale = scale.toShort(),
@@ -164,18 +55,28 @@ actual fun Decimal.pow(
         raiseOnDivideByZero = true
     )
 )
+)
 
-actual fun Double.toDecimal() = NSDecimalNumber(this)
-actual fun Int.toDecimal() = NSDecimalNumber(this.toDouble())
-actual fun String.toDecimal() = NSDecimalNumber(this)
+actual operator fun Decimal.minus(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberBySubtracting(value.nsDecimal))
 
-actual fun Decimal.toDouble() = this.toString().toDouble()
-actual fun Decimal.toInt() = this.intValue
-actual fun Decimal.toString() = this.stringValue
+actual fun Decimal.minus(value: Decimal, scale: Int) = copy(nsDecimal =
+nsDecimal.decimalNumberBySubtracting(
+    decimalNumber = value.nsDecimal,
+    withBehavior = NSDecimalNumberHandler(
+        roundingMode = NSRoundingMode.NSRoundPlain,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+)
 
-actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
-    decimalNumberByRoundingAccordingToBehavior(
-        NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+actual fun Decimal.minus(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
+    nsDecimal = nsDecimal.decimalNumberBySubtracting(
+        decimalNumber = value.nsDecimal,
+        withBehavior = NSDecimalNumberHandler(
             roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
@@ -184,6 +85,128 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
             raiseOnDivideByZero = true
         )
     )
+)
+
+actual operator fun Decimal.div(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByDividingBy(value.nsDecimal))
+
+actual fun Decimal.div(value: Decimal, scale: Int) = copy(nsDecimal =
+nsDecimal.decimalNumberByDividingBy(
+    decimalNumber = value.nsDecimal,
+    withBehavior = NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+        NSRoundingMode.NSRoundBankers,
+        scale.toShort(),
+        raiseOnExactness = true,
+        raiseOnOverflow = true,
+        raiseOnUnderflow = true,
+        raiseOnDivideByZero = true
+    )
+)
+)
+
+actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(nsDecimal =
+nsDecimal.decimalNumberByDividingBy(
+    decimalNumber = value.nsDecimal,
+    withBehavior = NSDecimalNumberHandler(
+        roundingMode = roundingMode.nsRoundingMode,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+)
+
+actual operator fun Decimal.times(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
+
+actual fun Decimal.times(value: Decimal, scale: Int) = copy(nsDecimal =
+nsDecimal.decimalNumberByMultiplyingBy(
+    decimalNumber = value.nsDecimal,
+    NSDecimalNumberHandler(
+        roundingMode = NSRoundingMode.NSRoundPlain,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+)
+
+actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(nsDecimal =
+nsDecimal.decimalNumberByMultiplyingBy(
+    decimalNumber = value.nsDecimal,
+    withBehavior = NSDecimalNumberHandler(
+        roundingMode = roundingMode.nsRoundingMode,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+)
+
+actual infix fun Decimal.pow(n: Int): Decimal = if (n < 0)
+    1.toDecimal() / pow(n.absoluteValue)
+else
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(n.toULong()))
+
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = if (n < 0)
+    1.toDecimal() / pow(n.absoluteValue, scale)
+else
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
+        n.toULong(),
+        NSDecimalNumberHandler(
+            roundingMode = NSRoundingMode.NSRoundPlain,
+            scale = scale.toShort(),
+            raiseOnExactness = false,
+            raiseOnOverflow = false,
+            raiseOnUnderflow = false,
+            raiseOnDivideByZero = true
+        )
+    )
+    )
+actual fun Decimal.pow(
+    n: Int,
+    scale: Int,
+    roundingMode: RoundingMode
+): Decimal = if (n < 0)
+    1.toDecimal() / pow(n.absoluteValue, scale, roundingMode)
+else
+    copy(nsDecimal = nsDecimal.decimalNumberByRaisingToPower(
+        n.toULong(),
+        withBehavior = NSDecimalNumberHandler(
+            roundingMode = roundingMode.nsRoundingMode,
+            scale = scale.toShort(),
+            raiseOnExactness = false,
+            raiseOnOverflow = false,
+            raiseOnUnderflow = false,
+            raiseOnDivideByZero = true
+        )
+    )
+    )
+
+actual fun Double.toDecimal() = Decimal(NSDecimalNumber(this))
+actual fun Int.toDecimal() = Decimal(NSDecimalNumber(this.toDouble()))
+actual fun String.toDecimal() = Decimal(NSDecimalNumber(this))
+
+actual fun Decimal.toDouble() = nsDecimal.toString().toDouble()
+actual fun Decimal.toInt() = nsDecimal.intValue
+actual fun Decimal.toString() = nsDecimal.stringValue
+
+actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) = copy(nsDecimal =
+nsDecimal.decimalNumberByRoundingAccordingToBehavior(
+    NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+        roundingMode = roundingMode.nsRoundingMode,
+        scale = scale.toShort(),
+        raiseOnExactness = false,
+        raiseOnOverflow = false,
+        raiseOnUnderflow = false,
+        raiseOnDivideByZero = true
+    )
+)
+)
 
 val RoundingMode.nsRoundingMode
     get() = when (this) {

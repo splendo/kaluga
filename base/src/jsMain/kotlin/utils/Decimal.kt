@@ -19,7 +19,9 @@ package com.splendo.kaluga.base.utils
 
 import kotlin.math.pow
 
-actual data class Decimal(val double: Double)
+actual data class Decimal(val double: Double) : Comparable<Decimal> {
+    override fun compareTo(other: Decimal): Int = double.compareTo(other.double)
+}
 
 actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(this.double + value.double)
 
@@ -61,10 +63,10 @@ actual fun Decimal.times(
     roundingMode: RoundingMode
 ): Decimal = this * value
 
-actual infix fun Decimal.pow(n: UInt): Decimal = Decimal(this.double.pow(n.toInt()))
-actual fun Decimal.pow(n: UInt, scale: Int): Decimal = this pow n
+actual infix fun Decimal.pow(n: Int): Decimal = Decimal(this.double.pow(n.toInt()))
+actual fun Decimal.pow(n: Int, scale: Int): Decimal = this pow n
 actual fun Decimal.pow(
-    n: UInt,
+    n: Int,
     scale: Int,
     roundingMode: RoundingMode
 ): Decimal = this pow n

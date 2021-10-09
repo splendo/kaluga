@@ -17,7 +17,7 @@
 
 package com.splendo.kaluga.base.utils
 
-expect class Decimal
+expect class Decimal : Comparable<Decimal>
 
 expect operator fun Decimal.plus(value: Decimal): Decimal
 expect fun Decimal.plus(value: Decimal, scale: Int): Decimal
@@ -51,10 +51,10 @@ expect fun Decimal.times(
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
 
-expect infix fun Decimal.pow(n: UInt): Decimal
-expect fun Decimal.pow(n: UInt, scale: Int): Decimal
+expect infix fun Decimal.pow(n: Int): Decimal
+expect fun Decimal.pow(n: Int, scale: Int): Decimal
 expect fun Decimal.pow(
-    n: UInt,
+    n: Int,
     scale: Int,
     roundingMode: RoundingMode = RoundingMode.RoundHalfEven
 ): Decimal
