@@ -32,6 +32,18 @@ sealed interface MeasurementSystem {
 
 interface BaseMetricUnit<T : MeasurementType, S : MeasurementSystem.Metric> : ScientificUnit<S, T>
 
+class Giga<T : MeasurementType, S : MeasurementSystem.Metric, U : BaseMetricUnit<T, S>>(private val unit : U) : ScientificUnit<S, T> {
+    override val symbol: String = "G${unit.symbol}"
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000000000.0.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000000.0.toDecimal()
+}
+
+class Mega<T : MeasurementType, S : MeasurementSystem.Metric, U : BaseMetricUnit<T, S>>(private val unit : U) : ScientificUnit<S, T> {
+    override val symbol: String = "M${unit.symbol}"
+    override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000000.0.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000.0.toDecimal()
+}
+
 class Kilo<T : MeasurementType, S : MeasurementSystem.Metric, U : BaseMetricUnit<T, S>>(private val unit : U) : ScientificUnit<S, T> {
     override val symbol: String = "k${unit.symbol}"
     override fun fromSIUnit(value: Decimal): Decimal = unit.fromSIUnit(value) / 1000.0.toDecimal()
