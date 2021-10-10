@@ -151,6 +151,9 @@ class ScientificUnitTest {
     @Test
     fun testForce() {
         assertScientificUnit(1000, Newton, Poundal, 7.233013851209894, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Newton, PoundForce, 0.22480894309971003, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Newton, OunceForce, 3.596943089595371, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Newton, GrainsForce, 1573.6626016979735, unitTranslationErrorTolerance)
     }
 }
 
