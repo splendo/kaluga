@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class Speed<System : MeasurementSystem, LengthUnit : Length<System>> : AbstractScientificUnit<System, MeasurementType.Speed>() {
@@ -45,7 +46,8 @@ infix fun Length<*>.per(time: Time) = when (this) {
     is ImperialLength -> this per time
 }
 
-inline infix fun <
+@JvmName("lengthDivTime")
+inline operator fun <
     System : MeasurementSystem,
     LengthUnit : Length<System>,
     reified SpeedUnit : Speed<System, LengthUnit>,
@@ -53,11 +55,12 @@ inline infix fun <
     System,
     MeasurementType.Length,
     LengthUnit,
-    >.per(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Speed, SpeedUnit> {
+    >.div(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Speed, SpeedUnit> {
     val speedUnit = (unit per time.unit) as SpeedUnit
     return ScientificValue(value / time.value, speedUnit)
 }
 
+@JvmName("speedTimesTime")
 infix operator fun <
     System : MeasurementSystem,
     LengthUnit : Length<System>,
@@ -66,6 +69,7 @@ infix operator fun <
         return ScientificValue(value * time.convertValue(unit.per), unit.distance)
     }
 
+@JvmName("lengthDivSpeed")
 infix operator fun <
     LengthSystem : MeasurementSystem,
     LengthUnit : Length<LengthSystem>,

@@ -108,8 +108,9 @@ class ScientificUnitTest {
         assertScientificUnit(1000, ImperialFluidDram, CubicMeter, 0.0000035516328125, unitTranslationErrorTolerance)
         assertScientificUnit(1000, UsFluidOunce, CubicMeter, 0.0000295735295625, unitTranslationErrorTolerance)
         assertScientificUnit(1000, ImperialFluidOunce, CubicMeter, 0.0000284130625, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, UsLegalCup, CubicMeter, 0.0002365882365, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, ImperialCup, CubicMeter, 0.00025, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, UsCustomaryCup, CubicMeter, 0.0002365882365, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, UsLegalCup, CubicMeter, 0.00024, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, MetricCup, CubicMeter, 0.00025, unitTranslationErrorTolerance)
         assertScientificUnit(1000, UsLiquidPint, CubicMeter, 0.000473176473, unitTranslationErrorTolerance)
         assertScientificUnit(1000, ImperialPint, CubicMeter, 0.00056826125, unitTranslationErrorTolerance)
         assertScientificUnit(1000, UsLiquidQuart, CubicMeter, 0.000946352946, unitTranslationErrorTolerance)
@@ -118,6 +119,7 @@ class ScientificUnitTest {
         assertScientificUnit(1000, ImperialGallon, CubicMeter, 0.00454609, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicKilometer, CubicMeter, 1000000000.0, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMile, CubicMeter, 4168181825.4405794, 0.01)
+        assertScientificUnit(1000, AcreFoot, CubicMeter, 1233.48183754752, unitTranslationErrorTolerance)
 
         assertScientificUnit(1000, CubicMeter, Milliliter, 1e+6)
         assertScientificUnit(1000, CubicMeter, Liter, 1000.0)
@@ -127,22 +129,28 @@ class ScientificUnitTest {
         assertScientificUnit(1000, CubicMeter, ImperialFluidDram, 281560.63782283233, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, UsFluidOunce, 33814.022701842994, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, ImperialFluidOunce, 35195.07972785405, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, CubicMeter, UsLegalCup, 4226.752837730375, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, CubicMeter, ImperialCup, 4000.0, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, CubicMeter, UsCustomaryCup, 4226.752837730375, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, CubicMeter, MetricCup, 4000.0, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, UsLiquidPint, 2113.376418865187, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, ImperialPint, 1759.753986392702, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, UsLiquidQuart, 1056.688209432594, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, ImperialQuart, 879.8769931963512, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, UsLiquidGallon, 264.1720523581484, unitTranslationErrorTolerance)
         assertScientificUnit(1000, CubicMeter, ImperialGallon, 219.96924829908778, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, CubicMeter, AcreFoot, 0.000810713193789913, unitTranslationErrorTolerance)
     }
 
     @Test
     fun testSpeed() {
-        val speed = ScientificValue(10.0, Kilometer) per ScientificValue(1.0, Hour)
+        val speed = 10.0(Kilometer) / 1.0(Hour)
         val meterPerSecond = (Meter per Second)
         speed.convert(meterPerSecond)
         assertEquals(2.77777778, speed.convert(meterPerSecond).doubleValue, 0.0001)
+    }
+
+    @Test
+    fun testForce() {
+        assertScientificUnit(1000, Newton, Poundal, 7.233013851209894, unitTranslationErrorTolerance)
     }
 }
 

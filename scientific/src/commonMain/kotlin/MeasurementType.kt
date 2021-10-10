@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific
 sealed interface MeasurementType {
     interface Acceleration : MeasurementType
     interface Area : MeasurementType
+    interface Force : MeasurementType
     interface Frequency : MeasurementType
     interface Length : MeasurementType
     interface Speed : MeasurementType

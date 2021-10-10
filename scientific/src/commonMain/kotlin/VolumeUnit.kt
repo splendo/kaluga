@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class Volume<System : MeasurementSystem> :
@@ -137,134 +138,113 @@ object CubicMile : ImperialVolume(), ScientificUnit<MeasurementSystem.Imperial, 
 @Serializable
 object AcreFoot : USImperialVolume() {
     override val symbol: String = "ac ft"
-    val ACRE_FOOT_IN_CUBIC_METER = 0.000810713193789913
-    override fun toSIUnit(value: Decimal): Decimal = value / ACRE_FOOT_IN_CUBIC_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * ACRE_FOOT_IN_CUBIC_METER.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(Acre.toSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = Acre.fromSIUnit(Foot.fromSIUnit(value))
 }
 
 @Serializable
 object UsFluidDram : USImperialVolume() {
     override val symbol: String = "fl dr"
-    const val US_FLUID_DRAM_IN_CUBIC_METER = 270512.18161474395
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * US_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+    const val US_DRAMS_IN_FLUID_OUNCE = 8
+    override fun toSIUnit(value: Decimal): Decimal = UsFluidOunce.toSIUnit(value / US_DRAMS_IN_FLUID_OUNCE.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsFluidOunce.fromSIUnit(value) * US_DRAMS_IN_FLUID_OUNCE.toDecimal()
 }
 
 @Serializable
 object UsFluidOunce : USImperialVolume() {
     override val symbol: String = "fl oz"
-    const val US_FLUID_OUNCES_IN_LITER = 33814.022701842994
-    override fun toSIUnit(value: Decimal): Decimal = value / US_FLUID_OUNCES_IN_LITER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * US_FLUID_OUNCES_IN_LITER.toDecimal()
+    const val US_FLUID_OUNCES_IN_GALLON = 128
+    override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_FLUID_OUNCES_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) * US_FLUID_OUNCES_IN_GALLON.toDecimal()
+}
+
+@Serializable
+object UsCustomaryCup : USImperialVolume() {
+    override val symbol: String = "cup"
+    const val US_LEGAL_CUPS_IN_GALLON = 16
+    override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_LEGAL_CUPS_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) * US_LEGAL_CUPS_IN_GALLON.toDecimal()
 }
 
 @Serializable
 object UsLegalCup : USImperialVolume() {
     override val symbol: String = "cup"
-    const val US_LEGAL_CUPS_IN_CUBIC_METER = 4226.752837730375
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * US_LEGAL_CUPS_IN_CUBIC_METER.toDecimal()
+    const val MILLILITERS_IN_CUP = 240
+    override fun toSIUnit(value: Decimal): Decimal = Milliliter.toSIUnit(value * MILLILITERS_IN_CUP.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) / MILLILITERS_IN_CUP.toDecimal()
 }
 
 @Serializable
 object UsLiquidPint : USImperialVolume() {
     override val symbol: String = "pint"
-    const val US_PINTS_IN_CUBIC_METER = 2113.376418865187
-    override fun toSIUnit(value: Decimal): Decimal = value / US_PINTS_IN_CUBIC_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * US_PINTS_IN_CUBIC_METER.toDecimal()
+    const val US_PINTS_IN_GALLON = 8
+    override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_PINTS_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) * US_PINTS_IN_GALLON.toDecimal()
 }
 
 @Serializable
 object UsLiquidQuart : USImperialVolume() {
     override val symbol: String = "qt"
-    const val US_QUARTS_IN_CUBIC_METER = 1056.688209432594
-    override fun toSIUnit(value: Decimal): Decimal = value / US_QUARTS_IN_CUBIC_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * US_QUARTS_IN_CUBIC_METER.toDecimal()
+    const val US_QUARTS_IN_GALLON = 4
+    override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_QUARTS_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = UsLiquidGallon.fromSIUnit(value) * US_QUARTS_IN_GALLON.toDecimal()
 }
 
 @Serializable
 object UsLiquidGallon : USImperialVolume() {
     override val symbol: String = "gal"
-    const val US_LIQUID_GALLONS_IN_CUBIC_METER = 264.1720523581484
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * US_LIQUID_GALLONS_IN_CUBIC_METER.toDecimal()
+    const val CUBIC_INCH_IN_GALLON = 231
+    override fun toSIUnit(value: Decimal): Decimal = CubicInch.toSIUnit(value * CUBIC_INCH_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = CubicInch.fromSIUnit(value) / CUBIC_INCH_IN_GALLON.toDecimal()
 }
 
 // UK Imperial
 @Serializable
 object ImperialFluidDram : UKImperialVolume() {
     override val symbol: String = "fl dr"
-    const val IMPERIAL_FLUID_DRAM_IN_CUBIC_METER = 281560.63782283233
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_FLUID_DRAM_IN_CUBIC_METER.toDecimal()
+    const val IMPERIAL_FLUID_DRAM_IN_FLUID_OUNCE = 8
+    override fun toSIUnit(value: Decimal): Decimal = ImperialFluidOunce.toSIUnit(value / IMPERIAL_FLUID_DRAM_IN_FLUID_OUNCE.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialFluidOunce.fromSIUnit(value) * IMPERIAL_FLUID_DRAM_IN_FLUID_OUNCE.toDecimal()
 }
 
 @Serializable
 object ImperialFluidOunce : UKImperialVolume() {
     override val symbol: String = "fl oz"
-    const val IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER = 35195.07972785405
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_FLUID_OUNCES_IN_CUBIC_METER.toDecimal()
+    const val IMPERIAL_FLUID_OUNCES_GALLON = 160
+    override fun toSIUnit(value: Decimal): Decimal = ImperialGallon.toSIUnit(value / IMPERIAL_FLUID_OUNCES_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialGallon.fromSIUnit(value) * IMPERIAL_FLUID_OUNCES_GALLON.toDecimal()
 }
 
 @Serializable
-object ImperialCup : UKImperialVolume() {
+object MetricCup : UKImperialVolume() {
     override val symbol: String = "cup"
-    const val IMPERIAL_CUPS_IN_CUBIC_METER = 4000.0
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_CUPS_IN_CUBIC_METER.toDecimal()
+    const val MILLILITER_IN_CUP = 250
+    override fun toSIUnit(value: Decimal): Decimal = Milliliter.toSIUnit(value * MILLILITER_IN_CUP.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Milliliter.fromSIUnit(value) / MILLILITER_IN_CUP.toDecimal()
 }
 
 @Serializable
 object ImperialPint : UKImperialVolume() {
     override val symbol: String = "pt"
-    const val IMPERIAL_PINTS_IN_CUBIC_METER = 1759.753986392702
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_PINTS_IN_CUBIC_METER.toDecimal()
+    const val IMPERIAL_PINTS_IN_GALLON = 8
+    override fun toSIUnit(value: Decimal): Decimal = ImperialGallon.toSIUnit(value / IMPERIAL_PINTS_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialGallon.fromSIUnit(value) * IMPERIAL_PINTS_IN_GALLON.toDecimal()
 }
 
 @Serializable
 object ImperialQuart : UKImperialVolume() {
     override val symbol: String = "qt"
-    const val IMPERIAL_QUARTS_IN_CUBIC_METER = 879.8769931963512
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_QUARTS_IN_CUBIC_METER.toDecimal()
+    const val IMPERIAL_QUARTS_IN_GALLON = 4
+    override fun toSIUnit(value: Decimal): Decimal = ImperialGallon.toSIUnit(value / IMPERIAL_QUARTS_IN_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialGallon.fromSIUnit(value) * IMPERIAL_QUARTS_IN_GALLON.toDecimal()
 }
 
 @Serializable
 object ImperialGallon : UKImperialVolume() {
     override val symbol: String = "gal"
-    const val IMPERIAL_GALLONS_IN_CUBIC_METER = 219.96924829908778
-    override fun toSIUnit(value: Decimal): Decimal =
-        value / IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
-
-    override fun fromSIUnit(value: Decimal): Decimal =
-        value * IMPERIAL_GALLONS_IN_CUBIC_METER.toDecimal()
+    const val LITER_PER_GALLON = 4.54609
+    override fun toSIUnit(value: Decimal): Decimal = Liter.toSIUnit(value * LITER_PER_GALLON.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Liter.fromSIUnit(value) / LITER_PER_GALLON.toDecimal()
 }
 
 fun <
@@ -344,60 +324,116 @@ fun <
     return ScientificValue(volumeInHeightCubed / height.value, Square(height.unit)).convert(this)
 }
 
+@JvmName("meterTimesSquareMeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMeter>) = CubicMeter.volume(other, this)
+@JvmName("squareMeterTimesMeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>) = other * this
+@JvmName("nanometerTimesSquareNanometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareNanometer>) = CubicNanometer.volume(other, this)
+@JvmName("squareNanometerTimesNanometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareNanometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>) = other * this
+@JvmName("micrometerTimesSquareMicrometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMicrometer>) = CubicMicrometer.volume(other, this)
+@JvmName("squareMicrometerTimesMicrometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMicrometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>) = other * this
+@JvmName("millimeterTimesSquareMillimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMillimeter>) = CubicMillimeter.volume(other, this)
+@JvmName("squareMillimeterTimesMillimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMillimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>) = other * this
+@JvmName("centimeterTimesSquareCentimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareCentimeter>) = CubicCentimeter.volume(other, this)
+@JvmName("squareCentimeterTimesCentimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareCentimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>) = other * this
+@JvmName("decimeterTimesSquareDecimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecimeter>) = CubicDecimeter.volume(other, this)
+@JvmName("squareDecimeterTimesDecimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecimeter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>) = other * this
+@JvmName("decameterTimesSquareDecameter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecameter>) = CubicDecameter.volume(other, this)
+@JvmName("squareDecameterTimesDecameter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecameter>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>) = other * this
+@JvmName("hectometerTimesSquarehectometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareHectometer>) = CubicHectometer.volume(other, this)
+@JvmName("squareHectometerTimesHectometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareHectometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>) = other * this
+@JvmName("kilometerTimesSquareKilometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareKilometer>) = CubicKilometer.volume(other, this)
+@JvmName("squareKilometerTimesKilometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareKilometer>.times(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>) = other * this
+@JvmName("inchTimesSquareInch")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareInch>) = CubicInch.volume(other, this)
+@JvmName("squareInchTimesInch")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareInch>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>) = other * this
+@JvmName("footTimesSquareFoot")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareFoot>) = CubicFoot.volume(other, this)
+@JvmName("squareFootTimesFoot")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareFoot>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = other * this
+@JvmName("yardTimesSquareYard")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareYard>) = CubicYard.volume(other, this)
+@JvmName("squareYardTimesYard")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareYard>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>) = other * this
+@JvmName("mileTimesSquareMile")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareMile>) = CubicMile.volume(other, this)
+@JvmName("squareMileTimesMile")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareMile>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>) = other * this
+@JvmName("footTimesAcre")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, Acre>) = AcreFoot.volume(other, this)
+@JvmName("acreTimesFoot")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, Acre>.times(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = other * this
 
+@JvmName("cubicMeterDivSquareMeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMeter>) = Meter.fromVolume(this, other)
+@JvmName("cubicMeterDivMeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Meter>) = SquareMeter.fromVolume(this, other)
+@JvmName("cubicNanometerDivSquareNanometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicNanometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareNanometer>) = Nanometer.fromVolume(this, other)
+@JvmName("cubicNanometerDivNanometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicNanometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Nanometer>) = SquareNanometer.fromVolume(this, other)
+@JvmName("cubicMicrometerDivSquareMicrometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMicrometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMicrometer>) = Micrometer.fromVolume(this, other)
+@JvmName("cubicMicrometerDivMicrometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMicrometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Micrometer>) = SquareMicrometer.fromVolume(this, other)
+@JvmName("cubicMillimeterDivSquareMillimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMillimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareMillimeter>) = Millimeter.fromVolume(this, other)
+@JvmName("cubicMillimeterDivMillimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicMillimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Millimeter>) = SquareMillimeter.fromVolume(this, other)
+@JvmName("cubicCentimeterDivSquareCentimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicCentimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareCentimeter>) = Centimeter.fromVolume(this, other)
+@JvmName("cubicCentimeterDivCentimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicCentimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Centimeter>) = SquareCentimeter.fromVolume(this, other)
+@JvmName("cubicDecimeterDivSquareDecimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicDecimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecimeter>) = Decimeter.fromVolume(this, other)
+@JvmName("cubicDecimeterDivDecimeter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicDecimeter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decimeter>) = SquareDecimeter.fromVolume(this, other)
+@JvmName("cubicDecameterDivSquareDecameter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicDecameter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareDecameter>) = Decameter.fromVolume(this, other)
+@JvmName("cubicDecameterDivDecameter")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicDecameter>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Decameter>) = SquareDecameter.fromVolume(this, other)
+@JvmName("cubicHectometerDivSquareHectometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicHectometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareHectometer>) = Hectometer.fromVolume(this, other)
+@JvmName("cubicHectometerDivHectometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicHectometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Hectometer>) = SquareHectometer.fromVolume(this, other)
+@JvmName("cubicKilometerDivSquareKilometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicKilometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Area, SquareKilometer>) = Kilometer.fromVolume(this, other)
+@JvmName("cubicKilometerDivKilometer")
 operator fun ScientificValue<MeasurementSystem.Metric, MeasurementType.Volume, CubicKilometer>.div(other: ScientificValue<MeasurementSystem.Metric, MeasurementType.Length, Kilometer>) = SquareKilometer.fromVolume(this, other)
+@JvmName("cubicInchDivSquareInch")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicInch>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareInch>) = Inch.fromVolume( this, other)
+@JvmName("cubicInchDivInch")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicInch>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Inch>) = SquareInch.fromVolume(this, other)
+@JvmName("cubicFootDivSquareFoot")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicFoot>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareFoot>) = Foot.fromVolume(this, other)
+@JvmName("cubicFootDivFoot")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicFoot>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = SquareFoot.fromVolume(this, other)
+@JvmName("cubicYardDivSquareYard")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicYard>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareYard>) = Yard.fromVolume(this, other)
+@JvmName("cubicYardDivYard")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicYard>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Yard>) = SquareYard.fromVolume(this, other)
+@JvmName("cubicMileDivSquareMile")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicMile>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, SquareMile>) = Mile.fromVolume(this, other)
+@JvmName("cubicMileDivMile")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Volume, CubicMile>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Mile>) = SquareMile.fromVolume(this, other)
+@JvmName("acreFootDivAcre")
 operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Volume, AcreFoot>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Area, Acre>) = Foot.fromVolume(this, other)
+@JvmName("acreFootDivFoot")
 operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Volume, AcreFoot>.div(other: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Length, Foot>) = Acre.fromVolume(this, other)

@@ -50,7 +50,10 @@ infix fun Speed<*, *>.per(time: Time) = when (this) {
     is ImperialSpeed -> this per time
 }
 
-inline infix fun <
+val MetricStandardGravityAcceleration = ScientificValue(9.80665, Meter per Second per Second)
+val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)
+
+inline operator fun <
     System : MeasurementSystem,
     LengthUnit : Length<System>,
     SpeedUnit : Speed<System, LengthUnit>,
@@ -59,7 +62,7 @@ inline infix fun <
     System,
     MeasurementType.Speed,
     SpeedUnit,
-    >.per(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Acceleration, AccelerationUnit> {
+    >.div(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Acceleration, AccelerationUnit> {
     val accelerationUnit = (unit per time.unit) as AccelerationUnit
     return ScientificValue(value / time.value, accelerationUnit)
 }

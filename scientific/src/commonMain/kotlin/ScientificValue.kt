@@ -26,6 +26,7 @@ data class ScientificValue<System : MeasurementSystem, Type : MeasurementType, U
     val unit: Unit
 ) : Comparable<ScientificValue<*, Type, *>> {
     constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
+    constructor(value: Int, unit: Unit) : this(value.toDecimal(), unit)
 
     override fun compareTo(other: ScientificValue<*, Type, *>): Int = unit.toSIUnit(value).compareTo(other.unit.toSIUnit(other.value))
 
@@ -49,3 +50,19 @@ fun <
     > ScientificValue<*, Type, Unit>.convertValue(target: TargetUnit) : Decimal {
     return unit.convert(value, target)
 }
+
+operator fun <
+    Type : MeasurementType,
+    System : MeasurementSystem,
+    UnitType : ScientificUnit<System, Type>
+    > Int.invoke(unit: UnitType) = ScientificValue(this, unit)
+operator fun <
+    Type : MeasurementType,
+    System : MeasurementSystem,
+    UnitType : ScientificUnit<System, Type>
+    > Double.invoke(unit: UnitType) = ScientificValue(this, unit)
+operator fun <
+    Type : MeasurementType,
+    System : MeasurementSystem,
+    UnitType : ScientificUnit<System, Type>
+    > Decimal.invoke(unit: UnitType) = ScientificValue(this, unit)

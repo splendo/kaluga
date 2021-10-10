@@ -70,28 +70,28 @@ object Kilometer : MetricLength(), ScientificUnit<MeasurementSystem.Metric, Meas
 // Imperial Length
 @Serializable
 object Inch : ImperialLength("in") {
-    const val INCHES_IN_METER = 39.37007874015748
-    override fun toSIUnit(value: Decimal): Decimal = value / INCHES_IN_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * INCHES_IN_METER.toDecimal()
+    const val INCHES_IN_FOOT = 12
+    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value / INCHES_IN_FOOT.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) * INCHES_IN_FOOT.toDecimal()
 }
 
 @Serializable
 object Foot : ImperialLength("ft") {
-    const val FEET_IN_METER = 3.280839895013123
-    override fun toSIUnit(value: Decimal): Decimal = value / FEET_IN_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * FEET_IN_METER.toDecimal()
+    const val METER_IN_FEET = 0.3048
+    override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET.toDecimal()
 }
 
 @Serializable
 object Yard : ImperialLength("yd") {
-    const val YARDS_IN_METER = 1.0936132983377078
-    override fun toSIUnit(value: Decimal): Decimal = value / YARDS_IN_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * YARDS_IN_METER.toDecimal()
+    const val FOOT_IN_YARD = 3
+    override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value * FOOT_IN_YARD.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) / FOOT_IN_YARD.toDecimal()
 }
 
 @Serializable
 object Mile : ImperialLength("mi") {
-    const val MILES_IN_METER = 0.000621371192237334
-    override fun toSIUnit(value: Decimal): Decimal = value / MILES_IN_METER.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * MILES_IN_METER.toDecimal()
+    const val YARDS_IN_MILE = 1760
+    override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE.toDecimal()
 }
