@@ -225,6 +225,28 @@ class ServiceMonitorRepoTest : SimpleFlowTest<ServiceMonitorState>() {
     }
 
     @Test
+    fun test_state_is_unauthorized() {
+        runBlocking {
+            val job = launch {
+                repo.filterOnlyImportant().collect {
+                    assertIsNot<ServiceMonitorState.NotInitialized>(it)
+                }
+            }
+            delay(SERVICE_MONITOR_DELAY)
+            repo.takeAndChangeState {
+                { ServiceMonitorState.Initialized.Unauthorized }
+            }
+
+            repo.useState {
+                assertIs<ServiceMonitorState.Initialized.Unauthorized>(it)
+            }
+
+            delay(SERVICE_MONITOR_DELAY)
+            job.cancel()
+        }
+    }
+
+    @Test
     fun test_filter_out_not_initiliazed() {
         runBlocking {
             val job = launch {
