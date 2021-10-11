@@ -50,13 +50,13 @@ class ServiceMonitorViewModel(
     override fun onResume(scope: CoroutineScope) {
         super.onResume(scope)
 
-        coroutineScope.launch {
+        scope.launch {
             bltMonitorRepo.collect {
                 _bluetoothServiceStatusText.value = it.toStringValues()
             }
         }
 
-        coroutineScope.launch {
+        scope.launch {
             locationMonitorRepo.collect {
                 _locationServiceStatusText.value = it.toStringValues()
             }
