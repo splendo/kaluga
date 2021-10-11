@@ -85,7 +85,7 @@ actual operator fun Decimal.div(value: Decimal) = decimalNumberByDividingBy(valu
 actual fun Decimal.div(value: Decimal, scale: Int) =
     decimalNumberByDividingBy(
         decimalNumber = value,
-        withBehavior = NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+        withBehavior = NSDecimalNumberHandler(
             NSRoundingMode.NSRoundBankers,
             scale.toShort(),
             raiseOnExactness = true,
@@ -146,7 +146,7 @@ actual fun Decimal.toString() = this.stringValue
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
     decimalNumberByRoundingAccordingToBehavior(
-        NSDecimalNumberHandler.decimalNumberHandlerWithRoundingMode(
+        NSDecimalNumberHandler(
             roundingMode = roundingMode.nsRoundingMode,
             scale = scale.toShort(),
             raiseOnExactness = false,
