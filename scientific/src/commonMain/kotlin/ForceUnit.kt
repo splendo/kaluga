@@ -131,6 +131,14 @@ object GrainForce : ImperialForce() {
 }
 
 @Serializable
+object Kip : USImperialForce() {
+    const val POUNDS_FORCE_IN_KIP = 1000.0
+    override val symbol: String ="kip"
+    override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(value * POUNDS_FORCE_IN_KIP.toDecimal())
+}
+
+@Serializable
 object UsTonForce : USImperialForce() {
     override val symbol: String = "STf"
     override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
@@ -280,6 +288,8 @@ operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, 
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, OunceForce>.div(acceleration: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Acceleration, ImperialAcceleration>) = Ounce.mass(this, acceleration)
 @JvmName("grainForceDivAcceleration")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, GrainForce>.div(acceleration: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Acceleration, ImperialAcceleration>) = Grain.mass(this, acceleration)
+@JvmName("kipDivAcceleration")
+operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Force, Kip>.div(acceleration: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Acceleration, ImperialAcceleration>) = Pound.mass(this, acceleration)
 @JvmName("usTonForceDivAcceleration")
 operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Force, UsTonForce>.div(acceleration: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Acceleration, ImperialAcceleration>) = UsTon.mass(this, acceleration)
 @JvmName("imperialTonForceDivAcceleration")
@@ -315,6 +325,8 @@ operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, 
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, OunceForce>.div(mass: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Weight, Ounce>) = (Foot per Second per Second).acceleration(this, mass)
 @JvmName("grainForceDivGrain")
 operator fun ScientificValue<MeasurementSystem.Imperial, MeasurementType.Force, GrainForce>.div(mass: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Weight, Grain>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("kipDivPound")
+operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Force, Kip>.div(mass: ScientificValue<MeasurementSystem.Imperial, MeasurementType.Weight, Pound>) = (Foot per Second per Second).acceleration(this, mass)
 @JvmName("usTonForceDivUsTon")
 operator fun ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Force, UsTonForce>.div(mass: ScientificValue<MeasurementSystem.USCustomary, MeasurementType.Weight, UsTon>) = (Foot per Second per Second).acceleration(this, mass)
 @JvmName("imperialTonForceDivImperialTon")
