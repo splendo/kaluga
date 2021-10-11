@@ -68,5 +68,6 @@ fun ServiceMonitorState.toStringValues(): String = when (this) {
     is ServiceMonitorState.Initialized.Disabled -> "monitor_services_status_disabled".localized()
     is ServiceMonitorState.Initialized.Enabled -> "monitor_services_status_enabled".localized()
     is ServiceMonitorState.NotInitialized -> "monitor_services_status_not_initialized".localized()
-    ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
+    is ServiceMonitorState.NotSupported -> "monitor_services_status_not_supported".localized()
+    is ServiceMonitorState.Initialized.Unauthorized -> "monitor_services_status_unauthorized".localized()
 }
