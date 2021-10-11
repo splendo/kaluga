@@ -21,13 +21,8 @@ import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
-import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
-import platform.CoreLocation.kCLAuthorizationStatusAuthorized
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
-import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
 import platform.CoreLocation.kCLAuthorizationStatusDenied
-import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import kotlin.coroutines.CoroutineContext
 
@@ -59,7 +54,7 @@ class DefaultLocationMonitor(
 
     private val isUnauthorized: Boolean
         get() = locationManager.authorizationStatus == kCLAuthorizationStatusRestricted ||
-                locationManager.authorizationStatus == kCLAuthorizationStatusDenied
+            locationManager.authorizationStatus == kCLAuthorizationStatusDenied
 
     override fun startMonitoring() {
         super.startMonitoring()

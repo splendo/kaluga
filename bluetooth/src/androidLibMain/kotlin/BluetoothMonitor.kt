@@ -70,13 +70,12 @@ class DefaultBluetoothMonitor internal constructor(
 
     private val isUnauthorized: Boolean
         get() = ContextCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.BLUETOOTH
-                ) == PackageManager.PERMISSION_DENIED
-                    || ContextCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ) == PackageManager.PERMISSION_DENIED
+            applicationContext,
+            Manifest.permission.BLUETOOTH
+        ) == PackageManager.PERMISSION_DENIED || ContextCompat.checkSelfPermission(
+            applicationContext,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_DENIED
 
     private val availabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -104,7 +103,7 @@ class DefaultBluetoothMonitor internal constructor(
         launchTakeAndChangeState { // Force first emission
             {
                 if (bluetoothAdapter.isEnabled) {
-                   isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
+                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
                 } else {
                     isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
                 }
@@ -120,7 +119,6 @@ class DefaultBluetoothMonitor internal constructor(
             applicationContext.unregisterReceiver(availabilityBroadcastReceiver)
         }
     }
-
 
     private fun updateState(state: SystemServiceState) {
         launchTakeAndChangeState {

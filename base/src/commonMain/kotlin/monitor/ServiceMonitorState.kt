@@ -41,7 +41,7 @@ sealed class ServiceMonitorState : State() {
         /**
          * Describe when system's service is on, but permission for that haven't been granted yet.
          */
-        object Unauthorized: Initialized()
+        object Unauthorized : Initialized()
     }
 
     /**
