@@ -24,6 +24,10 @@ import platform.CoreBluetooth.CBCentralManager
 import platform.CoreBluetooth.CBCentralManagerDelegateProtocol
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOff
 import platform.CoreBluetooth.CBCentralManagerStatePoweredOn
+import platform.CoreBluetooth.CBCentralManagerStateResetting
+import platform.CoreBluetooth.CBCentralManagerStateUnauthorized
+import platform.CoreBluetooth.CBCentralManagerStateUnknown
+import platform.CoreBluetooth.CBCentralManagerStateUnsupported
 import platform.CoreBluetooth.CBManagerState
 import platform.darwin.NSObject
 import kotlin.coroutines.CoroutineContext
@@ -80,9 +84,12 @@ class DefaultBluetoothMonitor internal constructor(
         launchTakeAndChangeState {
             {
                 when (status) {
-                    CBCentralManagerStatePoweredOn -> ServiceMonitorState.Initialized.Enabled
-                    CBCentralManagerStatePoweredOff -> ServiceMonitorState.Initialized.Disabled
-                    else -> ServiceMonitorState.NotSupported
+                    CBCentralManagerStatePoweredOn,
+                    CBCentralManagerStateUnauthorized -> ServiceMonitorState.Initialized.Enabled
+                    CBCentralManagerStatePoweredOff,
+                    CBCentralManagerStateResetting -> ServiceMonitorState.Initialized.Disabled
+                    CBCentralManagerStateUnsupported,
+                    CBCentralManagerStateUnknown -> ServiceMonitorState.NotSupported
                 }
             }
         }
