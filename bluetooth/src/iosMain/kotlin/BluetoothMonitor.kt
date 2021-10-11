@@ -88,8 +88,8 @@ class DefaultBluetoothMonitor internal constructor(
                     CBCentralManagerStateUnauthorized -> ServiceMonitorState.Initialized.Enabled
                     CBCentralManagerStatePoweredOff,
                     CBCentralManagerStateResetting -> ServiceMonitorState.Initialized.Disabled
-                    CBCentralManagerStateUnsupported,
-                    CBCentralManagerStateUnknown -> ServiceMonitorState.NotSupported
+                    CBCentralManagerStateUnsupported -> ServiceMonitorState.NotSupported
+                    CBCentralManagerStateUnknown -> ServiceMonitorState.NotInitialized
                     else -> ServiceMonitorState.NotInitialized
                 }
             }
