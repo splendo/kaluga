@@ -26,7 +26,7 @@ import com.splendo.kaluga.state.State
 sealed class ServiceMonitorState : State() {
 
     /**
-     * Wheter the status is on/off.
+     * Whether the status is on/off.
      * At this point all system callbacks are registered and repo is listening for changes.
      */
     sealed class Initialized : ServiceMonitorState() {
@@ -37,6 +37,11 @@ sealed class ServiceMonitorState : State() {
 
         object Enabled : Initialized()
         object Disabled : Initialized()
+
+        /**
+         * Describe when system's service is on, but permission for that haven't been granted yet.
+         */
+        object Unauthorized: Initialized()
     }
 
     /**

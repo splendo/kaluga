@@ -21,7 +21,14 @@ import com.splendo.kaluga.base.DefaultServiceMonitor
 import com.splendo.kaluga.base.IOSVersion
 import com.splendo.kaluga.base.ServiceMonitor
 import com.splendo.kaluga.base.monitor.ServiceMonitorState
+import platform.CoreLocation.CLAuthorizationStatus
 import platform.CoreLocation.CLLocationManager
+import platform.CoreLocation.kCLAuthorizationStatusAuthorized
+import platform.CoreLocation.kCLAuthorizationStatusAuthorizedAlways
+import platform.CoreLocation.kCLAuthorizationStatusAuthorizedWhenInUse
+import platform.CoreLocation.kCLAuthorizationStatusDenied
+import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
+import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import kotlin.coroutines.CoroutineContext
 
 actual interface LocationMonitor : ServiceMonitor {
@@ -50,6 +57,10 @@ class DefaultLocationMonitor(
     coroutineContext: CoroutineContext
 ) : DefaultServiceMonitor(coroutineContext), LocationMonitor {
 
+    private val isUnauthorized: Boolean
+        get() = locationManager.authorizationStatus == kCLAuthorizationStatusRestricted ||
+                locationManager.authorizationStatus == kCLAuthorizationStatusDenied
+
     override fun startMonitoring() {
         super.startMonitoring()
 
@@ -65,9 +76,9 @@ class DefaultLocationMonitor(
         launchTakeAndChangeState {
             {
                 if (locationManager.locationServicesEnabled) {
-                    ServiceMonitorState.Initialized.Enabled
+                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
                 } else {
-                    ServiceMonitorState.Initialized.Disabled
+                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
                 }
             }
         }
@@ -77,4 +88,11 @@ class DefaultLocationMonitor(
         super.stopMonitoring()
         locationManager.delegate = null
     }
+
+    private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
+        if (isUnauthorized) {
+            ServiceMonitorState.Initialized.Unauthorized
+        } else {
+            default
+        }
 }

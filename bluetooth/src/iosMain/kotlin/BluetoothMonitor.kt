@@ -84,11 +84,11 @@ class DefaultBluetoothMonitor internal constructor(
         launchTakeAndChangeState {
             {
                 when (status) {
-                    CBCentralManagerStatePoweredOn,
-                    CBCentralManagerStateUnauthorized -> ServiceMonitorState.Initialized.Enabled
+                    CBCentralManagerStatePoweredOn -> ServiceMonitorState.Initialized.Enabled
                     CBCentralManagerStatePoweredOff,
                     CBCentralManagerStateResetting -> ServiceMonitorState.Initialized.Disabled
                     CBCentralManagerStateUnsupported -> ServiceMonitorState.NotSupported
+                    CBCentralManagerStateUnauthorized -> ServiceMonitorState.Initialized.Unauthorized
                     CBCentralManagerStateUnknown -> ServiceMonitorState.NotInitialized
                     else -> ServiceMonitorState.NotInitialized
                 }

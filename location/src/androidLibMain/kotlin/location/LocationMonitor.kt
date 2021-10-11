@@ -17,12 +17,15 @@
 
 package com.splendo.kaluga.location
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import com.splendo.kaluga.base.ApplicationHolder
 import com.splendo.kaluga.base.DefaultServiceMonitor
@@ -56,6 +59,12 @@ class DefaultLocationMonitor(
     coroutineContext: CoroutineContext
 ) : DefaultServiceMonitor(coroutineContext), LocationMonitor {
 
+    private val isUnauthorized: Boolean
+        get() = ContextCompat.checkSelfPermission(
+            applicationContext,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        ) == PackageManager.PERMISSION_DENIED
+
     private val locationAvailabilityBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if (intent?.action == LocationManager.MODE_CHANGED_ACTION) {
@@ -68,9 +77,9 @@ class DefaultLocationMonitor(
                 launchTakeAndChangeState {
                     {
                         if (isLocationEnabled) {
-                            ServiceMonitorState.Initialized.Enabled
+                            isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
                         } else {
-                            ServiceMonitorState.Initialized.Disabled
+                            isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
                         }
                     }
                 }
@@ -94,9 +103,9 @@ class DefaultLocationMonitor(
                 }
                 debug(TAG) { "(startMonitoring) Location isEnabled $isLocationEnabled" }
                 if (isLocationEnabled) {
-                    ServiceMonitorState.Initialized.Enabled
+                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
                 } else {
-                    ServiceMonitorState.Initialized.Disabled
+                    isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
                 }
             }
         }
@@ -104,6 +113,15 @@ class DefaultLocationMonitor(
 
     override fun stopMonitoring() {
         super.stopMonitoring()
-        applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
+        if (locationAvailabilityBroadcastReceiver.isOrderedBroadcast) {
+            applicationContext.unregisterReceiver(locationAvailabilityBroadcastReceiver)
+        }
     }
+
+    private fun isUnauthorizedOrDefault(default: ServiceMonitorState) =
+        if (isUnauthorized) {
+            ServiceMonitorState.Initialized.Unauthorized
+        } else {
+            default
+        }
 }
