@@ -126,16 +126,13 @@ class DefaultBluetoothMonitor internal constructor(
                 when (state) {
                     BluetoothAdapter.STATE_ON ->
                         isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Enabled)
-                    BluetoothAdapter.STATE_OFF -> {
+                    BluetoothAdapter.STATE_OFF ->
                         isUnauthorizedOrDefault(ServiceMonitorState.Initialized.Disabled)
-                    }
                     BluetoothAdapter.STATE_TURNING_ON,
-                    BluetoothAdapter.STATE_TURNING_OFF -> {
+                    BluetoothAdapter.STATE_TURNING_OFF ->
                         ServiceMonitorState.Initialized.Disabled
-                    }
-                    else -> {
+                    else ->
                         ServiceMonitorState.NotInitialized
-                    }
                 }
             }
         }
