@@ -37,6 +37,7 @@ sealed class FeatureListNavigationAction : NavigationAction<Nothing>(null) {
     object System : FeatureListNavigationAction()
     object ServiceMonitor : FeatureListNavigationAction()
     object Beacons : FeatureListNavigationAction()
+    object PlatformSpecific : FeatureListNavigationAction()
 }
 
 sealed class Feature(val title: String) {
@@ -52,12 +53,13 @@ sealed class Feature(val title: String) {
     object System : Feature("feature_system".localized())
     object ServiceMonitor : Feature("feature_service_monitor".localized())
     object Beacons : Feature("feature_beacons".localized())
+    object PlatformSpecific : Feature("feature_platform_specific".localized())
 }
 
 class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : NavigatingViewModel<FeatureListNavigationAction>(navigator) {
 
     val feature = observableOf(
-        listOf(
+        listOfNotNull(
             Feature.Alerts,
             Feature.Architecture,
             Feature.Bluetooth,
@@ -69,7 +71,8 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
             Feature.Permissions,
             Feature.ServiceMonitor,
             Feature.System,
-            Feature.Beacons
+            Feature.Beacons,
+            Feature.PlatformSpecific.takeIf { showPlatformSpecificFeatures }
         )
     )
 
@@ -88,6 +91,7 @@ class FeatureListViewModel(navigator: Navigator<FeatureListNavigationAction>) : 
                 is Feature.Permissions -> FeatureListNavigationAction.Permissions
                 is Feature.ServiceMonitor -> FeatureListNavigationAction.ServiceMonitor
                 is Feature.System -> FeatureListNavigationAction.System
+                is Feature.PlatformSpecific -> FeatureListNavigationAction.PlatformSpecific
             }
         )
     }
