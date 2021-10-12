@@ -28,5 +28,6 @@ sealed interface MeasurementType {
     interface Temperature : MeasurementType
     interface Time : MeasurementType
     interface Volume : MeasurementType
+    interface VolumetricFlow : MeasurementType
     interface Weight : MeasurementType
 }

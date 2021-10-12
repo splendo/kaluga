@@ -38,18 +38,18 @@ data class MetricDensity(override val weight: MetricWeight, override val per: Me
 @Serializable
 data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) : Density<MeasurementSystem.Imperial, ImperialWeight, ImperialVolume>()
 @Serializable
-data class USImperialDensity(override val weight: USImperialWeight, override val per: USImperialVolume) : Density<MeasurementSystem.USCustomary, USImperialWeight, USImperialVolume>()
+data class USImperialDensity(override val weight: USCustomaryWeight, override val per: USCustomaryVolume) : Density<MeasurementSystem.USCustomary, USCustomaryWeight, USCustomaryVolume>()
 @Serializable
 data class UKImperialDensity(override val weight: UKImperialWeight, override val per: UKImperialVolume) : Density<MeasurementSystem.UKImperial, UKImperialWeight, UKImperialVolume>()
 
 infix fun MetricWeight.per(volume: MetricVolume) = MetricDensity(this, volume)
 infix fun ImperialWeight.per(volume: ImperialVolume) = ImperialDensity(this, volume)
-infix fun USImperialWeight.per(volume: USImperialVolume) = USImperialDensity(this, volume)
+infix fun USCustomaryWeight.per(volume: USCustomaryVolume) = USImperialDensity(this, volume)
 infix fun UKImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this, volume)
 infix fun <System : MeasurementSystem> Weight<System>.per(volume: Volume<System>) = when (this) {
     is MetricWeight -> this per (volume as MetricVolume)
     is ImperialWeight -> this per (volume as ImperialVolume)
-    is USImperialWeight -> this per (volume as USImperialVolume)
+    is USCustomaryWeight -> this per (volume as USCustomaryVolume)
     is UKImperialWeight -> this per (volume as UKImperialVolume)
 }
 

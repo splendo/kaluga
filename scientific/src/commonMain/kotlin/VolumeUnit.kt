@@ -33,7 +33,7 @@ sealed class MetricVolume :
     Volume<MeasurementSystem.Metric>()
 
 @Serializable
-sealed class USImperialVolume :
+sealed class USCustomaryVolume :
     Volume<MeasurementSystem.USCustomary>()
 
 @Serializable
@@ -136,14 +136,21 @@ object CubicMile : ImperialVolume(), ScientificUnit<MeasurementSystem.Imperial, 
 // US Imperial
 
 @Serializable
-object AcreFoot : USImperialVolume() {
+data class USCustomaryImperialVolumeWrapper(val imperial: ImperialVolume) : USCustomaryVolume() {
+    override val symbol: String = imperial.symbol
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
+}
+
+@Serializable
+object AcreFoot : USCustomaryVolume() {
     override val symbol: String = "ac ft"
     override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(Acre.toSIUnit(value))
     override fun fromSIUnit(value: Decimal): Decimal = Acre.fromSIUnit(Foot.fromSIUnit(value))
 }
 
 @Serializable
-object UsFluidDram : USImperialVolume() {
+object UsFluidDram : USCustomaryVolume() {
     override val symbol: String = "fl dr"
     const val US_DRAMS_IN_FLUID_OUNCE = 8
     override fun toSIUnit(value: Decimal): Decimal = UsFluidOunce.toSIUnit(value / US_DRAMS_IN_FLUID_OUNCE.toDecimal())
@@ -151,7 +158,7 @@ object UsFluidDram : USImperialVolume() {
 }
 
 @Serializable
-object UsFluidOunce : USImperialVolume() {
+object UsFluidOunce : USCustomaryVolume() {
     override val symbol: String = "fl oz"
     const val US_FLUID_OUNCES_IN_GALLON = 128
     override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_FLUID_OUNCES_IN_GALLON.toDecimal())
@@ -159,7 +166,7 @@ object UsFluidOunce : USImperialVolume() {
 }
 
 @Serializable
-object UsCustomaryCup : USImperialVolume() {
+object UsCustomaryCup : USCustomaryVolume() {
     override val symbol: String = "cup"
     const val US_LEGAL_CUPS_IN_GALLON = 16
     override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_LEGAL_CUPS_IN_GALLON.toDecimal())
@@ -167,7 +174,7 @@ object UsCustomaryCup : USImperialVolume() {
 }
 
 @Serializable
-object UsLegalCup : USImperialVolume() {
+object UsLegalCup : USCustomaryVolume() {
     override val symbol: String = "cup"
     const val MILLILITERS_IN_CUP = 240
     override fun toSIUnit(value: Decimal): Decimal = Milliliter.toSIUnit(value * MILLILITERS_IN_CUP.toDecimal())
@@ -175,7 +182,7 @@ object UsLegalCup : USImperialVolume() {
 }
 
 @Serializable
-object UsLiquidPint : USImperialVolume() {
+object UsLiquidPint : USCustomaryVolume() {
     override val symbol: String = "pint"
     const val US_PINTS_IN_GALLON = 8
     override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_PINTS_IN_GALLON.toDecimal())
@@ -183,7 +190,7 @@ object UsLiquidPint : USImperialVolume() {
 }
 
 @Serializable
-object UsLiquidQuart : USImperialVolume() {
+object UsLiquidQuart : USCustomaryVolume() {
     override val symbol: String = "qt"
     const val US_QUARTS_IN_GALLON = 4
     override fun toSIUnit(value: Decimal): Decimal = UsLiquidGallon.toSIUnit(value / US_QUARTS_IN_GALLON.toDecimal())
@@ -191,7 +198,7 @@ object UsLiquidQuart : USImperialVolume() {
 }
 
 @Serializable
-object UsLiquidGallon : USImperialVolume() {
+object UsLiquidGallon : USCustomaryVolume() {
     override val symbol: String = "gal"
     const val CUBIC_INCH_IN_GALLON = 231
     override fun toSIUnit(value: Decimal): Decimal = CubicInch.toSIUnit(value * CUBIC_INCH_IN_GALLON.toDecimal())
@@ -199,6 +206,13 @@ object UsLiquidGallon : USImperialVolume() {
 }
 
 // UK Imperial
+@Serializable
+data class UKImperialImperialVolumeWrapper(val imperial: ImperialVolume) : UKImperialVolume() {
+    override val symbol: String = imperial.symbol
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
+}
+
 @Serializable
 object ImperialFluidDram : UKImperialVolume() {
     override val symbol: String = "fl dr"

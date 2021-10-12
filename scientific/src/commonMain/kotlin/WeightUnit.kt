@@ -36,7 +36,7 @@ sealed class ImperialWeight(override val symbol: String) :
     Weight<MeasurementSystem.Imperial>()
 
 @Serializable
-sealed class USImperialWeight(override val symbol: String) :
+sealed class USCustomaryWeight(override val symbol: String) :
     Weight<MeasurementSystem.USCustomary>()
 
 @Serializable
@@ -126,10 +126,22 @@ object ImperialTon : UKImperialWeight("ton") {
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_LONG_TONES.toDecimal()
 }
 
+@Serializable
+data class UKImperialImperialWeightWrapper(val imperial: ImperialWeight) : UKImperialWeight(imperial.symbol) {
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
+}
+
 // also short ton
 @Serializable
-object UsTon : USImperialWeight("ton") {
+object UsTon : USCustomaryWeight("ton") {
     const val POUND_IN_SHORT_TONES = 2000
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_SHORT_TONES.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_SHORT_TONES.toDecimal()
+}
+
+@Serializable
+data class USCustomaryImperialWeightWrapper(val imperial: ImperialWeight) : USCustomaryWeight(imperial.symbol) {
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }

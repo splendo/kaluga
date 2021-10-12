@@ -33,7 +33,7 @@ sealed class MetricForce :
     Force<MeasurementSystem.Metric>()
 
 @Serializable
-sealed class USImperialForce :
+sealed class USCustomaryForce :
     Force<MeasurementSystem.USCustomary>()
 
 @Serializable
@@ -131,7 +131,7 @@ object GrainForce : ImperialForce() {
 }
 
 @Serializable
-object Kip : USImperialForce() {
+object Kip : USCustomaryForce() {
     const val POUNDS_FORCE_IN_KIP = 1000.0
     override val symbol: String ="kip"
     override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP.toDecimal()
@@ -139,10 +139,24 @@ object Kip : USImperialForce() {
 }
 
 @Serializable
-object UsTonForce : USImperialForce() {
+data class USCustomaryImperialForceWrapper(val imperial: ImperialVolume) : USCustomaryForce() {
+    override val symbol: String = imperial.symbol
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
+}
+
+@Serializable
+object UsTonForce : USCustomaryForce() {
     override val symbol: String = "STf"
     override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
     override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
+}
+
+@Serializable
+data class UKImperialImperialForceWrapper(val imperial: ImperialForce) : UKImperialForce() {
+    override val symbol: String = imperial.symbol
+    override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
 @Serializable
