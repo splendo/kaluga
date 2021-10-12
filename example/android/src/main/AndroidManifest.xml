@@ -80,8 +80,10 @@
         <activity android:name=".architecture.ArchitectureInputActivity"
             android:label="@string/feature_architecture"/>
 
-        <activity android:name=".compose.ComposeArchitectureInputActivity"
-            android:label="Compose"/>
+        <activity android:name="com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity"
+            android:label="@string/feature_platform_specific"/>
+        <activity android:name="com.splendo.kaluga.example.platformspecific.compose.contacts.ContactsActivity"
+            android:label="@string/feature_platform_specific_compose"/>
 
         <activity android:name=".architecture.ArchitectureDetailsActivity"
             android:label="@string/feature_architecture"/>
@@ -93,6 +95,7 @@
             android:label="@string/feature_beacons"/>
 
         <activity android:name=".system.SystemActivity" android:label="@string/feature_system"/>
+
 
         <service android:name=".location.LocationBackgroundService"/>
 

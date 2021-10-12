@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
     id 'org.jlleitschuh.gradle.ktlint'
+    id "org.jetbrains.kotlin.plugin.serialization"
 }
 
 //noinspection UnnecessaryQualifiedReference
@@ -14,7 +15,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 android {
 
-    compileSdkVersion gradle.android_target_sdk_version
+    compileSdkVersion gradle.android_compile_sdk_version
     buildToolsVersion gradle.android_build_tools_version
     defaultConfig {
         applicationId "com.splendo.kaluga.example"
@@ -57,6 +58,7 @@ kotlin {
     sourceSets.all {
         languageSettings {
             useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
+            useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
         }
     }
 }
@@ -100,5 +102,12 @@ dependencies {
     implementation "io.insert-koin:koin-android:$gradle.koin_version"
     implementation "androidx.lifecycle:lifecycle-service:$gradle.androidx_lifecycle_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$gradle.kotlinx_coroutines_version!!"
+    
+    implementation "androidx.compose.material:material:$gradle.androidx_compose_version"
+    implementation "androidx.navigation:navigation-compose:$gradle.androidx_navigation_compose_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:$gradle.serialization_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$gradle.serialization_version"
 
+    implementation "com.google.android.material:material:$gradle.material_components_version"
+    implementation "com.google.android.material:compose-theme-adapter:$gradle.material_components_adapter_version"
 }
