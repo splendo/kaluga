@@ -24,6 +24,7 @@ sealed interface MeasurementType {
     interface Force : MeasurementType
     interface Frequency : MeasurementType
     interface Length : MeasurementType
+    interface Pressure : MeasurementType
     interface Speed : MeasurementType
     interface Temperature : MeasurementType
     interface Time : MeasurementType
