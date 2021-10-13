@@ -21,5 +21,27 @@ import com.splendo.kaluga.system.network.state.NetworkStateRepo
 
 class MockNetworkStateRepoBuilder : NetworkStateRepo.Builder {
 
-    override fun create(): NetworkStateRepo = NetworkStateRepo(MockNetworkManagerBuilder())
+    val networkStateRepo = MockNetworkStateRepo(MockNetworkManagerBuilder())
+
+    override fun create(): NetworkStateRepo = networkStateRepo
+}
+
+class MockNetworkStateRepo(networkManagerBuilder: BaseNetworkManager.Builder) : NetworkStateRepo(networkManagerBuilder) {
+
+    fun simulateNetworkStateChange(network: Network) {
+        onNetworkStateChange(network)
+    }
+}
+
+fun MockNetworkStateRepo.simulateOnlineStateChange(online: Boolean) {
+    val newNetworkState = if (online) Network.Known.Wifi() else Network.Known.Absent
+    simulateNetworkStateChange(newNetworkState)
+}
+
+fun MockNetworkStateRepoBuilder.simulateOnlineStateChange(online: Boolean) {
+    networkStateRepo.simulateOnlineStateChange(online)
+}
+
+fun MockNetworkStateRepoBuilder.simulateNetworkStateChange(network: Network) {
+    networkStateRepo.simulateNetworkStateChange(network)
 }
