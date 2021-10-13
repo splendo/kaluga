@@ -21,8 +21,8 @@ import com.splendo.kaluga.system.network.state.NetworkState
 import com.splendo.kaluga.system.network.state.NetworkStateRepo
 import com.splendo.kaluga.test.FlowTest
 import com.splendo.kaluga.test.FlowTestBlock
-import com.splendo.kaluga.test.mock.system.network.builder.MockNetworkStateRepo
-import com.splendo.kaluga.test.mock.system.network.builder.MockNetworkStateRepoBuilder
+import com.splendo.kaluga.system.network.mocks.MockNetworkStateRepo
+import com.splendo.kaluga.system.network.mocks.MockNetworkStateRepoBuilder
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
