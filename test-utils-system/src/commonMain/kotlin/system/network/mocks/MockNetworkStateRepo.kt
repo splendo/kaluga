@@ -15,7 +15,7 @@
 
  */
 
-package com.splendo.kaluga.test.mock.system.network.builder
+package com.splendo.kaluga.system.network.mocks
 
 import com.splendo.kaluga.system.network.BaseNetworkManager
 import com.splendo.kaluga.system.network.Network

@@ -72,3 +72,5 @@ include(":resources")
 include(":review")
 include(":scientific")
 include(":system")
+
+include(":test-utils-system")
