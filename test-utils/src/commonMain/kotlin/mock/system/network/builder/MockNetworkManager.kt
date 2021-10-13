@@ -15,11 +15,19 @@
 
  */
 
-package com.splendo.kaluga.system.network
+package com.splendo.kaluga.test.mock.system.network.builder
 
-import com.splendo.kaluga.system.network.state.NetworkStateRepo
+import com.splendo.kaluga.system.network.BaseNetworkManager
+import com.splendo.kaluga.system.network.NetworkStateChange
 
-class MockNetworkStateRepoBuilder : NetworkStateRepo.Builder {
+class MockNetworkManager(
+    override val onNetworkStateChange: NetworkStateChange
+) : BaseNetworkManager {
 
-    override fun create(): NetworkStateRepo = NetworkStateRepo(MockNetworkManagerBuilder())
+    override fun dispose() = Unit
+}
+
+class MockNetworkManagerBuilder : BaseNetworkManager.Builder {
+    override fun create(onNetworkStateChange: NetworkStateChange): BaseNetworkManager =
+        MockNetworkManager(onNetworkStateChange)
 }
