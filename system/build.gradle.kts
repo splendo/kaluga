@@ -14,9 +14,6 @@ group = "com.splendo.kaluga"
 version = ext["library_version"]!!
 
 kotlin {
-
-    val ext = (gradle as ExtensionAware).extra
-
     sourceSets {
         commonMain {
             dependencies {
