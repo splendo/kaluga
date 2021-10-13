@@ -40,6 +40,7 @@ kotlin {
                 implementation(project(":hud", ""))
                 implementation(project(":keyboard", ""))
                 implementation(project(":logging", ""))
+                implementation(project(":system", ""))
                 implementation(project(":base-permissions", ""))
                 implementation(project(":camera-permissions", ""))
                 implementation(project(":contacts-permissions", ""))
