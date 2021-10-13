@@ -79,7 +79,7 @@ open class NetworkStateRepo(
         }
     }
 
-    protected fun onNetworkStateChange(network: Network) {
+    internal fun onNetworkStateChange(network: Network) {
         runBlocking {
             takeAndChangeState { state: NetworkState ->
                 when (state) {
