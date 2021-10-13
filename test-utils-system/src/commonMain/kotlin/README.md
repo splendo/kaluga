@@ -7,7 +7,7 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation("com:splendo:kaluga:test-utils-system:$[kalugaVersion](https://github.com/splendo/kaluga/releases/))
+                implementation("com:splendo:kaluga:test-utils-system:$[kalugaVersion](https://github.com/splendo/kaluga/releases/)")
             }
         }
     }
