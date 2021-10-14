@@ -119,6 +119,9 @@ if (!(ext["example_as_root"] as Boolean)) {
 
     include(":test-utils")
     project(":test-utils").projectDir = file("../../../test-utils")
+
+    include(":test-utils-system")
+    project(":test-utils-system").projectDir = file("../../../test-utils-system")
 }
 
 include(":android")
