@@ -56,7 +56,7 @@ infix fun Speed.per(time: Time): Acceleration = when (this) {
     is ImperialSpeed -> this per time
 }
 
-val MetricStandardGravityAcceleration = ScientificValue(9.80665, Meter per Second per Second)
+val MetricStandardGravityAcceleration = 9.80665(Meter per Second per Second)
 val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)
 
 @JvmName("metricSpeedDivTime")

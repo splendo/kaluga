@@ -363,46 +363,89 @@ operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, Imperi
 
 @JvmName("baryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, Barye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesBaryeTimes")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = pressure * this
 @JvmName("millibaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, MilliBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesBarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, MilliBarye>) = pressure * this
 @JvmName("centibaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, CentiBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesCentibarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, CentiBarye>) = pressure * this
 @JvmName("decibaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, DeciBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesDecibarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, DeciBarye>) = pressure * this
 @JvmName("decabaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, DecaBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesDecabarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, DecaBarye>) = pressure * this
 @JvmName("hectobaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, HectoBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesHectobarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, HectoBarye>) = pressure * this
 @JvmName("kilobaryeTimesMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, KiloBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
+@JvmName("metricAreaTimesKilobarye")
+operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KiloBarye>) = pressure * this
 @JvmName("metricPressureTimesMetricArea")
 operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Pressure, Pressure>.times(area: ScientificValue<MeasurementType.Area, Area>) = Newton.force(this, area)
+@JvmName("metricAreaTimesMetricPressure")
+operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = pressure * this
 @JvmName("poundSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesPoundSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = pressure * this
 @JvmName("poundSquareFeetTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesPoundSquareFeet")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFeet>) = pressure * this
 @JvmName("ounceSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, OunceSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = OunceForce.force(this, area)
+@JvmName("imperialAreaTimesOunceSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) = pressure * this
 @JvmName("kilopoundSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesKilopoundSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>) = pressure * this
 @JvmName("inchMercuryTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfMercury>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesInchMercury")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>) = pressure * this
 @JvmName("inchWaterTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesInchWater")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>) = pressure * this
 @JvmName("feetOfWaterTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, FootOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
+@JvmName("imperialAreaTimesFeetOfWater")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>) = pressure * this
 @JvmName("kipSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
+@JvmName("imperialAreaTimesKipSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) = pressure * this
 @JvmName("kipSquareFeetTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
+@JvmName("imperialAreaTimesKipSquareFeet")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFeet>) = pressure * this
 @JvmName("usTonSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
+@JvmName("imperialAreaTimesUsTonSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) = pressure * this
 @JvmName("usTonSquareFeetTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
+@JvmName("imperialAreaTimesUsTonSquareFeet")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFeet>) = pressure * this
 @JvmName("imperialTonSquareInchTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
+@JvmName("imperialAreaTimesImperialTonSquareInch")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = pressure * this
 @JvmName("imperialTonSquareFeetTimesImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
+@JvmName("imperialAreaTimesImperialTonSquareFeet")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = pressure * this
+
 
 @JvmName("metricForceDivBarye")
 operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = SquareCentimeter.area(this, pressure)

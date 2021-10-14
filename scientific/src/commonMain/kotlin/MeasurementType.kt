@@ -28,11 +28,23 @@ sealed class MeasurementType {
     @Serializable
     object Density : MeasurementType()
     @Serializable
+    object ElectricCharge : MeasurementType()
+    @Serializable
+    object ElectricConductance : MeasurementType()
+    @Serializable
+    object ElectricCurrent : MeasurementType()
+    @Serializable
+    object ElectricResistance : MeasurementType()
+    @Serializable
+    object Energy : MeasurementType()
+    @Serializable
     object Force : MeasurementType()
     @Serializable
     object Frequency : MeasurementType()
     @Serializable
     object Length : MeasurementType()
+    @Serializable
+    object Power : MeasurementType()
     @Serializable
     object Pressure : MeasurementType()
     @Serializable
@@ -41,6 +53,8 @@ sealed class MeasurementType {
     object Temperature : MeasurementType()
     @Serializable
     object Time : MeasurementType()
+    @Serializable
+    object Voltage : MeasurementType()
     @Serializable
     object Volume : MeasurementType()
     @Serializable

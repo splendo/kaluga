@@ -51,4 +51,4 @@ fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Decimal,
     to: ScientificUnit<Unit>
-): Decimal = to.fromSIUnit(toSIUnit(value))
+): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))

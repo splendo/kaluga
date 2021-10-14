@@ -51,6 +51,9 @@ infix fun Length.per(time: Time): Speed = when (this) {
     is ImperialLength -> this per time
 }
 
+val MetricSpeedOfLight = 299792458(Meter per Second)
+val ImperialSpeedOfLight = MetricSpeedOfLight.convert(Foot per Second)
+
 @JvmName("metricLengthDivTime")
 operator fun <
     LengthUnit : MetricLength,
