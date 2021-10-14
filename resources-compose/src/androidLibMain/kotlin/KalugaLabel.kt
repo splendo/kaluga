@@ -39,7 +39,7 @@ import com.splendo.kaluga.resources.view.KalugaLabel
 import com.splendo.kaluga.resources.view.bindLabel
 
 @Composable
-fun KalugaLabel<*>.composable(modifier: Modifier) {
+fun KalugaLabel.composable(modifier: Modifier) {
     when (this) {
         is KalugaLabel.Plain -> {
             Text(

@@ -6,7 +6,7 @@ import android.text.style.URLSpan
 import android.widget.TextView
 import com.splendo.kaluga.resources.stylable.TextStyle
 
-fun TextView.bindLabel(label: KalugaLabel<*>) {
+fun TextView.bindLabel(label: KalugaLabel) {
     text = when (label) {
         is KalugaLabel.Plain -> label.text
         is KalugaLabel.Styled -> {

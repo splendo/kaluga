@@ -151,7 +151,7 @@ class UILinkTextViewDelegateWrapper(private val wrapped: UITextViewDelegateProto
 
 }
 
-fun UILabel.bindLabel(label: KalugaLabel<*>) {
+fun UILabel.bindLabel(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
         is KalugaLabel.Plain -> text = label.text
@@ -170,7 +170,7 @@ fun UILabel.bindLabel(label: KalugaLabel<*>) {
     }
 }
 
-fun UITextView.bindTextView(label: KalugaLabel<*>) {
+fun UITextView.bindTextView(label: KalugaLabel) {
     applyTextStyle(label.style)
     when (label) {
         is KalugaLabel.Plain -> text = label.text

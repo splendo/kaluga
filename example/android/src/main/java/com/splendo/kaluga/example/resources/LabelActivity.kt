@@ -54,7 +54,7 @@ class LabelAdapter : RecyclerView.Adapter<LabelAdapter.LabelViewHolder>() {
         val label = binding.label
     }
 
-    var labels: List<KalugaLabel<*>> = emptyList()
+    var labels: List<KalugaLabel> = emptyList()
         set(newValue) {
             field = newValue
             notifyDataSetChanged()

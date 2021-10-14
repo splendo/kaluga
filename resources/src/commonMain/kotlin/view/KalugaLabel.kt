@@ -18,20 +18,18 @@
 package com.splendo.kaluga.resources.view
 
 import com.splendo.kaluga.resources.StyledString
-import com.splendo.kaluga.resources.stylable.TextAlignment
 import com.splendo.kaluga.resources.stylable.TextStyle
 
-sealed class KalugaLabel<T> {
-    abstract val text: T
+sealed class KalugaLabel {
     abstract val style: TextStyle
 
     data class Plain(
-        override val text: String,
+        val text: String,
         override val style: TextStyle
-    ) : KalugaLabel<String>()
+    ) : KalugaLabel()
+
     data class Styled(
-        override val text: StyledString
-    ) : KalugaLabel<StyledString>() {
+        val text: StyledString,
         override val style: TextStyle = text.defaultTextStyle
-    }
+    ) : KalugaLabel()
 }

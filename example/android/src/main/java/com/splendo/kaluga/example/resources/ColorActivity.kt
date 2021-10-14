@@ -117,7 +117,7 @@ object ResourcesBinding {
 
     @BindingAdapter("label")
     @JvmStatic
-    fun bindLabel(view: TextView, label: KalugaLabel<*>?) {
+    fun bindLabel(view: TextView, label: KalugaLabel?) {
         label?.let {
             view.bindLabel(it)
         }
