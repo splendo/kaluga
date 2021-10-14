@@ -17,18 +17,34 @@
 
 package com.splendo.kaluga.scientific
 
-sealed interface MeasurementType {
-    interface Acceleration : MeasurementType
-    interface Area : MeasurementType
-    interface Density : MeasurementType
-    interface Force : MeasurementType
-    interface Frequency : MeasurementType
-    interface Length : MeasurementType
-    interface Pressure : MeasurementType
-    interface Speed : MeasurementType
-    interface Temperature : MeasurementType
-    interface Time : MeasurementType
-    interface Volume : MeasurementType
-    interface VolumetricFlow : MeasurementType
-    interface Weight : MeasurementType
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class MeasurementType {
+    @Serializable
+    object Acceleration : MeasurementType()
+    @Serializable
+    object Area : MeasurementType()
+    @Serializable
+    object Density : MeasurementType()
+    @Serializable
+    object Force : MeasurementType()
+    @Serializable
+    object Frequency : MeasurementType()
+    @Serializable
+    object Length : MeasurementType()
+    @Serializable
+    object Pressure : MeasurementType()
+    @Serializable
+    object Speed : MeasurementType()
+    @Serializable
+    object Temperature : MeasurementType()
+    @Serializable
+    object Time : MeasurementType()
+    @Serializable
+    object Volume : MeasurementType()
+    @Serializable
+    object VolumetricFlow : MeasurementType()
+    @Serializable
+    object Weight : MeasurementType()
 }

@@ -24,48 +24,50 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Length<System : MeasurementSystem> :
-    AbstractScientificUnit<System, MeasurementType.Length>()
+sealed class Length : AbstractScientificUnit<MeasurementType.Length>()
 
 @Serializable
-sealed class MetricLength :
-    Length<MeasurementSystem.Metric>()
+sealed class MetricLength : Length(), MetricScientificUnit<MeasurementType.Length>
 
 @Serializable
-sealed class ImperialLength(override val symbol: String) :
-    Length<MeasurementSystem.Imperial>()
+sealed class ImperialLength(override val symbol: String) : Length(), CommonImperialScientificUnit<MeasurementType.Length> {
+    override val system = MeasurementSystem.CommonImperial
+    override val type = MeasurementType.Length
+}
 
 // Metric Length
 @Serializable
 object Meter : MetricLength(), BaseMetricUnit<MeasurementType.Length, MeasurementSystem.Metric> {
     override val symbol: String = "m"
+    override val system = MeasurementSystem.Metric
+    override val type = MeasurementType.Length
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanometer : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Nano(Meter)
+object Nanometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Nano(Meter)
 
 @Serializable
-object Micrometer : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Micro(Meter)
+object Micrometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Micro(Meter)
 
 @Serializable
-object Millimeter : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Milli(Meter)
+object Millimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Milli(Meter)
 
 @Serializable
-object Centimeter : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Centi(Meter)
+object Centimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Centi(Meter)
 
 @Serializable
-object Decimeter : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deci(Meter)
+object Decimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deci(Meter)
 
 @Serializable
-object Decameter : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deca(Meter)
+object Decameter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deca(Meter)
 
 @Serializable
-object Hectometer : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Hecto(Meter)
+object Hectometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Hecto(Meter)
 
 @Serializable
-object Kilometer : MetricLength(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Kilo(Meter)
+object Kilometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Kilo(Meter)
 
 // Imperial Length
 @Serializable

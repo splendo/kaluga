@@ -21,48 +21,43 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 
-data class ScientificValue<System : MeasurementSystem, Type : MeasurementType, Unit : ScientificUnit<System, Type>> (
+data class ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> (
     val value: Decimal,
     val unit: Unit
-) : Comparable<ScientificValue<*, Type, *>> {
+) : MeasurementUsage by unit.system, Comparable<ScientificValue<Type, *>> {
     constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
     constructor(value: Int, unit: Unit) : this(value.toDecimal(), unit)
 
-    override fun compareTo(other: ScientificValue<*, Type, *>): Int = unit.toSIUnit(value).compareTo(other.unit.toSIUnit(other.value))
+    override fun compareTo(other: ScientificValue<Type, *>): Int = unit.toSIUnit(value).compareTo(other.unit.toSIUnit(other.value))
 
     val doubleValue: Double get() = value.toDouble()
 }
 
 fun <
     Type : MeasurementType,
-    Unit : ScientificUnit<*, Type>,
-    TargetSystem : MeasurementSystem,
-    TargetUnit : ScientificUnit<TargetSystem, Type>
-    > ScientificValue<*, Type, Unit>.convert(target: TargetUnit) : ScientificValue<TargetSystem, Type,  TargetUnit> {
+    Unit : ScientificUnit<Type>,
+    TargetUnit : ScientificUnit<Type>
+    > ScientificValue<Type, Unit>.convert(target: TargetUnit) : ScientificValue<Type,  TargetUnit> {
     return ScientificValue(convertValue(target), target)
 }
 
 fun <
     Type : MeasurementType,
-    Unit : ScientificUnit<*, Type>,
-    TargetSystem : MeasurementSystem,
-    TargetUnit : ScientificUnit<TargetSystem, Type>
-    > ScientificValue<*, Type, Unit>.convertValue(target: TargetUnit) : Decimal {
+    Unit : ScientificUnit<Type>,
+    TargetUnit : ScientificUnit<Type>
+    > ScientificValue<Type, Unit>.convertValue(target: TargetUnit) : Decimal {
     return unit.convert(value, target)
 }
 
 operator fun <
     Type : MeasurementType,
-    System : MeasurementSystem,
-    UnitType : ScientificUnit<System, Type>
+    UnitType : ScientificUnit<Type>
     > Int.invoke(unit: UnitType) = ScientificValue(this, unit)
 operator fun <
     Type : MeasurementType,
-    System : MeasurementSystem,
-    UnitType : ScientificUnit<System, Type>
+    UnitType : ScientificUnit<Type>
     > Double.invoke(unit: UnitType) = ScientificValue(this, unit)
 operator fun <
     Type : MeasurementType,
-    System : MeasurementSystem,
-    UnitType : ScientificUnit<System, Type>
+    UnitType : ScientificUnit<Type>
     > Decimal.invoke(unit: UnitType) = ScientificValue(this, unit)

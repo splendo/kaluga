@@ -1,18 +1,18 @@
 /*
  Copyright 2021 Splendo Consulting B.V. The Netherlands
- 
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
- 
+
       http://www.apache.org/licenses/LICENSE-2.0
- 
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-  
+
  */
 
 package com.splendo.kaluga.scientific
@@ -24,24 +24,28 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Weight<System : MeasurementSystem> :
-    AbstractScientificUnit<System, MeasurementType.Weight>()
+sealed class Weight : AbstractScientificUnit<MeasurementType.Weight>()
 
 @Serializable
-sealed class MetricWeight :
-    Weight<MeasurementSystem.Metric>()
+sealed class MetricWeight : Weight(), MetricScientificUnit<MeasurementType.Weight>
 
 @Serializable
-sealed class ImperialWeight(override val symbol: String) :
-    Weight<MeasurementSystem.Imperial>()
+sealed class ImperialWeight(override val symbol: String) : Weight(), CommonImperialScientificUnit<MeasurementType.Weight> {
+    override val system = MeasurementSystem.CommonImperial
+    override val type = MeasurementType.Weight
+}
 
 @Serializable
-sealed class USCustomaryWeight(override val symbol: String) :
-    Weight<MeasurementSystem.USCustomary>()
+sealed class USCustomaryWeight(override val symbol: String) : Weight(), USCustomaryScientificUnit<MeasurementType.Weight> {
+    override val system = MeasurementSystem.USCustomary
+    override val type = MeasurementType.Weight
+}
 
 @Serializable
-sealed class UKImperialWeight(override val symbol: String) :
-    Weight<MeasurementSystem.UKImperial>()
+sealed class UKImperialWeight(override val symbol: String) : Weight(), UKImperialScientificUnit<MeasurementType.Weight> {
+    override val system = MeasurementSystem.UKImperial
+    override val type = MeasurementType.Weight
+}
 
 // Metric Weight
 
@@ -49,36 +53,38 @@ sealed class UKImperialWeight(override val symbol: String) :
 object Gram : MetricWeight(), BaseMetricUnit<MeasurementType.Weight, MeasurementSystem.Metric> {
     override val symbol: String = "g"
     const val GRAMS_IN_KILOGRAM = 1000.0
+    override val system = MeasurementSystem.Metric
+    override val type = MeasurementType.Weight
     override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value * GRAMS_IN_KILOGRAM.toDecimal()
 }
 
 @Serializable
-object Nanogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Nano(Gram)
+object Nanogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Nano(Gram)
 
 @Serializable
-object Microgram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Micro(Gram)
+object Microgram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Micro(Gram)
 
 @Serializable
-object Milligram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Milli(Gram)
+object Milligram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Milli(Gram)
 
 @Serializable
-object Centigram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Centi(Gram)
+object Centigram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Centi(Gram)
 
 @Serializable
-object Decigram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deci(Gram)
+object Decigram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deci(Gram)
 
 @Serializable
-object Decagram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deca(Gram)
+object Decagram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deca(Gram)
 
 @Serializable
-object Hectogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Hecto(Gram)
+object Hectogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Hecto(Gram)
 
 @Serializable
-object Kilogram : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Kilo(Gram)
+object Kilogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Kilo(Gram)
 
 @Serializable
-object Tonne : MetricWeight(), ScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Mega(Gram) {
+object Tonne : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Mega(Gram) {
     override val symbol: String = "t"
 }
 

@@ -26,25 +26,28 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Temperature<System : MeasurementSystem> :
-    AbstractScientificUnit<System, MeasurementType.Temperature>()
+sealed class Temperature : AbstractScientificUnit<MeasurementType.Temperature>() {
+    override val type = MeasurementType.Temperature
+}
 
 @Serializable
-sealed class MetricTemperature(override val symbol: String) :
-    Temperature<MeasurementSystem.Metric>()
+sealed class MetricAndUKImperialTemperature(override val symbol: String) : Temperature(), MetricAndUKImperialScientificUnit<MeasurementType.Temperature>, MeasurementUsage.UsedInUKImperial {
+    override val system = MeasurementSystem.MetricAndUKImperial
+}
 
 @Serializable
-sealed class USCustomaryTemperature(override val symbol: String) :
-    Temperature<MeasurementSystem.USCustomary>()
+sealed class USCustomaryTemperature(override val symbol: String) : Temperature(), USCustomaryScientificUnit<MeasurementType.Temperature> {
+    override val system = MeasurementSystem.USCustomary
+}
 
 @Serializable
-object Celsius : MetricTemperature("°C") {
+object Celsius : MetricAndUKImperialTemperature("°C") {
     override fun toSIUnit(value: Decimal): Decimal = value + Kelvin.KELVIN_FREEZING.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value - Kelvin.KELVIN_FREEZING.toDecimal()
 }
 
 @Serializable
-object Kelvin : MetricTemperature("K") {
+object Kelvin : MetricAndUKImperialTemperature("K") {
     const val KELVIN_FREEZING = 273.15
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value

@@ -22,11 +22,13 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
-sealed class Acceleration<System : MeasurementSystem, LengthUnit : Length<System>, SpeedUnit : Speed<System, LengthUnit>> : AbstractScientificUnit<System, MeasurementType.Acceleration>() {
-    abstract val speed: SpeedUnit
+sealed class Acceleration : AbstractScientificUnit<MeasurementType.Acceleration>() {
+    abstract val speed: Speed
     abstract val per: Time
+    override val type = MeasurementType.Acceleration
     override val symbol: String by lazy { if (speed.per == per) {
         "${speed.distance.symbol} / ${per.symbol}2"
     } else {
@@ -38,14 +40,18 @@ sealed class Acceleration<System : MeasurementSystem, LengthUnit : Length<System
 }
 
 @Serializable
-data class MetricAcceleration(override val speed: MetricSpeed, override val per: Time) : Acceleration<MeasurementSystem.Metric, MetricLength, MetricSpeed>()
+data class MetricAcceleration(override val speed: MetricSpeed, override val per: Time) : Acceleration(), MetricScientificUnit<MeasurementType.Acceleration> {
+    override val system = MeasurementSystem.Metric
+}
 
 @Serializable
-data class ImperialAcceleration(override val speed: ImperialSpeed, override val per: Time) : Acceleration<MeasurementSystem.Imperial, ImperialLength, ImperialSpeed>()
+data class ImperialAcceleration(override val speed: ImperialSpeed, override val per: Time) : Acceleration(), CommonImperialScientificUnit<MeasurementType.Acceleration> {
+    override val system = MeasurementSystem.CommonImperial
+}
 
 infix fun MetricSpeed.per(time: Time) = MetricAcceleration(this, time)
 infix fun ImperialSpeed.per(time: Time) = ImperialAcceleration(this, time)
-infix fun Speed<*, *>.per(time: Time) = when (this) {
+infix fun Speed.per(time: Time): Acceleration = when (this) {
     is MetricSpeed -> this per time
     is ImperialSpeed -> this per time
 }
@@ -53,16 +59,35 @@ infix fun Speed<*, *>.per(time: Time) = when (this) {
 val MetricStandardGravityAcceleration = ScientificValue(9.80665, Meter per Second per Second)
 val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)
 
-inline operator fun <
-    System : MeasurementSystem,
-    LengthUnit : Length<System>,
-    SpeedUnit : Speed<System, LengthUnit>,
-    reified AccelerationUnit : Acceleration<System, LengthUnit, SpeedUnit>,
+@JvmName("metricSpeedDivTime")
+infix operator fun <
+    SpeedUnit : MetricSpeed,
     > ScientificValue<
-    System,
     MeasurementType.Speed,
     SpeedUnit,
-    >.div(time: ScientificValue<MeasurementSystem.Global, MeasurementType.Time, Time>): ScientificValue<System, MeasurementType.Acceleration, AccelerationUnit> {
-    val accelerationUnit = (unit per time.unit) as AccelerationUnit
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, MetricAcceleration> {
+    val accelerationUnit = (unit per time.unit)
+    return ScientificValue(value / time.value, accelerationUnit)
+}
+
+@JvmName("imperialSpeedDivTime")
+infix operator fun <
+    SpeedUnit : ImperialSpeed,
+    > ScientificValue<
+    MeasurementType.Speed,
+    SpeedUnit,
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> {
+    val accelerationUnit = (unit per time.unit)
+    return ScientificValue(value / time.value, accelerationUnit)
+}
+
+@JvmName("speedDivTime")
+infix operator fun <
+    SpeedUnit : Speed,
+    > ScientificValue<
+    MeasurementType.Speed,
+    SpeedUnit,
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, Acceleration> {
+    val accelerationUnit = (unit per time.unit)
     return ScientificValue(value / time.value, accelerationUnit)
 }
