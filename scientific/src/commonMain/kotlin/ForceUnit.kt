@@ -272,7 +272,7 @@ operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.t
 operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Pound>) = PoundForce.force(mass, this)
 @JvmName("accelerationTimesOunce")
 operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Ounce>) = OunceForce.force(mass, this)
-@JvmName("accelerationTimesOunce")
+@JvmName("accelerationTimesGrain")
 operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Grain>) = GrainForce.force(mass, this)
 @JvmName("accelerationTimesUSTon")
 operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, UsTon>) = UsTonForce.force(mass, this)
