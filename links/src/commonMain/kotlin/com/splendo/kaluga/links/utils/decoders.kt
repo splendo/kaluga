@@ -17,18 +17,12 @@
 
 package com.splendo.kaluga.links.utils
 
-import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.AbstractDecoder
 import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.modules.EmptySerializersModule
 import kotlinx.serialization.modules.SerializersModule
-
-fun <T> decodeFromList(list: List<Any>, deserializer: DeserializationStrategy<T>): T {
-    val decoder = LinksDecoder(ArrayDeque(list))
-    return decoder.decodeSerializableValue(deserializer)
-}
 
 class LinksDecoder(
     internal val list: ArrayDeque<Any>,
@@ -77,7 +71,7 @@ class LinksDecoder(
         return index
     }
 
-    override fun decodeNotNullMark(): Boolean = decodeString() != "NULL"
+    override fun decodeNotNullMark(): Boolean = decodeValue() != "NULL"
 
     override fun decodeSequentially(): Boolean = true
 }
