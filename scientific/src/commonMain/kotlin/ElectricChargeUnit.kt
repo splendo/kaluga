@@ -63,25 +63,7 @@ fun <
     ChargeUnit.charge(
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> {
-    val currentInAmpere = current.convertValue(Ampere)
-    val timeInSeconds = time.convertValue(Second)
-    return ScientificValue(currentInAmpere * timeInSeconds, Coulomb).convert(this)
-}
-
-fun <
-    CurrentUnit : ElectricCurrent,
-    TimeUnit : Time,
-    ChargeUnit : ElectricCharge
-    >
-    CurrentUnit.current(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> {
-    val chargeInCoulomb = charge.convertValue(Coulomb)
-    val timeInSeconds = per.convertValue(Second)
-    return ScientificValue(chargeInCoulomb / timeInSeconds, Ampere).convert(this)
-}
+) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(current, time)
 
 fun <
     CurrentUnit : ElectricCurrent,
@@ -91,12 +73,18 @@ fun <
     TimeUnit.duration(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.Time, TimeUnit> {
-    val chargeInCoulomb = charge.convertValue(Coulomb)
-    val currentInAmpere = current.convertValue(Ampere)
-    return ScientificValue(chargeInCoulomb / currentInAmpere, Second).convert(this)
-}
+) : ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(charge, current)
+
+fun <
+    VoltageUnit : Voltage,
+    EnergyUnit : Energy,
+    ChargeUnit : ElectricCharge
+    > ChargeUnit.charge(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+): ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(energy, voltage)
 
 infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Coulomb.charge(this, time)
-infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ampere.current(this, time)
+infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = current * this
 infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Second.duration(this, current)
+infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)

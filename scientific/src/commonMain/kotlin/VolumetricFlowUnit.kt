@@ -69,10 +69,7 @@ infix operator fun <
     > ScientificValue<
     MeasurementType.Volume,
     VolumeUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow> {
-    val volumetricFlowUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, volumetricFlowUnit)
-}
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow> = (value / time.value)(unit per time.unit)
 
 @JvmName("commonImperialVolumeDivTime")
 infix operator fun <
@@ -80,10 +77,7 @@ infix operator fun <
     > ScientificValue<
     MeasurementType.Volume,
     VolumeUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow> {
-    val volumetricFlowUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, volumetricFlowUnit)
-}
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow> = (value / time.value)(unit per time.unit)
 
 @JvmName("ukImperialVolumeDivTime")
 infix operator fun <
@@ -91,10 +85,7 @@ infix operator fun <
     > ScientificValue<
     MeasurementType.Volume,
     VolumeUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow> {
-    val volumetricFlowUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, volumetricFlowUnit)
-}
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow> = (value / time.value)(unit per time.unit)
 
 @JvmName("usCustomaryVolumeDivTime")
 infix operator fun <
@@ -102,30 +93,28 @@ infix operator fun <
     > ScientificValue<
     MeasurementType.Volume,
     VolumeUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow> {
-    val volumetricFlowUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, volumetricFlowUnit)
-}
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow> = (value / time.value)(unit per time.unit)
 
 @JvmName("metricVolumetricFlowTimesTime")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, MetricVolume> {
-    return ScientificValue(value * time.convertValue(unit.per), unit.volume)
-}
-
+infix operator fun ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, MetricVolume> = (value * time.convertValue(unit.per))(unit.volume)
+@JvmName("timeTimesMetricVolumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>) : ScientificValue<MeasurementType.Volume, MetricVolume> = volumetricFlow * this
 @JvmName("commonImperialVolumetricFlowTimesTime")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, ImperialVolume> {
-    return ScientificValue(value * time.convertValue(unit.per), unit.volume)
-}
-
+infix operator fun ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, ImperialVolume> = (value * time.convertValue(unit.per))(unit.volume)
+@JvmName("timeTimesCommonImperialVolumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>) : ScientificValue<MeasurementType.Volume, ImperialVolume> = volumetricFlow * this
 @JvmName("ukImperialVolumetricFlowTimesTime")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, UKImperialVolume> {
-    return ScientificValue(value * time.convertValue(unit.per), unit.volume)
-}
-
+infix operator fun ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, UKImperialVolume> = (value * time.convertValue(unit.per))(unit.volume)
+@JvmName("timeTimesUKImperialVolumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>) : ScientificValue<MeasurementType.Volume, UKImperialVolume> = volumetricFlow * this
 @JvmName("usCustomaryVolumetricFlowTimesTime")
-infix operator fun ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, USCustomaryVolume> {
-    return ScientificValue(value * time.convertValue(unit.per), unit.volume)
-}
+infix operator fun ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, USCustomaryVolume> = (value * time.convertValue(unit.per))(unit.volume)
+@JvmName("timeTimesUSCustomaryVolumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>) : ScientificValue<MeasurementType.Volume, USCustomaryVolume> = volumetricFlow * this
+@JvmName("volumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlow>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Volume, Volume> = (value * time.convertValue(unit.per))(unit.volume)
+@JvmName("timeTimesVolumetricFlowTimesTime")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlow>) : ScientificValue<MeasurementType.Volume, Volume> = volumetricFlow * this
 
 @JvmName("volumeDivVolumetricFlow")
 infix operator fun <

@@ -60,26 +60,16 @@ val MetricStandardGravityAcceleration = 9.80665(Meter per Second per Second)
 val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)
 
 @JvmName("metricSpeedDivTime")
-infix operator fun <
-    SpeedUnit : MetricSpeed,
-    > ScientificValue<
+infix operator fun ScientificValue<
     MeasurementType.Speed,
-    SpeedUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, MetricAcceleration> {
-    val accelerationUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, accelerationUnit)
-}
+    MetricSpeed,
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, MetricAcceleration> = (value / time.value)(unit per time.unit)
 
 @JvmName("imperialSpeedDivTime")
-infix operator fun <
-    SpeedUnit : ImperialSpeed,
-    > ScientificValue<
+infix operator fun ScientificValue<
     MeasurementType.Speed,
-    SpeedUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> {
-    val accelerationUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, accelerationUnit)
-}
+    ImperialSpeed,
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> = (value / time.value)(unit per time.unit)
 
 @JvmName("speedDivTime")
 infix operator fun <
@@ -87,7 +77,4 @@ infix operator fun <
     > ScientificValue<
     MeasurementType.Speed,
     SpeedUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, Acceleration> {
-    val accelerationUnit = (unit per time.unit)
-    return ScientificValue(value / time.value, accelerationUnit)
-}
+    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, Acceleration> = (value / time.value)(unit per time.unit)

@@ -18,6 +18,8 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 
@@ -61,3 +63,31 @@ operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>
     > Decimal.invoke(unit: UnitType) = ScientificValue(this, unit)
+
+internal fun <
+    TargetType : MeasurementType,
+    Unit : ScientificUnit<TargetType>,
+    NominatorType : MeasurementType,
+    NominatorUnit : ScientificUnit<NominatorType>,
+    DividerType : MeasurementType,
+    DividerUnit : ScientificUnit<DividerType>
+    >
+    Unit.byDividing(nominator: ScientificValue<NominatorType, NominatorUnit>, divider: ScientificValue<DividerType, DividerUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(nominator.unit.toSIUnit(nominator.value) / divider.unit.toSIUnit(divider.value))(this)
+
+internal fun <
+    TargetType : MeasurementType,
+    Unit : ScientificUnit<TargetType>,
+    LeftType : MeasurementType,
+    LeftUnit : ScientificUnit<LeftType>,
+    RightType : MeasurementType,
+    RightUnit : ScientificUnit<RightType>
+    >
+    Unit.byMultiplying(left: ScientificValue<LeftType, LeftUnit>, right: ScientificValue<RightType, RightUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(left.unit.toSIUnit(left.value) * right.unit.toSIUnit(right.value))(this)
+
+internal fun <
+    InverseType : MeasurementType,
+    InverseUnit : ScientificUnit<InverseType>,
+    Type : MeasurementType,
+    Unit : ScientificUnit<Type>
+    >
+    Unit.byInverting(inverse: ScientificValue<InverseType, InverseUnit>): ScientificValue<Type, Unit> = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.value))(this)

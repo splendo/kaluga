@@ -58,9 +58,7 @@ object GigaOhm : ElectricResistance(), SystemScientificUnit<MeasurementSystem.SI
 fun <
     ResistanceUnit : ElectricResistance,
     ConductanceUnit : ElectricConductance
-    > ResistanceUnit.resistance(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> {
-    return ScientificValue(1.0.toDecimal() / conductance.convertValue(Siemens), Ohm).convert(this)
-}
+    > ResistanceUnit.resistance(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byInverting(conductance)
 
 fun <
     CurrentUnit : ElectricCurrent,
@@ -69,9 +67,7 @@ fun <
     > ResistanceUnit.resistance(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> {
-    return ScientificValue(voltage.convertValue(Volt) / current.convertValue(Ampere), Ohm).convert(this)
-}
+): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(voltage, current)
 
 fun <ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.resistance() = Ohm.resistance(this)
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Ohm.resistance(this, current)

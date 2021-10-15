@@ -57,12 +57,41 @@ object GigaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, Measurem
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
+    ResistanceUnit : ElectricResistance
+    > VoltageUnit.voltage(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byMultiplying(current, resistance)
+
+fun <
+    CurrentUnit : ElectricCurrent,
+    VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance
     > VoltageUnit.voltage(
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
-): ScientificValue<MeasurementType.Voltage, VoltageUnit> {
-    return ScientificValue(current.convertValue(Ampere) / conductance.convertValue(Siemens), Volt).convert(this)
-}
+): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(current, conductance)
 
+fun <
+    VoltageUnit : Voltage,
+    EnergyUnit : Energy,
+    ChargeUnit : ElectricCharge
+    > VoltageUnit.voltage(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(energy, charge)
+
+fun <
+    VoltageUnit : Voltage,
+    ElectricCurrentUnit : ElectricCurrent,
+    PowerUnit : Power
+    > VoltageUnit.voltage(
+    power: ScientificValue<MeasurementType.Power, PowerUnit>,
+    current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
+): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(power, current)
+
+infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Volt.voltage(this, resistance)
+infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = current * this
 infix operator fun <CurrentUnit : ElectricCurrent, ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = Volt.voltage(this, conductance)
+infix operator fun <EnergyUnit : Energy, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = Volt.voltage(this, charge)
+infix operator fun <PowerUnit : Power, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Power, PowerUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Volt.voltage(this, current)

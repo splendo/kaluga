@@ -64,30 +64,50 @@ object RoundsPerMinute : Frequency() {
     override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
 }
 
+fun <
+    TimeUnit : Time,
+    FrequencyUnit : Frequency
+    > FrequencyUnit.frequency(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = byInverting(time)
+
+fun <
+    FrequencyUnit : Frequency,
+    TimeUnit : Time
+    > FrequencyUnit.frequency(cycle: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = (cycle / per.convertValue(Second))(Hertz).convert(this)
+
+
+fun <
+    TimeUnit : Time,
+    FrequencyUnit : Frequency
+    > TimeUnit.time(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = byInverting(frequency)
+
+fun <
+    FrequencyUnit : Frequency,
+    TimeUnit : Time
+    > TimeUnit.time(cycle: Decimal, at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = (cycle / at.convertValue(Hertz))(Second).convert(this)
+
 @JvmName("decimalDivSecond")
-operator fun Decimal.div(second: ScientificValue<MeasurementType.Time, Second>): ScientificValue<MeasurementType.Frequency, Hertz> = ScientificValue(this / second.value, Hertz)
+operator fun Decimal.div(second: ScientificValue<MeasurementType.Time, Second>): ScientificValue<MeasurementType.Frequency, Hertz> = (this / second.value)(Hertz)
 @JvmName("decimalDivMinute")
-operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = ScientificValue(this / minute.value, BeatsPerMinute)
-fun <FrequencyUnit : Frequency, TimeUnit : Time> FrequencyUnit.frequency(cycle: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = ScientificValue(cycle / per.convertValue(Second), Hertz).convert(this)
+operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = (this / minute.value)(BeatsPerMinute)
 
 operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): Decimal = convertValue(Hertz) * time.convertValue(Second)
+operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): Decimal = frequency * this
 
 @JvmName("decimalDivHertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Hertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.value, Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Hertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.value)(Second)
 @JvmName("decimalDivNanohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Nanohertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Nanohertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivMicrohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Microhertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Microhertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivMillihertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Millihertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Millihertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivKilohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Kilohertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Kilohertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivMegahertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Megahertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Megahertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivGigahertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Gigahertz>): ScientificValue<MeasurementType.Time, Second> = ScientificValue(this / frequency.convertValue(Hertz), Second)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Gigahertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivBPM")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = ScientificValue(this / frequency.value, Hour)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
 @JvmName("decimalDivRPM")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, RoundsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = ScientificValue(this / frequency.value, Hour)
-fun <FrequencyUnit : Frequency, TimeUnit : Time> TimeUnit.time(cycle: Decimal, at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = ScientificValue(cycle / at.convertValue(Hertz), Second).convert(this)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, RoundsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)

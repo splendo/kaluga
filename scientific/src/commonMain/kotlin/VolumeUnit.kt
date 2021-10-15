@@ -273,11 +273,7 @@ fun <
     > VolumeUnit.volume(
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     height: ScientificValue<MeasurementType.Length, HeightUnit>
-) : ScientificValue<MeasurementType.Volume, VolumeUnit> {
-    val heightInMeter = height.convertValue(Meter)
-    val areaInCubicMeter = area.convertValue(SquareMeter)
-    return ScientificValue(areaInCubicMeter * heightInMeter, CubicMeter).convert(this)
-}
+) : ScientificValue<MeasurementType.Volume, VolumeUnit> = byMultiplying(area, height)
 
 fun <
     LengthUnit : Length,
@@ -297,11 +293,7 @@ fun <
     > HeightUnit.fromVolume(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Length, HeightUnit> {
-    val volumeInMeterCubed = volume.convertValue(CubicMeter)
-    val areaInMeterSquared = area.convertValue(SquareMeter)
-    return ScientificValue(volumeInMeterCubed / areaInMeterSquared, Meter).convert(this)
-}
+) : ScientificValue<MeasurementType.Length, HeightUnit> = byDividing(volume, area)
 
 fun <
     HeightUnit : Length,
@@ -321,11 +313,7 @@ fun <
     > AreaUnit.fromVolume(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     height: ScientificValue<MeasurementType.Length, HeightUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> {
-    val volumeInMeterCubed = volume.convertValue(CubicMeter)
-    val heightInMeter = height.convertValue(Meter)
-    return ScientificValue(volumeInMeterCubed / heightInMeter, SquareMeter).convert(this)
-}
+) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(volume, height)
 
 @JvmName("meterTimesSquareMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Area, SquareMeter>) = CubicMeter.volume(other, this)

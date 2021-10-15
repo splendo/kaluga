@@ -111,11 +111,7 @@ fun <
     > AreaUnit.area(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     width: ScientificValue<MeasurementType.Length, WidthUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> {
-        val lengthInMeter = length.convertValue(Meter)
-        val widthInMeter = width.convertValue(Meter)
-        return ScientificValue(lengthInMeter * widthInMeter, SquareMeter).convert(this)
-    }
+) : ScientificValue<MeasurementType.Area, AreaUnit> = byMultiplying(length, width)
 
 fun <
     LengthUnit : Length,
@@ -124,11 +120,7 @@ fun <
     > WidthUnit.fromArea(
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>
-) : ScientificValue<MeasurementType.Length, WidthUnit> {
-    val areaInMeterSquared = area.convertValue(SquareMeter)
-    val lengthInMeter = length.convertValue(Meter)
-    return ScientificValue(areaInMeterSquared / lengthInMeter, Meter).convert(this)
-}
+) : ScientificValue<MeasurementType.Length, WidthUnit> = byDividing(area, length)
 
 @JvmName("meterTimesMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Length, Meter>) = SquareMeter.area(this, other)

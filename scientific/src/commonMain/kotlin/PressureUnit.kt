@@ -268,11 +268,7 @@ fun <
     > PressureUnit.pressure(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Pressure, PressureUnit> {
-    val forceValue = force.convertValue(Newton)
-    val areaValue = area.convertValue(SquareMeter)
-    return (forceValue / areaValue)(Pascal).convert(this)
-}
+) : ScientificValue<MeasurementType.Pressure, PressureUnit> = byDividing(force, area)
 
 fun <
     ForceUnit : ScientificUnit<MeasurementType.Force>,
@@ -281,11 +277,7 @@ fun <
     > ForceUnit.force(
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> {
-    val pressureValue = pressure.convertValue(Pascal)
-    val areaValue = area.convertValue(SquareMeter)
-    return (pressureValue * areaValue)(Newton).convert(this)
-}
+) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(pressure, area)
 
 fun <
     ForceUnit : ScientificUnit<MeasurementType.Force>,
@@ -294,11 +286,7 @@ fun <
     > AreaUnit.area(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> {
-    val forceValue = force.convertValue(Newton)
-    val pressureValue = pressure.convertValue(Pascal)
-    return (forceValue / pressureValue)(SquareMeter).convert(this)
-}
+) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(force, pressure)
 
 @JvmName("newtonDivMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Newton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)

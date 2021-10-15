@@ -189,11 +189,7 @@ fun <
     > ForceUnit.force(
     mass: ScientificValue<MeasurementType.Weight, MassUnit>,
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> {
-    val massValue = mass.convertValue(Kilogram)
-    val accelerationValue = acceleration.convertValue(Meter per Second per Second)
-    return (massValue * accelerationValue)(Newton).convert(this)
-}
+) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(mass, acceleration)
 
 fun <
     MassUnit : ScientificUnit<MeasurementType.Weight>,
@@ -202,11 +198,7 @@ fun <
     > MassUnit.mass(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-) : ScientificValue<MeasurementType.Weight, MassUnit> {
-    val forceInNewton = force.convertValue(Newton)
-    val accelerationInMeterPerSecond2 = acceleration.convertValue(Meter per Second per Second)
-    return (forceInNewton / accelerationInMeterPerSecond2)(Kilogram).convert(this)
-}
+) : ScientificValue<MeasurementType.Weight, MassUnit> = byDividing(force, acceleration)
 
 fun <
     MassUnit : ScientificUnit<MeasurementType.Weight>,
@@ -215,11 +207,7 @@ fun <
     > AccelerationUnit.acceleration(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     mass: ScientificValue<MeasurementType.Weight, MassUnit>
-) : ScientificValue<MeasurementType.Acceleration, AccelerationUnit> {
-    val forceInNewton = force.convertValue(Newton)
-    val massInKilogram = mass.convertValue(Kilogram)
-    return (forceInNewton / massInKilogram)(Meter per Second per Second).convert(this)
-}
+) : ScientificValue<MeasurementType.Acceleration, AccelerationUnit> = byDividing(force, mass)
 
 @JvmName("kilogramTimesAcceleration")
 operator fun ScientificValue<MeasurementType.Weight, Kilogram>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Newton.force(this, acceleration)
