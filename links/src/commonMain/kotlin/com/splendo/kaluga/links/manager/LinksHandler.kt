@@ -17,7 +17,12 @@
 
 package com.splendo.kaluga.links.manager
 
+/**
+ * Corresponds to urlParameterName and urlParameterValue.
+ */
+typealias NameValue = Pair<String, Any>
+
 interface LinksHandler {
     fun isValid(url: String): Boolean
-    fun extractQueryAsList(url: String): List<Any>
+    fun extractQueryAsList(url: String): List<NameValue>
 }
