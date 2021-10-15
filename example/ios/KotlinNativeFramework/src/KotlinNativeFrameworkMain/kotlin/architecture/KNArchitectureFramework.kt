@@ -56,6 +56,8 @@ import com.splendo.kaluga.example.shared.viewmodel.system.SystemViewModel
 import com.splendo.kaluga.keyboard.FocusHandler
 import com.splendo.kaluga.keyboard.KeyboardManager
 import com.splendo.kaluga.links.LinksBuilder
+import com.splendo.kaluga.links.manager.DefaultParametersDecoder
+import com.splendo.kaluga.links.manager.PlatformLinksHandler
 import com.splendo.kaluga.location.LocationStateRepoBuilder
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.Permissions
@@ -262,12 +264,16 @@ class KNArchitectureFramework {
 
     fun createLinksViewModel(
         parent: UIViewController,
+        alertPresenter: AlertPresenter.Builder,
         animated: Boolean,
         completion: (() -> Unit)? = null
     ): LinksViewModel {
         return LinksViewModel(
-            LinksBuilder(),
-            AlertPresenter.Builder(parent),
+            LinksBuilder(
+                PlatformLinksHandler(),
+                DefaultParametersDecoder()
+            ),
+            alertPresenter,
             ViewControllerNavigator(parent) { action ->
                 when (action) {
                     is BrowserNavigationActions.OpenWebView -> NavigationSpec.Browser(
