@@ -3,8 +3,13 @@
         "apps": [],
         "details": [
             {
-                "appID": "2732HQPVJP.com.splendo.kaluga.example",
-                "paths": ["*"]
+                "appIDs": ["2732HQPVJP.com.splendo.kaluga.example"],
+                "components": [
+                    {
+                        "/": "/kalugaexample/*",
+                        "comment": "Kaluga example path specification"
+                    }
+                ]
             }
         ]
     }
