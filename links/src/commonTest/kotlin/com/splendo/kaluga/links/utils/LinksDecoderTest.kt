@@ -1,5 +1,5 @@
 /*
- Copyright 2020 Splendo Consulting B.V. The Netherlands
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -17,10 +17,15 @@
 
 package com.splendo.kaluga.links.utils
 
+import com.splendo.kaluga.links.manager.DefaultParametersDecoder
+import com.splendo.kaluga.links.manager.NameValue
+import com.splendo.kaluga.links.manager.decodeFromList
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @Serializable
@@ -43,27 +48,34 @@ data class DataTypesValues(
     val nullableValue: String?
 )
 
+@Serializable
+data class Adventure(
+    val mapKind: String,
+    val dangerLevel: Int,
+    val companion: String?
+)
+
 class LinksDecoderTest {
 
     companion object {
         private const val byteValue: Byte = 1
-        private val queryValues = listOf<Any>(
-            "Test", // stringValue
-            'A', // charValue
-            0, // intValue
-            3L, // longValue
-            3.14f, // floatValue
-            3.14, // doubleValue
-            true, // booleanValue
-            "1", // byteValue
-            "A", // enumValue
-            3, // listValue size
-            "zero", // listValue[0]
-            "one", // listValue[1]
-            "two", // listValue[2]
-            "NULL" // nullableValue
+        private val queryValues = listOf<NameValue>(
+            "stringValue" to "Test", // stringValue
+            "charValue" to 'A', // charValue
+            "intValue" to 0, // intValue
+            "longValue" to 3L, // longValue
+            "floatValue" to 3.14f, // floatValue
+            "doubleValue" to 3.14, // doubleValue
+            "booleanValue" to true, // booleanValue
+            "byteValue" to "1", // byteValue
+            "enumValue" to  "A", // enumValue
+            "listValue" to 3,
+            "listValue" to "zero",
+            "listValue" to "one",
+            "listValue" to "two",
+            "nullableValue" to LinksDecoder.NULL_SYMBOL // nullableValue
         )
-        private val expextedValue = DataTypesValues(
+        private val expectedValue = DataTypesValues(
             "Test",
             'A',
             0,
@@ -78,25 +90,27 @@ class LinksDecoderTest {
         )
     }
 
+    private val mockDefaultParametersDecoder = DefaultParametersDecoder()
+
     @Test
     fun testDecodeList() {
-        val decodedObject = decodeFromList(queryValues, DataTypesValues.serializer())
+        val decodedObject = mockDefaultParametersDecoder.decodeFromList(queryValues, DataTypesValues.serializer())
 
-        assertEquals(expextedValue, decodedObject)
+        assertEquals(expectedValue, decodedObject)
     }
 
     @Test
     fun testDecodeListFailOnWrongOrder() { // it fails because the first parameter or DataTypesValues is a String.
-        val list = mutableListOf<Any>(300).plus(queryValues)
+        val list = mutableListOf<NameValue>("randomValue" to 300).plus(queryValues)
 
-        assertFailsWith<ClassCastException> {
-            decodeFromList(list, DataTypesValues.serializer())
+        assertFails {
+            mockDefaultParametersDecoder.decodeFromList<DataTypesValues>(list)
         }
     }
 
     @Test
     fun testDecoder() {
-        val linksDecoder = LinksDecoder(ArrayDeque(queryValues))
+        val linksDecoder = LinksDecoder(ArrayDeque(queryValues.map { it.second }))
 
         linksDecoder.run {
             testDataType<String>(decodeValue())
@@ -119,6 +133,20 @@ class LinksDecoderTest {
         assertFailsWith<NoSuchElementException> {
             testDataType<String>(linksDecoder.decodeValue())
         }
+    }
+
+    @Test
+    fun test_decode_null() {
+        val query = listOf(
+            "mapKind" to "treasure",
+            "dangerLevel" to 999,
+            "companion" to LinksDecoder.NULL_SYMBOL
+        )
+
+        val value = mockDefaultParametersDecoder.decodeFromList<Adventure>(query)
+        assertEquals(query[0].second, value.mapKind)
+        assertEquals(query[1].second, value.dangerLevel)
+        assertNull(value.companion)
     }
 
     private inline fun <reified T> testDataType(value: Any) {

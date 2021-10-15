@@ -30,7 +30,7 @@ class LinksDecoder(
 ) : AbstractDecoder() {
 
     companion object {
-        const val NULL = "null"
+        const val NULL_SYMBOL = "null"
     }
 
     private var elementIndex = 0
@@ -76,7 +76,7 @@ class LinksDecoder(
         return index
     }
 
-    override fun decodeNotNullMark(): Boolean = decodeString() != NULL
+    override fun decodeNotNullMark(): Boolean = decodeString() != NULL_SYMBOL
 
     override fun decodeSequentially(): Boolean = true
 }

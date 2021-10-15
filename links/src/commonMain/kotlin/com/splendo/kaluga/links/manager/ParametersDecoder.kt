@@ -44,7 +44,7 @@ class DefaultParametersDecoder : ParametersDecoder {
                 if (deserializer.descriptor.elementNames.firstOrNull { it == element.first } != null) {
                     element.second
                 } else {
-                    LinksDecoder.NULL
+                    LinksDecoder.NULL_SYMBOL
                 }
             }
         }

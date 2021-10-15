@@ -22,7 +22,10 @@ import kotlin.test.assertEquals
 
 class LinksManagerTestIOS {
 
-    private val linksManager = LinksManagerBuilder().create()
+    private val linksManager = LinksManagerBuilder(
+        PlatformLinksHandler(),
+        DefaultParametersDecoder()
+    ).create()
 
     @Test
     fun testHandleIncomingLinkSucceed() {

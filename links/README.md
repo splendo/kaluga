@@ -5,8 +5,11 @@ Module used to decode an object from either an App Link, Universal Link or Deep 
 ## Deserializer
 `LinksDecoder` is used to convert query values into an object and it takes a list of values and a serializer. **It is important that the values passed to `LinksDecoder` are ordered in the same way they are declared in the data class**.
 When `decodeFromList` is called, a `LinksDecoder` is created and it goes through the passed `List<Any>` one per one referring to the passed `serializer` in order to know the parameter's type and finally convert it.
+
+At the moment kaluga-links does not support missing values in url query. So eventually you will have to pass "something=1&somethingElse=NULL".
 ### Special usages
-- Query contains an array of values: In this case the query will have to contain a parameter (put just before the list of values) that identifies the size of that array. 
+- Query contains an array of values: In this case the query will have to contain a parameter (just before the list of values) that identifies the size of that array. **It's important** that also the array size parameter is the named as the actual array property.
+
 ``` kotlin
 @Serializable 
 data class Aliment(val name: String)
@@ -15,10 +18,16 @@ data class Aliment(val name: String)
 data class Recipe(val name: String, val ingredients: List<Aliment>)
 
 // Somewhere in the code
-val query = "name=Carbonara&size=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
+val query = "name=Carbonara&ingredients=3&ingredients=Spaghetti&ingredients=Bacon&ingredients=Egg"
 ```
-The list size's parameter name is not important and is not included in the data class parameters, but it is requested by the decoder.
+The list size's parameter is not included in the data class `Recipe`, but then is used by [LinksDecoder]. It's name must be the same as the array property it represents.
+```kotlin
+@Serializable
+data class Foo(val bar: String?, baz: String)
 
+// Somewhere in the code
+val query = "bar=NULL&baz=Bazinga"
+```
 
 ## Usage
 
