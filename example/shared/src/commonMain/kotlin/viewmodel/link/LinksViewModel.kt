@@ -37,7 +37,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Repository(
     val name: String,
-    val type: String
+    val type: String?,
 )
 
 class BrowserSpec : NavigationBundleSpec<BrowserSpecRow>(setOf(BrowserSpecRow.UrlSpecRow))
@@ -97,7 +97,7 @@ class LinksViewModel(
     }
 
     fun handleIncomingLink(url: String) {
-        val result = linksRepo.handleIncomingLink(url, Repository.serializer())
+        val result = linksRepo.handleIncomingLink<Repository>(url)
         if (result != null) {
             showAlert(
                 "Alert",
