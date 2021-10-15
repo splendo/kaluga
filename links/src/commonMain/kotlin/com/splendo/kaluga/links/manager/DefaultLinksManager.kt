@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.links.manager
 
-import com.splendo.kaluga.links.utils.decodeFromList
 import kotlinx.serialization.KSerializer
 
 class DefaultLinksManager(
-    private val linksHandler: LinksHandler
+    private val linksHandler: LinksHandler,
+    private val defaultParametersDecoder: ParametersDecoder
 ) : LinksManager {
 
     override fun <T> handleIncomingLink(url: String, serializer: KSerializer<T>): T? {
@@ -30,7 +30,7 @@ class DefaultLinksManager(
             return null
         }
 
-        return decodeFromList(list, serializer)
+        return defaultParametersDecoder.decodeFromList(list, serializer)
     }
 
     override fun validateLink(url: String): String? {
@@ -42,9 +42,11 @@ class DefaultLinksManager(
     }
 }
 
-class LinksManagerBuilder : LinksManager.Builder {
-    override fun create(): LinksManager =
-        DefaultLinksManager(PlatformLinksHandler())
+class LinksManagerBuilder(
+    private val platformLinksHandler: PlatformLinksHandler,
+    private val parametersDecoder: ParametersDecoder
+) : LinksManager.Builder {
+    override fun create(): LinksManager = DefaultLinksManager(platformLinksHandler, parametersDecoder)
 }
 
 expect class PlatformLinksHandler constructor() : LinksHandler

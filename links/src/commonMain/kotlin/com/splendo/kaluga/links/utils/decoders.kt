@@ -28,6 +28,11 @@ class LinksDecoder(
     internal val list: ArrayDeque<Any>,
     var elementsCount: Int = 0
 ) : AbstractDecoder() {
+
+    companion object {
+        const val NULL = "null"
+    }
+
     private var elementIndex = 0
 
     override val serializersModule: SerializersModule = EmptySerializersModule
@@ -71,7 +76,7 @@ class LinksDecoder(
         return index
     }
 
-    override fun decodeNotNullMark(): Boolean = decodeValue() != "NULL"
+    override fun decodeNotNullMark(): Boolean = decodeString() != NULL
 
     override fun decodeSequentially(): Boolean = true
 }

@@ -20,6 +20,7 @@ package com.splendo.kaluga.links.manager
 import com.splendo.kaluga.links.utils.LinksDecoder
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.descriptors.elementNames
+import kotlinx.serialization.serializer
 
 interface ParametersDecoder {
     fun <T> decodeFromList(list: List<NameValue>, deserializer: DeserializationStrategy<T>): T
@@ -43,7 +44,7 @@ class DefaultParametersDecoder : ParametersDecoder {
                 if (deserializer.descriptor.elementNames.firstOrNull { it == element.first } != null) {
                     element.second
                 } else {
-                    "NULL"
+                    LinksDecoder.NULL
                 }
             }
         }
@@ -53,3 +54,6 @@ class DefaultParametersDecoder : ParametersDecoder {
     }
 
 }
+
+inline fun <reified T> DefaultParametersDecoder.decodeFromList(list: List<NameValue>): T =
+    decodeFromList(list, serializer())
