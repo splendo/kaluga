@@ -29,10 +29,10 @@ actual class PlatformLinksHandler : LinksHandler {
         return NSURLConnection.canHandleRequest(NSURLRequest.requestWithURL(_url))
     }
 
-    override fun extractQueryAsList(url: String): List<Any> {
-        val url = NSURLComponents(url)
-        val queryItems = url.queryItems as List<NSURLQueryItem>? ?: return emptyList()
+    override fun extractQueryAsList(url: String): List<NameValue> {
+        val urlComponents = NSURLComponents(url)
+        val queryItems = urlComponents.queryItems as List<NSURLQueryItem>? ?: return emptyList()
 
-        return queryItems.mapNotNull { it.value }
+        return queryItems.map { it.name to (it.value as Any) }
     }
 }

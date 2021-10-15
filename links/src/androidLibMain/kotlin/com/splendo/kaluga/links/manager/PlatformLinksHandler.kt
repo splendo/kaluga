@@ -23,12 +23,12 @@ import android.webkit.URLUtil
 actual class PlatformLinksHandler : LinksHandler {
     override fun isValid(url: String): Boolean = URLUtil.isValidUrl(url)
 
-    override fun extractQueryAsList(url: String): List<Any> {
+    override fun extractQueryAsList(url: String): List<NameValue> {
         val params = UrlQuerySanitizer(url)
 
         if (params.parameterList == null) {
             return emptyList()
         }
-        return params.parameterList.map { it.mValue }
+        return params.parameterList.map { it.mParameter to it.mValue }
     }
 }
