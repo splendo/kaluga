@@ -20,6 +20,7 @@ package com.splendo.kaluga.links.utils
 import com.splendo.kaluga.links.manager.DefaultParametersDecoder
 import com.splendo.kaluga.links.manager.NameValue
 import com.splendo.kaluga.links.manager.decodeFromList
+import com.splendo.kaluga.logging.debug
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -51,15 +52,15 @@ data class DataTypesValues(
 @Serializable
 data class Adventure(
     val mapKind: String,
-    val dangerLevel: Int,
-    val companion: String?
+    val dangerLevel: Int?,
+    val companion: String
 )
 
 class LinksDecoderTest {
 
     companion object {
         private const val byteValue: Byte = 1
-        private val queryValues = listOf<NameValue>(
+        private val queryValues = listOf(
             "stringValue" to "Test", // stringValue
             "charValue" to 'A', // charValue
             "intValue" to 0, // intValue
@@ -139,14 +140,14 @@ class LinksDecoderTest {
     fun test_decode_null() {
         val query = listOf(
             "mapKind" to "treasure",
-            "dangerLevel" to 999,
-            "companion" to LinksDecoder.NULL_SYMBOL
+            "dangerLevel" to LinksDecoder.NULL_SYMBOL,
+            "companion" to "Ahoy"
         )
 
         val value = mockDefaultParametersDecoder.decodeFromList<Adventure>(query)
         assertEquals(query[0].second, value.mapKind)
-        assertEquals(query[1].second, value.dangerLevel)
-        assertNull(value.companion)
+        assertNull(value.dangerLevel)
+        assertEquals(query[2].second, value.companion)
     }
 
     private inline fun <reified T> testDataType(value: Any) {

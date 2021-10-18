@@ -30,10 +30,11 @@ class LinksDecoder(
 ) : AbstractDecoder() {
 
     companion object {
-        const val NULL_SYMBOL = "null"
+        val NULL_SYMBOL = "null"
     }
 
     private var elementIndex = 0
+    private var tempReference: Any? = null
 
     override val serializersModule: SerializersModule = EmptySerializersModule
 
@@ -50,7 +51,10 @@ class LinksDecoder(
             elementsCount = it
         }
 
-    override fun decodeValue(): Any = list.removeFirst()
+    override fun decodeValue(): Any = list.removeFirst().run {
+        tempReference = this
+        this
+    }
 
     override fun decodeInt(): Int = decodeValue().toString().toInt()
 
@@ -76,7 +80,7 @@ class LinksDecoder(
         return index
     }
 
-    override fun decodeNotNullMark(): Boolean = decodeString() != NULL_SYMBOL
+    override fun decodeNotNullMark(): Boolean = (if(elementIndex == list.size) tempReference else decodeValue()) != NULL_SYMBOL
 
     override fun decodeSequentially(): Boolean = true
 }
