@@ -52,7 +52,6 @@ class DefaultParametersDecoder : ParametersDecoder {
         val decoder = LinksDecoder(ArrayDeque(valuesList))
         return decoder.decodeSerializableValue(deserializer)
     }
-
 }
 
 inline fun <reified T> DefaultParametersDecoder.decodeFromList(list: List<NameValue>): T =

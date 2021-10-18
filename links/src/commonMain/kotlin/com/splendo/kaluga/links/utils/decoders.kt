@@ -80,7 +80,7 @@ class LinksDecoder(
         return index
     }
 
-    override fun decodeNotNullMark(): Boolean = (if(elementIndex == list.size) tempReference else decodeValue()) != NULL_SYMBOL
+    override fun decodeNotNullMark(): Boolean = (if (elementIndex == list.size) tempReference else decodeValue()) != NULL_SYMBOL
 
     override fun decodeSequentially(): Boolean = true
 }

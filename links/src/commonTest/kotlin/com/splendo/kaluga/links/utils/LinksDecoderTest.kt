@@ -20,7 +20,6 @@ package com.splendo.kaluga.links.utils
 import com.splendo.kaluga.links.manager.DefaultParametersDecoder
 import com.splendo.kaluga.links.manager.NameValue
 import com.splendo.kaluga.links.manager.decodeFromList
-import com.splendo.kaluga.logging.debug
 import kotlinx.serialization.Serializable
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -69,7 +68,7 @@ class LinksDecoderTest {
             "doubleValue" to 3.14, // doubleValue
             "booleanValue" to true, // booleanValue
             "byteValue" to "1", // byteValue
-            "enumValue" to  "A", // enumValue
+            "enumValue" to "A", // enumValue
             "listValue" to 3,
             "listValue" to "zero",
             "listValue" to "one",
