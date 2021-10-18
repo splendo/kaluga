@@ -47,7 +47,10 @@ class AndroidLinksHandlerTest {
     fun testQueryExtractorSucceed() {
         val url = "https://test.io?list_1=first&list_2=second&list_3=third"
 
-        assertEquals(listOf("first", "second", "third"), linksValidator.extractQueryAsList(url))
+        assertEquals(
+            listOf("list_1" to "first", "list_2" to "second", "list_3" to "third"),
+            linksValidator.extractQueryAsList(url)
+        )
     }
 
     @Test

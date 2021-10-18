@@ -26,7 +26,7 @@ data class Person(
     val spokenLanguages: List<Languages> = emptyList()
 ) {
     companion object {
-        val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguageSize=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
+        val dummyUrl = "http://url.com?name=Corrado&surname=Quattrocchi&spokenLanguages=3&spokenLanguages=ITALIAN&spokenLanguages=ENGLISH&spokenLanguages=DUTCH"
         val dummyPerson = Person(
             "Corrado",
             "Quattrocchi",
