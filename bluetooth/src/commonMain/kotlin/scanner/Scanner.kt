@@ -29,6 +29,7 @@ import com.splendo.kaluga.bluetooth.device.Identifier
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.Enabled
 import com.splendo.kaluga.bluetooth.scanner.ScanningState.Initialized.NoBluetooth.Disabled
+import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.Permission
 import com.splendo.kaluga.permissions.PermissionState
 import com.splendo.kaluga.permissions.Permissions
@@ -150,10 +151,12 @@ abstract class BaseScanner constructor(
     fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable
     }.also {
+        warn("Scanner", "bluetoothEnabled: notifyPeripherals")
         notifyPeripherals { handleBluetoothStateChange(isOn = true) }
     }
 
     fun bluetoothDisabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Enabled::class) {
+        warn("Scanner", "bluetoothDisabled: notifyPeripherals")
         it.disable
     }.also {
         notifyPeripherals { handleBluetoothStateChange(isOn = false) }

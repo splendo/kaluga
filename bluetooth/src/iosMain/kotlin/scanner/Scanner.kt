@@ -83,12 +83,14 @@ actual class Scanner internal constructor(
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            warn("CBCentralManager") { "centralManagerDidUpdateState(${central.state})" }
+            warn(TAG) { "centralManagerDidUpdateState(${central.state})" }
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
             if (isEnabled) {
-                info("CBCentralManager") { "isEnabled" }
+                info(TAG) { "isEnabled" }
                 isEnabledCompleted.complete()
             }
+            // TODO: check if the following call is redundant
+            warn(TAG) { "notifyPeripherals($isEnabled)" }
             notifyPeripherals {
                 handleBluetoothStateChange(isOn = isEnabled)
             }
