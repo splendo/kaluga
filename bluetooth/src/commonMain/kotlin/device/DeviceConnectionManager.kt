@@ -220,7 +220,6 @@ abstract class BaseDeviceConnectionManager(
     }
 
     private suspend fun handleNoBluetooth() {
-
     }
 }
 

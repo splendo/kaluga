@@ -279,7 +279,6 @@ sealed class DeviceState(
             override val connectionManager: BaseDeviceConnectionManager
         ) : Disconnected(deviceInfo, connectionManager) {
 
-
             fun startConnecting() = connectionManager.stateRepo.launchTakeAndChangeState(
                 coroutineContext,
                 remainIfStateNot = NotConnected::class
