@@ -118,6 +118,7 @@ class KNArchitectureFramework {
                         is FeatureListNavigationAction.Links -> "showLinks"
                         is FeatureListNavigationAction.Bluetooth -> "showBluetooth"
                         is FeatureListNavigationAction.Beacons -> "showBeacons"
+                        is FeatureListNavigationAction.PlatformSpecific -> "showPlatformSpecific"
                         is FeatureListNavigationAction.Resources -> "showResources"
                     }
                 )

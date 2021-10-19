@@ -42,6 +42,7 @@ import com.splendo.kaluga.example.loading.LoadingActivity
 import com.splendo.kaluga.example.location.LocationActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoActivity
 import com.splendo.kaluga.example.permissions.PermissionsDemoListActivity
+import com.splendo.kaluga.example.platformspecific.PlatformSpecificActivity
 import com.splendo.kaluga.example.resources.ButtonActivity
 import com.splendo.kaluga.example.resources.ColorActivity
 import com.splendo.kaluga.example.resources.LabelActivity
@@ -123,7 +124,7 @@ val utilitiesModule = module {
     }
     single { LocationStateRepoBuilder() }
     single { BluetoothBuilder().create() }
-    single { Beacons(get<Bluetooth>()) }
+    single { Beacons(get<Bluetooth>(), timeoutMs = 60_000) }
 }
 
 val viewModelModule = module {
@@ -161,6 +162,7 @@ val viewModelModule = module {
                     FeatureListNavigationAction.Bluetooth -> NavigationSpec.Activity(BluetoothActivity::class.java)
                     FeatureListNavigationAction.Beacons -> NavigationSpec.Activity(BeaconsActivity::class.java)
                     FeatureListNavigationAction.Resources -> NavigationSpec.Activity(ResourcesActivity::class.java)
+                    FeatureListNavigationAction.PlatformSpecific -> NavigationSpec.Activity(PlatformSpecificActivity::class.java)
                 }
             }
         )

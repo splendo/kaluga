@@ -19,6 +19,13 @@ package com.splendo.kaluga.alerts
 
 import android.app.AlertDialog
 import android.content.Context
+import android.text.Editable
+import android.text.InputType
+import android.text.TextWatcher
+import android.util.TypedValue
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.splendo.kaluga.architecture.lifecycle.LifecycleManagerObserver
 import com.splendo.kaluga.architecture.lifecycle.LifecycleSubscribable
@@ -40,7 +47,8 @@ actual class AlertPresenter(
     actual class Builder(
         private val lifecycleManagerObserver: LifecycleManagerObserver = LifecycleManagerObserver()
     ) : BaseAlertPresenter.Builder(), LifecycleSubscribable by lifecycleManagerObserver {
-        actual override fun create(coroutineScope: CoroutineScope) = AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
+        actual override fun create(coroutineScope: CoroutineScope) =
+            AlertPresenter(createAlert(), lifecycleManagerObserver, coroutineScope)
     }
 
     private companion object {
@@ -52,7 +60,12 @@ actual class AlertPresenter(
     }
 
     private sealed class DialogPresentation {
-        data class Showing(val animated: Boolean, val afterHandler: (Alert.Action?) -> Unit, val completion: () -> Unit) : DialogPresentation()
+        data class Showing(
+            val animated: Boolean,
+            val afterHandler: (Alert.Action?) -> Unit,
+            val completion: () -> Unit
+        ) : DialogPresentation()
+
         object Hidden : DialogPresentation()
     }
 
@@ -61,11 +74,16 @@ actual class AlertPresenter(
 
     init {
         launch {
-            combine(lifecycleManagerObserver.managerState, presentation) { managerState, dialogPresentation ->
+            combine(
+                lifecycleManagerObserver.managerState,
+                presentation
+            ) { managerState, dialogPresentation ->
                 Pair(managerState, dialogPresentation)
             }.collect { contextPresentation ->
                 when (val dialogPresentation = contextPresentation.second) {
-                    is DialogPresentation.Showing -> contextPresentation.first?.activity?.let { presentDialog(it, dialogPresentation) } ?: run { alertDialog = null }
+                    is DialogPresentation.Showing -> contextPresentation.first?.activity?.let {
+                        presentDialog(it, dialogPresentation)
+                    } ?: run { alertDialog = null }
                     is DialogPresentation.Hidden -> alertDialog?.dismiss()
                 }
             }
@@ -96,6 +114,21 @@ actual class AlertPresenter(
                 }
             }
             .create()
+            .applyIf(alert.style == Alert.Style.TEXT_INPUT) {
+                alert.textInputAction?.let { textInputAction ->
+                    val editText = createEditTextView(
+                        context,
+                        textInputAction
+                    )
+                    setView(editText)
+                }
+                alert.actions.forEach { action ->
+                    setButton(transform(action.style), action.title) { _, _ ->
+                        action.handler()
+                        presentation.afterHandler(action)
+                    }
+                }
+            }
             .applyIf(alert.style == Alert.Style.ALERT) {
                 alert.actions.forEach { action ->
                     setButton(transform(action.style), action.title) { _, _ ->
@@ -114,6 +147,56 @@ actual class AlertPresenter(
             }
         presentation.completion()
     }
+
+    /**
+     * Creates an [EditText] wrapped in a [LinearLayout] for dialogs of type [Alert.Style.TEXT_INPUT]
+     *
+     * @param context The Android context used to create view
+     * @param textInputAction The [Alert.TextInputAction] used for initializing the [EditText]
+     */
+    private fun createEditTextView(
+        context: Context,
+        textInputAction: Alert.TextInputAction
+    ): LinearLayout {
+        val linearLayout = LinearLayout(context)
+        val layoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        val editText = EditText(context)
+        editText.layoutParams = layoutParams
+        linearLayout.addView(editText)
+        val padding =
+            context.resources.getDimension(R.dimen.dialog_text_input_padding).dpToPx(context)
+        linearLayout.setPaddingRelative(padding, 0, padding, 0)
+        editText.inputType = InputType.TYPE_CLASS_TEXT
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+                // Do nothing
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                textInputAction.textObserver(s.toString())
+            }
+        })
+        textInputAction.placeholder?.let { editText.hint = it }
+        textInputAction.text?.let { editText.setText(it) }
+        return linearLayout
+    }
 }
 
 /**
@@ -129,3 +212,11 @@ fun AppCompatActivity.alertPresenterBuilder(): AlertPresenter.Builder =
     getOrPutAndRemoveOnDestroyFromCache {
         AlertPresenter.Builder(lifecycleManagerObserver())
     }
+
+fun Float.dpToPx(context: Context): Int {
+    return TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        this,
+        context.resources.displayMetrics
+    ).toInt()
+}

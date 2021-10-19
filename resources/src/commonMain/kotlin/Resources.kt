@@ -97,7 +97,10 @@ expect class DefaultFontLoader() : FontLoader
  * @param defaultValue The [String] to return if no match was found for the identifier. Defaults to `this`.
  * @return The [String] associated with the identifier represented by this String, or [defaultValue] if no such [String] could be found.
  */
-fun String.localized(stringLoader: StringLoader = DefaultStringLoader(), defaultValue: String = this) = stringLoader.loadString(this, defaultValue)
+fun String.localized(
+    stringLoader: StringLoader = DefaultStringLoader(),
+    defaultValue: String = this
+) = stringLoader.loadString(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a plural string format [String] and
@@ -119,7 +122,10 @@ fun String.quantity(
  * @param defaultValue The [Color] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [Color] associated with the identifier represented by this String, or [defaultValue] if no such [Color] could be found.
  */
-fun String.asColor(colorLoader: ColorLoader = DefaultColorLoader(), defaultValue: Color? = null): Color? = colorLoader.loadColor(this, defaultValue)
+fun String.asColor(
+    colorLoader: ColorLoader = DefaultColorLoader(),
+    defaultValue: Color? = null
+): Color? = colorLoader.loadColor(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [Color] and grabs the associated [Image]
@@ -127,7 +133,10 @@ fun String.asColor(colorLoader: ColorLoader = DefaultColorLoader(), defaultValue
  * @param defaultValue The [Image] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [Image] associated with the identifier represented by this String, or [defaultValue] if no such [Image] could be found.
  */
-fun String.asImage(imageLoader: ImageLoader = DefaultImageLoader(), defaultValue: Image? = null): Image? = imageLoader.loadImage(this, defaultValue)
+fun String.asImage(
+    imageLoader: ImageLoader = DefaultImageLoader(),
+    defaultValue: Image? = null
+): Image? = imageLoader.loadImage(this, defaultValue)
 
 /**
  * Treats this string as a resource identifier for a [Font] and grabs the associated [Font]
@@ -135,4 +144,7 @@ fun String.asImage(imageLoader: ImageLoader = DefaultImageLoader(), defaultValue
  * @param defaultValue The [Font] to return if no match was found for the identifier. Defaults to `null`.
  * @return The [Font] associated with the identifier represented by this String, or [defaultValue] if no such [Font] could be found.
  */
-suspend fun String.asFont(fontLoader: FontLoader = DefaultFontLoader(), defaultValue: Font? = null): Font? = fontLoader.loadFont(this, defaultValue)
+suspend fun String.asFont(
+    fontLoader: FontLoader = DefaultFontLoader(),
+    defaultValue: Font? = null
+): Font? = fontLoader.loadFont(this, defaultValue)

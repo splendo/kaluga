@@ -26,6 +26,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 typealias AlertActionHandler = () -> Unit
+typealias AlertTextObserver = (String) -> Unit
 
 /**
  * An object that represents an alert with title and/or message and actions (button)
@@ -33,11 +34,13 @@ typealias AlertActionHandler = () -> Unit
  * @property title The title of the alert
  * @property message The descriptive text that provides more details
  * @property actions The list of action objects that the user can take in response to the alert
+ * @property textInputAction The optional action object that sets the alert's input options and text change callback
  */
 data class Alert(
     val title: String?,
     val message: String?,
     val actions: List<Action>,
+    val textInputAction: TextInputAction? = null,
     val style: Style = Style.ALERT
 ) {
 
@@ -45,11 +48,11 @@ data class Alert(
      * Alert style
      */
     enum class Style {
-        ALERT, ACTION_LIST
+        ALERT, ACTION_LIST, TEXT_INPUT
     }
 
     /**
-     * An action than represents a button in the alert
+     * An action that represents a button in the alert
      *
      * @property title The title of the action's button
      * @property style The style that is applied to the action's button
@@ -69,6 +72,19 @@ data class Alert(
             NEGATIVE(CANCEL.value)
         }
     }
+
+    /**
+     * An action that represents an input field in the alert and its initial state
+     *
+     * @param text The initial text of the input field
+     * @param placeholder The hint of the input field
+     * @param textObserver The block to execute when the user edits the text in the input field
+     */
+    data class TextInputAction(
+        val text: String?,
+        val placeholder: String?,
+        val textObserver: AlertTextObserver
+    )
 }
 
 /**
@@ -119,6 +135,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         private var title: String? = null
         private var message: String? = null
         private var actions: MutableList<Alert.Action> = mutableListOf()
+        private var textInputAction: Alert.TextInputAction? = null
         private var style: Alert.Style = Alert.Style.ALERT
         internal val lock = Lock()
 
@@ -170,6 +187,21 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         }
 
         /**
+         * Initializes alert's input field
+         *
+         * @param text The initial text of the input field
+         * @param placeholder The input field hint
+         * @param textObserver The callback for text change events of inout field
+         */
+        fun setTextInput(
+            text: String? = null,
+            placeholder: String?,
+            textObserver: AlertTextObserver
+        ) = apply {
+            setTextInputAction(Alert.TextInputAction(text, placeholder, textObserver))
+        }
+
+        /**
          * Adds a list of [actions] to the alert
          *
          * @param actions The list of action objects
@@ -198,17 +230,26 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
         private fun addAction(action: Alert.Action) = apply { this.actions.add(action) }
 
         /**
+         * Adds an [Alert.TextInputAction] to the alert
+         *
+         * @param action The action object
+         */
+        private fun setTextInputAction(action: Alert.TextInputAction) =
+            apply { this.textInputAction = action }
+
+        /**
          * Reset builder into initial state
          */
         internal fun reset() = apply {
             this.title = null
             this.message = null
             this.actions = mutableListOf()
+            this.textInputAction = null
             this.style = Alert.Style.ALERT
         }
 
         /**
-         * Creates an alert based on [title], [message] and [actions] properties
+         * Creates an alert based on [title], [message], [actions] and [textInputAction] properties
          *
          * @return The alert object
          * @throws IllegalArgumentException in case missing title and/or message or actions
@@ -220,7 +261,7 @@ abstract class BaseAlertPresenter(private val alert: Alert) : AlertActions {
 
             require(actions.isNotEmpty()) { "Please set at least one Action for the Alert" }
 
-            return Alert(title, message, actions, style)
+            return Alert(title, message, actions, textInputAction, style)
         }
 
         /**
@@ -274,13 +315,16 @@ expect class AlertPresenter : BaseAlertPresenter {
 }
 
 /**
- * Builds an alert using DSL syntax (thread safe)
+ * Builds an alert of type [Alert.Style.ALERT] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseAlertPresenter.Builder.buildAlert(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): BaseAlertPresenter = lock.withLock {
+fun BaseAlertPresenter.Builder.buildAlert(
+    coroutineScope: CoroutineScope,
+    initialize: BaseAlertPresenter.Builder.() -> Unit
+): BaseAlertPresenter = lock.withLock {
     reset()
     setStyle(Alert.Style.ALERT)
     initialize()
@@ -288,15 +332,35 @@ fun BaseAlertPresenter.Builder.buildAlert(coroutineScope: CoroutineScope, initia
 }
 
 /**
- * Builds an alert using DSL syntax (thread safe)
+ * Builds an alert of type [Alert.Style.ACTION_LIST] using DSL syntax (thread safe)
  *
  * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
  * @param initialize The block to construct an Alert
  * @return The built alert interface object
  */
-fun BaseAlertPresenter.Builder.buildActionSheet(coroutineScope: CoroutineScope, initialize: BaseAlertPresenter.Builder.() -> Unit): BaseAlertPresenter = lock.withLock {
+fun BaseAlertPresenter.Builder.buildActionSheet(
+    coroutineScope: CoroutineScope,
+    initialize: BaseAlertPresenter.Builder.() -> Unit
+): BaseAlertPresenter = lock.withLock {
     reset()
     setStyle(Alert.Style.ACTION_LIST)
+    initialize()
+    return create(coroutineScope)
+}
+
+/**
+ * Builds an alert of type [Alert.Style.TEXT_INPUT] using DSL syntax (thread safe)
+ *
+ * @param coroutineScope The [CoroutineScope] managing the alert lifecycle.
+ * @param initialize The block to construct an Alert
+ * @return The built alert interface object
+ */
+fun BaseAlertPresenter.Builder.buildAlertWithInput(
+    coroutineScope: CoroutineScope,
+    initialize: BaseAlertPresenter.Builder.() -> Unit
+): BaseAlertPresenter = lock.withLock {
+    reset()
+    setStyle(Alert.Style.TEXT_INPUT)
     initialize()
     return create(coroutineScope)
 }

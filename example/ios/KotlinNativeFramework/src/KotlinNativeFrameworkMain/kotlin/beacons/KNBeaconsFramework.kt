@@ -22,8 +22,9 @@ import com.splendo.kaluga.bluetooth.beacons.Beacons
 import kotlinx.coroutines.MainScope
 
 class KNBeaconsFramework {
-    val mainScope = MainScope()
+    private val mainScope = MainScope()
     val service = Beacons(
         BluetoothBuilder().create(coroutineScope = mainScope),
+        timeoutMs = 60_000
     )
 }
