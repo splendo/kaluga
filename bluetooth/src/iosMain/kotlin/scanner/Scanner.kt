@@ -83,31 +83,15 @@ actual class Scanner internal constructor(
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            warn(TAG) { "centralManagerDidUpdateState(${central.state})" }
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
             if (isEnabled) {
-                info(TAG) { "isEnabled" }
                 isEnabledCompleted.complete()
-            }
-            // TODO: check if the following call is redundant
-            warn(TAG) { "notifyPeripherals($isEnabled)" }
-            notifyPeripherals {
-                handleBluetoothStateChange(isOn = isEnabled)
             }
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
-
-        fun notifyPeripherals(block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
-            scanner.stateRepo.launchUseState { scannerState ->
-                if (scannerState is ScanningState.Initialized.Enabled)
-                    scannerState.discovered.devices.forEach { device ->
-                        block(device.peekState().connectionManager)
-                    }
-            }
-        }.invoke()
 
         fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
             scanner.stateRepo.launchUseState { scannerState ->
@@ -120,17 +104,17 @@ actual class Scanner internal constructor(
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            info("CBCentralManager") { "didConnectPeripheral" }
+            info(TAG) { "didConnectPeripheral" }
             handlePeripheral(didConnectPeripheral) { handleConnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            info("CBCentralManager") { "didDisconnectPeripheral" }
+            info(TAG) { "didDisconnectPeripheral" }
             handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            info("CBCentralManager") { "didFailToConnectPeripheral" }
+            info(TAG) { "didFailToConnectPeripheral" }
             handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
         }
     }
