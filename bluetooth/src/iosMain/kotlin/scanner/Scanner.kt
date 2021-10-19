@@ -32,6 +32,8 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
+import com.splendo.kaluga.logging.info
+import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
@@ -81,14 +83,29 @@ actual class Scanner internal constructor(
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            if (central.state == CBCentralManagerStatePoweredOn) {
+            warn("CBCentralManager") { "centralManagerDidUpdateState(${central.state})" }
+            val isEnabled = central.state == CBCentralManagerStatePoweredOn
+            if (isEnabled) {
+                info("CBCentralManager") { "isEnabled" }
                 isEnabledCompleted.complete()
+            }
+            notifyPeripherals {
+                handleBluetoothStateChange(isOn = isEnabled)
             }
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didDiscoverPeripheral: CBPeripheral, advertisementData: Map<Any?, *>, RSSI: NSNumber) {
             scanner.discoverPeripheral(central, didDiscoverPeripheral, advertisementData.typedMap(), RSSI.intValue)
         }
+
+        fun notifyPeripherals(block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
+            scanner.stateRepo.launchUseState { scannerState ->
+                if (scannerState is ScanningState.Initialized.Enabled)
+                    scannerState.discovered.devices.forEach { device ->
+                        block(device.peekState().connectionManager)
+                    }
+            }
+        }.invoke()
 
         fun handlePeripheral(didConnectPeripheral: CBPeripheral, block: suspend BaseDeviceConnectionManager.() -> Unit) = mainContinuation {
             scanner.stateRepo.launchUseState { scannerState ->
@@ -101,14 +118,17 @@ actual class Scanner internal constructor(
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
+            info("CBCentralManager") { "didConnectPeripheral" }
             handlePeripheral(didConnectPeripheral) { handleConnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
+            info("CBCentralManager") { "didDisconnectPeripheral" }
             handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
+            info("CBCentralManager") { "didFailToConnectPeripheral" }
             handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
         }
     }

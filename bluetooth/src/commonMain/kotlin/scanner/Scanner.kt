@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.flow.filterOnlyImportant
 import com.splendo.kaluga.bluetooth.BluetoothMonitor
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.device.AdvertisementData
+import com.splendo.kaluga.bluetooth.device.BaseDeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.ConnectionSettings
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.Identifier
@@ -148,10 +149,14 @@ abstract class BaseScanner constructor(
 
     fun bluetoothEnabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Disabled::class) {
         it.enable
+    }.also {
+        notifyPeripherals { handleBluetoothStateChange(isOn = true) }
     }
 
     fun bluetoothDisabled() = stateRepo.launchTakeAndChangeState(remainIfStateNot = Enabled::class) {
         it.disable
+    }.also {
+        notifyPeripherals { handleBluetoothStateChange(isOn = false) }
     }
 
     internal fun handleDeviceDiscovered(identifier: Identifier, rssi: Int, advertisementData: AdvertisementData, deviceCreator: () -> Device) =
@@ -171,6 +176,15 @@ abstract class BaseScanner constructor(
         when {
             areSensorsEnabled() -> bluetoothEnabled()
             else -> bluetoothDisabled()
+        }
+    }
+
+    private fun notifyPeripherals(block: suspend BaseDeviceConnectionManager.() -> Unit) = suspend {
+        stateRepo.launchUseState { scannerState ->
+            if (scannerState is ScanningState.Initialized.Enabled)
+                scannerState.discovered.devices.forEach { device ->
+                    block(device.peekState().connectionManager)
+                }
         }
     }
 }

@@ -195,9 +195,12 @@ fun Flow<Device?>.services(): Flow<List<Service>> {
 suspend fun Flow<Device?>.connect() {
     state().transformLatest { deviceState ->
         when (deviceState) {
-            is Disconnected -> deviceState.startConnecting()
             is Connected -> emit(Unit)
-            is Connecting, is Reconnecting, is Disconnecting -> { }
+            is Disconnected.NotConnected -> deviceState.startConnecting()
+            is Disconnected.WaitingForBluetooth,
+            is Disconnecting,
+            is Connecting,
+            is Reconnecting -> { }
         }
     }.first()
 }
