@@ -32,8 +32,6 @@ import com.splendo.kaluga.bluetooth.device.DefaultCBPeripheralWrapper
 import com.splendo.kaluga.bluetooth.device.Device
 import com.splendo.kaluga.bluetooth.device.DeviceConnectionManager
 import com.splendo.kaluga.bluetooth.device.DeviceInfoImpl
-import com.splendo.kaluga.logging.info
-import com.splendo.kaluga.logging.warn
 import com.splendo.kaluga.permissions.Permissions
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.flow.first
@@ -83,14 +81,10 @@ actual class Scanner internal constructor(
     private class PoweredOnCBCentralManagerDelegate(private val scanner: Scanner, private val isEnabledCompleted: EmptyCompletableDeferred) : NSObject(), CBCentralManagerDelegateProtocol {
 
         override fun centralManagerDidUpdateState(central: CBCentralManager) = mainContinuation {
-            warn(TAG) { "centralManagerDidUpdateState(${central.state})" }
             val isEnabled = central.state == CBCentralManagerStatePoweredOn
             if (isEnabled) {
-                info(TAG) { "isEnabled" }
                 isEnabledCompleted.complete()
             }
-            // TODO: check if the following call is redundant
-            warn(TAG) { "notifyPeripherals($isEnabled)" }
             notifyPeripherals {
                 handleBluetoothStateChange(isOn = isEnabled)
             }
@@ -120,17 +114,14 @@ actual class Scanner internal constructor(
         }.invoke()
 
         override fun centralManager(central: CBCentralManager, didConnectPeripheral: CBPeripheral) {
-            info("CBCentralManager") { "didConnectPeripheral" }
             handlePeripheral(didConnectPeripheral) { handleConnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didDisconnectPeripheral: CBPeripheral, error: NSError?) {
-            info("CBCentralManager") { "didDisconnectPeripheral" }
             handlePeripheral(didDisconnectPeripheral) { handleDisconnect() }
         }
 
         override fun centralManager(central: CBCentralManager, didFailToConnectPeripheral: CBPeripheral, error: NSError?) {
-            info("CBCentralManager") { "didFailToConnectPeripheral" }
             handlePeripheral(didFailToConnectPeripheral) { handleDisconnect() }
         }
     }

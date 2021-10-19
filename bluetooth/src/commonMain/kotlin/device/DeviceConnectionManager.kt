@@ -25,7 +25,6 @@ import com.splendo.kaluga.bluetooth.Service
 import com.splendo.kaluga.bluetooth.UUID
 import com.splendo.kaluga.bluetooth.uuidString
 import com.splendo.kaluga.logging.debug
-import com.splendo.kaluga.logging.info
 import kotlinx.coroutines.CoroutineScope
 
 abstract class BaseDeviceConnectionManager(
@@ -115,7 +114,6 @@ abstract class BaseDeviceConnectionManager(
     }
 
     suspend fun handleBluetoothStateChange(isOn: Boolean) {
-        info(TAG, "handleBluetoothStateChange($isOn)")
         val clean = suspend {
             currentAction = null
             notifyingCharacteristics.clear()
