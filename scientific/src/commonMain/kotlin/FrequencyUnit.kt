@@ -90,7 +90,9 @@ operator fun Decimal.div(second: ScientificValue<MeasurementType.Time, Second>):
 @JvmName("decimalDivMinute")
 operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = (this / minute.value)(BeatsPerMinute)
 
+@JvmName("frequencyTimesTime")
 operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): Decimal = convertValue(Hertz) * time.convertValue(Second)
+@JvmName("timeTimesFrequency")
 operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): Decimal = frequency * this
 
 @JvmName("decimalDivHertz")

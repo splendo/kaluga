@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class Energy : AbstractScientificUnit<MeasurementType.Energy>()
@@ -36,6 +37,7 @@ object Joule : MetricEnergy(), BaseMetricUnit<MeasurementType.Energy, Measuremen
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
+@JvmName("energyFromForceAndDistance")
 fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
@@ -46,6 +48,7 @@ fun <
     distance: ScientificValue<MeasurementType.Length, LengthUnit>
 ): ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(force, distance)
 
+@JvmName("energyFromPressureAndVolume")
 fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
@@ -56,6 +59,7 @@ fun <
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
 ): ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(pressure, volume)
 
+@JvmName("energyFromChargeAndVoltage")
 fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
@@ -66,6 +70,7 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(charge, voltage)
 
+@JvmName("energyFromPowerAndTime")
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
@@ -75,11 +80,19 @@ fun <
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ): ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(power, time)
 
+@JvmName("forceTimesLength")
 infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = Joule.energy(this, distance)
+@JvmName("lengthTimesForce")
 infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+@JvmName("pressureTimesVolume")
 infix operator fun <PressureUnit : Pressure, VolumeUnit : Volume> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = Joule.energy(this, volume)
+@JvmName("volumeTimesPressure")
 infix operator fun <PressureUnit : Pressure, VolumeUnit : Volume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = pressure * this
+@JvmName("chargeTimesVoltage")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Joule.energy(this, voltage)
+@JvmName("voltageTimesCharge")
 infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = charge * this
+@JvmName("powerTimesTime")
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<MeasurementType.Power, PowerUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Joule.energy(this, time)
+@JvmName("timeTimesPower")
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, PowerUnit>) = power * this

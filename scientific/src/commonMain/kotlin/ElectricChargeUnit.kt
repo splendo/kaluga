@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class ElectricCharge : AbstractScientificUnit<MeasurementType.ElectricCharge>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCharge>
@@ -53,6 +54,7 @@ object MegaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.Me
 @Serializable
 object GigaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Giga(Coulomb)
 
+@JvmName("chargeFromCurrentAndTime")
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
@@ -63,6 +65,7 @@ fun <
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(current, time)
 
+@JvmName("timeFromChargeAndCurrent")
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
@@ -73,6 +76,7 @@ fun <
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) : ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(charge, current)
 
+@JvmName("chargeFromEnergyAndVoltage")
 fun <
     VoltageUnit : Voltage,
     EnergyUnit : Energy,
@@ -82,7 +86,11 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(energy, voltage)
 
+@JvmName("currentTimesTime")
 infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Coulomb.charge(this, time)
+@JvmName("timeTimesCurrent")
 infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = current * this
+@JvmName("chargeDivCurrent")
 infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Second.duration(this, current)
+@JvmName("energyDivVoltage")
 infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)

@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class ElectricCurrent : AbstractScientificUnit<MeasurementType.ElectricCurrent>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCurrent>
@@ -61,6 +62,7 @@ object MegaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.Me
 @Serializable
 object GigaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Giga(Ampere)
 
+@JvmName("currentFromCHargeAndTime")
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
@@ -71,6 +73,7 @@ fun <
     per: ScientificValue<MeasurementType.Time, TimeUnit>
 ) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(charge, per)
 
+@JvmName("currentFromVoltageAndConductance")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
@@ -80,6 +83,7 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byMultiplying(conductance, voltage)
 
+@JvmName("currentFromVoltageAndResistance")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
@@ -89,6 +93,7 @@ fun <
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
 ): ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(voltage, resistance)
 
+@JvmName("currentFromPowerAndVoltage")
 fun <
     VoltageUnit : Voltage,
     ElectricCurrentUnit : ElectricCurrent,
@@ -98,8 +103,13 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit> = byDividing(power, voltage)
 
+@JvmName("conductanceTimesVoltage")
 infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Ampere.current(this, voltage)
+@JvmName("voltageTimesConductance")
 infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = conductance * this
+@JvmName("chargeDivTime")
 infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ampere.current(this, time)
+@JvmName("voltageDivResistance")
 infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Ampere.current(this, resistance)
+@JvmName("powerDivVoltage")
 infix operator fun <PowerUnit : Power, VoltageUnit : Voltage> ScientificValue<MeasurementType.Power, PowerUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Ampere.current(this, voltage)

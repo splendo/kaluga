@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class Power : AbstractScientificUnit<MeasurementType.Power>()
@@ -35,6 +36,7 @@ object Watt : MetricPower(), BaseMetricUnit<MeasurementType.Power, MeasurementSy
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
+@JvmName("powerFromEnergyAndTime")
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
@@ -44,6 +46,7 @@ fun <
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ): ScientificValue<MeasurementType.Power, PowerUnit> = byDividing(energy, time)
 
+@JvmName("timeFromEnergyAndPower")
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
@@ -53,6 +56,7 @@ fun <
     power: ScientificValue<MeasurementType.Power, PowerUnit>
 ): ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(energy, power)
 
+@JvmName("powerFromVoltageAndCurrent")
 fun <
     VoltageUnit : Voltage,
     ElectricCurrentUnit : ElectricCurrent,
@@ -62,7 +66,11 @@ fun <
     current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
 ): ScientificValue<MeasurementType.Power, PowerUnit> = byMultiplying(voltage, current)
 
+@JvmName("voltageTimesCurrent")
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>) = Watt.power(this, current)
+@JvmName("currentTimesVoltage")
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = voltage * this
+@JvmName("energyDivTime")
 infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Watt.power(this, time)
+@JvmName("energyDivPower")
 infix operator fun <EnergyUnit : Energy, PowerUnit : Power> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(power: ScientificValue<MeasurementType.Power, PowerUnit>) = Second.time(this, power)
