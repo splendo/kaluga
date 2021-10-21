@@ -33,12 +33,12 @@ interface SystemScientificUnit<System : MeasurementSystem, Type : MeasurementTyp
     override val system: System
 }
 
-interface SIScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.SI, Type>, MeasurementUsage.UsedGlobally
 interface MetricScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.Metric, Type>, MeasurementUsage.UsedInMetric
-interface CommonImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.CommonImperial, Type>, MeasurementUsage.UsedInCommonImperial
+interface ImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.Imperial, Type>, MeasurementUsage.UsedInImperial
 interface USCustomaryScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.USCustomary, Type>, MeasurementUsage.UsedInUSCustomary
 interface UKImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.UKImperial, Type>, MeasurementUsage.UsedInUKImperial
-interface MetricAndUKImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Type>, MeasurementUsage.UsedOutsideUS
+interface MetricAndUKImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.MetricAndUKImperial, Type>, MeasurementUsage.UsedInMetricAndUKImperial
+interface MetricAndImperialScientificUnit<Type : MeasurementType> : SystemScientificUnit<MeasurementSystem.MetricAndImperial, Type>, MeasurementUsage.UsedInMetricAndImperial
 
 @Serializable
 sealed class AbstractScientificUnit<Type : MeasurementType> : ScientificUnit<Type>

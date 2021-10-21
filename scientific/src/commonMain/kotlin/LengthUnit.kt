@@ -30,8 +30,8 @@ sealed class Length : AbstractScientificUnit<MeasurementType.Length>()
 sealed class MetricLength : Length(), MetricScientificUnit<MeasurementType.Length>
 
 @Serializable
-sealed class ImperialLength(override val symbol: String) : Length(), CommonImperialScientificUnit<MeasurementType.Length> {
-    override val system = MeasurementSystem.CommonImperial
+sealed class ImperialLength(override val symbol: String) : Length(), ImperialScientificUnit<MeasurementType.Length> {
+    override val system = MeasurementSystem.Imperial
     override val type = MeasurementType.Length
 }
 

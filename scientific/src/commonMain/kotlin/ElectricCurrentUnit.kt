@@ -18,49 +18,48 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.times
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ElectricCurrent : AbstractScientificUnit<MeasurementType.ElectricCurrent>(), SIScientificUnit<MeasurementType.ElectricCurrent>
+sealed class ElectricCurrent : AbstractScientificUnit<MeasurementType.ElectricCurrent>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCurrent>
 
 @Serializable
-object Ampere : ElectricCurrent(), BaseMetricUnit<MeasurementType.ElectricCurrent, MeasurementSystem.SI> {
+object Ampere : ElectricCurrent(), BaseMetricUnit<MeasurementType.ElectricCurrent, MeasurementSystem.MetricAndImperial> {
     override val symbol = "A"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricCurrent
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object NanoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Nano(Ampere)
+object NanoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Nano(Ampere)
 @Serializable
-object MicroAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Micro(Ampere)
+object MicroAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Micro(Ampere)
 @Serializable
-object MilliAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Milli(Ampere)
+object MilliAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Milli(Ampere)
 @Serializable
-object CentiAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Centi(Ampere)
+object CentiAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Centi(Ampere)
 @Serializable
-object DeciAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Deci(Ampere)
+object DeciAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deci(Ampere)
 @Serializable
-object DecaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Deca(Ampere)
+object DecaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere)
 @Serializable
-object AbAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Deca(Ampere) {
+object AbAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere) {
     override val symbol: String = "abA"
 }
 @Serializable
-object Biot : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Deca(Ampere) {
+object Biot : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere) {
     override val symbol: String = "B"
 }
 @Serializable
-object HectoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Hecto(Ampere)
+object HectoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Hecto(Ampere)
 @Serializable
-object KiloAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Kilo(Ampere)
+object KiloAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Kilo(Ampere)
 @Serializable
-object MegaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Mega(Ampere)
+object MegaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Mega(Ampere)
 @Serializable
-object GigaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCurrent> by Giga(Ampere)
+object GigaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Giga(Ampere)
 
 fun <
     CurrentUnit : ElectricCurrent,

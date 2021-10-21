@@ -18,43 +18,40 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), SIScientificUnit<MeasurementType.ElectricConductance>
+sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricConductance>
 
 @Serializable
-object Siemens : ElectricConductance(), BaseMetricUnit<MeasurementType.ElectricConductance, MeasurementSystem.SI> {
+object Siemens : ElectricConductance(), BaseMetricUnit<MeasurementType.ElectricConductance, MeasurementSystem.MetricAndImperial> {
     override val symbol = "S"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricConductance
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object NanoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Nano(Siemens)
+object NanoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Nano(Siemens)
 @Serializable
-object MicroSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Micro(Siemens)
+object MicroSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Micro(Siemens)
 @Serializable
-object MilliSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Milli(Siemens)
+object MilliSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Milli(Siemens)
 @Serializable
-object CentiSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Centi(Siemens)
+object CentiSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Centi(Siemens)
 @Serializable
-object DeciSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Deci(Siemens)
+object DeciSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Deci(Siemens)
 @Serializable
-object DecaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Deca(Siemens)
+object DecaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Deca(Siemens)
 @Serializable
-object HectoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Hecto(Siemens)
+object HectoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Hecto(Siemens)
 @Serializable
-object KiloSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Kilo(Siemens)
+object KiloSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Kilo(Siemens)
 @Serializable
-object MegaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Mega(Siemens)
+object MegaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Mega(Siemens)
 @Serializable
-object GigaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricConductance> by Giga(Siemens)
+object GigaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Giga(Siemens)
 
 fun <
     ResistanceUnit : ElectricResistance,

@@ -27,26 +27,26 @@ sealed interface MeasurementUsage {
     interface UsedInMetric
     interface UsedInUKImperial
     interface UsedInUSCustomary
-    interface UsedInCommonImperial : UsedInUKImperial, UsedInUSCustomary
-    interface UsedOutsideUS : UsedInMetric, UsedInUKImperial
-    interface UsedGlobally : UsedInMetric, UsedInCommonImperial
+    interface UsedInImperial : UsedInUKImperial, UsedInUSCustomary
+    interface UsedInMetricAndUKImperial : UsedInMetric, UsedInUKImperial
+    interface UsedInMetricAndImperial : UsedInMetric, UsedInImperial
 }
 
 @Serializable
 sealed class MeasurementSystem : MeasurementUsage {
 
     @Serializable
-    object SI : MeasurementSystem(), MeasurementUsage.UsedGlobally
-    @Serializable
     object Metric : MeasurementSystem(), MeasurementUsage.UsedInMetric
     @Serializable
-    object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedOutsideUS
-    @Serializable
-    object CommonImperial : MeasurementSystem(), MeasurementUsage.UsedInCommonImperial
+    object Imperial : MeasurementSystem(), MeasurementUsage.UsedInImperial
     @Serializable
     object USCustomary : MeasurementSystem(), MeasurementUsage.UsedInUSCustomary
     @Serializable
     object UKImperial : MeasurementSystem(), MeasurementUsage.UsedInUKImperial
+    @Serializable
+    object MetricAndUKImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndUKImperial
+    @Serializable
+    object MetricAndImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndImperial
 }
 
 interface BaseMetricUnit<T : MeasurementType, S> : SystemScientificUnit<S, T>, MeasurementUsage.UsedInMetric where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {

@@ -40,8 +40,8 @@ data class MetricSpeed(override val distance: MetricLength, override val per: Ti
 }
 
 @Serializable
-data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) : Speed(), CommonImperialScientificUnit<MeasurementType.Speed> {
-    override val system = MeasurementSystem.CommonImperial
+data class ImperialSpeed(override val distance: ImperialLength, override val per: Time) : Speed(), ImperialScientificUnit<MeasurementType.Speed> {
+    override val system = MeasurementSystem.Imperial
 }
 
 infix fun MetricLength.per(time: Time) = MetricSpeed(this, time)

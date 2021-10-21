@@ -18,41 +18,40 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Voltage : AbstractScientificUnit<MeasurementType.Voltage>(), SIScientificUnit<MeasurementType.Voltage>
+sealed class Voltage : AbstractScientificUnit<MeasurementType.Voltage>(), MetricAndImperialScientificUnit<MeasurementType.Voltage>
 
 @Serializable
-object Volt : Voltage(), BaseMetricUnit<MeasurementType.Voltage, MeasurementSystem.SI> {
+object Volt : Voltage(), BaseMetricUnit<MeasurementType.Voltage, MeasurementSystem.MetricAndImperial> {
     override val symbol = "V"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Voltage
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object NanoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Nano(Volt)
+object NanoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Nano(Volt)
 @Serializable
-object MicroVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Micro(Volt)
+object MicroVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Micro(Volt)
 @Serializable
-object MilliVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Milli(Volt)
+object MilliVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Milli(Volt)
 @Serializable
-object CentiVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Centi(Volt)
+object CentiVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Centi(Volt)
 @Serializable
-object DeciVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Deci(Volt)
+object DeciVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Deci(Volt)
 @Serializable
-object DecaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Deca(Volt)
+object DecaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Deca(Volt)
 @Serializable
-object HectoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Hecto(Volt)
+object HectoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Hecto(Volt)
 @Serializable
-object KiloVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Kilo(Volt)
+object KiloVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Kilo(Volt)
 @Serializable
-object MegaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Mega(Volt)
+object MegaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Mega(Volt)
 @Serializable
-object GigaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Voltage> by Giga(Volt)
+object GigaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Giga(Volt)
 
 fun <
     CurrentUnit : ElectricCurrent,

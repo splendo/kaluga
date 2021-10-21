@@ -39,8 +39,8 @@ data class MetricDensity(override val weight: MetricWeight, override val per: Me
     override val system = MeasurementSystem.Metric
 }
 @Serializable
-data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) : Density(), CommonImperialScientificUnit<MeasurementType.Density> {
-    override val system = MeasurementSystem.CommonImperial
+data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) : Density(), ImperialScientificUnit<MeasurementType.Density> {
+    override val system = MeasurementSystem.Imperial
 }
 @Serializable
 data class USCustomaryDensity(override val weight: USCustomaryWeight, override val per: USCustomaryVolume) : Density(), USCustomaryScientificUnit<MeasurementType.Density> {
@@ -76,7 +76,7 @@ infix operator fun <
     WeightUnit,
     >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, MetricDensity> = (value / volume.value)(unit per volume.unit)
 
-@JvmName("commonImperialWeightDivCommonImperialVolume")
+@JvmName("imperialWeightDivImperialVolume")
 infix operator fun <
     WeightUnit : ImperialWeight,
     VolumeUnit : ImperialVolume,
@@ -122,7 +122,7 @@ infix operator fun <
     VolumeUnit : MetricVolume,
     >  ScientificValue<MeasurementType.Density, MetricDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, MetricWeight> = (value * volume.convertValue(unit.per))(unit.weight)
 
-@JvmName("commonImperialDensityTimesCommonImperialVolume")
+@JvmName("imperialDensityTimesImperialVolume")
 infix operator fun <
     VolumeUnit : ImperialVolume,
     >  ScientificValue<MeasurementType.Density, ImperialDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, ImperialWeight> = (value * volume.convertValue(unit.per))(unit.weight)
@@ -147,7 +147,7 @@ infix operator fun <
     VolumeUnit : MetricVolume,
     >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, MetricDensity>) : ScientificValue< MeasurementType.Weight, MetricWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
 
-@JvmName("commonImperialVolumeTimesCommonImperialDensity")
+@JvmName("imperialVolumeTimesImperialDensity")
 infix operator fun <
     VolumeUnit : ImperialVolume,
     >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) : ScientificValue< MeasurementType.Weight, ImperialWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
@@ -172,7 +172,7 @@ infix operator fun <
     WeightUnit : MetricWeight,
     > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, MetricDensity>) : ScientificValue<MeasurementType.Volume, MetricVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
 
-@JvmName("commonImperialWeightDivCommonImperialDensity")
+@JvmName("imperialWeightDivImperialDensity")
 infix operator fun <
     WeightUnit : ImperialWeight,
     > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, ImperialDensity>) : ScientificValue<MeasurementType.Volume, ImperialVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)

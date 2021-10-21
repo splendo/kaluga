@@ -18,42 +18,40 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ElectricCharge : AbstractScientificUnit<MeasurementType.ElectricCharge>(), SIScientificUnit<MeasurementType.ElectricCharge>
+sealed class ElectricCharge : AbstractScientificUnit<MeasurementType.ElectricCharge>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCharge>
 
 @Serializable
-object Coulomb : ElectricCharge(), BaseMetricUnit<MeasurementType.ElectricCharge, MeasurementSystem.SI> {
+object Coulomb : ElectricCharge(), BaseMetricUnit<MeasurementType.ElectricCharge, MeasurementSystem.MetricAndImperial> {
     override val symbol = "C"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricCharge
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object NanoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Nano(Coulomb)
+object NanoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Nano(Coulomb)
 @Serializable
-object MicroCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Micro(Coulomb)
+object MicroCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Micro(Coulomb)
 @Serializable
-object MilliCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Milli(Coulomb)
+object MilliCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Milli(Coulomb)
 @Serializable
-object CentiCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Centi(Coulomb)
+object CentiCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Centi(Coulomb)
 @Serializable
-object DeciCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Deci(Coulomb)
+object DeciCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Deci(Coulomb)
 @Serializable
-object DecaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Deca(Coulomb)
+object DecaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Deca(Coulomb)
 @Serializable
-object HectoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Hecto(Coulomb)
+object HectoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Hecto(Coulomb)
 @Serializable
-object KiloCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Kilo(Coulomb)
+object KiloCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Kilo(Coulomb)
 @Serializable
-object MegaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Mega(Coulomb)
+object MegaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Mega(Coulomb)
 @Serializable
-object GigaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.ElectricCharge> by Giga(Coulomb)
+object GigaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Giga(Coulomb)
 
 fun <
     CurrentUnit : ElectricCurrent,

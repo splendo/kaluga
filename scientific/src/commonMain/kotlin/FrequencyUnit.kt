@@ -25,32 +25,32 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
 @Serializable
-sealed class Frequency : ScientificUnit<MeasurementType.Frequency>, SIScientificUnit<MeasurementType.Frequency>
+sealed class Frequency : ScientificUnit<MeasurementType.Frequency>, MetricAndImperialScientificUnit<MeasurementType.Frequency>
 
-object Hertz : Frequency(), BaseMetricUnit<MeasurementType.Frequency, MeasurementSystem.SI> {
+object Hertz : Frequency(), BaseMetricUnit<MeasurementType.Frequency, MeasurementSystem.MetricAndImperial> {
     override val symbol: String = "Hz"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 
 @Serializable
-object Nanohertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Nano(Hertz)
+object Nanohertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Nano(Hertz)
 @Serializable
-object Microhertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Micro(Hertz)
+object Microhertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Micro(Hertz)
 @Serializable
-object Millihertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Milli(Hertz)
+object Millihertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Milli(Hertz)
 @Serializable
-object Kilohertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Kilo(Hertz)
+object Kilohertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Kilo(Hertz)
 @Serializable
-object Megahertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Mega(Hertz)
+object Megahertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Mega(Hertz)
 @Serializable
-object Gigahertz : Frequency(), SystemScientificUnit<MeasurementSystem.SI, MeasurementType.Frequency> by Giga(Hertz)
+object Gigahertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Giga(Hertz)
 @Serializable
 object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()
@@ -58,7 +58,7 @@ object BeatsPerMinute : Frequency() {
 @Serializable
 object RoundsPerMinute : Frequency() {
     override val symbol: String = "rpm"
-    override val system = MeasurementSystem.SI
+    override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Frequency
     override fun fromSIUnit(value: Decimal): Decimal = value * 60.0.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 60.0.toDecimal()

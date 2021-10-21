@@ -31,7 +31,7 @@ sealed class Area : AbstractScientificUnit<MeasurementType.Area>()
 sealed class MetricArea : Area(), MetricScientificUnit<MeasurementType.Area>
 
 @Serializable
-sealed class ImperialArea : Area(), CommonImperialScientificUnit<MeasurementType.Area>
+sealed class ImperialArea : Area(), ImperialScientificUnit<MeasurementType.Area>
 
 class Square<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit : U) : SystemScientificUnit<S, MeasurementType.Area> {
     override val symbol: String = "${unit.symbol}2"
@@ -75,22 +75,22 @@ object Hectare : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, Me
 object SquareKilometer : MetricArea(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Area> by Square(Kilo(Meter))
 
 @Serializable
-object SquareMile : ImperialArea(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Area> by Square(Mile) {
+object SquareMile : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Mile) {
     override val symbol: String = "sq. mi"
 }
 
 @Serializable
-object SquareYard : ImperialArea(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Area> by Square(Yard) {
+object SquareYard : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Yard) {
     override val symbol: String = "sq. yd"
 }
 
 @Serializable
-object SquareFoot : ImperialArea(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Area> by Square(Foot) {
+object SquareFoot : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Foot) {
     override val symbol: String = "sq. fr"
 }
 
 @Serializable
-object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Area> by Square(Inch) {
+object SquareInch : ImperialArea(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Area> by Square(Inch) {
     override val symbol: String = "sq. in"
 }
 
@@ -99,7 +99,7 @@ object Acre : ImperialArea() {
     override val symbol: String = "acre"
     val ACRES_IN_SQUARE_MILE = 640.0
     override val type = MeasurementType.Area
-    override val system = MeasurementSystem.CommonImperial
+    override val system = MeasurementSystem.Imperial
     override fun toSIUnit(value: Decimal): Decimal = SquareMile.toSIUnit(value / ACRES_IN_SQUARE_MILE.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
 }

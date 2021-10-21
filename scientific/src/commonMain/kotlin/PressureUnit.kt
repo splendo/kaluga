@@ -31,8 +31,8 @@ sealed class Pressure : AbstractScientificUnit<MeasurementType.Pressure>()
 sealed class MetricPressure : Pressure(), MetricScientificUnit<MeasurementType.Pressure>
 
 @Serializable
-sealed class ImperialPressure  : Pressure(), CommonImperialScientificUnit<MeasurementType.Pressure> {
-    override val system = MeasurementSystem.CommonImperial
+sealed class ImperialPressure  : Pressure(), ImperialScientificUnit<MeasurementType.Pressure> {
+    override val system = MeasurementSystem.Imperial
     override val type = MeasurementType.Pressure
 }
 

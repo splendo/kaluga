@@ -43,8 +43,8 @@ sealed class UKImperialForce : Force(), UKImperialScientificUnit<MeasurementType
 }
 
 @Serializable
-sealed class ImperialForce : Force(), CommonImperialScientificUnit<MeasurementType.Force> {
-    override val system = MeasurementSystem.CommonImperial
+sealed class ImperialForce : Force(), ImperialScientificUnit<MeasurementType.Force> {
+    override val system = MeasurementSystem.Imperial
     override val type = MeasurementType.Force
 }
 

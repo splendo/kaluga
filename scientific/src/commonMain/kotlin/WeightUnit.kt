@@ -30,8 +30,8 @@ sealed class Weight : AbstractScientificUnit<MeasurementType.Weight>()
 sealed class MetricWeight : Weight(), MetricScientificUnit<MeasurementType.Weight>
 
 @Serializable
-sealed class ImperialWeight(override val symbol: String) : Weight(), CommonImperialScientificUnit<MeasurementType.Weight> {
-    override val system = MeasurementSystem.CommonImperial
+sealed class ImperialWeight(override val symbol: String) : Weight(), ImperialScientificUnit<MeasurementType.Weight> {
+    override val system = MeasurementSystem.Imperial
     override val type = MeasurementType.Weight
 }
 

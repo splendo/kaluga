@@ -43,7 +43,7 @@ sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<MeasurementTy
 }
 
 @Serializable
-sealed class ImperialVolume : Volume(), CommonImperialScientificUnit<MeasurementType.Volume>
+sealed class ImperialVolume : Volume(), ImperialScientificUnit<MeasurementType.Volume>
 
 class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit : U) : SystemScientificUnit<S, MeasurementType.Volume> {
     override val symbol: String = "${unit.symbol}3"
@@ -119,22 +119,22 @@ object Kiloliter : MetricVolume(), SystemScientificUnit<MeasurementSystem.Metric
 
 // Imperial
 @Serializable
-object CubicInch : ImperialVolume(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Volume> by Cubic(Inch) {
+object CubicInch : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Inch) {
     override val symbol: String = "cu in"
 }
 
 @Serializable
-object CubicFoot : ImperialVolume(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Volume> by Cubic(Foot) {
+object CubicFoot : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Foot) {
     override val symbol: String = "cu ft"
 }
 
 @Serializable
-object CubicYard : ImperialVolume(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Volume> by Cubic(Yard) {
+object CubicYard : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Yard) {
     override val symbol: String = "cu yd"
 }
 
 @Serializable
-object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.CommonImperial, MeasurementType.Volume> by Cubic(Mile) {
+object CubicMile : ImperialVolume(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Volume> by Cubic(Mile) {
     override val symbol: String = "cu mi"
 }
 
