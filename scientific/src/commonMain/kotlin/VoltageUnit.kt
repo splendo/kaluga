@@ -94,6 +94,28 @@ fun <
     current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
 ): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(power, current)
 
+@JvmName("voltageFromChargeAndCapacitance")
+fun <
+    ChargeUnit : ElectricCharge,
+    VoltageUnit : Voltage,
+    CapacitanceUnit : ElectricCapacitance
+    >
+    VoltageUnit.voltage(
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+) : ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(charge, capacitance)
+
+@JvmName("voltageFromFluxAndTime")
+fun <
+    VoltageUnit : Voltage,
+    TimeUnit : Time,
+    FluxUnit : MagneticFlux
+    >
+    VoltageUnit.voltage(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) : ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(flux, time)
+
 @JvmName("currentTimesResistance")
 infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Volt.voltage(this, resistance)
 @JvmName("resistanceTimesCurrent")
@@ -102,5 +124,9 @@ infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResi
 infix operator fun <CurrentUnit : ElectricCurrent, ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = Volt.voltage(this, conductance)
 @JvmName("energyDivCharge")
 infix operator fun <EnergyUnit : Energy, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = Volt.voltage(this, charge)
-@JvmName("poerDivCurrent")
+@JvmName("powerDivCurrent")
 infix operator fun <PowerUnit : Power, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Power, PowerUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Volt.voltage(this, current)
+@JvmName("chargeDivCapacitance")
+infix operator fun <ChargeUnit : ElectricCharge, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Volt.voltage(this, capacitance)
+@JvmName("fluxDivTime")
+infix operator fun <FluxUnit : MagneticFlux, TimeUnit : Time> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Volt.voltage(this, time)

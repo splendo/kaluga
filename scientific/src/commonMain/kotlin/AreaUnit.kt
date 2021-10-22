@@ -104,6 +104,7 @@ object Acre : ImperialArea() {
     override fun fromSIUnit(value: Decimal): Decimal = SquareMile.fromSIUnit(value) * ACRES_IN_SQUARE_MILE.toDecimal()
 }
 
+@JvmName("areaFromLengthAndWidth")
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
@@ -113,6 +114,7 @@ fun <
     width: ScientificValue<MeasurementType.Length, WidthUnit>
 ) : ScientificValue<MeasurementType.Area, AreaUnit> = byMultiplying(length, width)
 
+@JvmName("lengthFromAreaAndLength")
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
@@ -122,6 +124,7 @@ fun <
     length: ScientificValue<MeasurementType.Length, LengthUnit>
 ) : ScientificValue<MeasurementType.Length, WidthUnit> = byDividing(area, length)
 
+@JvmName("areaFromForceAndPressure")
 fun <
     ForceUnit : ScientificUnit<MeasurementType.Force>,
     AreaUnit : ScientificUnit<MeasurementType.Area>,
@@ -130,6 +133,17 @@ fun <
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
 ) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(force, pressure)
+
+@JvmName("areaFromFluxAndInduction")
+fun <
+    FluxUnit : MagneticFlux,
+    AreaUnit : Area,
+    InductionUnit : MagneticInduction
+    >
+    AreaUnit.area(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
+) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(flux, induction)
 
 @JvmName("meterTimesMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Length, Meter>) = SquareMeter.area(this, other)
@@ -217,3 +231,6 @@ operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, F
 operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = SquareInch.area(this, pressure)
 @JvmName("ukImperialForceImperialTonSquareFeet")
 operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = SquareFoot.area(this, pressure)
+
+@JvmName("fluxDivInduction")
+infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = SquareMeter.area(this, induction)

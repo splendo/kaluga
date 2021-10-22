@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class ElectricResistance : AbstractScientificUnit<MeasurementType.ElectricResistance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricResistance>
@@ -58,6 +59,7 @@ fun <
     ConductanceUnit : ElectricConductance
     > ResistanceUnit.resistance(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byInverting(conductance)
 
+@JvmName("resistanceFromVoltageAndCurrent")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
@@ -67,5 +69,60 @@ fun <
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(voltage, current)
 
+@JvmName("resistanceFromTimeAndCapacitance")
+fun <
+    CapacitanceUnit : ElectricCapacitance,
+    TimeUnit : Time,
+    ResistanceUnit : ElectricResistance
+    >
+    ResistanceUnit.resistance(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+) : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(time, capacitance)
+
+@JvmName("resistanceFromFluxAndCharge")
+fun <
+    ResistanceUnit : ElectricResistance,
+    ChargeUnit : ElectricCharge,
+    FluxUnit : MagneticFlux
+    >
+    ResistanceUnit.resistance(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+) : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(flux, charge)
+
+@JvmName("resistanceFromInductanceAndFrequency")
+fun <
+    ResistanceUnit : ElectricResistance,
+    FrequencyUnit : Frequency,
+    InductanceUnit : ElectricInductance
+    >
+    ResistanceUnit.resistance(
+    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byMultiplying(inductance, frequency)
+
+@JvmName("resistanceFromInductanceAndTime")
+fun <
+    ResistanceUnit : ElectricResistance,
+    TimeUnit : Time,
+    InductanceUnit : ElectricInductance
+    >
+    ResistanceUnit.resistance(
+    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(inductance, time)
+
 fun <ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.resistance() = Ohm.resistance(this)
+@JvmName("voltageDivCurrent")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Ohm.resistance(this, current)
+@JvmName("timeDivCapacitance")
+infix operator fun <TimeUnit : Time, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.Time, TimeUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Ohm.resistance(this, capacitance)
+@JvmName("fluxDivCharge")
+infix operator fun <FluxUnit : MagneticFlux, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = Ohm.resistance(this, charge)
+@JvmName("inductanceTimesFrequency")
+infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Ohm.resistance(this, frequency)
+@JvmName("frequencyTimesInductance")
+infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>) = inductance * this
+@JvmName("inductanceDivTime")
+infix operator fun <InductanceUnit : ElectricInductance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ohm.resistance(this, time)

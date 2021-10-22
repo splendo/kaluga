@@ -86,6 +86,28 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(energy, voltage)
 
+@JvmName("capacitanceFromChargeAndVoltage")
+fun <
+    ChargeUnit : ElectricCharge,
+    VoltageUnit : Voltage,
+    CapacitanceUnit : ElectricCapacitance
+    >
+    ChargeUnit.charge(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(capacitance, voltage)
+
+@JvmName("chargeFromFluxAndResistance")
+fun <
+    ResistanceUnit : ElectricResistance,
+    ChargeUnit : ElectricCharge,
+    FluxUnit : MagneticFlux
+    >
+    ChargeUnit.charge(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(flux, resistance)
+
 @JvmName("currentTimesTime")
 infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Coulomb.charge(this, time)
 @JvmName("timeTimesCurrent")
@@ -94,3 +116,9 @@ infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificVa
 infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Second.duration(this, current)
 @JvmName("energyDivVoltage")
 infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)
+@JvmName("capacitanceTimesVoltage")
+infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)
+@JvmName("voltageTimesCapacitance")
+infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
+@JvmName("fluxDivResistance")
+infix operator fun <FluxUnit : MagneticFlux, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Coulomb.charge(this, resistance)

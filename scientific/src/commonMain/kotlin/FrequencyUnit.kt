@@ -85,6 +85,27 @@ fun <
     TimeUnit : Time
     > TimeUnit.time(cycle: Decimal, at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = (cycle / at.convertValue(Hertz))(Second).convert(this)
 
+@JvmName("frequencyFromConductanceAndCapacity")
+fun <
+    CapacitanceUnit : ElectricCapacitance,
+    ConductanceUnit : ElectricConductance,
+    FrequencyUnit : Frequency
+    > FrequencyUnit.frequency(
+    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = byDividing(conductance, capacitance)
+
+@JvmName("frequencyFromReistanceAndInductance")
+fun <
+    ResistanceUnit : ElectricResistance,
+    FrequencyUnit : Frequency,
+    InductanceUnit : ElectricInductance
+    >
+    FrequencyUnit.frequency(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
+    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
+) : ScientificValue<MeasurementType.Frequency, FrequencyUnit> = byDividing(resistance, inductance)
+
 @JvmName("decimalDivSecond")
 operator fun Decimal.div(second: ScientificValue<MeasurementType.Time, Second>): ScientificValue<MeasurementType.Frequency, Hertz> = (this / second.value)(Hertz)
 @JvmName("decimalDivMinute")
@@ -103,3 +124,8 @@ operator fun <M : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, Measur
 operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
 @JvmName("decimalDivRPM")
 operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, RoundsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
+
+@JvmName("conductanceDivCapacitance")
+operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Hertz.frequency(this, capacitance)
+@JvmName("resistanceDivInductance")
+operator fun <ResistanceUnit : ElectricResistance, InductanceUnit : ElectricInductance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.div(inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>) = Hertz.frequency(this, inductance)

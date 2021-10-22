@@ -281,6 +281,17 @@ fun <
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ): ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(power, time)
 
+@JvmName("energyFromFluxAndCurrent")
+fun <
+    EnergyUnit : Energy,
+    CurrentUnit : ElectricCurrent,
+    FluxUnit : MagneticFlux
+    >
+    EnergyUnit.energy(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) : ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(flux, current)
+
 @JvmName("forceTimesLength")
 infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = Joule.energy(this, distance)
 @JvmName("lengthTimesForce")
@@ -297,3 +308,7 @@ infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> Scientif
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<MeasurementType.Power, PowerUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Joule.energy(this, time)
 @JvmName("timeTimesPower")
 infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, PowerUnit>) = power * this
+@JvmName("fluxTimesCurrent")
+infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Joule.energy(this, current)
+@JvmName("currentTimesFlux")
+infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>) = flux * this

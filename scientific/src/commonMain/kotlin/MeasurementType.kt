@@ -28,11 +28,15 @@ sealed class MeasurementType {
     @Serializable
     object Density : MeasurementType()
     @Serializable
+    object ElectricCapacitance : MeasurementType()
+    @Serializable
     object ElectricCharge : MeasurementType()
     @Serializable
     object ElectricConductance : MeasurementType()
     @Serializable
     object ElectricCurrent : MeasurementType()
+    @Serializable
+    object ElectricInductance : MeasurementType()
     @Serializable
     object ElectricResistance : MeasurementType()
     @Serializable
@@ -43,6 +47,10 @@ sealed class MeasurementType {
     object Frequency : MeasurementType()
     @Serializable
     object Length : MeasurementType()
+    @Serializable
+    object MagneticFlux : MeasurementType()
+    @Serializable
+    object MagneticInduction : MeasurementType()
     @Serializable
     object Power : MeasurementType()
     @Serializable

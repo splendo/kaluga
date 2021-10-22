@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricConductance>
@@ -58,6 +59,7 @@ fun <
     ConductanceUnit : ElectricConductance
     > ConductanceUnit.conductance(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byInverting(resistance)
 
+@JvmName("conductanceFromCurrentAndVoltage")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
@@ -67,5 +69,20 @@ fun <
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byDividing(current, voltage)
 
+@JvmName("conductanceFromCapacitanceAndFrequency")
+fun <
+    CapacitanceUnit : ElectricCapacitance,
+    ConductanceUnit : ElectricConductance,
+    FrequencyUnit : Frequency
+    > ConductanceUnit.conductance(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byMultiplying(capacitance, frequency)
+
 fun <ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.conductance() = Siemens.conductance(this)
+@JvmName("currentDivVoltage")
 infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Siemens.conductance(this, voltage)
+@JvmName("capacitanceTimesFrequency")
+infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Siemens.conductance(this, frequency)
+@JvmName("frequencyTimesCapacitance")
+infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
