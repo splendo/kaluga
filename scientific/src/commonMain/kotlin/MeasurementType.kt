@@ -24,6 +24,8 @@ sealed class MeasurementType {
     @Serializable
     object Acceleration : MeasurementType()
     @Serializable
+    object Angle : MeasurementType()
+    @Serializable
     object Area : MeasurementType()
     @Serializable
     object Density : MeasurementType()
@@ -48,6 +50,10 @@ sealed class MeasurementType {
     @Serializable
     object Length : MeasurementType()
     @Serializable
+    object LuminousFlux : MeasurementType()
+    @Serializable
+    object LuminousIntensity : MeasurementType()
+    @Serializable
     object MagneticFlux : MeasurementType()
     @Serializable
     object MagneticInduction : MeasurementType()
@@ -55,6 +61,8 @@ sealed class MeasurementType {
     object Power : MeasurementType()
     @Serializable
     object Pressure : MeasurementType()
+    @Serializable
+    object SolidAngle : MeasurementType()
     @Serializable
     object Speed : MeasurementType()
     @Serializable

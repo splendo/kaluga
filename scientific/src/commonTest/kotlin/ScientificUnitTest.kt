@@ -191,6 +191,11 @@ class ScientificUnitTest {
         val unitString = Json.encodeToString(unitSerializer, Meter)
         assertEquals(Meter, Json.decodeFromString(unitSerializer, unitString))
     }
+
+    @Test
+    fun testSolidAngle() {
+        assertScientificUnit(1000, Steradian, SquareDegree, 3282.806350011744, unitTranslationErrorTolerance)
+    }
 }
 
 fun <Type : MeasurementType> assertScientificUnit(
