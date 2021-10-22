@@ -37,7 +37,7 @@ sealed class ImperialLength(override val symbol: String) : Length(), ImperialSci
 
 // Metric Length
 @Serializable
-object Meter : MetricLength(), BaseMetricUnit<MeasurementType.Length, MeasurementSystem.Metric> {
+object Meter : MetricLength(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Length> {
     override val symbol: String = "m"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Length
@@ -46,54 +46,54 @@ object Meter : MetricLength(), BaseMetricUnit<MeasurementType.Length, Measuremen
 }
 
 @Serializable
-object Nanometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Nano(Meter)
+object Nanometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Nano(Meter)
 
 @Serializable
-object Micrometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Micro(Meter)
+object Micrometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Micro(Meter)
 
 @Serializable
-object Millimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Milli(Meter)
+object Millimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Milli(Meter)
 
 @Serializable
-object Centimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Centi(Meter)
+object Centimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Centi(Meter)
 
 @Serializable
-object Decimeter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deci(Meter)
+object Decimeter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Deci(Meter)
 
 @Serializable
-object Decameter : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Deca(Meter)
+object Decameter : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Deca(Meter)
 
 @Serializable
-object Hectometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Hecto(Meter)
+object Hectometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Hecto(Meter)
 
 @Serializable
-object Kilometer : MetricLength(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Length> by Kilo(Meter)
+object Kilometer : MetricLength(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Length, Meter> by Kilo(Meter)
 
 // Imperial Length
 @Serializable
 object Inch : ImperialLength("in") {
-    const val INCHES_IN_FOOT = 12
+    private const val INCHES_IN_FOOT = 12
     override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value / INCHES_IN_FOOT.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) * INCHES_IN_FOOT.toDecimal()
 }
 
 @Serializable
 object Foot : ImperialLength("ft") {
-    const val METER_IN_FEET = 0.3048
+    private const val METER_IN_FEET = 0.3048
     override fun toSIUnit(value: Decimal): Decimal = value * METER_IN_FEET.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value / METER_IN_FEET.toDecimal()
 }
 
 @Serializable
 object Yard : ImperialLength("yd") {
-    const val FOOT_IN_YARD = 3
+    private const val FOOT_IN_YARD = 3
     override fun toSIUnit(value: Decimal): Decimal = Foot.toSIUnit(value * FOOT_IN_YARD.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Foot.fromSIUnit(value) / FOOT_IN_YARD.toDecimal()
 }
 
 @Serializable
 object Mile : ImperialLength("mi") {
-    const val YARDS_IN_MILE = 1760
+    private const val YARDS_IN_MILE = 1760
     override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE.toDecimal()
 }

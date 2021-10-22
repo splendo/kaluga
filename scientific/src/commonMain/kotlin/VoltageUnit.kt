@@ -25,7 +25,7 @@ import kotlin.jvm.JvmName
 sealed class Voltage : AbstractScientificUnit<MeasurementType.Voltage>(), MetricAndImperialScientificUnit<MeasurementType.Voltage>
 
 @Serializable
-object Volt : Voltage(), BaseMetricUnit<MeasurementType.Voltage, MeasurementSystem.MetricAndImperial> {
+object Volt : Voltage(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> {
     override val symbol = "V"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Voltage
@@ -34,25 +34,25 @@ object Volt : Voltage(), BaseMetricUnit<MeasurementType.Voltage, MeasurementSyst
 }
 
 @Serializable
-object NanoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Nano(Volt)
+object NanoVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Nano(Volt)
 @Serializable
-object MicroVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Micro(Volt)
+object MicroVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Micro(Volt)
 @Serializable
-object MilliVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Milli(Volt)
+object MilliVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Milli(Volt)
 @Serializable
-object CentiVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Centi(Volt)
+object CentiVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Centi(Volt)
 @Serializable
-object DeciVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Deci(Volt)
+object DeciVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Deci(Volt)
 @Serializable
-object DecaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Deca(Volt)
+object DecaVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Deca(Volt)
 @Serializable
-object HectoVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Hecto(Volt)
+object HectoVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Hecto(Volt)
 @Serializable
-object KiloVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Kilo(Volt)
+object KiloVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Kilo(Volt)
 @Serializable
-object MegaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Mega(Volt)
+object MegaVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Mega(Volt)
 @Serializable
-object GigaVolt : Voltage(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage> by Giga(Volt)
+object GigaVolt : Voltage(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Voltage, Volt> by Giga(Volt)
 
 @JvmName("voltageFromCurrentAndResistance")
 fun <

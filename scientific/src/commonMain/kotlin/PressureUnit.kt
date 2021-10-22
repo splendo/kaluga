@@ -49,7 +49,7 @@ sealed class USCustomaryPressure  : Pressure(), USCustomaryScientificUnit<Measur
 }
 
 @Serializable
-object Pascal : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, MeasurementSystem.Metric> {
+object Pascal : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Pressure> {
     override val symbol: String = "P"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -57,28 +57,28 @@ object Pascal : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, Measu
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 @Serializable
-object NanoPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Nano(Pascal)
+object NanoPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Nano(Pascal)
 @Serializable
-object MicroPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Micro(Pascal)
+object MicroPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Micro(Pascal)
 @Serializable
-object MilliPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Milli(Pascal)
+object MilliPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Milli(Pascal)
 @Serializable
-object CentiPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Centi(Pascal)
+object CentiPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Centi(Pascal)
 @Serializable
-object DeciPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deci(Pascal)
+object DeciPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Deci(Pascal)
 @Serializable
-object DecaPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deca(Pascal)
+object DecaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Deca(Pascal)
 @Serializable
-object HectoPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Hecto(Pascal)
+object HectoPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Hecto(Pascal)
 @Serializable
-object KiloPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Kilo(Pascal)
+object KiloPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Kilo(Pascal)
 @Serializable
-object MegaPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Mega(Pascal)
+object MegaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Mega(Pascal)
 @Serializable
-object GigaPascal : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Giga(Pascal)
+object GigaPascal : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Pascal> by Giga(Pascal)
 @Serializable
-object Bar : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, MeasurementSystem.Metric> {
-    const val BAR_PER_PASCAL = 0.00001
+object Bar : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Pressure> {
+    private const val BAR_PER_PASCAL = 0.00001
     override val symbol: String = "bar"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -86,20 +86,20 @@ object Bar : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, Measurem
     override fun toSIUnit(value: Decimal): Decimal = value / BAR_PER_PASCAL.toDecimal()
 }
 @Serializable
-object MilliBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Milli(Bar)
+object MilliBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Milli(Bar)
 @Serializable
-object CentiBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Centi(Bar)
+object CentiBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Centi(Bar)
 @Serializable
-object DeciBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deci(Bar)
+object DeciBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Deci(Bar)
 @Serializable
-object DecaBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deca(Bar)
+object DecaBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Deca(Bar)
 @Serializable
-object HectoBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Hecto(Bar)
+object HectoBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Hecto(Bar)
 @Serializable
-object KiloBar : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Kilo(Bar)
+object KiloBar : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Bar> by Kilo(Bar)
 @Serializable
-object Barye : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, MeasurementSystem.Metric> {
-    const val BARYE_PER_PASCAL = 10
+object Barye : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Pressure> {
+    private const val BARYE_PER_PASCAL = 10
     override val symbol: String = "Ba"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -107,20 +107,20 @@ object Barye : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, Measur
     override fun toSIUnit(value: Decimal): Decimal = value / BARYE_PER_PASCAL.toDecimal()
 }
 @Serializable
-object MilliBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Milli(Barye)
+object MilliBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Milli(Barye)
 @Serializable
-object CentiBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Centi(Barye)
+object CentiBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Centi(Barye)
 @Serializable
-object DeciBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deci(Barye)
+object DeciBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Deci(Barye)
 @Serializable
-object DecaBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deca(Barye)
+object DecaBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Deca(Barye)
 @Serializable
-object HectoBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Hecto(Barye)
+object HectoBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Hecto(Barye)
 @Serializable
-object KiloBarye : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Kilo(Barye)
+object KiloBarye : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> by Kilo(Barye)
 @Serializable
 object Atmosphere : MetricPressure() {
-    const val PASCAL_PER_ATMOSPHERE = 101325
+    private const val PASCAL_PER_ATMOSPHERE = 101325
     override val symbol: String = "atm"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -128,8 +128,8 @@ object Atmosphere : MetricPressure() {
     override fun toSIUnit(value: Decimal): Decimal = value * PASCAL_PER_ATMOSPHERE.toDecimal()
 }
 @Serializable
-object Torr : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, MeasurementSystem.Metric> {
-    const val TORR_PER_ATMOSPHERE = 760
+object Torr : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Pressure> {
+    private const val TORR_PER_ATMOSPHERE = 760
     override val symbol: String = "Torr"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -137,20 +137,20 @@ object Torr : MetricPressure(), BaseMetricUnit<MeasurementType.Pressure, Measure
     override fun toSIUnit(value: Decimal): Decimal = Atmosphere.toSIUnit(value / TORR_PER_ATMOSPHERE.toDecimal())
 }
 @Serializable
-object MilliTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Milli(Torr)
+object MilliTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Milli(Torr)
 @Serializable
-object CentiTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Centi(Torr)
+object CentiTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Centi(Torr)
 @Serializable
-object DeciTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deci(Torr)
+object DeciTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Deci(Torr)
 @Serializable
-object DecaTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Deca(Torr)
+object DecaTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Deca(Torr)
 @Serializable
-object HectoTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Hecto(Torr)
+object HectoTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Hecto(Torr)
 @Serializable
-object KiloTorr : MetricPressure(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Pressure> by Kilo(Torr)
+object KiloTorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Kilo(Torr)
 @Serializable
 object MillimeterOfMercury : MetricPressure() {
-    const val PASCAL_PER_MMHG = 133.322387415
+    private const val PASCAL_PER_MMHG = 133.322387415
     override val symbol: String = "mmHg"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -167,7 +167,7 @@ object CentimeterOfWater : MetricPressure() {
 }
 @Serializable
 object MillimeterOfWater : MetricPressure() {
-    const val PASCAL_PER_MMH2O = 9.80665
+    private const val PASCAL_PER_MMH2O = 9.80665
     override val symbol: String = "mmH2O"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Pressure
@@ -198,7 +198,7 @@ object OunceSquareInch : ImperialPressure() {
 
 @Serializable
 object KiloPoundSquareInch : ImperialPressure() {
-    const val POUND_PER_KILOPOUND_SQUARE_INCH = 1000.0
+    private const val POUND_PER_KILOPOUND_SQUARE_INCH = 1000.0
     override val symbol: String = "ksi"
     override fun fromSIUnit(value: Decimal): Decimal = PoundSquareInch.fromSIUnit(value) / POUND_PER_KILOPOUND_SQUARE_INCH.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = PoundSquareInch.toSIUnit(value * POUND_PER_KILOPOUND_SQUARE_INCH.toDecimal())
@@ -270,44 +270,14 @@ fun <
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) : ScientificValue<MeasurementType.Pressure, PressureUnit> = byDividing(force, area)
 
-fun <
-    ForceUnit : ScientificUnit<MeasurementType.Force>,
-    AreaUnit : ScientificUnit<MeasurementType.Area>,
-    PressureUnit : ScientificUnit<MeasurementType.Pressure>
-    > ForceUnit.force(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(pressure, area)
-
-fun <
-    ForceUnit : ScientificUnit<MeasurementType.Force>,
-    AreaUnit : ScientificUnit<MeasurementType.Area>,
-    PressureUnit : ScientificUnit<MeasurementType.Pressure>
-    > AreaUnit.area(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(force, pressure)
-
 @JvmName("newtonDivMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Newton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("gigaNewtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Giganewton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("megaNewtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Meganewton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("kiloNewtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Kilonewton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("milliNewtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Millinewton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("microNewtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Micronewton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
+@JvmName("newtonMultipleDivMetricArea")
+operator fun <N : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton>, Area : MetricArea> ScientificValue<MeasurementType.Force, N>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
 @JvmName("dyneDivMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Dyne>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
-@JvmName("milliDyneDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Millidyne>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
-@JvmName("kiloDyneDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Kilodyne>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
-@JvmName("megaDyneDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Megadyne>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
+@JvmName("dyneMultipleDivMetricArea")
+operator fun <D : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne>,Area : MetricArea> ScientificValue<MeasurementType.Force, D>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
 @JvmName("kilogramForceDivMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, KilogramForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
 @JvmName("gramForceDivMetricArea")
@@ -348,132 +318,3 @@ operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: 
 operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = ImperialTonSquareFeet.pressure(this, area)
 @JvmName("imperialTonForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonSquareInch.pressure(this, area)
-
-@JvmName("baryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, Barye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesBaryeTimes")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = pressure * this
-@JvmName("millibaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, MilliBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesBarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, MilliBarye>) = pressure * this
-@JvmName("centibaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, CentiBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesCentibarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, CentiBarye>) = pressure * this
-@JvmName("decibaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, DeciBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesDecibarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, DeciBarye>) = pressure * this
-@JvmName("decabaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, DecaBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesDecabarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, DecaBarye>) = pressure * this
-@JvmName("hectobaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, HectoBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesHectobarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, HectoBarye>) = pressure * this
-@JvmName("kilobaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, KiloBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesKilobarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KiloBarye>) = pressure * this
-@JvmName("metricPressureTimesMetricArea")
-operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Pressure, Pressure>.times(area: ScientificValue<MeasurementType.Area, Area>) = Newton.force(this, area)
-@JvmName("metricAreaTimesMetricPressure")
-operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = pressure * this
-@JvmName("poundSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesPoundSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = pressure * this
-@JvmName("poundSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesPoundSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFeet>) = pressure * this
-@JvmName("ounceSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, OunceSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = OunceForce.force(this, area)
-@JvmName("imperialAreaTimesOunceSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) = pressure * this
-@JvmName("kilopoundSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesKilopoundSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>) = pressure * this
-@JvmName("inchMercuryTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfMercury>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesInchMercury")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>) = pressure * this
-@JvmName("inchWaterTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesInchWater")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>) = pressure * this
-@JvmName("feetOfWaterTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, FootOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesFeetOfWater")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>) = pressure * this
-@JvmName("kipSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
-@JvmName("imperialAreaTimesKipSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) = pressure * this
-@JvmName("kipSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
-@JvmName("imperialAreaTimesKipSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFeet>) = pressure * this
-@JvmName("usTonSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
-@JvmName("imperialAreaTimesUsTonSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) = pressure * this
-@JvmName("usTonSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
-@JvmName("imperialAreaTimesUsTonSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFeet>) = pressure * this
-@JvmName("imperialTonSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
-@JvmName("imperialAreaTimesImperialTonSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = pressure * this
-@JvmName("imperialTonSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
-@JvmName("imperialAreaTimesImperialTonSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = pressure * this
-
-
-@JvmName("metricForceDivBarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceMillibarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, MilliBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceCentibarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, CentiBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceDecibarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, DeciBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceDecabarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, DecaBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceHectobarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, HectoBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceKilobarye")
-operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KiloBarye>) = SquareCentimeter.area(this, pressure)
-@JvmName("metricForceDivMetricPressure")
-operator fun <Force : MetricForce, Pressure : MetricPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareMeter.area(this, pressure)
-@JvmName("imperialForcePoundSquareInch")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForcePoundSquareFeet")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("imperialForceKiloPoundSquareInch")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceOunceSquareFeet")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceInchOfMercury")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceInchOfWater")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceFootOfWater")
-operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>) = SquareFoot.area(this, pressure)
-@JvmName("usCustomaryForceKipSquareInch")
-operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("usCustomaryForcePoundSquareFeet")
-operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("usCustomaryForceUSTonSquareInch")
-operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("usCustomaryForceUSTonSquareFeet")
-operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("ukImperialForceImperialTonSquareInch")
-operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("ukImperialForceImperialTonSquareFeet")
-operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = SquareFoot.area(this, pressure)

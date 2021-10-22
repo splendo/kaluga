@@ -27,7 +27,7 @@ import kotlin.jvm.JvmName
 @Serializable
 sealed class Frequency : ScientificUnit<MeasurementType.Frequency>, MetricAndImperialScientificUnit<MeasurementType.Frequency>
 
-object Hertz : Frequency(), BaseMetricUnit<MeasurementType.Frequency, MeasurementSystem.MetricAndImperial> {
+object Hertz : Frequency(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> {
     override val symbol: String = "Hz"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Frequency
@@ -36,17 +36,17 @@ object Hertz : Frequency(), BaseMetricUnit<MeasurementType.Frequency, Measuremen
 }
 
 @Serializable
-object Nanohertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Nano(Hertz)
+object Nanohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Nano(Hertz)
 @Serializable
-object Microhertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Micro(Hertz)
+object Microhertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Micro(Hertz)
 @Serializable
-object Millihertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Milli(Hertz)
+object Millihertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Milli(Hertz)
 @Serializable
-object Kilohertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Kilo(Hertz)
+object Kilohertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Kilo(Hertz)
 @Serializable
-object Megahertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Mega(Hertz)
+object Megahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Mega(Hertz)
 @Serializable
-object Gigahertz : Frequency(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency> by Giga(Hertz)
+object Gigahertz : Frequency(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz> by Giga(Hertz)
 @Serializable
 object BeatsPerMinute : Frequency() {
     override val symbol: String = "bpm"
@@ -97,18 +97,8 @@ operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<Measur
 
 @JvmName("decimalDivHertz")
 operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Hertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.value)(Second)
-@JvmName("decimalDivNanohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Nanohertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
-@JvmName("decimalDivMicrohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Microhertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
-@JvmName("decimalDivMillihertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Millihertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
-@JvmName("decimalDivKilohertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Kilohertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
-@JvmName("decimalDivMegahertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Megahertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
-@JvmName("decimalDivGigahertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Gigahertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
+@JvmName("decimalDivHertzMultiple")
+operator fun <M : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz>> Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, M>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
 @JvmName("decimalDivBPM")
 operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
 @JvmName("decimalDivRPM")

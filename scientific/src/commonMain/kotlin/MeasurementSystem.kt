@@ -49,11 +49,13 @@ sealed class MeasurementSystem : MeasurementUsage {
     object MetricAndImperial : MeasurementSystem(), MeasurementUsage.UsedInMetricAndImperial
 }
 
-interface BaseMetricUnit<T : MeasurementType, S> : SystemScientificUnit<S, T>, MeasurementUsage.UsedInMetric where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+interface MetricBaseUnit<S, T : MeasurementType> : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val type: T
 }
 
-class Giga<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+interface MetricMultipleUnit<S, T : MeasurementType, U : MetricBaseUnit<S, T>> : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric
+
+class Giga<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "G${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -61,7 +63,7 @@ class Giga<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : 
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000000.0.toDecimal()
 }
 
-class Mega<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Mega<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "M${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -69,7 +71,7 @@ class Mega<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : 
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000000.0.toDecimal()
 }
 
-class Kilo<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Kilo<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "k${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -77,7 +79,7 @@ class Kilo<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : 
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 1000.0.toDecimal()
 }
 
-class Hecto<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Hecto<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "h${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -85,7 +87,7 @@ class Hecto<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit :
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 100.0.toDecimal()
 }
 
-class Deca<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Deca<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "da${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -93,7 +95,7 @@ class Deca<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : 
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) * 10.0.toDecimal()
 }
 
-class Deci<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Deci<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "d${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -101,7 +103,7 @@ class Deci<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : 
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 10.0.toDecimal()
 }
 
-class Centi<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Centi<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "c${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -109,7 +111,7 @@ class Centi<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit :
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 100.0.toDecimal()
 }
 
-class Milli<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Milli<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "c${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -117,7 +119,7 @@ class Milli<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit :
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 1000.0.toDecimal()
 }
 
-class Micro<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Micro<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "μ${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type
@@ -125,7 +127,7 @@ class Micro<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit :
     override fun toSIUnit(value: Decimal): Decimal = unit.toSIUnit(value) / 1000000.0.toDecimal()
 }
 
-class Nano<T : MeasurementType, S, U : BaseMetricUnit<T, S>>(private val unit : U) : SystemScientificUnit<S, T> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
+class Nano<S, T : MeasurementType, U : MetricBaseUnit<S, T>>(private val unit : U) : MetricMultipleUnit<S, T, U> where S : MeasurementSystem, S : MeasurementUsage.UsedInMetric {
     override val symbol: String = "μ${unit.symbol}"
     override val system: S = unit.system
     override val type: T = unit.type

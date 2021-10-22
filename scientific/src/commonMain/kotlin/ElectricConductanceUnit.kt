@@ -24,7 +24,7 @@ import kotlinx.serialization.Serializable
 sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricConductance>
 
 @Serializable
-object Siemens : ElectricConductance(), BaseMetricUnit<MeasurementType.ElectricConductance, MeasurementSystem.MetricAndImperial> {
+object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> {
     override val symbol = "S"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricConductance
@@ -33,25 +33,25 @@ object Siemens : ElectricConductance(), BaseMetricUnit<MeasurementType.ElectricC
 }
 
 @Serializable
-object NanoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Nano(Siemens)
+object NanoSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Nano(Siemens)
 @Serializable
-object MicroSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Micro(Siemens)
+object MicroSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Micro(Siemens)
 @Serializable
-object MilliSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Milli(Siemens)
+object MilliSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Milli(Siemens)
 @Serializable
-object CentiSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Centi(Siemens)
+object CentiSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Centi(Siemens)
 @Serializable
-object DeciSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Deci(Siemens)
+object DeciSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deci(Siemens)
 @Serializable
-object DecaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Deca(Siemens)
+object DecaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deca(Siemens)
 @Serializable
-object HectoSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Hecto(Siemens)
+object HectoSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Hecto(Siemens)
 @Serializable
-object KiloSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Kilo(Siemens)
+object KiloSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Kilo(Siemens)
 @Serializable
-object MegaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Mega(Siemens)
+object MegaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Mega(Siemens)
 @Serializable
-object GigaSiemens : ElectricConductance(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance> by Giga(Siemens)
+object GigaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens)
 
 fun <
     ResistanceUnit : ElectricResistance,

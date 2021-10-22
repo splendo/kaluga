@@ -48,7 +48,7 @@ object Celsius : MetricAndUKImperialTemperature("°C") {
 
 @Serializable
 object Kelvin : MetricAndUKImperialTemperature("K") {
-    const val KELVIN_FREEZING = 273.15
+    internal const val KELVIN_FREEZING = 273.15
     override fun toSIUnit(value: Decimal): Decimal = value
     override fun fromSIUnit(value: Decimal): Decimal = value
 }
@@ -61,7 +61,8 @@ object Fahrenheit : USCustomaryTemperature("°F") {
 
 @Serializable
 object Rankine : USCustomaryTemperature("°R") {
-    const val RANKINE_FREEZING = 459.67
-    override fun toSIUnit(value: Decimal): Decimal = value * 5.0.toDecimal() / 9.0.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * 9.0.toDecimal() / 5.0.toDecimal()
+    internal const val RANKINE_FREEZING = 459.67
+    private const val FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE = 5.0 / 9.0
+    override fun toSIUnit(value: Decimal): Decimal = value * FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / FAHRENHEIT_INCREASE_PER_CELSIUS_INCREASE.toDecimal()
 }

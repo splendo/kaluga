@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 @Serializable
 sealed class Weight : AbstractScientificUnit<MeasurementType.Weight>()
@@ -50,9 +51,9 @@ sealed class UKImperialWeight(override val symbol: String) : Weight(), UKImperia
 // Metric Weight
 
 @Serializable
-object Gram : MetricWeight(), BaseMetricUnit<MeasurementType.Weight, MeasurementSystem.Metric> {
+object Gram : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Weight> {
     override val symbol: String = "g"
-    const val GRAMS_IN_KILOGRAM = 1000.0
+    private const val GRAMS_IN_KILOGRAM = 1000.0
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Weight
     override fun toSIUnit(value: Decimal): Decimal = value / GRAMS_IN_KILOGRAM.toDecimal()
@@ -60,66 +61,66 @@ object Gram : MetricWeight(), BaseMetricUnit<MeasurementType.Weight, Measurement
 }
 
 @Serializable
-object Nanogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Nano(Gram)
+object Nanogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Nano(Gram)
 
 @Serializable
-object Microgram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Micro(Gram)
+object Microgram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Micro(Gram)
 
 @Serializable
-object Milligram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Milli(Gram)
+object Milligram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Milli(Gram)
 
 @Serializable
-object Centigram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Centi(Gram)
+object Centigram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Centi(Gram)
 
 @Serializable
-object Decigram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deci(Gram)
+object Decigram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Deci(Gram)
 
 @Serializable
-object Decagram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Deca(Gram)
+object Decagram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Deca(Gram)
 
 @Serializable
-object Hectogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Hecto(Gram)
+object Hectogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Hecto(Gram)
 
 @Serializable
-object Kilogram : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Kilo(Gram)
+object Kilogram : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Kilo(Gram)
 
 @Serializable
-object Tonne : MetricWeight(), SystemScientificUnit<MeasurementSystem.Metric, MeasurementType.Weight> by Mega(Gram) {
+object Tonne : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> by Mega(Gram) {
     override val symbol: String = "t"
 }
 
 // Imperial Weight
 @Serializable
 object Grain : ImperialWeight("gr") {
-    const val GRAIN_IN_POUND = 7000
+    private const val GRAIN_IN_POUND = 7000
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / GRAIN_IN_POUND.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * GRAIN_IN_POUND.toDecimal()
 }
 
 @Serializable
 object Dram : ImperialWeight("dr") {
-    const val DRAMS_IN_POUND = 256
+    private const val DRAMS_IN_POUND = 256
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / DRAMS_IN_POUND.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * DRAMS_IN_POUND.toDecimal()
 }
 
 @Serializable
 object Ounce : ImperialWeight("oz") {
-    const val OUNCES_IN_POUND = 16
+    private const val OUNCES_IN_POUND = 16
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value / OUNCES_IN_POUND.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) * OUNCES_IN_POUND.toDecimal()
 }
 
 @Serializable
 object Pound : ImperialWeight("lb") {
-    const val KILOGRAM_IN_POUND = 0.45359237
+    private const val KILOGRAM_IN_POUND = 0.45359237
     override fun toSIUnit(value: Decimal): Decimal = value * KILOGRAM_IN_POUND.toDecimal()
     override fun fromSIUnit(value: Decimal): Decimal = value / KILOGRAM_IN_POUND.toDecimal()
 }
 
 @Serializable
 object Stone : ImperialWeight("st") {
-    const val STONES_IN_POUND = 14
+    private const val STONES_IN_POUND = 14
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * STONES_IN_POUND.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / STONES_IN_POUND.toDecimal()
 }
@@ -127,7 +128,7 @@ object Stone : ImperialWeight("st") {
 // also long ton
 @Serializable
 object ImperialTon : UKImperialWeight("ton") {
-    const val POUND_IN_LONG_TONES = 2240
+    private const val POUND_IN_LONG_TONES = 2240
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_LONG_TONES.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_LONG_TONES.toDecimal()
 }
@@ -141,7 +142,7 @@ data class UKImperialImperialWeightWrapper(val imperial: ImperialWeight) : UKImp
 // also short ton
 @Serializable
 object UsTon : USCustomaryWeight("ton") {
-    const val POUND_IN_SHORT_TONES = 2000
+    private const val POUND_IN_SHORT_TONES = 2000
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * POUND_IN_SHORT_TONES.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / POUND_IN_SHORT_TONES.toDecimal()
 }
@@ -151,3 +152,35 @@ data class USCustomaryImperialWeightWrapper(val imperial: ImperialWeight) : USCu
     override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
+
+fun <
+    MassUnit : ScientificUnit<MeasurementType.Weight>,
+    AccelerationUnit : ScientificUnit<MeasurementType.Acceleration>,
+    ForceUnit : ScientificUnit<MeasurementType.Force>
+    > MassUnit.mass(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+) : ScientificValue<MeasurementType.Weight, MassUnit> = byDividing(force, acceleration)
+
+@JvmName("newtonDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, Newton>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
+@JvmName("newtonMultipleDivAcceleration")
+operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton>> ScientificValue<MeasurementType.Force, M>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
+@JvmName("dyneDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, Dyne>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
+@JvmName("dyneMultipleDivAcceleration")
+operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne>> ScientificValue<MeasurementType.Force, M>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
+@JvmName("poundalDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, Poundal>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Pound.mass(this, acceleration)
+@JvmName("poundForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Pound.mass(this, acceleration)
+@JvmName("ounceForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, OunceForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Ounce.mass(this, acceleration)
+@JvmName("grainForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, GrainForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Grain.mass(this, acceleration)
+@JvmName("kipDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, Kip>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Pound.mass(this, acceleration)
+@JvmName("usTonForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = UsTon.mass(this, acceleration)
+@JvmName("imperialTonForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = ImperialTon.mass(this, acceleration)

@@ -25,7 +25,7 @@ import kotlin.jvm.JvmName
 sealed class ElectricCurrent : AbstractScientificUnit<MeasurementType.ElectricCurrent>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCurrent>
 
 @Serializable
-object Ampere : ElectricCurrent(), BaseMetricUnit<MeasurementType.ElectricCurrent, MeasurementSystem.MetricAndImperial> {
+object Ampere : ElectricCurrent(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> {
     override val symbol = "A"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricCurrent
@@ -34,33 +34,33 @@ object Ampere : ElectricCurrent(), BaseMetricUnit<MeasurementType.ElectricCurren
 }
 
 @Serializable
-object NanoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Nano(Ampere)
+object NanoAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Nano(Ampere)
 @Serializable
-object MicroAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Micro(Ampere)
+object MicroAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Micro(Ampere)
 @Serializable
-object MilliAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Milli(Ampere)
+object MilliAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Milli(Ampere)
 @Serializable
-object CentiAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Centi(Ampere)
+object CentiAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Centi(Ampere)
 @Serializable
-object DeciAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deci(Ampere)
+object DeciAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deci(Ampere)
 @Serializable
-object DecaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere)
+object DecaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere)
 @Serializable
-object AbAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere) {
+object AbAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere) {
     override val symbol: String = "abA"
 }
 @Serializable
-object Biot : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Deca(Ampere) {
+object Biot : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere) {
     override val symbol: String = "B"
 }
 @Serializable
-object HectoAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Hecto(Ampere)
+object HectoAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Hecto(Ampere)
 @Serializable
-object KiloAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Kilo(Ampere)
+object KiloAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Kilo(Ampere)
 @Serializable
-object MegaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Mega(Ampere)
+object MegaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Mega(Ampere)
 @Serializable
-object GigaAmpere : ElectricCurrent(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent> by Giga(Ampere)
+object GigaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Giga(Ampere)
 
 @JvmName("currentFromCHargeAndTime")
 fun <

@@ -25,7 +25,7 @@ import kotlin.jvm.JvmName
 sealed class ElectricCharge : AbstractScientificUnit<MeasurementType.ElectricCharge>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCharge>
 
 @Serializable
-object Coulomb : ElectricCharge(), BaseMetricUnit<MeasurementType.ElectricCharge, MeasurementSystem.MetricAndImperial> {
+object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> {
     override val symbol = "C"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.ElectricCharge
@@ -34,25 +34,25 @@ object Coulomb : ElectricCharge(), BaseMetricUnit<MeasurementType.ElectricCharge
 }
 
 @Serializable
-object NanoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Nano(Coulomb)
+object NanoCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Nano(Coulomb)
 @Serializable
-object MicroCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Micro(Coulomb)
+object MicroCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Micro(Coulomb)
 @Serializable
-object MilliCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Milli(Coulomb)
+object MilliCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Milli(Coulomb)
 @Serializable
-object CentiCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Centi(Coulomb)
+object CentiCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Centi(Coulomb)
 @Serializable
-object DeciCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Deci(Coulomb)
+object DeciCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deci(Coulomb)
 @Serializable
-object DecaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Deca(Coulomb)
+object DecaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deca(Coulomb)
 @Serializable
-object HectoCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Hecto(Coulomb)
+object HectoCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Hecto(Coulomb)
 @Serializable
-object KiloCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Kilo(Coulomb)
+object KiloCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Kilo(Coulomb)
 @Serializable
-object MegaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Mega(Coulomb)
+object MegaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Mega(Coulomb)
 @Serializable
-object GigaCoulomb : ElectricCharge(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge> by Giga(Coulomb)
+object GigaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Giga(Coulomb)
 
 @JvmName("chargeFromCurrentAndTime")
 fun <

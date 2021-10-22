@@ -166,6 +166,22 @@ class ScientificUnitTest {
     }
 
     @Test
+    fun testEnergy() {
+        assertScientificUnit(1000, Joule, Electronvolt,  6.2415090744607621e+18, 10000000.0)
+        assertScientificUnit(1000, Joule, FootPoundal, 23.730360404231938, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Joule, HorsepowerHour, 3.72506136e-7, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Joule, BritishThermalUnit, 0.000947817120313, unitTranslationErrorTolerance)
+    }
+
+    @Test
+    fun testPower() {
+        assertScientificUnit(1000, Watt, Horsepower, 0.001341022089595028, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Watt, MetricHorsepower, 0.001359621617303904, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Watt, BritishThermalUnitPerSecond, 0.000947817120313317, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Watt, BritishThermalUnitPerMinute, 0.056869027359913, unitTranslationErrorTolerance)
+    }
+
+    @Test
     fun testSerialization() {
         val serializer = LengthUnitQuestion.serializer()
         val string = Json.encodeToString(serializer, LengthUnitQuestion(Meter, Inch))

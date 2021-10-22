@@ -78,3 +78,35 @@ infix operator fun <
     MeasurementType.Speed,
     SpeedUnit,
     >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, Acceleration> = (value / time.value)(unit per time.unit)
+
+fun <
+    MassUnit : ScientificUnit<MeasurementType.Weight>,
+    AccelerationUnit : ScientificUnit<MeasurementType.Acceleration>,
+    ForceUnit : ScientificUnit<MeasurementType.Force>
+    > AccelerationUnit.acceleration(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    mass: ScientificValue<MeasurementType.Weight, MassUnit>
+) : ScientificValue<MeasurementType.Acceleration, AccelerationUnit> = byDividing(force, mass)
+
+@JvmName("newtonDivKilogram")
+operator fun ScientificValue<MeasurementType.Force, Newton>.div(mass: ScientificValue<MeasurementType.Weight, Kilogram>) = (Meter per Second per Second).acceleration(this, mass)
+@JvmName("newtonMultipleDivKilogram")
+operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton>> ScientificValue<MeasurementType.Force, M>.div(mass: ScientificValue<MeasurementType.Weight, Kilogram>) = (Meter per Second per Second).acceleration(this, mass)
+@JvmName("dyneDivGram")
+operator fun ScientificValue<MeasurementType.Force, Dyne>.div(mass: ScientificValue<MeasurementType.Weight, Gram>) = (Centimeter per Second per Second).acceleration(this, mass)
+@JvmName("dyneMultipleDivGram")
+operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne>> ScientificValue<MeasurementType.Force, M>.div(mass: ScientificValue<MeasurementType.Weight, Gram>) = (Centimeter per Second per Second).acceleration(this, mass)
+@JvmName("poundalDivPound")
+operator fun ScientificValue<MeasurementType.Force, Poundal>.div(mass: ScientificValue<MeasurementType.Weight, Pound>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("poundForceDivPound")
+operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(mass: ScientificValue<MeasurementType.Weight, Pound>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("ounceForceDivOunce")
+operator fun ScientificValue<MeasurementType.Force, OunceForce>.div(mass: ScientificValue<MeasurementType.Weight, Ounce>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("grainForceDivGrain")
+operator fun ScientificValue<MeasurementType.Force, GrainForce>.div(mass: ScientificValue<MeasurementType.Weight, Grain>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("kipDivPound")
+operator fun ScientificValue<MeasurementType.Force, Kip>.div(mass: ScientificValue<MeasurementType.Weight, Pound>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("usTonForceDivUsTon")
+operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(mass: ScientificValue<MeasurementType.Weight, UsTon>) = (Foot per Second per Second).acceleration(this, mass)
+@JvmName("imperialTonForceDivImperialTon")
+operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(mass: ScientificValue<MeasurementType.Weight, ImperialTon>) = (Foot per Second per Second).acceleration(this, mass)

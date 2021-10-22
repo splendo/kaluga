@@ -27,7 +27,7 @@ import kotlinx.serialization.Serializable
 sealed class Time : AbstractScientificUnit<MeasurementType.Time>(), MetricAndImperialScientificUnit<MeasurementType.Time>
 
 @Serializable
-object Second : Time(), BaseMetricUnit<MeasurementType.Time, MeasurementSystem.MetricAndImperial> {
+object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time> {
     override val symbol = "s"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Time
@@ -36,17 +36,17 @@ object Second : Time(), BaseMetricUnit<MeasurementType.Time, MeasurementSystem.M
 }
 
 @Serializable
-object MilliSecond : Time(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time> by Milli(Second)
+object MilliSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Milli(Second)
 
 @Serializable
-object MicroSecond : Time(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time> by Micro(Second)
+object MicroSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Micro(Second)
 
 @Serializable
-object NanoSecond : Time(), SystemScientificUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time> by Nano(Second)
+object NanoSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Nano(Second)
 
 @Serializable
 object Minute : Time() {
-    const val SECOND_PER_MINUTE = 60.0
+    private const val SECOND_PER_MINUTE = 60.0
     override val symbol: String = "min"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Time
@@ -56,10 +56,10 @@ object Minute : Time() {
 
 @Serializable
 object Hour : Time() {
-    const val HOUR_PER_MINUTE = 3600.0
+    private const val SECOND_PER_HOUR = 3600.0
     override val symbol: String = "h"
     override val system = MeasurementSystem.MetricAndImperial
     override val type = MeasurementType.Time
-    override fun fromSIUnit(value: Decimal): Decimal = value / HOUR_PER_MINUTE.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * HOUR_PER_MINUTE.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / SECOND_PER_HOUR.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value * SECOND_PER_HOUR.toDecimal()
 }
