@@ -196,6 +196,11 @@ class ScientificUnitTest {
     fun testSolidAngle() {
         assertScientificUnit(1000, Steradian, SquareDegree, 3282.806350011744, unitTranslationErrorTolerance)
     }
+
+    @Test
+    fun testIlluminance() {
+        assertScientificUnit(1000, Lux, FootCandle, 0.09290304, unitTranslationErrorTolerance)
+    }
 }
 
 fun <Type : MeasurementType> assertScientificUnit(

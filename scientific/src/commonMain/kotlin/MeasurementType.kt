@@ -24,6 +24,8 @@ sealed class MeasurementType {
     @Serializable
     object Acceleration : MeasurementType()
     @Serializable
+    object AmountOfSubstance : MeasurementType()
+    @Serializable
     object Angle : MeasurementType()
     @Serializable
     object Area : MeasurementType()
@@ -47,6 +49,8 @@ sealed class MeasurementType {
     object Force : MeasurementType()
     @Serializable
     object Frequency : MeasurementType()
+    @Serializable
+    object Illuminance : MeasurementType()
     @Serializable
     object Length : MeasurementType()
     @Serializable

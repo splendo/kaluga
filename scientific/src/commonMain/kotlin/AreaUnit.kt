@@ -145,6 +145,16 @@ fun <
     induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
 ) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(flux, induction)
 
+fun <
+    FluxUnit : LuminousFlux,
+    AreaUnit : Area,
+    IlluminanceUnit : Illuminance
+    >
+    AreaUnit.area(
+    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+): ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(flux, illuminance)
+
 @JvmName("meterTimesMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Length, Meter>) = SquareMeter.area(this, other)
 @JvmName("nanometerTimesNanometer")
@@ -234,3 +244,9 @@ operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Fo
 
 @JvmName("fluxDivInduction")
 infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = SquareMeter.area(this, induction)
+@JvmName("fluxDivPhot")
+infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(phot: ScientificValue<MeasurementType.Illuminance, PhotUnit>) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> = SquareCentimeter.area(this, phot)
+@JvmName("fluxDivMetricIlluminance")
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = SquareMeter.area(this, illuminance)
+@JvmName("fluxDivImperialIlluminance")
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = SquareFoot.area(this, illuminance)

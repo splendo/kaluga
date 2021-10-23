@@ -89,6 +89,23 @@ object Tonne : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, Meas
     override val symbol: String = "t"
 }
 
+@Serializable
+object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Weight> {
+    override val symbol: String = "Da"
+    private const val DALTON_IN_KILOGRAM = 1.6605300000013E-27
+    override val system = MeasurementSystem.Metric
+    override val type = MeasurementType.Weight
+    override fun toSIUnit(value: Decimal): Decimal = value / DALTON_IN_KILOGRAM.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value * DALTON_IN_KILOGRAM.toDecimal()
+}
+
+@Serializable
+object KiloDalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Dalton> by Kilo(Dalton)
+@Serializable
+object MegaDalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Dalton> by Mega(Dalton)
+@Serializable
+object GigaDalton : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Dalton> by Giga(Dalton)
+
 // Imperial Weight
 @Serializable
 object Grain : ImperialWeight("gr") {

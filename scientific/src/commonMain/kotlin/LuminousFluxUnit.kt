@@ -65,7 +65,22 @@ fun <
     solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
 ) : ScientificValue<MeasurementType.LuminousFlux, FluxUnit> = byMultiplying(intensity, solidAngle)
 
+@JvmName("luminousFluxFromIlluminanceAndArea")
+fun <
+    FluxUnit : LuminousFlux,
+    AreaUnit : Area,
+    IlluminanceUnit : Illuminance
+    >
+    FluxUnit.flux(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+): ScientificValue<MeasurementType.LuminousFlux, FluxUnit> = byMultiplying(illuminance, area)
+
 @JvmName("luminousIntensityTimesSolidAngle")
 infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>.times(solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>) = Lumen.flux(this, solidAngle)
 @JvmName("solidAngleTimesLuminousIntensity")
 infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>) = intensity * this
+@JvmName("illuminanceTimesArea")
+infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lumen.flux(this, area)
+@JvmName("areaTimesIlluminance")
+infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = illuminance * this
