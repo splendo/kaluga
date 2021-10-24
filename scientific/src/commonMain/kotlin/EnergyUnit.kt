@@ -105,12 +105,11 @@ object GigaWattHour : MetricAndImperialEnergy(), MetricMultipleUnit<MeasurementS
 
 @Serializable
 object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Energy> {
-    const val JOULE_IN_ELECTRONVOLT =  	1.602176634e-19
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Energy
-    override fun fromSIUnit(value: Decimal): Decimal = value / JOULE_IN_ELECTRONVOLT.toDecimal()
-    override fun toSIUnit(value: Decimal): Decimal = value * JOULE_IN_ELECTRONVOLT.toDecimal()
+    override fun fromSIUnit(value: Decimal): Decimal = value / elementaryCharge.value
+    override fun toSIUnit(value: Decimal): Decimal = value * elementaryCharge.value
 }
 
 @Serializable

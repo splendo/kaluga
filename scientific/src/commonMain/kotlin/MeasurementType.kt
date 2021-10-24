@@ -28,6 +28,10 @@ sealed class MeasurementType {
     @Serializable
     object Angle : MeasurementType()
     @Serializable
+    object AngularAcceleration : MeasurementType()
+    @Serializable
+    object AngularVelocity : MeasurementType()
+    @Serializable
     object Area : MeasurementType()
     @Serializable
     object Density : MeasurementType()
@@ -51,6 +55,8 @@ sealed class MeasurementType {
     object Frequency : MeasurementType()
     @Serializable
     object Illuminance : MeasurementType()
+    @Serializable
+    object Jolt : MeasurementType()
     @Serializable
     object Length : MeasurementType()
     @Serializable

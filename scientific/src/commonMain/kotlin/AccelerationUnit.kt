@@ -79,6 +79,25 @@ infix operator fun <
     SpeedUnit,
     >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Acceleration, Acceleration> = (value / time.value)(unit per time.unit)
 
+@JvmName("metricAccelerationTimesTime")
+infix operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Speed, MetricSpeed> = (value * time.convertValue(unit.per))(unit.speed)
+@JvmName("timeTimesMetricAcceleration")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) : ScientificValue<MeasurementType.Speed, MetricSpeed> = acceleration * this
+@JvmName("imperialAccelerationTimesTime")
+infix operator fun  ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Speed, ImperialSpeed> = (value * time.convertValue(unit.per))(unit.speed)
+@JvmName("timeTimesImperialAcceleration")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) : ScientificValue<MeasurementType.Speed, ImperialSpeed> = acceleration * this
+@JvmName("speedTimesTime")
+infix operator fun  ScientificValue<MeasurementType.Acceleration, Acceleration>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Speed, Speed> = (value * time.convertValue(unit.per))(unit.speed)
+@JvmName("timeTimesAcceleration")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(acceleration: ScientificValue<MeasurementType.Acceleration, Acceleration>) : ScientificValue<MeasurementType.Speed, Speed> = acceleration * this
+
+@JvmName("speedDivAcceleration")
+infix operator fun <
+    SpeedUnit : Speed,
+    AccelerationUnit : Acceleration
+    >  ScientificValue<MeasurementType.Speed, SpeedUnit>.div(acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>) : ScientificValue<MeasurementType.Time, Time> = (convertValue(acceleration.unit.speed) / acceleration.value)(acceleration.unit.per)
+
 fun <
     MassUnit : ScientificUnit<MeasurementType.Weight>,
     AccelerationUnit : ScientificUnit<MeasurementType.Acceleration>,

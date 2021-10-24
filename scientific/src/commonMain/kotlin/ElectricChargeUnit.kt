@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
@@ -53,6 +54,8 @@ object KiloCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.Metr
 object MegaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Mega(Coulomb)
 @Serializable
 object GigaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Giga(Coulomb)
+
+val elementaryCharge = 1.602176634e-19(Coulomb)
 
 @JvmName("chargeFromCurrentAndTime")
 fun <
