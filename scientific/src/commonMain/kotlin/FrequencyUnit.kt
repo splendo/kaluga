@@ -106,24 +106,23 @@ fun <
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
 ) : ScientificValue<MeasurementType.Frequency, FrequencyUnit> = byDividing(resistance, inductance)
 
-@JvmName("decimalDivSecond")
-operator fun Decimal.div(second: ScientificValue<MeasurementType.Time, Second>): ScientificValue<MeasurementType.Frequency, Hertz> = (this / second.value)(Hertz)
 @JvmName("decimalDivMinute")
-operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = (this / minute.value)(BeatsPerMinute)
+operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = BeatsPerMinute.frequency(this, minute)
+@JvmName("decimalDivTime")
+operator fun <TimeUnit : Time> Decimal.div(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, Hertz> = Hertz.frequency(this, time)
 
 @JvmName("frequencyTimesTime")
 operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): Decimal = convertValue(Hertz) * time.convertValue(Second)
 @JvmName("timeTimesFrequency")
 operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): Decimal = frequency * this
 
-@JvmName("decimalDivHertz")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, Hertz>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.value)(Second)
-@JvmName("decimalDivHertzMultiple")
-operator fun <M : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Frequency, Hertz>> Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, M>): ScientificValue<MeasurementType.Time, Second> = (this / frequency.convertValue(Hertz))(Second)
+
 @JvmName("decimalDivBPM")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = Hour.time(this, frequency)
 @JvmName("decimalDivRPM")
-operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, RoundsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = (this / frequency.value)(Hour)
+operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, RoundsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = Hour.time(this, frequency)
+@JvmName("decimalDivFrequency")
+operator fun <FrequencyUnit : Frequency> Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, Second> = Second.time(this, frequency)
 
 @JvmName("conductanceDivCapacitance")
 operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Hertz.frequency(this, capacitance)

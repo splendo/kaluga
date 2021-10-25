@@ -291,6 +291,29 @@ fun <
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) : ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(flux, current)
 
+@JvmName("energyFromAbsorbedDoseAndWeight")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose
+    >
+    EnergyUnit.energy(
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) : ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(absorbedDose, weight)
+
+@JvmName("energyFromEquivalentDoseAndWeight")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    EquivalentDoseUnit : IonizingRadiationEquivalentDose
+    >
+    EnergyUnit.energy(
+    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) : ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(equivalentDose, weight)
+
+
 @JvmName("forceTimesLength")
 infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = Joule.energy(this, distance)
 @JvmName("lengthTimesForce")
@@ -311,3 +334,28 @@ infix operator fun <PowerUnit : Power, TimeUnit : Time> ScientificValue<Measurem
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Joule.energy(this, current)
 @JvmName("currentTimesFlux")
 infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>) = flux * this
+@JvmName("radTimesWeight")
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Erg.energy(this, weight)
+@JvmName("weightTimesRad")
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>) = absorbedDose * this
+@JvmName("radMultipleTimesWeight")
+infix operator fun <AbsorbedDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad> = Erg.energy(this, weight)
+@JvmName("weightTimesRadMultiple")
+infix operator fun <AbsorbedDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad>  = absorbedDose * this
+@JvmName("absorbedDoseTimesWeight")
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Joule.energy(this, weight)
+@JvmName("weightTimesAbsorbedDose")
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) = absorbedDose * this
+@JvmName("roentgenEquivalentManTimesWeight")
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Erg.energy(this, weight)
+@JvmName("weightTimesRoentgenEquivalentMan")
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) = equivalentDose * this
+@JvmName("roentgenEquivalentManMultipleTimesWeight")
+infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> = Erg.energy(this, weight)
+@JvmName("weightTimesRoentgenEquivalentManMultiple")
+infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>  = equivalentDose * this
+@JvmName("equivalentDoseTimesWeight")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Joule.energy(this, weight)
+@JvmName("weightTimesEquivalentDose")
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) = equivalentDose * this
+

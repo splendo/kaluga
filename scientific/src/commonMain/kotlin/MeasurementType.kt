@@ -34,6 +34,8 @@ sealed class MeasurementType {
     @Serializable
     object Area : MeasurementType()
     @Serializable
+    object CatalysticActivity : MeasurementType()
+    @Serializable
     object Density : MeasurementType()
     @Serializable
     object ElectricCapacitance : MeasurementType()
@@ -56,6 +58,10 @@ sealed class MeasurementType {
     @Serializable
     object Illuminance : MeasurementType()
     @Serializable
+    object IonizingRadiationAbsorbedDose : MeasurementType()
+    @Serializable
+    object IonizingRadiationEquivalentDose : MeasurementType()
+    @Serializable
     object Jolt : MeasurementType()
     @Serializable
     object Length : MeasurementType()
@@ -71,6 +77,8 @@ sealed class MeasurementType {
     object Power : MeasurementType()
     @Serializable
     object Pressure : MeasurementType()
+    @Serializable
+    object Radioactivity : MeasurementType()
     @Serializable
     object SolidAngle : MeasurementType()
     @Serializable

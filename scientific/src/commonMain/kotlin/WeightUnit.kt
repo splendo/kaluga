@@ -92,11 +92,10 @@ object Tonne : MetricWeight(), MetricMultipleUnit<MeasurementSystem.Metric, Meas
 @Serializable
 object Dalton : MetricWeight(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Weight> {
     override val symbol: String = "Da"
-    private const val DALTON_IN_KILOGRAM = 1.6605300000013E-27
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Weight
-    override fun toSIUnit(value: Decimal): Decimal = value / DALTON_IN_KILOGRAM.toDecimal()
-    override fun fromSIUnit(value: Decimal): Decimal = value * DALTON_IN_KILOGRAM.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) / AvogadroConstant
+    override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) * AvogadroConstant
 }
 
 @Serializable
@@ -179,6 +178,29 @@ fun <
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
 ) : ScientificValue<MeasurementType.Weight, MassUnit> = byDividing(force, acceleration)
 
+@JvmName("weightFromEnergyAndAbsorbedDose")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose
+    >
+    WeightUnit.weight(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) : ScientificValue<MeasurementType.Weight, WeightUnit> = byDividing(energy, absorbedDose)
+
+@JvmName("weightFromEnergyAndEquivalentDose")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    EquivalentDoseUnit : IonizingRadiationEquivalentDose
+    >
+    WeightUnit.weight(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) : ScientificValue<MeasurementType.Weight, WeightUnit> = byDividing(energy, equivalentDose)
+
+
 @JvmName("newtonDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, Newton>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
 @JvmName("newtonMultipleDivAcceleration")
@@ -201,3 +223,40 @@ operator fun ScientificValue<MeasurementType.Force, Kip>.div(acceleration: Scien
 operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = UsTon.mass(this, acceleration)
 @JvmName("imperialTonForceDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = ImperialTon.mass(this, acceleration)
+
+@JvmName("ergDivRad")
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>) = Gram.weight(this, absorbedDose)
+@JvmName("ergMultipleDivRad")
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Gram.weight(this, absorbedDose)
+@JvmName("ergMultipleDivRadMultiple")
+infix operator fun <AbsorbedDoseUnit> ScientificValue<MeasurementType.Energy, Erg>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) where
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
+    AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad>
+    = Gram.weight(this, absorbedDose)
+@JvmName("ergMultipleDivRadMultiple")
+infix operator fun <ErgUnit, AbsorbedDoseUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) where
+    ErgUnit : Energy,
+    ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg>,
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
+    AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad>
+    = Gram.weight(this, absorbedDose)
+@JvmName("energyDivAbsorbedDose")
+infix operator fun <EnergyUnit : Energy, AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) = Kilogram.weight(this, absorbedDose)
+@JvmName("ergDivRem")
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) = Gram.weight(this, equivalentDose)
+@JvmName("ergMultipleDivRem")
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Gram.weight(this, equivalentDose)
+@JvmName("ergMultipleDivRemMultiple")
+infix operator fun <EquivalentDoseUnit> ScientificValue<MeasurementType.Energy, Erg>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) where
+    EquivalentDoseUnit : IonizingRadiationEquivalentDose,
+    EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>
+    = Gram.weight(this, equivalentDose)
+@JvmName("ergMultipleDivRemMultiple")
+infix operator fun <ErgUnit, EquivalentDoseUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) where
+    ErgUnit : Energy,
+    ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg>,
+    EquivalentDoseUnit : IonizingRadiationEquivalentDose,
+    EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>
+    = Gram.weight(this, equivalentDose)
+@JvmName("energyDivEquivalentDose")
+infix operator fun <EnergyUnit : Energy, EquivalentDoseUnit : IonizingRadiationEquivalentDose> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) = Kilogram.weight(this, equivalentDose)
