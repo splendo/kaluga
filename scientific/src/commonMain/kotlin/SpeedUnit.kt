@@ -46,53 +46,80 @@ data class ImperialSpeed(override val distance: ImperialLength, override val per
 
 infix fun MetricLength.per(time: Time) = MetricSpeed(this, time)
 infix fun ImperialLength.per(time: Time) = ImperialSpeed(this, time)
-infix fun Length.per(time: Time): Speed = when (this) {
-    is MetricLength -> this per time
-    is ImperialLength -> this per time
-}
 
 val MetricSpeedOfLight = 299792458(Meter per Second)
 val ImperialSpeedOfLight = MetricSpeedOfLight.convert(Foot per Second)
 
+@JvmName("speedFromDistanceAndTime")
+fun <
+    LengthUnit : Length,
+    TimeUnit : Time,
+    SpeedUnit : Speed
+    > SpeedUnit.speed(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = byDividing(distance, time)
+
+@JvmName("timeFromDistanceAndSpeed")
+fun <
+    LengthUnit : Length,
+    TimeUnit : Time,
+    SpeedUnit : Speed
+    > TimeUnit.time(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+) = byDividing(distance, speed)
+
+@JvmName("speedFromMomentumAndMass")
+fun <
+    WeightUnit : Weight,
+    SpeedUnit : Speed,
+    MomentumUnit : Momentum
+    > SpeedUnit.speed(
+    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
+    mass: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = byDividing(momentum, mass)
+
+@JvmName("speedFromAccelerationAndTime")
+fun <
+    AccelerationUnit : Acceleration,
+    TimeUnit : Time,
+    SpeedUnit : Speed
+    > SpeedUnit.speed(
+    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = byMultiplying(acceleration, time)
+
 @JvmName("metricLengthDivTime")
-operator fun <
-    LengthUnit : MetricLength,
-    > ScientificValue<
-    MeasurementType.Length,
-    LengthUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Speed, MetricSpeed> = (value / time.value)(unit per time.unit)
-
+operator fun <LengthUnit : MetricLength, > ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (unit per time.unit).speed(this, time)
 @JvmName("imperialLengthDivTime")
-operator fun <
-    LengthUnit : ImperialLength,
-    > ScientificValue<
-    MeasurementType.Length,
-    LengthUnit,
-    >.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Speed, ImperialSpeed> = (value / time.value)(unit per time.unit)
-
+operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (unit per time.unit).speed(this, time)
 @JvmName("lengthDivTime")
-operator fun <
-    LengthUnit : Length
-    > ScientificValue<
-MeasurementType.Length,
-LengthUnit,
->.div(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Speed, Speed> = (value / time.value)(unit per time.unit)
-
-@JvmName("metricSpeedTimesTime")
-infix operator fun ScientificValue<MeasurementType.Speed, MetricSpeed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, MetricLength> = (value * time.convertValue(unit.per))(unit.distance)
-@JvmName("timeTimesMetricSpeed")
-infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) : ScientificValue<MeasurementType.Length, MetricLength> = speed * this
-@JvmName("imperialSpeedTimesTime")
-infix operator fun  ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, ImperialLength> = (value * time.convertValue(unit.per))(unit.distance)
-@JvmName("timeTimesImperialSpeed")
-infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) : ScientificValue<MeasurementType.Length, ImperialLength> = speed * this
-@JvmName("speedTimesTime")
-infix operator fun  ScientificValue<MeasurementType.Speed, Speed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, Length> = (value * time.convertValue(unit.per))(unit.distance)
-@JvmName("timeTimesSpeed")
-infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, Speed>) : ScientificValue<MeasurementType.Length, Length> = speed * this
+operator fun <LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (Meter per Second).speed(this, time)
 
 @JvmName("lengthDivSpeed")
-infix operator fun <
-    LengthUnit : Length,
-    SpeedUnit : Speed
-    >  ScientificValue<MeasurementType.Length, LengthUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) : ScientificValue<MeasurementType.Time, Time> = (convertValue(speed.unit.distance) / speed.value)(speed.unit.per)
+infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<MeasurementType.Length, LengthUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = speed.unit.per.time(this, speed)
+
+@JvmName("metricMomentumDivMetricMass")
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = unit.speed.speed(this, mass)
+@JvmName("imperialMomentumDivImperialMass")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = unit.speed.speed(this, mass)
+@JvmName("ukImperialMomentumDivUKImperialMass")
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = unit.speed.speed(this, mass)
+@JvmName("usCustomaryMomentumDivUSCustomaryMass")
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = unit.speed.speed(this, mass)
+@JvmName("momentumDivMass")
+infix operator fun <MomentumUnit : Momentum, WeightUnit : Weight> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = (Meter per Second).speed(this, mass)
+
+@JvmName("metricAccelerationTimesTime")
+infix operator fun <TimeUnit : Time>  ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.speed.speed(this, time)
+@JvmName("timeTimesMetricAcceleration")
+infix operator fun <TimeUnit : Time>  ScientificValue<MeasurementType.Time, TimeUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = acceleration * this
+@JvmName("imperialAccelerationTimesTime")
+infix operator fun <TimeUnit : Time>  ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.speed.speed(this, time)
+@JvmName("timeTimesImperialAcceleration")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = acceleration * this
+@JvmName("speedTimesTime")
+infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Meter per Second).speed(this, time)
+@JvmName("timeTimesAcceleration")
+infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>) = acceleration * this

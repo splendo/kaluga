@@ -22,6 +22,28 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
+
+val MetricLengthUnits = setOf(
+    Meter,
+    Nanometer,
+    Micrometer,
+    Millimeter,
+    Centimeter,
+    Decimeter,
+    Decameter,
+    Hectometer,
+    Kilometer
+)
+
+val ImperialLengthUnits = setOf(
+    Inch,
+    Foot,
+    Yard,
+    Mile
+)
+
+val LengthUnits: Set<Length> = MetricLengthUnits + ImperialLengthUnits
 
 @Serializable
 sealed class Length : AbstractScientificUnit<MeasurementType.Length>()
@@ -97,3 +119,69 @@ object Mile : ImperialLength("mi") {
     override fun toSIUnit(value: Decimal): Decimal = Yard.toSIUnit(value * YARDS_IN_MILE.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Yard.fromSIUnit(value) / YARDS_IN_MILE.toDecimal()
 }
+
+@JvmName("distanceFromSpeedAndTime")
+fun <
+    LengthUnit : Length,
+    TimeUnit : Time,
+    SpeedUnit : Speed
+    > LengthUnit.distance(
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = byMultiplying(speed, time)
+
+@JvmName("widthWidthAndLength")
+fun <
+    LengthUnit : Length,
+    WidthUnit : Length,
+    AreaUnit : Area
+    > WidthUnit.width(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = byDividing(area, length)
+
+@JvmName("metricSpeedTimesTime")
+infix operator fun ScientificValue<MeasurementType.Speed, MetricSpeed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, MetricLength> = unit.distance.distance(this, time)
+@JvmName("timeTimesMetricSpeed")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) : ScientificValue<MeasurementType.Length, MetricLength> = speed * this
+@JvmName("imperialSpeedTimesTime")
+infix operator fun  ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, ImperialLength> = unit.distance.distance(this, time)
+@JvmName("timeTimesImperialSpeed")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) : ScientificValue<MeasurementType.Length, ImperialLength> = speed * this
+@JvmName("speedTimesTime")
+infix operator fun  ScientificValue<MeasurementType.Speed, Speed>.times(time: ScientificValue<MeasurementType.Time, Time>) : ScientificValue<MeasurementType.Length, Length> = unit.distance.distance(this, time)
+@JvmName("timeTimesSpeed")
+infix operator fun ScientificValue<MeasurementType.Time, Time>.times(speed: ScientificValue<MeasurementType.Speed, Speed>) : ScientificValue<MeasurementType.Length, Length> = speed * this
+
+@JvmName("squareMeterDivMeter")
+operator fun ScientificValue<MeasurementType.Area, SquareMeter>.div(length: ScientificValue<MeasurementType.Length, Meter>) = Meter.width(this, length)
+@JvmName("squareNanoeterDivNanometer")
+operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.div(length: ScientificValue<MeasurementType.Length, Nanometer>) = Nanometer.width(this, length)
+@JvmName("squareMicrometerDivMicrometer")
+operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.div(length: ScientificValue<MeasurementType.Length, Micrometer>) = Micrometer.width(this, length)
+@JvmName("squareMillimeterDivMillimeter")
+operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.div(length: ScientificValue<MeasurementType.Length, Millimeter>) = Millimeter.width(this, length)
+@JvmName("squareCentimeterDivCentimeter")
+operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.div(length: ScientificValue<MeasurementType.Length, Centimeter>) = Centimeter.width(this, length)
+@JvmName("squareDecimeterDivDecimeter")
+operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.div(length: ScientificValue<MeasurementType.Length, Decimeter>) = Decimeter.width(this, length)
+@JvmName("squareDecameterDivDecameter")
+operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.div(length: ScientificValue<MeasurementType.Length, Decameter>) = Decameter.width(this, length)
+@JvmName("squareHectometerDivHectometer")
+operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.div(length: ScientificValue<MeasurementType.Length, Hectometer>) = Hectometer.width(this, length)
+@JvmName("squareKilometerDivKilometer")
+operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.div(length: ScientificValue<MeasurementType.Length, Kilometer>) = Kilometer.width(this, length)
+@JvmName("metricAreaDivMetricLength")
+operator fun <AreaUnit : MetricArea, LengthUnit : MetricLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Meter.width(this, length)
+@JvmName("squareInchDivInch")
+operator fun ScientificValue<MeasurementType.Area, SquareInch>.div(length: ScientificValue<MeasurementType.Length, Inch>) = Inch.width(this, length)
+@JvmName("squareFootDivFoot")
+operator fun ScientificValue<MeasurementType.Area, SquareFoot>.div(length: ScientificValue<MeasurementType.Length, Foot>) = Foot.width(this, length)
+@JvmName("squareYardDivYard")
+operator fun ScientificValue<MeasurementType.Area, SquareYard>.div(length: ScientificValue<MeasurementType.Length, Yard>) = Yard.width(this, length)
+@JvmName("squareMileDivMile")
+operator fun ScientificValue<MeasurementType.Area, SquareMile>.div(length: ScientificValue<MeasurementType.Length, Mile>) = Mile.width(this, length)
+@JvmName("imperialAreaDivImperialLength")
+operator fun <AreaUnit : ImperialArea, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Foot.width(this, length)
+@JvmName("areaDivLenth")
+operator fun <AreaUnit : Area, LengthUnit : Length> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Meter.width(this, length)

@@ -74,6 +74,8 @@ sealed class MeasurementType {
     @Serializable
     object MagneticInduction : MeasurementType()
     @Serializable
+    object Momentum : MeasurementType()
+    @Serializable
     object Power : MeasurementType()
     @Serializable
     object Pressure : MeasurementType()

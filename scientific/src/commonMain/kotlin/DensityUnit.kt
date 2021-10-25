@@ -55,139 +55,24 @@ infix fun MetricWeight.per(volume: MetricVolume) = MetricDensity(this, volume)
 infix fun ImperialWeight.per(volume: ImperialVolume) = ImperialDensity(this, volume)
 infix fun USCustomaryWeight.per(volume: USCustomaryVolume) = USCustomaryDensity(this, volume)
 infix fun UKImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this, volume)
-infix fun <
-    System : MeasurementSystem,
-    WeightUnit,
-    VolumeUnit
-    > WeightUnit.per(volume: VolumeUnit): Density where WeightUnit : Weight, WeightUnit : SystemScientificUnit<System, MeasurementType.Weight>, VolumeUnit : Volume, VolumeUnit : SystemScientificUnit<System, MeasurementType.Volume> = when (this) {
-    is MetricWeight -> this per (volume as MetricVolume)
-    is ImperialWeight -> this per (volume as ImperialVolume)
-    is USCustomaryWeight -> this per (volume as USCustomaryVolume)
-    is UKImperialWeight -> this per (volume as UKImperialVolume)
-    else -> error("Unknown Weight")
-}
+
+@JvmName("densityFromWeightAndVolume")
+fun <
+    WeightUnit : Weight,
+    VolumeUnit : Volume,
+    DensityUnit : Density
+    > DensityUnit.density(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+) = byDividing(weight, volume)
 
 @JvmName("metricWeightDivMetricVolume")
-infix operator fun <
-    WeightUnit : MetricWeight,
-    VolumeUnit : MetricVolume,
-    > ScientificValue<
-    MeasurementType.Weight,
-    WeightUnit,
-    >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, MetricDensity> = (value / volume.value)(unit per volume.unit)
-
+infix operator fun <WeightUnit : MetricWeight, VolumeUnit : MetricVolume> ScientificValue<MeasurementType.Weight, WeightUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).density(this, volume)
 @JvmName("imperialWeightDivImperialVolume")
-infix operator fun <
-    WeightUnit : ImperialWeight,
-    VolumeUnit : ImperialVolume,
-    > ScientificValue<
-    MeasurementType.Weight,
-    WeightUnit,
-    >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, ImperialDensity> = (value / volume.value)(unit per volume.unit)
-
+infix operator fun <WeightUnit : ImperialWeight, VolumeUnit : ImperialVolume> ScientificValue<MeasurementType.Weight, WeightUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).density(this, volume)
 @JvmName("ukImperialWeightDivUKImperialVolume")
-infix operator fun <
-    WeightUnit : UKImperialWeight,
-    VolumeUnit : UKImperialVolume,
-    > ScientificValue<
-    MeasurementType.Weight,
-    WeightUnit,
-    >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, UKImperialDensity> = (value / volume.value)(unit per volume.unit)
-
+infix operator fun <WeightUnit : UKImperialWeight, VolumeUnit : UKImperialVolume> ScientificValue<MeasurementType.Weight, WeightUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).density(this, volume)
 @JvmName("usCustomaryWeightDivUSCustomaryVolume")
-infix operator fun <
-    WeightUnit : USCustomaryWeight,
-    VolumeUnit : USCustomaryVolume,
-    > ScientificValue<
-    MeasurementType.Weight,
-    WeightUnit,
-    >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, USCustomaryDensity> = (value / volume.value)(unit per volume.unit)
-
+infix operator fun <WeightUnit : USCustomaryWeight, VolumeUnit : USCustomaryVolume> ScientificValue<MeasurementType.Weight, WeightUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).density(this, volume)
 @JvmName("weightDivVolume")
-infix operator fun <
-    System : MeasurementSystem,
-    WeightUnit,
-    VolumeUnit,
-    > ScientificValue<
-    MeasurementType.Weight,
-    WeightUnit,
-    >.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>): ScientificValue<MeasurementType.Density, Density> where
-    WeightUnit : Weight,
-    WeightUnit : SystemScientificUnit<System, MeasurementType.Weight>,
-    VolumeUnit : Volume, VolumeUnit : SystemScientificUnit<System, MeasurementType.Volume>
-    = (value / volume.value)(unit per volume.unit)
-
-@JvmName("metricDensityTimesMetricVolume")
-infix operator fun <
-    VolumeUnit : MetricVolume,
-    >  ScientificValue<MeasurementType.Density, MetricDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, MetricWeight> = (value * volume.convertValue(unit.per))(unit.weight)
-
-@JvmName("imperialDensityTimesImperialVolume")
-infix operator fun <
-    VolumeUnit : ImperialVolume,
-    >  ScientificValue<MeasurementType.Density, ImperialDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, ImperialWeight> = (value * volume.convertValue(unit.per))(unit.weight)
-
-@JvmName("ukImperialDensityTimesUKImperialVolume")
-infix operator fun <
-    VolumeUnit : UKImperialVolume,
-    >  ScientificValue<MeasurementType.Density, UKImperialDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, UKImperialWeight> = (value * volume.convertValue(unit.per))(unit.weight)
-
-@JvmName("usCustomaryDensityTimesUSCustomaryVolume")
-infix operator fun <
-    VolumeUnit : USCustomaryVolume,
-    >  ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, USCustomaryWeight> = (value * volume.convertValue(unit.per))(unit.weight)
-
-@JvmName("densityTimesVolume")
-infix operator fun <
-    VolumeUnit : Volume,
-    >  ScientificValue<MeasurementType.Density, Density>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) : ScientificValue< MeasurementType.Weight, Weight> = (value * volume.convertValue(unit.per))(unit.weight)
-
-@JvmName("metricVolumeTimesMetricDensity")
-infix operator fun <
-    VolumeUnit : MetricVolume,
-    >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, MetricDensity>) : ScientificValue< MeasurementType.Weight, MetricWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
-
-@JvmName("imperialVolumeTimesImperialDensity")
-infix operator fun <
-    VolumeUnit : ImperialVolume,
-    >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) : ScientificValue< MeasurementType.Weight, ImperialWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
-
-@JvmName("ukImperialVolumeTimesUKImperialDensity")
-infix operator fun <
-    VolumeUnit : UKImperialVolume,
-    >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) : ScientificValue< MeasurementType.Weight, UKImperialWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
-
-@JvmName("usCustomaryVolumeTimesUSCustomaryDensity")
-infix operator fun <
-    VolumeUnit : USCustomaryVolume,
-    >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) : ScientificValue< MeasurementType.Weight, USCustomaryWeight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
-
-@JvmName("volumeTimesDensity")
-infix operator fun <
-    VolumeUnit : Volume,
-    >  ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, Density>) : ScientificValue< MeasurementType.Weight, Weight> = (density.value * convertValue(density.unit.per))(density.unit.weight)
-
-@JvmName("metricWeightDivMetricDensity")
-infix operator fun <
-    WeightUnit : MetricWeight,
-    > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, MetricDensity>) : ScientificValue<MeasurementType.Volume, MetricVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
-
-@JvmName("imperialWeightDivImperialDensity")
-infix operator fun <
-    WeightUnit : ImperialWeight,
-    > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, ImperialDensity>) : ScientificValue<MeasurementType.Volume, ImperialVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
-
-@JvmName("ukImperialWeightDivUKImperialDensity")
-infix operator fun <
-    WeightUnit : UKImperialWeight,
-    > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) : ScientificValue<MeasurementType.Volume, UKImperialVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
-
-@JvmName("usCustomaryWeightDivUSCustomaryDensity")
-infix operator fun <
-    WeightUnit : USCustomaryWeight,
-    > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) : ScientificValue<MeasurementType.Volume, USCustomaryVolume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
-
-@JvmName("weightDivDensity")
-infix operator fun <
-    WeightUnit : Weight
-    > ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, Density>) : ScientificValue<MeasurementType.Volume, Volume> = (convertValue(density.unit.weight) / density.value)(density.unit.per)
+infix operator fun <WeightUnit : Weight, VolumeUnit : Volume> ScientificValue<MeasurementType.Weight, WeightUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (Kilogram per CubicMeter).density(this, volume)

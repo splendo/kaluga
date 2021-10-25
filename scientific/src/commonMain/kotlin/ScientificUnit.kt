@@ -52,3 +52,6 @@ fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Decimal,
     to: ScientificUnit<Unit>
 ): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))
+
+val MetricUnits: Set<MetricScientificUnit<*>> = MetricLengthUnits + MetricAreaUnits
+val Units: Set<ScientificUnit<*>> = MetricUnits

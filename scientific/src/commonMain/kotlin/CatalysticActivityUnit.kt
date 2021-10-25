@@ -21,6 +21,20 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
+val CatalysticActivityUnits = setOf(
+    Katal,
+    Nanokatal,
+    Microkatal,
+    Millikatal,
+    Centikatal,
+    Decikatal,
+    Decakatal,
+    Hectokatal,
+    Kilokatal,
+    Megakatal,
+    Gigakatal
+)
+
 @Serializable
 sealed class CatalysticActivity : AbstractScientificUnit<MeasurementType.CatalysticActivity>(), MetricAndImperialScientificUnit<MeasurementType.CatalysticActivity>
 
@@ -34,26 +48,27 @@ object Katal : CatalysticActivity(), MetricBaseUnit<MeasurementSystem.MetricAndI
 }
 
 @Serializable
-object NanoKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Nano(Katal)
+object Nanokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Nano(Katal)
 @Serializable
-object MicroKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Micro(Katal)
+object Microkatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Micro(Katal)
 @Serializable
-object MilliKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Milli(Katal)
+object Millikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Milli(Katal)
 @Serializable
-object CentiKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Centi(Katal)
+object Centikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Centi(Katal)
 @Serializable
-object DeciKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deci(Katal)
+object Decikatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deci(Katal)
 @Serializable
-object DecaKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deca(Katal)
+object Decakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Deca(Katal)
 @Serializable
-object HectoKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Hecto(Katal)
+object Hectokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Hecto(Katal)
 @Serializable
-object KiloKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Kilo(Katal)
+object Kilokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Kilo(Katal)
 @Serializable
-object MegaKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Mega(Katal)
+object Megakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Mega(Katal)
 @Serializable
-object GigaKatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Giga(Katal)
+object Gigakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Giga(Katal)
 
+@JvmName("catalysticActivityFromAmountOfSubstanceAndTime")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
@@ -64,6 +79,7 @@ fun <
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = byDividing(amountOfSubstance, time)
 
+@JvmName("timeFromAmountOfSubstanceAndCatalysticActivity")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,

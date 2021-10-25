@@ -24,6 +24,29 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
+val MetricAreaUnits = setOf(
+    SquareMeter,
+    SquareNanometer,
+    SquareMicrometer,
+    SquareMillimeter,
+    SquareCentimeter,
+    SquareDecimeter,
+    SquareDecameter,
+    SquareHectometer,
+    SquareKilometer,
+    Hectare
+)
+
+val ImperialAreaUnits = setOf(
+    SquareInch,
+    SquareFoot,
+    SquareYard,
+    SquareMile,
+    Acre
+)
+
+val AreaUnits: Set<Area> = MetricAreaUnits + ImperialAreaUnits
+
 @Serializable
 sealed class Area : AbstractScientificUnit<MeasurementType.Area>()
 
@@ -112,17 +135,7 @@ fun <
     > AreaUnit.area(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     width: ScientificValue<MeasurementType.Length, WidthUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> = byMultiplying(length, width)
-
-@JvmName("lengthFromAreaAndLength")
-fun <
-    LengthUnit : Length,
-    WidthUnit : Length,
-    AreaUnit : Area
-    > WidthUnit.fromArea(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
-    length: ScientificValue<MeasurementType.Length, LengthUnit>
-) : ScientificValue<MeasurementType.Length, WidthUnit> = byDividing(area, length)
+) = byMultiplying(length, width)
 
 @JvmName("areaFromForceAndPressure")
 fun <
@@ -132,7 +145,7 @@ fun <
     > AreaUnit.area(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(force, pressure)
+) = byDividing(force, pressure)
 
 @JvmName("areaFromFluxAndInduction")
 fun <
@@ -143,8 +156,9 @@ fun <
     AreaUnit.area(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(flux, induction)
+) = byDividing(flux, induction)
 
+@JvmName("areaFromFluxAndIlluminance")
 fun <
     FluxUnit : LuminousFlux,
     AreaUnit : Area,
@@ -153,7 +167,7 @@ fun <
     AreaUnit.area(
     flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
     illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
-): ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(flux, illuminance)
+) = byDividing(flux, illuminance)
 
 @JvmName("meterTimesMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Length, Meter>) = SquareMeter.area(this, other)
@@ -173,6 +187,8 @@ operator fun ScientificValue<MeasurementType.Length, Decameter>.times(other: Sci
 operator fun ScientificValue<MeasurementType.Length, Hectometer>.times(other: ScientificValue<MeasurementType.Length, Hectometer>) = SquareHectometer.area(this, other)
 @JvmName("kilometerTimesKilometer")
 operator fun ScientificValue<MeasurementType.Length, Kilometer>.times(other: ScientificValue<MeasurementType.Length, Kilometer>) = SquareKilometer.area(this, other)
+@JvmName("metricLengthTimesMetricLength")
+operator fun <LengthUnit : MetricLength, WidthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(width: ScientificValue<MeasurementType.Length, WidthUnit>) = SquareMeter.area(this, width)
 @JvmName("inchTimesInch")
 operator fun ScientificValue<MeasurementType.Length, Inch>.times(other: ScientificValue<MeasurementType.Length, Inch>) = SquareInch.area(this, other)
 @JvmName("footTimesFoot")
@@ -181,33 +197,10 @@ operator fun ScientificValue<MeasurementType.Length, Foot>.times(other: Scientif
 operator fun ScientificValue<MeasurementType.Length, Yard>.times(other: ScientificValue<MeasurementType.Length, Yard>) = SquareYard.area(this, other)
 @JvmName("mileTimesMile")
 operator fun ScientificValue<MeasurementType.Length, Mile>.times(other: ScientificValue<MeasurementType.Length, Mile>) = SquareMile.area(this, other)
-
-@JvmName("squareMeterDivMeter")
-operator fun ScientificValue<MeasurementType.Area, SquareMeter>.div(other: ScientificValue<MeasurementType.Length, Meter>) = Meter.fromArea(this, other)
-@JvmName("squareNanoeterDivNanometer")
-operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.div(other: ScientificValue<MeasurementType.Length, Nanometer>) = Nanometer.fromArea(this, other)
-@JvmName("squareMicrometerDivMicrometer")
-operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.div(other: ScientificValue<MeasurementType.Length, Micrometer>) = Micrometer.fromArea(this, other)
-@JvmName("squareMillimeterDivMillimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.div(other: ScientificValue<MeasurementType.Length, Millimeter>) = Millimeter.fromArea(this, other)
-@JvmName("squareCentimeterDivCentimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.div(other: ScientificValue<MeasurementType.Length, Centimeter>) = Centimeter.fromArea(this, other)
-@JvmName("squareDecimeterDivDecimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.div(other: ScientificValue<MeasurementType.Length, Decimeter>) = Decimeter.fromArea(this, other)
-@JvmName("squareDecameterDivDecameter")
-operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.div(other: ScientificValue<MeasurementType.Length, Decameter>) = Decameter.fromArea(this, other)
-@JvmName("squareHectometerDivHectometer")
-operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.div(other: ScientificValue<MeasurementType.Length, Hectometer>) = Hectometer.fromArea(this, other)
-@JvmName("squareKilometerDivKilometer")
-operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.div(other: ScientificValue<MeasurementType.Length, Kilometer>) = Kilometer.fromArea(this, other)
-@JvmName("squareInchDivInch")
-operator fun ScientificValue<MeasurementType.Area, SquareInch>.div(other: ScientificValue<MeasurementType.Length, Inch>) = Inch.fromArea(this, other)
-@JvmName("squareFootDivFoot")
-operator fun ScientificValue<MeasurementType.Area, SquareFoot>.div(other: ScientificValue<MeasurementType.Length, Foot>) = Foot.fromArea(this, other)
-@JvmName("squareYardDivYard")
-operator fun ScientificValue<MeasurementType.Area, SquareYard>.div(other: ScientificValue<MeasurementType.Length, Yard>) = Yard.fromArea(this, other)
-@JvmName("squareMileDivMile")
-operator fun ScientificValue<MeasurementType.Area, SquareMile>.div(other: ScientificValue<MeasurementType.Length, Mile>) = Mile.fromArea(this, other)
+@JvmName("imperialLengthTimesImperialLength")
+operator fun <LengthUnit : ImperialLength, WidthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(width: ScientificValue<MeasurementType.Length, WidthUnit>) = SquareFoot.area(this, width)
+@JvmName("lengthTimesLength")
+operator fun <LengthUnit : Length, WidthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(width: ScientificValue<MeasurementType.Length, WidthUnit>) = SquareMeter.area(this, width)
 
 @JvmName("metricForceDivBarye")
 operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = SquareCentimeter.area(this, pressure)
@@ -217,36 +210,48 @@ operator fun <Force : MetricForce, B : MetricMultipleUnit<MeasurementSystem.Metr
 operator fun <Force : MetricForce, Pressure : MetricPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareMeter.area(this, pressure)
 @JvmName("imperialForcePoundSquareInch")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForcePoundSquareFeet")
+@JvmName("imperialForceDivPoundSquareFeet")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("imperialForceKiloPoundSquareInch")
+@JvmName("imperialForceDivKiloPoundSquareInch")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceOunceSquareFeet")
+@JvmName("imperialForceDivOunceSquareFeet")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceInchOfMercury")
+@JvmName("imperialForceDivInchOfMercury")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceInchOfWater")
+@JvmName("imperialForceDivInchOfWater")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>) = SquareInch.area(this, pressure)
-@JvmName("imperialForceFootOfWater")
+@JvmName("imperialForceDivFootOfWater")
 operator fun <Force : ImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>) = SquareFoot.area(this, pressure)
-@JvmName("usCustomaryForceKipSquareInch")
+@JvmName("usCustomaryForceDivKipSquareInch")
 operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("usCustomaryForcePoundSquareFeet")
+@JvmName("usCustomaryForceDivPoundSquareFeet")
 operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("usCustomaryForceUSTonSquareInch")
+@JvmName("usCustomaryForceDivUSTonSquareInch")
 operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("usCustomaryForceUSTonSquareFeet")
+@JvmName("usCustomaryForceDivUSTonSquareFeet")
 operator fun <Force : USCustomaryForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFeet>) = SquareFoot.area(this, pressure)
-@JvmName("ukImperialForceImperialTonSquareInch")
+@JvmName("ukImperialForceDivImperialTonSquareInch")
 operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = SquareInch.area(this, pressure)
-@JvmName("ukImperialForceImperialTonSquareFeet")
+@JvmName("ukImperialForceDivImperialTonSquareFeet")
 operator fun <Force : UKImperialForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = SquareFoot.area(this, pressure)
+@JvmName("imperialForceDivImperialPressure")
+operator fun <Force : ImperialForce, Pressure : ImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareFoot.area(this, pressure)
+@JvmName("ukImperialForceDivUKImperialPressure")
+operator fun <Force : UKImperialForce, Pressure : UKImperialPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareFoot.area(this, pressure)
+@JvmName("usCustomaryForceDivUSCustomaryPressure")
+operator fun <Force : USCustomaryForce, Pressure : USCustomaryPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareFoot.area(this, pressure)
+@JvmName("forceDivPressure")
+operator fun <ForceUnit : Force, PressureUnit : Pressure> ScientificValue<MeasurementType.Force, ForceUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = SquareMeter.area(this, pressure)
 
 @JvmName("fluxDivInduction")
 infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = SquareMeter.area(this, induction)
 @JvmName("fluxDivPhot")
+infix operator fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(phot: ScientificValue<MeasurementType.Illuminance, Phot>) = SquareCentimeter.area(this, phot)
+@JvmName("fluxDivPhotMultiple")
 infix operator fun <FluxUnit : LuminousFlux, PhotUnit> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(phot: ScientificValue<MeasurementType.Illuminance, PhotUnit>) where PhotUnit : Illuminance, PhotUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> = SquareCentimeter.area(this, phot)
 @JvmName("fluxDivMetricIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = SquareMeter.area(this, illuminance)
 @JvmName("fluxDivImperialIlluminance")
 infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = SquareFoot.area(this, illuminance)
+@JvmName("fluxDivIlluminance")
+infix operator fun <FluxUnit : LuminousFlux, IlluminanceUnit : Illuminance> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = SquareMeter.area(this, illuminance)

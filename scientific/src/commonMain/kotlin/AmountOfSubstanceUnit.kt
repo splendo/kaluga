@@ -18,12 +18,24 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 import kotlin.native.concurrent.ThreadLocal
+
+val AmountOfSubstanceUnits = setOf(
+    Mole,
+    Nanomole,
+    Micromole,
+    Millimole,
+    Centimole,
+    Decimole,
+    Decamole,
+    Hectomole,
+    Kilomole,
+    Megamole,
+    Gigamole
+)
 
 @Serializable
 sealed class AmountOfSubstance : AbstractScientificUnit<MeasurementType.AmountOfSubstance>(), MetricAndImperialScientificUnit<MeasurementType.AmountOfSubstance>
@@ -38,25 +50,25 @@ object Mole : AmountOfSubstance(), MetricBaseUnit<MeasurementSystem.MetricAndImp
 }
 
 @Serializable
-object NanoMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Nano(Mole)
+object Nanomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Nano(Mole)
 @Serializable
-object MicroMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Micro(Mole)
+object Micromole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Micro(Mole)
 @Serializable
-object MilliMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Milli(Mole)
+object Millimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Milli(Mole)
 @Serializable
-object CentiMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Centi(Mole)
+object Centimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Centi(Mole)
 @Serializable
-object DeciMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deci(Mole)
+object Decimole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deci(Mole)
 @Serializable
-object DecaMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deca(Mole)
+object Decamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Deca(Mole)
 @Serializable
-object HectoMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Hecto(Mole)
+object Hectomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Hecto(Mole)
 @Serializable
-object KiloMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Kilo(Mole)
+object Kilomole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Kilo(Mole)
 @Serializable
-object MegaMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Mega(Mole)
+object Megamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Mega(Mole)
 @Serializable
-object GigaMole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Giga(Mole)
+object Gigamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.AmountOfSubstance, Mole> by Giga(Mole)
 
 @ThreadLocal
 val AvogadroConstant = 6.02214076e23.toDecimal()

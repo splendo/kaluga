@@ -266,6 +266,7 @@ object ImperialGallon : UKImperialVolume() {
     override fun fromSIUnit(value: Decimal): Decimal = Liter.fromSIUnit(value) / LITER_PER_GALLON.toDecimal()
 }
 
+@JvmName("volumeFromAreaAndHeight")
 fun <
     HeightUnit : Length,
     AreaUnit : Area,
@@ -275,6 +276,7 @@ fun <
     height: ScientificValue<MeasurementType.Length, HeightUnit>
 ) : ScientificValue<MeasurementType.Volume, VolumeUnit> = byMultiplying(area, height)
 
+@JvmName("volumeFromLengthWidthAndHeight")
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
@@ -314,6 +316,17 @@ fun <
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     height: ScientificValue<MeasurementType.Length, HeightUnit>
 ) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(volume, height)
+
+
+@JvmName("volumeFromWeightAndDensity")
+fun <
+    WeightUnit : Weight,
+    VolumeUnit : Volume,
+    DensityUnit : Density
+    > VolumeUnit.volume(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    density: ScientificValue<MeasurementType.Density, DensityUnit>
+) = byDividing(weight, density)
 
 @JvmName("meterTimesSquareMeter")
 operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Area, SquareMeter>) = CubicMeter.volume(other, this)
@@ -428,3 +441,14 @@ operator fun ScientificValue<MeasurementType.Volume, CubicMile>.div(other: Scien
 operator fun ScientificValue<MeasurementType.Volume, AcreFoot>.div(other: ScientificValue<MeasurementType.Area, Acre>) = Foot.fromVolume(this, other)
 @JvmName("acreFootDivFoot")
 operator fun ScientificValue<MeasurementType.Volume, AcreFoot>.div(other: ScientificValue<MeasurementType.Length, Foot>) = Acre.fromVolume(this, other)
+
+@JvmName("metricWeightDivMetricDensity")
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, MetricDensity>) = density.unit.per.volume(this, density)
+@JvmName("imperialWeightDivImperialDensity")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = density.unit.per.volume(this, density)
+@JvmName("ukImperialWeightDivUKImperialDensity")
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) = density.unit.per.volume(this, density)
+@JvmName("usCustomaryWeightDivUSCustomaryDensity")
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = density.unit.per.volume(this, density)
+@JvmName("weightDivDensity")
+infix operator fun <WeightUnit : Weight, DensityUnit : Density> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, DensityUnit>) = CubicMeter.volume(this, density)

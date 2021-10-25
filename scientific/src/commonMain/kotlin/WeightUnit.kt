@@ -169,14 +169,35 @@ data class USCustomaryImperialWeightWrapper(val imperial: ImperialWeight) : USCu
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+@JvmName("massFromMomentumAndSpeed")
 fun <
-    MassUnit : ScientificUnit<MeasurementType.Weight>,
-    AccelerationUnit : ScientificUnit<MeasurementType.Acceleration>,
-    ForceUnit : ScientificUnit<MeasurementType.Force>
+    WeightUnit : Weight,
+    SpeedUnit : Speed,
+    MomentumUnit : Momentum
+    > WeightUnit.mass(
+    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+) = byDividing(momentum, speed)
+
+@JvmName("massFromForceAndAcceleration")
+fun <
+    MassUnit : Weight,
+    AccelerationUnit : Acceleration,
+    ForceUnit : Force
     > MassUnit.mass(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-) : ScientificValue<MeasurementType.Weight, MassUnit> = byDividing(force, acceleration)
+) = byDividing(force, acceleration)
+
+@JvmName("weightFromDensityAndVolume")
+fun <
+    MassUnit : Weight,
+    DensityUnit : Density,
+    VolumeUnit : Volume
+    > MassUnit.mass(
+    density: ScientificValue<MeasurementType.Density, DensityUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+) = byMultiplying(density, volume)
 
 @JvmName("weightFromEnergyAndAbsorbedDose")
 fun <
@@ -187,7 +208,7 @@ fun <
     WeightUnit.weight(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
-) : ScientificValue<MeasurementType.Weight, WeightUnit> = byDividing(energy, absorbedDose)
+) = byDividing(energy, absorbedDose)
 
 @JvmName("weightFromEnergyAndEquivalentDose")
 fun <
@@ -198,17 +219,37 @@ fun <
     WeightUnit.weight(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
-) : ScientificValue<MeasurementType.Weight, WeightUnit> = byDividing(energy, equivalentDose)
+) = byDividing(energy, equivalentDose)
 
+@JvmName("metricMomentumDivMetricSpeed")
+operator fun ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = unit.mass.mass(this, speed)
+@JvmName("imperialMomentumDivImperialSpeed")
+operator fun ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+@JvmName("ukImperialMomentumDivImperialSpeed")
+operator fun ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+@JvmName("usCustomaryMomentumDivImperialSpeed")
+operator fun ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+@JvmName("momentumDivSpeed")
+operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = unit.mass.mass(this, speed)
 
 @JvmName("newtonDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, Newton>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
 @JvmName("newtonMultipleDivAcceleration")
-operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton>> ScientificValue<MeasurementType.Force, M>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
+operator fun <NewtonUnit> ScientificValue<MeasurementType.Force, NewtonUnit>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) where NewtonUnit : MetricForce, NewtonUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> = Kilogram.mass(this, acceleration)
 @JvmName("dyneDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, Dyne>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
 @JvmName("dyneMultipleDivAcceleration")
-operator fun <M : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne>> ScientificValue<MeasurementType.Force, M>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
+operator fun <DyneUnit> ScientificValue<MeasurementType.Force, DyneUnit>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = Gram.mass(this, acceleration)
+@JvmName("kilogramForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, KilogramForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
+@JvmName("gramForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, GramForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Gram.mass(this, acceleration)
+@JvmName("milligramForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, MilligramForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Milligram.mass(this, acceleration)
+@JvmName("tonneForceDivAcceleration")
+operator fun ScientificValue<MeasurementType.Force, TonneForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Tonne.mass(this, acceleration)
+@JvmName("metricForceDivMetricAcceleration")
+operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Kilogram.mass(this, acceleration)
 @JvmName("poundalDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, Poundal>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = Pound.mass(this, acceleration)
 @JvmName("poundForceDivAcceleration")
@@ -223,6 +264,29 @@ operator fun ScientificValue<MeasurementType.Force, Kip>.div(acceleration: Scien
 operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = UsTon.mass(this, acceleration)
 @JvmName("imperialTonForceDivAcceleration")
 operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = ImperialTon.mass(this, acceleration)
+@JvmName("forceDivAcceleration")
+operator fun <ForceUnit : Force, AccelerationUnit : Acceleration> ScientificValue<MeasurementType.Force, ForceUnit>.div(acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>) = Kilogram.mass(this, acceleration)
+
+@JvmName("metricDensityTimesMetricVolume")
+infix operator fun <VolumeUnit : MetricVolume> ScientificValue<MeasurementType.Density, MetricDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = unit.weight.mass(this, volume)
+@JvmName("metricVolumeTimesMetricDensity")
+infix operator fun <VolumeUnit : MetricVolume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, MetricDensity>) = density * this
+@JvmName("imperialDensityTimesImperialVolume")
+infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<MeasurementType.Density, ImperialDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = unit.weight.mass(this, volume)
+@JvmName("imperialVolumeTimesImperialDensity")
+infix operator fun <VolumeUnit : ImperialVolume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = density * this
+@JvmName("ukImperialDensityTimesUKImperialVolume")
+infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<MeasurementType.Density, UKImperialDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = unit.weight.mass(this, volume)
+@JvmName("ukImperialVolumeTimesUKImperialDensity")
+infix operator fun <VolumeUnit : UKImperialVolume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) = density * this
+@JvmName("usCustomaryDensityTimesUSCustomaryVolume")
+infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = unit.weight.mass(this, volume)
+@JvmName("usCustomaryVolumeTimesUSCustomaryDensity")
+infix operator fun <VolumeUnit : USCustomaryVolume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = density * this
+@JvmName("densityTimesVolume")
+infix operator fun <VolumeUnit : Volume> ScientificValue<MeasurementType.Density, Density>.times(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = Kilogram.mass(this, volume)
+@JvmName("volumeTimesDensity")
+infix operator fun <VolumeUnit : Volume> ScientificValue<MeasurementType.Volume, VolumeUnit>.times(density: ScientificValue<MeasurementType.Density, Density>) = density * this
 
 @JvmName("ergDivRad")
 infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>) = Gram.weight(this, absorbedDose)
@@ -242,6 +306,7 @@ infix operator fun <ErgUnit, AbsorbedDoseUnit> ScientificValue<MeasurementType.E
     = Gram.weight(this, absorbedDose)
 @JvmName("energyDivAbsorbedDose")
 infix operator fun <EnergyUnit : Energy, AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) = Kilogram.weight(this, absorbedDose)
+
 @JvmName("ergDivRem")
 infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) = Gram.weight(this, equivalentDose)
 @JvmName("ergMultipleDivRem")
