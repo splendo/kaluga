@@ -54,7 +54,7 @@ val permissions = Permissions(
 )
 
 val bluetoothBuilder = BluetoothBuilder(permissions = permissions)
-CommonViewModel(blutoothBuilder)
+CommonViewModel(bluetoothBuilder)
 ...
 
 // Common code
