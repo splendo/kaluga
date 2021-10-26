@@ -53,7 +53,7 @@ val permissions = Permissions(
     }
 )
 
-val blutoothBuilder = BluetoothBuilder(permissions = permissions)
+val bluetoothBuilder = BluetoothBuilder(permissions = permissions)
 CommonViewModel(blutoothBuilder)
 ...
 
