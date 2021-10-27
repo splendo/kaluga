@@ -19,7 +19,21 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MagneticFluxUnits = setOf(
+    Weber,
+    Nanoweber,
+    Microweber,
+    Milliweber,
+    Centiweber,
+    Deciweber,
+    Decaweber,
+    Hectoweber,
+    Kiloweber,
+    Megaweber,
+    Gigaweber,
+    Maxwell
+)
 
 @Serializable
 sealed class MagneticFlux : AbstractScientificUnit<MeasurementType.MagneticFlux>(), MetricAndImperialScientificUnit<MeasurementType.MagneticFlux>
@@ -34,25 +48,25 @@ object Weber : MagneticFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperia
 }
 
 @Serializable
-object NanoWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Nano(Weber)
+object Nanoweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Nano(Weber)
 @Serializable
-object MicroWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Micro(Weber)
+object Microweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Micro(Weber)
 @Serializable
-object MilliWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Milli(Weber)
+object Milliweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Milli(Weber)
 @Serializable
-object CentiWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Centi(Weber)
+object Centiweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Centi(Weber)
 @Serializable
-object DeciWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Deci(Weber)
+object Deciweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Deci(Weber)
 @Serializable
-object DecaWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Deca(Weber)
+object Decaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Deca(Weber)
 @Serializable
-object HectoWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Hecto(Weber)
+object Hectoweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Hecto(Weber)
 @Serializable
-object KiloWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Kilo(Weber)
+object Kiloweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Kilo(Weber)
 @Serializable
-object MegaWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Mega(Weber)
+object Megaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Mega(Weber)
 @Serializable
-object GigaWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Giga(Weber)
+object Gigaweber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Giga(Weber)
 @Serializable
 object Maxwell : MagneticFlux() {
     override val symbol = "Mx"
@@ -61,91 +75,3 @@ object Maxwell : MagneticFlux() {
     override fun fromSIUnit(value: Decimal): Decimal = Abvolt.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = Abvolt.toSIUnit(value)
 }
-
-@JvmName("fluxFromResistanceAndCharge")
-fun <
-    ResistanceUnit : ElectricResistance,
-    ChargeUnit : ElectricCharge,
-    FluxUnit : MagneticFlux
-    >
-    FluxUnit.flux(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(resistance, charge)
-
-@JvmName("fluxFromVoltageAndTime")
-fun <
-    VoltageUnit : Voltage,
-    TimeUnit : Time,
-    FluxUnit : MagneticFlux
-    >
-    FluxUnit.flux(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(voltage, time)
-
-@JvmName("timeFromFluxAndVoltage")
-fun <
-    VoltageUnit : Voltage,
-    TimeUnit : Time,
-    FluxUnit : MagneticFlux
-    >
-    TimeUnit.time(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-) : ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(flux, voltage)
-
-
-@JvmName("fluxFromEnergyAndCurrent")
-fun <
-    EnergyUnit : Energy,
-    CurrentUnit : ElectricCurrent,
-    FluxUnit : MagneticFlux
-    >
-    FluxUnit.flux(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byDividing(energy, current)
-
-@JvmName("fluxFromInductionAndArea")
-fun <
-    FluxUnit : MagneticFlux,
-    AreaUnit : Area,
-    InductionUnit : MagneticInduction
-    >
-    FluxUnit.flux(
-    induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(induction, area)
-
-@JvmName("fluxFromInductanceAndCurrent")
-fun <
-    FluxUnit : MagneticFlux,
-    CurrentUnit : ElectricCurrent,
-    InductanceUnit : ElectricInductance
-    >
-    FluxUnit.flux(
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(inductance, current)
-
-@JvmName("resistanceTimesCharge")
-infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = Weber.flux(this, charge)
-@JvmName("chargeTimesResistance")
-infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = resistance * this
-@JvmName("voltageTimesTime")
-infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Weber.flux(this, time)
-@JvmName("timeTimesVoltage")
-infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = voltage * this
-@JvmName("fluxDivVoltage")
-infix operator fun <FluxUnit : MagneticFlux, VoltageUnit : Voltage> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Second.time(this, voltage)
-@JvmName("energyDivCurrent")
-infix operator fun <EnergyUnit : Energy, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Weber.flux(this, current)
-@JvmName("inductionTimesArea")
-infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.MagneticInduction, InductionUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Weber.flux(this, area)
-@JvmName("areaTimesInduction")
-infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = induction * this
-@JvmName("inductanceTimesCurrent")
-infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Weber.flux(this, current)
-@JvmName("currentTimesInductance")
-infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>) = inductance * this

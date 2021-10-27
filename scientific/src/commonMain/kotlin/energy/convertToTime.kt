@@ -22,6 +22,9 @@ import com.splendo.kaluga.scientific.BritishThermalUnitPerHour
 import com.splendo.kaluga.scientific.BritishThermalUnitPerMinute
 import com.splendo.kaluga.scientific.BritishThermalUnitPerSecond
 import com.splendo.kaluga.scientific.Energy
+import com.splendo.kaluga.scientific.FootPoundForce
+import com.splendo.kaluga.scientific.FootPoundForcePerMinute
+import com.splendo.kaluga.scientific.FootPoundForcePerSecond
 import com.splendo.kaluga.scientific.Horsepower
 import com.splendo.kaluga.scientific.HorsepowerHour
 import com.splendo.kaluga.scientific.Hour
@@ -47,6 +50,8 @@ infix operator fun <WattUnit> ScientificValue<MeasurementType.Energy, WattHour>.
 infix operator fun <WattHourUnit, WattUnit> ScientificValue<MeasurementType.Energy, WattHourUnit>.div(power: ScientificValue<MeasurementType.Power, WattUnit>) where WattHourUnit : Energy, WattHourUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, WattHour>, WattUnit : Power, WattUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Power, Watt> = Hour.time(this, power)
 @JvmName("horepowerHourDivHorsepower")
 infix operator fun ScientificValue<MeasurementType.Energy, HorsepowerHour>.div(power: ScientificValue<MeasurementType.Power, Horsepower>) = Hour.time(this, power)
+@JvmName("footPountForceDivFootPoundForcePerMinute")
+infix operator fun ScientificValue<MeasurementType.Energy, FootPoundForce>.div(power: ScientificValue<MeasurementType.Power, FootPoundForcePerMinute>) = Minute.time(this, power)
 @JvmName("britishThermalUnitDivBritishThermalUnitPerHour")
 infix operator fun ScientificValue<MeasurementType.Energy, BritishThermalUnit>.div(power: ScientificValue<MeasurementType.Power, BritishThermalUnitPerHour>) = Hour.time(this, power)
 @JvmName("britishThermalUnitDivBritishThermalUnitPerMinute")

@@ -22,8 +22,18 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 import kotlin.math.PI
+
+val SolidAngleUnits = setOf(
+    Steradian,
+    Nanosteradian,
+    Microsteradian,
+    Millisteradian,
+    Centisteradian,
+    Decisteradian,
+    Spat,
+    SquareDegree
+)
 
 @Serializable
 sealed class SolidAngle : AbstractScientificUnit<MeasurementType.SolidAngle>(), MetricAndImperialScientificUnit<MeasurementType.SolidAngle>
@@ -38,15 +48,15 @@ object Steradian : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImper
 }
 
 @Serializable
-object NanoSteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Nano(Steradian)
+object Nanosteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Nano(Steradian)
 @Serializable
-object MicroSteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Micro(Steradian)
+object Microsteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Micro(Steradian)
 @Serializable
-object MilliSteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Milli(Steradian)
+object Millisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Milli(Steradian)
 @Serializable
-object CentiSteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Centi(Steradian)
+object Centisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Centi(Steradian)
 @Serializable
-object DeciSteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Deci(Steradian)
+object Decisteradian : SolidAngle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle, Steradian> by Deci(Steradian)
 
 @Serializable
 object Spat : SolidAngle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.SolidAngle> {
@@ -66,17 +76,3 @@ object SquareDegree : SolidAngle() {
     override fun fromSIUnit(value: Decimal): Decimal = Degree.fromSIUnit(Degree.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = Degree.toSIUnit(Degree.toSIUnit(value))
 }
-
-@JvmName("luminousFluxFromIntensityAndSolidAngle")
-fun <
-    IntensityUnit : LuminousIntensity,
-    SolidAngleUnit : SolidAngle,
-    FluxUnit : LuminousFlux
-    >
-    SolidAngleUnit.solidAngle(
-    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
-    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>
-) : ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit> = byDividing(flux, intensity)
-
-@JvmName("luminousFluxDivIntensity")
-infix operator fun <FluxUnit : LuminousFlux, IntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>) = Steradian.solidAngle(this, intensity)

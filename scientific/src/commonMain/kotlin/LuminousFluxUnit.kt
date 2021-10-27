@@ -21,6 +21,20 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
+val LuminousFluxUnits = setOf(
+    Lumen,
+    Nanolumen,
+    Microlumen,
+    Millilumen,
+    Centilumen,
+    Decilumen,
+    Decalumen,
+    Hectolumen,
+    Kilolumen,
+    Megalumen,
+    Gigalumen
+)
+
 @Serializable
 sealed class LuminousFlux : AbstractScientificUnit<MeasurementType.LuminousFlux>(), MetricAndImperialScientificUnit<MeasurementType.LuminousFlux>
 
@@ -34,53 +48,22 @@ object Lumen : LuminousFlux(), MetricBaseUnit<MeasurementSystem.MetricAndImperia
 }
 
 @Serializable
-object NanoLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Nano(Lumen)
+object Nanolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Nano(Lumen)
 @Serializable
-object MicroLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Micro(Lumen)
+object Microlumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Micro(Lumen)
 @Serializable
-object MilliLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Milli(Lumen)
+object Millilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Milli(Lumen)
 @Serializable
-object CentiLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Centi(Lumen)
+object Centilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Centi(Lumen)
 @Serializable
-object DeciLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deci(Lumen)
+object Decilumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deci(Lumen)
 @Serializable
-object DecaLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deca(Lumen)
+object Decalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Deca(Lumen)
 @Serializable
-object HectoLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Hecto(Lumen)
+object Hectolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Hecto(Lumen)
 @Serializable
-object KiloLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Kilo(Lumen)
+object Kilolumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Kilo(Lumen)
 @Serializable
-object MegaLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Mega(Lumen)
+object Megalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Mega(Lumen)
 @Serializable
-object GigaLumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Giga(Lumen)
-
-@JvmName("luminousFluxFromIntensityAndSolidAngle")
-fun <
-    IntensityUnit : LuminousIntensity,
-    SolidAngleUnit : SolidAngle,
-    FluxUnit : LuminousFlux
-    >
-    FluxUnit.flux(
-    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>,
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
-) : ScientificValue<MeasurementType.LuminousFlux, FluxUnit> = byMultiplying(intensity, solidAngle)
-
-@JvmName("luminousFluxFromIlluminanceAndArea")
-fun <
-    FluxUnit : LuminousFlux,
-    AreaUnit : Area,
-    IlluminanceUnit : Illuminance
-    >
-    FluxUnit.flux(
-    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-): ScientificValue<MeasurementType.LuminousFlux, FluxUnit> = byMultiplying(illuminance, area)
-
-@JvmName("luminousIntensityTimesSolidAngle")
-infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>.times(solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>) = Lumen.flux(this, solidAngle)
-@JvmName("solidAngleTimesLuminousIntensity")
-infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>) = intensity * this
-@JvmName("illuminanceTimesArea")
-infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lumen.flux(this, area)
-@JvmName("areaTimesIlluminance")
-infix operator fun <IlluminanceUnit : Illuminance, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = illuminance * this
+object Gigalumen : LuminousFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousFlux, Lumen> by Giga(Lumen)

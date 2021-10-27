@@ -22,7 +22,36 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MetricAndImperialPowerUnits = setOf(
+    Watt,
+    Nanowatt,
+    Microwatt,
+    Milliwatt,
+    Centiwatt,
+    Deciwatt,
+    Decawatt,
+    Hectowatt,
+    Kilowatt,
+    Megawatt,
+    Gigawatt,
+    ErgPerSecond
+)
+
+val MetricPowerUnits = MetricAndImperialPowerUnits.map { it.metric }.toSet() + setOf(MetricHorsepower)
+val ImperialPowerUnits = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
+    setOf(
+    FootPoundForcePerSecond,
+    FootPoundForcePerMinute,
+    Horsepower,
+    BritishThermalUnitPerSecond,
+    BritishThermalUnitPerMinute,
+    BritishThermalUnitPerHour
+)
+
+val PowerUnits: Set<Power> = MetricAndImperialPowerUnits +
+    MetricPowerUnits.filter { it !is MetricMetricAndImperialPowerWrapper }.toSet() +
+    ImperialPowerUnits.filter { it !is ImperialMetricAndImperialPowerWrapper }.toSet()
 
 @Serializable
 sealed class Power : AbstractScientificUnit<MeasurementType.Power>()
@@ -59,9 +88,9 @@ object Hectowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSyste
 @Serializable
 object Kilowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Kilo(Watt)
 @Serializable
-object MegaWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Mega(Watt)
+object Megawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Mega(Watt)
 @Serializable
-object GigaWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Giga(Watt)
+object Gigawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Giga(Watt)
 
 @Serializable
 object ErgPerSecond : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power> {
@@ -157,44 +186,3 @@ data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: Met
 }
 
 val <PowerUnit : MetricAndImperialPower> PowerUnit.imperial get() = ImperialMetricAndImperialPowerWrapper(this)
-
-@JvmName("powerFromEnergyAndTime")
-fun <
-    EnergyUnit : Energy,
-    TimeUnit : Time,
-    PowerUnit : Power
-    > PowerUnit.power(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-): ScientificValue<MeasurementType.Power, PowerUnit> = byDividing(energy, time)
-
-@JvmName("powerFromVoltageAndCurrent")
-fun <
-    VoltageUnit : Voltage,
-    ElectricCurrentUnit : ElectricCurrent,
-    PowerUnit : Power
-    > PowerUnit.power(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
-): ScientificValue<MeasurementType.Power, PowerUnit> = byMultiplying(voltage, current)
-
-@JvmName("powerFromForceAndSpeed")
-fun <
-    ForceUnit : Force,
-    SpeedUnit : Speed,
-    PowerUnit : Power
-    > PowerUnit.power(
-    force: ScientificValue<MeasurementType.Force, ForceUnit>,
-    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
-): ScientificValue<MeasurementType.Power, PowerUnit> = byMultiplying(force, speed)
-
-@JvmName("voltageTimesCurrent")
-infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>) = Watt.power(this, current)
-@JvmName("currentTimesVoltage")
-infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = voltage * this
-@JvmName("energyDivTime")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Watt.power(this, time)
-@JvmName("metricForceTimesMetricSpeed")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = Watt.power(this, speed)
-@JvmName("metricSpeedTimesMetricForce")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this

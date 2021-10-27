@@ -23,6 +23,17 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val TimeUnits = setOf(
+    Second,
+    Nanosecond,
+    Microsecond,
+    Millisecond,
+    Centisecond,
+    Decisecond,
+    Minute,
+    Hour
+)
+
 @Serializable
 sealed class Time : AbstractScientificUnit<MeasurementType.Time>(), MetricAndImperialScientificUnit<MeasurementType.Time>
 
@@ -36,13 +47,19 @@ object Second : Time(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Meas
 }
 
 @Serializable
-object MilliSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Milli(Second)
+object Decisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Deci(Second)
 
 @Serializable
-object MicroSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Micro(Second)
+object Centisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Centi(Second)
 
 @Serializable
-object NanoSecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Nano(Second)
+object Millisecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Milli(Second)
+
+@Serializable
+object Microsecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Micro(Second)
+
+@Serializable
+object Nanosecond : Time(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Time, Second> by Nano(Second)
 
 @Serializable
 object Minute : Time() {

@@ -26,14 +26,16 @@ import com.splendo.kaluga.scientific.Deciwatt
 import com.splendo.kaluga.scientific.ErgPerSecond
 import com.splendo.kaluga.scientific.FootPoundForcePerMinute
 import com.splendo.kaluga.scientific.FootPoundForcePerSecond
-import com.splendo.kaluga.scientific.GigaWatt
+import com.splendo.kaluga.scientific.Gigawatt
 import com.splendo.kaluga.scientific.Hectowatt
 import com.splendo.kaluga.scientific.Horsepower
 import com.splendo.kaluga.scientific.Hour
+import com.splendo.kaluga.scientific.ImperialMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.ImperialPower
 import com.splendo.kaluga.scientific.Kilowatt
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MegaWatt
+import com.splendo.kaluga.scientific.Megawatt
+import com.splendo.kaluga.scientific.MetricMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.MetricPower
 import com.splendo.kaluga.scientific.Microwatt
 import com.splendo.kaluga.scientific.Milliwatt
@@ -42,6 +44,7 @@ import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.Watt
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.power.times
 import kotlin.jvm.JvmName
 
@@ -64,9 +67,11 @@ infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: Scie
 @JvmName("hourTimesKilowatt")
 infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, Kilowatt>) = power * this
 @JvmName("hourTimesMegawatt")
-infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, MegaWatt>) = power * this
+infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, Megawatt>) = power * this
 @JvmName("hourTimesGigawatt")
-infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, GigaWatt>) = power * this
+infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, Gigawatt>) = power * this
+@JvmName("timeTimesMetricMetricAndImperialPowerWrapperTimesHour")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, MetricMetricAndImperialPowerWrapper>) = power * this
 @JvmName("timeTimesErgPerSecond")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, ErgPerSecond>) = power * this
 @JvmName("timeTimesPower")
@@ -83,6 +88,8 @@ infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeU
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, BritishThermalUnitPerMinute>) = power * this
 @JvmName("timeTimesBritishThermalUnitPerHour")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, BritishThermalUnitPerHour>) = power * this
+@JvmName("timeTimesImperialMetricAndImperialPowerWrapperTimesHour")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, ImperialMetricAndImperialPowerWrapper>) = power * this
 @JvmName("timeTimesImperialPower")
 infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, PowerUnit>) = power * this
 @JvmName("timeTimesPower")

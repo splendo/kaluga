@@ -22,7 +22,21 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MagneticInductionUnits = setOf(
+    Tesla,
+    Nanotesla,
+    Microtesla,
+    Millitesla,
+    Centitesla,
+    Decitesla,
+    Decatesla,
+    Hectotesla,
+    Kilotesla,
+    Megatesla,
+    Gigatesla,
+    Gauss
+)
 
 @Serializable
 sealed class MagneticInduction : AbstractScientificUnit<MeasurementType.MagneticInduction>(), MetricAndImperialScientificUnit<MeasurementType.MagneticInduction>
@@ -37,25 +51,25 @@ object Tesla : MagneticInduction(), MetricBaseUnit<MeasurementSystem.MetricAndIm
 }
 
 @Serializable
-object NanoTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Nano(Tesla)
+object Nanotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Nano(Tesla)
 @Serializable
-object MicroTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Micro(Tesla)
+object Microtesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Micro(Tesla)
 @Serializable
-object MilliTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Milli(Tesla)
+object Millitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Milli(Tesla)
 @Serializable
-object CentiTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Centi(Tesla)
+object Centitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Centi(Tesla)
 @Serializable
-object DeciTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deci(Tesla)
+object Decitesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deci(Tesla)
 @Serializable
-object DecaTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deca(Tesla)
+object Decatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Deca(Tesla)
 @Serializable
-object HectoTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Hecto(Tesla)
+object Hectotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Hecto(Tesla)
 @Serializable
-object KiloTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Kilo(Tesla)
+object Kilotesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Kilo(Tesla)
 @Serializable
-object MegaTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Mega(Tesla)
+object Megatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Mega(Tesla)
 @Serializable
-object GigaTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Giga(Tesla)
+object Gigatesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Giga(Tesla)
 @Serializable
 object Gauss : MagneticInduction() {
     private const val GAUSS_IN_TESLA = 10000.0
@@ -65,19 +79,3 @@ object Gauss : MagneticInduction() {
     override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
 }
-
-@JvmName("inductionFromFluxAndArea")
-fun <
-    FluxUnit : MagneticFlux,
-    AreaUnit : Area,
-    InductionUnit : MagneticInduction
-    >
-    InductionUnit.induction(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.MagneticInduction, InductionUnit> = byDividing(flux, area)
-
-@JvmName("maxwellDivSquareCentimeter")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Gauss.induction(this, area)
-@JvmName("fluxDivArea")
-infix operator fun <FluxUnit : MagneticFlux, AreaUnit : Area> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Tesla.induction(this, area)

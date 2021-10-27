@@ -22,7 +22,65 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MetricVolumeUnits = setOf(
+    CubicMeter,
+    CubicNanometer,
+    CubicMicrometer,
+    CubicMillimeter,
+    CubicCentimeter,
+    CubicDecimeter,
+    CubicDecameter,
+    CubicHectometer,
+    CubicKilometer,
+    CubicMegameter,
+    CubicGigameter,
+    Liter,
+    Nanoliter,
+    Microliter,
+    Milliliter,
+    Centiliter,
+    Deciliter,
+    Decaliter,
+    Hectoliter,
+    Kiloliter,
+    Megaliter,
+    Gigaliter
+)
+
+val ImperialVolumeUnits = setOf(
+    CubicInch,
+    CubicFoot,
+    CubicYard,
+    CubicMile
+)
+
+val USCustomaryVolumeUnits = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
+    setOf(
+    AcreFoot,
+    UsFluidDram,
+    UsFluidOunce,
+    UsCustomaryCup,
+    UsLegalCup,
+    UsLiquidPint,
+    UsLiquidQuart,
+    UsLiquidGallon
+)
+
+val UKImperialVolumeUnits = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
+    setOf(
+        ImperialFluidDram,
+        ImperialFluidOunce,
+        MetricCup,
+        ImperialPint,
+        ImperialQuart,
+        ImperialGallon
+    )
+
+val VolumeUnits: Set<Volume> = MetricVolumeUnits +
+    ImperialVolumeUnits +
+    USCustomaryVolumeUnits.filter { it !is USCustomaryImperialVolumeWrapper }.toSet() +
+    UKImperialVolumeUnits.filter { it !is UKImperialImperialVolumeWrapper }.toSet()
 
 @Serializable
 sealed class Volume : AbstractScientificUnit<MeasurementType.Volume>()
@@ -281,156 +339,3 @@ object ImperialGallon : UKImperialVolume() {
     override fun toSIUnit(value: Decimal): Decimal = Liter.toSIUnit(value * LITER_PER_GALLON.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Liter.fromSIUnit(value) / LITER_PER_GALLON.toDecimal()
 }
-
-@JvmName("volumeFromAreaAndHeight")
-fun <
-    HeightUnit : Length,
-    AreaUnit : Area,
-    VolumeUnit : Volume
-    > VolumeUnit.volume(
-    area: ScientificValue<MeasurementType.Area, AreaUnit>,
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
-) : ScientificValue<MeasurementType.Volume, VolumeUnit> = byMultiplying(area, height)
-
-@JvmName("volumeFromLengthWidthAndHeight")
-fun <
-    LengthUnit : Length,
-    WidthUnit : Length,
-    HeightUnit : Length,
-    VolumeUnit : Volume
-    > VolumeUnit.volume(
-    length: ScientificValue<MeasurementType.Length, LengthUnit>,
-    width: ScientificValue<MeasurementType.Length, WidthUnit>,
-    height: ScientificValue<MeasurementType.Length, HeightUnit>
-) : ScientificValue<MeasurementType.Volume, VolumeUnit> = volume(SquareMeter.area(length, width), height)
-
-@JvmName("volumeFromWeightAndDensity")
-fun <
-    WeightUnit : Weight,
-    VolumeUnit : Volume,
-    DensityUnit : Density
-    > VolumeUnit.volume(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    density: ScientificValue<MeasurementType.Density, DensityUnit>
-) = byDividing(weight, density)
-
-@JvmName("volumeFromEnergyAndPressure")
-fun <
-    EnergyUnit : Energy,
-    PressureUnit : Pressure,
-    VolumeUnit : Volume
-    > VolumeUnit.volume(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
-) = byDividing(energy, pressure)
-
-@JvmName("meterTimesSquareMeter")
-operator fun ScientificValue<MeasurementType.Length, Meter>.times(other: ScientificValue<MeasurementType.Area, SquareMeter>) = CubicMeter.volume(other, this)
-@JvmName("squareMeterTimesMeter")
-operator fun ScientificValue<MeasurementType.Area, SquareMeter>.times(other: ScientificValue<MeasurementType.Length, Meter>) = other * this
-@JvmName("nanometerTimesSquareNanometer")
-operator fun ScientificValue<MeasurementType.Length, Nanometer>.times(other: ScientificValue<MeasurementType.Area, SquareNanometer>) = CubicNanometer.volume(other, this)
-@JvmName("squareNanometerTimesNanometer")
-operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.times(other: ScientificValue<MeasurementType.Length, Nanometer>) = other * this
-@JvmName("micrometerTimesSquareMicrometer")
-operator fun ScientificValue<MeasurementType.Length, Micrometer>.times(other: ScientificValue<MeasurementType.Area, SquareMicrometer>) = CubicMicrometer.volume(other, this)
-@JvmName("squareMicrometerTimesMicrometer")
-operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.times(other: ScientificValue<MeasurementType.Length, Micrometer>) = other * this
-@JvmName("millimeterTimesSquareMillimeter")
-operator fun ScientificValue<MeasurementType.Length, Millimeter>.times(other: ScientificValue<MeasurementType.Area, SquareMillimeter>) = CubicMillimeter.volume(other, this)
-@JvmName("squareMillimeterTimesMillimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.times(other: ScientificValue<MeasurementType.Length, Millimeter>) = other * this
-@JvmName("centimeterTimesSquareCentimeter")
-operator fun ScientificValue<MeasurementType.Length, Centimeter>.times(other: ScientificValue<MeasurementType.Area, SquareCentimeter>) = CubicCentimeter.volume(other, this)
-@JvmName("squareCentimeterTimesCentimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.times(other: ScientificValue<MeasurementType.Length, Centimeter>) = other * this
-@JvmName("decimeterTimesSquareDecimeter")
-operator fun ScientificValue<MeasurementType.Length, Decimeter>.times(other: ScientificValue<MeasurementType.Area, SquareDecimeter>) = CubicDecimeter.volume(other, this)
-@JvmName("squareDecimeterTimesDecimeter")
-operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.times(other: ScientificValue<MeasurementType.Length, Decimeter>) = other * this
-@JvmName("decameterTimesSquareDecameter")
-operator fun ScientificValue<MeasurementType.Length, Decameter>.times(other: ScientificValue<MeasurementType.Area, SquareDecameter>) = CubicDecameter.volume(other, this)
-@JvmName("squareDecameterTimesDecameter")
-operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.times(other: ScientificValue<MeasurementType.Length, Decameter>) = other * this
-@JvmName("hectometerTimesSquarehectometer")
-operator fun ScientificValue<MeasurementType.Length, Hectometer>.times(other: ScientificValue<MeasurementType.Area, SquareHectometer>) = CubicHectometer.volume(other, this)
-@JvmName("squareHectometerTimesHectometer")
-operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.times(other: ScientificValue<MeasurementType.Length, Hectometer>) = other * this
-@JvmName("kilometerTimesSquareKilometer")
-operator fun ScientificValue<MeasurementType.Length, Kilometer>.times(other: ScientificValue<MeasurementType.Area, SquareKilometer>) = CubicKilometer.volume(other, this)
-@JvmName("squareKilometerTimesKilometer")
-operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.times(other: ScientificValue<MeasurementType.Length, Kilometer>) = other * this
-@JvmName("metricAreaTimesMetricLength")
-operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<MeasurementType.Area, AreaUnit>.times(height: ScientificValue<MeasurementType.Length, HeightUnit>) = CubicMeter.volume(this, height)
-@JvmName("metricLengthTimesMetricArea")
-operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
-@JvmName("inchTimesSquareInch")
-operator fun ScientificValue<MeasurementType.Length, Inch>.times(other: ScientificValue<MeasurementType.Area, SquareInch>) = CubicInch.volume(other, this)
-@JvmName("squareInchTimesInch")
-operator fun ScientificValue<MeasurementType.Area, SquareInch>.times(other: ScientificValue<MeasurementType.Length, Inch>) = other * this
-@JvmName("footTimesSquareFoot")
-operator fun ScientificValue<MeasurementType.Length, Foot>.times(other: ScientificValue<MeasurementType.Area, SquareFoot>) = CubicFoot.volume(other, this)
-@JvmName("squareFootTimesFoot")
-operator fun ScientificValue<MeasurementType.Area, SquareFoot>.times(other: ScientificValue<MeasurementType.Length, Foot>) = other * this
-@JvmName("yardTimesSquareYard")
-operator fun ScientificValue<MeasurementType.Length, Yard>.times(other: ScientificValue<MeasurementType.Area, SquareYard>) = CubicYard.volume(other, this)
-@JvmName("squareYardTimesYard")
-operator fun ScientificValue<MeasurementType.Area, SquareYard>.times(other: ScientificValue<MeasurementType.Length, Yard>) = other * this
-@JvmName("mileTimesSquareMile")
-operator fun ScientificValue<MeasurementType.Length, Mile>.times(other: ScientificValue<MeasurementType.Area, SquareMile>) = CubicMile.volume(other, this)
-@JvmName("squareMileTimesMile")
-operator fun ScientificValue<MeasurementType.Area, SquareMile>.times(other: ScientificValue<MeasurementType.Length, Mile>) = other * this
-@JvmName("footTimesAcre")
-operator fun ScientificValue<MeasurementType.Length, Foot>.times(other: ScientificValue<MeasurementType.Area, Acre>) = AcreFoot.volume(other, this)
-@JvmName("acreTimesFoot")
-operator fun ScientificValue<MeasurementType.Area, Acre>.times(other: ScientificValue<MeasurementType.Length, Foot>) = other * this
-@JvmName("imperialAreaTimesImperialLength")
-operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Area, AreaUnit>.times(height: ScientificValue<MeasurementType.Length, HeightUnit>) = CubicFoot.volume(this, height)
-@JvmName("imperialLengthTimesImperialArea")
-operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
-@JvmName("areaTimesLength")
-operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<MeasurementType.Area, AreaUnit>.times(height: ScientificValue<MeasurementType.Length, HeightUnit>) = CubicMeter.volume(this, height)
-@JvmName("lengthTimesArea")
-operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
-
-@JvmName("metricWeightDivMetricDensity")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, MetricDensity>) = density.unit.per.volume(this, density)
-@JvmName("imperialWeightDivImperialDensity")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = density.unit.per.volume(this, density)
-@JvmName("ukImperialWeightDivUKImperialDensity")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) = density.unit.per.volume(this, density)
-@JvmName("usCustomaryWeightDivUSCustomaryDensity")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = density.unit.per.volume(this, density)
-@JvmName("weightDivDensity")
-infix operator fun <WeightUnit : Weight, DensityUnit : Density> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, DensityUnit>) = CubicMeter.volume(this, density)
-
-@JvmName("ergDivBarye")
-operator fun ScientificValue<MeasurementType.Energy, Erg>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = CubicCentimeter.volume(this, pressure)
-@JvmName("ergMultipleDivBarye")
-operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = CubicCentimeter.volume(this, pressure)
-@JvmName("ergDivBaryeMultiple")
-operator fun <BaryeUnit> ScientificValue<MeasurementType.Energy, Erg>.div(pressure: ScientificValue<MeasurementType.Pressure, BaryeUnit>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> = CubicCentimeter.volume(this, pressure)
-@JvmName("ergMultipleDivBaryeMultiple")
-operator fun <ErgUnit, BaryeUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, BaryeUnit>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg>, BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> = CubicCentimeter.volume(this, pressure)
-@JvmName("metricEnergyDivMetricPressure")
-operator fun <EnergyUnit : MetricEnergy, PressureUnit : MetricPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicMeter.volume(this, pressure)
-@JvmName("footPoundalDivPoundSquareFoot")
-operator fun ScientificValue<MeasurementType.Energy, FootPoundal>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFoot>) = CubicFoot.volume(this, pressure)
-@JvmName("inchPoundForceDivPoundSquareInch")
-operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = CubicInch.volume(this, pressure)
-@JvmName("inchOunceForceDivPoundSquareInch")
-operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = CubicInch.volume(this, pressure)
-@JvmName("imperialEnergyDivImperialPressure")
-operator fun <EnergyUnit : ImperialEnergy, PressureUnit : ImperialPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.volume(this, pressure)
-@JvmName("metricAndImperialEnergyDivImperialPressure")
-operator fun <EnergyUnit : MetricAndImperialEnergy, PressureUnit : ImperialPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.volume(this, pressure)
-@JvmName("imperialEnergyDivUKImperialPressure")
-operator fun <EnergyUnit : ImperialEnergy, PressureUnit : UKImperialPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.ukImperial.volume(this, pressure)
-@JvmName("metricAndImperialEnergyDivUKImperialPressure")
-operator fun <EnergyUnit : MetricAndImperialEnergy, PressureUnit : UKImperialPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.ukImperial.volume(this, pressure)
-@JvmName("imperialEnergyDivUSCustomaryPressure")
-operator fun <EnergyUnit : ImperialEnergy, PressureUnit : USCustomaryPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.usCustomary.volume(this, pressure)
-@JvmName("metricAndImperialEnergyDivUSCustomaryPressure")
-operator fun <EnergyUnit : MetricAndImperialEnergy, PressureUnit : USCustomaryPressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicFoot.usCustomary.volume(this, pressure)
-@JvmName("energyDivPressure")
-operator fun <EnergyUnit : Energy, PressureUnit : Pressure> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = CubicMeter.volume(this, pressure)

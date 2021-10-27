@@ -19,7 +19,20 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val LuminousIntensityUnits = setOf(
+    Candela,
+    Nanocandela,
+    Microcandela,
+    Millicandela,
+    Centicandela,
+    Decicandela,
+    Decacandela,
+    Hectocandela,
+    Kilocandela,
+    Megacandela,
+    Gigacandela
+)
 
 @Serializable
 sealed class LuminousIntensity : AbstractScientificUnit<MeasurementType.LuminousIntensity>(), MetricAndImperialScientificUnit<MeasurementType.LuminousIntensity>
@@ -34,36 +47,22 @@ object Candela : LuminousIntensity(), MetricBaseUnit<MeasurementSystem.MetricAnd
 }
 
 @Serializable
-object NanoCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Nano(Candela)
+object Nanocandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Nano(Candela)
 @Serializable
-object MicroCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Micro(Candela)
+object Microcandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Micro(Candela)
 @Serializable
-object MilliCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Milli(Candela)
+object Millicandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Milli(Candela)
 @Serializable
-object CentiCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Centi(Candela)
+object Centicandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Centi(Candela)
 @Serializable
-object DeciCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Deci(Candela)
+object Decicandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Deci(Candela)
 @Serializable
-object DecaCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Deca(Candela)
+object Decacandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Deca(Candela)
 @Serializable
-object HectoCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Hecto(Candela)
+object Hectocandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Hecto(Candela)
 @Serializable
-object KiloCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Kilo(Candela)
+object Kilocandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Kilo(Candela)
 @Serializable
-object MegaCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Mega(Candela)
+object Megacandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Mega(Candela)
 @Serializable
-object GigaCandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Giga(Candela)
-
-@JvmName("luminousFluxFromIntensityAndSolidAngle")
-fun <
-    IntensityUnit : LuminousIntensity,
-    SolidAngleUnit : SolidAngle,
-    FluxUnit : LuminousFlux
-    >
-    IntensityUnit.intensity(
-    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
-    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
-) : ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit> = byDividing(flux, solidAngle)
-
-@JvmName("luminousFluxDivSolidAngle")
-infix operator fun <FluxUnit : LuminousFlux, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>) = Candela.intensity(this, solidAngle)
+object Gigacandela : LuminousIntensity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.LuminousIntensity, Candela> by Giga(Candela)

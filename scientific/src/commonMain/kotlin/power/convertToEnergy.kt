@@ -32,20 +32,22 @@ import com.splendo.kaluga.scientific.ErgPerSecond
 import com.splendo.kaluga.scientific.FootPoundForce
 import com.splendo.kaluga.scientific.FootPoundForcePerMinute
 import com.splendo.kaluga.scientific.FootPoundForcePerSecond
-import com.splendo.kaluga.scientific.GigaWatt
+import com.splendo.kaluga.scientific.Gigawatt
 import com.splendo.kaluga.scientific.GigawattHour
 import com.splendo.kaluga.scientific.Hectowatt
 import com.splendo.kaluga.scientific.HectowattHour
 import com.splendo.kaluga.scientific.Horsepower
 import com.splendo.kaluga.scientific.HorsepowerHour
 import com.splendo.kaluga.scientific.Hour
+import com.splendo.kaluga.scientific.ImperialMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.ImperialPower
 import com.splendo.kaluga.scientific.Joule
 import com.splendo.kaluga.scientific.Kilowatt
 import com.splendo.kaluga.scientific.KilowattHour
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MegaWatt
+import com.splendo.kaluga.scientific.Megawatt
 import com.splendo.kaluga.scientific.MegawattHour
+import com.splendo.kaluga.scientific.MetricMetricAndImperialPowerWrapper
 import com.splendo.kaluga.scientific.MetricPower
 import com.splendo.kaluga.scientific.Microwatt
 import com.splendo.kaluga.scientific.MicrowattHour
@@ -58,6 +60,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.Watt
 import com.splendo.kaluga.scientific.WattHour
+import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.energy.energy
 import kotlin.jvm.JvmName
 
@@ -80,9 +83,11 @@ infix operator fun ScientificValue<MeasurementType.Power, Hectowatt>.times(time:
 @JvmName("kilowattTimesHour")
 infix operator fun ScientificValue<MeasurementType.Power, Kilowatt>.times(time: ScientificValue<MeasurementType.Time, Hour>) = KilowattHour.energy(this, time)
 @JvmName("megawattTimesHour")
-infix operator fun ScientificValue<MeasurementType.Power, MegaWatt>.times(time: ScientificValue<MeasurementType.Time, Hour>) = MegawattHour.energy(this, time)
+infix operator fun ScientificValue<MeasurementType.Power, Megawatt>.times(time: ScientificValue<MeasurementType.Time, Hour>) = MegawattHour.energy(this, time)
 @JvmName("gigawattTimesHour")
-infix operator fun ScientificValue<MeasurementType.Power, GigaWatt>.times(time: ScientificValue<MeasurementType.Time, Hour>) = GigawattHour.energy(this, time)
+infix operator fun ScientificValue<MeasurementType.Power, Gigawatt>.times(time: ScientificValue<MeasurementType.Time, Hour>) = GigawattHour.energy(this, time)
+@JvmName("metricMetricAndImperialPowerWrapperTimesHour")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, MetricMetricAndImperialPowerWrapper>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = convert(unit.metricAndImperialPower) * time
 @JvmName("ergPerSecondTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, ErgPerSecond>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Erg.energy(this, time)
 @JvmName("powerTimesTime")
@@ -99,6 +104,8 @@ infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, Brit
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, BritishThermalUnitPerMinute>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = BritishThermalUnit.energy(this, time)
 @JvmName("britishThermalUnitPerHourTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, BritishThermalUnitPerHour>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = BritishThermalUnit.energy(this, time)
+@JvmName("imperialMetricAndImperialPowerWrapperTimesHour")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, ImperialMetricAndImperialPowerWrapper>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = convert(unit.metricAndImperialPower) * time
 @JvmName("imperialPowerTimesTime")
 infix operator fun <PowerUnit : ImperialPower, TimeUnit : Time> ScientificValue<MeasurementType.Power, PowerUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = FootPoundForce.energy(this, time)
 @JvmName("powerTimesTime")

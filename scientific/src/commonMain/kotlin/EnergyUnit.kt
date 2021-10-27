@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 val MetricAndImperialEnergyUnits = setOf(
     WattHour,
@@ -92,7 +91,7 @@ val ImperialEnergyUnits = setOf(
     BritishThermalUnit.Thermal
 ) + MetricAndImperialEnergyUnits.map { it.imperial }.toSet()
 
-val EnergyUnits = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
+val EnergyUnits: Set<Energy> = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 @Serializable
 sealed class Energy : AbstractScientificUnit<MeasurementType.Energy>()
@@ -306,7 +305,7 @@ object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSy
     }
 
     @Serializable
-    object Thermal : SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie, "-th")
+    object Thermal : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie, "-th")
 }
 
 @Serializable

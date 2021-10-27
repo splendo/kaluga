@@ -25,6 +25,10 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val MetricAndUkImperialTemperatureUnits = setOf(Kelvin, Celsius)
+val USCustomaryTemperatureUnits = setOf(Rankine, Fahrenheit)
+val TemperatureUnits: Set<Temperature> = MetricAndUkImperialTemperatureUnits + USCustomaryTemperatureUnits
+
 @Serializable
 sealed class Temperature : AbstractScientificUnit<MeasurementType.Temperature>() {
     override val type = MeasurementType.Temperature

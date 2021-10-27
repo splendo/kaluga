@@ -24,6 +24,31 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
+val IonizingRadiationEquivalentDoseUnits = setOf(
+    Sievert,
+    Nanosievert,
+    Microsievert,
+    Millisievert,
+    Centisievert,
+    Decisievert,
+    Decasievert,
+    Hectosievert,
+    Kilosievert,
+    Megasievert,
+    Gigasievert,
+    RoentgenEquivalentMan,
+    NanoroentgenEquivalentMan,
+    MicroroentgenEquivalentMan,
+    MilliroentgenEquivalentMan,
+    CentiroentgenEquivalentMan,
+    DeciroentgenEquivalentMan,
+    DecaroentgenEquivalentMan,
+    HectoroentgenEquivalentMan,
+    KiloroentgenEquivalentMan,
+    MegaroentgenEquivalentMan,
+    GigaroentgenEquivalentMan
+)
+
 @Serializable
 sealed class IonizingRadiationEquivalentDose : AbstractScientificUnit<MeasurementType.IonizingRadiationEquivalentDose>(), MetricAndImperialScientificUnit<MeasurementType.IonizingRadiationEquivalentDose>
 
@@ -37,25 +62,25 @@ object Sievert : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSy
 }
 
 @Serializable
-object NanoSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Nano(Sievert)
+object Nanosievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Nano(Sievert)
 @Serializable
-object MicroSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Micro(Sievert)
+object Microsievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Micro(Sievert)
 @Serializable
-object MilliSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Milli(Sievert)
+object Millisievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Milli(Sievert)
 @Serializable
-object CentiSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Centi(Sievert)
+object Centisievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Centi(Sievert)
 @Serializable
-object DeciSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Deci(Sievert)
+object Decisievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Deci(Sievert)
 @Serializable
-object DecaSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Deca(Sievert)
+object Decasievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Deca(Sievert)
 @Serializable
-object HectoSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Hecto(Sievert)
+object Hectosievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Hecto(Sievert)
 @Serializable
-object KiloSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Kilo(Sievert)
+object Kilosievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Kilo(Sievert)
 @Serializable
-object MegaSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Mega(Sievert)
+object Megasievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Mega(Sievert)
 @Serializable
-object GigaSievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Giga(Sievert)
+object Gigasievert : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, Sievert> by Giga(Sievert)
 
 @Serializable
 object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose> {
@@ -68,40 +93,22 @@ object RoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricBaseUnit
 }
 
 @Serializable
-object NanoRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Nano(RoentgenEquivalentMan)
+object NanoroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Nano(RoentgenEquivalentMan)
 @Serializable
-object MicroRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Micro(RoentgenEquivalentMan)
+object MicroroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Micro(RoentgenEquivalentMan)
 @Serializable
-object MilliRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Milli(RoentgenEquivalentMan)
+object MilliroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Milli(RoentgenEquivalentMan)
 @Serializable
-object CentiRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Centi(RoentgenEquivalentMan)
+object CentiroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Centi(RoentgenEquivalentMan)
 @Serializable
-object DeciRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Deci(RoentgenEquivalentMan)
+object DeciroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Deci(RoentgenEquivalentMan)
 @Serializable
-object DecaRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Deca(RoentgenEquivalentMan)
+object DecaroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Deca(RoentgenEquivalentMan)
 @Serializable
-object HectoRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Hecto(RoentgenEquivalentMan)
+object HectoroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Hecto(RoentgenEquivalentMan)
 @Serializable
-object KiloRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Kilo(RoentgenEquivalentMan)
+object KiloroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Kilo(RoentgenEquivalentMan)
 @Serializable
-object MegaRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Mega(RoentgenEquivalentMan)
+object MegaroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Mega(RoentgenEquivalentMan)
 @Serializable
-object GigaRoentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Giga(RoentgenEquivalentMan)
-
-@JvmName("equivalentDoseFromEnergyAndWeight")
-fun <
-    EnergyUnit : Energy,
-    WeightUnit : Weight,
-    EquivalentDoseUnit : IonizingRadiationEquivalentDose
-    >
-    EquivalentDoseUnit.equivalentDose(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
-) : ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit> = byDividing(energy, weight)
-
-@JvmName("ergEquivalentDoseByGram")
-infix fun ScientificValue<MeasurementType.Energy, Erg>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) = RoentgenEquivalentMan.equivalentDose(this, gram)
-@JvmName("ergMultipleEquivalentDoseByGram")
-infix fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = RoentgenEquivalentMan.equivalentDose(this, gram)
-@JvmName("energyEquivalentDoseByWeight")
-infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<MeasurementType.Energy, EnergyUnit>.equivalentDoseBy(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Sievert.equivalentDose(this, weight)
+object GigaroentgenEquivalentMan : IonizingRadiationEquivalentDose(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> by Giga(RoentgenEquivalentMan)

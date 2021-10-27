@@ -25,6 +25,32 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 import kotlin.math.ln
 
+val RadioactivityUnits = setOf(
+    Becquerel,
+    Nanobecquerel,
+    Microbecquerel,
+    Millibecquerel,
+    Centibecquerel,
+    Decibecquerel,
+    Decabecquerel,
+    Hectobecquerel,
+    Kilobecquerel,
+    Megabecquerel,
+    Gigabecquerel,
+    Rutherford,
+    Curie,
+    Nanocurie,
+    Microcurie,
+    Millicurie,
+    Centicurie,
+    Decicurie,
+    Decacurie,
+    Hectocurie,
+    Kilocurie,
+    Megacurie,
+    Gigacurie
+)
+
 @Serializable
 sealed class Radioactivity : AbstractScientificUnit<MeasurementType.Radioactivity>(), MetricAndImperialScientificUnit<MeasurementType.Radioactivity>
 
@@ -38,25 +64,25 @@ object Becquerel : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndIm
 }
 
 @Serializable
-object NanoBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Nano(Becquerel)
+object Nanobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Nano(Becquerel)
 @Serializable
-object MicroBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Micro(Becquerel)
+object Microbecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Micro(Becquerel)
 @Serializable
-object MilliBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Milli(Becquerel)
+object Millibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Milli(Becquerel)
 @Serializable
-object CentiBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Centi(Becquerel)
+object Centibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Centi(Becquerel)
 @Serializable
-object DeciBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Deci(Becquerel)
+object Decibecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Deci(Becquerel)
 @Serializable
-object DecaBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Deca(Becquerel)
+object Decabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Deca(Becquerel)
 @Serializable
-object HectoBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Hecto(Becquerel)
+object Hectobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Hecto(Becquerel)
 @Serializable
-object KiloBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Kilo(Becquerel)
+object Kilobecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Kilo(Becquerel)
 @Serializable
-object MegaBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Mega(Becquerel)
+object Megabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Mega(Becquerel)
 @Serializable
-object GigaBecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Giga(Becquerel)
+object Gigabecquerel : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Becquerel> by Giga(Becquerel)
 
 @Serializable
 object Rutherford : Radioactivity() {
@@ -79,63 +105,22 @@ object Curie : Radioactivity(), MetricBaseUnit<MeasurementSystem.MetricAndImperi
 }
 
 @Serializable
-object NanoCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Nano(Curie)
+object Nanocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Nano(Curie)
 @Serializable
-object MicroCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Micro(Curie)
+object Microcurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Micro(Curie)
 @Serializable
-object MilliCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Milli(Curie)
+object Millicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Milli(Curie)
 @Serializable
-object CentiCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Centi(Curie)
+object Centicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Centi(Curie)
 @Serializable
-object DeciCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Deci(Curie)
+object Decicurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Deci(Curie)
 @Serializable
-object DecaCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Deca(Curie)
+object Decacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Deca(Curie)
 @Serializable
-object HectoCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Hecto(Curie)
+object Hectocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Hecto(Curie)
 @Serializable
-object KiloCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Kilo(Curie)
+object Kilocurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Kilo(Curie)
 @Serializable
-object MegaCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Mega(Curie)
+object Megacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Mega(Curie)
 @Serializable
-object GigaCurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Giga(Curie)
-
-fun <
-    TimeUnit : Time,
-    RadioactivityUnit : Radioactivity
-    > RadioactivityUnit.radioactivity(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = byInverting(time)
-
-fun <
-    RadioactivityUnit : Radioactivity,
-    TimeUnit : Time
-    > RadioactivityUnit.radioactivity(decays: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = (decays / per.convertValue(Second))(Becquerel).convert(this)
-
-
-fun <
-    TimeUnit : Time,
-    RadioactivityUnit : Radioactivity
-    > TimeUnit.time(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = byInverting(radioactivity)
-
-fun <
-    RadioactivityUnit : Radioactivity,
-    TimeUnit : Time
-    > TimeUnit.time(decay: Decimal, at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = (decay / at.convertValue(Becquerel))(Second).convert(this)
-
-fun <
-    AmountOfSubstanceUnit : AmountOfSubstance,
-    TimeUnit : Time,
-    RadioactivityUnit : Radioactivity
-    > RadioactivityUnit.radioactivity(
-    substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
-    halfLife: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = byDividing(ScientificValue(substance.value * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife)
-
-@JvmName("decimalDivTime")
-infix fun <TimeUnit : Time> Decimal.decaysPer(time: ScientificValue<MeasurementType.Time, Time>): ScientificValue<MeasurementType.Radioactivity, Becquerel> = Becquerel.radioactivity (this, time)
-
-@JvmName("radioactivityTimesTime")
-operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): Decimal = convertValue(Becquerel) * time.convertValue(Second)
-@JvmName("timeTimesRadioactivity")
-operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): Decimal = radioactivity * this
-
-@JvmName("decimalDivRadioactivity")
-operator fun <RadioactivityUnit : Radioactivity> Decimal.div(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, Second> = Second.time(this, radioactivity)
+object Gigacurie : Radioactivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Radioactivity, Curie> by Giga(Curie)
