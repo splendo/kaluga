@@ -103,7 +103,7 @@ class BluetoothCharacteristicNotificationTest : BluetoothFlowTest<DeviceState>()
             device.takeAndChangeState { deviceState ->
                 println("state: $deviceState")
                 when (deviceState) {
-                    is DeviceState.Disconnected -> deviceState.connect(deviceState)
+                    is DeviceState.Disconnected.NotConnected -> deviceState.connect(deviceState)
                     else -> fail("$deviceState is not expected")
                 }
             }
