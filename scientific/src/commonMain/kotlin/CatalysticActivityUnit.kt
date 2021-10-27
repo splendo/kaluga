@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 val CatalysticActivityUnits = setOf(
     Katal,
@@ -67,30 +66,3 @@ object Kilokatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.Me
 object Megakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Mega(Katal)
 @Serializable
 object Gigakatal : CatalysticActivity(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.CatalysticActivity, Katal> by Giga(Katal)
-
-@JvmName("catalysticActivityFromAmountOfSubstanceAndTime")
-fun <
-    AmountOfSubstanceUnit : AmountOfSubstance,
-    TimeUnit : Time,
-    CatalysisUnit : CatalysticActivity
-    >
-    CatalysisUnit.catalysticActivity(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(amountOfSubstance, time)
-
-@JvmName("timeFromAmountOfSubstanceAndCatalysticActivity")
-fun <
-    AmountOfSubstanceUnit : AmountOfSubstance,
-    TimeUnit : Time,
-    CatalysisUnit : CatalysticActivity
-    >
-    TimeUnit.time(
-    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>
-) = byDividing(amountOfSubstance, catalysis)
-
-@JvmName("amountOfSubstanceDivTime")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Katal.catalysticActivity(this, time)
-@JvmName("amountOfSubstanceDivCatalysticActivity")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>) = Second.time(this, catalysis)

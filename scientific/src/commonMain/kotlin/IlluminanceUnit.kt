@@ -21,6 +21,37 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
+val MetricIlluminanceUnits = setOf(
+    Lux,
+    Nanolux,
+    Microlux,
+    Millilux,
+    Centilux,
+    Decilux,
+    Decalux,
+    Hectolux,
+    Kilolux,
+    Megalux,
+    Gigalux,
+    Phot,
+    Nanophot,
+    Microphot,
+    Milliphot,
+    Centiphot,
+    Deciphot,
+    Decaphot,
+    Hectophot,
+    Kilophot,
+    Megaphot,
+    Gigaphot
+)
+
+val ImperialIlluminanceUnits = setOf(
+    FootCandle
+)
+
+val IlluminanceUnits: Set<Illuminance> = MetricIlluminanceUnits + ImperialIlluminanceUnits
+
 @Serializable
 sealed class Illuminance : AbstractScientificUnit<MeasurementType.Illuminance>()
 
@@ -39,25 +70,25 @@ object Lux : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Measu
 }
 
 @Serializable
-object NanoLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Nano(Lux)
+object Nanolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Nano(Lux)
 @Serializable
-object MicroLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Micro(Lux)
+object Microlux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Micro(Lux)
 @Serializable
-object MilliLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Milli(Lux)
+object Millilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Milli(Lux)
 @Serializable
-object CentiLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Centi(Lux)
+object Centilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Centi(Lux)
 @Serializable
-object DeciLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deci(Lux)
+object Decilux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deci(Lux)
 @Serializable
-object DecaLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deca(Lux)
+object Decalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Deca(Lux)
 @Serializable
-object HectoLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Hecto(Lux)
+object Hectolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Hecto(Lux)
 @Serializable
-object KiloLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Kilo(Lux)
+object Kilolux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Kilo(Lux)
 @Serializable
-object MegaLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Mega(Lux)
+object Megalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Mega(Lux)
 @Serializable
-object GigaLux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Giga(Lux)
+object Gigalux : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Lux> by Giga(Lux)
 
 @Serializable
 object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Illuminance> {
@@ -69,25 +100,25 @@ object Phot : MetricIlluminance(), MetricBaseUnit<MeasurementSystem.Metric, Meas
 }
 
 @Serializable
-object NanoPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Nano(Phot)
+object Nanophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Nano(Phot)
 @Serializable
-object MicroPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Micro(Phot)
+object Microphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Micro(Phot)
 @Serializable
-object MilliPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Milli(Phot)
+object Milliphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Milli(Phot)
 @Serializable
-object CentiPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Centi(Phot)
+object Centiphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Centi(Phot)
 @Serializable
-object DeciPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deci(Phot)
+object Deciphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deci(Phot)
 @Serializable
-object DecaPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deca(Phot)
+object Decaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Deca(Phot)
 @Serializable
-object HectoPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Hecto(Phot)
+object Hectophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Hecto(Phot)
 @Serializable
-object KiloPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Kilo(Phot)
+object Kilophot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Kilo(Phot)
 @Serializable
-object MegaPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Mega(Phot)
+object Megaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Mega(Phot)
 @Serializable
-object GigaPhot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Giga(Phot)
+object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Illuminance, Phot> by Giga(Phot)
 
 @Serializable
 object FootCandle : ImperialIlluminance() {
@@ -97,20 +128,3 @@ object FootCandle : ImperialIlluminance() {
     override fun fromSIUnit(value: Decimal): Decimal = SquareFoot.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(value)
 }
-
-fun <
-    FluxUnit : LuminousFlux,
-    AreaUnit : Area,
-    IlluminanceUnit : Illuminance
-    >
-    IlluminanceUnit.illuminance(
-    flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-): ScientificValue<MeasurementType.Illuminance, IlluminanceUnit> = byDividing(flux, area)
-
-@JvmName("lumenDivSquareCentimeter")
-infix fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(squareCentimeter: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Phot.illuminance(this, squareCentimeter)
-@JvmName("lumenDivMetricArea")
-infix fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lux.illuminance(this, area)
-@JvmName("lumenDivImperialArea")
-infix fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = FootCandle.illuminance(this, area)

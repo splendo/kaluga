@@ -183,7 +183,7 @@ object PoundSquareInch : ImperialPressure() {
 }
 
 @Serializable
-object PoundSquareFeet : ImperialPressure() {
+object PoundSquareFoot : ImperialPressure() {
     override val symbol: String = "${PoundForce.symbol}/${SquareFoot.symbol}"
     override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / SquareFoot.fromSIUnit(1.toDecimal())
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
@@ -229,7 +229,7 @@ object KipSquareInch : USCustomaryPressure() {
 }
 
 @Serializable
-object KipSquareFeet : USCustomaryPressure() {
+object KipSquareFoot : USCustomaryPressure() {
     override val symbol: String = "${Kip.symbol}/${SquareFoot.symbol}"
     override fun fromSIUnit(value: Decimal): Decimal = Kip.fromSIUnit(value) / SquareFoot.fromSIUnit(1.toDecimal())
     override fun toSIUnit(value: Decimal): Decimal = Kip.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
@@ -242,7 +242,7 @@ object USTonSquareInch : USCustomaryPressure() {
 }
 
 @Serializable
-object USTonSquareFeet : USCustomaryPressure() {
+object USTonSquareFoot : USCustomaryPressure() {
     override val symbol: String = "${UsTonForce.symbol}/${SquareFoot.symbol}"
     override fun fromSIUnit(value: Decimal): Decimal = UsTonForce.fromSIUnit(value) / SquareFoot.fromSIUnit(1.toDecimal())
     override fun toSIUnit(value: Decimal): Decimal = UsTonForce.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
@@ -255,66 +255,84 @@ object ImperialTonSquareInch : UKImperialPressure() {
 }
 
 @Serializable
-object ImperialTonSquareFeet : UKImperialPressure() {
+object ImperialTonSquareFoot : UKImperialPressure() {
     override val symbol: String = "${ImperialTonForce.symbol}/${SquareFoot.symbol}"
     override fun fromSIUnit(value: Decimal): Decimal = ImperialTonForce.fromSIUnit(value) / SquareFoot.fromSIUnit(1.toDecimal())
     override fun toSIUnit(value: Decimal): Decimal = ImperialTonForce.toSIUnit(value * SquareFoot.fromSIUnit(1.toDecimal()))
 }
 
+@JvmName("pressureFromForceAndArea")
 fun <
-    ForceUnit : ScientificUnit<MeasurementType.Force>,
-    AreaUnit : ScientificUnit<MeasurementType.Area>,
-    PressureUnit : ScientificUnit<MeasurementType.Pressure>
+    ForceUnit : Force,
+    AreaUnit : Area,
+    PressureUnit : Pressure
     > PressureUnit.pressure(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Pressure, PressureUnit> = byDividing(force, area)
+) = byDividing(force, area)
 
-@JvmName("newtonDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Newton>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("newtonMultipleDivMetricArea")
-operator fun <N : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton>, Area : MetricArea> ScientificValue<MeasurementType.Force, N>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
+@JvmName("pressureFromEnergyAndVolume")
+fun <
+    EnergyUnit : Energy,
+    VolumeUnit : Volume,
+    PressureUnit : Pressure
+    > PressureUnit.pressure(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
+) = byDividing(energy, volume)
+
 @JvmName("dyneDivMetricArea")
 operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, Dyne>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
 @JvmName("dyneMultipleDivMetricArea")
-operator fun <D : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne>,Area : MetricArea> ScientificValue<MeasurementType.Force, D>.div(area: ScientificValue<MeasurementType.Area, Area>) = Barye.pressure(this, area)
-@JvmName("kilogramForceDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, KilogramForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("gramForceDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, GramForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("milligramForceDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, MilligramForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("tonneForceDivMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Force, TonneForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
-@JvmName("poundalDivSquareInch")
-operator fun ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, SquareInch>) = PoundSquareInch.pressure(this, area)
+operator fun <DyneUnit, Area : MetricArea> ScientificValue<MeasurementType.Force, DyneUnit>.div(area: ScientificValue<MeasurementType.Area, Area>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = Barye.pressure(this, area)
+@JvmName("metricForceDivMetricArea")
+operator fun <ForceUnit : MetricForce, Area : MetricArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, Area>) = Pascal.pressure(this, area)
 @JvmName("poundalDivSquareFoot")
-operator fun ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFeet.pressure(this, area)
-@JvmName("poundForceDivSquareInch")
-operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, SquareInch>) = PoundSquareInch.pressure(this, area)
+operator fun ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFoot.pressure(this, area)
+@JvmName("poundalDivImperialArea")
+operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, Area>) = PoundSquareInch.pressure(this, area)
 @JvmName("poundForceDivSquareFoot")
-operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFeet.pressure(this, area)
+operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFoot.pressure(this, area)
 @JvmName("poundForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = PoundSquareInch.pressure(this, area)
 @JvmName("ounceForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, OunceForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = OunceSquareInch.pressure(this, area)
 @JvmName("grainForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, GrainForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = OunceSquareInch.pressure(this, area)
-@JvmName("kipDivSquareInch")
-operator fun ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, SquareInch>) = KipSquareInch.pressure(this, area)
 @JvmName("kipDivSquareFoot")
-operator fun ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = KipSquareFeet.pressure(this, area)
+operator fun ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = KipSquareFoot.pressure(this, area)
 @JvmName("kipDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, Area>) = KipSquareInch.pressure(this, area)
-@JvmName("usTonForceDivSquareInch")
-operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareInch>) = USTonSquareInch.pressure(this, area)
 @JvmName("usTonForceDivSquareFoot")
-operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = USTonSquareFeet.pressure(this, area)
+operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = USTonSquareFoot.pressure(this, area)
 @JvmName("usTonForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = USTonSquareInch.pressure(this, area)
-@JvmName("imperialTonForceDivSquareInch")
-operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareInch>) = ImperialTonSquareInch.pressure(this, area)
 @JvmName("imperialTonForceDivSquareFoot")
-operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = ImperialTonSquareFeet.pressure(this, area)
+operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = ImperialTonSquareFoot.pressure(this, area)
 @JvmName("imperialTonForceDivImperialArea")
 operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonSquareInch.pressure(this, area)
+
+@JvmName("ergDivCubicCentimeter")
+operator fun ScientificValue<MeasurementType.Energy, Erg>.div(volume: ScientificValue<MeasurementType.Volume, CubicCentimeter>) = Barye.pressure(this, volume)
+@JvmName("ergMultipleDivCubicCentimeter")
+operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(volume: ScientificValue<MeasurementType.Volume, CubicCentimeter>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Barye.pressure(this, volume)
+@JvmName("metricEnergyDivMetricVolume")
+operator fun <EnergyUnit : MetricEnergy, VolumeUnit: MetricVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = Pascal.pressure(this, volume)
+@JvmName("footPoundalDivCubicFoot")
+operator fun ScientificValue<MeasurementType.Energy, FootPoundal>.div(volume: ScientificValue<MeasurementType.Volume, CubicFoot>) = PoundSquareFoot.pressure(this, volume)
+@JvmName("footPoundForceDivCubicFoot")
+operator fun ScientificValue<MeasurementType.Energy, FootPoundForce>.div(volume: ScientificValue<MeasurementType.Volume, CubicFoot>) = PoundSquareFoot.pressure(this, volume)
+@JvmName("imperialEnergyDivImperialVolume")
+operator fun <EnergyUnit : ImperialEnergy, VolumeUnit: ImperialVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("metricAndImperialEnergyDivImperialVolume")
+operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit: ImperialVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("imperialEnergyDivUKImperialVolume")
+operator fun <EnergyUnit : ImperialEnergy, VolumeUnit: UKImperialVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("imperialEnergyDivUSCustomaryVolume")
+operator fun <EnergyUnit : ImperialEnergy, VolumeUnit: USCustomaryVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("metricAndImperialEnergyDivUKImperialVolume")
+operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit: UKImperialVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("metricAndImperialEnergyDivUSCustomaryVolume")
+operator fun <EnergyUnit : MetricAndImperialEnergy, VolumeUnit: USCustomaryVolume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = PoundSquareInch.pressure(this, volume)
+@JvmName("energyDivVolume")
+operator fun <EnergyUnit : Energy, VolumeUnit: Volume> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = Pascal.pressure(this, volume)

@@ -19,7 +19,21 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val ElectricConductanceUnits = setOf(
+    Siemens,
+    Nanosiemens,
+    Microsiemens,
+    Millisiemens,
+    Centisiemens,
+    Decisiemens,
+    Decasiemens,
+    Hectosiemens,
+    Kilosiemens,
+    Megasiemens,
+    Gigasiemens,
+    Absiemens
+)
 
 @Serializable
 sealed class ElectricConductance : AbstractScientificUnit<MeasurementType.ElectricConductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricConductance>
@@ -34,55 +48,26 @@ object Siemens : ElectricConductance(), MetricBaseUnit<MeasurementSystem.MetricA
 }
 
 @Serializable
-object NanoSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Nano(Siemens)
+object Nanosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Nano(Siemens)
 @Serializable
-object MicroSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Micro(Siemens)
+object Microsiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Micro(Siemens)
 @Serializable
-object MilliSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Milli(Siemens)
+object Millisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Milli(Siemens)
 @Serializable
-object CentiSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Centi(Siemens)
+object Centisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Centi(Siemens)
 @Serializable
-object DeciSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deci(Siemens)
+object Decisiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deci(Siemens)
 @Serializable
-object DecaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deca(Siemens)
+object Decasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Deca(Siemens)
 @Serializable
-object HectoSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Hecto(Siemens)
+object Hectosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Hecto(Siemens)
 @Serializable
-object KiloSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Kilo(Siemens)
+object Kilosiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Kilo(Siemens)
 @Serializable
-object MegaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Mega(Siemens)
+object Megasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Mega(Siemens)
 @Serializable
-object GigaSiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens)
-
-fun <
-    ResistanceUnit : ElectricResistance,
-    ConductanceUnit : ElectricConductance
-    > ConductanceUnit.conductance(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byInverting(resistance)
-
-@JvmName("conductanceFromCurrentAndVoltage")
-fun <
-    CurrentUnit : ElectricCurrent,
-    VoltageUnit : Voltage,
-    ConductanceUnit : ElectricConductance
-    > ConductanceUnit.conductance(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byDividing(current, voltage)
-
-@JvmName("conductanceFromCapacitanceAndFrequency")
-fun <
-    CapacitanceUnit : ElectricCapacitance,
-    ConductanceUnit : ElectricConductance,
-    FrequencyUnit : Frequency
-    > ConductanceUnit.conductance(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
-): ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit> = byMultiplying(capacitance, frequency)
-
-fun <ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.conductance() = Siemens.conductance(this)
-@JvmName("currentDivVoltage")
-infix operator fun <CurrentUnit : ElectricCurrent, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Siemens.conductance(this, voltage)
-@JvmName("capacitanceTimesFrequency")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Siemens.conductance(this, frequency)
-@JvmName("frequencyTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
+object Gigasiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens)
+@Serializable
+object Absiemens : ElectricConductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricConductance, Siemens> by Giga(Siemens) {
+    override val symbol: String = "abS"
+}

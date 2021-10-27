@@ -19,7 +19,22 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val ElectricCurrentUnits = setOf(
+    Ampere,
+    Nanoampere,
+    Microampere,
+    Milliampere,
+    Centiampere,
+    Deciampere,
+    Decaampere,
+    Hectoampere,
+    Kiloampere,
+    Megaampere,
+    Gigaampere,
+    Biot,
+    Abampere
+)
 
 @Serializable
 sealed class ElectricCurrent : AbstractScientificUnit<MeasurementType.ElectricCurrent>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCurrent>
@@ -34,19 +49,19 @@ object Ampere : ElectricCurrent(), MetricBaseUnit<MeasurementSystem.MetricAndImp
 }
 
 @Serializable
-object NanoAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Nano(Ampere)
+object Nanoampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Nano(Ampere)
 @Serializable
-object MicroAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Micro(Ampere)
+object Microampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Micro(Ampere)
 @Serializable
-object MilliAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Milli(Ampere)
+object Milliampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Milli(Ampere)
 @Serializable
-object CentiAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Centi(Ampere)
+object Centiampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Centi(Ampere)
 @Serializable
-object DeciAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deci(Ampere)
+object Deciampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deci(Ampere)
 @Serializable
-object DecaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere)
+object Decaampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere)
 @Serializable
-object AbAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere) {
+object Abampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Deca(Ampere) {
     override val symbol: String = "abA"
 }
 @Serializable
@@ -54,88 +69,10 @@ object Biot : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndI
     override val symbol: String = "B"
 }
 @Serializable
-object HectoAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Hecto(Ampere)
+object Hectoampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Hecto(Ampere)
 @Serializable
-object KiloAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Kilo(Ampere)
+object Kiloampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Kilo(Ampere)
 @Serializable
-object MegaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Mega(Ampere)
+object Megaampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Mega(Ampere)
 @Serializable
-object GigaAmpere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Giga(Ampere)
-
-@JvmName("currentFromCHargeAndTime")
-fun <
-    CurrentUnit : ElectricCurrent,
-    TimeUnit : Time,
-    ChargeUnit : ElectricCharge
-    >
-    CurrentUnit.current(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    per: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(charge, per)
-
-@JvmName("currentFromVoltageAndConductance")
-fun <
-    CurrentUnit : ElectricCurrent,
-    VoltageUnit : Voltage,
-    ConductanceUnit : ElectricConductance
-    > CurrentUnit.current(
-    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-): ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byMultiplying(conductance, voltage)
-
-@JvmName("currentFromVoltageAndResistance")
-fun <
-    CurrentUnit : ElectricCurrent,
-    VoltageUnit : Voltage,
-    ResistanceUnit : ElectricResistance
-    > CurrentUnit.current(
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
-): ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(voltage, resistance)
-
-@JvmName("currentFromPowerAndVoltage")
-fun <
-    VoltageUnit : Voltage,
-    ElectricCurrentUnit : ElectricCurrent,
-    PowerUnit : Power
-    > ElectricCurrentUnit.current(
-    power: ScientificValue<MeasurementType.Power, PowerUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-): ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit> = byDividing(power, voltage)
-
-@JvmName("currentFromEnergyAndFlux")
-fun <
-    EnergyUnit : Energy,
-    CurrentUnit : ElectricCurrent,
-    FluxUnit : MagneticFlux
-    >
-    CurrentUnit.current(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
-) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(energy, flux)
-
-@JvmName("currentFromFluxAndInductance")
-fun <
-    FluxUnit : MagneticFlux,
-    CurrentUnit : ElectricCurrent,
-    InductanceUnit : ElectricInductance
-    >
-    CurrentUnit.current(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
-) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(flux, inductance)
-
-@JvmName("conductanceTimesVoltage")
-infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Ampere.current(this, voltage)
-@JvmName("voltageTimesConductance")
-infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = conductance * this
-@JvmName("chargeDivTime")
-infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ampere.current(this, time)
-@JvmName("voltageDivResistance")
-infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Ampere.current(this, resistance)
-@JvmName("powerDivVoltage")
-infix operator fun <PowerUnit : Power, VoltageUnit : Voltage> ScientificValue<MeasurementType.Power, PowerUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Ampere.current(this, voltage)
-@JvmName("energyDivFlux")
-infix operator fun <EnergyUnit : Energy, FluxUnit : MagneticFlux> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>) = Ampere.current(this, flux)
-@JvmName("fluxDivInductance")
-infix operator fun <FluxUnit : MagneticFlux, InductanceUnit : ElectricInductance> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>) = Ampere.current(this, inductance)
+object Gigaampere : ElectricCurrent(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCurrent, Ampere> by Giga(Ampere)

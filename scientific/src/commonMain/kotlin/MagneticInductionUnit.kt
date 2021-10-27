@@ -18,6 +18,9 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.base.utils.times
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
@@ -53,6 +56,15 @@ object KiloTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.Met
 object MegaTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Mega(Tesla)
 @Serializable
 object GigaTesla : MagneticInduction(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticInduction, Tesla> by Giga(Tesla)
+@Serializable
+object Gauss : MagneticInduction() {
+    private const val GAUSS_IN_TESLA = 10000.0
+    override val symbol = "G"
+    override val system = MeasurementSystem.MetricAndImperial
+    override val type = MeasurementType.MagneticInduction
+    override fun fromSIUnit(value: Decimal): Decimal = value * GAUSS_IN_TESLA.toDecimal()
+    override fun toSIUnit(value: Decimal): Decimal = value / GAUSS_IN_TESLA.toDecimal()
+}
 
 @JvmName("inductionFromFluxAndArea")
 fun <
@@ -65,5 +77,7 @@ fun <
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) : ScientificValue<MeasurementType.MagneticInduction, InductionUnit> = byDividing(flux, area)
 
+@JvmName("maxwellDivSquareCentimeter")
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Gauss.induction(this, area)
 @JvmName("fluxDivArea")
 infix operator fun <FluxUnit : MagneticFlux, AreaUnit : Area> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Tesla.induction(this, area)

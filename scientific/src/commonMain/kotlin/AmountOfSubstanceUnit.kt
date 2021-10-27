@@ -20,7 +20,6 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 import kotlin.native.concurrent.ThreadLocal
 
 val AmountOfSubstanceUnits = setOf(
@@ -72,19 +71,3 @@ object Gigamole : AmountOfSubstance(), MetricMultipleUnit<MeasurementSystem.Metr
 
 @ThreadLocal
 val AvogadroConstant = 6.02214076e23.toDecimal()
-
-@JvmName("amountOfSubstanceFromCatalysisAndTime")
-fun <
-    AmountOfSubstanceUnit : AmountOfSubstance,
-    TimeUnit : Time,
-    CatalysisUnit : CatalysticActivity
-    >
-    AmountOfSubstanceUnit.amountOfSubstance(
-    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(catalysis, time)
-
-@JvmName("catalysticActivityTimesTime")
-infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Mole.amountOfSubstance(this, time)
-@JvmName("timeTimesCatalysticActivity")
-infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.Time, TimeUnit>.times(catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>) = catalysis * this

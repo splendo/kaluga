@@ -91,11 +91,11 @@ fun <
 ) = byMultiplying(acceleration, time)
 
 @JvmName("metricLengthDivTime")
-operator fun <LengthUnit : MetricLength, > ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (unit per time.unit).speed(this, time)
+operator fun <LengthUnit : MetricLength, TimeUnit : Time> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).speed(this, time)
 @JvmName("imperialLengthDivTime")
-operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (unit per time.unit).speed(this, time)
+operator fun <LengthUnit : ImperialLength, TimeUnit : Time> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).speed(this, time)
 @JvmName("lengthDivTime")
-operator fun <LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, Time>) = (Meter per Second).speed(this, time)
+operator fun <LengthUnit : Length, TimeUnit : Time> ScientificValue<MeasurementType.Length, LengthUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Meter per Second).speed(this, time)
 
 @JvmName("lengthDivSpeed")
 infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<MeasurementType.Length, LengthUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = speed.unit.per.time(this, speed)

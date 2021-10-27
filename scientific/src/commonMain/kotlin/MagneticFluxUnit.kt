@@ -53,6 +53,14 @@ object KiloWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAn
 object MegaWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Mega(Weber)
 @Serializable
 object GigaWeber : MagneticFlux(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.MagneticFlux, Weber> by Giga(Weber)
+@Serializable
+object Maxwell : MagneticFlux() {
+    override val symbol = "Mx"
+    override val system = MeasurementSystem.MetricAndImperial
+    override val type = MeasurementType.MagneticFlux
+    override fun fromSIUnit(value: Decimal): Decimal = Abvolt.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = Abvolt.toSIUnit(value)
+}
 
 @JvmName("fluxFromResistanceAndCharge")
 fun <

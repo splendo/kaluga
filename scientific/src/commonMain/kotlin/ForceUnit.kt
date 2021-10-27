@@ -22,13 +22,65 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MetricForceUnits = setOf (
+    Newton,
+    Nanonewton,
+    Micronewton,
+    Millinewton,
+    Centinewton,
+    Decinewton,
+    Decanewton,
+    Hectonewton,
+    Kilonewton,
+    Meganewton,
+    Giganewton,
+    Dyne,
+    Nanodyne,
+    Microdyne,
+    Millidyne,
+    Centidyne,
+    Decidyne,
+    Decadyne,
+    Hectodyne,
+    Kilodyne,
+    Megadyne,
+    Gigadyne,
+    KilogramForce,
+    TonneForce,
+    GramForce,
+    MilligramForce
+    )
+
+val ImperialForceUnits = setOf(
+    Poundal,
+    PoundForce,
+    OunceForce,
+    GrainForce,
+)
+
+val USCustomaryForceUnits = setOf(
+    Kip,
+    UsTonForce
+) + ImperialForceUnits.map { it.usCustomary }
+
+val UKImperialForceUnits = setOf(
+    ImperialTonForce
+) + ImperialForceUnits.map { it.ukImperial }
+
+val ForceUnits: Set<Force> = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
 
 @Serializable
 sealed class Force : AbstractScientificUnit<MeasurementType.Force>()
 
 @Serializable
 sealed class MetricForce : Force(), MetricScientificUnit<MeasurementType.Force>
+
+@Serializable
+sealed class ImperialForce : Force(), ImperialScientificUnit<MeasurementType.Force> {
+    override val system = MeasurementSystem.Imperial
+    override val type = MeasurementType.Force
+}
 
 @Serializable
 sealed class USCustomaryForce : Force(), USCustomaryScientificUnit<MeasurementType.Force> {
@@ -42,11 +94,6 @@ sealed class UKImperialForce : Force(), UKImperialScientificUnit<MeasurementType
     override val type = MeasurementType.Force
 }
 
-@Serializable
-sealed class ImperialForce : Force(), ImperialScientificUnit<MeasurementType.Force> {
-    override val system = MeasurementSystem.Imperial
-    override val type = MeasurementType.Force
-}
 
 @Serializable
 object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Force> {
@@ -64,6 +111,14 @@ object Micronewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric,
 @Serializable
 object Millinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Milli(Newton)
 @Serializable
+object Centinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Centi(Newton)
+@Serializable
+object Decinewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Deci(Newton)
+@Serializable
+object Decanewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Deca(Newton)
+@Serializable
+object Hectonewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Hecto(Newton)
+@Serializable
 object Kilonewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Kilo(Newton)
 @Serializable
 object Meganewton : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Newton> by Mega(Newton)
@@ -78,12 +133,28 @@ object Dyne : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, Measuremen
     override fun fromSIUnit(value: Decimal): Decimal = value * 100000.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = value / 100000.toDecimal()
 }
+
+@Serializable
+object Nanodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Nano(Dyne)
+@Serializable
+object Microdyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Micro(Dyne)
 @Serializable
 object Millidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Milli(Dyne)
+@Serializable
+object Centidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Centi(Dyne)
+@Serializable
+object Decidyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Deci(Dyne)
+@Serializable
+object Decadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Deca(Dyne)
+@Serializable
+object Hectodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Hecto(Dyne)
 @Serializable
 object Kilodyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Kilo(Dyne)
 @Serializable
 object Megadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Mega(Dyne)
+@Serializable
+object Gigadyne : MetricForce(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> by Giga(Dyne)
+
 @Serializable
 object KilogramForce : MetricForce() {
     override val symbol: String = "kgf"
@@ -155,17 +226,26 @@ object Kip : USCustomaryForce() {
 }
 
 @Serializable
+object UsTonForce : USCustomaryForce() {
+    override val symbol: String = "STf"
+    override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
+    override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
+}
+
+@Serializable
 data class USCustomaryImperialForceWrapper(val imperial: ImperialForce) : USCustomaryForce() {
     override val symbol: String = imperial.symbol
     override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+val <ForceUnit : ImperialForce> ForceUnit.usCustomary get() = USCustomaryImperialForceWrapper(this)
+
 @Serializable
-object UsTonForce : USCustomaryForce() {
-    override val symbol: String = "STf"
-    override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
+object ImperialTonForce : UKImperialForce() {
+    override val symbol: String = "LTf"
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
+    override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
 }
 
 @Serializable
@@ -175,170 +255,4 @@ data class UKImperialImperialForceWrapper(val imperial: ImperialForce) : UKImper
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
-@Serializable
-object ImperialTonForce : UKImperialForce() {
-    override val symbol: String = "LTf"
-    override fun fromSIUnit(value: Decimal): Decimal = ImperialTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
-}
-
-@JvmName("forceFromMassAndAcceleration")
-fun <
-    MassUnit : ScientificUnit<MeasurementType.Weight>,
-    AccelerationUnit : ScientificUnit<MeasurementType.Acceleration>,
-    ForceUnit : ScientificUnit<MeasurementType.Force>
-    > ForceUnit.force(
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
-    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(mass, acceleration)
-
-@JvmName("forceFromMomentumAndTime")
-fun <
-    ForceUnit : Force,
-    TimeUnit : Time,
-    MomentumUnit : Momentum
-    > ForceUnit.force(
-    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(momentum, time)
-
-@JvmName("forceFromPressureAndArea")
-fun <
-    ForceUnit : ScientificUnit<MeasurementType.Force>,
-    AreaUnit : ScientificUnit<MeasurementType.Area>,
-    PressureUnit : ScientificUnit<MeasurementType.Pressure>
-    > ForceUnit.force(
-    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
-    area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(pressure, area)
-
-@JvmName("kilogramTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, Kilogram>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Newton.force(this, acceleration)
-@JvmName("accelerationTimesKilogram")
-operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Kilogram>) = mass * this
-@JvmName("gramTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, Gram>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Dyne.force(this, acceleration)
-@JvmName("accelerationTimesGram")
-operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Gram>) = mass * this
-@JvmName("gramMultipleTimesAcceleration")
-operator fun <GramUnit> ScientificValue<MeasurementType.Weight, GramUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) where GramUnit : MetricWeight, GramUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> = Newton.force(this, acceleration)
-@JvmName("accelerationTimesGramMultiple")
-operator fun <GramUnit> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, GramUnit>) where GramUnit : MetricWeight, GramUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Weight, Gram> = mass * this
-@JvmName("metricWeightTimesMetricAcceleration")
-operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, MetricAcceleration>) = Newton.force(this, acceleration)
-@JvmName("metricAccelerationTimesMetricWeight")
-operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
-@JvmName("poundTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, Pound>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = PoundForce.force(this, acceleration)
-@JvmName("accelerationTimesPound")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Pound>) = PoundForce.force(mass, this)
-@JvmName("ounceTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, Ounce>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = OunceForce.force(this, acceleration)
-@JvmName("accelerationTimesOunce")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Ounce>) = OunceForce.force(mass, this)
-@JvmName("grainTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, Grain>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = GrainForce.force(this, acceleration)
-@JvmName("accelerationTimesGrain")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Grain>) = GrainForce.force(mass, this)
-@JvmName("usTonTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, UsTon>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = UsTonForce.force(this, acceleration)
-@JvmName("accelerationTimesUSTon")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, UsTon>) = UsTonForce.force(mass, this)
-@JvmName("imperialTonTimesAcceleration")
-operator fun ScientificValue<MeasurementType.Weight, ImperialTon>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = ImperialTonForce.force(this, acceleration)
-@JvmName("accelerationTimesImperialTon")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, ImperialTon>) = ImperialTonForce.force(mass, this)
-@JvmName("imperialWeightTimesImperialAcceleration")
-operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = PoundForce.force(this, acceleration)
-@JvmName("imperialAccelerationTimesImperialWeight")
-operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
-@JvmName("ukImperialWeightTimesImperialAcceleration")
-operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = UKImperialImperialForceWrapper(PoundForce).force(this, acceleration)
-@JvmName("imperialAccelerationTimesUKImperialWeight")
-operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
-@JvmName("usCustomaryWeightTimesImperialAcceleration")
-operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>) = USCustomaryImperialForceWrapper(PoundForce).force(this, acceleration)
-@JvmName("imperialAccelerationTimesUSCustomaryWeight")
-operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
-@JvmName("weightTimesAcceleration")
-operator fun <WeightUnit : Weight, AccelerationUnit : Acceleration> ScientificValue<MeasurementType.Weight, WeightUnit>.times(acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>) = Newton.force(this, acceleration)
-@JvmName("accelerationTimesWeight")
-operator fun <WeightUnit : Weight, AccelerationUnit : Acceleration> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
-
-@JvmName("metricMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)
-@JvmName("imperialMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.force(this, time)
-@JvmName("ukImperialMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = UKImperialImperialForceWrapper(PoundForce).force(this, time)
-@JvmName("usCustomaryMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = USCustomaryImperialForceWrapper(PoundForce).force(this, time)
-@JvmName("momentumDivTime")
-operator fun <MomentumUnit : Momentum, TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)
-
-@JvmName("baryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, Barye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesBarye")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = pressure * this
-@JvmName("baryeMultipleTimesMetricArea")
-operator fun <Area : MetricArea, B : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye>> ScientificValue<MeasurementType.Pressure, B>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricAreaTimesBaryeMultiple")
-operator fun <Area : MetricArea, B : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye>> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, B>) = pressure * this
-@JvmName("centibaryeTimesMetricArea")
-operator fun <Area : MetricArea> ScientificValue<MeasurementType.Pressure, CentiBarye>.times(area: ScientificValue<MeasurementType.Area, Area>) = Dyne.force(this, area)
-@JvmName("metricPressureTimesMetricArea")
-operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Pressure, Pressure>.times(area: ScientificValue<MeasurementType.Area, Area>) = Newton.force(this, area)
-@JvmName("metricAreaTimesMetricPressure")
-operator fun <Pressure : MetricPressure, Area : MetricArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = pressure * this
-@JvmName("poundSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesPoundSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareInch>) = pressure * this
-@JvmName("poundSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, PoundSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesPoundSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, PoundSquareFeet>) = pressure * this
-@JvmName("ounceSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, OunceSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = OunceForce.force(this, area)
-@JvmName("imperialAreaTimesOunceSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, OunceSquareInch>) = pressure * this
-@JvmName("kilopoundSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesKilopoundSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KiloPoundSquareInch>) = pressure * this
-@JvmName("inchMercuryTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfMercury>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesInchMercury")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfMercury>) = pressure * this
-@JvmName("inchWaterTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, InchOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesInchWater")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, InchOfWater>) = pressure * this
-@JvmName("feetOfWaterTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, FootOfWater>.times(area: ScientificValue<MeasurementType.Area, Area>) = PoundForce.force(this, area)
-@JvmName("imperialAreaTimesFeetOfWater")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, FootOfWater>) = pressure * this
-@JvmName("kipSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
-@JvmName("imperialAreaTimesKipSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareInch>) = pressure * this
-@JvmName("kipSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, KipSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = Kip.force(this, area)
-@JvmName("imperialAreaTimesKipSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, KipSquareFeet>) = pressure * this
-@JvmName("usTonSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
-@JvmName("imperialAreaTimesUsTonSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareInch>) = pressure * this
-@JvmName("usTonSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, USTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = UsTonForce.force(this, area)
-@JvmName("imperialAreaTimesUsTonSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, USTonSquareFeet>) = pressure * this
-@JvmName("imperialTonSquareInchTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
-@JvmName("imperialAreaTimesImperialTonSquareInch")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareInch>) = pressure * this
-@JvmName("imperialTonSquareFeetTimesImperialArea")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>.times(area: ScientificValue<MeasurementType.Area, Area>) = ImperialTonForce.force(this, area)
-@JvmName("imperialAreaTimesImperialTonSquareFeet")
-operator fun <Area : ImperialArea> ScientificValue<MeasurementType.Area, Area>.times(pressure: ScientificValue<MeasurementType.Pressure, ImperialTonSquareFeet>) = pressure * this
+val <ForceUnit : ImperialForce> ForceUnit.ukImperial get() = UKImperialImperialForceWrapper(this)

@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 import kotlin.math.PI
 
 val AngleUnits = setOf(
@@ -33,8 +32,11 @@ val AngleUnits = setOf(
     Centiradian,
     Deciradian,
     Turn,
+    Nanoturn,
+    Microturn,
     Milliturn,
     Centiturn,
+    Deciturn,
     Degree,
     Gradian,
     ArcMinute,
@@ -75,9 +77,15 @@ object Turn : Angle(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, Measu
 }
 
 @Serializable
+object Nanoturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Angle, Turn> by Nano(Turn)
+@Serializable
+object Microturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Angle, Turn> by Micro(Turn)
+@Serializable
 object Milliturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Angle, Turn> by Milli(Turn)
 @Serializable
 object Centiturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Angle, Turn> by Centi(Turn)
+@Serializable
+object Deciturn : Angle(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Angle, Turn> by Deci(Turn)
 
 @Serializable
 object Degree : Angle() {
@@ -118,17 +126,3 @@ object ArcSecond : Angle() {
     override fun fromSIUnit(value: Decimal): Decimal = Turn.fromSIUnit(value) * ARCSECOND_IN_TURN.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = Turn.toSIUnit(value / ARCSECOND_IN_TURN.toDecimal())
 }
-
-@JvmName("angleFromAngularVelocityAndTime")
-fun <
-    AngleUnit : Angle,
-    TimeUnit : Time,
-    > AngleUnit.angle(
-    velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(velocity, time)
-
-@JvmName("angularVelocityTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.angle.angle(this, time)
-@JvmName("timeTimesAngularVelocity")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(angularVelocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>) = angularVelocity * this

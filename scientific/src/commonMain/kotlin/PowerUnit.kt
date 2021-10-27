@@ -43,17 +43,34 @@ object Watt : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricA
     override fun toSIUnit(value: Decimal): Decimal = value
 }
 @Serializable
-object NanoWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Nano(Watt)
+object Nanowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Nano(Watt)
 @Serializable
-object MicroWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Micro(Watt)
+object Microwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Micro(Watt)
 @Serializable
-object MilliWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Milli(Watt)
+object Milliwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Milli(Watt)
 @Serializable
-object KiloWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Kilo(Watt)
+object Centiwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Centi(Watt)
+@Serializable
+object Deciwatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Deci(Watt)
+@Serializable
+object Decawatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Deca(Watt)
+@Serializable
+object Hectowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Hecto(Watt)
+@Serializable
+object Kilowatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Kilo(Watt)
 @Serializable
 object MegaWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Mega(Watt)
 @Serializable
 object GigaWatt : MetricAndImperialPower(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power, Watt> by Giga(Watt)
+
+@Serializable
+object ErgPerSecond : MetricAndImperialPower(), MetricBaseUnit<MeasurementSystem.MetricAndImperial, MeasurementType.Power> {
+    override val symbol: String = "erg/s"
+    override val system = MeasurementSystem.MetricAndImperial
+    override val type = MeasurementType.Power
+    override fun fromSIUnit(value: Decimal): Decimal = Erg.fromSIUnit(value)
+    override fun toSIUnit(value: Decimal): Decimal = Erg.toSIUnit(value)
+}
 
 @Serializable
 object MetricHorsepower : MetricPower() {
@@ -128,6 +145,8 @@ data class MetricMetricAndImperialPowerWrapper(val metricAndImperialPower: Metri
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)
 }
 
+val <PowerUnit : MetricAndImperialPower> PowerUnit.metric get() = MetricMetricAndImperialPowerWrapper(this)
+
 @Serializable
 data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: MetricAndImperialPower) : ImperialPower() {
     override val system = MeasurementSystem.Imperial
@@ -137,6 +156,7 @@ data class ImperialMetricAndImperialPowerWrapper(val metricAndImperialPower: Met
     override fun toSIUnit(value: Decimal): Decimal = metricAndImperialPower.toSIUnit(value)
 }
 
+val <PowerUnit : MetricAndImperialPower> PowerUnit.imperial get() = ImperialMetricAndImperialPowerWrapper(this)
 
 @JvmName("powerFromEnergyAndTime")
 fun <
@@ -147,16 +167,6 @@ fun <
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ): ScientificValue<MeasurementType.Power, PowerUnit> = byDividing(energy, time)
-
-@JvmName("timeFromEnergyAndPower")
-fun <
-    EnergyUnit : Energy,
-    TimeUnit : Time,
-    PowerUnit : Power
-    > TimeUnit.time(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    power: ScientificValue<MeasurementType.Power, PowerUnit>
-): ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(energy, power)
 
 @JvmName("powerFromVoltageAndCurrent")
 fun <
@@ -184,8 +194,6 @@ infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent
 infix operator fun <VoltageUnit : Voltage, ElectricCurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = voltage * this
 @JvmName("energyDivTime")
 infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Watt.power(this, time)
-@JvmName("energyDivPower")
-infix operator fun <EnergyUnit : Energy, PowerUnit : Power> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(power: ScientificValue<MeasurementType.Power, PowerUnit>) = Second.time(this, power)
 @JvmName("metricForceTimesMetricSpeed")
 infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.times(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = Watt.power(this, speed)
 @JvmName("metricSpeedTimesMetricForce")

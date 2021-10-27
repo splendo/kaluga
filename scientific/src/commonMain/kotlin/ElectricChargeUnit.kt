@@ -18,9 +18,23 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+import kotlin.native.concurrent.ThreadLocal
+
+val ElectricChargeUnits = setOf(
+    Coulomb,
+    Nanocoulomb,
+    Microcoulomb,
+    Millicoulomb,
+    Centicoulomb,
+    Decicoulomb,
+    Decacoulomb,
+    Hectocoulomb,
+    Kilocoulomb,
+    Megacoulomb,
+    Gigacoulomb,
+    Abcoulomb
+)
 
 @Serializable
 sealed class ElectricCharge : AbstractScientificUnit<MeasurementType.ElectricCharge>(), MetricAndImperialScientificUnit<MeasurementType.ElectricCharge>
@@ -35,93 +49,29 @@ object Coulomb : ElectricCharge(), MetricBaseUnit<MeasurementSystem.MetricAndImp
 }
 
 @Serializable
-object NanoCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Nano(Coulomb)
+object Nanocoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Nano(Coulomb)
 @Serializable
-object MicroCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Micro(Coulomb)
+object Microcoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Micro(Coulomb)
 @Serializable
-object MilliCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Milli(Coulomb)
+object Millicoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Milli(Coulomb)
 @Serializable
-object CentiCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Centi(Coulomb)
+object Centicoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Centi(Coulomb)
 @Serializable
-object DeciCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deci(Coulomb)
+object Decicoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deci(Coulomb)
 @Serializable
-object DecaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deca(Coulomb)
+object Decacoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deca(Coulomb)
 @Serializable
-object HectoCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Hecto(Coulomb)
+object Abcoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Deca(Coulomb) {
+    override val symbol: String = "abC"
+}
 @Serializable
-object KiloCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Kilo(Coulomb)
+object Hectocoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Hecto(Coulomb)
 @Serializable
-object MegaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Mega(Coulomb)
+object Kilocoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Kilo(Coulomb)
 @Serializable
-object GigaCoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Giga(Coulomb)
+object Megacoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Mega(Coulomb)
+@Serializable
+object Gigacoulomb : ElectricCharge(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricCharge, Coulomb> by Giga(Coulomb)
 
+@ThreadLocal
 val elementaryCharge = 1.602176634e-19(Coulomb)
-
-@JvmName("chargeFromCurrentAndTime")
-fun <
-    CurrentUnit : ElectricCurrent,
-    TimeUnit : Time,
-    ChargeUnit : ElectricCharge
-    >
-    ChargeUnit.charge(
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(current, time)
-
-@JvmName("timeFromChargeAndCurrent")
-fun <
-    CurrentUnit : ElectricCurrent,
-    TimeUnit : Time,
-    ChargeUnit : ElectricCharge
-    >
-    TimeUnit.duration(
-    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(charge, current)
-
-@JvmName("chargeFromEnergyAndVoltage")
-fun <
-    VoltageUnit : Voltage,
-    EnergyUnit : Energy,
-    ChargeUnit : ElectricCharge
-    > ChargeUnit.charge(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-): ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(energy, voltage)
-
-@JvmName("capacitanceFromChargeAndVoltage")
-fun <
-    ChargeUnit : ElectricCharge,
-    VoltageUnit : Voltage,
-    CapacitanceUnit : ElectricCapacitance
-    >
-    ChargeUnit.charge(
-    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
-    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(capacitance, voltage)
-
-@JvmName("chargeFromFluxAndResistance")
-fun <
-    ResistanceUnit : ElectricResistance,
-    ChargeUnit : ElectricCharge,
-    FluxUnit : MagneticFlux
-    >
-    ChargeUnit.charge(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
-) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byDividing(flux, resistance)
-
-@JvmName("currentTimesTime")
-infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Coulomb.charge(this, time)
-@JvmName("timeTimesCurrent")
-infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = current * this
-@JvmName("chargeDivCurrent")
-infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Second.duration(this, current)
-@JvmName("energyDivVoltage")
-infix operator fun <EnergyUnit : Energy, VoltageUnit : Voltage> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)
-@JvmName("capacitanceTimesVoltage")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)
-@JvmName("voltageTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
-@JvmName("fluxDivResistance")
-infix operator fun <FluxUnit : MagneticFlux, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Coulomb.charge(this, resistance)

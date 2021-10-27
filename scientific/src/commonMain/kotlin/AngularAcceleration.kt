@@ -22,7 +22,6 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<MeasurementType.AngularAcceleration>(), MetricAndImperialScientificUnit<MeasurementType.AngularAcceleration> {
@@ -40,28 +39,3 @@ data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Ti
 }
 
 infix fun AngularVelocity.per(time: Time) = AngularAcceleration(this, time)
-
-@JvmName("angularAccelerationFromAngularVelocityAndTime")
-fun <
-    VelocityUnit : AngularVelocity,
-    TimeUnit : Time,
-    AccelerationUnit : AngularAcceleration
-    > AccelerationUnit.acceleration(
-    velocity: ScientificValue<MeasurementType.AngularVelocity, VelocityUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(velocity, time)
-
-@JvmName("timeFromAngularAccelerationAndVelocity")
-fun <
-    VelocityUnit : AngularVelocity,
-    TimeUnit : Time,
-    AccelerationUnit : AngularAcceleration
-    > TimeUnit.time(
-    velocity: ScientificValue<MeasurementType.AngularVelocity, VelocityUnit>,
-    acceleration: ScientificValue<MeasurementType.AngularAcceleration, AccelerationUnit>
-) = byDividing(velocity, acceleration)
-
-@JvmName("angularVelocityDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).acceleration(this, time)
-@JvmName("angularVelocityDivAngularAcceleration")
-infix operator fun ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.div(angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>) = Second.time(this, angularAcceleration)

@@ -19,7 +19,21 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val ElectricInductanceUnits = setOf(
+    Henry,
+    Nanohenry,
+    Microhenry,
+    Millihenry,
+    Centihenry,
+    Decihenry,
+    Decahenry,
+    Hectohenry,
+    Kilohenry,
+    Megahenry,
+    Gigahenry,
+    Abhenry
+)
 
 @Serializable
 sealed class ElectricInductance : AbstractScientificUnit<MeasurementType.ElectricInductance>(), MetricAndImperialScientificUnit<MeasurementType.ElectricInductance>
@@ -34,77 +48,26 @@ object Henry : ElectricInductance(), MetricBaseUnit<MeasurementSystem.MetricAndI
 }
 
 @Serializable
-object NanoHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Nano(Henry)
+object Nanohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Nano(Henry)
 @Serializable
-object MicroHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Micro(Henry)
+object Abhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Nano(Henry) {
+    override val symbol: String = "abH"
+}
 @Serializable
-object MilliHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Milli(Henry)
+object Microhenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Micro(Henry)
 @Serializable
-object CentiHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Centi(Henry)
+object Millihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Milli(Henry)
 @Serializable
-object DeciHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deci(Henry)
+object Centihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Centi(Henry)
 @Serializable
-object DecaHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deca(Henry)
+object Decihenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deci(Henry)
 @Serializable
-object HectoHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Hecto(Henry)
+object Decahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Deca(Henry)
 @Serializable
-object KiloHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Kilo(Henry)
+object Hectohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Hecto(Henry)
 @Serializable
-object MegaHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Mega(Henry)
+object Kilohenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Kilo(Henry)
 @Serializable
-object GigaHenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Giga(Henry)
-
-@JvmName("inductanceFromFluxAndCurrent")
-fun <
-    FluxUnit : MagneticFlux,
-    CurrentUnit : ElectricCurrent,
-    InductanceUnit : ElectricInductance
-    >
-    InductanceUnit.inductance(
-    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
-    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.ElectricInductance, InductanceUnit> = byDividing(flux, current)
-
-@JvmName("inductanceFromResistanceAndFrequency")
-fun <
-    ResistanceUnit : ElectricResistance,
-    FrequencyUnit : Frequency,
-    InductanceUnit : ElectricInductance
-    >
-    InductanceUnit.inductance(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
-) : ScientificValue<MeasurementType.ElectricInductance, InductanceUnit> = byDividing(resistance, frequency)
-
-@JvmName("inductanceFromResistanceAndTime")
-fun <
-    ResistanceUnit : ElectricResistance,
-    TimeUnit : Time,
-    InductanceUnit : ElectricInductance
-    >
-    InductanceUnit.inductance(
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricInductance, InductanceUnit> = byMultiplying(resistance, time)
-
-@JvmName("timeFromInductanceAndResistance")
-fun <
-    ResistanceUnit : ElectricResistance,
-    TimeUnit : Time,
-    InductanceUnit : ElectricInductance
-    >
-    TimeUnit.time(
-    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
-    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
-) : ScientificValue<MeasurementType.Time, TimeUnit> = byDividing(inductance, resistance)
-
-@JvmName("fluxDivCurrent")
-infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Henry.inductance(this, current)
-@JvmName("resistanceDivFrequency")
-infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Henry.inductance(this, frequency)
-@JvmName("resistanceTimesTime")
-infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Henry.inductance(this, time)
-@JvmName("timeTimesResistance")
-infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = resistance * this
-@JvmName("inductanceDivResistance")
-infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Second.time(this, resistance)
+object Megahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Mega(Henry)
+@Serializable
+object Gigahenry : ElectricInductance(), MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.ElectricInductance, Henry> by Giga(Henry)

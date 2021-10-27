@@ -155,6 +155,8 @@ data class UKImperialImperialWeightWrapper(val imperial: ImperialWeight) : UKImp
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
 
+val <WeightUnit : ImperialWeight> WeightUnit.ukImperial get() = UKImperialImperialWeightWrapper(this)
+
 // also short ton
 @Serializable
 object UsTon : USCustomaryWeight("ton") {
@@ -168,6 +170,8 @@ data class USCustomaryImperialWeightWrapper(val imperial: ImperialWeight) : USCu
     override fun fromSIUnit(value: Decimal): Decimal = imperial.fromSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = imperial.toSIUnit(value)
 }
+
+val <WeightUnit : ImperialWeight> WeightUnit.usCustomary get() = USCustomaryImperialWeightWrapper(this)
 
 @JvmName("massFromMomentumAndSpeed")
 fun <
@@ -297,7 +301,7 @@ infix operator fun <AbsorbedDoseUnit> ScientificValue<MeasurementType.Energy, Er
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad>
     = Gram.weight(this, absorbedDose)
-@JvmName("ergMultipleDivRadMultiple")
+@JvmName("ergMultipleDivAbsorbedDose")
 infix operator fun <ErgUnit, AbsorbedDoseUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) where
     ErgUnit : Energy,
     ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg>,
@@ -311,7 +315,7 @@ infix operator fun <EnergyUnit : Energy, AbsorbedDoseUnit : IonizingRadiationAbs
 infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) = Gram.weight(this, equivalentDose)
 @JvmName("ergMultipleDivRem")
 infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Gram.weight(this, equivalentDose)
-@JvmName("ergMultipleDivRemMultiple")
+@JvmName("ergDivRemMultiple")
 infix operator fun <EquivalentDoseUnit> ScientificValue<MeasurementType.Energy, Erg>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) where
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>

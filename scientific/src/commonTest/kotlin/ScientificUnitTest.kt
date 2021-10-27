@@ -185,6 +185,7 @@ class ScientificUnitTest {
     fun testSerialization() {
         val serializer = LengthUnitQuestion.serializer()
         val string = Json.encodeToString(serializer, LengthUnitQuestion(Meter, Inch))
+        print(string)
         assertEquals(LengthUnitQuestion(Meter, Inch), Json.decodeFromString(serializer, string))
 
         val unitSerializer = AbstractScientificUnit.serializer(MeasurementType.Length.serializer())
