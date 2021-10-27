@@ -29,8 +29,10 @@ val branchFromGit = run {
     }
 }
 
-// favour bitrise's branch detection else try to get it via the `git` CLI.
-val branch = (BITRISE_GIT_BRANCH ?: kaluga_branch ?: branchFromGit ).replace('/', '-').trim().toLowerCase().also {
+// favour user definition of kaluga_branch (if present), otherwise take it from GIT branch:
+// - if running on CI: favour bitrise's branch detection
+// - else: try to get it via the `git` CLI.
+val branch = (kaluga_branch ?: BITRISE_GIT_BRANCH ?: branchFromGit ).replace('/', '-').trim().toLowerCase().also {
         if (it == "HEAD")
             logger.warn("Unable to determine current branch: Project is checked out with detached head!")
     }
