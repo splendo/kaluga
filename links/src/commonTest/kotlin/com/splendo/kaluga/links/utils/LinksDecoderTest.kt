@@ -59,7 +59,7 @@ class LinksDecoderTest {
 
     companion object {
         private const val byteValue: Byte = 1
-        private val queryValues = listOf(
+        private val validParameters = listOf(
             "stringValue" to "Test", // stringValue
             "charValue" to 'A', // charValue
             "intValue" to 0, // intValue
@@ -75,7 +75,7 @@ class LinksDecoderTest {
             "listValue" to "two",
             "nullableValue" to LinksDecoder.NULL_SYMBOL // nullableValue
         )
-        private val expectedValue = DataTypesValues(
+        private val expectedValidValues = DataTypesValues(
             "Test",
             'A',
             0,
@@ -94,14 +94,14 @@ class LinksDecoderTest {
 
     @Test
     fun testDecodeList() {
-        val decodedObject = mockDefaultParametersDecoder.decodeFromList(queryValues, DataTypesValues.serializer())
+        val decodedObject = mockDefaultParametersDecoder.decodeFromList(validParameters, DataTypesValues.serializer())
 
-        assertEquals(expectedValue, decodedObject)
+        assertEquals(expectedValidValues, decodedObject)
     }
 
     @Test
     fun testDecodeListFailOnWrongOrder() { // it fails because the first parameter or DataTypesValues is a String.
-        val list = mutableListOf<NameValue>("randomValue" to 300).plus(queryValues)
+        val list = mutableListOf<NameValue>("randomValue" to 300).plus(validParameters)
 
         assertFails {
             mockDefaultParametersDecoder.decodeFromList<DataTypesValues>(list)
@@ -110,7 +110,7 @@ class LinksDecoderTest {
 
     @Test
     fun testDecoder() {
-        val linksDecoder = LinksDecoder(ArrayDeque(queryValues.map { it.second }))
+        val linksDecoder = LinksDecoder(ArrayDeque(validParameters.map { it.second }))
 
         linksDecoder.run {
             testDataType<String>(decodeValue())
