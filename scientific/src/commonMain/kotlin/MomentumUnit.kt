@@ -20,6 +20,35 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
+val MetricMomentumUnits = MetricWeightUnits.map { weight ->
+    MetricSpeedUnits.map {
+        MetricMomentum(weight, it)
+    }
+}.flatten().toSet()
+
+val ImperialMomentumUnits = ImperialWeightUnits.map { weight ->
+    ImperialSpeedUnits.map {
+        ImperialMomentum(weight, it)
+    }
+}.flatten().toSet()
+
+val UKImperialMomentumUnits = UKImperialWeightUnits.map { weight ->
+    ImperialSpeedUnits.map {
+        UKImperialMomentum(weight, it)
+    }
+}.flatten().toSet()
+
+val USCustomaryMomentumUnits = USCustomaryWeightUnits.map { weight ->
+    ImperialSpeedUnits.map {
+        USCustomaryMomentum(weight, it)
+    }
+}.flatten().toSet()
+
+val MomentumUnits: Set<Momentum> = MetricMomentumUnits +
+    ImperialMomentumUnits +
+    UKImperialMomentumUnits.filter { it.mass !is UKImperialImperialWeightWrapper }.toSet() +
+    USCustomaryMomentumUnits.filter { it.mass !is USCustomaryImperialWeightWrapper }.toSet()
+
 @Serializable
 sealed class Momentum : AbstractScientificUnit<MeasurementType.Momentum>() {
     abstract val mass: Weight

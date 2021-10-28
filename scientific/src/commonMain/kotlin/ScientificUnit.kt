@@ -53,5 +53,41 @@ fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     to: ScientificUnit<Unit>
 ): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
-val MetricUnits: Set<MetricScientificUnit<*>> = MetricLengthUnits + MetricAreaUnits
-val Units: Set<ScientificUnit<*>> = MetricUnits
+val Units: Set<ScientificUnit<*>> = AccelerationUnits +
+    AmountOfSubstanceUnits +
+    AngleUnits +
+    AngularAccelerationUnits +
+    AngularVelocityUnits +
+    AreaUnits +
+    CatalysticActivityUnits +
+    DensityUnits +
+    ElectricCapacitanceUnits +
+    ElectricChargeUnits +
+    ElectricConductanceUnits +
+    ElectricCurrentUnits +
+    ElectricInductanceUnits +
+    ElectricResistanceUnits +
+    EnergyUnits +
+    ForceUnits +
+    FrequencyUnits +
+    IlluminanceUnits +
+    IonizingRadiationAbsorbedDoseUnits +
+    IonizingRadiationEquivalentDoseUnits +
+    JoltUnits +
+    LengthUnits +
+    LuminousFluxUnits +
+    LuminousIntensityUnits +
+    MagneticFluxUnits +
+    MagneticInductionUnits +
+    PowerUnits +
+    PressureUnits +
+    RadioactivityUnits +
+    SolidAngleUnits +
+    SpeedUnits +
+    TemperatureUnits +
+    TimeUnits +
+    VoltageUnits +
+    VolumetricFlowUnits +
+    VolumeUnits +
+    WeightUnits
+

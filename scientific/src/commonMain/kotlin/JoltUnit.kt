@@ -22,7 +22,21 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
+
+val MetricJoltUnits = MetricAccelerationUnits.map { acceleration ->
+    TimeUnits.map {
+        MetricJolt(acceleration, it)
+    }
+}.flatten().toSet()
+
+val ImperialJoltUnits = ImperialAccelerationUnits.map { acceleration ->
+    TimeUnits.map {
+        ImperialJolt(acceleration, it)
+    }
+}.flatten().toSet()
+
+val JoltUnits: Set<Jolt> = MetricJoltUnits +
+    ImperialJoltUnits
 
 @Serializable
 sealed class Jolt : AbstractScientificUnit<MeasurementType.Jolt>() {

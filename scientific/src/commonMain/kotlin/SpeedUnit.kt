@@ -23,6 +23,16 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val MetricSpeedUnits: Set<MetricSpeed> = MetricLengthUnits.map { length ->
+    TimeUnits.map { MetricSpeed(length, it) }
+}.flatten().toSet()
+
+val ImperialSpeedUnits: Set<ImperialSpeed> = ImperialLengthUnits.map { length ->
+    TimeUnits.map { ImperialSpeed(length, it) }
+}.flatten().toSet()
+
+val SpeedUnits: Set<Speed> = MetricSpeedUnits + ImperialSpeedUnits
+
 @Serializable
 sealed class Speed : AbstractScientificUnit<MeasurementType.Speed>() {
     abstract val distance: Length

@@ -23,6 +23,35 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val MetricDensityUnits = MetricWeightUnits.map { weight ->
+    MetricVolumeUnits.map {
+        MetricDensity(weight, it)
+    }
+}.flatten().toSet()
+
+val ImperialDensityUnits = ImperialWeightUnits.map { weight ->
+    ImperialVolumeUnits.map {
+        ImperialDensity(weight, it)
+    }
+}.flatten().toSet()
+
+val UKImperialDensityUnits = UKImperialWeightUnits.map { weight ->
+    UKImperialVolumeUnits.map {
+        UKImperialDensity(weight, it)
+    }
+}.flatten().toSet()
+
+val USCustomaryDensityUnits = USCustomaryWeightUnits.map { weight ->
+    USCustomaryVolumeUnits.map {
+        USCustomaryDensity(weight, it)
+    }
+}.flatten().toSet()
+
+val DensityUnits: Set<Density> = MetricDensityUnits +
+    ImperialDensityUnits +
+    UKImperialDensityUnits.filter { it.weight !is UKImperialImperialWeightWrapper || it.per !is UKImperialImperialVolumeWrapper }.toSet() +
+    USCustomaryDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper || it.per !is USCustomaryImperialVolumeWrapper }.toSet()
+
 @Serializable
 sealed class Density : AbstractScientificUnit<MeasurementType.Density>() {
     abstract val weight: Weight

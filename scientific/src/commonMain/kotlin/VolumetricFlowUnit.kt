@@ -23,6 +23,27 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> = MetricVolumeUnits.map { volume ->
+    TimeUnits.map { MetricVolumetricFlow(volume, it) }
+}.flatten().toSet()
+
+val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> = ImperialVolumeUnits.map { volume ->
+    TimeUnits.map { ImperialVolumetricFlow(volume, it) }
+}.flatten().toSet()
+
+val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> = UKImperialVolumeUnits.map { volume ->
+    TimeUnits.map { UKImperialVolumetricFlow(volume, it) }
+}.flatten().toSet()
+
+val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> = USCustomaryVolumeUnits.map { volume ->
+    TimeUnits.map { USCustomaryVolumetricFlow(volume, it) }
+}.flatten().toSet()
+
+val VolumetricFlowUnits: Set<VolumetricFlow> = MetricVolumetricFlowUnits +
+    ImperialVolumetricFlowUnits +
+    UKImperialVolumetricFlowUnits.filter { it.volume !is UKImperialImperialVolumeWrapper }.toSet() +
+    USCustomaryVolumetricFlowUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper }.toSet()
+
 @Serializable
 sealed class VolumetricFlow : AbstractScientificUnit<MeasurementType.VolumetricFlow>() {
     abstract val volume: Volume

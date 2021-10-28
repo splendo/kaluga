@@ -23,6 +23,12 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val AngularAccelerationUnits = AngularVelocityUnits.map { angularVelocity ->
+    TimeUnits.map {
+        AngularAcceleration(angularVelocity, it)
+    }
+}.flatten().toSet()
+
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<MeasurementType.AngularAcceleration>(), MetricAndImperialScientificUnit<MeasurementType.AngularAcceleration> {
     override val type = MeasurementType.AngularAcceleration

@@ -23,6 +23,21 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
+val MetricAccelerationUnits = MetricSpeedUnits.map { speed ->
+    TimeUnits.map {
+        MetricAcceleration(speed, it)
+    }
+}.flatten().toSet()
+
+val ImperialAccelerationUnits = ImperialSpeedUnits.map { speed ->
+    TimeUnits.map {
+        ImperialAcceleration(speed, it)
+    }
+}.flatten().toSet()
+
+val AccelerationUnits: Set<Acceleration> = MetricAccelerationUnits +
+    ImperialAccelerationUnits
+
 @Serializable
 sealed class Acceleration : AbstractScientificUnit<MeasurementType.Acceleration>() {
     abstract val speed: Speed
