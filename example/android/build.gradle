@@ -57,8 +57,8 @@ android {
 kotlin {
     sourceSets.all {
         languageSettings {
-            useExperimentalAnnotation 'kotlin.ExperimentalStdlibApi'
-            useExperimentalAnnotation 'kotlinx.serialization.ExperimentalSerializationApi'
+            optIn 'kotlin.ExperimentalStdlibApi'
+            optIn 'kotlinx.serialization.ExperimentalSerializationApi'
         }
     }
 }
