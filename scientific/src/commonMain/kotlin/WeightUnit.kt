@@ -52,7 +52,8 @@ val ImperialWeightUnits = setOf(
     Grain,
     Ounce,
     Pound,
-    Stone
+    Stone,
+    Slug
 )
 
 val UKImperialWeightUnits = ImperialWeightUnits.map { it.ukImperial }.toSet() + setOf(ImperialTon)
@@ -189,6 +190,12 @@ object Stone : ImperialWeight("st") {
     private const val STONES_IN_POUND = 14
     override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value * STONES_IN_POUND.toDecimal())
     override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / STONES_IN_POUND.toDecimal()
+}
+
+@Serializable
+object Slug : ImperialWeight("slug") {
+    override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit((Foot per Second).fromSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = (Foot per Second).toSIUnit(PoundForce.fromSIUnit(value))
 }
 
 // also long ton

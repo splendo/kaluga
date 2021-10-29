@@ -18,15 +18,10 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val AngularVelocityUnits = AngleUnits.map { angle ->
-    TimeUnits.map {
-        AngularVelocity(angle, it)
-    }
+    TimeUnits.map { angle per it }
 }.flatten().toSet()
 
 @Serializable
@@ -34,8 +29,8 @@ data class AngularVelocity(val angle: Angle, val per: Time) : AbstractScientific
     override val type = MeasurementType.AngularVelocity
     override val system = MeasurementSystem.MetricAndImperial
     override val symbol: String by lazy { "${angle.symbol} / ${per.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = angle.fromSIUnit(value) * per.convert(1.0.toDecimal(), Second)
-    override fun toSIUnit(value: Decimal): Decimal = angle.toSIUnit(value) / per.convert(1.0.toDecimal(), Second)
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(angle.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = angle.toSIUnit(per.fromSIUnit(value))
 }
 
 infix fun Angle.per(time: Time) = AngularVelocity(this, time)

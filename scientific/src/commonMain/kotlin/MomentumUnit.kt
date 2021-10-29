@@ -54,7 +54,7 @@ sealed class Momentum : AbstractScientificUnit<MeasurementType.Momentum>() {
     abstract val mass: Weight
     abstract val speed: Speed
     override val type = MeasurementType.Momentum
-    override val symbol: String by lazy { "${mass.symbol} * ${speed.symbol}" }
+    override val symbol: String by lazy { "${mass.symbol}⋅${speed.symbol}" }
     override fun fromSIUnit(value: Decimal): Decimal = speed.fromSIUnit(mass.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = mass.toSIUnit(speed.toSIUnit(value))
 }
@@ -67,6 +67,8 @@ data class MetricMomentum(override val mass: MetricWeight, override val speed: M
 @Serializable
 data class ImperialMomentum(override val mass: ImperialWeight, override val speed: ImperialSpeed) : Momentum(), ImperialScientificUnit<MeasurementType.Momentum> {
     override val system = MeasurementSystem.Imperial
+    val ukImperial get() = UKImperialMomentum(mass.ukImperial, speed)
+    val usCustomary get() = USCustomaryMomentum(mass.usCustomary, speed)
 }
 
 @Serializable

@@ -19,6 +19,8 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.length.div
+import com.splendo.kaluga.scientific.speed.times
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -30,6 +32,7 @@ class ScientificUnitTest {
 
     @Test
     fun weighConversionTest() {
+        assertScientificUnit(1000, Kilogram, Slug, 0.068521765561961, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Microgram, Kilogram, 1e-9)
         assertScientificUnit(1000, Milligram, Kilogram, 1e-6)
         assertScientificUnit(1000, Gram, Kilogram, 0.001)

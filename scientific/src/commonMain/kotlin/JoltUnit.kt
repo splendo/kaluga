@@ -18,21 +18,14 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val MetricJoltUnits = MetricAccelerationUnits.map { acceleration ->
-    TimeUnits.map {
-        MetricJolt(acceleration, it)
-    }
+    TimeUnits.map { acceleration per it }
 }.flatten().toSet()
 
 val ImperialJoltUnits = ImperialAccelerationUnits.map { acceleration ->
-    TimeUnits.map {
-        ImperialJolt(acceleration, it)
-    }
+    TimeUnits.map { acceleration per it }
 }.flatten().toSet()
 
 val JoltUnits: Set<Jolt> = MetricJoltUnits +
@@ -53,8 +46,8 @@ sealed class Jolt : AbstractScientificUnit<MeasurementType.Jolt>() {
         }
         "${acceleration.speed.distance.symbol} / $perSymbol"
     }
-    override fun fromSIUnit(value: Decimal): Decimal = acceleration.fromSIUnit(value) * per.convert(1.0.toDecimal(), Second)
-    override fun toSIUnit(value: Decimal): Decimal = acceleration.toSIUnit(value) / per.convert(1.0.toDecimal(), Second)
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(acceleration.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = acceleration.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable

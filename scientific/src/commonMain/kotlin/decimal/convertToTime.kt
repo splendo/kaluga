@@ -25,7 +25,6 @@ import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.time
 import com.splendo.kaluga.scientific.time.time
 import kotlin.jvm.JvmName
 

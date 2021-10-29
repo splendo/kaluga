@@ -74,7 +74,7 @@ infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: Scie
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, MetricMetricAndImperialPowerWrapper>) = power * this
 @JvmName("timeTimesErgPerSecond")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, ErgPerSecond>) = power * this
-@JvmName("timeTimesPower")
+@JvmName("timeTimesMetricPower")
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(power: ScientificValue<MeasurementType.Power, PowerUnit>) = power * this
 @JvmName("hourTimesHorsepower")
 infix operator fun ScientificValue<MeasurementType.Time, Hour>.times(power: ScientificValue<MeasurementType.Power, Horsepower>) = power * this

@@ -90,7 +90,7 @@ infix operator fun ScientificValue<MeasurementType.Power, Gigawatt>.times(time: 
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, MetricMetricAndImperialPowerWrapper>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = convert(unit.metricAndImperialPower) * time
 @JvmName("ergPerSecondTimesTime")
 infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Power, ErgPerSecond>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Erg.energy(this, time)
-@JvmName("powerTimesTime")
+@JvmName("metricPowerTimesTime")
 infix operator fun <PowerUnit : MetricPower, TimeUnit : Time> ScientificValue<MeasurementType.Power, PowerUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Joule.energy(this, time)
 @JvmName("horsepowerTimesHour")
 infix operator fun ScientificValue<MeasurementType.Power, Horsepower>.times(time: ScientificValue<MeasurementType.Time, Hour>) = HorsepowerHour.energy(this, time)

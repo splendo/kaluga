@@ -18,33 +18,22 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val MetricDensityUnits = MetricWeightUnits.map { weight ->
-    MetricVolumeUnits.map {
-        MetricDensity(weight, it)
-    }
+    MetricVolumeUnits.map { weight per it }
 }.flatten().toSet()
 
 val ImperialDensityUnits = ImperialWeightUnits.map { weight ->
-    ImperialVolumeUnits.map {
-        ImperialDensity(weight, it)
-    }
+    ImperialVolumeUnits.map { weight per it }
 }.flatten().toSet()
 
 val UKImperialDensityUnits = UKImperialWeightUnits.map { weight ->
-    UKImperialVolumeUnits.map {
-        UKImperialDensity(weight, it)
-    }
+    UKImperialVolumeUnits.map { weight per it }
 }.flatten().toSet()
 
 val USCustomaryDensityUnits = USCustomaryWeightUnits.map { weight ->
-    USCustomaryVolumeUnits.map {
-        USCustomaryDensity(weight, it)
-    }
+    USCustomaryVolumeUnits.map { weight per it }
 }.flatten().toSet()
 
 val DensityUnits: Set<Density> = MetricDensityUnits +
@@ -58,8 +47,8 @@ sealed class Density : AbstractScientificUnit<MeasurementType.Density>() {
     abstract val per: Volume
     override val symbol: String by lazy { "${weight.symbol} / ${per.symbol}" }
     override val type = MeasurementType.Density
-    override fun fromSIUnit(value: Decimal): Decimal = weight.fromSIUnit(value) * per.convert(1.0.toDecimal(), CubicMeter)
-    override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(value) / per.convert(1.0.toDecimal(), CubicMeter)
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(weight.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = weight.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
@@ -69,6 +58,8 @@ data class MetricDensity(override val weight: MetricWeight, override val per: Me
 @Serializable
 data class ImperialDensity(override val weight: ImperialWeight, override val per: ImperialVolume) : Density(), ImperialScientificUnit<MeasurementType.Density> {
     override val system = MeasurementSystem.Imperial
+    val ukImperial get() = weight.ukImperial per per.ukImperial
+    val usCustomary get() = weight.usCustomary per per.usCustomary
 }
 @Serializable
 data class USCustomaryDensity(override val weight: USCustomaryWeight, override val per: USCustomaryVolume) : Density(), USCustomaryScientificUnit<MeasurementType.Density> {
@@ -81,5 +72,9 @@ data class UKImperialDensity(override val weight: UKImperialWeight, override val
 
 infix fun MetricWeight.per(volume: MetricVolume) = MetricDensity(this, volume)
 infix fun ImperialWeight.per(volume: ImperialVolume) = ImperialDensity(this, volume)
+infix fun ImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this.ukImperial, volume)
+infix fun ImperialWeight.per(volume: USCustomaryVolume) = USCustomaryDensity(this.usCustomary, volume)
 infix fun USCustomaryWeight.per(volume: USCustomaryVolume) = USCustomaryDensity(this, volume)
+infix fun USCustomaryWeight.per(volume: ImperialVolume) = USCustomaryDensity(this, volume.usCustomary)
+infix fun UKImperialWeight.per(volume: ImperialVolume) = UKImperialDensity(this, volume.ukImperial)
 infix fun UKImperialWeight.per(volume: UKImperialVolume) = UKImperialDensity(this, volume)

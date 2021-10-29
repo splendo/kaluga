@@ -18,25 +18,22 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> = MetricVolumeUnits.map { volume ->
-    TimeUnits.map { MetricVolumetricFlow(volume, it) }
+    TimeUnits.map { volume per it }
 }.flatten().toSet()
 
 val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> = ImperialVolumeUnits.map { volume ->
-    TimeUnits.map { ImperialVolumetricFlow(volume, it) }
+    TimeUnits.map { volume per it }
 }.flatten().toSet()
 
 val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> = UKImperialVolumeUnits.map { volume ->
-    TimeUnits.map { UKImperialVolumetricFlow(volume, it) }
+    TimeUnits.map { volume per it }
 }.flatten().toSet()
 
 val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> = USCustomaryVolumeUnits.map { volume ->
-    TimeUnits.map { USCustomaryVolumetricFlow(volume, it) }
+    TimeUnits.map { volume per it }
 }.flatten().toSet()
 
 val VolumetricFlowUnits: Set<VolumetricFlow> = MetricVolumetricFlowUnits +
@@ -50,8 +47,8 @@ sealed class VolumetricFlow : AbstractScientificUnit<MeasurementType.VolumetricF
     abstract val per: Time
     override val type = MeasurementType.VolumetricFlow
     override val symbol: String by lazy { "${volume.symbol} / ${per.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = volume.fromSIUnit(value) * per.convert(1.0.toDecimal(), Second)
-    override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(value) / per.convert(1.0.toDecimal(), Second)
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(volume.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = volume.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
@@ -61,6 +58,8 @@ data class MetricVolumetricFlow(override val volume: MetricVolume, override val 
 @Serializable
 data class ImperialVolumetricFlow(override val volume: ImperialVolume, override val per: Time) : VolumetricFlow(), ImperialScientificUnit<MeasurementType.VolumetricFlow> {
     override val system = MeasurementSystem.Imperial
+    val ukImperial get() = UKImperialVolumetricFlow(volume.ukImperial, per)
+    val usCustomary get() = USCustomaryVolumetricFlow(volume.usCustomary, per)
 }
 @Serializable
 data class UKImperialVolumetricFlow(override val volume: UKImperialVolume, override val per: Time) : VolumetricFlow(), UKImperialScientificUnit<MeasurementType.VolumetricFlow> {

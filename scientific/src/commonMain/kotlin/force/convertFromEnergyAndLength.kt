@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.force
 
-import com.splendo.kaluga.scientific.Acceleration
+import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.Force
+import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
-import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("forceFromMassAndAcceleration")
+@JvmName("forceFromEnergyAndLength")
 fun <
-    MassUnit : Weight,
-    AccelerationUnit : Acceleration,
+    EnergyUnit : Energy,
+    LengthUnit : Length,
     ForceUnit : Force
     > ForceUnit.force(
-    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
-    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-) : ScientificValue<MeasurementType.Force, ForceUnit> = byMultiplying(mass, acceleration)
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = byDividing(energy, length)

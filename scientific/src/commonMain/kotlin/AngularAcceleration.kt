@@ -18,15 +18,10 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val AngularAccelerationUnits = AngularVelocityUnits.map { angularVelocity ->
-    TimeUnits.map {
-        AngularAcceleration(angularVelocity, it)
-    }
+    TimeUnits.map { angularVelocity per it }
 }.flatten().toSet()
 
 @Serializable
@@ -40,8 +35,8 @@ data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Ti
             "${angularVelocity.angle.symbol} / (${angularVelocity.per.symbol} * ${per.symbol})"
         }
     }
-    override fun fromSIUnit(value: Decimal): Decimal = angularVelocity.fromSIUnit(value) * per.convert(1.0.toDecimal(), Second)
-    override fun toSIUnit(value: Decimal): Decimal = angularVelocity.toSIUnit(value) / per.convert(1.0.toDecimal(), Second)
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(angularVelocity.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = angularVelocity.toSIUnit(per.fromSIUnit(value))
 }
 
 infix fun AngularVelocity.per(time: Time) = AngularAcceleration(this, time)

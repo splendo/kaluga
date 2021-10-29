@@ -24,6 +24,8 @@ sealed class MeasurementType {
     @Serializable
     object Acceleration : MeasurementType()
     @Serializable
+    object Action : MeasurementType()
+    @Serializable
     object AmountOfSubstance : MeasurementType()
     @Serializable
     object Angle : MeasurementType()
@@ -34,9 +36,13 @@ sealed class MeasurementType {
     @Serializable
     object Area : MeasurementType()
     @Serializable
+    object AreaDensity : MeasurementType()
+    @Serializable
     object CatalysticActivity : MeasurementType()
     @Serializable
     object Density : MeasurementType()
+    @Serializable
+    object DynamicViscosity : MeasurementType()
     @Serializable
     object ElectricCapacitance : MeasurementType()
     @Serializable
@@ -56,23 +62,47 @@ sealed class MeasurementType {
     @Serializable
     object Frequency : MeasurementType()
     @Serializable
+    object HeatCapacity : MeasurementType()
+    @Serializable
     object Illuminance : MeasurementType()
     @Serializable
     object IonizingRadiationAbsorbedDose : MeasurementType()
     @Serializable
     object IonizingRadiationEquivalentDose : MeasurementType()
     @Serializable
+    object Irradiance : MeasurementType()
+    @Serializable
+    object LinearMassDensity : MeasurementType()
+    @Serializable
     object Jolt : MeasurementType()
     @Serializable
     object Length : MeasurementType()
+    @Serializable
+    object Luminance : MeasurementType()
+    @Serializable
+    object LuminousEnergy : MeasurementType()
+    @Serializable
+    object LuminousExposure : MeasurementType()
     @Serializable
     object LuminousFlux : MeasurementType()
     @Serializable
     object LuminousIntensity : MeasurementType()
     @Serializable
+    object MassFlowRate : MeasurementType()
+    @Serializable
     object MagneticFlux : MeasurementType()
     @Serializable
     object MagneticInduction : MeasurementType()
+    @Serializable
+    object Molality : MeasurementType()
+    @Serializable
+    object Molarity : MeasurementType()
+    @Serializable
+    object MolarEnergy : MeasurementType()
+    @Serializable
+    object MolarMass : MeasurementType()
+    @Serializable
+    object MolarVolume : MeasurementType()
     @Serializable
     object Momentum : MeasurementType()
     @Serializable
@@ -84,9 +114,19 @@ sealed class MeasurementType {
     @Serializable
     object SolidAngle : MeasurementType()
     @Serializable
+    object SpecificEnergy : MeasurementType()
+    @Serializable
+    object SpecificHeatCapacity : MeasurementType()
+    @Serializable
+    object SpecificVolume : MeasurementType()
+    @Serializable
     object Speed : MeasurementType()
     @Serializable
+    object SurfaceTension : MeasurementType()
+    @Serializable
     object Temperature : MeasurementType()
+    @Serializable
+    object ThermalResistance : MeasurementType()
     @Serializable
     object Time : MeasurementType()
     @Serializable
@@ -96,5 +136,9 @@ sealed class MeasurementType {
     @Serializable
     object VolumetricFlow : MeasurementType()
     @Serializable
+    object VolumetricFlux : MeasurementType()
+    @Serializable
     object Weight : MeasurementType()
+    @Serializable
+    object Yank : MeasurementType()
 }
