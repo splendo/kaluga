@@ -205,6 +205,11 @@ class ScientificUnitTest {
     fun testIlluminance() {
         assertScientificUnit(1000, Lux, FootCandle, 0.09290304, unitTranslationErrorTolerance)
     }
+
+    @Test
+    fun testLuminance() {
+        assertScientificUnit(1000, Nit, FootLambert, 0.2918635079631734, unitTranslationErrorTolerance)
+    }
 }
 
 fun <Type : MeasurementType> assertScientificUnit(

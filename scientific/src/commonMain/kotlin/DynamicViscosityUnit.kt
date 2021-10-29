@@ -204,7 +204,7 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Are
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, UKImperialDynamicViscosity>) = dynamicViscosity * this
 @JvmName("imperialAreaTimesUSCustomaryDynamicViscosity")
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, USCustomaryDynamicViscosity>) = dynamicViscosity * this
-@JvmName("dynamicViscosityTimesArea")
+@JvmName("areaTimesDynamicViscosity")
 infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>) = dynamicViscosity * this
 
 @JvmName("metricMomentumDivMetricDynamicViscosity")

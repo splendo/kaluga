@@ -59,8 +59,8 @@ data class MetricVolumetricFlux(override val volumetricFlow: MetricVolumetricFlo
 @Serializable
 data class ImperialVolumetricFlux(override val volumetricFlow: ImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), ImperialScientificUnit<MeasurementType.VolumetricFlux> {
     override val system = MeasurementSystem.Imperial
-    val ukImperial get() = UKImperialVolumetricFlux(volumetricFlow.ukImperial, per)
-    val usCustomary get() = USCustomaryVolumetricFlux(volumetricFlow.usCustomary, per)
+    val ukImperial get() = volumetricFlow.ukImperial per per
+    val usCustomary get() = volumetricFlow.usCustomary per per
 }
 @Serializable
 data class UKImperialVolumetricFlux(override val volumetricFlow: UKImperialVolumetricFlow, override val per: ImperialArea) : VolumetricFlux(), UKImperialScientificUnit<MeasurementType.VolumetricFlux> {
@@ -117,25 +117,25 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Vol
 @JvmName("volumetricFlowDivArea")
 infix operator fun <VolumetricFlowUnit : VolumetricFlow, AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (CubicMeter per Second per SquareMeter).volumetricFlux(this, area)
 
-@JvmName("metricVolumetricFluxTimesArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
-@JvmName("imperialVolumetricFluxTimesArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
-@JvmName("ukImperialVolumetricFluxTimesArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
-@JvmName("usCustomaryVolumetricFluxTimesArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
+@JvmName("metricVolumetricFluxTimesMetricArea")
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
+@JvmName("imperialVolumetricFluxTimesImperialArea")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
+@JvmName("ukImperialVolumetricFluxTimesImperialArea")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
+@JvmName("usCustomaryVolumetricFluxTimesImperialArea")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
 @JvmName("volumetricFluxTimesArea")
 infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.volumetricFlow).volumetricFlow(this, area)
 
-@JvmName("areaTimesMetricVolumetricFlux")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>) = volumetricFlux * this
-@JvmName("areaTimesImperialArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>) = volumetricFlux * this
-@JvmName("areaTimesUKImperialAreaT")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>) = volumetricFlux * this
-@JvmName("areaTimesUSCustomaryArea")
-infix operator fun <AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>) = volumetricFlux * this
+@JvmName("metricAreaTimesMetricVolumetricFlux")
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>) = volumetricFlux * this
+@JvmName("imperialAreaTimesImperialArea")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>) = volumetricFlux * this
+@JvmName("imperialAreaTimesUKImperialAreaT")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>) = volumetricFlux * this
+@JvmName("imperialAreaTimesUSCustomaryArea")
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>) = volumetricFlux * this
 @JvmName("areaTimesVolumetricFlux")
 infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>) = volumetricFlux * this
 

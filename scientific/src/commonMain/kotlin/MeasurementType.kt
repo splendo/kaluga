@@ -70,8 +70,6 @@ sealed class MeasurementType {
     @Serializable
     object IonizingRadiationEquivalentDose : MeasurementType()
     @Serializable
-    object Irradiance : MeasurementType()
-    @Serializable
     object LinearMassDensity : MeasurementType()
     @Serializable
     object Jolt : MeasurementType()

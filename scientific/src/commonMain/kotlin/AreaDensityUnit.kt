@@ -228,5 +228,5 @@ infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
 @JvmName("usCustomaryAreaDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength>  ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).density(this, length)
-@JvmName("areaDensityDivDensity")
+@JvmName("areaDensityDivLength")
 infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (Kilogram per CubicMeter).density(this, length)

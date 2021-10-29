@@ -161,6 +161,18 @@ infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType
 @JvmName("linearMassDensityTimesLength")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.times(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Kilogram.mass(this, length)
 
+@JvmName("metricLengthTimesMetricLinearMassDensity")
+infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>) = linearMassDensity * this
+@JvmName("imperialLengthTimesImperialLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>) = linearMassDensity * this
+@JvmName("imperialLengthUKImperialLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>) = linearMassDensity * this
+@JvmName("imperialLengthTimesUSCustomaryLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>) = linearMassDensity * this
+@JvmName("lengthTimesLinearMassDensity")
+infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>) = linearMassDensity * this
+
+
 @JvmName("metricWeightDivMetricLinearMassDensity")
 infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>) = linearMassDensity.unit.per.length(this, linearMassDensity)
 @JvmName("imperialWeightDivImperialLinearMassDensity")
@@ -229,7 +241,7 @@ infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType
 infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).areaDensity(this, length)
 @JvmName("usCustomaryLinearMassDensityDivImperialLength")
 infix operator fun <LengthUnit : ImperialLength>  ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit.weight per (1(unit.per) * 1(length.unit)).unit).areaDensity(this, length)
-@JvmName("linearMassDensityDivDensity")
+@JvmName("linearMassDensityDivLength")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (Kilogram per SquareMeter).areaDensity(this, length)
 
 
@@ -316,5 +328,5 @@ infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Lin
 infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
 @JvmName("usCustomaryLinearMassDensityDivImperialArea")
 infix operator fun <AreaUnit : ImperialArea>  ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
-@JvmName("linearMassDensityDivDensity")
+@JvmName("linearMassDensityDivArea")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, AreaUnit : Area> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (Kilogram per CubicMeter).density(this, area)
