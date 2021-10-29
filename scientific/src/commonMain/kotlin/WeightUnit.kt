@@ -24,24 +24,24 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Weight<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Weight>()
+sealed class Weight :
+    ScientificUnit()
 
 @Serializable
 sealed class MetricWeight(override val symbol: String) :
-    Weight<MeasurementSystem.Metric>()
+    Weight()
 
 @Serializable
 sealed class ImperialWeight(override val symbol: String) :
-    Weight<MeasurementSystem.Imperial>()
+    Weight()
 
 @Serializable
 sealed class USImperialWeight(override val symbol: String) :
-    Weight<MeasurementSystem.USCustomary>()
+    Weight()
 
 @Serializable
 sealed class UKImperialWeight(override val symbol: String) :
-    Weight<MeasurementSystem.UKImperial>()
+    Weight()
 
 // Metric Weight
 @Serializable

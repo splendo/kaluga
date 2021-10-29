@@ -22,19 +22,19 @@ import com.splendo.kaluga.base.utils.toDouble
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ScientificUnit<System : MeasurementSystem, Type : MeasurementType> {
+sealed class ScientificUnit {
     abstract val symbol: String
 
     abstract fun toSIUnit(value: Decimal): Decimal
     abstract fun fromSIUnit(value: Decimal): Decimal
 }
 
-fun <Unit : MeasurementType> ScientificUnit<*, Unit>.convert(
+fun ScientificUnit.convert(
     value: Double,
-    to: ScientificUnit<*, Unit>
+    to: ScientificUnit
 ): Double = convert(value.toDecimal(), to).toDouble()
 
-fun <Unit : MeasurementType> ScientificUnit<*, Unit>.convert(
+fun ScientificUnit.convert(
     value: Decimal,
-    to: ScientificUnit<*, Unit>
+    to: ScientificUnit
 ): Decimal = to.fromSIUnit(toSIUnit(value))

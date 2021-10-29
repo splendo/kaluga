@@ -24,20 +24,20 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Volume<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Volume>()
+sealed class Volume :
+    ScientificUnit()
 
 @Serializable
 sealed class MetricVolume(override val symbol: String) :
-    Volume<MeasurementSystem.Metric>()
+    Volume()
 
 @Serializable
 sealed class USImperialVolume(override val symbol: String) :
-    Volume<MeasurementSystem.USCustomary>()
+    Volume()
 
 @Serializable
 sealed class UKImperialVolume(override val symbol: String) :
-    Volume<MeasurementSystem.UKImperial>()
+    Volume()
 
 // Metric Volume
 @Serializable

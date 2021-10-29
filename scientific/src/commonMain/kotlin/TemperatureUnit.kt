@@ -26,16 +26,16 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Temperature<System : MeasurementSystem> :
-    ScientificUnit<System, MeasurementType.Temperature>()
+sealed class Temperature :
+    ScientificUnit()
 
 @Serializable
 sealed class MetricTemperature(override val symbol: String) :
-    Temperature<MeasurementSystem.Metric>()
+    Temperature()
 
 @Serializable
 sealed class USCustomaryTemperature(override val symbol: String) :
-    Temperature<MeasurementSystem.USCustomary>()
+    Temperature()
 
 @Serializable
 object Celsius : MetricTemperature("°C") {
