@@ -18,8 +18,8 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.energy.div
-import com.splendo.kaluga.scientific.force.times
+import com.splendo.kaluga.scientific.converter.energy.div
+import com.splendo.kaluga.scientific.converter.force.times
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 

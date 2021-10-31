@@ -1,0 +1,38 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.energy
+
+import com.splendo.kaluga.scientific.Abampere
+import com.splendo.kaluga.scientific.Ampere
+import com.splendo.kaluga.scientific.Energy
+import com.splendo.kaluga.scientific.Erg
+import com.splendo.kaluga.scientific.MagneticFlux
+import com.splendo.kaluga.scientific.Maxwell
+import com.splendo.kaluga.scientific.MeasurementSystem
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricMultipleUnit
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import kotlin.jvm.JvmName
+
+@JvmName("ergDivMaxwell")
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) = Abampere.current(this, flux)
+@JvmName("ergMultipleDivMaxwell")
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Abampere.current(this, flux)
+@JvmName("energyDivFlux")
+infix operator fun <EnergyUnit : Energy, FluxUnit : MagneticFlux> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>) = Ampere.current(this, flux)

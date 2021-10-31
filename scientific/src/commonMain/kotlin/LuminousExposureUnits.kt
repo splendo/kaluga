@@ -18,8 +18,8 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.illuminance.times
-import com.splendo.kaluga.scientific.luminousFlux.div
+import com.splendo.kaluga.scientific.converter.illuminance.times
+import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 

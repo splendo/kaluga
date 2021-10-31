@@ -18,8 +18,8 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.area.times
-import com.splendo.kaluga.scientific.volume.div
+import com.splendo.kaluga.scientific.converter.area.times
+import com.splendo.kaluga.scientific.converter.volume.div
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 

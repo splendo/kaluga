@@ -18,10 +18,10 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.force.div
-import com.splendo.kaluga.scientific.force.times
-import com.splendo.kaluga.scientific.momentum.div
-import com.splendo.kaluga.scientific.pressure.times
+import com.splendo.kaluga.scientific.converter.force.div
+import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.converter.momentum.div
+import com.splendo.kaluga.scientific.converter.pressure.times
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 

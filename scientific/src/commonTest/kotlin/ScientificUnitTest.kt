@@ -19,8 +19,8 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
-import com.splendo.kaluga.scientific.length.div
-import com.splendo.kaluga.scientific.speed.times
+import com.splendo.kaluga.scientific.converter.length.div
+import com.splendo.kaluga.scientific.converter.speed.times
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
