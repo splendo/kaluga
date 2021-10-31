@@ -33,12 +33,12 @@ import com.splendo.kaluga.scientific.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)
 @JvmName("imperialMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.force(this, time)
 @JvmName("ukImperialMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.ukImperial.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.ukImperial.force(this, time)
 @JvmName("usCustomaryMomentumDivTime")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.usCustomary.force(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = PoundForce.usCustomary.force(this, time)
 @JvmName("momentumDivTime")
-operator fun <MomentumUnit : Momentum, TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)
+infix operator fun <MomentumUnit : Momentum, TimeUnit : Time> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Newton.force(this, time)

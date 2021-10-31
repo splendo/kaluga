@@ -31,12 +31,12 @@ import com.splendo.kaluga.scientific.weight.times
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpeedTimesMetricWeight")
-operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Speed, MetricSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
 @JvmName("imperialSpeedTimesImperialWeight")
-operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
 @JvmName("imperialSpeedTimesUKImperialWeight")
-operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
 @JvmName("imperialSpeedTimesUSCustomaryWeight")
-operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Speed, ImperialSpeed>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
 @JvmName("speedTimesWeight")
-operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<MeasurementType.Speed, SpeedUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : Weight, SpeedUnit : Speed> ScientificValue<MeasurementType.Speed, SpeedUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this

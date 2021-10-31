@@ -21,21 +21,21 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> = MetricAndImperialEnergyUnits.map { energy ->
+val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> = MetricAndImperialEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
-}.flatten().toSet()
+}.toSet()
 
-val MetricHeatCapacityUnits: Set<MetricHeatCapacity> = MetricEnergyUnits.map { energy ->
+val MetricHeatCapacityUnits: Set<MetricHeatCapacity> = MetricEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
-}.flatten().toSet()
+}.toSet()
 
-val UKImperialHeatCapacityUnits: Set<UKImperialHeatCapacity> = ImperialEnergyUnits.map { energy ->
+val UKImperialHeatCapacityUnits: Set<UKImperialHeatCapacity> = ImperialEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
-}.flatten().toSet()
+}.toSet()
 
-val USCustomaryHeatCapacityUnits: Set<USCustomaryHeatCapacity> = ImperialEnergyUnits.map { energy ->
+val USCustomaryHeatCapacityUnits: Set<USCustomaryHeatCapacity> = ImperialEnergyUnits.flatMap { energy ->
     USCustomaryTemperatureUnits.map { energy per it }
-}.flatten().toSet()
+}.toSet()
 
 val HeatCapacityUnits: Set<HeatCapacity> = MetricAndUKImperialHeatCapacityUnits +
     MetricHeatCapacityUnits.filter { it.energy !is MetricMetricAndImperialEnergyWrapper }.toSet() +

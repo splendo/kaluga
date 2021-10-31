@@ -43,24 +43,24 @@ import com.splendo.kaluga.scientific.weight.times
 import kotlin.jvm.JvmName
 
 @JvmName("accelerationTimesGram")
-operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Gram>) = mass * this
+infix operator fun ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Gram>) = mass * this
 @JvmName("metricAccelerationTimesMetricWeight")
-operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
 @JvmName("accelerationTimesPound")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Pound>) = PoundForce.force(mass, this)
+infix operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Pound>) = PoundForce.force(mass, this)
 @JvmName("accelerationTimesOunce")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Ounce>) = OunceForce.force(mass, this)
+infix operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Ounce>) = OunceForce.force(mass, this)
 @JvmName("accelerationTimesGrain")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Grain>) = GrainForce.force(mass, this)
+infix operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, Grain>) = GrainForce.force(mass, this)
 @JvmName("accelerationTimesUSTon")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, UsTon>) = UsTonForce.force(mass, this)
+infix operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, UsTon>) = UsTonForce.force(mass, this)
 @JvmName("accelerationTimesImperialTon")
-operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, ImperialTon>) = ImperialTonForce.force(mass, this)
+infix operator fun ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, ImperialTon>) = ImperialTonForce.force(mass, this)
 @JvmName("imperialAccelerationTimesImperialWeight")
-operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
 @JvmName("imperialAccelerationTimesUKImperialWeight")
-operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
 @JvmName("imperialAccelerationTimesUSCustomaryWeight")
-operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
 @JvmName("accelerationTimesWeight")
-operator fun <WeightUnit : Weight, AccelerationUnit : Acceleration> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this
+infix operator fun <WeightUnit : Weight, AccelerationUnit : Acceleration> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.times(mass: ScientificValue<MeasurementType.Weight, WeightUnit>) = mass * this

@@ -23,17 +23,17 @@ import com.splendo.kaluga.scientific.force.times
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricAndImperialActionUnits: Set<MetricAndImperialAction> = MetricAndImperialEnergyUnits.map { energy ->
+val MetricAndImperialActionUnits: Set<MetricAndImperialAction> = MetricAndImperialEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
-}.flatten().toSet()
+}.toSet()
 
-val MetricActionUnits: Set<MetricAction> = MetricEnergyUnits.map { energy ->
+val MetricActionUnits: Set<MetricAction> = MetricEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialActionUnits: Set<ImperialAction> = ImperialEnergyUnits.map { energy ->
+val ImperialActionUnits: Set<ImperialAction> = ImperialEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
-}.flatten().toSet()
+}.toSet()
 
 val ActionUnits: Set<Action> = MetricAndImperialActionUnits +
     MetricActionUnits.filter { it.energy !is MetricMetricAndImperialEnergyWrapper }.toSet() +

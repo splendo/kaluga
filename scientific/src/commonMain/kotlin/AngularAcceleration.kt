@@ -20,9 +20,9 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val AngularAccelerationUnits = AngularVelocityUnits.map { angularVelocity ->
+val AngularAccelerationUnits = AngularVelocityUnits.flatMap { angularVelocity ->
     TimeUnits.map { angularVelocity per it }
-}.flatten().toSet()
+}.toSet()
 
 @Serializable
 data class AngularAcceleration(val angularVelocity: AngularVelocity, val per: Time) : AbstractScientificUnit<MeasurementType.AngularAcceleration>(), MetricAndImperialScientificUnit<MeasurementType.AngularAcceleration> {

@@ -31,12 +31,12 @@ import com.splendo.kaluga.scientific.weight.mass
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricSpeed")
-operator fun ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = unit.mass.mass(this, speed)
+infix operator fun ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = unit.mass.mass(this, speed)
 @JvmName("imperialMomentumDivImperialSpeed")
-operator fun ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+infix operator fun ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 @JvmName("ukImperialMomentumDivImperialSpeed")
-operator fun ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+infix operator fun ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 @JvmName("usCustomaryMomentumDivImperialSpeed")
-operator fun ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
+infix operator fun ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = unit.mass.mass(this, speed)
 @JvmName("momentumDivSpeed")
-operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = unit.mass.mass(this, speed)
+infix operator fun <MomentumUnit : Momentum, SpeedUnit : Speed> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = unit.mass.mass(this, speed)

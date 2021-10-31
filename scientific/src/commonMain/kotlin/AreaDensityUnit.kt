@@ -23,21 +23,21 @@ import com.splendo.kaluga.scientific.volume.div
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricAreaDensityUnits = MetricWeightUnits.map { weight ->
+val MetricAreaDensityUnits = MetricWeightUnits.flatMap { weight ->
     MetricAreaUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialAreaDensityUnits = ImperialWeightUnits.map { weight ->
+val ImperialAreaDensityUnits = ImperialWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val UKImperialAreaDensityUnits = UKImperialWeightUnits.map { weight ->
+val UKImperialAreaDensityUnits = UKImperialWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val USCustomaryAreaDensityUnits = USCustomaryWeightUnits.map { weight ->
+val USCustomaryAreaDensityUnits = USCustomaryWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
 val AreaDensityUnits: Set<AreaDensity> = MetricAreaDensityUnits +
     ImperialAreaDensityUnits +

@@ -31,10 +31,10 @@ import com.splendo.kaluga.scientific.illuminance.illuminance
 import kotlin.jvm.JvmName
 
 @JvmName("lumenDivSquareCentimeter")
-infix fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(squareCentimeter: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Phot.illuminance(this, squareCentimeter)
+infix operator fun <FluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(squareCentimeter: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Phot.illuminance(this, squareCentimeter)
 @JvmName("lumenDivMetricArea")
-infix fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lux.illuminance(this, area)
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lux.illuminance(this, area)
 @JvmName("lumenDivImperialArea")
-infix fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = FootCandle.illuminance(this, area)
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = FootCandle.illuminance(this, area)
 @JvmName("lumenDivArea")
-infix fun <FluxUnit : LuminousFlux, AreaUnit : Area> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lux.illuminance(this, area)
+infix operator fun <FluxUnit : LuminousFlux, AreaUnit : Area> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Lux.illuminance(this, area)

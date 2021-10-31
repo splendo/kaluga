@@ -28,7 +28,7 @@ import com.splendo.kaluga.scientific.radioactivity.times
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesFrequency")
-operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): Decimal = frequency * this
+infix operator fun <FrequencyUnit : Frequency, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): Decimal = frequency * this
 
 @JvmName("timeTimesRadioactivity")
-operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): Decimal = radioactivity * this
+infix operator fun <RadioactivityUnit : Radioactivity, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): Decimal = radioactivity * this

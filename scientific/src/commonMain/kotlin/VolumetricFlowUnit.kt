@@ -20,21 +20,21 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> = MetricVolumeUnits.map { volume ->
+val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> = MetricVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> = ImperialVolumeUnits.map { volume ->
+val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> = ImperialVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
-}.flatten().toSet()
+}.toSet()
 
-val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> = UKImperialVolumeUnits.map { volume ->
+val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> = UKImperialVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
-}.flatten().toSet()
+}.toSet()
 
-val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> = USCustomaryVolumeUnits.map { volume ->
+val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> = USCustomaryVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
-}.flatten().toSet()
+}.toSet()
 
 val VolumetricFlowUnits: Set<VolumetricFlow> = MetricVolumetricFlowUnits +
     ImperialVolumetricFlowUnits +

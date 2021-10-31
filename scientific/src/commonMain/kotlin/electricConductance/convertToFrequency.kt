@@ -26,4 +26,4 @@ import com.splendo.kaluga.scientific.frequency.frequency
 import kotlin.jvm.JvmName
 
 @JvmName("conductanceDivCapacitance")
-operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Hertz.frequency(this, capacitance)
+infix operator fun <ConductanceUnit : ElectricConductance, CapacitanceUnit : ElectricCapacitance> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = Hertz.frequency(this, capacitance)

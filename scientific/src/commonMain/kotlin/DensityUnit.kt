@@ -20,21 +20,21 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricDensityUnits = MetricWeightUnits.map { weight ->
+val MetricDensityUnits = MetricWeightUnits.flatMap { weight ->
     MetricVolumeUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialDensityUnits = ImperialWeightUnits.map { weight ->
+val ImperialDensityUnits = ImperialWeightUnits.flatMap { weight ->
     ImperialVolumeUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val UKImperialDensityUnits = UKImperialWeightUnits.map { weight ->
+val UKImperialDensityUnits = UKImperialWeightUnits.flatMap { weight ->
     UKImperialVolumeUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
-val USCustomaryDensityUnits = USCustomaryWeightUnits.map { weight ->
+val USCustomaryDensityUnits = USCustomaryWeightUnits.flatMap { weight ->
     USCustomaryVolumeUnits.map { weight per it }
-}.flatten().toSet()
+}.toSet()
 
 val DensityUnits: Set<Density> = MetricDensityUnits +
     ImperialDensityUnits +

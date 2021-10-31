@@ -20,13 +20,13 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricAccelerationUnits = MetricSpeedUnits.map { speed ->
+val MetricAccelerationUnits = MetricSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialAccelerationUnits = ImperialSpeedUnits.map { speed ->
+val ImperialAccelerationUnits = ImperialSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
-}.flatten().toSet()
+}.toSet()
 
 val AccelerationUnits: Set<Acceleration> = MetricAccelerationUnits +
     ImperialAccelerationUnits

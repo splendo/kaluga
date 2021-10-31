@@ -23,21 +23,21 @@ import com.splendo.kaluga.scientific.weight.times
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricYankUnits: Set<MetricYank> = MetricForceUnits.map { force ->
+val MetricYankUnits: Set<MetricYank> = MetricForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
-}.flatten().toSet()
+}.toSet()
 
-val ImperialYankUnits: Set<ImperialYank> = ImperialForceUnits.map { force ->
+val ImperialYankUnits: Set<ImperialYank> = ImperialForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
-}.flatten().toSet()
+}.toSet()
 
-val UKImperialYankUnits: Set<UKImperialYank> = UKImperialForceUnits.map { force ->
+val UKImperialYankUnits: Set<UKImperialYank> = UKImperialForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
-}.flatten().toSet()
+}.toSet()
 
-val USCustomaryYankUnits: Set<USCustomaryYank> = USCustomaryForceUnits.map { force ->
+val USCustomaryYankUnits: Set<USCustomaryYank> = USCustomaryForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
-}.flatten().toSet()
+}.toSet()
 
 val YankUnits: Set<Yank> = MetricYankUnits +
     ImperialYankUnits +

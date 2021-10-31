@@ -42,36 +42,36 @@ import com.splendo.kaluga.scientific.force.times
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesDyne")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(dyne: ScientificValue<MeasurementType.Force, Dyne>) = dyne * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(dyne: ScientificValue<MeasurementType.Force, Dyne>) = dyne * this
 @JvmName("timeTimesDyneMultiple")
-operator fun <DyneUnit, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(dyne: ScientificValue<MeasurementType.Force, DyneUnit>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = dyne * this
+infix operator fun <DyneUnit, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(dyne: ScientificValue<MeasurementType.Force, DyneUnit>) where DyneUnit : MetricForce, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = dyne * this
 @JvmName("timeTimesTonneForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(tonne: ScientificValue<MeasurementType.Force, TonneForce>) = tonne * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(tonne: ScientificValue<MeasurementType.Force, TonneForce>) = tonne * this
 @JvmName("timeTimesGramForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(gram: ScientificValue<MeasurementType.Force, GramForce>) = gram * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(gram: ScientificValue<MeasurementType.Force, GramForce>) = gram * this
 @JvmName("timeTimesMilligramForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(milligram: ScientificValue<MeasurementType.Force, MilligramForce>) = milligram * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(milligram: ScientificValue<MeasurementType.Force, MilligramForce>) = milligram * this
 @JvmName("timeTimesMetricForce")
-operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
 @JvmName("timeTimesPoundal")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(poundal: ScientificValue<MeasurementType.Force, Poundal>) = poundal * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(poundal: ScientificValue<MeasurementType.Force, Poundal>) = poundal * this
 @JvmName("timeTimesPoundForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(poundForce: ScientificValue<MeasurementType.Force, PoundForce>) = poundForce * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(poundForce: ScientificValue<MeasurementType.Force, PoundForce>) = poundForce * this
 @JvmName("timeTimesOunceForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(ounceForce: ScientificValue<MeasurementType.Force, OunceForce>) = ounceForce * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(ounceForce: ScientificValue<MeasurementType.Force, OunceForce>) = ounceForce * this
 @JvmName("timeTimesGrainForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(grainForce: ScientificValue<MeasurementType.Force, GrainForce>) = grainForce * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(grainForce: ScientificValue<MeasurementType.Force, GrainForce>) = grainForce * this
 @JvmName("timeTimesKip")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(kip: ScientificValue<MeasurementType.Force, Kip>) = kip * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(kip: ScientificValue<MeasurementType.Force, Kip>) = kip * this
 @JvmName("timeTimesUsTonForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(usTonForce: ScientificValue<MeasurementType.Force, UsTonForce>) = usTonForce * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(usTonForce: ScientificValue<MeasurementType.Force, UsTonForce>) = usTonForce * this
 @JvmName("timeTimesImperialTonForce")
-operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(imperialTonForce: ScientificValue<MeasurementType.Force, ImperialTonForce>) = imperialTonForce * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(imperialTonForce: ScientificValue<MeasurementType.Force, ImperialTonForce>) = imperialTonForce * this
 @JvmName("timeTimesImperialForce")
-operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
 @JvmName("timeTimesUKImperialForce")
-operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
 @JvmName("timeTimesUSCustomaryForce")
-operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
 @JvmName("timeTimesForce")
-operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
