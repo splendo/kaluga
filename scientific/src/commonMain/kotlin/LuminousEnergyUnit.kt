@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val LuminousEnergyUnits = LuminousFluxUnits.flatMap { flux ->
+val LuminousEnergyUnits: Set<LuminousEnergy> = LuminousFluxUnits.flatMap { flux ->
     TimeUnits.map { flux x it }
 }.toSet()
 

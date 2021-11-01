@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val CatalysticActivityUnits = setOf(
+val CatalysticActivityUnits: Set<CatalysticActivity> = setOf(
     Katal,
     Nanokatal,
     Microkatal,

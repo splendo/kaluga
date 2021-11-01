@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 import kotlin.math.PI
 
-val MetricLuminanceUnits = setOf(
+val MetricLuminanceUnits: Set<MetricLuminance> = setOf(
     Nit,
     Nanonit,
     Micronit,
@@ -44,7 +44,7 @@ val MetricLuminanceUnits = setOf(
     Bril
 )
 
-val ImperialLuminanceUnits = setOf(
+val ImperialLuminanceUnits: Set<ImperialLuminance> = setOf(
     FootLambert
 )
 

@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricForceUnits = setOf (
+val MetricForceUnits: Set<MetricForce> = setOf (
     Newton,
     Nanonewton,
     Micronewton,
@@ -52,19 +52,19 @@ val MetricForceUnits = setOf (
     MilligramForce
     )
 
-val ImperialForceUnits = setOf(
+val ImperialForceUnits: Set<ImperialForce> = setOf(
     Poundal,
     PoundForce,
     OunceForce,
     GrainForce,
 )
 
-val USCustomaryForceUnits = setOf(
+val USCustomaryForceUnits: Set<USCustomaryForce> = setOf(
     Kip,
     UsTonForce
 ) + ImperialForceUnits.map { it.usCustomary }
 
-val UKImperialForceUnits = setOf(
+val UKImperialForceUnits: Set<UKImperialForce> = setOf(
     ImperialTonForce
 ) + ImperialForceUnits.map { it.ukImperial }
 

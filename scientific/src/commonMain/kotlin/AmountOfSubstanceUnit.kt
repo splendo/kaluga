@@ -22,7 +22,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.native.concurrent.ThreadLocal
 
-val AmountOfSubstanceUnits = setOf(
+val AmountOfSubstanceUnits: Set<AmountOfSubstance> = setOf(
     Mole,
     Nanomole,
     Micromole,

@@ -24,7 +24,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val FrequencyUnits = setOf(
+val FrequencyUnits: Set<Frequency> = setOf(
     Hertz,
     Nanohertz,
     Microhertz,

@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAndImperialEnergyUnits = setOf(
+val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> = setOf(
     WattHour,
     NanowattHour,
     MicrowattHour,
@@ -45,7 +45,7 @@ val MetricAndImperialEnergyUnits = setOf(
     Megacalorie.IT
 )
 
-val MetricEnergyUnits = setOf(
+val MetricEnergyUnits: Set<MetricEnergy> = setOf(
     Joule,
     Nanojoule,
     Microjoule,
@@ -81,7 +81,7 @@ val MetricEnergyUnits = setOf(
     Gigaelectronvolt
 ) + MetricAndImperialEnergyUnits.map {it.metric }.toSet()
 
-val ImperialEnergyUnits = setOf(
+val ImperialEnergyUnits: Set<ImperialEnergy> = setOf(
     FootPoundal,
     FootPoundForce,
     InchPoundForce,

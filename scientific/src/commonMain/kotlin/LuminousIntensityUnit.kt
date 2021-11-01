@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val LuminousIntensityUnits = setOf(
+val LuminousIntensityUnits: Set<LuminousIntensity> = setOf(
     Candela,
     Nanocandela,
     Microcandela,

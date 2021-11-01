@@ -20,25 +20,25 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricMomentumUnits = MetricWeightUnits.flatMap { weight ->
+val MetricMomentumUnits: Set<MetricMomentum> = MetricWeightUnits.flatMap { weight ->
     MetricSpeedUnits.map {
         MetricMomentum(weight, it)
     }
 }.toSet()
 
-val ImperialMomentumUnits = ImperialWeightUnits.flatMap { weight ->
+val ImperialMomentumUnits: Set<ImperialMomentum> = ImperialWeightUnits.flatMap { weight ->
     ImperialSpeedUnits.map {
         ImperialMomentum(weight, it)
     }
 }.toSet()
 
-val UKImperialMomentumUnits = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialMomentumUnits: Set<UKImperialMomentum> = UKImperialWeightUnits.flatMap { weight ->
     ImperialSpeedUnits.map {
         UKImperialMomentum(weight, it)
     }
 }.toSet()
 
-val USCustomaryMomentumUnits = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryMomentumUnits: Set<USCustomaryMomentum> = USCustomaryWeightUnits.flatMap { weight ->
     ImperialSpeedUnits.map {
         USCustomaryMomentum(weight, it)
     }

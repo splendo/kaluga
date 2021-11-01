@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val TimeUnits = setOf(
+val TimeUnits: Set<Time> = setOf(
     Second,
     Nanosecond,
     Microsecond,

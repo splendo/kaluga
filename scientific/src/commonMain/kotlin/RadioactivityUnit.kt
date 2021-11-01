@@ -25,7 +25,7 @@ import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 import kotlin.math.ln
 
-val RadioactivityUnits = setOf(
+val RadioactivityUnits: Set<Radioactivity> = setOf(
     Becquerel,
     Nanobecquerel,
     Microbecquerel,

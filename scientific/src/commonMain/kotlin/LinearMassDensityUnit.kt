@@ -24,19 +24,19 @@ import com.splendo.kaluga.scientific.converter.volume.div
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricLinearMassDensityUnits = MetricWeightUnits.flatMap { weight ->
+val MetricLinearMassDensityUnits: Set<MetricLinearMassDensity> = MetricWeightUnits.flatMap { weight ->
     MetricLengthUnits.map { weight per it }
 }.toSet()
 
-val ImperialLinearMassDensityUnits = ImperialWeightUnits.flatMap { weight ->
+val ImperialLinearMassDensityUnits: Set<ImperialLinearMassDensity> = ImperialWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 
-val UKImperialLinearMassDensityUnits = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialLinearMassDensityUnits: Set<UKImperialLinearMassDensity> = UKImperialWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryLinearMassDensityUnits = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryLinearMassDensityUnits: Set<USCustomaryLinearMassDensity> = USCustomaryWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 

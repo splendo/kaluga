@@ -23,11 +23,11 @@ import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricLuminousExposureUnits = MetricIlluminanceUnits.flatMap { illuminance ->
+val MetricLuminousExposureUnits: Set<MetricLuminousExposure> = MetricIlluminanceUnits.flatMap { illuminance ->
     TimeUnits.map { illuminance x it }
 }.toSet()
 
-val ImperialLuminousExposureUnits = ImperialIlluminanceUnits.flatMap { illuminance ->
+val ImperialLuminousExposureUnits: Set<ImperialLuminousExposure> = ImperialIlluminanceUnits.flatMap { illuminance ->
     TimeUnits.map { illuminance x it }
 }.toSet()
 

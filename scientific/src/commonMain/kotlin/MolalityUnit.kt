@@ -21,19 +21,19 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricMolalityUnits = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val MetricMolalityUnits: Set<MetricMolality> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     MetricWeightUnits.map { amountOfSubstance per it }
 }.toSet()
 
-val ImperialMolalityUnits = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val ImperialMolalityUnits: Set<ImperialMolality> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     ImperialWeightUnits.map { amountOfSubstance per it  }
 }.toSet()
 
-val UKImperialMolalityUnits = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val UKImperialMolalityUnits: Set<UKImperialMolality> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     UKImperialWeightUnits.map { amountOfSubstance per it  }
 }.toSet()
 
-val USCustomaryMolalityUnits = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val USCustomaryMolalityUnits: Set<USCustomaryMolality> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     USCustomaryWeightUnits.map { amountOfSubstance per it  }
 }.toSet()
 

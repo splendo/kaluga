@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricPressureUnits = setOf(
+val MetricPressureUnits: Set<MetricPressure> = setOf(
     Pascal,
     NanoPascal,
     MicroPascal,
@@ -74,7 +74,7 @@ val MetricPressureUnits = setOf(
     CentimeterOfWater
 )
 
-val ImperialPressureUnits = setOf(
+val ImperialPressureUnits: Set<ImperialPressure> = setOf(
     PoundSquareInch,
     PoundSquareFoot,
     OunceSquareInch,
@@ -84,14 +84,14 @@ val ImperialPressureUnits = setOf(
     FootOfWater
 )
 
-val USCustomaryPressureUnits = setOf(
+val USCustomaryPressureUnits: Set<USCustomaryPressure> = setOf(
     KipSquareInch,
     KipSquareFoot,
     USTonSquareInch,
     USTonSquareFoot
 ) + ImperialPressureUnits.map { it.usCustomary }.toSet()
 
-val UKImperialPressureUnits = setOf(
+val UKImperialPressureUnits: Set<UKImperialPressure> = setOf(
     ImperialTonSquareInch,
     ImperialTonSquareFoot
 ) + ImperialPressureUnits.map { it.ukImperial }.toSet()

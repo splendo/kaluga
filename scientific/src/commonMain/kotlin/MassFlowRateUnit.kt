@@ -21,19 +21,19 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmName
 
-val MetricMassFlowRateUnits = MetricWeightUnits.flatMap { weight ->
+val MetricMassFlowRateUnits: Set<MetricMassFlowRate> = MetricWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val ImperialMassFlowRateUnits = ImperialWeightUnits.flatMap { weight ->
+val ImperialMassFlowRateUnits: Set<ImperialMassFlowRate> = ImperialWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val UKImperialMassFlowRateUnits = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialMassFlowRateUnits: Set<UKImperialMassFlowRate> = UKImperialWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryMassFlowRateUnits = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryMassFlowRateUnits: Set<USCustomaryMassFlowRate> = USCustomaryWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 

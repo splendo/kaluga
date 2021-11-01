@@ -22,9 +22,8 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val IonizingRadiationEquivalentDoseUnits = setOf(
+val IonizingRadiationEquivalentDoseUnits: Set<IonizingRadiationEquivalentDose> = setOf(
     Sievert,
     Nanosievert,
     Microsievert,

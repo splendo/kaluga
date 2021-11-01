@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricWeightUnits = setOf(
+val MetricWeightUnits: Set<MetricWeight> = setOf(
     Kilogram,
     Nanogram,
     Microgram,
@@ -48,7 +48,7 @@ val MetricWeightUnits = setOf(
     Gigadalton
 )
 
-val ImperialWeightUnits = setOf(
+val ImperialWeightUnits: Set<ImperialWeight> = setOf(
     Grain,
     Ounce,
     Pound,
@@ -56,8 +56,8 @@ val ImperialWeightUnits = setOf(
     Slug
 )
 
-val UKImperialWeightUnits = ImperialWeightUnits.map { it.ukImperial }.toSet() + setOf(ImperialTon)
-val USCustomaryWeightUnits = ImperialWeightUnits.map { it.usCustomary }.toSet() + setOf(UsTon)
+val UKImperialWeightUnits: Set<UKImperialWeight> = ImperialWeightUnits.map { it.ukImperial }.toSet() + setOf(ImperialTon)
+val USCustomaryWeightUnits: Set<USCustomaryWeight> = ImperialWeightUnits.map { it.usCustomary }.toSet() + setOf(UsTon)
 
 val WeightUnits: Set<Weight> = MetricWeightUnits +
     ImperialWeightUnits +

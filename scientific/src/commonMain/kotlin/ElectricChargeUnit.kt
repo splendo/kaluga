@@ -21,7 +21,7 @@ import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 import kotlin.native.concurrent.ThreadLocal
 
-val ElectricChargeUnits = setOf(
+val ElectricChargeUnits: Set<ElectricCharge> = setOf(
     Coulomb,
     Nanocoulomb,
     Microcoulomb,

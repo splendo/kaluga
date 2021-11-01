@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAreaUnits = setOf(
+val MetricAreaUnits: Set<MetricArea> = setOf(
     SquareMeter,
     SquareNanometer,
     SquareMicrometer,
@@ -36,7 +36,7 @@ val MetricAreaUnits = setOf(
     Hectare
 )
 
-val ImperialAreaUnits = setOf(
+val ImperialAreaUnits: Set<ImperialArea> = setOf(
     SquareInch,
     SquareFoot,
     SquareYard,

@@ -20,19 +20,19 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricDensityUnits = MetricWeightUnits.flatMap { weight ->
+val MetricDensityUnits: Set<MetricDensity> = MetricWeightUnits.flatMap { weight ->
     MetricVolumeUnits.map { weight per it }
 }.toSet()
 
-val ImperialDensityUnits = ImperialWeightUnits.flatMap { weight ->
+val ImperialDensityUnits: Set<ImperialDensity> = ImperialWeightUnits.flatMap { weight ->
     ImperialVolumeUnits.map { weight per it }
 }.toSet()
 
-val UKImperialDensityUnits = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialDensityUnits: Set<UKImperialDensity> = UKImperialWeightUnits.flatMap { weight ->
     UKImperialVolumeUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryDensityUnits = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryDensityUnits: Set<USCustomaryDensity> = USCustomaryWeightUnits.flatMap { weight ->
     USCustomaryVolumeUnits.map { weight per it }
 }.toSet()
 

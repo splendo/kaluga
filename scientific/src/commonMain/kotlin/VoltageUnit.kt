@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val VoltageUnits = setOf(
+val VoltageUnits: Set<Voltage> = setOf(
     Volt,
     Nanovolt,
     Microvolt,

@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricLengthUnits = setOf(
+val MetricLengthUnits: Set<MetricLength> = setOf(
     Meter,
     Nanometer,
     Micrometer,
@@ -38,7 +38,7 @@ val MetricLengthUnits = setOf(
     NauticalMile
 )
 
-val ImperialLengthUnits = setOf(
+val ImperialLengthUnits: Set<ImperialLength> = setOf(
     Inch,
     Foot,
     Yard,

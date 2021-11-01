@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricVolumeUnits = setOf(
+val MetricVolumeUnits: Set<MetricVolume> = setOf(
     CubicMeter,
     CubicNanometer,
     CubicMicrometer,
@@ -48,14 +48,14 @@ val MetricVolumeUnits = setOf(
     Gigaliter
 )
 
-val ImperialVolumeUnits = setOf(
+val ImperialVolumeUnits: Set<ImperialVolume> = setOf(
     CubicInch,
     CubicFoot,
     CubicYard,
     CubicMile
 )
 
-val USCustomaryVolumeUnits = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
+val USCustomaryVolumeUnits: Set<USCustomaryVolume> = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
     setOf(
     AcreFoot,
     UsFluidDram,
@@ -67,7 +67,7 @@ val USCustomaryVolumeUnits = ImperialVolumeUnits.map { it.usCustomary }.toSet() 
     UsLiquidGallon
 )
 
-val UKImperialVolumeUnits = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
+val UKImperialVolumeUnits: Set<UKImperialVolume> = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
     setOf(
         ImperialFluidDram,
         ImperialFluidOunce,

@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAndImperialPowerUnits = setOf(
+val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> = setOf(
     Watt,
     Nanowatt,
     Microwatt,
@@ -38,8 +38,8 @@ val MetricAndImperialPowerUnits = setOf(
     ErgPerSecond
 )
 
-val MetricPowerUnits = MetricAndImperialPowerUnits.map { it.metric }.toSet() + setOf(MetricHorsepower)
-val ImperialPowerUnits = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
+val MetricPowerUnits: Set<MetricPower> = MetricAndImperialPowerUnits.map { it.metric }.toSet() + setOf(MetricHorsepower)
+val ImperialPowerUnits: Set<ImperialPower> = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
     setOf(
     FootPoundForcePerSecond,
     FootPoundForcePerMinute,

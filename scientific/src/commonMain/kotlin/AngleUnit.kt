@@ -24,7 +24,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
-val AngleUnits = setOf(
+val AngleUnits: Set<Angle> = setOf(
     Radian,
     Nanoradian,
     Microradian,

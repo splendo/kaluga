@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val ElectricCurrentUnits = setOf(
+val ElectricCurrentUnits: Set<ElectricCurrent> = setOf(
     Ampere,
     Nanoampere,
     Microampere,
