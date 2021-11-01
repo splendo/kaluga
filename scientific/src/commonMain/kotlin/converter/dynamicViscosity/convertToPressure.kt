@@ -1,0 +1,40 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.dynamicViscosity
+
+import com.splendo.kaluga.scientific.DynamicViscosity
+import com.splendo.kaluga.scientific.ImperialDynamicViscosity
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricDynamicViscosity
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.Time
+import com.splendo.kaluga.scientific.UKImperialDynamicViscosity
+import com.splendo.kaluga.scientific.USCustomaryDynamicViscosity
+import com.splendo.kaluga.scientific.converter.pressure.pressure
+import kotlin.jvm.JvmName
+
+@JvmName("metricDynamicViscosityDivTime")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.DynamicViscosity, MetricDynamicViscosity>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.pressure).pressure(this, time)
+@JvmName("imperialDynamicViscosityDivTime")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.DynamicViscosity, ImperialDynamicViscosity>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.pressure).pressure(this, time)
+@JvmName("ukImperialDynamicViscosityDivTime")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.DynamicViscosity, UKImperialDynamicViscosity>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.pressure).pressure(this, time)
+@JvmName("usCustomaryDynamicViscosityDivTime")
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.DynamicViscosity, USCustomaryDynamicViscosity>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.pressure).pressure(this, time)
+@JvmName("dynamicViscosityDivTime")
+infix operator fun <DynamicViscosityUnit : DynamicViscosity, TimeUnit : Time> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.pressure).pressure(this, time)

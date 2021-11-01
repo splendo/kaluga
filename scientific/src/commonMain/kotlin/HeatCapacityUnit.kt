@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> = MetricAndImperialEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
@@ -76,87 +75,3 @@ infix fun MetricEnergy.per(temperature: MetricAndUKImperialTemperature) = Metric
 infix fun ImperialEnergy.per(temperature: MetricAndUKImperialTemperature) = UKImperialHeatCapacity(this, temperature)
 infix fun MetricAndImperialEnergy.per(temperature: USCustomaryTemperature) = USCustomaryHeatCapacity(this.imperial, temperature)
 infix fun ImperialEnergy.per(temperature: USCustomaryTemperature) = USCustomaryHeatCapacity(this, temperature)
-
-@JvmName("heatCapacityFromEnergyAndTemperature")
-fun <
-    EnergyUnit : Energy,
-    TemperatureUnit : Temperature,
-    HeatCapacityUnit : HeatCapacity
-    > HeatCapacityUnit.heatCapacity(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
-) = byDividing(energy, temperature)
-
-@JvmName("energyFromHeatCapacityAndTemperature")
-fun <
-    EnergyUnit : Energy,
-    TemperatureUnit : Temperature,
-    HeatCapacityUnit : HeatCapacity
-    > EnergyUnit.energy(
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
-    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
-) = byMultiplying(heatCapacity, temperature)
-
-@JvmName("temperatureFromEnergyAndHeatCapacity")
-fun <
-    EnergyUnit : Energy,
-    TemperatureUnit : Temperature,
-    HeatCapacityUnit : HeatCapacity
-    > TemperatureUnit.temperature(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>
-) = byDividing(energy, heatCapacity)
-
-@JvmName("metricAndImperialEnergyDivMetricAndUKImperialTemperature")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit per temperature.unit).heatCapacity(this, temperature)
-@JvmName("metricEnergyDivMetricAndUKImperialTemperature")
-infix operator fun <EnergyUnit : MetricEnergy, TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit per temperature.unit).heatCapacity(this, temperature)
-@JvmName("imperialEnergyDivMetricAndUKImperialTemperature")
-infix operator fun <EnergyUnit : ImperialEnergy, TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit per temperature.unit).heatCapacity(this, temperature)
-@JvmName("metricAndImperialEnergyDivUSCustomaryTemperature")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit per temperature.unit).heatCapacity(this, temperature)
-@JvmName("imperialEnergyDivUSCustomaryTemperature")
-infix operator fun <EnergyUnit : ImperialEnergy, TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit per temperature.unit).heatCapacity(this, temperature)
-@JvmName("energyDivTemperature")
-infix operator fun <EnergyUnit : Energy, TemperatureUnit : Temperature> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (Joule per Kelvin).heatCapacity(this, temperature)
-
-@JvmName("metricAndUKImperialHeatCapacityTimesMetricAndUKImperialTemperature")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-@JvmName("metricHeatCapacityTimesMetricAndUKImperialTemperature")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-@JvmName("ukImperialHeatCapacityTimesMetricAndUKImperialTemperature")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-@JvmName("metricAndUKImperialHeatCapacityTimesUSCustomaryTemperature")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-@JvmName("usCustomaryHeatCapacityTimesUSCustomaryTemperature")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.HeatCapacity, USCustomaryHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-@JvmName("heatCapacityTimesTemperature")
-infix operator fun <HeatCapacityUnit : HeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy).energy(this, temperature)
-
-@JvmName("metricAndUKImperialTemperatureTimesMetricAndUKImperialHeatCapacity")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>) = heatCapacity * this
-@JvmName("metricAndUKImperialTemperatureTimesMetricHeatCapacity")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>) = heatCapacity * this
-@JvmName("metricAndUKImperialTemperatureTimesUKImperialHeatCapacity")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>) = heatCapacity * this
-@JvmName("usCustomaryTemperatureTimesMetricAndUKImperialHeatCapacity")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>) = heatCapacity * this
-@JvmName("usCustomaryTemperatureTimesUSCustomaryHeatCapacity")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, USCustomaryHeatCapacity>) = heatCapacity * this
-@JvmName("temperatureTimesHeatCapacity")
-infix operator fun <HeatCapacityUnit : HeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>) = heatCapacity * this
-
-@JvmName("metricAndImperialEnergyDivMetricAndUKImperialHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("metricAndImperialEnergyDivMetricHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("metricAndImperialEnergyDivUKImperialHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("metricEnergyDivMetricHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, MetricEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("ukImperialEnergyDivUKImperialHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, ImperialEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("usCustomaryEnergyDivUSCustomaryHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.Energy, ImperialEnergy>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, USCustomaryHeatCapacity>) = heatCapacity.unit.per.temperature(this, heatCapacity)
-@JvmName("energyDivHeatCapacity")
-infix operator fun <EnergyUnit : Energy, HeatCapacityUnit : HeatCapacity> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>) = heatCapacity.unit.per.temperature(this, heatCapacity)

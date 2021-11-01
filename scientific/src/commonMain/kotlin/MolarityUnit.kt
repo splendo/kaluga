@@ -316,7 +316,7 @@ infix operator fun <MolalityUnit : Molality> ScientificValue<MeasurementType.Den
 infix operator fun <MolalityUnit : Molality> ScientificValue<MeasurementType.Density, UKImperialDensity>.times(molality: ScientificValue<MeasurementType.Molality, MolalityUnit>) = molality * this
 @JvmName("usCustomaryDensityTimesMolality")
 infix operator fun <MolalityUnit : Molality> ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(molality: ScientificValue<MeasurementType.Molality, MolalityUnit>) = molality * this
-@JvmName("densityTimesMolalityTimes")
+@JvmName("densityTimesMolality")
 infix operator fun <MolalityUnit : Molality, DensityUnit : Density> ScientificValue<MeasurementType.Density, DensityUnit>.times(molality: ScientificValue<MeasurementType.Molality, MolalityUnit>) = molality * this
 
 @JvmName("molarityDivMetricDensity")
