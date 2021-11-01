@@ -24,16 +24,16 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Length :
-    ScientificUnit()
+sealed class Length<System : MeasurementSystem> :
+    ScientificUnit<System, MeasurementType.Length>()
 
 @Serializable
 sealed class MetricLength(override val symbol: String) :
-    Length()
+    Length<MeasurementSystem.Metric>()
 
 @Serializable
 sealed class ImperialLength(override val symbol: String) :
-    Length()
+    Length<MeasurementSystem.Imperial>()
 
 // Metric Length
 @Serializable

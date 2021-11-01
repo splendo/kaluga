@@ -129,8 +129,8 @@ class ScientificUnitTest {
 
 fun assertForLength(
     max: Int,
-    inputUnit: ScientificUnit,
-    outputUnit: ScientificUnit,
+    inputUnit: ScientificUnit<*, MeasurementType.Length>,
+    outputUnit: ScientificUnit<*, MeasurementType.Length>,
     inputToOutputRatio: Double,
     tolerance: Double = 0.0
 ) {
@@ -146,8 +146,8 @@ fun assertForLength(
 
 fun assertForVolume(
     max: Int,
-    inputUnit: ScientificUnit,
-    outputUnit: ScientificUnit,
+    inputUnit: ScientificUnit<*, MeasurementType.Volume>,
+    outputUnit: ScientificUnit<*, MeasurementType.Volume>,
     inputToOutputRatio: Double,
     tolerance: Double = 0.0
 ) {
@@ -163,8 +163,8 @@ fun assertForVolume(
 
 fun assertForWeight(
     max: Int,
-    inputUnit: ScientificUnit,
-    outputUnit: ScientificUnit,
+    inputUnit: ScientificUnit<*, MeasurementType.Weight>,
+    outputUnit: ScientificUnit<*, MeasurementType.Weight>,
     inputToOutputRatio: Double,
     tolerance: Double = 0.0
 ) {
