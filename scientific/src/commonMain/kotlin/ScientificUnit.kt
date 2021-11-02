@@ -99,6 +99,7 @@ val Units: Set<ScientificUnit<*>> = AccelerationUnits +
     RadioactivityUnits +
     SolidAngleUnits +
     SpecificEnergyUnits +
+    SpecificHeatCapacityUnits +
     SpecificVolumeUnits +
     SpeedUnits +
     TemperatureUnits +

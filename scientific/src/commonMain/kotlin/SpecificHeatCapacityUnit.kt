@@ -21,7 +21,9 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.minus
 import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.toDecimal
+import com.splendo.kaluga.scientific.converter.heatCapacity.times
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 val MetricSpecificHeatCapacityUnits: Set<MetricSpecificHeatCapacity> = MetricHeatCapacityUnits.flatMap { heatCapacity ->
     MetricWeightUnits.map { heatCapacity per it }
