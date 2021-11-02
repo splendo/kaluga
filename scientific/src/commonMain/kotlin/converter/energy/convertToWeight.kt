@@ -20,16 +20,25 @@ package com.splendo.kaluga.scientific.converter.energy
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.Erg
 import com.splendo.kaluga.scientific.Gram
+import com.splendo.kaluga.scientific.ImperialEnergy
+import com.splendo.kaluga.scientific.ImperialSpecificEnergy
 import com.splendo.kaluga.scientific.IonizingRadiationAbsorbedDose
 import com.splendo.kaluga.scientific.IonizingRadiationEquivalentDose
 import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.MetricEnergy
 import com.splendo.kaluga.scientific.MetricMultipleUnit
+import com.splendo.kaluga.scientific.MetricSpecificEnergy
 import com.splendo.kaluga.scientific.Rad
 import com.splendo.kaluga.scientific.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.SpecificEnergy
+import com.splendo.kaluga.scientific.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.USCustomarySpecificEnergy
 import com.splendo.kaluga.scientific.converter.weight.weight
+import com.splendo.kaluga.scientific.weight
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivRad")
@@ -69,3 +78,22 @@ infix operator fun <ErgUnit, EquivalentDoseUnit> ScientificValue<MeasurementType
     = Gram.weight(this, equivalentDose)
 @JvmName("energyDivEquivalentDose")
 infix operator fun <EnergyUnit : Energy, EquivalentDoseUnit : IonizingRadiationEquivalentDose> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) = Kilogram.weight(this, equivalentDose)
+
+@JvmName("metricAndImperialEnergyDivMetricSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("metricAndImperialEnergyDivImperialSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("metricAndImperialEnergyDivUKImperialSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("metricAndImperialEnergyDivUSCustomarySpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, MetricAndImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("metricEnergyDivMetricSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, MetricEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("imperialEnergyDivImperialSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("imperialEnergyDivUKImperialSpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("imperialEnergyDivUSCustomarySpecificEnergy")
+infix operator fun ScientificValue<MeasurementType.Energy, ImperialEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = specificEnergy.unit.per.weight(this, specificEnergy)
+@JvmName("energyDivSpecificEnergy")
+infix operator fun <EnergyUnit : Energy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>) = specificEnergy.unit.per.weight(this, specificEnergy)

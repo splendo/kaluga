@@ -20,16 +20,22 @@ package com.splendo.kaluga.scientific.converter.weight
 import com.splendo.kaluga.scientific.CubicMeter
 import com.splendo.kaluga.scientific.Density
 import com.splendo.kaluga.scientific.ImperialDensity
+import com.splendo.kaluga.scientific.ImperialSpecificVolume
 import com.splendo.kaluga.scientific.ImperialWeight
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.MetricDensity
+import com.splendo.kaluga.scientific.MetricSpecificVolume
 import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.UKImperialDensity
+import com.splendo.kaluga.scientific.UKImperialSpecificVolume
 import com.splendo.kaluga.scientific.UKImperialWeight
 import com.splendo.kaluga.scientific.USCustomaryDensity
+import com.splendo.kaluga.scientific.USCustomarySpecificVolume
 import com.splendo.kaluga.scientific.USCustomaryWeight
 import com.splendo.kaluga.scientific.Weight
+import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.converter.volume.volume
 import kotlin.jvm.JvmName
 
@@ -47,3 +53,18 @@ infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementT
 infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = density.unit.per.volume(this, density)
 @JvmName("weightDivDensity")
 infix operator fun <WeightUnit : Weight, DensityUnit : Density> ScientificValue<MeasurementType.Weight, WeightUnit>.div(density: ScientificValue<MeasurementType.Density, DensityUnit>) = CubicMeter.volume(this, density)
+
+@JvmName("metricWeightTimesMetricSpecificVolume")
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>) = specificVolume * this
+@JvmName("imperialWeightTimesImperialSpecificVolume")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>) = specificVolume * this
+@JvmName("imperialWeightTimesUKImperialSpecificVolume")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>) = specificVolume * this
+@JvmName("imperialWeightTimesUSCustomarySpecificVolume")
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>) = specificVolume * this
+@JvmName("ukImperialWeightTimesUKImperialSpecificVolume")
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>) = specificVolume * this
+@JvmName("usCustomaryWeightTimesUSCustomarySpecificVolume")
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>) = specificVolume * this
+@JvmName("weightTimesSpecificVolume")
+infix operator fun <SpecificVolumeUnit : SpecificVolume, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>) = specificVolume * this

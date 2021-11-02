@@ -1,0 +1,73 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.molarVolume
+
+import com.splendo.kaluga.scientific.Density
+import com.splendo.kaluga.scientific.ImperialDensity
+import com.splendo.kaluga.scientific.ImperialMolarVolume
+import com.splendo.kaluga.scientific.ImperialSpecificVolume
+import com.splendo.kaluga.scientific.Kilogram
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricDensity
+import com.splendo.kaluga.scientific.MetricMolarVolume
+import com.splendo.kaluga.scientific.MetricSpecificVolume
+import com.splendo.kaluga.scientific.MolarVolume
+import com.splendo.kaluga.scientific.Mole
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.SpecificVolume
+import com.splendo.kaluga.scientific.UKImperialDensity
+import com.splendo.kaluga.scientific.UKImperialMolarVolume
+import com.splendo.kaluga.scientific.UKImperialSpecificVolume
+import com.splendo.kaluga.scientific.USCustomaryDensity
+import com.splendo.kaluga.scientific.USCustomaryMolarVolume
+import com.splendo.kaluga.scientific.USCustomarySpecificVolume
+import com.splendo.kaluga.scientific.converter.molarMass.molarMass
+import com.splendo.kaluga.scientific.molarMass
+import com.splendo.kaluga.scientific.per
+import kotlin.jvm.JvmName
+
+@JvmName("metricMolarVolumeTimesMetricDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, MetricMolarVolume>.times(density: ScientificValue<MeasurementType.Density, MetricDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("imperialMolarVolumeTimesImperialDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("imperialMolarVolumeTimesUKImperialDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>.times(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("imperialMolarVolumeTimesUSCustomaryDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>.times(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("ukImperialMolarVolumeTimesImperialDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("ukImperialMolarVolumeTimesUKImperialDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>.times(density: ScientificValue<MeasurementType.Density, UKImperialDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("usCustomaryMolarVolumeTimesImperialDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>.times(density: ScientificValue<MeasurementType.Density, ImperialDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("usCustomaryMolarVolumeTimesUSCustomaryDensity")
+infix operator fun ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>.times(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = (density.unit.weight per unit.per).molarMass(this, density)
+@JvmName("molarVolumeTimesDensity")
+infix operator fun <MolarVolumeUnit : MolarVolume, DensityUnit : Density> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.times(density: ScientificValue<MeasurementType.Density, DensityUnit>) = (Kilogram per Mole).molarMass(this, density)
+
+@JvmName("molarVolumeDivMetricSpecificVolume")
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.div(specificVolume: ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>) = (specificVolume.unit.per per unit.per).molarMass(this, specificVolume)
+@JvmName("molarVolumeDivImperialSpecificVolume")
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.div(specificVolume: ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>) = (specificVolume.unit.per per unit.per).molarMass(this, specificVolume)
+@JvmName("molarVolumeDivUKImperialSpecificVolume")
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.div(specificVolume: ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>) = (specificVolume.unit.per per unit.per).molarMass(this, specificVolume)
+@JvmName("molarVolumeDivUSCustomarySpecificVolume")
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.div(specificVolume: ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>) = (specificVolume.unit.per per unit.per).molarMass(this, specificVolume)
+@JvmName("molarVolumeDivSpecificVolume")
+infix operator fun <MolarVolumeUnit : MolarVolume, SpecificVolumeUnit : SpecificVolume> ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>.div(specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>) = (Kilogram per unit.per).molarMass(this, specificVolume)
+

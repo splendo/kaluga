@@ -20,16 +20,22 @@ package com.splendo.kaluga.scientific.converter.linearMassDensity
 import com.splendo.kaluga.scientific.Density
 import com.splendo.kaluga.scientific.ImperialDensity
 import com.splendo.kaluga.scientific.ImperialLinearMassDensity
+import com.splendo.kaluga.scientific.ImperialSpecificVolume
 import com.splendo.kaluga.scientific.LinearMassDensity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.MetricDensity
 import com.splendo.kaluga.scientific.MetricLinearMassDensity
+import com.splendo.kaluga.scientific.MetricSpecificVolume
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.UKImperialDensity
 import com.splendo.kaluga.scientific.UKImperialLinearMassDensity
+import com.splendo.kaluga.scientific.UKImperialSpecificVolume
 import com.splendo.kaluga.scientific.USCustomaryDensity
 import com.splendo.kaluga.scientific.USCustomaryLinearMassDensity
+import com.splendo.kaluga.scientific.USCustomarySpecificVolume
 import com.splendo.kaluga.scientific.converter.area.area
+import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
 import kotlin.jvm.JvmName
@@ -52,3 +58,22 @@ infix operator fun ScientificValue<MeasurementType.LinearMassDensity, USCustomar
 infix operator fun ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.div(density: ScientificValue<MeasurementType.Density, USCustomaryDensity>) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
 @JvmName("linearMassDensityDivDensity")
 infix operator fun <LinearMassDensityUnit : LinearMassDensity, DensityUnit : Density> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.div(density: ScientificValue<MeasurementType.Density, DensityUnit>) = (1(density.unit.per) / 1(unit.per)).unit.area(this, density)
+
+@JvmName("metricLinearMassDensityTimesMetricSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>) = specificVolume * this
+@JvmName("imperialLinearMassDensityTimesImperialSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>) = specificVolume * this
+@JvmName("imperialLinearMassDensityTimesUKImperialSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>) = specificVolume * this
+@JvmName("imperialLinearMassDensityTimesUSCustomarySpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>) = specificVolume * this
+@JvmName("ukImperialLinearMassDensityTimesImperialSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>) = specificVolume * this
+@JvmName("ukImperialLinearMassDensityTimesUKImperialSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>) = specificVolume * this
+@JvmName("usCustomaryLinearMassDensityTimesImperialSpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>) = specificVolume * this
+@JvmName("usCustomaryLinearMassDensityTimesUSCustomarySpecificVolume")
+infix operator fun ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>) = specificVolume * this
+@JvmName("linearMassDensityTimesSpecificVolume")
+infix operator fun <LinearMassDensityUnit : LinearMassDensity, SpecificVolumeUnit : SpecificVolume> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>) = specificVolume * this

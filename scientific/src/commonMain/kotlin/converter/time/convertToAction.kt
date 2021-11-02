@@ -1,0 +1,37 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.time
+
+import com.splendo.kaluga.scientific.Energy
+import com.splendo.kaluga.scientific.ImperialEnergy
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.MetricEnergy
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.Time
+import com.splendo.kaluga.scientific.converter.energy.times
+import kotlin.jvm.JvmName
+
+@JvmName("timeTimesMetricAndImperialEnergy")
+infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(energy: ScientificValue<MeasurementType.Energy, EnergyUnit>) = energy * this
+@JvmName("timeTimesMetricEnergy")
+infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(energy: ScientificValue<MeasurementType.Energy, EnergyUnit>) = energy * this
+@JvmName("timeTimesImperialEnergy")
+infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(energy: ScientificValue<MeasurementType.Energy, EnergyUnit>) = energy * this
+@JvmName("timeTimesEnergy")
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(energy: ScientificValue<MeasurementType.Energy, EnergyUnit>) = energy * this

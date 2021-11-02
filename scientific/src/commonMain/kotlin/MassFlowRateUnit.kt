@@ -19,7 +19,6 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 val MetricMassFlowRateUnits: Set<MetricMassFlowRate> = MetricWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
@@ -75,81 +74,3 @@ infix fun MetricWeight.per(time: Time) = MetricMassFlowRate(this, time)
 infix fun ImperialWeight.per(time: Time) = ImperialMassFlowRate(this, time)
 infix fun USCustomaryWeight.per(time: Time) = USCustomaryMassFlowRate(this, time)
 infix fun UKImperialWeight.per(time: Time) = UKImperialMassFlowRate(this, time)
-
-@JvmName("massFlowRateFromWeightAndArea")
-fun <
-    WeightUnit : Weight,
-    TimeUnit : Time,
-    MassFlowRateUnit : MassFlowRate
-    > MassFlowRateUnit.massFlowRate(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(weight, time)
-
-@JvmName("weightFromMassFlowRateAndTime")
-fun <
-    WeightUnit : Weight,
-    TimeUnit : Time,
-    MassFlowRateUnit : MassFlowRate
-    > WeightUnit.mass(
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
-    time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(massFlowRate, time)
-
-@JvmName("timeFromWeightAndMassFlowRate")
-fun <
-    WeightUnit : Weight,
-    TimeUnit : Time,
-    MassFlowRateUnit : MassFlowRate
-    > TimeUnit.time(
-    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
-    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>
-) = byDividing(weight, massFlowRate)
-
-@JvmName("metricWeightDivTime")
-infix operator fun <WeightUnit : MetricWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).massFlowRate(this, time)
-@JvmName("imperialWeightDivTime")
-infix operator fun <WeightUnit : ImperialWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).massFlowRate(this, time)
-@JvmName("ukImperialWeightDivTime")
-infix operator fun <WeightUnit : UKImperialWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).massFlowRate(this, time)
-@JvmName("usCustomaryWeightDivTime")
-infix operator fun <WeightUnit : USCustomaryWeight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).massFlowRate(this, time)
-@JvmName("weightDivTime")
-infix operator fun <WeightUnit : Weight, TimeUnit : Time> ScientificValue<MeasurementType.Weight, WeightUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Kilogram per time.unit).massFlowRate(this, time)
-
-@JvmName("metricMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.weight.mass(this, time)
-@JvmName("imperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.weight.mass(this, time)
-@JvmName("ukImperialMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.weight.mass(this, time)
-@JvmName("usCustomaryMassFlowRateTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.weight.mass(this, time)
-@JvmName("massFlowRateTimesTime")
-infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Kilogram.mass(this, time)
-
-@JvmName("timeTimesMetricMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>) = massFlowRate * this
-@JvmName("timeTimesImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>) = massFlowRate * this
-@JvmName("timeUKImperialMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>) = massFlowRate * this
-@JvmName("timeTimesUSCustomaryMassFlowRate")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>) = massFlowRate * this
-@JvmName("timeTimesMassFlowRate")
-infix operator fun <MassFlowRateUnit : MassFlowRate, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>) = massFlowRate * this
-
-@JvmName("metricWeightDivMetricMassFlowRate")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MetricMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("imperialWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("ukImperialWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("ukImperialWeightDivUKImperialMassFlowRate")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, UKImperialMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("usCustomaryWeightDivImperialMassFlowRate")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, ImperialMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("usCustomaryWeightDivUSCustomaryMassFlowRate")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, USCustomaryMassFlowRate>) = massFlowRate.unit.per.time(this, massFlowRate)
-@JvmName("weightDivMassFlowRate")
-infix operator fun <WeightUnit : Weight, MassFlowRateUnit : MassFlowRate> ScientificValue<MeasurementType.Weight, WeightUnit>.div(massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>) = massFlowRate.unit.per.time(this, massFlowRate)

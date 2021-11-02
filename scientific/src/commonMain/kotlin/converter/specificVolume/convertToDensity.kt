@@ -1,0 +1,42 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.specificVolume
+
+import com.splendo.kaluga.scientific.CubicMeter
+import com.splendo.kaluga.scientific.ImperialSpecificVolume
+import com.splendo.kaluga.scientific.Kilogram
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricSpecificVolume
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.SpecificVolume
+import com.splendo.kaluga.scientific.UKImperialSpecificVolume
+import com.splendo.kaluga.scientific.USCustomarySpecificVolume
+import com.splendo.kaluga.scientific.converter.density.density
+import com.splendo.kaluga.scientific.per
+import kotlin.jvm.JvmName
+
+@JvmName("metricSpecificVolumeDensity")
+fun ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.density() = (unit.per per unit.volume).density(this)
+@JvmName("imperialSpecificVolumeDensity")
+fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.density() = (unit.per per unit.volume).density(this)
+@JvmName("ukImperialSpecificVolumeDensity")
+fun ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.density() = (unit.per per unit.volume).density(this)
+@JvmName("usCustomarySpecificVolumeDensity")
+fun ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.density() = (unit.per per unit.volume).density(this)
+@JvmName("specificVolumeDensity")
+fun <SpecificVolumeUnit : SpecificVolume> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.density() = (Kilogram per CubicMeter).density(this)

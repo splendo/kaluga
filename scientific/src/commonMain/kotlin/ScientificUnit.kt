@@ -54,13 +54,16 @@ fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
 ): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 val Units: Set<ScientificUnit<*>> = AccelerationUnits +
+    ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +
     AngularAccelerationUnits +
     AngularVelocityUnits +
+    AreaDensityUnits +
     AreaUnits +
     CatalysticActivityUnits +
     DensityUnits +
+    DynamicViscosityUnits +
     ElectricCapacitanceUnits +
     ElectricChargeUnits +
     ElectricConductanceUnits +
@@ -70,24 +73,40 @@ val Units: Set<ScientificUnit<*>> = AccelerationUnits +
     EnergyUnits +
     ForceUnits +
     FrequencyUnits +
+    HeatCapacityUnits +
     IlluminanceUnits +
     IonizingRadiationAbsorbedDoseUnits +
     IonizingRadiationEquivalentDoseUnits +
     JoltUnits +
     LengthUnits +
+    LinearMassDensityUnits +
+    LuminanceUnits +
+    LuminousEnergyUnits +
+    LuminousExposureUnits +
     LuminousFluxUnits +
     LuminousIntensityUnits +
     MagneticFluxUnits +
     MagneticInductionUnits +
+    MassFlowRateUnits +
+    MolalityUnits +
+    MolarEnergyUnits +
+    MolarityUnits +
+    MolarMassUnits +
+    MolarVolumeUnits +
+    MomentumUnits +
     PowerUnits +
     PressureUnits +
     RadioactivityUnits +
     SolidAngleUnits +
+    SpecificEnergyUnits +
+    SpecificVolumeUnits +
     SpeedUnits +
     TemperatureUnits +
     TimeUnits +
     VoltageUnits +
     VolumetricFlowUnits +
+    VolumetricFluxUnits +
     VolumeUnits +
-    WeightUnits
+    WeightUnits +
+    YankUnits
 

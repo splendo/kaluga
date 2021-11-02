@@ -1,0 +1,43 @@
+/*
+ Copyright 2021 Splendo Consulting B.V. The Netherlands
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+ */
+
+package com.splendo.kaluga.scientific.converter.amountOfSubstance
+
+import com.splendo.kaluga.scientific.AmountOfSubstance
+import com.splendo.kaluga.scientific.CubicMeter
+import com.splendo.kaluga.scientific.ImperialVolume
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.MetricVolume
+import com.splendo.kaluga.scientific.Mole
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.UKImperialVolume
+import com.splendo.kaluga.scientific.USCustomaryVolume
+import com.splendo.kaluga.scientific.Volume
+import com.splendo.kaluga.scientific.converter.molarity.molarity
+import com.splendo.kaluga.scientific.per
+import kotlin.jvm.JvmName
+
+@JvmName("amountOfSubstanceDivMetricVolume")
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : MetricVolume> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).molarity(this, volume)
+@JvmName("amountOfSubstanceDivImperialVolume")
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : ImperialVolume> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).molarity(this, volume)
+@JvmName("amountOfSubstanceDivUKImperialVolume")
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : UKImperialVolume> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).molarity(this, volume)
+@JvmName("amountOfSubstanceDivUSCustomaryVolume")
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : USCustomaryVolume> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (unit per volume.unit).molarity(this, volume)
+@JvmName("amountOfSubstanceDivVolume")
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, VolumeUnit : Volume> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(volume: ScientificValue<MeasurementType.Volume, VolumeUnit>) = (Mole per CubicMeter).molarity(this, volume)
