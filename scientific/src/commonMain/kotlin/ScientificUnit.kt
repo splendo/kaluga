@@ -102,6 +102,7 @@ val Units: Set<ScientificUnit<*>> = AccelerationUnits +
     SpecificVolumeUnits +
     SpeedUnits +
     TemperatureUnits +
+    ThermalResistanceUnits +
     TimeUnits +
     VoltageUnits +
     VolumetricFlowUnits +
