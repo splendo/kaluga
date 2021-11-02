@@ -18,6 +18,9 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.minus
+import com.splendo.kaluga.base.utils.plus
+import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
 val MetricAndUKImperialThermalResistanceUnits: Set<MetricAndUKImperialThermalResistance> = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
@@ -47,8 +50,8 @@ sealed class ThermalResistance : AbstractScientificUnit<MeasurementType.ThermalR
     abstract val per: Power
     override val type = MeasurementType.ThermalResistance
     override val symbol: String by lazy { "${temperature.symbol}/${per.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.fromSIUnit(value))
-    override fun toSIUnit(value: Decimal): Decimal = temperature.toSIUnit(per.fromSIUnit(value))
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.fromSIUnit(value) - temperature.fromSIUnit(0.toDecimal()))
+    override fun toSIUnit(value: Decimal): Decimal = temperature.toSIUnit(per.fromSIUnit(value)) + temperature.toSIUnit(0.toDecimal())
 }
 
 @Serializable

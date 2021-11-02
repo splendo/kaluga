@@ -38,7 +38,6 @@ import com.splendo.kaluga.scientific.SpecificEnergy
 import com.splendo.kaluga.scientific.UKImperialSpecificEnergy
 import com.splendo.kaluga.scientific.USCustomarySpecificEnergy
 import com.splendo.kaluga.scientific.converter.weight.weight
-import com.splendo.kaluga.scientific.weight
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivRad")

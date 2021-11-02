@@ -27,6 +27,7 @@ import com.splendo.kaluga.scientific.Temperature
 import com.splendo.kaluga.scientific.UKImperialHeatCapacity
 import com.splendo.kaluga.scientific.USCustomaryHeatCapacity
 import com.splendo.kaluga.scientific.USCustomaryTemperature
+import com.splendo.kaluga.scientific.converter.heatCapacity.times
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureTimesMetricAndUKImperialHeatCapacity")

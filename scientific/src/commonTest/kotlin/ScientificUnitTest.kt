@@ -210,6 +210,18 @@ class ScientificUnitTest {
     fun testLuminance() {
         assertScientificUnit(1000, Nit, FootLambert, 0.2918635079631734, unitTranslationErrorTolerance)
     }
+
+    @Test
+    fun testHeatCapacity() {
+        assertScientificUnit(1000, Joule per Kelvin, Joule per Celsius, 1.0)
+        assertScientificUnit(1000, WattHour per Kelvin, WattHour per Fahrenheit, 5.0/9.0)
+    }
+
+    @Test
+    fun testThermalResistance() {
+        assertScientificUnit(1000, Kelvin per Watt, Celsius per Watt, 1.0)
+        assertScientificUnit(1000, Kelvin per Watt, Fahrenheit per Watt, 9.0/5.0, unitTranslationErrorTolerance)
+    }
 }
 
 fun <Type : MeasurementType> assertScientificUnit(

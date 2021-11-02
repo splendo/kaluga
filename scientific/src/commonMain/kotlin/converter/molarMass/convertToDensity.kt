@@ -37,7 +37,6 @@ import com.splendo.kaluga.scientific.USCustomaryMolarMass
 import com.splendo.kaluga.scientific.USCustomaryMolarVolume
 import com.splendo.kaluga.scientific.USCustomaryMolarity
 import com.splendo.kaluga.scientific.converter.density.density
-import com.splendo.kaluga.scientific.density
 import com.splendo.kaluga.scientific.per
 import kotlin.jvm.JvmName
 

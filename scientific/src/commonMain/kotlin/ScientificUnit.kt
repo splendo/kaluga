@@ -110,4 +110,3 @@ val Units: Set<ScientificUnit<*>> = AccelerationUnits +
     VolumeUnits +
     WeightUnits +
     YankUnits
-
