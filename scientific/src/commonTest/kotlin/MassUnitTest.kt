@@ -88,6 +88,6 @@ class MassUnitTest {
         assertEquals(256.0, Pound.convert(1.0, Dram))
         assertEquals(16.0, Pound.convert(1.0, Ounce))
         assertEquals(0.07142857142857142, Pound.convert(1.0, Stone))
-        assertEquals(0.031080950037834294, Pound.convert(1.0, Slug))
+        assertEquals(0.031080950171567253, Pound.convert(1.0, Slug))
     }
 }
