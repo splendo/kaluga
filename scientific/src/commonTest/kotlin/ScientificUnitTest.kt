@@ -39,34 +39,6 @@ class ScientificUnitTest {
     }
 
     @Test
-    fun weighConversionTest() {
-        assertScientificUnit(1000, Kilogram, Slug, 0.068521765561961, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Microgram, Kilogram, 1e-9)
-        assertScientificUnit(1000, Milligram, Kilogram, 1e-6)
-        assertScientificUnit(1000, Gram, Kilogram, 0.001)
-        assertScientificUnit(1000, Tonne, Kilogram, 1000.0)
-        assertScientificUnit(1000, Dram, Kilogram, 0.0017718451953125, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Grain, Kilogram, 0.00006479891, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Ounce, Kilogram, 0.028349523125, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Pound, Kilogram, 0.45359237, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Stone, Kilogram, 6.35029318, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, UsTon, Kilogram, 907.18474, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, ImperialTon, Kilogram, 1016.0469088, unitTranslationErrorTolerance)
-
-        assertScientificUnit(1000, Kilogram, Microgram, 1.0E9)
-        assertScientificUnit(1000, Kilogram, Milligram, 1000000.0)
-        assertScientificUnit(1000, Kilogram, Gram, 1000.0)
-        assertScientificUnit(1000, Kilogram, Tonne, 0.001)
-        assertScientificUnit(1000, Kilogram, Dram, 564.3833911932866, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Grain, 15432.358352941432, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Ounce, 35.27396194958041, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Pound, 2.204622621848776, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Stone, 0.1574730444177697, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, UsTon, 0.001102311310924, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, ImperialTon, 0.000984206527611, unitTranslationErrorTolerance)
-    }
-
-    @Test
     fun temperatureConversionTest() {
         assertEquals(Celsius.convert(0.0.toDecimal(), Fahrenheit).toDouble(), 32.0, unitTranslationErrorTolerance)
         assertEquals(Celsius.convert(0.0.toDecimal(), Kelvin).toDouble(), 273.15, unitTranslationErrorTolerance)
