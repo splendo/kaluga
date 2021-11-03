@@ -19,25 +19,24 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricMolarMassUnits: Set<MetricMolarMass> = MetricWeightUnits.flatMap { weight ->
+val MetricMolarMassUnits: Set<MetricMolarMass> get() = MetricWeightUnits.flatMap { weight ->
     AmountOfSubstanceUnits.map { weight per it }
 }.toSet()
 
-val ImperialMolarMassUnits: Set<ImperialMolarMass> = ImperialWeightUnits.flatMap { weight ->
+val ImperialMolarMassUnits: Set<ImperialMolarMass> get() = ImperialWeightUnits.flatMap { weight ->
     AmountOfSubstanceUnits.map { weight per it }
 }.toSet()
 
-val UKImperialMolarMassUnits: Set<UKImperialMolarMass> = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialMolarMassUnits: Set<UKImperialMolarMass> get() = UKImperialWeightUnits.flatMap { weight ->
     AmountOfSubstanceUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryMolarMassUnits: Set<USCustomaryMolarMass> = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryMolarMassUnits: Set<USCustomaryMolarMass> get() = USCustomaryWeightUnits.flatMap { weight ->
     AmountOfSubstanceUnits.map { weight per it }
 }.toSet()
 
-val MolarMassUnits: Set<MolarMass> = MetricMolarMassUnits +
+val MolarMassUnits: Set<MolarMass> get() = MetricMolarMassUnits +
     ImperialMolarMassUnits +
     UKImperialMolarMassUnits.filter { it.weight !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomaryMolarMassUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()

@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricDynamicViscosityUnits: Set<MetricDynamicViscosity> = MetricPressureUnits.flatMap { pressure ->
+val MetricDynamicViscosityUnits: Set<MetricDynamicViscosity> get() = MetricPressureUnits.flatMap { pressure ->
     TimeUnits.map { pressure x it }
 }.toSet()
 
-val ImperialDynamicViscosityUnits: Set<ImperialDynamicViscosity> = ImperialPressureUnits.flatMap { pressure ->
+val ImperialDynamicViscosityUnits: Set<ImperialDynamicViscosity> get() = ImperialPressureUnits.flatMap { pressure ->
     TimeUnits.map { pressure x it }
 }.toSet()
 
-val UKImperialDynamicViscosityUnits: Set<UKImperialDynamicViscosity> = UKImperialPressureUnits.flatMap { pressure ->
+val UKImperialDynamicViscosityUnits: Set<UKImperialDynamicViscosity> get() = UKImperialPressureUnits.flatMap { pressure ->
     TimeUnits.map { pressure x it }
 }.toSet()
 
-val USCustomaryDynamicViscosityUnits: Set<USCustomaryDynamicViscosity> = USCustomaryPressureUnits.flatMap { pressure ->
+val USCustomaryDynamicViscosityUnits: Set<USCustomaryDynamicViscosity> get() = USCustomaryPressureUnits.flatMap { pressure ->
     TimeUnits.map { pressure x it }
 }.toSet()
 
-val DynamicViscosityUnits: Set<DynamicViscosity> = MetricDynamicViscosityUnits +
+val DynamicViscosityUnits: Set<DynamicViscosity> get() = MetricDynamicViscosityUnits +
     ImperialDynamicViscosityUnits +
     UKImperialDynamicViscosityUnits.filter { it.pressure !is UKImperialPressureWrapper }.toSet() +
     USCustomaryDynamicViscosityUnits.filter { it.pressure !is USCustomaryImperialPressureWrapper }.toSet()

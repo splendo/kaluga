@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> = MetricVolumeUnits.flatMap { volume ->
+val MetricVolumetricFlowUnits: Set<MetricVolumetricFlow> get() = MetricVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
 }.toSet()
 
-val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> = ImperialVolumeUnits.flatMap { volume ->
+val ImperialVolumetricFlowUnits: Set<ImperialVolumetricFlow> get() = ImperialVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
 }.toSet()
 
-val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> = UKImperialVolumeUnits.flatMap { volume ->
+val UKImperialVolumetricFlowUnits: Set<UKImperialVolumetricFlow> get() = UKImperialVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
 }.toSet()
 
-val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> = USCustomaryVolumeUnits.flatMap { volume ->
+val USCustomaryVolumetricFlowUnits: Set<USCustomaryVolumetricFlow> get() = USCustomaryVolumeUnits.flatMap { volume ->
     TimeUnits.map { volume per it }
 }.toSet()
 
-val VolumetricFlowUnits: Set<VolumetricFlow> = MetricVolumetricFlowUnits +
+val VolumetricFlowUnits: Set<VolumetricFlow> get() = MetricVolumetricFlowUnits +
     ImperialVolumetricFlowUnits +
     UKImperialVolumetricFlowUnits.filter { it.volume !is UKImperialImperialVolumeWrapper }.toSet() +
     USCustomaryVolumetricFlowUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper }.toSet()

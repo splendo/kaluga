@@ -92,7 +92,10 @@ internal fun <
     DividerType : MeasurementType,
     DividerUnit : ScientificUnit<DividerType>
     >
-    Unit.byDividing(nominator: ScientificValue<NominatorType, NominatorUnit>, divider: ScientificValue<DividerType, DividerUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this)
+    Unit.byDividing(
+    nominator: ScientificValue<NominatorType, NominatorUnit>,
+    divider: ScientificValue<DividerType, DividerUnit>
+): ScientificValue<TargetType, Unit> = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this)
 
 internal fun <
     TargetType : MeasurementType,
@@ -102,7 +105,10 @@ internal fun <
     RightType : MeasurementType,
     RightUnit : ScientificUnit<RightType>
     >
-    Unit.byMultiplying(left: ScientificValue<LeftType, LeftUnit>, right: ScientificValue<RightType, RightUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(left.unit.toSIUnit(left.decimalValue) * right.unit.toSIUnit(right.decimalValue))(this)
+    Unit.byMultiplying(
+    left: ScientificValue<LeftType, LeftUnit>,
+    right: ScientificValue<RightType, RightUnit>
+): ScientificValue<TargetType, Unit> = fromSIUnit(left.unit.toSIUnit(left.decimalValue) * right.unit.toSIUnit(right.decimalValue))(this)
 
 internal fun <
     InverseType : MeasurementType,
@@ -110,4 +116,6 @@ internal fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>
     >
-    Unit.byInverting(inverse: ScientificValue<InverseType, InverseUnit>): ScientificValue<Type, Unit> = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this)
+    Unit.byInverting(
+    inverse: ScientificValue<InverseType, InverseUnit>
+): ScientificValue<Type, Unit> = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this)

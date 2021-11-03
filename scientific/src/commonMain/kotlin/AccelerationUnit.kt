@@ -19,16 +19,17 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
+import kotlin.native.concurrent.ThreadLocal
 
-val MetricAccelerationUnits: Set<MetricAcceleration> = MetricSpeedUnits.flatMap { speed ->
+val MetricAccelerationUnits: Set<MetricAcceleration> get() = MetricSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
 }.toSet()
 
-val ImperialAccelerationUnits: Set<ImperialAcceleration> = ImperialSpeedUnits.flatMap { speed ->
+val ImperialAccelerationUnits: Set<ImperialAcceleration> get() = ImperialSpeedUnits.flatMap { speed ->
     TimeUnits.map { speed per it }
 }.toSet()
 
-val AccelerationUnits: Set<Acceleration> = MetricAccelerationUnits +
+val AccelerationUnits: Set<Acceleration> get() = MetricAccelerationUnits +
     ImperialAccelerationUnits
 
 @Serializable
@@ -61,5 +62,7 @@ data class ImperialAcceleration(override val speed: ImperialSpeed, override val 
 infix fun MetricSpeed.per(time: Time) = MetricAcceleration(this, time)
 infix fun ImperialSpeed.per(time: Time) = ImperialAcceleration(this, time)
 
+@ThreadLocal
 val MetricStandardGravityAcceleration = 9.80665(Meter per Second per Second)
+@ThreadLocal
 val ImperialStandardGravityAcceleration = MetricStandardGravityAcceleration.convert(Foot per Second per Second)

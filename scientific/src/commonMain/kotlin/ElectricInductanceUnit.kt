@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val ElectricInductanceUnits: Set<ElectricInductance> = setOf(
+val ElectricInductanceUnits: Set<ElectricInductance> get() = setOf(
     Henry,
     Nanohenry,
     Microhenry,

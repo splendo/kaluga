@@ -18,28 +18,25 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> = MetricAndImperialEnergyUnits.flatMap { energy ->
+val MetricAndUKImperialHeatCapacityUnits: Set<MetricAndUKImperialHeatCapacity> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
 }.toSet()
 
-val MetricHeatCapacityUnits: Set<MetricHeatCapacity> = MetricEnergyUnits.flatMap { energy ->
+val MetricHeatCapacityUnits: Set<MetricHeatCapacity> get() = MetricEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
 }.toSet()
 
-val UKImperialHeatCapacityUnits: Set<UKImperialHeatCapacity> = ImperialEnergyUnits.flatMap { energy ->
+val UKImperialHeatCapacityUnits: Set<UKImperialHeatCapacity> get() = ImperialEnergyUnits.flatMap { energy ->
     MetricAndUkImperialTemperatureUnits.map { energy per it }
 }.toSet()
 
-val USCustomaryHeatCapacityUnits: Set<USCustomaryHeatCapacity> = ImperialEnergyUnits.flatMap { energy ->
+val USCustomaryHeatCapacityUnits: Set<USCustomaryHeatCapacity> get() = ImperialEnergyUnits.flatMap { energy ->
     USCustomaryTemperatureUnits.map { energy per it }
 }.toSet()
 
-val HeatCapacityUnits: Set<HeatCapacity> = MetricAndUKImperialHeatCapacityUnits +
+val HeatCapacityUnits: Set<HeatCapacity> get() = MetricAndUKImperialHeatCapacityUnits +
     MetricHeatCapacityUnits.filter { it.energy !is MetricMetricAndImperialEnergyWrapper }.toSet() +
     UKImperialHeatCapacityUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet() +
     USCustomaryHeatCapacityUnits
@@ -50,8 +47,8 @@ sealed class HeatCapacity : AbstractScientificUnit<MeasurementType.HeatCapacity>
     abstract val per: Temperature
     override val type = MeasurementType.HeatCapacity
     override val symbol: String by lazy { "${energy.symbol}/${per.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(energy.fromSIUnit(value)) - per.toSIUnit(0.toDecimal())
-    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.fromSIUnit(value) + per.fromSIUnit(0.toDecimal()))
+    override fun fromSIUnit(value: Decimal): Decimal = per.deltaToSIUnitDelta(energy.fromSIUnit(value))
+    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(per.deltaFromSIUnitDelta(value))
 }
 
 @Serializable

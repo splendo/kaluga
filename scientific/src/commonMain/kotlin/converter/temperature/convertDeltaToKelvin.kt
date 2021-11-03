@@ -17,21 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.temperature
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.HeatCapacity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.byDividing
-import kotlin.jvm.JvmName
 
-@JvmName("temperatureFromEnergyAndHeatCapacity")
 fun <
-    EnergyUnit : Energy,
-    TemperatureUnit : Temperature,
-    HeatCapacityUnit : HeatCapacity
-    > TemperatureUnit.temperature(
-    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
-    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>
-) = deltaValue(Kelvin.byDividing(energy, heatCapacity))
+    TemperatureUnit : Temperature
+    > ScientificValue<MeasurementType.Temperature, TemperatureUnit>.deltaValueInKelvin() = DefaultScientificValue(unit.deltaToSIUnitDelta(decimalValue), Kelvin)

@@ -53,7 +53,7 @@ fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     to: ScientificUnit<Unit>
 ): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
-val Units: Set<ScientificUnit<*>> = AccelerationUnits +
+val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +
     ActionUnits +
     AmountOfSubstanceUnits +
     AngleUnits +

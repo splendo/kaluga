@@ -19,25 +19,24 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricSpecificEnergyUnits: Set<MetricSpecificEnergy> = MetricEnergyUnits.flatMap { energy ->
+val MetricSpecificEnergyUnits: Set<MetricSpecificEnergy> get() = MetricEnergyUnits.flatMap { energy ->
     MetricWeightUnits.map { energy per it }
 }.toSet()
 
-val ImperialSpecificEnergyUnits: Set<ImperialSpecificEnergy> = ImperialEnergyUnits.flatMap { energy ->
+val ImperialSpecificEnergyUnits: Set<ImperialSpecificEnergy> get() = ImperialEnergyUnits.flatMap { energy ->
     ImperialWeightUnits.map { energy per it }
 }.toSet()
 
-val UKImperialSpecificEnergyUnits: Set<UKImperialSpecificEnergy> = ImperialEnergyUnits.flatMap { energy ->
+val UKImperialSpecificEnergyUnits: Set<UKImperialSpecificEnergy> get() = ImperialEnergyUnits.flatMap { energy ->
     UKImperialWeightUnits.map { energy per it }
 }.toSet()
 
-val USCustomarySpecificEnergyUnits: Set<USCustomarySpecificEnergy> = ImperialEnergyUnits.flatMap { energy ->
+val USCustomarySpecificEnergyUnits: Set<USCustomarySpecificEnergy> get() = ImperialEnergyUnits.flatMap { energy ->
     USCustomaryWeightUnits.map { energy per it }
 }.toSet()
 
-val SpecificEnergyUnits: Set<SpecificEnergy> = MetricSpecificEnergyUnits +
+val SpecificEnergyUnits: Set<SpecificEnergy> get() = MetricSpecificEnergyUnits +
     ImperialSpecificEnergyUnits +
     UKImperialSpecificEnergyUnits.filter { it.per !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomarySpecificEnergyUnits.filter { it.per !is USCustomaryImperialWeightWrapper }.toSet()

@@ -19,25 +19,24 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricSurfaceTensionUnits: Set<MetricSurfaceTension> = MetricForceUnits.flatMap { force ->
+val MetricSurfaceTensionUnits: Set<MetricSurfaceTension> get() = MetricForceUnits.flatMap { force ->
     MetricLengthUnits.map { force per it }
 }.toSet()
 
-val ImperialSurfaceTensionUnits: Set<ImperialSurfaceTension> = ImperialForceUnits.flatMap { force ->
+val ImperialSurfaceTensionUnits: Set<ImperialSurfaceTension> get() = ImperialForceUnits.flatMap { force ->
     ImperialLengthUnits.map { force per it }
 }.toSet()
 
-val UKImperialSurfaceTensionUnits: Set<UKImperialSurfaceTension> = UKImperialForceUnits.flatMap { force ->
+val UKImperialSurfaceTensionUnits: Set<UKImperialSurfaceTension> get() = UKImperialForceUnits.flatMap { force ->
     ImperialLengthUnits.map { force per it }
 }.toSet()
 
-val USCustomarySurfaceTensionUnits: Set<USCustomarySurfaceTension> = USCustomaryForceUnits.flatMap { force ->
+val USCustomarySurfaceTensionUnits: Set<USCustomarySurfaceTension> get() = USCustomaryForceUnits.flatMap { force ->
     ImperialLengthUnits.map { force per it }
 }.toSet()
 
-val SurfaceTensionUnits: Set<SurfaceTension> = MetricSurfaceTensionUnits +
+val SurfaceTensionUnits: Set<SurfaceTension> get() = MetricSurfaceTensionUnits +
     ImperialSurfaceTensionUnits +
     UKImperialSurfaceTensionUnits.filter { it.force !is UKImperialImperialForceWrapper }.toSet() +
     USCustomarySurfaceTensionUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()

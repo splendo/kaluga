@@ -20,15 +20,15 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricLuminousExposureUnits: Set<MetricLuminousExposure> = MetricIlluminanceUnits.flatMap { illuminance ->
+val MetricLuminousExposureUnits: Set<MetricLuminousExposure> get() = MetricIlluminanceUnits.flatMap { illuminance ->
     TimeUnits.map { illuminance x it }
 }.toSet()
 
-val ImperialLuminousExposureUnits: Set<ImperialLuminousExposure> = ImperialIlluminanceUnits.flatMap { illuminance ->
+val ImperialLuminousExposureUnits: Set<ImperialLuminousExposure> get() = ImperialIlluminanceUnits.flatMap { illuminance ->
     TimeUnits.map { illuminance x it }
 }.toSet()
 
-val LuminousExposureUnits: Set<LuminousExposure> = MetricLuminousExposureUnits + ImperialLuminousExposureUnits
+val LuminousExposureUnits: Set<LuminousExposure> get() = MetricLuminousExposureUnits + ImperialLuminousExposureUnits
 
 @Serializable
 abstract class LuminousExposure : ScientificUnit<MeasurementType.LuminousExposure> {

@@ -19,21 +19,20 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricAndImperialMolarEnergyUnits: Set<MetricAndImperialMolarEnergy> = MetricAndImperialEnergyUnits.flatMap { energy ->
+val MetricAndImperialMolarEnergyUnits: Set<MetricAndImperialMolarEnergy> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
     AmountOfSubstanceUnits.map { energy per it }
 }.toSet()
 
-val MetricMolarEnergyUnits: Set<MetricMolarEnergy> = MetricEnergyUnits.flatMap { energy ->
+val MetricMolarEnergyUnits: Set<MetricMolarEnergy> get() = MetricEnergyUnits.flatMap { energy ->
     AmountOfSubstanceUnits.map { energy per it }
 }.toSet()
 
-val ImperialMolarEnergyUnits: Set<ImperialMolarEnergy> = ImperialEnergyUnits.flatMap { energy ->
+val ImperialMolarEnergyUnits: Set<ImperialMolarEnergy> get() = ImperialEnergyUnits.flatMap { energy ->
     AmountOfSubstanceUnits.map { energy per it }
 }.toSet()
 
-val MolarEnergyUnits: Set<MolarEnergy> = MetricAndImperialMolarEnergyUnits +
+val MolarEnergyUnits: Set<MolarEnergy> get() = MetricAndImperialMolarEnergyUnits +
     MetricMolarEnergyUnits.filter { it.energy !is MetricMetricAndImperialEnergyWrapper }.toSet() +
     ImperialMolarEnergyUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 

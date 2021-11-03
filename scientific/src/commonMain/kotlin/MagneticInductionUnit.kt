@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MagneticInductionUnits: Set<MagneticInduction> = setOf(
+val MagneticInductionUnits: Set<MagneticInduction> get() = setOf(
     Tesla,
     Nanotesla,
     Microtesla,

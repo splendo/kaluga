@@ -19,9 +19,8 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val ElectricResistanceUnits: Set<ElectricResistance> = setOf(
+val ElectricResistanceUnits: Set<ElectricResistance> get() = setOf(
     Ohm,
     Nanoohm,
     Microohm,

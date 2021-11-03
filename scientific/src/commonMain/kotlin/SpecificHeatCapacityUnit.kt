@@ -18,26 +18,21 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.converter.heatCapacity.times
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricSpecificHeatCapacityUnits: Set<MetricSpecificHeatCapacity> = MetricHeatCapacityUnits.flatMap { heatCapacity ->
+val MetricSpecificHeatCapacityUnits: Set<MetricSpecificHeatCapacity> get() = MetricHeatCapacityUnits.flatMap { heatCapacity ->
     MetricWeightUnits.map { heatCapacity per it }
 }.toSet()
 
-val UKImperialSpecificHeatCapacityUnits: Set<UKImperialSpecificHeatCapacity> = UKImperialHeatCapacityUnits.flatMap { heatCapacity ->
+val UKImperialSpecificHeatCapacityUnits: Set<UKImperialSpecificHeatCapacity> get() = UKImperialHeatCapacityUnits.flatMap { heatCapacity ->
     UKImperialWeightUnits.map { heatCapacity per it }
 }.toSet()
 
-val USCustomarySpecificHeatCapacityUnits: Set<USCustomarySpecificHeatCapacity> = USCustomaryHeatCapacityUnits.flatMap { heatCapacity ->
+val USCustomarySpecificHeatCapacityUnits: Set<USCustomarySpecificHeatCapacity> get() = USCustomaryHeatCapacityUnits.flatMap { heatCapacity ->
     USCustomaryWeightUnits.map { heatCapacity per it }
 }.toSet()
 
-val SpecificHeatCapacityUnits: Set<SpecificHeatCapacity> = MetricSpecificHeatCapacityUnits +
+val SpecificHeatCapacityUnits: Set<SpecificHeatCapacity> get() = MetricSpecificHeatCapacityUnits +
     UKImperialSpecificHeatCapacityUnits +
     USCustomarySpecificHeatCapacityUnits
 
@@ -48,8 +43,8 @@ sealed class SpecificHeatCapacity : AbstractScientificUnit<MeasurementType.Speci
     abstract val perWeight: Weight
     override val type = MeasurementType.SpecificHeatCapacity
     override val symbol: String by lazy { "${energy.symbol}/(${perTemperature.symbol}⋅${perWeight.symbol})" }
-    override fun fromSIUnit(value: Decimal): Decimal = perWeight.toSIUnit(perTemperature.toSIUnit(energy.fromSIUnit(value)) - perTemperature.toSIUnit(0.toDecimal()))
-    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(perTemperature.fromSIUnit(perWeight.fromSIUnit(value))) + perTemperature.fromSIUnit(0.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = perWeight.toSIUnit(perTemperature.deltaToSIUnitDelta(energy.fromSIUnit(value)))
+    override fun toSIUnit(value: Decimal): Decimal = energy.toSIUnit(perTemperature.deltaFromSIUnitDelta(perWeight.fromSIUnit(value)))
 }
 
 @Serializable

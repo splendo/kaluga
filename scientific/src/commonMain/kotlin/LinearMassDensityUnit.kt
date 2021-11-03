@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricLinearMassDensityUnits: Set<MetricLinearMassDensity> = MetricWeightUnits.flatMap { weight ->
+val MetricLinearMassDensityUnits: Set<MetricLinearMassDensity> get() = MetricWeightUnits.flatMap { weight ->
     MetricLengthUnits.map { weight per it }
 }.toSet()
 
-val ImperialLinearMassDensityUnits: Set<ImperialLinearMassDensity> = ImperialWeightUnits.flatMap { weight ->
+val ImperialLinearMassDensityUnits: Set<ImperialLinearMassDensity> get() = ImperialWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 
-val UKImperialLinearMassDensityUnits: Set<UKImperialLinearMassDensity> = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialLinearMassDensityUnits: Set<UKImperialLinearMassDensity> get() = UKImperialWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryLinearMassDensityUnits: Set<USCustomaryLinearMassDensity> = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryLinearMassDensityUnits: Set<USCustomaryLinearMassDensity> get() = USCustomaryWeightUnits.flatMap { weight ->
     ImperialLengthUnits.map { weight per it }
 }.toSet()
 
-val LinearMassDensityUnits: Set<LinearMassDensity> = MetricLinearMassDensityUnits +
+val LinearMassDensityUnits: Set<LinearMassDensity> get() = MetricLinearMassDensityUnits +
     ImperialLinearMassDensityUnits +
     UKImperialLinearMassDensityUnits.filter { it.weight !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomaryLinearMassDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()

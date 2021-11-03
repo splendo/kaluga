@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> = setOf(
+val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> get() = setOf(
     WattHour,
     NanowattHour,
     MicrowattHour,
@@ -45,7 +45,7 @@ val MetricAndImperialEnergyUnits: Set<MetricAndImperialEnergy> = setOf(
     Megacalorie.IT
 )
 
-val MetricEnergyUnits: Set<MetricEnergy> = setOf(
+val MetricEnergyUnits: Set<MetricEnergy> get() = setOf(
     Joule,
     Nanojoule,
     Microjoule,
@@ -81,7 +81,7 @@ val MetricEnergyUnits: Set<MetricEnergy> = setOf(
     Gigaelectronvolt
 ) + MetricAndImperialEnergyUnits.map {it.metric }.toSet()
 
-val ImperialEnergyUnits: Set<ImperialEnergy> = setOf(
+val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
     FootPoundal,
     FootPoundForce,
     InchPoundForce,
@@ -91,7 +91,7 @@ val ImperialEnergyUnits: Set<ImperialEnergy> = setOf(
     BritishThermalUnit.Thermal
 ) + MetricAndImperialEnergyUnits.map { it.imperial }.toSet()
 
-val EnergyUnits: Set<Energy> = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
+val EnergyUnits: Set<Energy> get() = MetricAndImperialEnergyUnits + MetricEnergyUnits.filter { it !is MetricMetricAndImperialEnergyWrapper }.toSet() + ImperialEnergyUnits.filter { it !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 
 @Serializable
 sealed class Energy : AbstractScientificUnit<MeasurementType.Energy>()
@@ -197,8 +197,8 @@ object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, M
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Energy
-    override fun fromSIUnit(value: Decimal): Decimal = value / elementaryCharge.decimalValue
-    override fun toSIUnit(value: Decimal): Decimal = value * elementaryCharge.decimalValue
+    override fun fromSIUnit(value: Decimal): Decimal = value.div(elementaryCharge.decimalValue, 29)
+    override fun toSIUnit(value: Decimal): Decimal = value.times(elementaryCharge.decimalValue, 29)
 }
 
 @Serializable

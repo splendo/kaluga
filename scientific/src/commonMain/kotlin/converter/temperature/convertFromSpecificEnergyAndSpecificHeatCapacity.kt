@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.temperature
 
+import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.SpecificEnergy
@@ -33,4 +34,4 @@ fun <
     > TemperatureUnit.temperature(
     specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
-) = byDividing(specificEnergy, specificHeatCapacity)
+) = deltaValue(Kelvin.byDividing(specificEnergy, specificHeatCapacity))

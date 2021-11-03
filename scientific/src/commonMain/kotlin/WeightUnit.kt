@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricWeightUnits: Set<MetricWeight> = setOf(
+val MetricWeightUnits: Set<MetricWeight> get() = setOf(
     Kilogram,
     Nanogram,
     Microgram,
@@ -48,7 +48,7 @@ val MetricWeightUnits: Set<MetricWeight> = setOf(
     Gigadalton
 )
 
-val ImperialWeightUnits: Set<ImperialWeight> = setOf(
+val ImperialWeightUnits: Set<ImperialWeight> get() = setOf(
     Grain,
     Ounce,
     Pound,
@@ -56,10 +56,10 @@ val ImperialWeightUnits: Set<ImperialWeight> = setOf(
     Slug
 )
 
-val UKImperialWeightUnits: Set<UKImperialWeight> = ImperialWeightUnits.map { it.ukImperial }.toSet() + setOf(ImperialTon)
-val USCustomaryWeightUnits: Set<USCustomaryWeight> = ImperialWeightUnits.map { it.usCustomary }.toSet() + setOf(UsTon)
+val UKImperialWeightUnits: Set<UKImperialWeight> get() = ImperialWeightUnits.map { it.ukImperial }.toSet() + setOf(ImperialTon)
+val USCustomaryWeightUnits: Set<USCustomaryWeight> get() = ImperialWeightUnits.map { it.usCustomary }.toSet() + setOf(UsTon)
 
-val WeightUnits: Set<Weight> = MetricWeightUnits +
+val WeightUnits: Set<Weight> get() = MetricWeightUnits +
     ImperialWeightUnits +
     UKImperialWeightUnits.filter { it !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomaryWeightUnits.filter { it !is USCustomaryImperialWeightWrapper }.toSet()

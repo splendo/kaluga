@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricIlluminanceUnits: Set<MetricIlluminance> = setOf(
+val MetricIlluminanceUnits: Set<MetricIlluminance> get() = setOf(
     Lux,
     Nanolux,
     Microlux,
@@ -45,11 +45,11 @@ val MetricIlluminanceUnits: Set<MetricIlluminance> = setOf(
     Gigaphot
 )
 
-val ImperialIlluminanceUnits: Set<ImperialIlluminance> = setOf(
+val ImperialIlluminanceUnits: Set<ImperialIlluminance> get() = setOf(
     FootCandle
 )
 
-val IlluminanceUnits: Set<Illuminance> = MetricIlluminanceUnits + ImperialIlluminanceUnits
+val IlluminanceUnits: Set<Illuminance> get() = MetricIlluminanceUnits + ImperialIlluminanceUnits
 
 @Serializable
 sealed class Illuminance : AbstractScientificUnit<MeasurementType.Illuminance>()

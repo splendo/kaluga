@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.SpecificEnergy
 import com.splendo.kaluga.scientific.SpecificHeatCapacity
 import com.splendo.kaluga.scientific.Temperature
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
 import kotlin.jvm.JvmName
 
 @JvmName("specificEnergyFromSpecificHeatCapacityAndTemperature")
@@ -33,4 +34,4 @@ fun <
     > SpecificEnergyUnit.specificEnergy(
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
     temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
-) = byMultiplying(specificHeatCapacity, temperature)
+) = byMultiplying(specificHeatCapacity, temperature.deltaValueInKelvin())

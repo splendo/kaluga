@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MagneticFluxUnits: Set<MagneticFlux> = setOf(
+val MagneticFluxUnits: Set<MagneticFlux> get() = setOf(
     Weber,
     Nanoweber,
     Microweber,

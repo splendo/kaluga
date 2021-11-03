@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.temperature
 
+import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
@@ -33,4 +34,4 @@ fun <
     > TemperatureUnit.temperature(
     thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>,
     power: ScientificValue<MeasurementType.Power, PowerUnit>
-) = byMultiplying(thermalResistance, power)
+) = deltaValue(Kelvin.byMultiplying(thermalResistance, power))

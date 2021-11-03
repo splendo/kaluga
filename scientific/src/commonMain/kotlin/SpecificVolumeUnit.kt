@@ -18,29 +18,25 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.converter.area.times
-import com.splendo.kaluga.scientific.converter.length.times
-import com.splendo.kaluga.scientific.converter.volume.div
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricSpecificVolumeUnits: Set<MetricSpecificVolume> = MetricVolumeUnits.flatMap { volume ->
+val MetricSpecificVolumeUnits: Set<MetricSpecificVolume> get() = MetricVolumeUnits.flatMap { volume ->
     MetricWeightUnits.map { volume per it }
 }.toSet()
 
-val ImperialSpecificVolumeUnits: Set<ImperialSpecificVolume> = ImperialVolumeUnits.flatMap { volume ->
+val ImperialSpecificVolumeUnits: Set<ImperialSpecificVolume> get() = ImperialVolumeUnits.flatMap { volume ->
     ImperialWeightUnits.map { volume per it }
 }.toSet()
 
-val UKImperialSpecificVolumeUnits: Set<UKImperialSpecificVolume> = UKImperialVolumeUnits.flatMap { volume ->
+val UKImperialSpecificVolumeUnits: Set<UKImperialSpecificVolume> get() = UKImperialVolumeUnits.flatMap { volume ->
     UKImperialWeightUnits.map { volume per it }
 }.toSet()
 
-val USCustomarySpecificVolumeUnits: Set<USCustomarySpecificVolume> = USCustomaryVolumeUnits.flatMap { volume ->
+val USCustomarySpecificVolumeUnits: Set<USCustomarySpecificVolume> get() = USCustomaryVolumeUnits.flatMap { volume ->
     USCustomaryWeightUnits.map { volume per it }
 }.toSet()
 
-val SpecificVolumeUnits: Set<SpecificVolume> = MetricSpecificVolumeUnits +
+val SpecificVolumeUnits: Set<SpecificVolume> get() = MetricSpecificVolumeUnits +
     ImperialSpecificVolumeUnits +
     UKImperialSpecificVolumeUnits.filter { it.volume !is UKImperialImperialVolumeWrapper || it.per !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomarySpecificVolumeUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper || it.per !is USCustomaryImperialWeightWrapper }.toSet()

@@ -20,15 +20,15 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricSpeedUnits: Set<MetricSpeed> = MetricLengthUnits.flatMap { length ->
+val MetricSpeedUnits: Set<MetricSpeed> get() = MetricLengthUnits.flatMap { length ->
     TimeUnits.map { MetricSpeed(length, it) }
 }.toSet()
 
-val ImperialSpeedUnits: Set<ImperialSpeed> = ImperialLengthUnits.flatMap { length ->
+val ImperialSpeedUnits: Set<ImperialSpeed> get() = ImperialLengthUnits.flatMap { length ->
     TimeUnits.map { ImperialSpeed(length, it) }
 }.toSet()
 
-val SpeedUnits: Set<Speed> = MetricSpeedUnits + ImperialSpeedUnits
+val SpeedUnits: Set<Speed> get() = MetricSpeedUnits + ImperialSpeedUnits
 
 @Serializable
 sealed class Speed : AbstractScientificUnit<MeasurementType.Speed>() {

@@ -23,6 +23,7 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Temperature
 import com.splendo.kaluga.scientific.ThermalResistance
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
 import kotlin.jvm.JvmName
 
 @JvmName("thermalResistanceFromTemperatureAndPower")
@@ -33,4 +34,4 @@ fun <
     > PowerUnit.power(
     temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
     thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>
-) = byDividing(temperature, thermalResistance)
+) = byDividing(temperature.deltaValueInKelvin(), thermalResistance)

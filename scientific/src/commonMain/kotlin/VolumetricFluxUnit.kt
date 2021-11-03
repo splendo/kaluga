@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricVolumetricFluxUnits: Set<MetricVolumetricFlux> = MetricVolumetricFlowUnits.flatMap { volumetricFlow ->
+val MetricVolumetricFluxUnits: Set<MetricVolumetricFlux> get() = MetricVolumetricFlowUnits.flatMap { volumetricFlow ->
     MetricAreaUnits.map { volumetricFlow per it }
 }.toSet()
 
-val ImperialVolumetricFluxUnits: Set<ImperialVolumetricFlux> = ImperialVolumetricFlowUnits.flatMap { volumetricFlow ->
+val ImperialVolumetricFluxUnits: Set<ImperialVolumetricFlux> get() = ImperialVolumetricFlowUnits.flatMap { volumetricFlow ->
     ImperialAreaUnits.map { volumetricFlow per it }
 }.toSet()
 
-val UKImperialVolumetricFluxUnits: Set<UKImperialVolumetricFlux> = UKImperialVolumetricFlowUnits.flatMap { volumetricFlow ->
+val UKImperialVolumetricFluxUnits: Set<UKImperialVolumetricFlux> get() = UKImperialVolumetricFlowUnits.flatMap { volumetricFlow ->
     ImperialAreaUnits.map { volumetricFlow per it }
 }.toSet()
 
-val USCustomaryVolumetricFluxUnits: Set<USCustomaryVolumetricFlux> = USCustomaryVolumetricFlowUnits.flatMap { volumetricFlow ->
+val USCustomaryVolumetricFluxUnits: Set<USCustomaryVolumetricFlux> get() = USCustomaryVolumetricFlowUnits.flatMap { volumetricFlow ->
     ImperialAreaUnits.map { volumetricFlow per it }
 }.toSet()
 
-val VolumetricFluxUnits: Set<VolumetricFlux> = MetricVolumetricFluxUnits +
+val VolumetricFluxUnits: Set<VolumetricFlux> get() = MetricVolumetricFluxUnits +
     ImperialVolumetricFluxUnits +
     UKImperialVolumetricFluxUnits.filter { it.volumetricFlow.volume !is UKImperialImperialVolumeWrapper }.toSet() +
     USCustomaryVolumetricFluxUnits.filter { it.volumetricFlow.volume !is USCustomaryImperialVolumeWrapper }.toSet()

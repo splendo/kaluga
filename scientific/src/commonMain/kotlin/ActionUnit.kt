@@ -18,24 +18,21 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.converter.energy.div
-import com.splendo.kaluga.scientific.converter.force.times
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricAndImperialActionUnits: Set<MetricAndImperialAction> = MetricAndImperialEnergyUnits.flatMap { energy ->
+val MetricAndImperialActionUnits: Set<MetricAndImperialAction> get() = MetricAndImperialEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
 }.toSet()
 
-val MetricActionUnits: Set<MetricAction> = MetricEnergyUnits.flatMap { energy ->
+val MetricActionUnits: Set<MetricAction> get() = MetricEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
 }.toSet()
 
-val ImperialActionUnits: Set<ImperialAction> = ImperialEnergyUnits.flatMap { energy ->
+val ImperialActionUnits: Set<ImperialAction> get() = ImperialEnergyUnits.flatMap { energy ->
     TimeUnits.map { energy x it }
 }.toSet()
 
-val ActionUnits: Set<Action> = MetricAndImperialActionUnits +
+val ActionUnits: Set<Action> get() = MetricAndImperialActionUnits +
     MetricActionUnits.filter { it.energy !is MetricMetricAndImperialEnergyWrapper }.toSet() +
     ImperialActionUnits.filter { it.energy !is ImperialMetricAndImperialEnergyWrapper }.toSet()
 

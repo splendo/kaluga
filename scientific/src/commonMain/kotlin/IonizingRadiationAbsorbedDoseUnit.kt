@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> = setOf(
+val IonizingRadiationAbsorbedDoseUnits: Set<IonizingRadiationAbsorbedDose> get() = setOf(
     Gray,
     Nanogray,
     Microgray,

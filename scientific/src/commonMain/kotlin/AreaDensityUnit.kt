@@ -18,28 +18,25 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.converter.area.times
-import com.splendo.kaluga.scientific.converter.volume.div
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricAreaDensityUnits: Set<MetricAreaDensity> = MetricWeightUnits.flatMap { weight ->
+val MetricAreaDensityUnits: Set<MetricAreaDensity> get() = MetricWeightUnits.flatMap { weight ->
     MetricAreaUnits.map { weight per it }
 }.toSet()
 
-val ImperialAreaDensityUnits: Set<ImperialAreaDensity> = ImperialWeightUnits.flatMap { weight ->
+val ImperialAreaDensityUnits: Set<ImperialAreaDensity> get() = ImperialWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
 }.toSet()
 
-val UKImperialAreaDensityUnits: Set<UKImperialAreaDensity> = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialAreaDensityUnits: Set<UKImperialAreaDensity> get() = UKImperialWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryAreaDensityUnits: Set<USCustomaryAreaDensity> = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryAreaDensityUnits: Set<USCustomaryAreaDensity> get() = USCustomaryWeightUnits.flatMap { weight ->
     ImperialAreaUnits.map { weight per it }
 }.toSet()
 
-val AreaDensityUnits: Set<AreaDensity> = MetricAreaDensityUnits +
+val AreaDensityUnits: Set<AreaDensity> get() = MetricAreaDensityUnits +
     ImperialAreaDensityUnits +
     UKImperialAreaDensityUnits.filter { it.weight !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomaryAreaDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()

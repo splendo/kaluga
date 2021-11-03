@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricForceUnits: Set<MetricForce> = setOf (
+val MetricForceUnits: Set<MetricForce> get() = setOf (
     Newton,
     Nanonewton,
     Micronewton,
@@ -52,23 +52,23 @@ val MetricForceUnits: Set<MetricForce> = setOf (
     MilligramForce
     )
 
-val ImperialForceUnits: Set<ImperialForce> = setOf(
+val ImperialForceUnits: Set<ImperialForce> get() = setOf(
     Poundal,
     PoundForce,
     OunceForce,
     GrainForce,
 )
 
-val USCustomaryForceUnits: Set<USCustomaryForce> = setOf(
+val USCustomaryForceUnits: Set<USCustomaryForce> get() = setOf(
     Kip,
     UsTonForce
 ) + ImperialForceUnits.map { it.usCustomary }
 
-val UKImperialForceUnits: Set<UKImperialForce> = setOf(
+val UKImperialForceUnits: Set<UKImperialForce> get() = setOf(
     ImperialTonForce
 ) + ImperialForceUnits.map { it.ukImperial }
 
-val ForceUnits: Set<Force> = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
+val ForceUnits: Set<Force> get() = MetricForceUnits + ImperialForceUnits + UKImperialForceUnits.filter { it !is UKImperialImperialForceWrapper }.toSet() + USCustomaryForceUnits.filter { it !is USCustomaryImperialForceWrapper }
 
 @Serializable
 sealed class Force : AbstractScientificUnit<MeasurementType.Force>()

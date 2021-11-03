@@ -24,7 +24,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 import kotlin.math.PI
 
-val SolidAngleUnits: Set<SolidAngle> = setOf(
+val SolidAngleUnits: Set<SolidAngle> get() = setOf(
     Steradian,
     Nanosteradian,
     Microsteradian,

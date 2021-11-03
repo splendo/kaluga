@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricMassFlowRateUnits: Set<MetricMassFlowRate> = MetricWeightUnits.flatMap { weight ->
+val MetricMassFlowRateUnits: Set<MetricMassFlowRate> get() = MetricWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val ImperialMassFlowRateUnits: Set<ImperialMassFlowRate> = ImperialWeightUnits.flatMap { weight ->
+val ImperialMassFlowRateUnits: Set<ImperialMassFlowRate> get() = ImperialWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val UKImperialMassFlowRateUnits: Set<UKImperialMassFlowRate> = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialMassFlowRateUnits: Set<UKImperialMassFlowRate> get() = UKImperialWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryMassFlowRateUnits: Set<USCustomaryMassFlowRate> = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryMassFlowRateUnits: Set<USCustomaryMassFlowRate> get() = USCustomaryWeightUnits.flatMap { weight ->
     TimeUnits.map { weight per it }
 }.toSet()
 
-val MassFlowRateUnits: Set<MassFlowRate> = MetricMassFlowRateUnits +
+val MassFlowRateUnits: Set<MassFlowRate> get() = MetricMassFlowRateUnits +
     ImperialMassFlowRateUnits +
     UKImperialMassFlowRateUnits.filter { it.weight !is UKImperialImperialWeightWrapper }.toSet() +
     USCustomaryMassFlowRateUnits.filter { it.weight !is USCustomaryImperialWeightWrapper }.toSet()

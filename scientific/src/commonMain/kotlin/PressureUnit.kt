@@ -23,7 +23,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricPressureUnits: Set<MetricPressure> = setOf(
+val MetricPressureUnits: Set<MetricPressure> get() = setOf(
     Pascal,
     NanoPascal,
     MicroPascal,
@@ -74,7 +74,7 @@ val MetricPressureUnits: Set<MetricPressure> = setOf(
     CentimeterOfWater
 )
 
-val ImperialPressureUnits: Set<ImperialPressure> = setOf(
+val ImperialPressureUnits: Set<ImperialPressure> get() = setOf(
     PoundSquareInch,
     PoundSquareFoot,
     OunceSquareInch,
@@ -84,19 +84,19 @@ val ImperialPressureUnits: Set<ImperialPressure> = setOf(
     FootOfWater
 )
 
-val USCustomaryPressureUnits: Set<USCustomaryPressure> = setOf(
+val USCustomaryPressureUnits: Set<USCustomaryPressure> get() = setOf(
     KipSquareInch,
     KipSquareFoot,
     USTonSquareInch,
     USTonSquareFoot
 ) + ImperialPressureUnits.map { it.usCustomary }.toSet()
 
-val UKImperialPressureUnits: Set<UKImperialPressure> = setOf(
+val UKImperialPressureUnits: Set<UKImperialPressure> get() = setOf(
     ImperialTonSquareInch,
     ImperialTonSquareFoot
 ) + ImperialPressureUnits.map { it.ukImperial }.toSet()
 
-val PressureUnits: Set<Pressure> = MetricPressureUnits +
+val PressureUnits: Set<Pressure> get() = MetricPressureUnits +
     ImperialPressureUnits +
     USCustomaryPressureUnits.filter { it !is USCustomaryImperialPressureWrapper }.toSet() +
     UKImperialPressureUnits.filter { it !is UKImperialPressureWrapper }.toSet()

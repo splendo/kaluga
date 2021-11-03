@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricMolarVolumeUnits: Set<MetricMolarVolume> = MetricVolumeUnits.flatMap { volume ->
+val MetricMolarVolumeUnits: Set<MetricMolarVolume> get() = MetricVolumeUnits.flatMap { volume ->
     AmountOfSubstanceUnits.map { volume per it }
 }.toSet()
 
-val ImperialMolarVolumeUnits: Set<ImperialMolarVolume> = ImperialVolumeUnits.flatMap { volume ->
+val ImperialMolarVolumeUnits: Set<ImperialMolarVolume> get() = ImperialVolumeUnits.flatMap { volume ->
     AmountOfSubstanceUnits.map { volume per it }
 }.toSet()
 
-val UKImperialMolarVolumeUnits: Set<UKImperialMolarVolume> = UKImperialVolumeUnits.flatMap { volume ->
+val UKImperialMolarVolumeUnits: Set<UKImperialMolarVolume> get() = UKImperialVolumeUnits.flatMap { volume ->
     AmountOfSubstanceUnits.map { volume per it }
 }.toSet()
 
-val USCustomaryMolarVolumeUnits: Set<USCustomaryMolarVolume> = USCustomaryVolumeUnits.flatMap { volume ->
+val USCustomaryMolarVolumeUnits: Set<USCustomaryMolarVolume> get() = USCustomaryVolumeUnits.flatMap { volume ->
     AmountOfSubstanceUnits.map { volume per it }
 }.toSet()
 
-val MolarVolumeUnits: Set<MolarVolume> = MetricMolarVolumeUnits +
+val MolarVolumeUnits: Set<MolarVolume> get() = MetricMolarVolumeUnits +
     ImperialMolarVolumeUnits +
     UKImperialMolarVolumeUnits.filter { it.volume !is UKImperialImperialVolumeWrapper }.toSet() +
     USCustomaryMolarVolumeUnits.filter { it.volume !is USCustomaryImperialVolumeWrapper }.toSet()

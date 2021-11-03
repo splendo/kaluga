@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricDensityUnits: Set<MetricDensity> = MetricWeightUnits.flatMap { weight ->
+val MetricDensityUnits: Set<MetricDensity> get() = MetricWeightUnits.flatMap { weight ->
     MetricVolumeUnits.map { weight per it }
 }.toSet()
 
-val ImperialDensityUnits: Set<ImperialDensity> = ImperialWeightUnits.flatMap { weight ->
+val ImperialDensityUnits: Set<ImperialDensity> get() = ImperialWeightUnits.flatMap { weight ->
     ImperialVolumeUnits.map { weight per it }
 }.toSet()
 
-val UKImperialDensityUnits: Set<UKImperialDensity> = UKImperialWeightUnits.flatMap { weight ->
+val UKImperialDensityUnits: Set<UKImperialDensity> get() = UKImperialWeightUnits.flatMap { weight ->
     UKImperialVolumeUnits.map { weight per it }
 }.toSet()
 
-val USCustomaryDensityUnits: Set<USCustomaryDensity> = USCustomaryWeightUnits.flatMap { weight ->
+val USCustomaryDensityUnits: Set<USCustomaryDensity> get() = USCustomaryWeightUnits.flatMap { weight ->
     USCustomaryVolumeUnits.map { weight per it }
 }.toSet()
 
-val DensityUnits: Set<Density> = MetricDensityUnits +
+val DensityUnits: Set<Density> get() = MetricDensityUnits +
     ImperialDensityUnits +
     UKImperialDensityUnits.filter { it.weight !is UKImperialImperialWeightWrapper || it.per !is UKImperialImperialVolumeWrapper }.toSet() +
     USCustomaryDensityUnits.filter { it.weight !is USCustomaryImperialWeightWrapper || it.per !is USCustomaryImperialVolumeWrapper }.toSet()

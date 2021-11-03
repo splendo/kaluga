@@ -18,28 +18,25 @@
 package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.minus
-import com.splendo.kaluga.base.utils.plus
-import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
 
-val MetricAndUKImperialThermalResistanceUnits: Set<MetricAndUKImperialThermalResistance> = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
+val MetricAndUKImperialThermalResistanceUnits: Set<MetricAndUKImperialThermalResistance> get() = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
     MetricAndImperialPowerUnits.map { temperature per it }
 }.toSet()
 
-val MetricThermalResistanceUnits: Set<MetricThermalResistance> = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
+val MetricThermalResistanceUnits: Set<MetricThermalResistance> get() = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
     MetricPowerUnits.map { temperature per it }
 }.toSet()
 
-val UKImperialThermalResistanceUnits: Set<UKImperialThermalResistance> = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
+val UKImperialThermalResistanceUnits: Set<UKImperialThermalResistance> get() = MetricAndUkImperialTemperatureUnits.flatMap { temperature ->
     ImperialPowerUnits.map { temperature per it }
 }.toSet()
 
-val USCustomaryThermalResistanceUnits: Set<USCustomaryThermalResistance> = USCustomaryTemperatureUnits.flatMap { temperature ->
+val USCustomaryThermalResistanceUnits: Set<USCustomaryThermalResistance> get() = USCustomaryTemperatureUnits.flatMap { temperature ->
     ImperialPowerUnits.map { temperature per it }
 }.toSet()
 
-val ThermalResistanceUnits: Set<ThermalResistance> = MetricAndUKImperialThermalResistanceUnits +
+val ThermalResistanceUnits: Set<ThermalResistance> get() = MetricAndUKImperialThermalResistanceUnits +
     MetricThermalResistanceUnits.filter { it.per !is MetricMetricAndImperialPowerWrapper }.toSet() +
     UKImperialThermalResistanceUnits.filter { it.per !is ImperialMetricAndImperialPowerWrapper }.toSet() +
     USCustomaryThermalResistanceUnits
@@ -50,8 +47,8 @@ sealed class ThermalResistance : AbstractScientificUnit<MeasurementType.ThermalR
     abstract val per: Power
     override val type = MeasurementType.ThermalResistance
     override val symbol: String by lazy { "${temperature.symbol}/${per.symbol}" }
-    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.fromSIUnit(value) - temperature.fromSIUnit(0.toDecimal()))
-    override fun toSIUnit(value: Decimal): Decimal = temperature.toSIUnit(per.fromSIUnit(value)) + temperature.toSIUnit(0.toDecimal())
+    override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(temperature.deltaFromSIUnitDelta(value))
+    override fun toSIUnit(value: Decimal): Decimal = temperature.deltaToSIUnitDelta(per.fromSIUnit(value))
 }
 
 @Serializable

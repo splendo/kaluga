@@ -22,10 +22,8 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
-import kotlin.math.ln
 
-val RadioactivityUnits: Set<Radioactivity> = setOf(
+val RadioactivityUnits: Set<Radioactivity> get() = setOf(
     Becquerel,
     Nanobecquerel,
     Microbecquerel,

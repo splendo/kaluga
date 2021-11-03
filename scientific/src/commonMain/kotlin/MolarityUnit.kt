@@ -19,25 +19,24 @@ package com.splendo.kaluga.scientific
 
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
-val MetricMolarityUnits: Set<MetricMolarity> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val MetricMolarityUnits: Set<MetricMolarity> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     MetricVolumeUnits.map { amountOfSubstance per it }
 }.toSet()
 
-val ImperialMolarityUnits: Set<ImperialMolarity> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val ImperialMolarityUnits: Set<ImperialMolarity> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     ImperialVolumeUnits.map { amountOfSubstance per it }
 }.toSet()
 
-val UKImperialMolarityUnits: Set<UKImperialMolarity> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val UKImperialMolarityUnits: Set<UKImperialMolarity> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     UKImperialVolumeUnits.map { amountOfSubstance per it }
 }.toSet()
 
-val USCustomaryMolarityUnits: Set<USCustomaryMolarity> = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
+val USCustomaryMolarityUnits: Set<USCustomaryMolarity> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
     USCustomaryVolumeUnits.map { amountOfSubstance per it }
 }.toSet()
 
-val MolarityUnits: Set<Molarity> = MetricMolarityUnits +
+val MolarityUnits: Set<Molarity> get() = MetricMolarityUnits +
     ImperialMolarityUnits +
     UKImperialMolarityUnits.filter { it.per !is UKImperialImperialVolumeWrapper }.toSet() +
     USCustomaryMolarityUnits.filter { it.per !is USCustomaryImperialVolumeWrapper }.toSet()

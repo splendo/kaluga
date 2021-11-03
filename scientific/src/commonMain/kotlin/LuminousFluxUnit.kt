@@ -20,7 +20,7 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val LuminousFluxUnits: Set<LuminousFlux> = setOf(
+val LuminousFluxUnits: Set<LuminousFlux> get() = setOf(
     Lumen,
     Nanolumen,
     Microlumen,

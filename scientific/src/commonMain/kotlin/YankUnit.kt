@@ -20,23 +20,23 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.Decimal
 import kotlinx.serialization.Serializable
 
-val MetricYankUnits: Set<MetricYank> = MetricForceUnits.flatMap { force ->
+val MetricYankUnits: Set<MetricYank> get() = MetricForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
 }.toSet()
 
-val ImperialYankUnits: Set<ImperialYank> = ImperialForceUnits.flatMap { force ->
+val ImperialYankUnits: Set<ImperialYank> get() = ImperialForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
 }.toSet()
 
-val UKImperialYankUnits: Set<UKImperialYank> = UKImperialForceUnits.flatMap { force ->
+val UKImperialYankUnits: Set<UKImperialYank> get() = UKImperialForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
 }.toSet()
 
-val USCustomaryYankUnits: Set<USCustomaryYank> = USCustomaryForceUnits.flatMap { force ->
+val USCustomaryYankUnits: Set<USCustomaryYank> get() = USCustomaryForceUnits.flatMap { force ->
     TimeUnits.map { force per it }
 }.toSet()
 
-val YankUnits: Set<Yank> = MetricYankUnits +
+val YankUnits: Set<Yank> get() = MetricYankUnits +
     ImperialYankUnits +
     UKImperialYankUnits.filter { it.force !is UKImperialImperialForceWrapper }.toSet() +
     USCustomaryYankUnits.filter { it.force !is USCustomaryImperialForceWrapper }.toSet()

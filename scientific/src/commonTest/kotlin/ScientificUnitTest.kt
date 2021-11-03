@@ -21,14 +21,22 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.speed.times
+import com.splendo.kaluga.scientific.converter.temperature.div
+import com.splendo.kaluga.scientific.converter.thermalResistance.times
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class ScientificUnitTest {
 
     private val unitTranslationErrorTolerance = 0.000001
+
+    @Test
+    fun testUnits() {
+        assertFalse(Units.isEmpty())
+    }
 
     @Test
     fun weighConversionTest() {
@@ -170,7 +178,7 @@ class ScientificUnitTest {
 
     @Test
     fun testEnergy() {
-        assertScientificUnit(1000, Joule, Electronvolt,  6.2415090744607621e+18, 10000000.0)
+        assertScientificUnit(1000, Joule, Electronvolt,  6.2415090744607621e+18, 10000.0)
         assertScientificUnit(1000, Joule, FootPoundal, 23.730360404231938, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, HorsepowerHour, 3.72506136e-7, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, BritishThermalUnit, 0.000947817120313, unitTranslationErrorTolerance)
@@ -221,6 +229,12 @@ class ScientificUnitTest {
     fun testThermalResistance() {
         assertScientificUnit(1000, Kelvin per Watt, Celsius per Watt, 1.0)
         assertScientificUnit(1000, Kelvin per Watt, Fahrenheit per Watt, 9.0/5.0, unitTranslationErrorTolerance)
+
+        val resistance = 1(Celsius) / 2(Watt)
+        assertEquals(0.5, resistance.value)
+        val temperature = resistance * 2(Watt)
+        assertEquals(1.0, temperature.value)
+        assertEquals(Celsius, temperature.unit)
     }
 }
 
