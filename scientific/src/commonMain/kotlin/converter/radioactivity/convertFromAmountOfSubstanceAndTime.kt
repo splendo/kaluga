@@ -21,6 +21,7 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
 import com.splendo.kaluga.scientific.AvogadroConstant
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
@@ -35,4 +36,4 @@ fun <
     > RadioactivityUnit.radioactivity(
     substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     halfLife: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = byDividing(ScientificValue(substance.value * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife)
+) : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = byDividing(DefaultScientificValue(substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife)

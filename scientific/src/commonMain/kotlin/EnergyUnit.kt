@@ -197,8 +197,8 @@ object Electronvolt : MetricEnergy(), MetricBaseUnit<MeasurementSystem.Metric, M
     override val symbol: String = "eV"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Energy
-    override fun fromSIUnit(value: Decimal): Decimal = value / elementaryCharge.value
-    override fun toSIUnit(value: Decimal): Decimal = value * elementaryCharge.value
+    override fun fromSIUnit(value: Decimal): Decimal = value / elementaryCharge.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = value * elementaryCharge.decimalValue
 }
 
 @Serializable

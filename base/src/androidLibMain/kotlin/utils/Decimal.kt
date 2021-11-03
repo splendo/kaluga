@@ -105,8 +105,7 @@ actual fun Decimal.round(scale: Int, roundingMode: RoundingMode) =
         )
     )
 
-actual fun Double.toDecimal() = BigDecimal.valueOf(this)
-actual fun Int.toDecimal() = BigDecimal.valueOf(this.toDouble())
+actual fun Number.toDecimal() = BigDecimal.valueOf(this.toDouble())
 actual fun String.toDecimal() = BigDecimal(this)
 
 actual fun Decimal.toDouble() = this.toDouble()

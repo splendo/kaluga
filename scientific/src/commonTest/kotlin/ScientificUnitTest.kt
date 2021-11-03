@@ -21,7 +21,6 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.scientific.converter.length.div
 import com.splendo.kaluga.scientific.converter.speed.times
-import com.splendo.kaluga.scientific.converter.weight.times
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -151,9 +150,9 @@ class ScientificUnitTest {
         val speed = 10.0(Kilometer) / 1.0(Hour)
         val meterPerSecond = (Meter per Second)
         speed.convert(meterPerSecond)
-        assertEquals(2.77777778, speed.convert(meterPerSecond).doubleValue, 0.0001)
-        assertEquals(20.0, (speed * 2(Hour)).doubleValue)
-        assertEquals(4.5, (45.0(Kilometer) / speed).doubleValue)
+        assertEquals(2.77777778, speed.convert(meterPerSecond).value, 0.0001)
+        assertEquals(20.0, (speed * 2(Hour)).value)
+        assertEquals(4.5, (45.0(Kilometer) / speed).value)
     }
 
     @Test

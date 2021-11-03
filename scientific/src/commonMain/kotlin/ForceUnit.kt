@@ -160,32 +160,32 @@ object KilogramForce : MetricForce() {
     override val symbol: String = "kgf"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Force
-    override fun fromSIUnit(value: Decimal): Decimal = value / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = value * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = value / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = value * MetricStandardGravityAcceleration.decimalValue
 }
 @Serializable
 object TonneForce : MetricForce() {
     override val symbol: String = "tf"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Force
-    override fun fromSIUnit(value: Decimal): Decimal = Tonne.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Tonne.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Tonne.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Tonne.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 @Serializable
 object GramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Force
-    override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Gram.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Gram.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 @Serializable
 object MilligramForce : MetricForce() {
     override val symbol: String = "gf"
     override val system = MeasurementSystem.Metric
     override val type = MeasurementType.Force
-    override fun fromSIUnit(value: Decimal): Decimal = Milligram.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Milligram.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Milligram.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Milligram.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 // Imperial
@@ -199,22 +199,22 @@ object Poundal : ImperialForce() {
 @Serializable
 object PoundForce : ImperialForce() {
     override val symbol: String = "lbf"
-    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Pound.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Pound.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
 object OunceForce : ImperialForce() {
     override val symbol: String = "ozf"
-    override fun fromSIUnit(value: Decimal): Decimal = Ounce.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Ounce.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Ounce.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Ounce.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
 object GrainForce : ImperialForce() {
     override val symbol: String = "grf"
-    override fun fromSIUnit(value: Decimal): Decimal = Grain.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = Grain.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = Grain.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = Grain.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
@@ -228,8 +228,8 @@ object Kip : USCustomaryForce() {
 @Serializable
 object UsTonForce : USCustomaryForce() {
     override val symbol: String = "STf"
-    override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = UsTon.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = UsTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable
@@ -244,8 +244,8 @@ val <ForceUnit : ImperialForce> ForceUnit.usCustomary get() = USCustomaryImperia
 @Serializable
 object ImperialTonForce : UKImperialForce() {
     override val symbol: String = "LTf"
-    override fun fromSIUnit(value: Decimal): Decimal = ImperialTon.fromSIUnit(value) / MetricStandardGravityAcceleration.value
-    override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.value
+    override fun fromSIUnit(value: Decimal): Decimal = ImperialTon.fromSIUnit(value) / MetricStandardGravityAcceleration.decimalValue
+    override fun toSIUnit(value: Decimal): Decimal = ImperialTon.toSIUnit(value) * MetricStandardGravityAcceleration.decimalValue
 }
 
 @Serializable

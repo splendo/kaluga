@@ -73,8 +73,7 @@ actual fun Decimal.pow(
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode): Decimal = this
 
-actual fun Double.toDecimal(): Decimal = Decimal(this)
-actual fun Int.toDecimal(): Decimal = Decimal(this.toDouble())
+actual fun Number.toDecimal(): Decimal = Decimal(this.toDouble())
 actual fun String.toDecimal(): Decimal = Decimal(this.toDouble())
 
 actual fun Decimal.toDouble(): Double = double

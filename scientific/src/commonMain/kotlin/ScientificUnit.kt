@@ -44,7 +44,7 @@ interface MetricAndImperialScientificUnit<Type : MeasurementType> : SystemScient
 sealed class AbstractScientificUnit<Type : MeasurementType> : ScientificUnit<Type>
 
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
-    value: Double,
+    value: Number,
     to: ScientificUnit<Unit>
 ): Double = convert(value.toDecimal(), to).toDouble()
 

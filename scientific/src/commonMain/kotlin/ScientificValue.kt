@@ -22,47 +22,67 @@ import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import kotlinx.serialization.Serializable
 
-data class ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> (
-    val value: Decimal,
+interface ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> : Comparable<ScientificValue<Type, *>> {
+    val value: Number
     val unit: Unit
-) : MeasurementUsage by unit.system, Comparable<ScientificValue<Type, *>> {
-    constructor(value: Double, unit: Unit) : this(value.toDecimal(), unit)
-    constructor(value: Int, unit: Unit) : this(value.toDecimal(), unit)
 
-    override fun compareTo(other: ScientificValue<Type, *>): Int = unit.toSIUnit(value).compareTo(other.unit.toSIUnit(other.value))
+    override fun compareTo(other: ScientificValue<Type, *>): Int = unit.toSIUnit(value.toDecimal()).compareTo(other.unit.toSIUnit(other.value.toDecimal()))
 
-    val doubleValue: Double get() = value.toDouble()
+    val decimalValue: Decimal get() = value.toDecimal()
+}
+
+@Serializable
+data class DefaultScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>>(
+    override val value: Double,
+    override val unit: Unit
+) : ScientificValue<Type, Unit> {
+    constructor(value: Decimal, unit: Unit) : this(value.toDouble(), unit)
+}
+
+fun <
+    Type : MeasurementType,
+    Unit : ScientificUnit<Type>,
+    TargetUnit : ScientificUnit<Type>,
+    TargetValue : ScientificValue<Type, TargetUnit>
+    > ScientificValue<Type, Unit>.convert(target: TargetUnit, factory: (Decimal, TargetUnit) -> TargetValue) : TargetValue {
+    return factory(convertValue(target), target)
 }
 
 fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.convert(target: TargetUnit) : ScientificValue<Type,  TargetUnit> {
-    return ScientificValue(convertValue(target), target)
-}
+    > ScientificValue<Type, Unit>.convert(target: TargetUnit) = convert(target, ::DefaultScientificValue)
 
 fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
     > ScientificValue<Type, Unit>.convertValue(target: TargetUnit) : Decimal {
-    return unit.convert(value, target)
+    return unit.convert(decimalValue, target)
 }
 
 operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>
-    > Int.invoke(unit: UnitType) = ScientificValue(this, unit)
+    > Number.invoke(unit: UnitType) = this.toDecimal()(unit)
+operator fun <
+    Type : MeasurementType,
+    UnitType : ScientificUnit<Type>,
+    ValueType : ScientificValue<Type, UnitType>
+    > Number.invoke(unit: UnitType, factory: (Decimal, UnitType) -> ValueType) = this.toDecimal()(unit, factory)
+
 operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>
-    > Double.invoke(unit: UnitType) = ScientificValue(this, unit)
+    > Decimal.invoke(unit: UnitType) = this(unit, ::DefaultScientificValue)
 operator fun <
     Type : MeasurementType,
-    UnitType : ScientificUnit<Type>
-    > Decimal.invoke(unit: UnitType) = ScientificValue(this, unit)
+    UnitType : ScientificUnit<Type>,
+    ValueType : ScientificValue<Type, UnitType>
+    > Decimal.invoke(unit: UnitType, factory: (Decimal, UnitType) -> ValueType) = factory(this, unit)
 
 internal fun <
     TargetType : MeasurementType,
@@ -72,7 +92,7 @@ internal fun <
     DividerType : MeasurementType,
     DividerUnit : ScientificUnit<DividerType>
     >
-    Unit.byDividing(nominator: ScientificValue<NominatorType, NominatorUnit>, divider: ScientificValue<DividerType, DividerUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(nominator.unit.toSIUnit(nominator.value) / divider.unit.toSIUnit(divider.value))(this)
+    Unit.byDividing(nominator: ScientificValue<NominatorType, NominatorUnit>, divider: ScientificValue<DividerType, DividerUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(nominator.unit.toSIUnit(nominator.decimalValue) / divider.unit.toSIUnit(divider.decimalValue))(this)
 
 internal fun <
     TargetType : MeasurementType,
@@ -82,7 +102,7 @@ internal fun <
     RightType : MeasurementType,
     RightUnit : ScientificUnit<RightType>
     >
-    Unit.byMultiplying(left: ScientificValue<LeftType, LeftUnit>, right: ScientificValue<RightType, RightUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(left.unit.toSIUnit(left.value) * right.unit.toSIUnit(right.value))(this)
+    Unit.byMultiplying(left: ScientificValue<LeftType, LeftUnit>, right: ScientificValue<RightType, RightUnit>): ScientificValue<TargetType, Unit> = fromSIUnit(left.unit.toSIUnit(left.decimalValue) * right.unit.toSIUnit(right.decimalValue))(this)
 
 internal fun <
     InverseType : MeasurementType,
@@ -90,4 +110,4 @@ internal fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>
     >
-    Unit.byInverting(inverse: ScientificValue<InverseType, InverseUnit>): ScientificValue<Type, Unit> = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.value))(this)
+    Unit.byInverting(inverse: ScientificValue<InverseType, InverseUnit>): ScientificValue<Type, Unit> = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this)
