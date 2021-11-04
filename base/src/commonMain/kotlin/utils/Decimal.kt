@@ -71,6 +71,18 @@ expect fun Decimal.round(scale: Int, roundingMode: RoundingMode = RoundingMode.R
 expect fun Number.toDecimal(): Decimal
 expect fun String.toDecimal(): Decimal
 
+fun ByteArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun DoubleArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun FloatArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun IntArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun ShortArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun LongArray.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+fun <NumberType : Number> Collection<NumberType>.toDecimalList(): List<Decimal> = map { it.toDecimal() }
+
 expect fun Decimal.toDouble(): Double
 expect fun Decimal.toString(): String
 expect fun Decimal.toInt(): Int
+
+fun List<Decimal>.toDoubleArray(): DoubleArray = map { it.toDouble() }.toDoubleArray()
+fun List<Decimal>.toStringList(): List<String> = map { it.toString() }
+fun List<Decimal>.toIntArray(): IntArray = map { it.toInt() }.toIntArray()

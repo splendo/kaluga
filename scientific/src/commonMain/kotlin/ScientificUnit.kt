@@ -46,12 +46,12 @@ sealed class AbstractScientificUnit<Type : MeasurementType> : ScientificUnit<Typ
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Number,
     to: ScientificUnit<Unit>
-): Double = convert(value.toDecimal(), to).toDouble()
+) = convert(value.toDecimal(), to)
 
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Decimal,
     to: ScientificUnit<Unit>
-): Decimal = if (this == to) value else to.fromSIUnit(toSIUnit(value))
+) = if (this == to) value else to.fromSIUnit(toSIUnit(value))
 
 val Units: Set<ScientificUnit<*>> get() = AccelerationUnits +
     ActionUnits +

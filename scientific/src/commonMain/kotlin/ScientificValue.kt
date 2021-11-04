@@ -30,7 +30,7 @@ interface ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> :
     val value: Number
     val unit: Unit
 
-    override fun compareTo(other: ScientificValue<Type, *>): Int = unit.toSIUnit(value.toDecimal()).compareTo(other.unit.toSIUnit(other.value.toDecimal()))
+    override fun compareTo(other: ScientificValue<Type, *>): Int = unit.toSIUnit(decimalValue).compareTo(other.unit.toSIUnit(other.decimalValue))
 
     val decimalValue: Decimal get() = value.toDecimal()
 }
