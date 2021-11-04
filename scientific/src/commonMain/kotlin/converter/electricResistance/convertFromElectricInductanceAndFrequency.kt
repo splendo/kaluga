@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricInductance
 import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.Frequency
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("resistanceFromInductanceAndFrequency")
+@JvmName("resistanceFromInductanceAndFrequencyDefault")
 fun <
     ResistanceUnit : ElectricResistance,
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance
-    >
-    ResistanceUnit.resistance(
+> ResistanceUnit.resistance(
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
     frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
-) : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byMultiplying(inductance, frequency)
+) = resistance(inductance, frequency, ::DefaultScientificValue)
+
+@JvmName("resistanceFromInductanceAndFrequency")
+fun <
+    ResistanceUnit : ElectricResistance,
+    FrequencyUnit : Frequency,
+    InductanceUnit : ElectricInductance,
+    Value : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+> ResistanceUnit.resistance(
+    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
+    factory: (Decimal, ResistanceUnit) -> Value
+) = byMultiplying(inductance, frequency, factory)

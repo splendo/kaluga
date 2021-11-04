@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("momentumFromForceAndTime")
+@JvmName("momentumFromForceAndTimeDefault")
 fun <
     ForceUnit : Force,
     TimeUnit : Time,
     MomentumUnit : Momentum
-    > MomentumUnit.momentum(
+> MomentumUnit.momentum(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(force, time)
+) = momentum(force, time, ::DefaultScientificValue)
+
+@JvmName("momentumFromForceAndTime")
+fun <
+    ForceUnit : Force,
+    TimeUnit : Time,
+    MomentumUnit : Momentum,
+    Value : ScientificValue<MeasurementType.Momentum, MomentumUnit>
+> MomentumUnit.momentum(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, MomentumUnit) -> Value
+) = byMultiplying(force, time, factory)

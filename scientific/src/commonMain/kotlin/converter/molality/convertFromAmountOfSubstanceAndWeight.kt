@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.molality
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Molality
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("molalityFromAmountOfSubstanceAndWeight")
+@JvmName("molalityFromAmountOfSubstanceAndWeightDefault")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolalityUnit : Molality
-    > MolalityUnit.molality(
+> MolalityUnit.molality(
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
-) = byDividing(amountOfSubstance, weight)
+) = molality(amountOfSubstance, weight, ::DefaultScientificValue)
+
+@JvmName("molalityFromAmountOfSubstanceAndWeight")
+fun <
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    WeightUnit : Weight,
+    MolalityUnit : Molality,
+    Value : ScientificValue<MeasurementType.Molality, MolalityUnit>
+> MolalityUnit.molality(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    factory: (Decimal, MolalityUnit) -> Value
+) = byDividing(amountOfSubstance, weight, factory)

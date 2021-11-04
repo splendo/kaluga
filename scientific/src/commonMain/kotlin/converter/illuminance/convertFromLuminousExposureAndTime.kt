@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Illuminance
 import com.splendo.kaluga.scientific.LuminousExposure
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("illuminanceFromLuminousExposureAndTime")
+@JvmName("illuminanceFromLuminousExposureAndTimeDefault")
 fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
     IlluminanceUnit : Illuminance
-    > IlluminanceUnit.illuminance(
+> IlluminanceUnit.illuminance(
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(luminousExposure, time)
+) = illuminance(luminousExposure, time, ::DefaultScientificValue)
+
+@JvmName("illuminanceFromLuminousExposureAndTime")
+fun <
+    LuminousExposureUnit : LuminousExposure,
+    TimeUnit : Time,
+    IlluminanceUnit : Illuminance,
+    Value : ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+> IlluminanceUnit.illuminance(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, IlluminanceUnit) -> Value
+) = byDividing(luminousExposure, time, factory)

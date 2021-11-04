@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.specificEnergy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("specificEnergyFromEnergyAndWeight")
+@JvmName("specificEnergyFromEnergyAndWeightDefault")
 fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy
-    > SpecificEnergyUnit.specificEnergy(
+> SpecificEnergyUnit.specificEnergy(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
-) = byDividing(energy, weight)
+) = specificEnergy(energy, weight, ::DefaultScientificValue)
+
+@JvmName("specificEnergyFromEnergyAndWeight")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    SpecificEnergyUnit : SpecificEnergy,
+    Value : ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+> SpecificEnergyUnit.specificEnergy(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    factory: (Decimal, SpecificEnergyUnit) -> Value
+) = byDividing(energy, weight, factory)

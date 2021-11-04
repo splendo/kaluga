@@ -17,21 +17,34 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
 import com.splendo.kaluga.scientific.CatalysticActivity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("amountOfSubstanceFromCatalysisAndTime")
+@JvmName("amountOfSubstanceFromCatalysisAndTimeDefault")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity
-    >
-    AmountOfSubstanceUnit.amountOfSubstance(
+> AmountOfSubstanceUnit.amountOfSubstance(
     catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(catalysis, time)
+) = amountOfSubstance(catalysis, time, ::DefaultScientificValue)
+
+@JvmName("amountOfSubstanceFromCatalysisAndTime")
+fun <
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    TimeUnit : Time,
+    CatalysisUnit : CatalysticActivity,
+    Value : ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+> AmountOfSubstanceUnit.amountOfSubstance(
+    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, AmountOfSubstanceUnit) -> Value
+) = byMultiplying(catalysis, time, factory)

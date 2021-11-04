@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.VolumetricFlow
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("volumetricFlowFromVolumeAndTime")
+@JvmName("volumetricFlowFromVolumeAndTimeDefault")
 fun <
     VolumeUnit : Volume,
     TimeUnit : Time,
     VolumetricFlowUnit : VolumetricFlow
-    > VolumetricFlowUnit.volumetricFlow(
+> VolumetricFlowUnit.volumetricFlow(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(volume, time)
+) = volumetricFlow(volume, time, ::DefaultScientificValue)
+
+@JvmName("volumetricFlowFromVolumeAndTime")
+fun <
+    VolumeUnit : Volume,
+    TimeUnit : Time,
+    VolumetricFlowUnit : VolumetricFlow,
+    Value : ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>
+> VolumetricFlowUnit.volumetricFlow(
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, VolumetricFlowUnit) -> Value
+) = byDividing(volume, time, factory)

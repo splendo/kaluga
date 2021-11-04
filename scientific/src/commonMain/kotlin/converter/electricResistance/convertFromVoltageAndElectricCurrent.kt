@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("resistanceFromVoltageAndCurrent")
+@JvmName("resistanceFromVoltageAndCurrentDefault")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance
-    > ResistanceUnit.resistance(
+> ResistanceUnit.resistance(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-): ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit> = byDividing(voltage, current)
+) = resistance(voltage, current, ::DefaultScientificValue)
+
+@JvmName("resistanceFromVoltageAndCurrent")
+fun <
+    CurrentUnit : ElectricCurrent,
+    VoltageUnit : Voltage,
+    ResistanceUnit : ElectricResistance,
+    Value : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+> ResistanceUnit.resistance(
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    factory: (Decimal, ResistanceUnit) -> Value
+) = byDividing(voltage, current, factory)

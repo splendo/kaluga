@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCharge
 import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("currentFromChargeAndTime")
+@JvmName("currentFromChargeAndTimeDefault")
 fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge
-    >
-    CurrentUnit.current(
+> CurrentUnit.current(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     per: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit> = byDividing(charge, per)
+) = current(charge, per, ::DefaultScientificValue)
+
+@JvmName("currentFromChargeAndTime")
+fun <
+    CurrentUnit : ElectricCurrent,
+    TimeUnit : Time,
+    ChargeUnit : ElectricCharge,
+    Value : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+> CurrentUnit.current(
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
+    per: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, CurrentUnit) -> Value
+) = byDividing(charge, per, factory)

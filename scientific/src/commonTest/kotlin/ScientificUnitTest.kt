@@ -19,7 +19,10 @@ package com.splendo.kaluga.scientific
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.converter.decimal.div
+import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.length.div
+import com.splendo.kaluga.scientific.converter.length.times
 import com.splendo.kaluga.scientific.converter.speed.times
 import com.splendo.kaluga.scientific.converter.temperature.div
 import com.splendo.kaluga.scientific.converter.thermalResistance.times
@@ -36,6 +39,28 @@ class ScientificUnitTest {
     @Test
     fun testUnits() {
         assertFalse(Units.isEmpty())
+    }
+
+    @Test
+    fun testCalculations() {
+        assertEquals(15(Meter), 5(Meter) + 100(Decimeter))
+        assertEquals(15(Meter), 5(Meter) + 10)
+        assertEquals(15(Meter), 10 + 5(Meter))
+
+        assertEquals(5(Meter), 10(Meter) - 50(Decimeter))
+        assertEquals(5(Meter), 10(Meter) - 5)
+        assertEquals(5(Meter), 15 - 10(Meter))
+
+        assertEquals(9(SquareMeter), 3(Meter) * 30(Decimeter))
+        assertEquals(4.0, (2(Hertz) * 2(Second)).toDouble())
+        assertEquals(9(Kilogram), 3(Kilogram) * 30(Hectogram))
+        assertEquals(9(Kilogram), 3(Kilogram) * 3)
+        assertEquals(9(Kilogram), 3 * 3(Kilogram))
+
+        assertEquals(0.5(Hertz), 1.0 / 2(Second))
+        assertEquals(3(Kilogram), 9(Kilogram) / 30(Hectogram))
+        assertEquals(3(Kilogram), 9(Kilogram) / 3)
+        assertEquals(3(Kilogram), 9 / 3(Kilogram))
     }
 
     @Test

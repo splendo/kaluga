@@ -55,7 +55,7 @@ import kotlin.jvm.JvmName
 @JvmName("metricForceDivBarye")
 infix operator fun <Force : MetricForce> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Barye>) = SquareCentimeter.area(this, pressure)
 @JvmName("metricForceDivBaryeMultiple")
-infix operator fun <Force : MetricForce, B : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye>> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, B>) = SquareCentimeter.area(this, pressure)
+infix operator fun <Force : MetricForce, BaryeUnit> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, BaryeUnit>) where BaryeUnit : Pressure, BaryeUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Barye> = SquareCentimeter.area(this, pressure)
 @JvmName("metricForceDivMetricPressure")
 infix operator fun <Force : MetricForce, Pressure : MetricPressure> ScientificValue<MeasurementType.Force, Force>.div(pressure: ScientificValue<MeasurementType.Pressure, Pressure>) = SquareMeter.area(this, pressure)
 @JvmName("imperialForcePoundSquareInch")

@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MagneticFlux
 import com.splendo.kaluga.scientific.MagneticInduction
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("fluxFromInductionAndArea")
+@JvmName("fluxFromInductionAndAreaDefault")
 fun <
     FluxUnit : MagneticFlux,
     AreaUnit : Area,
     InductionUnit : MagneticInduction
-    >
-    FluxUnit.flux(
+> FluxUnit.flux(
     induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(induction, area)
+) = flux(induction, area, ::DefaultScientificValue)
+
+@JvmName("fluxFromInductionAndArea")
+fun <
+    FluxUnit : MagneticFlux,
+    AreaUnit : Area,
+    InductionUnit : MagneticInduction,
+    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+> FluxUnit.flux(
+    induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, FluxUnit) -> Value
+) = byMultiplying(induction, area, factory)

@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("areaFromVolumeAndHeight")
+@JvmName("areaFromVolumeAndHeightDefault")
 fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume
-    > AreaUnit.area(
+> AreaUnit.area(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     height: ScientificValue<MeasurementType.Length, HeightUnit>
-) : ScientificValue<MeasurementType.Area, AreaUnit> = byDividing(volume, height)
+) = area(volume, height, ::DefaultScientificValue)
+
+@JvmName("areaFromVolumeAndHeight")
+fun <
+    HeightUnit : Length,
+    AreaUnit : Area,
+    VolumeUnit : Volume,
+    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+> AreaUnit.area(
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    height: ScientificValue<MeasurementType.Length, HeightUnit>,
+    factory: (Decimal, AreaUnit) -> Value
+) = byDividing(volume, height, factory)

@@ -17,20 +17,34 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
 import com.splendo.kaluga.scientific.AreaDensity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("areaFromWeightAndAreaDensity")
+@JvmName("areaFromWeightAndAreaDensityDefault")
 fun <
     WeightUnit : Weight,
     AreaUnit : Area,
     AreaDensityUnit : AreaDensity
-    > AreaUnit.area(
+> AreaUnit.area(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
-) = byDividing(weight, areaDensity)
+) = area(weight, areaDensity, ::DefaultScientificValue)
+
+@JvmName("areaFromWeightAndAreaDensity")
+fun <
+    WeightUnit : Weight,
+    AreaUnit : Area,
+    AreaDensityUnit : AreaDensity,
+    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+> AreaUnit.area(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
+    factory: (Decimal, AreaUnit) -> Value
+) = byDividing(weight, areaDensity, factory)

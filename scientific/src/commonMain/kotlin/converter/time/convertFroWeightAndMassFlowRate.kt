@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MassFlowRate
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("timeFromWeightAndMassFlowRate")
+@JvmName("timeFromWeightAndMassFlowRateDefault")
 fun <
     WeightUnit : Weight,
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate
-    > TimeUnit.time(
+> TimeUnit.time(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>
-) = byDividing(weight, massFlowRate)
+) = time(weight, massFlowRate, ::DefaultScientificValue)
+
+@JvmName("timeFromWeightAndMassFlowRate")
+fun <
+    WeightUnit : Weight,
+    TimeUnit : Time,
+    MassFlowRateUnit : MassFlowRate,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+> TimeUnit.time(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = byDividing(weight, massFlowRate, factory)

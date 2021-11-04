@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.BeatsPerMinute
 import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.Hour
@@ -28,10 +29,18 @@ import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
 import kotlin.jvm.JvmName
 
+@JvmName("numberDivBPM")
+infix operator fun Number.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = toDecimal() / frequency
+@JvmName("numberDivFrequency")
+infix operator fun <FrequencyUnit : Frequency> Number.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, Second> = toDecimal() / frequency
+
 @JvmName("decimalDivBPM")
 infix operator fun Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, BeatsPerMinute>): ScientificValue<MeasurementType.Time, Hour> = Hour.time(this, frequency)
 @JvmName("decimalDivFrequency")
 infix operator fun <FrequencyUnit : Frequency> Decimal.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, Second> = Second.time(this, frequency)
+
+@JvmName("numberDivRadioactivity")
+infix operator fun <RadioactivityUnit : Radioactivity> Number.div(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, Second> = toDecimal() / radioactivity
 
 @JvmName("decimalDivRadioactivity")
 infix operator fun <RadioactivityUnit : Radioactivity> Decimal.div(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, Second> = Second.time(this, radioactivity)

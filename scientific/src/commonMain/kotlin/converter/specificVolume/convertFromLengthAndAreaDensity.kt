@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.specificVolume
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.AreaDensity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("specificVolumeFromLengthAndAreaDensity")
+@JvmName("specificVolumeFromLengthAndAreaDensityDefault")
 fun <
     SpecificVolumeUnit : SpecificVolume,
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity
-    > SpecificVolumeUnit.specificVolume(
+> SpecificVolumeUnit.specificVolume(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
-) = byDividing(length, areaDensity)
+) = specificVolume(length, areaDensity, ::DefaultScientificValue)
+
+@JvmName("specificVolumeFromLengthAndAreaDensity")
+fun <
+    SpecificVolumeUnit : SpecificVolume,
+    LengthUnit : Length,
+    AreaDensityUnit : AreaDensity,
+    Value : ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+> SpecificVolumeUnit.specificVolume(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
+    factory: (Decimal, SpecificVolumeUnit) -> Value
+) = byDividing(length, areaDensity, factory)

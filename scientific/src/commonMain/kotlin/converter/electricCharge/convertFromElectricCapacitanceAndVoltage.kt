@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCapacitance
 import com.splendo.kaluga.scientific.ElectricCharge
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("chargeFromCapacitanceAndVoltage")
+@JvmName("chargeFromCapacitanceAndVoltageDefault")
 fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance
-    >
-    ChargeUnit.charge(
+> ChargeUnit.charge(
     capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
-) : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit> = byMultiplying(capacitance, voltage)
+) = charge(capacitance, voltage, ::DefaultScientificValue)
+
+@JvmName("chargeFromCapacitanceAndVoltage")
+fun <
+    ChargeUnit : ElectricCharge,
+    VoltageUnit : Voltage,
+    CapacitanceUnit : ElectricCapacitance,
+    Value : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+> ChargeUnit.charge(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    factory: (Decimal, ChargeUnit) -> Value
+) = byMultiplying(capacitance, voltage, factory)

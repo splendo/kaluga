@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.SpecificVolume
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("weightFromVolumeAndSpecificVolume")
+@JvmName("weightFromVolumeAndSpecificVolumeDefault")
 fun <
     VolumeUnit : Volume,
     WeightUnit : Weight,
     SpecificVolumeUnit : SpecificVolume
-    > WeightUnit.weight(
+> WeightUnit.weight(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
-) = byDividing(volume, specificVolume)
+) = weight(volume, specificVolume, ::DefaultScientificValue)
+
+@JvmName("weightFromVolumeAndSpecificVolume")
+fun <
+    VolumeUnit : Volume,
+    WeightUnit : Weight,
+    SpecificVolumeUnit : SpecificVolume,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.weight(
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byDividing(volume, specificVolume, factory)

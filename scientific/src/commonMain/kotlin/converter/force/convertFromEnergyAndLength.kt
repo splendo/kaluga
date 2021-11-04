@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.Length
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("forceFromEnergyAndLength")
+@JvmName("forceFromEnergyAndLengthDefault")
 fun <
     EnergyUnit : Energy,
     LengthUnit : Length,
     ForceUnit : Force
-    > ForceUnit.force(
+> ForceUnit.force(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>
-) = byDividing(energy, length)
+) = force(energy, length, ::DefaultScientificValue)
+
+@JvmName("forceFromEnergyAndLength")
+fun <
+    EnergyUnit : Energy,
+    LengthUnit : Length,
+    ForceUnit : Force,
+    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+> ForceUnit.force(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    factory: (Decimal, ForceUnit) -> Value
+) = byDividing(energy, length, factory)

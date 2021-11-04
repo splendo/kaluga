@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("forceFromMomentumAndTime")
+@JvmName("forceFromMomentumAndTimeDefault")
 fun <
     ForceUnit : Force,
     TimeUnit : Time,
     MomentumUnit : Momentum
-    > ForceUnit.force(
+> ForceUnit.force(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(momentum, time)
+) = force(momentum, time, ::DefaultScientificValue)
+
+@JvmName("forceFromMomentumAndTime")
+fun <
+    ForceUnit : Force,
+    TimeUnit : Time,
+    MomentumUnit : Momentum,
+    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+> ForceUnit.force(
+    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, ForceUnit) -> Value
+) = byDividing(momentum, time, factory)

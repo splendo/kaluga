@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("momentumFromDynamicViscosityAndArea")
+@JvmName("momentumFromDynamicViscosityAndAreaDefault")
 fun <
     MomentumUnit : Momentum,
     AreaUnit : Area,
     DynamicViscosityUnit : DynamicViscosity
-    > MomentumUnit.momentum(
+> MomentumUnit.momentum(
     dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byMultiplying(dynamicViscosity, area)
+) = momentum(dynamicViscosity, area, ::DefaultScientificValue)
+
+@JvmName("momentumFromDynamicViscosityAndArea")
+fun <
+    MomentumUnit : Momentum,
+    AreaUnit : Area,
+    DynamicViscosityUnit : DynamicViscosity,
+    Value : ScientificValue<MeasurementType.Momentum, MomentumUnit>
+> MomentumUnit.momentum(
+    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, MomentumUnit) -> Value
+) = byMultiplying(dynamicViscosity, area, factory)

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Pressure
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromPressureAndVolume")
+@JvmName("energyFromPressureAndVolumeDefault")
 fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
     VolumeUnit : Volume
-    >
-    EnergyUnit.energy(
+> EnergyUnit.energy(
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
-) = byMultiplying(pressure, volume)
+) = energy(pressure, volume, ::DefaultScientificValue)
+
+@JvmName("energyFromPressureAndVolume")
+fun <
+    EnergyUnit : Energy,
+    PressureUnit : Pressure,
+    VolumeUnit : Volume,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(pressure, volume, factory)

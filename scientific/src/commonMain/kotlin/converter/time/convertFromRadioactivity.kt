@@ -20,6 +20,7 @@ package com.splendo.kaluga.scientific.converter.time
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
 import com.splendo.kaluga.scientific.Becquerel
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
@@ -29,15 +30,37 @@ import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
+import kotlin.jvm.JvmName
 
+@JvmName("timeFromInvertedRadioactivityDefault")
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
-    > TimeUnit.time(radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = byInverting(radioactivity)
+> TimeUnit.time(
+    radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+) = time(radioactivity, ::DefaultScientificValue)
+
+@JvmName("timeFromInvertedRadioactivity")
+fun <
+    TimeUnit : Time,
+    RadioactivityUnit : Radioactivity,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+> TimeUnit.time(
+    radioactivity: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = byInverting(radioactivity, factory)
 
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time
-    > TimeUnit.time(decay: Decimal, at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = (decay / at.convertValue(
-    Becquerel
-))(Second).convert(this)
+    > TimeUnit.time(decay: Decimal, at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>) = time(decay, at, ::DefaultScientificValue)
+
+fun <
+    RadioactivityUnit : Radioactivity,
+    TimeUnit : Time,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    > TimeUnit.time(
+    decay: Decimal,
+    at: ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = (decay / at.convertValue(Becquerel))(Second).convert(this, factory)

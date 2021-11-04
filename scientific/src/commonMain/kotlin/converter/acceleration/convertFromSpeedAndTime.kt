@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Acceleration
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Speed
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("accelerationFromSpeedAndTime")
+@JvmName("accelerationFromSpeedAndTimeDefault")
 fun <
     SpeedUnit : Speed,
     TimeUnit : Time,
     AccelerationUnit : Acceleration
-    > AccelerationUnit.acceleration(
+> AccelerationUnit.acceleration(
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
-    time : ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(speed, time)
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = acceleration(speed, time, ::DefaultScientificValue)
+
+@JvmName("accelerationFromSpeedAndTime")
+fun <
+    SpeedUnit : Speed,
+    TimeUnit : Time,
+    AccelerationUnit : Acceleration,
+    Value : ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+> AccelerationUnit.acceleration(
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, AccelerationUnit) -> Value
+) = byDividing(speed, time, factory)

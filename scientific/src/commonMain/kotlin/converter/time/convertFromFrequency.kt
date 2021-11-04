@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
@@ -29,15 +30,42 @@ import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
+import kotlin.jvm.JvmName
 
+@JvmName("timeFromInvertedFrequencyDefault")
 fun <
     TimeUnit : Time,
-    FrequencyUnit : Frequency
-    > TimeUnit.time(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = byInverting(frequency)
+    FrequencyUnit : Frequency,
+> TimeUnit.time(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = time(frequency, ::DefaultScientificValue)
+
+@JvmName("timeFromInvertedFrequency")
+fun <
+    TimeUnit : Time,
+    FrequencyUnit : Frequency,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+> TimeUnit.time(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = byInverting(frequency, factory)
 
 fun <
     FrequencyUnit : Frequency,
     TimeUnit : Time
-    > TimeUnit.time(cycle: Decimal, at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>): ScientificValue<MeasurementType.Time, TimeUnit> = (cycle / at.convertValue(
+    > TimeUnit.time(
+    cycle: Decimal,
+    at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = time(cycle, at, ::DefaultScientificValue)
+
+fun <
+    FrequencyUnit : Frequency,
+    TimeUnit : Time,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+    > TimeUnit.time(
+    cycle: Decimal,
+    at: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = (cycle / at.convertValue(
     Hertz
-))(Second).convert(this)
+))(Second).convert(this, factory)

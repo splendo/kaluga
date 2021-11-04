@@ -17,19 +17,33 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("areaFromLengthAndWidth")
+@JvmName("areaFromLengthAndWidthDefault")
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area
-    > AreaUnit.area(
+> AreaUnit.area(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     width: ScientificValue<MeasurementType.Length, WidthUnit>
-) = byMultiplying(length, width)
+) = area(length, width, ::DefaultScientificValue)
+
+@JvmName("areaFromLengthAndWidth")
+fun <
+    LengthUnit : Length,
+    WidthUnit : Length,
+    AreaUnit : Area,
+    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+> AreaUnit.area(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    width: ScientificValue<MeasurementType.Length, WidthUnit>,
+    factory: (Decimal, AreaUnit) -> Value
+) = byMultiplying(length, width, factory)

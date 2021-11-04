@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.temperature
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Power
@@ -26,12 +28,24 @@ import com.splendo.kaluga.scientific.ThermalResistance
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("temperatureFromThermalResistanceAndPower")
+@JvmName("temperatureFromThermalResistanceAndPowerDefault")
 fun <
     TemperatureUnit : Temperature,
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance
-    > TemperatureUnit.temperature(
+> TemperatureUnit.temperature(
     thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>,
     power: ScientificValue<MeasurementType.Power, PowerUnit>
-) = deltaValue(Kelvin.byMultiplying(thermalResistance, power))
+) = temperature(thermalResistance, power, ::DefaultScientificValue)
+
+@JvmName("temperatureFromThermalResistanceAndPower")
+fun <
+    TemperatureUnit : Temperature,
+    PowerUnit : Power,
+    ThermalResistanceUnit : ThermalResistance,
+    Value : ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+> TemperatureUnit.temperature(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>,
+    power: ScientificValue<MeasurementType.Power, PowerUnit>,
+    factory: (Decimal, TemperatureUnit) -> Value
+) = deltaValue(Kelvin.byMultiplying(thermalResistance, power, ::DefaultScientificValue), factory)

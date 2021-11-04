@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.Length
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromForceAndDistance")
+@JvmName("energyFromForceAndDistanceDefault")
 fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
     LengthUnit : Length
-    >
-    EnergyUnit.energy(
+> EnergyUnit.energy(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     distance: ScientificValue<MeasurementType.Length, LengthUnit>
-) = byMultiplying(force, distance)
+) = energy(force, distance, ::DefaultScientificValue)
+
+@JvmName("energyFromForceAndDistance")
+fun <
+    EnergyUnit : Energy,
+    ForceUnit : Force,
+    LengthUnit : Length,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(force, distance, factory)

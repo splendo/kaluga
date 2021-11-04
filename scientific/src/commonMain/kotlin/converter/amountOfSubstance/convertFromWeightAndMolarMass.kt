@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("amountOfSubstanceFromWeightAndMolarMass")
+@JvmName("amountOfSubstanceFromWeightAndMolarMassDefault")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolarMassUnit : MolarMass
-    > AmountOfSubstanceUnit.amountOfSubstance(
+> AmountOfSubstanceUnit.amountOfSubstance(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
+) = amountOfSubstance(weight, molarMass, ::DefaultScientificValue)
+
+@JvmName("amountOfSubstanceFromWeightAndMolarMass")
+fun <
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    WeightUnit : Weight,
+    MolarMassUnit : MolarMass,
+    Value : ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+> AmountOfSubstanceUnit.amountOfSubstance(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
-) = byDividing(weight, molarMass)
+    factory: (Decimal, AmountOfSubstanceUnit) -> Value
+) = byDividing(weight, molarMass, factory)

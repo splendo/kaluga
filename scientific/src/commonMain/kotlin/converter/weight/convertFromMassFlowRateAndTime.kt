@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MassFlowRate
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("weightFromMassFlowRateAndTime")
+@JvmName("weightFromMassFlowRateAndTimeDefault")
 fun <
     WeightUnit : Weight,
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate
-    > WeightUnit.mass(
+> WeightUnit.mass(
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(massFlowRate, time)
+) = mass(massFlowRate, time, ::DefaultScientificValue)
+
+@JvmName("weightFromMassFlowRateAndTime")
+fun <
+    WeightUnit : Weight,
+    TimeUnit : Time,
+    MassFlowRateUnit : MassFlowRate,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.mass(
+    massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byMultiplying(massFlowRate, time, factory)

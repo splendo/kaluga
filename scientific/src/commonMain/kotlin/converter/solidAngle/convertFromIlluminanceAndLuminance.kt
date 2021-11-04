@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.solidAngle
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Illuminance
 import com.splendo.kaluga.scientific.Luminance
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("solidAngleFromIlluminanceAndLuminance")
+@JvmName("solidAngleFromIlluminanceAndLuminanceDefault")
 fun <
     LuminanceUnit : Luminance,
     SolidAngleUnit : SolidAngle,
     IlluminanceUnit : Illuminance
-    >
-    SolidAngleUnit.solidAngle(
+> SolidAngleUnit.solidAngle(
     illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
     luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
-) = byDividing(illuminance, luminance)
+) = solidAngle(illuminance, luminance, ::DefaultScientificValue)
+
+@JvmName("solidAngleFromIlluminanceAndLuminance")
+fun <
+    LuminanceUnit : Luminance,
+    SolidAngleUnit : SolidAngle,
+    IlluminanceUnit : Illuminance,
+    Value : ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
+> SolidAngleUnit.solidAngle(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>,
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>,
+    factory: (Decimal, SolidAngleUnit) -> Value
+) = byDividing(illuminance, luminance, factory)

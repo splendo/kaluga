@@ -17,19 +17,33 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("widthFromAreaAndLength")
+@JvmName("widthFromAreaAndLengthDefault")
 fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area
-    > WidthUnit.width(
+> WidthUnit.width(
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>
-) = byDividing(area, length)
+) = width(area, length, ::DefaultScientificValue)
+
+@JvmName("widthFromAreaAndLength")
+fun <
+    LengthUnit : Length,
+    WidthUnit : Length,
+    AreaUnit : Area,
+    Value : ScientificValue<MeasurementType.Length, WidthUnit>
+> WidthUnit.width(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    factory: (Decimal, WidthUnit) -> Value
+) = byDividing(area, length, factory)

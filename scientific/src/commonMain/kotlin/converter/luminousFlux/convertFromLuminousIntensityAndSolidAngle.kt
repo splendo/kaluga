@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.LuminousFlux
 import com.splendo.kaluga.scientific.LuminousIntensity
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("luminousFluxFromIntensityAndSolidAngle")
+@JvmName("luminousFluxFromIntensityAndSolidAngleDefault")
 fun <
     IntensityUnit : LuminousIntensity,
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux
-    >
-    FluxUnit.flux(
+> FluxUnit.flux(
     intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>,
     solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
-) : ScientificValue<MeasurementType.LuminousFlux, FluxUnit> = byMultiplying(intensity, solidAngle)
+) = flux(intensity, solidAngle, ::DefaultScientificValue)
+
+@JvmName("luminousFluxFromIntensityAndSolidAngle")
+fun <
+    IntensityUnit : LuminousIntensity,
+    SolidAngleUnit : SolidAngle,
+    FluxUnit : LuminousFlux,
+    Value : ScientificValue<MeasurementType.LuminousFlux, FluxUnit>
+> FluxUnit.flux(
+    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>,
+    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>,
+    factory: (Decimal, FluxUnit) -> Value
+) = byMultiplying(intensity, solidAngle, factory)

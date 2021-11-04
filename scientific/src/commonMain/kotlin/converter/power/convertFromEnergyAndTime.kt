@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.power
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Power
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("powerFromEnergyAndTime")
+@JvmName("powerFromEnergyAndTimeDefault")
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
     PowerUnit : Power
-    > PowerUnit.power(
+> PowerUnit.power(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-): ScientificValue<MeasurementType.Power, PowerUnit> = byDividing(energy, time)
+) = power(energy, time, ::DefaultScientificValue)
+
+@JvmName("powerFromEnergyAndTime")
+fun <
+    EnergyUnit : Energy,
+    TimeUnit : Time,
+    PowerUnit : Power,
+    Value : ScientificValue<MeasurementType.Power, PowerUnit>
+> PowerUnit.power(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, PowerUnit) -> Value
+) = byDividing(energy, time, factory)

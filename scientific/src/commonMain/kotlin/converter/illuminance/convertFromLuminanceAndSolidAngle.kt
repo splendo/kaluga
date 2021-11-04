@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Illuminance
 import com.splendo.kaluga.scientific.Luminance
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("illuminanceFromLuminanceAndSolidAngle")
+@JvmName("illuminanceFromLuminanceAndSolidAngleDefault")
 fun <
     LuminanceUnit : Luminance,
     SolidAngleUnit : SolidAngle,
     IlluminanceUnit : Illuminance
-    >
-    IlluminanceUnit.illuminance(
+> IlluminanceUnit.illuminance(
     luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>,
     solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
-) = byMultiplying(luminance, solidAngle)
+) = illuminance(luminance, solidAngle, ::DefaultScientificValue)
+
+@JvmName("illuminanceFromLuminanceAndSolidAngle")
+fun <
+    LuminanceUnit : Luminance,
+    SolidAngleUnit : SolidAngle,
+    IlluminanceUnit : Illuminance,
+    Value : ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+> IlluminanceUnit.illuminance(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>,
+    solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>,
+    factory: (Decimal, IlluminanceUnit) -> Value
+) = byMultiplying(luminance, solidAngle, factory)

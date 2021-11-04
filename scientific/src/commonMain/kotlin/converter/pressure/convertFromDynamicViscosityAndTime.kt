@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.pressure
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Pressure
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("pressureFromDynamicViscosityAndTime")
+@JvmName("pressureFromDynamicViscosityAndTimeDefault")
 fun <
     DynamicViscosityUnit : DynamicViscosity,
     TimeUnit : Time,
     PressureUnit : Pressure
-    > PressureUnit.pressure(
+> PressureUnit.pressure(
     dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(dynamicViscosity, time)
+) = pressure(dynamicViscosity, time, ::DefaultScientificValue)
+
+@JvmName("pressureFromDynamicViscosityAndTime")
+fun <
+    DynamicViscosityUnit : DynamicViscosity,
+    TimeUnit : Time,
+    PressureUnit : Pressure,
+    Value : ScientificValue<MeasurementType.Pressure, PressureUnit>
+> PressureUnit.pressure(
+    dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, PressureUnit) -> Value
+) = byDividing(dynamicViscosity, time, factory)

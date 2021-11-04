@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.volume
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Pressure
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("volumeFromEnergyAndPressure")
+@JvmName("volumeFromEnergyAndPressureDefault")
 fun <
     EnergyUnit : Energy,
     PressureUnit : Pressure,
     VolumeUnit : Volume
-    > VolumeUnit.volume(
+> VolumeUnit.volume(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
-) = byDividing(energy, pressure)
+) = volume(energy, pressure, ::DefaultScientificValue)
+
+@JvmName("volumeFromEnergyAndPressure")
+fun <
+    EnergyUnit : Energy,
+    PressureUnit : Pressure,
+    VolumeUnit : Volume,
+    Value : ScientificValue<MeasurementType.Volume, VolumeUnit>
+> VolumeUnit.volume(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
+    factory: (Decimal, VolumeUnit) -> Value
+) = byDividing(energy, pressure, factory)

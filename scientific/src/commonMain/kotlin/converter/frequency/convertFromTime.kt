@@ -19,6 +19,7 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
@@ -29,15 +30,36 @@ import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
+import kotlin.jvm.JvmName
 
+@JvmName("frequencyFromInvertedTimeDefault")
 fun <
     TimeUnit : Time,
-    FrequencyUnit : Frequency
-    > FrequencyUnit.frequency(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = byInverting(time)
+    FrequencyUnit : Frequency,
+> FrequencyUnit.frequency(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = frequency(time, ::DefaultScientificValue)
+
+@JvmName("frequencyFromInvertedTime")
+fun <
+    TimeUnit : Time,
+    FrequencyUnit : Frequency,
+    Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+> FrequencyUnit.frequency(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, FrequencyUnit) -> Value
+) = byInverting(time, factory)
 
 fun <
     FrequencyUnit : Frequency,
     TimeUnit : Time
-    > FrequencyUnit.frequency(cycle: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, FrequencyUnit> = (cycle / per.convertValue(
-    Second
-))(Hertz).convert(this)
+    > FrequencyUnit.frequency(cycle: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>) = frequency(cycle, per, ::DefaultScientificValue)
+
+fun <
+    FrequencyUnit : Frequency,
+    TimeUnit : Time,
+    Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+    > FrequencyUnit.frequency(
+    cycle: Decimal,
+    per: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, FrequencyUnit) -> Value) = (cycle / per.convertValue(Second))(Hertz).convert(this, factory)

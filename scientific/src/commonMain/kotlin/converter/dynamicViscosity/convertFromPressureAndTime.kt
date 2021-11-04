@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.dynamicViscosity
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Pressure
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("dynamicViscosityFromPressureAndTime")
+@JvmName("dynamicViscosityFromPressureAndTimeDefault")
 fun <
     DynamicViscosityUnit : DynamicViscosity,
     TimeUnit : Time,
     PressureUnit : Pressure
-    > DynamicViscosityUnit.dynamicViscosity(
+> DynamicViscosityUnit.dynamicViscosity(
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(pressure, time)
+) = dynamicViscosity(pressure, time, ::DefaultScientificValue)
+
+@JvmName("dynamicViscosityFromPressureAndTime")
+fun <
+    DynamicViscosityUnit : DynamicViscosity,
+    TimeUnit : Time,
+    PressureUnit : Pressure,
+    Value : ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>
+> DynamicViscosityUnit.dynamicViscosity(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, DynamicViscosityUnit) -> Value
+) = byMultiplying(pressure, time, factory)

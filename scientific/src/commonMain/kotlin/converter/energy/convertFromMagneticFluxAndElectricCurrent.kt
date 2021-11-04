@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MagneticFlux
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromFluxAndCurrent")
+@JvmName("energyFromFluxAndCurrentDefault")
 fun <
     EnergyUnit : Energy,
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux
-    >
-    EnergyUnit.energy(
+> EnergyUnit.energy(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.Energy, EnergyUnit> = byMultiplying(flux, current)
+) = energy(flux, current, ::DefaultScientificValue)
+
+@JvmName("energyFromFluxAndCurrent")
+fun <
+    EnergyUnit : Energy,
+    CurrentUnit : ElectricCurrent,
+    FluxUnit : MagneticFlux,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(flux, current, factory)

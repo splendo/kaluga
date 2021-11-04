@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("massFromMomentumAndSpeed")
+@JvmName("massFromMomentumAndSpeedDefault")
 fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum
-    > WeightUnit.mass(
+> WeightUnit.mass(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
-) = byDividing(momentum, speed)
+) = mass(momentum, speed, ::DefaultScientificValue)
+
+@JvmName("massFromMomentumAndSpeed")
+fun <
+    WeightUnit : Weight,
+    SpeedUnit : Speed,
+    MomentumUnit : Momentum,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.mass(
+    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byDividing(momentum, speed, factory)

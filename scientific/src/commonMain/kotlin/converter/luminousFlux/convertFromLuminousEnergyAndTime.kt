@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.LuminousEnergy
 import com.splendo.kaluga.scientific.LuminousFlux
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,11 +27,22 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("luminousFluxFromLuminousEnergyAndTime")
+@JvmName("luminousFluxFromLuminousEnergyAndTimeDefault")
 fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux
-    > LuminousFluxUnit.luminousFlux(
+> LuminousFluxUnit.luminousFlux(
     luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(luminousEnergy, time)
+) = luminousFlux(luminousEnergy, time, ::DefaultScientificValue)
+
+@JvmName("luminousFluxFromLuminousEnergyAndTime")
+fun <
+    TimeUnit : Time,
+    LuminousFluxUnit : LuminousFlux,
+    Value : ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>
+> LuminousFluxUnit.luminousFlux(
+    luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, LuminousFluxUnit) -> Value
+) = byDividing(luminousEnergy, time, factory)

@@ -22,8 +22,8 @@ import com.splendo.kaluga.scientific.LuminousFlux
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.SolidAngle
-import com.splendo.kaluga.scientific.converter.luminousIntensity.intensity
+import com.splendo.kaluga.scientific.converter.luminousIntensity.luminousIntensity
 import kotlin.jvm.JvmName
 
 @JvmName("luminousFluxDivSolidAngle")
-infix operator fun <FluxUnit : LuminousFlux, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>) = Candela.intensity(this, solidAngle)
+infix operator fun <FluxUnit : LuminousFlux, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>) = Candela.luminousIntensity(this, solidAngle)

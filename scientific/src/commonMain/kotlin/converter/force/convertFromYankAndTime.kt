@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("forceFromYankAndTime")
+@JvmName("forceFromYankAndTimeDefault")
 fun <
     ForceUnit : Force,
     TimeUnit : Time,
     YankUnit : Yank
-    > ForceUnit.force(
+> ForceUnit.force(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(yank, time)
+) = force(yank, time, ::DefaultScientificValue)
+
+@JvmName("forceFromYankAndTime")
+fun <
+    ForceUnit : Force,
+    TimeUnit : Time,
+    YankUnit : Yank,
+    Value : ScientificValue<MeasurementType.Force, ForceUnit>
+> ForceUnit.force(
+    yank: ScientificValue<MeasurementType.Yank, YankUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, ForceUnit) -> Value
+) = byMultiplying(yank, time, factory)

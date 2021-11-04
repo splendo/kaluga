@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromSpecificEnergyAndWeight")
+@JvmName("energyFromSpecificEnergyAndWeightDefault")
 fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy
-    > EnergyUnit.energy(
+> EnergyUnit.energy(
     specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
-) = byMultiplying(specificEnergy, weight)
+) = energy(specificEnergy, weight, ::DefaultScientificValue)
+
+@JvmName("energyFromSpecificEnergyAndWeight")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    SpecificEnergyUnit : SpecificEnergy,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(specificEnergy, weight, factory)

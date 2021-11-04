@@ -15,19 +15,18 @@
 
  */
 
-package com.splendo.kaluga.scientific.converter.decimal
+package com.splendo.kaluga.scientific.converter.frequency
 
-import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.Becquerel
+import com.splendo.kaluga.scientific.BeatsPerMinute
+import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.Minute
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
+import com.splendo.kaluga.scientific.Second
+import com.splendo.kaluga.scientific.converter.time.time
 import kotlin.jvm.JvmName
 
-@JvmName("numberDivTime")
-infix fun <TimeUnit : Time> Number.decaysPer(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, Becquerel> = toDecimal().decaysPer(time)
-
-@JvmName("decimalDivTime")
-infix fun <TimeUnit : Time> Decimal.decaysPer(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Radioactivity, Becquerel> = Becquerel.radioactivity(this, time)
+@JvmName("beatsPerMinuteTime")
+fun ScientificValue<MeasurementType.Frequency, BeatsPerMinute>.time() = Minute.time(this)
+@JvmName("time")
+fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.time() = Second.time(this)

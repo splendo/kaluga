@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("momentumFromMassAndSpeed")
+@JvmName("momentumFromMassAndSpeedDefault")
 fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum
-    > MomentumUnit.momentum(
+> MomentumUnit.momentum(
     mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
-) = byMultiplying(mass, speed)
+) = momentum(mass, speed, ::DefaultScientificValue)
+
+@JvmName("momentumFromMassAndSpeed")
+fun <
+    WeightUnit : Weight,
+    SpeedUnit : Speed,
+    MomentumUnit : Momentum,
+    Value : ScientificValue<MeasurementType.Momentum, MomentumUnit>
+> MomentumUnit.momentum(
+    mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    factory: (Decimal, MomentumUnit) -> Value
+) = byMultiplying(mass, speed, factory)

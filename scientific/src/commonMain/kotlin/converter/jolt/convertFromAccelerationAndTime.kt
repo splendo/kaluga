@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.jolt
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Acceleration
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("joltFromAccelerationAndTime")
+@JvmName("joltFromAccelerationAndTimeDefault")
 fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
     JoltUnit : Jolt
-    > JoltUnit.jolt(
+> JoltUnit.jolt(
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
-    time : ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(acceleration, time)
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = jolt(acceleration, time, ::DefaultScientificValue)
+
+@JvmName("joltFromAccelerationAndTime")
+fun <
+    AccelerationUnit : Acceleration,
+    TimeUnit : Time,
+    JoltUnit : Jolt,
+    Value : ScientificValue<MeasurementType.Jolt, JoltUnit>
+> JoltUnit.jolt(
+    acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, JoltUnit) -> Value
+) = byDividing(acceleration, time, factory)

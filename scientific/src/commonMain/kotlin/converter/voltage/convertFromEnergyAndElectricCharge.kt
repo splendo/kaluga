@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCharge
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("voltageFromEnergyAndCharge")
+@JvmName("voltageFromEnergyAndChargeDefault")
 fun <
     VoltageUnit : Voltage,
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge
-    > VoltageUnit.voltage(
+> VoltageUnit.voltage(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
-): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(energy, charge)
+) = voltage(energy, charge, ::DefaultScientificValue)
+
+@JvmName("voltageFromEnergyAndCharge")
+fun <
+    VoltageUnit : Voltage,
+    EnergyUnit : Energy,
+    ChargeUnit : ElectricCharge,
+    Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
+> VoltageUnit.voltage(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
+    factory: (Decimal, VoltageUnit) -> Value
+) = byDividing(energy, charge, factory)

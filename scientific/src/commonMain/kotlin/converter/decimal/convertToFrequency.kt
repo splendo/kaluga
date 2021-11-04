@@ -18,6 +18,7 @@
 package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.BeatsPerMinute
 import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
@@ -26,6 +27,11 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.frequency.frequency
 import kotlin.jvm.JvmName
+
+@JvmName("numberDivMinute")
+infix operator fun Number.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = toDecimal() / minute
+@JvmName("numberDivTime")
+infix operator fun <TimeUnit : Time> Number.div(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Frequency, Hertz> = toDecimal() / time
 
 @JvmName("decimalDivMinute")
 infix operator fun Decimal.div(minute: ScientificValue<MeasurementType.Time, Minute>): ScientificValue<MeasurementType.Frequency, BeatsPerMinute> = BeatsPerMinute.frequency(this, minute)

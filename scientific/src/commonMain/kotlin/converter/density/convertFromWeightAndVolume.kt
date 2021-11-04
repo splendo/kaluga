@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.density
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Density
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("densityFromWeightAndVolume")
+@JvmName("densityFromWeightAndVolumeDefault")
 fun <
     WeightUnit : Weight,
     VolumeUnit : Volume,
     DensityUnit : Density
-    > DensityUnit.density(
+> DensityUnit.density(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
-) = byDividing(weight, volume)
+) = density(weight, volume, ::DefaultScientificValue)
+
+@JvmName("densityFromWeightAndVolume")
+fun <
+    WeightUnit : Weight,
+    VolumeUnit : Volume,
+    DensityUnit : Density,
+    Value : ScientificValue<MeasurementType.Density, DensityUnit>
+> DensityUnit.density(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    factory: (Decimal, DensityUnit) -> Value
+) = byDividing(weight, volume, factory)

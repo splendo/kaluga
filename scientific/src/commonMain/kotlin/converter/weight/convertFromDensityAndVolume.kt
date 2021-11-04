@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Density
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("weightFromDensityAndVolume")
+@JvmName("weightFromDensityAndVolumeDefault")
 fun <
     MassUnit : Weight,
     DensityUnit : Density,
     VolumeUnit : Volume
-    > MassUnit.mass(
+> MassUnit.mass(
     density: ScientificValue<MeasurementType.Density, DensityUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
-) = byMultiplying(density, volume)
+) = mass(density, volume, ::DefaultScientificValue)
+
+@JvmName("weightFromDensityAndVolume")
+fun <
+    MassUnit : Weight,
+    DensityUnit : Density,
+    VolumeUnit : Volume,
+    Value : ScientificValue<MeasurementType.Weight, MassUnit>
+> MassUnit.mass(
+    density: ScientificValue<MeasurementType.Density, DensityUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    factory: (Decimal, MassUnit) -> Value
+) = byMultiplying(density, volume, factory)

@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.specificVolume
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.LinearMassDensity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("specificVolumeFromAreaAndLinearMassDensity")
+@JvmName("specificVolumeFromAreaAndLinearMassDensityDefault")
 fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
     LinearMassDensityUnit : LinearMassDensity
-    > SpecificVolumeUnit.specificVolume(
+> SpecificVolumeUnit.specificVolume(
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>
-) = byDividing(area, linearMassDensity)
+) = specificVolume(area, linearMassDensity, ::DefaultScientificValue)
+
+@JvmName("specificVolumeFromAreaAndLinearMassDensity")
+fun <
+    SpecificVolumeUnit : SpecificVolume,
+    AreaUnit : Area,
+    LinearMassDensityUnit : LinearMassDensity,
+    Value : ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
+> SpecificVolumeUnit.specificVolume(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
+    factory: (Decimal, SpecificVolumeUnit) -> Value
+) = byDividing(area, linearMassDensity, factory)

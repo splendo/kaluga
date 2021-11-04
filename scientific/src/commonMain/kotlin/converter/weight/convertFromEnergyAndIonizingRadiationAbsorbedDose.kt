@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.IonizingRadiationAbsorbedDose
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("weightFromEnergyAndAbsorbedDose")
+@JvmName("weightFromEnergyAndAbsorbedDoseDefault")
 fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose
-    >
-    WeightUnit.weight(
+> WeightUnit.weight(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
-) = byDividing(energy, absorbedDose)
+) = weight(energy, absorbedDose, ::DefaultScientificValue)
+
+@JvmName("weightFromEnergyAndAbsorbedDose")
+fun <
+    EnergyUnit : Energy,
+    WeightUnit : Weight,
+    AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.weight(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byDividing(energy, absorbedDose, factory)

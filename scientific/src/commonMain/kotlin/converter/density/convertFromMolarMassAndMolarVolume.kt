@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.density
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Density
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.MolarVolume
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("densityFromMolarMassAndMolarVolume")
+@JvmName("densityFromMolarMassAndMolarVolumeDefault")
 fun <
     MolarMassUnit : MolarMass,
     MolarVolumeUnit : MolarVolume,
     DensityUnit : Density
-    > DensityUnit.density(
+> DensityUnit.density(
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
     molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
-) = byDividing(molarMass, molarVolume)
+) = density(molarMass, molarVolume, ::DefaultScientificValue)
+
+@JvmName("densityFromMolarMassAndMolarVolume")
+fun <
+    MolarMassUnit : MolarMass,
+    MolarVolumeUnit : MolarVolume,
+    DensityUnit : Density,
+    Value : ScientificValue<MeasurementType.Density, DensityUnit>
+> DensityUnit.density(
+    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
+    factory: (Decimal, DensityUnit) -> Value
+) = byDividing(molarMass, molarVolume, factory)

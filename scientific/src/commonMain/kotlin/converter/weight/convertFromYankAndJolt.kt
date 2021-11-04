@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("massFromYankAndJolt")
+@JvmName("massFromYankAndJoltDefault")
 fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank
-    > WeightUnit.mass(
+> WeightUnit.mass(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
-) = byDividing(yank, jolt)
+) = mass(yank, jolt, ::DefaultScientificValue)
+
+@JvmName("massFromYankAndJolt")
+fun <
+    WeightUnit : Weight,
+    JoltUnit : Jolt,
+    YankUnit : Yank,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.mass(
+    yank: ScientificValue<MeasurementType.Yank, YankUnit>,
+    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byDividing(yank, jolt, factory)

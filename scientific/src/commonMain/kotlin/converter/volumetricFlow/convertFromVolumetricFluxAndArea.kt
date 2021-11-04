@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.VolumetricFlow
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.VolumetricFlux
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("volumetricFlowFromVolumetricFluxAndArea")
+@JvmName("volumetricFlowFromVolumetricFluxAndAreaDefault")
 fun <
     VolumetricFlowUnit : VolumetricFlow,
     AreaUnit : Area,
     VolumetricFluxUnit : VolumetricFlux
-    > VolumetricFlowUnit.volumetricFlow(
+> VolumetricFlowUnit.volumetricFlow(
     volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byMultiplying(volumetricFlux, area)
+) = volumetricFlow(volumetricFlux, area, ::DefaultScientificValue)
+
+@JvmName("volumetricFlowFromVolumetricFluxAndArea")
+fun <
+    VolumetricFlowUnit : VolumetricFlow,
+    AreaUnit : Area,
+    VolumetricFluxUnit : VolumetricFlux,
+    Value : ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>
+> VolumetricFlowUnit.volumetricFlow(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, VolumetricFlowUnit) -> Value
+) = byMultiplying(volumetricFlux, area, factory)

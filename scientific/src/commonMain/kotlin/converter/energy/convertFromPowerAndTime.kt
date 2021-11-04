@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Power
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromPowerAndTime")
+@JvmName("energyFromPowerAndTimeDefault")
 fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
     PowerUnit : Power
-    > EnergyUnit.energy(
+> EnergyUnit.energy(
     power: ScientificValue<MeasurementType.Power, PowerUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byMultiplying(power, time)
+) = energy(power, time, ::DefaultScientificValue)
+
+@JvmName("energyFromPowerAndTime")
+fun <
+    EnergyUnit : Energy,
+    TimeUnit : Time,
+    PowerUnit : Power,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    power: ScientificValue<MeasurementType.Power, PowerUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(power, time, factory)

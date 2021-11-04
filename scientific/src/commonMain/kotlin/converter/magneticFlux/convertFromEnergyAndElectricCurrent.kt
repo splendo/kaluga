@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MagneticFlux
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("fluxFromEnergyAndCurrent")
+@JvmName("fluxFromEnergyAndCurrentDefault")
 fun <
     EnergyUnit : Energy,
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux
-    >
-    FluxUnit.flux(
+> FluxUnit.flux(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byDividing(energy, current)
+) = flux(energy, current, ::DefaultScientificValue)
+
+@JvmName("fluxFromEnergyAndCurrent")
+fun <
+    EnergyUnit : Energy,
+    CurrentUnit : ElectricCurrent,
+    FluxUnit : MagneticFlux,
+    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+> FluxUnit.flux(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    factory: (Decimal, FluxUnit) -> Value
+) = byDividing(energy, current, factory)

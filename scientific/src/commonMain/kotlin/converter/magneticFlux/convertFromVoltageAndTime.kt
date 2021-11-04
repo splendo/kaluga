@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MagneticFlux
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("fluxFromVoltageAndTime")
+@JvmName("fluxFromVoltageAndTimeDefault")
 fun <
     VoltageUnit : Voltage,
     TimeUnit : Time,
     FluxUnit : MagneticFlux
-    >
-    FluxUnit.flux(
+> FluxUnit.flux(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.MagneticFlux, FluxUnit> = byMultiplying(voltage, time)
+) = flux(voltage, time, ::DefaultScientificValue)
+
+@JvmName("fluxFromVoltageAndTime")
+fun <
+    VoltageUnit : Voltage,
+    TimeUnit : Time,
+    FluxUnit : MagneticFlux,
+    Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+> FluxUnit.flux(
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, FluxUnit) -> Value
+) = byMultiplying(voltage, time, factory)

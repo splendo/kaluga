@@ -17,20 +17,34 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
 import com.splendo.kaluga.scientific.AreaDensity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("weightFromAreaDensityAndArea")
+@JvmName("weightFromAreaDensityAndAreaDefault")
 fun <
     WeightUnit : Weight,
     AreaUnit : Area,
     AreaDensityUnit : AreaDensity
-    > WeightUnit.mass(
+> WeightUnit.mass(
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byMultiplying(areaDensity, area)
+) = mass(areaDensity, area, ::DefaultScientificValue)
+
+@JvmName("weightFromAreaDensityAndArea")
+fun <
+    WeightUnit : Weight,
+    AreaUnit : Area,
+    AreaDensityUnit : AreaDensity,
+    Value : ScientificValue<MeasurementType.Weight, WeightUnit>
+> WeightUnit.mass(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, WeightUnit) -> Value
+) = byMultiplying(areaDensity, area, factory)

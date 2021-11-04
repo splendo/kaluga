@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("timeFromDistanceAndSpeed")
+@JvmName("timeFromDistanceAndSpeedDefault")
 fun <
     LengthUnit : Length,
     TimeUnit : Time,
     SpeedUnit : Speed
-    > TimeUnit.time(
+> TimeUnit.time(
     distance: ScientificValue<MeasurementType.Length, LengthUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
-) = byDividing(distance, speed)
+) = time(distance, speed, ::DefaultScientificValue)
+
+@JvmName("timeFromDistanceAndSpeed")
+fun <
+    LengthUnit : Length,
+    TimeUnit : Time,
+    SpeedUnit : Speed,
+    Value : ScientificValue<MeasurementType.Time, TimeUnit>
+> TimeUnit.time(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>,
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
+    factory: (Decimal, TimeUnit) -> Value
+) = byDividing(distance, speed, factory)

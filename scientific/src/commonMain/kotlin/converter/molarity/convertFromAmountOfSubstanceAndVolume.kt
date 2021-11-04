@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.molarity
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Molarity
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("molarityFromAmountOfSubstanceAndVolume")
+@JvmName("molarityFromAmountOfSubstanceAndVolumeDefault")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     VolumeUnit : Volume,
     MolarityUnit : Molarity
-    > MolarityUnit.molarity(
+> MolarityUnit.molarity(
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
-) = byDividing(amountOfSubstance, volume)
+) = molarity(amountOfSubstance, volume, ::DefaultScientificValue)
+
+@JvmName("molarityFromAmountOfSubstanceAndVolume")
+fun <
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    VolumeUnit : Volume,
+    MolarityUnit : Molarity,
+    Value : ScientificValue<MeasurementType.Molarity, MolarityUnit>
+> MolarityUnit.molarity(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
+    factory: (Decimal, MolarityUnit) -> Value
+) = byDividing(amountOfSubstance, volume, factory)

@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.surfaceTension
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.SurfaceTension
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("surfaceTensionFromForceAndLength")
+@JvmName("surfaceTensionFromForceAndLengthDefault")
 fun <
     ForceUnit : Force,
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension
-    >
-    SurfaceTensionUnit.surfaceTension(
+> SurfaceTensionUnit.surfaceTension(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>
-) = byDividing(force, length)
+) = surfaceTension(force, length, ::DefaultScientificValue)
+
+@JvmName("surfaceTensionFromForceAndLength")
+fun <
+    ForceUnit : Force,
+    LengthUnit : Length,
+    SurfaceTensionUnit : SurfaceTension,
+    Value : ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+> SurfaceTensionUnit.surfaceTension(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    length: ScientificValue<MeasurementType.Length, LengthUnit>,
+    factory: (Decimal, SurfaceTensionUnit) -> Value
+) = byDividing(force, length, factory)

@@ -17,6 +17,7 @@
 
 package com.splendo.kaluga.scientific.converter.radioactivity
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.AmountOfSubstance
@@ -27,13 +28,27 @@ import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
+import kotlin.jvm.JvmName
 import kotlin.math.ln
 
+@JvmName("radioactivityFromSubstanceAndHalfLifeDefault")
 fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
-    > RadioactivityUnit.radioactivity(
+> RadioactivityUnit.radioactivity(
     substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     halfLife: ScientificValue<MeasurementType.Time, TimeUnit>
-) : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit> = byDividing(DefaultScientificValue(substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife)
+) = radioactivity(substance, halfLife, ::DefaultScientificValue)
+
+@JvmName("radioactivityFromSubstanceAndHalfLife")
+fun <
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    TimeUnit : Time,
+    RadioactivityUnit : Radioactivity,
+    Value : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
+> RadioactivityUnit.radioactivity(
+    substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    halfLife: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, RadioactivityUnit) -> Value
+) = byDividing(DefaultScientificValue(substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife, factory)

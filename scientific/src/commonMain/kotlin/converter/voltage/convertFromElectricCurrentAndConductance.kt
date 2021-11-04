@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.ElectricConductance
 import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("voltageFromCurrentAndConductance")
+@JvmName("voltageFromCurrentAndConductanceDefault")
 fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance
-    > VoltageUnit.voltage(
+> VoltageUnit.voltage(
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
-): ScientificValue<MeasurementType.Voltage, VoltageUnit> = byDividing(current, conductance)
+) = voltage(current, conductance, ::DefaultScientificValue)
+
+@JvmName("voltageFromCurrentAndConductance")
+fun <
+    CurrentUnit : ElectricCurrent,
+    VoltageUnit : Voltage,
+    ConductanceUnit : ElectricConductance,
+    Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
+> VoltageUnit.voltage(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
+    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
+    factory: (Decimal, VoltageUnit) -> Value
+) = byDividing(current, conductance, factory)

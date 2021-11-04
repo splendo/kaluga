@@ -17,19 +17,32 @@
 
 package com.splendo.kaluga.scientific.converter.angularVelocity
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Angle
 import com.splendo.kaluga.scientific.AngularVelocity
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("angularVelocityFromAngleAndTime")
+@JvmName("angularVelocityFromAngleAndTimeDefault")
 fun <
     AngleUnit : Angle,
     TimeUnit : Time
-    > AngularVelocity.velocity(
+> AngularVelocity.velocity(
     angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
-) = byDividing(angle, time)
+) = velocity(angle, time, ::DefaultScientificValue)
+
+@JvmName("angularVelocityFromAngleAndTime")
+fun <
+    AngleUnit : Angle,
+    TimeUnit : Time,
+    Value : ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>
+> AngularVelocity.velocity(
+    angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
+    time: ScientificValue<MeasurementType.Time, TimeUnit>,
+    factory: (Decimal, AngularVelocity) -> Value
+) = byDividing(angle, time, factory)

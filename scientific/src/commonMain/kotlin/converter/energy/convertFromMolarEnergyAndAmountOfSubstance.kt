@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.AmountOfSubstance
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromMolarEnergyAndAmountOfSubstance")
+@JvmName("energyFromMolarEnergyAndAmountOfSubstanceDefault")
 fun <
     EnergyUnit : Energy,
     AmountOfSubstanceUnit : AmountOfSubstance,
     MolarEnergyUnit : MolarEnergy
-    > EnergyUnit.energy(
+> EnergyUnit.energy(
     molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
-) = byMultiplying(molarEnergy, amountOfSubstance)
+) = energy(molarEnergy, amountOfSubstance, ::DefaultScientificValue)
+
+@JvmName("energyFromMolarEnergyAndAmountOfSubstance")
+fun <
+    EnergyUnit : Energy,
+    AmountOfSubstanceUnit : AmountOfSubstance,
+    MolarEnergyUnit : MolarEnergy,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(molarEnergy, amountOfSubstance, factory)

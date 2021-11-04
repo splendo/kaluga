@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.pressure
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Pressure
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("pressureFromForceAndArea")
+@JvmName("pressureFromForceAndAreaDefault")
 fun <
     ForceUnit : Force,
     AreaUnit : Area,
     PressureUnit : Pressure
-    > PressureUnit.pressure(
+> PressureUnit.pressure(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byDividing(force, area)
+) = pressure(force, area, ::DefaultScientificValue)
+
+@JvmName("pressureFromForceAndArea")
+fun <
+    ForceUnit : Force,
+    AreaUnit : Area,
+    PressureUnit : Pressure,
+    Value : ScientificValue<MeasurementType.Pressure, PressureUnit>
+> PressureUnit.pressure(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, PressureUnit) -> Value
+) = byDividing(force, area, factory)

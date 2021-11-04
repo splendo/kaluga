@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.dynamicViscosity
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.Momentum
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("dynamicViscosityFromMomentumAndArea")
+@JvmName("dynamicViscosityFromMomentumAndAreaDefault")
 fun <
     MomentumUnit : Momentum,
     AreaUnit : Area,
     DynamicViscosityUnit : DynamicViscosity
-    > DynamicViscosityUnit.dynamicViscosity(
+> DynamicViscosityUnit.dynamicViscosity(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byDividing(momentum, area)
+) = dynamicViscosity(momentum, area, ::DefaultScientificValue)
+
+@JvmName("dynamicViscosityFromMomentumAndArea")
+fun <
+    MomentumUnit : Momentum,
+    AreaUnit : Area,
+    DynamicViscosityUnit : DynamicViscosity,
+    Value : ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>
+> DynamicViscosityUnit.dynamicViscosity(
+    momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, DynamicViscosityUnit) -> Value
+) = byDividing(momentum, area, factory)

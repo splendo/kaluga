@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Area
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,13 +27,24 @@ import com.splendo.kaluga.scientific.SurfaceTension
 import com.splendo.kaluga.scientific.byMultiplying
 import kotlin.jvm.JvmName
 
-@JvmName("energyFromSurfaceTensionAndArea")
+@JvmName("energyFromSurfaceTensionAndAreaDefault")
 fun <
     EnergyUnit : Energy,
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension
-    >
-    EnergyUnit.energy(
+> EnergyUnit.energy(
     surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
-) = byMultiplying(surfaceTension, area)
+) = energy(surfaceTension, area, ::DefaultScientificValue)
+
+@JvmName("energyFromSurfaceTensionAndArea")
+fun <
+    EnergyUnit : Energy,
+    AreaUnit : Area,
+    SurfaceTensionUnit : SurfaceTension,
+    Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
+> EnergyUnit.energy(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>,
+    area: ScientificValue<MeasurementType.Area, AreaUnit>,
+    factory: (Decimal, EnergyUnit) -> Value
+) = byMultiplying(surfaceTension, area, factory)

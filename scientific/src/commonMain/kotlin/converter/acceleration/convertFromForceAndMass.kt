@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Acceleration
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
@@ -25,12 +27,24 @@ import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("accelerationFromForceAndMass")
+@JvmName("accelerationFromForceAndMassDefault")
 fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
     ForceUnit : Force
-    > AccelerationUnit.acceleration(
+> AccelerationUnit.acceleration(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     mass: ScientificValue<MeasurementType.Weight, MassUnit>
-) : ScientificValue<MeasurementType.Acceleration, AccelerationUnit> = byDividing(force, mass)
+) = acceleration(force, mass, ::DefaultScientificValue)
+
+@JvmName("accelerationFromForceAndMass")
+fun <
+    MassUnit : Weight,
+    AccelerationUnit : Acceleration,
+    ForceUnit : Force,
+    Value : ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
+> AccelerationUnit.acceleration(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>,
+    mass: ScientificValue<MeasurementType.Weight, MassUnit>,
+    factory: (Decimal, AccelerationUnit) -> Value
+) = byDividing(force, mass, factory)

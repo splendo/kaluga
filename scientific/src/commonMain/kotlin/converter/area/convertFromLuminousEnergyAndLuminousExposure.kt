@@ -17,7 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
+import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.Area
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.LuminousEnergy
 import com.splendo.kaluga.scientific.LuminousExposure
 import com.splendo.kaluga.scientific.MeasurementType
@@ -25,11 +27,22 @@ import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("areaFromLuminousEnergyAndExposure")
+@JvmName("areaFromLuminousEnergyAndExposureDefault")
 fun <
     LuminousExposureUnit : LuminousExposure,
     AreaUnit : Area
-    > AreaUnit.area(
+> AreaUnit.area(
+    luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>
+) = area(luminousEnergy, luminousExposure, ::DefaultScientificValue)
+
+@JvmName("areaFromLuminousEnergyAndExposure")
+fun <
+    LuminousExposureUnit : LuminousExposure,
+    AreaUnit : Area,
+    Value : ScientificValue<MeasurementType.Area, AreaUnit>
+> AreaUnit.area(
     luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
-) = byDividing(luminousEnergy, luminousExposure)
+    factory: (Decimal, AreaUnit) -> Value
+) = byDividing(luminousEnergy, luminousExposure, factory)

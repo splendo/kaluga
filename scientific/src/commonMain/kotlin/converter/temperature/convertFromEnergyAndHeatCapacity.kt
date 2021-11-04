@@ -17,6 +17,8 @@
 
 package com.splendo.kaluga.scientific.converter.temperature
 
+import com.splendo.kaluga.base.utils.Decimal
+import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.HeatCapacity
 import com.splendo.kaluga.scientific.Kelvin
@@ -26,12 +28,24 @@ import com.splendo.kaluga.scientific.Temperature
 import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
-@JvmName("temperatureFromEnergyAndHeatCapacity")
+@JvmName("temperatureFromEnergyAndHeatCapacityDefault")
 fun <
     EnergyUnit : Energy,
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity
-    > TemperatureUnit.temperature(
+> TemperatureUnit.temperature(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>
-) = deltaValue(Kelvin.byDividing(energy, heatCapacity))
+) = temperature(energy, heatCapacity, ::DefaultScientificValue)
+
+@JvmName("temperatureFromEnergyAndHeatCapacity")
+fun <
+    EnergyUnit : Energy,
+    TemperatureUnit : Temperature,
+    HeatCapacityUnit : HeatCapacity,
+    Value : ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+> TemperatureUnit.temperature(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
+    heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
+    factory: (Decimal, TemperatureUnit) -> Value
+) = deltaValue(Kelvin.byDividing(energy, heatCapacity, ::DefaultScientificValue), factory)
