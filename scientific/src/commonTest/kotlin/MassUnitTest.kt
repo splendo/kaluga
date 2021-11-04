@@ -22,37 +22,7 @@ import kotlin.test.assertEquals
 
 class MassUnitTest {
 
-    /*
-    private val unitTranslationErrorTolerance = 0.000001
-
-    @Test
-    fun weighConversionTest() {
-        assertScientificUnit(1000, Kilogram, Slug, 0.068521765561961, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Microgram, Kilogram, 1e-9)
-        assertScientificUnit(1000, Milligram, Kilogram, 1e-6)
-        assertScientificUnit(1000, Gram, Kilogram, 0.001)
-        assertScientificUnit(1000, Tonne, Kilogram, 1000.0)
-        assertScientificUnit(1000, Dram, Kilogram, 0.0017718451953125, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Grain, Kilogram, 0.00006479891, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Ounce, Kilogram, 0.028349523125, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Pound, Kilogram, 0.45359237, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Stone, Kilogram, 6.35029318, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, UsTon, Kilogram, 907.18474, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, ImperialTon, Kilogram, 1016.0469088, unitTranslationErrorTolerance)
-
-        assertScientificUnit(1000, Kilogram, Microgram, 1.0E9)
-        assertScientificUnit(1000, Kilogram, Milligram, 1000000.0)
-        assertScientificUnit(1000, Kilogram, Gram, 1000.0)
-        assertScientificUnit(1000, Kilogram, Tonne, 0.001)
-        assertScientificUnit(1000, Kilogram, Dram, 564.3833911932866, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Grain, 15432.358352941432, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Ounce, 35.27396194958041, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Pound, 2.204622621848776, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, Stone, 0.1574730444177697, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, UsTon, 0.001102311310924, unitTranslationErrorTolerance)
-        assertScientificUnit(1000, Kilogram, ImperialTon, 0.000984206527611, unitTranslationErrorTolerance)
-    }
-    */
+    // ##### Same mass unit table conversions #####
 
     @Test
     fun kilogramConversionTest() {
@@ -63,8 +33,8 @@ class MassUnitTest {
         assertEquals(10_000.0, Kilogram.convert(1.0, Decigram))
         assertEquals(100.0, Kilogram.convert(1.0, Decagram))
         assertEquals(10.0, Kilogram.convert(1.0, Hectogram))
-        assertEquals(0.001, Kilogram.convert(1.0, Tonne))
         assertEquals(0.001, Kilogram.convert(1.0, Megagram))
+        assertEquals(0.001, Kilogram.convert(1.0, Tonne))
         assertEquals(1e-6, Kilogram.convert(1.0, Gigagram))
     }
 
@@ -89,5 +59,102 @@ class MassUnitTest {
         assertEquals(16.0, Pound.convert(1.0, Ounce))
         assertEquals(0.07142857142857142, Pound.convert(1.0, Stone))
         assertEquals(0.031080950171567253, Pound.convert(1.0, Slug))
+
+        // uk ton
+        assertEquals(4.464285714285714e-4, Pound.convert(1.0, ImperialTon))
+        // us ton
+        assertEquals(5.0e-4, Pound.convert(1.0, UsTon))
+    }
+
+    // ##### Mixed mass unit table conversions #####
+
+    @Test
+    fun kilogramToDaltonConversionTest() {
+        assertEquals(6.02214076e+35, Kilogram.convert(1.0, Nanodalton))
+        assertEquals(6.02214076e+32, Kilogram.convert(1.0, Microdalton))
+        assertEquals(6.02214076e+29, Kilogram.convert(1.0, Millidalton))
+        assertEquals(6.02214076e+28, Kilogram.convert(1.0, Centidalton))
+        assertEquals(6.02214076e+27, Kilogram.convert(1.0, Decidalton))
+        assertEquals(6.02214076e+26, Kilogram.convert(1.0, Dalton))
+        assertEquals(6.02214076e+25, Kilogram.convert(1.0, Decadalton))
+        assertEquals(6.02214076e+24, Kilogram.convert(1.0, HectoDalton))
+        assertEquals(6.02214076e+23, Kilogram.convert(1.0, Kilodalton))
+        assertEquals(6.02214076e+20, Kilogram.convert(1.0, Megadalton))
+        assertEquals(6.02214076e+17, Kilogram.convert(1.0, Gigadalton))
+    }
+
+    @Test
+    fun kilogramToPoundConversionTest() {
+        assertEquals(15_432.35835294143, Kilogram.convert(1.0, Grain))
+        assertEquals(564.3833911932866, Kilogram.convert(1.0, Dram))
+        assertEquals(35.27396194958041, Kilogram.convert(1.0, Ounce))
+        assertEquals(2.2046226218487757, Kilogram.convert(1.0, Pound))
+        assertEquals(0.15747304441776971, Kilogram.convert(1.0, Stone))
+        assertEquals(0.06852176585679176, Kilogram.convert(1.0, Slug))
+
+        // uk ton
+        assertEquals(9.842065276110606e-4, Kilogram.convert(1.0, ImperialTon))
+        // us ton
+        assertEquals(0.001102311310924388, Kilogram.convert(1.0, UsTon))
+    }
+
+    @Test
+    fun daltonToKilogramConversionTest() {
+        assertEquals(1.6605390671738466e-15, Dalton.convert(1.0, Nanogram))
+        assertEquals(1.6605390671738466e-18, Dalton.convert(1.0, Microgram))
+        assertEquals(1.6605390671738467e-21, Dalton.convert(1.0, Milligram))
+        assertEquals(1.6605390671738467e-22, Dalton.convert(1.0, Centigram))
+        assertEquals(1.6605390671738467e-23, Dalton.convert(1.0, Decigram))
+        assertEquals(1.6605390671738467e-25, Dalton.convert(1.0, Decagram))
+        assertEquals(1.6605390671738468e-26, Dalton.convert(1.0, Hectogram))
+        assertEquals(1.6605390671738468e-27, Dalton.convert(1.0, Kilogram))
+        assertEquals(1.6605390671738466e-30, Dalton.convert(1.0, Megagram))
+        assertEquals(1.6605390671738466e-30, Dalton.convert(1.0, Tonne))
+        assertEquals(1.6605390671738466e-33, Dalton.convert(1.0, Gigagram))
+    }
+
+    @Test
+    fun daltonToPoundConversionTest() {
+        assertEquals(2.5626033943685885e-23, Dalton.convert(1.0, Grain))
+        assertEquals(9.371806699405122e-25, Dalton.convert(1.0, Dram))
+        assertEquals(5.857379187128202e-26, Dalton.convert(1.0, Ounce))
+        assertEquals(3.660861991955126e-27, Dalton.convert(1.0, Pound))
+        assertEquals(2.6149014228250904e-28, Dalton.convert(1.0, Stone))
+        assertEquals(1.1378306915694172e-28, Dalton.convert(1.0, Slug))
+
+        // uk ton
+        assertEquals(1.6343133892656814e-30, Dalton.convert(1.0, ImperialTon))
+        // us ton
+        assertEquals(1.830430995977563e-30, Dalton.convert(1.0, UsTon))
+    }
+
+    @Test
+    fun poundToKilogramConversionTest() {
+        assertEquals(4.5359237e+11, Pound.convert(1.0, Nanogram))
+        assertEquals(4.5359237e+8, Pound.convert(1.0, Microgram))
+        assertEquals(453_592.37, Pound.convert(1.0, Milligram))
+        assertEquals(45_359.237, Pound.convert(1.0, Centigram))
+        assertEquals(4_535.9237, Pound.convert(1.0, Decigram))
+        assertEquals(45.359237, Pound.convert(1.0, Decagram))
+        assertEquals(4.5359237, Pound.convert(1.0, Hectogram))
+        assertEquals(0.45359237, Pound.convert(1.0, Kilogram))
+        assertEquals(4.5359237e-4, Pound.convert(1.0, Megagram))
+        assertEquals(4.5359237e-4, Pound.convert(1.0, Tonne))
+        assertEquals(4.5359237e-7, Pound.convert(1.0, Gigagram))
+    }
+
+    @Test
+    fun poundToDaltonConversionTest() {
+        assertEquals(2.731597099802001e+35, Pound.convert(1.0, Nanodalton))
+        assertEquals(2.731597099802001e+32, Pound.convert(1.0, Microdalton))
+        assertEquals(2.731597099802001e+29, Pound.convert(1.0, Millidalton))
+        assertEquals(2.7315970998020012e+28, Pound.convert(1.0, Centidalton))
+        assertEquals(2.7315970998020014e+27, Pound.convert(1.0, Decidalton))
+        assertEquals(2.7315970998020013e+26, Pound.convert(1.0, Dalton))
+        assertEquals(2.7315970998020012e+25, Pound.convert(1.0, Decadalton))
+        assertEquals(2.731597099802001e+24, Pound.convert(1.0, HectoDalton))
+        assertEquals(2.7315970998020013e+23, Pound.convert(1.0, Kilodalton))
+        assertEquals(2.731597099802001e+20, Pound.convert(1.0, Megadalton))
+        assertEquals(2.73159709980200128e+17, Pound.convert(1.0, Gigadalton))
     }
 }
