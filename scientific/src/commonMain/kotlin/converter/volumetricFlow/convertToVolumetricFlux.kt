@@ -35,12 +35,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.VolumetricFlow, MetricVolumetricFlow>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit per area.unit).volumetricFlux(this, area)
+
 @JvmName("imperialVolumetricFlowDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, ImperialVolumetricFlow>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit per area.unit).volumetricFlux(this, area)
+
 @JvmName("ukImperialVolumetricFlowDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, UKImperialVolumetricFlow>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit per area.unit).volumetricFlux(this, area)
+
 @JvmName("usCustomaryVolumetricFlowDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit per area.unit).volumetricFlux(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.VolumetricFlow, USCustomaryVolumetricFlow>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit per area.unit).volumetricFlux(this, area)
+
 @JvmName("volumetricFlowDivArea")
-infix operator fun <VolumetricFlowUnit : VolumetricFlow, AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (CubicMeter per Second per SquareMeter).volumetricFlux(this, area)
+infix operator fun <VolumetricFlowUnit : VolumetricFlow, AreaUnit : Area> ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (CubicMeter per Second per SquareMeter).volumetricFlux(this, area)

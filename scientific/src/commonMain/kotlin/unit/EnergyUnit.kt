@@ -80,7 +80,7 @@ val MetricEnergyUnits: Set<MetricEnergy> get() = setOf(
     Kiloelectronvolt,
     Megaelectronvolt,
     Gigaelectronvolt
-) + MetricAndImperialEnergyUnits.map {it.metric }.toSet()
+) + MetricAndImperialEnergyUnits.map { it.metric }.toSet()
 
 val ImperialEnergyUnits: Set<ImperialEnergy> get() = setOf(
     FootPoundal,
@@ -295,7 +295,7 @@ object HorsepowerHour : ImperialEnergy() {
     override fun toSIUnit(value: Decimal): Decimal = Horsepower.toSIUnit(WattHour.toSIUnit(value))
 }
 @Serializable
-object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie.IT)  {
+object BritishThermalUnit : ImperialEnergy(), SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> by BritishThermalUnitBase(Calorie.IT) {
 
     internal class BritishThermalUnitBase(private val calorieUnit: CalorieUnit, symbolPostfix: String = "") : SystemScientificUnit<MeasurementSystem.Imperial, MeasurementType.Energy> {
         override val symbol: String = "Btu$symbolPostfix"

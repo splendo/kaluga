@@ -36,7 +36,7 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
-> RadioactivityUnit.radioactivity(
+    > RadioactivityUnit.radioactivity(
     substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     halfLife: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = radioactivity(substance, halfLife, ::DefaultScientificValue)
@@ -47,8 +47,15 @@ fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
     Value : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
-> RadioactivityUnit.radioactivity(
+    > RadioactivityUnit.radioactivity(
     substance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     halfLife: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, RadioactivityUnit) -> Value
-) = byDividing(DefaultScientificValue(substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(), substance.unit), halfLife, factory)
+) = byDividing(
+    DefaultScientificValue(
+        substance.decimalValue * AvogadroConstant * ln(2.0).toDecimal(),
+        substance.unit
+    ),
+    halfLife,
+    factory
+)

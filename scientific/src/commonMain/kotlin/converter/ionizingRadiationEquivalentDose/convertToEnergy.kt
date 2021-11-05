@@ -30,8 +30,17 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("roentgenEquivalentManTimesWeight")
-infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Erg.energy(this, weight)
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = Erg.energy(this, weight)
+
 @JvmName("roentgenEquivalentManMultipleTimesWeight")
-infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> = Erg.energy(this, weight)
+infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
+    Erg.energy(this, weight)
+
 @JvmName("equivalentDoseTimesWeight")
-infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Joule.energy(this, weight)
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = Joule.energy(this, weight)

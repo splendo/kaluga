@@ -32,18 +32,38 @@ import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 import kotlin.jvm.JvmName
 
 @JvmName("powerTimesMetricAndUKImperialThermalResistance")
-infix operator fun <PowerUnit : Power> ScientificValue<MeasurementType.Power, PowerUnit>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricAndUKImperialThermalResistance>) = thermalResistance * this
+infix operator fun <PowerUnit : Power> ScientificValue<MeasurementType.Power, PowerUnit>.times(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricAndUKImperialThermalResistance>
+) = thermalResistance * this
+
 @JvmName("metricAndImperialPowerTimesMetricThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>
+) = thermalResistance * this
+
 @JvmName("metricPowerTimesMetricThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, MetricPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, MetricPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, MetricThermalResistance>) =
+    thermalResistance * this
+
 @JvmName("metricAndImperialPowerTimesUKImperialThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>
+) = thermalResistance * this
+
 @JvmName("imperialPowerTimesUKImperialThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, ImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, ImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, UKImperialThermalResistance>) =
+    thermalResistance * this
+
 @JvmName("metricAndImperialPowerTimesUSCustomaryThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, MetricAndImperialPower>.times(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>
+) = thermalResistance * this
+
 @JvmName("imperialPowerTimesUSCustomaryThermalResistance")
-infix operator fun ScientificValue<MeasurementType.Power, ImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>) = thermalResistance * this
+infix operator fun ScientificValue<MeasurementType.Power, ImperialPower>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, USCustomaryThermalResistance>) =
+    thermalResistance * this
+
 @JvmName("powerTimesThermalResistance")
-infix operator fun <ThermalResistanceUnit : ThermalResistance, PowerUnit : Power> ScientificValue<MeasurementType.Power, PowerUnit>.times(thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>) = thermalResistance * this
+infix operator fun <ThermalResistanceUnit : ThermalResistance, PowerUnit : Power> ScientificValue<MeasurementType.Power, PowerUnit>.times(
+    thermalResistance: ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>
+) = thermalResistance * this

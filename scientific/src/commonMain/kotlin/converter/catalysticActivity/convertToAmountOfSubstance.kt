@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("catalysticActivityTimesTime")
-infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Mole.amountOfSubstance(this, time)
+infix operator fun <TimeUnit : Time, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Mole.amountOfSubstance(this, time)

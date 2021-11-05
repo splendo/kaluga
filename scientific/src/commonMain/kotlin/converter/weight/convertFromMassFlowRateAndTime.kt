@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate
-> WeightUnit.mass(
+    > WeightUnit.mass(
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = mass(massFlowRate, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate,
     Value : ScientificValue<MeasurementType.Weight, WeightUnit>
-> WeightUnit.mass(
+    > WeightUnit.mass(
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, WeightUnit) -> Value

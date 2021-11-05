@@ -33,7 +33,7 @@ fun <
     EnergyUnit : Energy,
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity
-> TemperatureUnit.temperature(
+    > TemperatureUnit.temperature(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>
 ) = temperature(energy, heatCapacity, ::DefaultScientificValue)
@@ -44,7 +44,7 @@ fun <
     TemperatureUnit : Temperature,
     HeatCapacityUnit : HeatCapacity,
     Value : ScientificValue<MeasurementType.Temperature, TemperatureUnit>
-> TemperatureUnit.temperature(
+    > TemperatureUnit.temperature(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
     factory: (Decimal, TemperatureUnit) -> Value

@@ -30,7 +30,7 @@ import kotlin.jvm.JvmName
 @JvmName("angularAccelerationFromAngularVelocityAndTimeDefault")
 fun <
     TimeUnit : Time
-> AngularAcceleration.acceleration(
+    > AngularAcceleration.acceleration(
     velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = acceleration(velocity, time, ::DefaultScientificValue)
@@ -39,7 +39,7 @@ fun <
 fun <
     TimeUnit : Time,
     Value : ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>
-> AngularAcceleration.acceleration(
+    > AngularAcceleration.acceleration(
     velocity: ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, AngularAcceleration) -> Value

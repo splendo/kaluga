@@ -32,7 +32,7 @@ fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance
-> ChargeUnit.charge(
+    > ChargeUnit.charge(
     capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ) = charge(capacitance, voltage, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VoltageUnit : Voltage,
     CapacitanceUnit : ElectricCapacitance,
     Value : ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
-> ChargeUnit.charge(
+    > ChargeUnit.charge(
     capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     factory: (Decimal, ChargeUnit) -> Value

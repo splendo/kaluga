@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     VolumeUnit : Volume,
     DensityUnit : Density
-> DensityUnit.density(
+    > DensityUnit.density(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
 ) = density(weight, volume, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VolumeUnit : Volume,
     DensityUnit : Density,
     Value : ScientificValue<MeasurementType.Density, DensityUnit>
-> DensityUnit.density(
+    > DensityUnit.density(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     factory: (Decimal, DensityUnit) -> Value

@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("lengthDivSpeed")
-infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<MeasurementType.Length, LengthUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = speed.unit.per.time(this, speed)
+infix operator fun <LengthUnit : Length, SpeedUnit : Speed> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+) = speed.unit.per.time(this, speed)

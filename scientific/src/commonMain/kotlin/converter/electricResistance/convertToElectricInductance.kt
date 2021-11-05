@@ -29,11 +29,21 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abohmDivFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, Abohm>.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Abhenry.inductance(this, frequency)
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, Abohm>.div(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Abhenry.inductance(this, frequency)
+
 @JvmName("resistanceDivFrequency")
-infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Henry.inductance(this, frequency)
+infix operator fun <ResistanceUnit : ElectricResistance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.div(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Henry.inductance(this, frequency)
 
 @JvmName("abohmTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abhenry.inductance(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Abhenry.inductance(this, time)
+
 @JvmName("resistanceTimesTime")
-infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Henry.inductance(this, time)
+infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Henry.inductance(this, time)

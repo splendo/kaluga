@@ -32,7 +32,7 @@ fun <
     VoltageUnit : Voltage,
     ElectricCurrentUnit : ElectricCurrent,
     PowerUnit : Power
-> PowerUnit.power(
+    > PowerUnit.power(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>
 ) = power(voltage, current, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     ElectricCurrentUnit : ElectricCurrent,
     PowerUnit : Power,
     Value : ScientificValue<MeasurementType.Power, PowerUnit>
-> PowerUnit.power(
+    > PowerUnit.power(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, ElectricCurrentUnit>,
     factory: (Decimal, PowerUnit) -> Value

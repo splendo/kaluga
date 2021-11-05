@@ -32,7 +32,7 @@ fun <
     AreaDensityUnit : AreaDensity,
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity
-> LengthUnit.length(
+    > LengthUnit.length(
     linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
 ) = length(linearMassDensity, areaDensity, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     LengthUnit : Length,
     LinearMassDensityUnit : LinearMassDensity,
     Value : ScientificValue<MeasurementType.Length, LengthUnit>
-> LengthUnit.length(
+    > LengthUnit.length(
     linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
     factory: (Decimal, LengthUnit) -> Value

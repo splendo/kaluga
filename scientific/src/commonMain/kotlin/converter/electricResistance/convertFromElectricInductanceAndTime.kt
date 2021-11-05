@@ -32,7 +32,7 @@ fun <
     ResistanceUnit : ElectricResistance,
     TimeUnit : Time,
     InductanceUnit : ElectricInductance
-> ResistanceUnit.resistance(
+    > ResistanceUnit.resistance(
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = resistance(inductance, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     InductanceUnit : ElectricInductance,
     Value : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
-> ResistanceUnit.resistance(
+    > ResistanceUnit.resistance(
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, ResistanceUnit) -> Value

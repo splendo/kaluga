@@ -32,7 +32,7 @@ fun <
     DensityUnit : Density,
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity
-> DensityUnit.density(
+    > DensityUnit.density(
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>
 ) = density(areaDensity, length, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity,
     Value : ScientificValue<MeasurementType.Density, DensityUnit>
-> DensityUnit.density(
+    > DensityUnit.density(
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     factory: (Decimal, DensityUnit) -> Value

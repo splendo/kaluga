@@ -30,8 +30,14 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abhenryTimesAbampere")
-infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) = Maxwell.flux(this, current)
+infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+    Maxwell.flux(this, current)
+
 @JvmName("abhenryTimesBiot")
-infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) = Maxwell.flux(this, current)
+infix operator fun ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+    Maxwell.flux(this, current)
+
 @JvmName("inductanceTimesCurrent")
-infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Weber.flux(this, current)
+infix operator fun <InductanceUnit : ElectricInductance, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = Weber.flux(this, current)

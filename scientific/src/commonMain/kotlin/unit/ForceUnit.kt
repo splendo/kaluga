@@ -26,7 +26,7 @@ import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
 import kotlinx.serialization.Serializable
 
-val MetricForceUnits: Set<MetricForce> get() = setOf (
+val MetricForceUnits: Set<MetricForce> get() = setOf(
     Newton,
     Nanonewton,
     Micronewton,
@@ -53,7 +53,7 @@ val MetricForceUnits: Set<MetricForce> get() = setOf (
     TonneForce,
     GramForce,
     MilligramForce
-    )
+)
 
 val ImperialForceUnits: Set<ImperialForce> get() = setOf(
     Poundal,
@@ -96,7 +96,6 @@ sealed class UKImperialForce : Force(), UKImperialScientificUnit<MeasurementType
     override val system = MeasurementSystem.UKImperial
     override val type = MeasurementType.Force
 }
-
 
 @Serializable
 object Newton : MetricForce(), MetricBaseUnit<MeasurementSystem.Metric, MeasurementType.Force> {
@@ -223,7 +222,7 @@ object GrainForce : ImperialForce() {
 @Serializable
 object Kip : USCustomaryForce() {
     private const val POUNDS_FORCE_IN_KIP = 1000.0
-    override val symbol: String ="kip"
+    override val symbol: String = "kip"
     override fun fromSIUnit(value: Decimal): Decimal = PoundForce.fromSIUnit(value) / POUNDS_FORCE_IN_KIP.toDecimal()
     override fun toSIUnit(value: Decimal): Decimal = PoundForce.toSIUnit(value * POUNDS_FORCE_IN_KIP.toDecimal())
 }

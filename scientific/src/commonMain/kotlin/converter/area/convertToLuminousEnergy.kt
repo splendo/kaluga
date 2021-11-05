@@ -29,8 +29,16 @@ import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricExposure")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>) = luminousExposure * this
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>
+) = luminousExposure * this
+
 @JvmName("imperialAreaTimesImperialExposure")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>) = luminousExposure * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>
+) = luminousExposure * this
+
 @JvmName("areaTimesExposure")
-infix operator fun <ExposureUnit : LuminousExposure, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>) = luminousExposure * this
+infix operator fun <ExposureUnit : LuminousExposure, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>
+) = luminousExposure * this

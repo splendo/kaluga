@@ -32,12 +32,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumeDivTime")
-infix operator fun <VolumeUnit : MetricVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : MetricVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).volumetricFlow(this, time)
+
 @JvmName("imperialVolumeDivTime")
-infix operator fun <VolumeUnit : ImperialVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : ImperialVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).volumetricFlow(this, time)
+
 @JvmName("ukImperialVolumeDivTime")
-infix operator fun <VolumeUnit : UKImperialVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : UKImperialVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).volumetricFlow(this, time)
+
 @JvmName("usCustomaryVolumeDivTime")
-infix operator fun <VolumeUnit : USCustomaryVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : USCustomaryVolume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).volumetricFlow(this, time)
+
 @JvmName("volumeDivTime")
-infix operator fun <VolumeUnit : Volume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (CubicMeter per Second).volumetricFlow(this, time)
+infix operator fun <VolumeUnit : Volume, TimeUnit : Time> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (CubicMeter per Second).volumetricFlow(this, time)

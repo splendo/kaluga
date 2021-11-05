@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricPressureTimesTime")
-infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).dynamicViscosity(this, time)
+infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).dynamicViscosity(this, time)
+
 @JvmName("imperialPressureTimesTime")
-infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).dynamicViscosity(this, time)
+infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).dynamicViscosity(this, time)
+
 @JvmName("ukImperialPressureTimesTime")
-infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).dynamicViscosity(this, time)
+infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).dynamicViscosity(this, time)
+
 @JvmName("usCustomaryPressureTimesTime")
-infix operator fun <PressureUnit : USCustomaryPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).dynamicViscosity(this, time)
+infix operator fun <PressureUnit : USCustomaryPressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).dynamicViscosity(this, time)
+
 @JvmName("pressureTimesTime")
-infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Pascal x time.unit).dynamicViscosity(this, time)
+infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<MeasurementType.Pressure, PressureUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (Pascal x time.unit).dynamicViscosity(this, time)

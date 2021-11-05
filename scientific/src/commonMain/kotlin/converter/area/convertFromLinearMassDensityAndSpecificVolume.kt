@@ -32,7 +32,7 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     AreaUnit : Area,
     LinearMassDensityUnit : LinearMassDensity
-> AreaUnit.area(
+    > AreaUnit.area(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
     linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>
 ) = area(specificVolume, linearMassDensity, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     LinearMassDensityUnit : LinearMassDensity,
     Value : ScientificValue<MeasurementType.Area, AreaUnit>
-> AreaUnit.area(
+    > AreaUnit.area(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
     linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>,
     factory: (Decimal, AreaUnit) -> Value

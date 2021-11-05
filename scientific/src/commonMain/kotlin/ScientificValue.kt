@@ -74,9 +74,10 @@ fun <
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>,
     TargetValue : ScientificValue<Type, TargetUnit>
-    > ScientificValue<Type, Unit>.convert(target: TargetUnit, factory: (Decimal, TargetUnit) -> TargetValue) : TargetValue {
-    return factory(convertValue(target), target)
-}
+    > ScientificValue<Type, Unit>.convert(
+    target: TargetUnit,
+    factory: (Decimal, TargetUnit) -> TargetValue
+): TargetValue = factory(convertValue(target), target)
 
 fun <
     Type : MeasurementType,
@@ -88,7 +89,7 @@ fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
-    > ScientificValue<Type, Unit>.convertValue(target: TargetUnit) : Decimal {
+    > ScientificValue<Type, Unit>.convertValue(target: TargetUnit): Decimal {
     return unit.convert(decimalValue, target)
 }
 
@@ -308,8 +309,7 @@ internal fun <
     LeftUnit : ScientificUnit<LeftType>,
     RightType : MeasurementType,
     RightUnit : ScientificUnit<RightType>
-    >
-    Unit.byAdding(
+    > Unit.byAdding(
     left: ScientificValue<LeftType, LeftUnit>,
     right: ScientificValue<RightType, RightUnit>,
     factory: (Decimal, Unit) -> ValueType
@@ -323,8 +323,7 @@ internal fun <
     LeftUnit : ScientificUnit<LeftType>,
     RightType : MeasurementType,
     RightUnit : ScientificUnit<RightType>
-    >
-    Unit.bySubtracting(
+    > Unit.bySubtracting(
     left: ScientificValue<LeftType, LeftUnit>,
     right: ScientificValue<RightType, RightUnit>,
     factory: (Decimal, Unit) -> ValueType
@@ -338,8 +337,7 @@ internal fun <
     NominatorUnit : ScientificUnit<NominatorType>,
     DividerType : MeasurementType,
     DividerUnit : ScientificUnit<DividerType>
-    >
-    Unit.byDividing(
+    > Unit.byDividing(
     nominator: ScientificValue<NominatorType, NominatorUnit>,
     divider: ScientificValue<DividerType, DividerUnit>,
     factory: (Decimal, Unit) -> ValueType
@@ -353,8 +351,7 @@ internal fun <
     LeftUnit : ScientificUnit<LeftType>,
     RightType : MeasurementType,
     RightUnit : ScientificUnit<RightType>
-    >
-    Unit.byMultiplying(
+    > Unit.byMultiplying(
     left: ScientificValue<LeftType, LeftUnit>,
     right: ScientificValue<RightType, RightUnit>,
     factory: (Decimal, Unit) -> ValueType
@@ -366,8 +363,7 @@ internal fun <
     Type : MeasurementType,
     Unit : ScientificUnit<Type>,
     ValueType : ScientificValue<Type, Unit>
-    >
-    Unit.byInverting(
+    > Unit.byInverting(
     inverse: ScientificValue<InverseType, InverseUnit>,
     factory: (Decimal, Unit) -> ValueType
 ) = fromSIUnit(1.0.toDecimal() / inverse.unit.toSIUnit(inverse.decimalValue))(this, factory)

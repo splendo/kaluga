@@ -42,13 +42,13 @@ val MetricAndImperialPowerUnits: Set<MetricAndImperialPower> get() = setOf(
 val MetricPowerUnits: Set<MetricPower> get() = MetricAndImperialPowerUnits.map { it.metric }.toSet() + setOf(MetricHorsepower)
 val ImperialPowerUnits: Set<ImperialPower> get() = MetricAndImperialPowerUnits.map { it.imperial }.toSet() +
     setOf(
-    FootPoundForcePerSecond,
-    FootPoundForcePerMinute,
-    Horsepower,
-    BritishThermalUnitPerSecond,
-    BritishThermalUnitPerMinute,
-    BritishThermalUnitPerHour
-)
+        FootPoundForcePerSecond,
+        FootPoundForcePerMinute,
+        Horsepower,
+        BritishThermalUnitPerSecond,
+        BritishThermalUnitPerMinute,
+        BritishThermalUnitPerHour
+    )
 
 val PowerUnits: Set<Power> get() = MetricAndImperialPowerUnits +
     MetricPowerUnits.filter { it !is MetricMetricAndImperialPowerWrapper }.toSet() +

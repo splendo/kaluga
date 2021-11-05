@@ -41,36 +41,78 @@ import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivMetricSurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) = SquareCentimeter.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) =
+    SquareCentimeter.area(this, surfaceTension)
+
 @JvmName("ergMultipleDivMetricSurfaceTension")
-infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = SquareCentimeter.area(this, surfaceTension)
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    SquareCentimeter.area(this, surfaceTension)
+
 @JvmName("metricAndImperialEnergyDivMetricSurfaceTension")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) = SquareMeter.area(this, surfaceTension)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>
+) = SquareMeter.area(this, surfaceTension)
+
 @JvmName("metricEnergyDivMetricSurfaceTension")
-infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) = SquareMeter.area(this, surfaceTension)
+infix operator fun <EnergyUnit : MetricEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>
+) = SquareMeter.area(this, surfaceTension)
+
 @JvmName("inchPoundForceDivImperialSurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("inchPoundForceDivUKImperialSurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("inchPoundForceDivUSCustomarySurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchPoundForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("inchOunceForceDivImperialSurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("inchOunceForceDivUKImperialSurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("inchOunceForceDivUSCustomarySurfaceTension")
-infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) = SquareInch.area(this, surfaceTension)
+infix operator fun ScientificValue<MeasurementType.Energy, InchOunceForce>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) =
+    SquareInch.area(this, surfaceTension)
+
 @JvmName("metricAndImperialEnergyDivImperialSurfaceTension")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("metricAndImperialEnergyDivUKImperialSurfaceTension")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("metricAndImperialEnergyDivUSCustomarySurfaceTension")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("imperialEnergyDivImperialSurfaceTension")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("imperialEnergyDivUKImperialSurfaceTension")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("imperialEnergyDivUSCustomarySurfaceTension")
-infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) = SquareFoot.area(this, surfaceTension)
+infix operator fun <EnergyUnit : ImperialEnergy> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>
+) = SquareFoot.area(this, surfaceTension)
+
 @JvmName("energyDivSurfaceTension")
-infix operator fun <EnergyUnit : Energy, SurfaceTensionUnit : SurfaceTension> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>) = SquareMeter.area(this, surfaceTension)
+infix operator fun <EnergyUnit : Energy, SurfaceTensionUnit : SurfaceTension> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+) = SquareMeter.area(this, surfaceTension)

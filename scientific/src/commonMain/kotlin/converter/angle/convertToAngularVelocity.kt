@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("angleDivTime")
-infix operator fun <AngleUnit : Angle, TimeUnit : Time> ScientificValue<MeasurementType.Angle, AngleUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).velocity(this, time)
+infix operator fun <AngleUnit : Angle, TimeUnit : Time> ScientificValue<MeasurementType.Angle, AngleUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).velocity(this, time)

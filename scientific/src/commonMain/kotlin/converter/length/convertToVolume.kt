@@ -60,40 +60,80 @@ import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.jvm.JvmName
 
 @JvmName("meterTimesSquareMeter")
-infix operator fun ScientificValue<MeasurementType.Length, Meter>.times(area: ScientificValue<MeasurementType.Area, SquareMeter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Meter>.times(area: ScientificValue<MeasurementType.Area, SquareMeter>) =
+    area * this
+
 @JvmName("nanometerTimesSquareNanometer")
-infix operator fun ScientificValue<MeasurementType.Length, Nanometer>.times(area: ScientificValue<MeasurementType.Area, SquareNanometer>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Nanometer>.times(area: ScientificValue<MeasurementType.Area, SquareNanometer>) =
+    area * this
+
 @JvmName("micrometerTimesSquareMicrometer")
-infix operator fun ScientificValue<MeasurementType.Length, Micrometer>.times(area: ScientificValue<MeasurementType.Area, SquareMicrometer>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Micrometer>.times(area: ScientificValue<MeasurementType.Area, SquareMicrometer>) =
+    area * this
+
 @JvmName("millimeterTimesSquareMillimeter")
-infix operator fun ScientificValue<MeasurementType.Length, Millimeter>.times(area: ScientificValue<MeasurementType.Area, SquareMillimeter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Millimeter>.times(area: ScientificValue<MeasurementType.Area, SquareMillimeter>) =
+    area * this
+
 @JvmName("centimeterTimesSquareCentimeter")
-infix operator fun ScientificValue<MeasurementType.Length, Centimeter>.times(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Centimeter>.times(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) =
+    area * this
+
 @JvmName("decimeterTimesSquareDecimeter")
-infix operator fun ScientificValue<MeasurementType.Length, Decimeter>.times(area: ScientificValue<MeasurementType.Area, SquareDecimeter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Decimeter>.times(area: ScientificValue<MeasurementType.Area, SquareDecimeter>) =
+    area * this
+
 @JvmName("decameterTimesSquareDecameter")
-infix operator fun ScientificValue<MeasurementType.Length, Decameter>.times(area: ScientificValue<MeasurementType.Area, SquareDecameter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Decameter>.times(area: ScientificValue<MeasurementType.Area, SquareDecameter>) =
+    area * this
+
 @JvmName("hectometerTimesSquarehectometer")
-infix operator fun ScientificValue<MeasurementType.Length, Hectometer>.times(area: ScientificValue<MeasurementType.Area, SquareHectometer>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Hectometer>.times(area: ScientificValue<MeasurementType.Area, SquareHectometer>) =
+    area * this
+
 @JvmName("kilometerTimesSquareKilometer")
-infix operator fun ScientificValue<MeasurementType.Length, Kilometer>.times(area: ScientificValue<MeasurementType.Area, SquareKilometer>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Kilometer>.times(area: ScientificValue<MeasurementType.Area, SquareKilometer>) =
+    area * this
+
 @JvmName("kilometerTimesSquareMegameter")
-infix operator fun ScientificValue<MeasurementType.Length, Megameter>.times(area: ScientificValue<MeasurementType.Area, SquareMegameter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Megameter>.times(area: ScientificValue<MeasurementType.Area, SquareMegameter>) =
+    area * this
+
 @JvmName("gigameterTimesSquareGigameter")
-infix operator fun ScientificValue<MeasurementType.Length, Gigameter>.times(area: ScientificValue<MeasurementType.Area, SquareGigameter>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Gigameter>.times(area: ScientificValue<MeasurementType.Area, SquareGigameter>) =
+    area * this
+
 @JvmName("metricLengthTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
+infix operator fun <AreaUnit : MetricArea, HeightUnit : MetricLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = area * this
+
 @JvmName("inchTimesSquareInch")
-infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(area: ScientificValue<MeasurementType.Area, SquareInch>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(area: ScientificValue<MeasurementType.Area, SquareInch>) =
+    area * this
+
 @JvmName("footTimesSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Length, Foot>.times(area: ScientificValue<MeasurementType.Area, SquareFoot>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Foot>.times(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    area * this
+
 @JvmName("yardTimesSquareYard")
-infix operator fun ScientificValue<MeasurementType.Length, Yard>.times(area: ScientificValue<MeasurementType.Area, SquareYard>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Yard>.times(area: ScientificValue<MeasurementType.Area, SquareYard>) =
+    area * this
+
 @JvmName("mileTimesSquareMile")
-infix operator fun ScientificValue<MeasurementType.Length, Mile>.times(area: ScientificValue<MeasurementType.Area, SquareMile>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Mile>.times(area: ScientificValue<MeasurementType.Area, SquareMile>) =
+    area * this
+
 @JvmName("footTimesAcre")
-infix operator fun ScientificValue<MeasurementType.Length, Foot>.times(area: ScientificValue<MeasurementType.Area, Acre>) = area * this
+infix operator fun ScientificValue<MeasurementType.Length, Foot>.times(area: ScientificValue<MeasurementType.Area, Acre>) =
+    area * this
+
 @JvmName("imperialLengthTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
+infix operator fun <AreaUnit : ImperialArea, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Length, HeightUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = area * this
+
 @JvmName("lengthTimesArea")
-infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<MeasurementType.Length, HeightUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = area * this
+infix operator fun <AreaUnit : Area, HeightUnit : Length> ScientificValue<MeasurementType.Length, HeightUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = area * this

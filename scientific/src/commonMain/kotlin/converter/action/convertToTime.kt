@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Energy
 import kotlin.jvm.JvmName
 
 @JvmName("actionDivEnergy")
-infix operator fun <ActionUnit : Action, EnergyUnit : Energy> ScientificValue<MeasurementType.Action, ActionUnit>.div(energy: ScientificValue<MeasurementType.Energy, EnergyUnit>) = unit.time.time(this, energy)
+infix operator fun <ActionUnit : Action, EnergyUnit : Energy> ScientificValue<MeasurementType.Action, ActionUnit>.div(
+    energy: ScientificValue<MeasurementType.Energy, EnergyUnit>
+) = unit.time.time(this, energy)

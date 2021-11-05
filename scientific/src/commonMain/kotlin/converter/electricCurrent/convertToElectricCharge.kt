@@ -29,8 +29,16 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abcoulomb.charge(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Abcoulomb.charge(this, time)
+
 @JvmName("biotTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abcoulomb.charge(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Abcoulomb.charge(this, time)
+
 @JvmName("currentTimesTime")
-infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Coulomb.charge(this, time)
+infix operator fun <CurrentUnit : ElectricCurrent, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Coulomb.charge(this, time)

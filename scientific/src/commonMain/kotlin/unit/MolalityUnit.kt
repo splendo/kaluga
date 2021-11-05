@@ -26,15 +26,15 @@ val MetricMolalityUnits: Set<MetricMolality> get() = AmountOfSubstanceUnits.flat
 }.toSet()
 
 val ImperialMolalityUnits: Set<ImperialMolality> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
-    ImperialWeightUnits.map { amountOfSubstance per it  }
+    ImperialWeightUnits.map { amountOfSubstance per it }
 }.toSet()
 
 val UKImperialMolalityUnits: Set<UKImperialMolality> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
-    UKImperialWeightUnits.map { amountOfSubstance per it  }
+    UKImperialWeightUnits.map { amountOfSubstance per it }
 }.toSet()
 
 val USCustomaryMolalityUnits: Set<USCustomaryMolality> get() = AmountOfSubstanceUnits.flatMap { amountOfSubstance ->
-    USCustomaryWeightUnits.map { amountOfSubstance per it  }
+    USCustomaryWeightUnits.map { amountOfSubstance per it }
 }.toSet()
 
 val MolalityUnits: Set<Molality> get() = MetricMolalityUnits +

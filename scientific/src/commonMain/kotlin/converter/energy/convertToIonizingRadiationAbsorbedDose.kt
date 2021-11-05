@@ -31,8 +31,14 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("ergAbsorbedByGram")
-infix fun ScientificValue<MeasurementType.Energy, Erg>.absorbedBy(gram: ScientificValue<MeasurementType.Weight, Gram>) = Rad.absorbedDose(this, gram)
+infix fun ScientificValue<MeasurementType.Energy, Erg>.absorbedBy(gram: ScientificValue<MeasurementType.Weight, Gram>) =
+    Rad.absorbedDose(this, gram)
+
 @JvmName("ergMultipleAbsorbedByGram")
-infix fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.absorbedBy(gram: ScientificValue<MeasurementType.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Rad.absorbedDose(this, gram)
+infix fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.absorbedBy(gram: ScientificValue<MeasurementType.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    Rad.absorbedDose(this, gram)
+
 @JvmName("energyAbsorbedByWeight")
-infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<MeasurementType.Energy, EnergyUnit>.absorbedBy(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Gray.absorbedDose(this, weight)
+infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<MeasurementType.Energy, EnergyUnit>.absorbedBy(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = Gray.absorbedDose(this, weight)

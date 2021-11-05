@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("forceDivYank")
-infix operator fun <ForceUnit : Force, YankUnit : Yank> ScientificValue<MeasurementType.Force, ForceUnit>.div(yank: ScientificValue<MeasurementType.Yank, YankUnit>) = yank.unit.per.time(this, yank)
+infix operator fun <ForceUnit : Force, YankUnit : Yank> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    yank: ScientificValue<MeasurementType.Yank, YankUnit>
+) = yank.unit.per.time(this, yank)

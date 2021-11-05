@@ -32,15 +32,27 @@ import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesAbohm")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) = Abvolt.voltage(this, resistance)
+infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+    Abvolt.voltage(this, resistance)
+
 @JvmName("biotTimesAbohm")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) = Abvolt.voltage(this, resistance)
+infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+    Abvolt.voltage(this, resistance)
+
 @JvmName("currentTimesResistance")
-infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Volt.voltage(this, resistance)
+infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.times(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) = Volt.voltage(this, resistance)
 
 @JvmName("abampereDivAbsiemens")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) = Abvolt.voltage(this, conductance)
+infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Abampere>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) =
+    Abvolt.voltage(this, conductance)
+
 @JvmName("biotDivAbsiemens")
-infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) = Abvolt.voltage(this, conductance)
+infix operator fun ScientificValue<MeasurementType.ElectricCurrent, Biot>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) =
+    Abvolt.voltage(this, conductance)
+
 @JvmName("currentDivConductance")
-infix operator fun <CurrentUnit : ElectricCurrent, ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = Volt.voltage(this, conductance)
+infix operator fun <CurrentUnit : ElectricCurrent, ConductanceUnit : ElectricConductance> ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>.div(
+    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
+) = Volt.voltage(this, conductance)

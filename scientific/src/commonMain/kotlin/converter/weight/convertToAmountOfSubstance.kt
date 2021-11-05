@@ -27,7 +27,11 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("weightTimesMolality")
-infix operator fun <MolalityUnit : Molality, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(molality: ScientificValue<MeasurementType.Molality, MolalityUnit>) = molality * this
+infix operator fun <MolalityUnit : Molality, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    molality: ScientificValue<MeasurementType.Molality, MolalityUnit>
+) = molality * this
 
 @JvmName("weightDivMolarMass")
-infix operator fun <WeightUnit : Weight, MolarMassUnit : MolarMass> ScientificValue<MeasurementType.Weight, WeightUnit>.div(molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>) = molarMass.unit.per.amountOfSubstance(this, molarMass)
+infix operator fun <WeightUnit : Weight, MolarMassUnit : MolarMass> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
+) = molarMass.unit.per.amountOfSubstance(this, molarMass)

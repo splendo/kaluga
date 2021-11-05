@@ -32,7 +32,7 @@ fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
     SpeedUnit : Speed
-> SpeedUnit.speed(
+    > SpeedUnit.speed(
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = speed(acceleration, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     SpeedUnit : Speed,
     Value : ScientificValue<MeasurementType.Speed, SpeedUnit>
-> SpeedUnit.speed(
+    > SpeedUnit.speed(
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, SpeedUnit) -> Value

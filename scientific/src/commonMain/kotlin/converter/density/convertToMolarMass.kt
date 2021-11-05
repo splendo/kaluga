@@ -37,32 +37,63 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensityDivMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, MetricDensity>.div(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, MetricDensity>.div(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+
 @JvmName("imperialDensityDivMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, ImperialDensity>.div(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, ImperialDensity>.div(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+
 @JvmName("ukImperialDensityDivMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, UKImperialDensity>.div(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, UKImperialDensity>.div(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+
 @JvmName("usCustomaryDensityDivMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, USCustomaryDensity>.div(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, USCustomaryDensity>.div(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = (unit.weight per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+
 @JvmName("densityDivMolarity")
-infix operator fun <DensityUnit : Density, MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, DensityUnit>.div(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = (Kilogram per molarity.unit.amountOfSubstance).molarMass(this, molarity)
+infix operator fun <DensityUnit : Density, MolarityUnit : Molarity> ScientificValue<MeasurementType.Density, DensityUnit>.div(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = (Kilogram per molarity.unit.amountOfSubstance).molarMass(this, molarity)
 
 @JvmName("metricDensityTimesMetricMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, MetricDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, MetricMolarVolume>) = molarVolume * this
-@JvmName("imperialDensityTimesImperialMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) = molarVolume * this
-@JvmName("imperialDensityTimesUKImperialMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>) = molarVolume * this
-@JvmName("imperialDensityTimesUSCustomaryMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>) = molarVolume * this
-@JvmName("ukImperialDensityTimesImperialMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, UKImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) = molarVolume * this
-@JvmName("ukImperialDensityTimesUKImperialMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, UKImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>) = molarVolume * this
-@JvmName("usCustomaryDensityTimesImperialMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) = molarVolume * this
-@JvmName("usCustomaryDensityTimesUSCustomaryMolarVolume")
-infix operator fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>) = molarVolume * this
-@JvmName("densityTimesMolarVolume")
-infix operator fun <DensityUnit : Density, MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.Density, DensityUnit>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = molarVolume * this
+infix operator fun ScientificValue<MeasurementType.Density, MetricDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, MetricMolarVolume>) =
+    molarVolume * this
 
+@JvmName("imperialDensityTimesImperialMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) =
+    molarVolume * this
+
+@JvmName("imperialDensityTimesUKImperialMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>) =
+    molarVolume * this
+
+@JvmName("imperialDensityTimesUSCustomaryMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, ImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>) =
+    molarVolume * this
+
+@JvmName("ukImperialDensityTimesImperialMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, UKImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) =
+    molarVolume * this
+
+@JvmName("ukImperialDensityTimesUKImperialMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, UKImperialDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, UKImperialMolarVolume>) =
+    molarVolume * this
+
+@JvmName("usCustomaryDensityTimesImperialMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, ImperialMolarVolume>) =
+    molarVolume * this
+
+@JvmName("usCustomaryDensityTimesUSCustomaryMolarVolume")
+infix operator fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.times(molarVolume: ScientificValue<MeasurementType.MolarVolume, USCustomaryMolarVolume>) =
+    molarVolume * this
+
+@JvmName("densityTimesMolarVolume")
+infix operator fun <DensityUnit : Density, MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.Density, DensityUnit>.times(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = molarVolume * this

@@ -32,7 +32,7 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension
-> LengthUnit.length(
+    > LengthUnit.length(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
 ) = length(force, surfaceTension, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     LengthUnit : Length,
     SurfaceTensionUnit : SurfaceTension,
     Value : ScientificValue<MeasurementType.Length, LengthUnit>
-> LengthUnit.length(
+    > LengthUnit.length(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>,
     factory: (Decimal, LengthUnit) -> Value

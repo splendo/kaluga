@@ -34,12 +34,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricLength")
-infix operator fun <WeightUnit : MetricWeight, LengthUnit : MetricLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).linearMassDensity(this, length)
+infix operator fun <WeightUnit : MetricWeight, LengthUnit : MetricLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).linearMassDensity(this, length)
+
 @JvmName("imperialWeightDivImperialLength")
-infix operator fun <WeightUnit : ImperialWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).linearMassDensity(this, length)
+infix operator fun <WeightUnit : ImperialWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).linearMassDensity(this, length)
+
 @JvmName("ukImperialWeightDivImperialLength")
-infix operator fun <WeightUnit : UKImperialWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).linearMassDensity(this, length)
+infix operator fun <WeightUnit : UKImperialWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).linearMassDensity(this, length)
+
 @JvmName("usCustomaryWeightDivImperialLength")
-infix operator fun <WeightUnit : USCustomaryWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).linearMassDensity(this, length)
+infix operator fun <WeightUnit : USCustomaryWeight, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).linearMassDensity(this, length)
+
 @JvmName("weightDivLength")
-infix operator fun <WeightUnit : Weight, LengthUnit : Length> ScientificValue<MeasurementType.Weight, WeightUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (Kilogram per Meter).linearMassDensity(this, length)
+infix operator fun <WeightUnit : Weight, LengthUnit : Length> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (Kilogram per Meter).linearMassDensity(this, length)

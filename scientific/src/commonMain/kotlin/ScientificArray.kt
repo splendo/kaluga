@@ -182,16 +182,15 @@ fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>,
     NumberType : Number
-    >ScientificArray<NumberType, Type, UnitType>.split(
-) = split(unit, ::DefaultScientificValue)
+    > ScientificArray<NumberType, Type, UnitType>.split() = split(unit, ::DefaultScientificValue)
 
 fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     TargetUnitType : ScientificUnit<Type>
-    >ScientificArray<NumberType, Type, UnitType>.split(
-    targetUnit : TargetUnitType
+    > ScientificArray<NumberType, Type, UnitType>.split(
+    targetUnit: TargetUnitType
 ) = split(targetUnit, ::DefaultScientificValue)
 
 fun <
@@ -201,7 +200,7 @@ fun <
     TargetUnitType : ScientificUnit<Type>,
     TargetValue : ScientificValue<Type, TargetUnitType>
     > ScientificArray<NumberType, Type, UnitType>.split(
-    targetUnit : TargetUnitType,
+    targetUnit: TargetUnitType,
     factory: (Decimal, TargetUnitType) -> TargetValue
 ): List<TargetValue> {
     val target = mutableListOf<TargetValue>()
@@ -218,7 +217,9 @@ fun <
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
-    > ScientificArray<NumberType, Type, Unit>.convert(target: TargetUnit) = convert(target, ::DefaultScientificArray)
+    > ScientificArray<NumberType, Type, Unit>.convert(
+    target: TargetUnit
+) = convert(target, ::DefaultScientificArray)
 
 fun <
     Type : MeasurementType,
@@ -230,7 +231,7 @@ fun <
     > ScientificArray<NumberType, Type, Unit>.convert(
     target: TargetUnit,
     factory: (List<Decimal>, TargetUnit) -> TargetValue
-) : TargetValue = map(target, factory) {
+) = map(target, factory) {
     convert(target)
 }
 
@@ -239,7 +240,9 @@ fun <
     NumberType : Number,
     Unit : ScientificUnit<Type>,
     TargetUnit : ScientificUnit<Type>
-    > ScientificArray<NumberType, Type, Unit>.convertValues(target: TargetUnit) : List<Decimal> {
+    > ScientificArray<NumberType, Type, Unit>.convertValues(
+    target: TargetUnit
+): List<Decimal> {
     val values = mutableListOf<Decimal>()
     iterator().forEach {
         values.add(unit.convert(it.toDecimal(), target))

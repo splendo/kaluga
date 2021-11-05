@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.SolidAngle
 import kotlin.jvm.JvmName
 
 @JvmName("solidAngleTimesLuminousIntensity")
-infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>) = intensity * this
+infix operator fun <IntensityUnit : LuminousIntensity, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>
+) = intensity * this

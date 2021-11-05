@@ -32,12 +32,26 @@ import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityDivStilb")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(luminance: ScientificValue<MeasurementType.Luminance, Stilb>) = SquareCentimeter.area(this, luminance)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    luminance: ScientificValue<MeasurementType.Luminance, Stilb>
+) = SquareCentimeter.area(this, luminance)
+
 @JvmName("luminousIntensityDivLambert")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(luminance: ScientificValue<MeasurementType.Luminance, Lambert>) = SquareCentimeter.area(this, luminance)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    luminance: ScientificValue<MeasurementType.Luminance, Lambert>
+) = SquareCentimeter.area(this, luminance)
+
 @JvmName("luminousIntensityDivMetricLuminance")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : MetricLuminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = SquareMeter.area(this, luminance)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : MetricLuminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = SquareMeter.area(this, luminance)
+
 @JvmName("luminousIntensityDivImperialLuminance")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : ImperialLuminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = SquareFoot.area(this, luminance)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : ImperialLuminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = SquareFoot.area(this, luminance)
+
 @JvmName("luminousIntensityDivLuminance")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : Luminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = SquareMeter.area(this, luminance)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, LuminanceUnit : Luminance> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = SquareMeter.area(this, luminance)

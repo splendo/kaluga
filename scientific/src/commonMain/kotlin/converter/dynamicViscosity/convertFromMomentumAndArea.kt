@@ -32,7 +32,7 @@ fun <
     MomentumUnit : Momentum,
     AreaUnit : Area,
     DynamicViscosityUnit : DynamicViscosity
-> DynamicViscosityUnit.dynamicViscosity(
+    > DynamicViscosityUnit.dynamicViscosity(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = dynamicViscosity(momentum, area, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     DynamicViscosityUnit : DynamicViscosity,
     Value : ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>
-> DynamicViscosityUnit.dynamicViscosity(
+    > DynamicViscosityUnit.dynamicViscosity(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, DynamicViscosityUnit) -> Value

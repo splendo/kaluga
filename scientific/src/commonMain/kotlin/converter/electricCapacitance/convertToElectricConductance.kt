@@ -28,6 +28,11 @@ import com.splendo.kaluga.scientific.unit.Siemens
 import kotlin.jvm.JvmName
 
 @JvmName("abfaradTimesFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Absiemens.conductance(this, frequency)
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>.times(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Absiemens.conductance(this, frequency)
+
 @JvmName("capacitanceTimesFrequency")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Siemens.conductance(this, frequency)
+infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Siemens.conductance(this, frequency)

@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose
-> WeightUnit.weight(
+    > WeightUnit.weight(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
 ) = weight(energy, absorbedDose, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     AbsorbedDoseUnit : IonizingRadiationAbsorbedDose,
     Value : ScientificValue<MeasurementType.Weight, WeightUnit>
-> WeightUnit.weight(
+    > WeightUnit.weight(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>,
     factory: (Decimal, WeightUnit) -> Value

@@ -32,7 +32,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance
-> VoltageUnit.voltage(
+    > VoltageUnit.voltage(
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
 ) = voltage(current, conductance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VoltageUnit : Voltage,
     ConductanceUnit : ElectricConductance,
     Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
-> VoltageUnit.voltage(
+    > VoltageUnit.voltage(
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>,
     factory: (Decimal, VoltageUnit) -> Value

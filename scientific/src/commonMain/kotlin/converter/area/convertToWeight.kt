@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricAreaDenisty")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>) = areaDensity * this
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>
+) = areaDensity * this
+
 @JvmName("imperialAreaTimesImperialAreaDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = areaDensity * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = areaDensity * this
+
 @JvmName("imperialAreaDensityTimesUKImperialAreaDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>) = areaDensity * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+) = areaDensity * this
+
 @JvmName("imperialAreaTimesImperialUSCustomaryAreaDensity")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>) = areaDensity * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+) = areaDensity * this
+
 @JvmName("areaTimesAreaDensity")
-infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>) = areaDensity * this
+infix operator fun <AreaDensityUnit : AreaDensity, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
+) = areaDensity * this

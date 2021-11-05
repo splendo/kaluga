@@ -26,6 +26,11 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAbohm")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) = resistance * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>
+) = resistance * this
+
 @JvmName("timeTimesResistance")
-infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = resistance * this
+infix operator fun <ResistanceUnit : ElectricResistance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) = resistance * this

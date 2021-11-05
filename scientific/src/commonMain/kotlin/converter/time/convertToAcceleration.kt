@@ -30,8 +30,13 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricJolt")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, MetricJolt>) : ScientificValue<MeasurementType.Acceleration, MetricAcceleration> = jolt * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, MetricJolt>): ScientificValue<MeasurementType.Acceleration, MetricAcceleration> =
+    jolt * this
+
 @JvmName("timeTimesImperialJolt")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) : ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> = jolt * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>): ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> =
+    jolt * this
+
 @JvmName("timeTimesJolt")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, Jolt>) : ScientificValue<MeasurementType.Acceleration, Acceleration> = jolt * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, Jolt>): ScientificValue<MeasurementType.Acceleration, Acceleration> =
+    jolt * this

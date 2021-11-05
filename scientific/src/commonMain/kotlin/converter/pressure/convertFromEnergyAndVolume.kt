@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     VolumeUnit : Volume,
     PressureUnit : Pressure
-> PressureUnit.pressure(
+    > PressureUnit.pressure(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>
 ) = pressure(energy, volume, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VolumeUnit : Volume,
     PressureUnit : Pressure,
     Value : ScientificValue<MeasurementType.Pressure, PressureUnit>
-> PressureUnit.pressure(
+    > PressureUnit.pressure(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     factory: (Decimal, PressureUnit) -> Value

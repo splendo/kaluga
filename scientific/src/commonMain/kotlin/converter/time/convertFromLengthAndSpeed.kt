@@ -32,7 +32,7 @@ fun <
     LengthUnit : Length,
     TimeUnit : Time,
     SpeedUnit : Speed
-> TimeUnit.time(
+    > TimeUnit.time(
     distance: ScientificValue<MeasurementType.Length, LengthUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
 ) = time(distance, speed, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     SpeedUnit : Speed,
     Value : ScientificValue<MeasurementType.Time, TimeUnit>
-> TimeUnit.time(
+    > TimeUnit.time(
     distance: ScientificValue<MeasurementType.Length, LengthUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
     factory: (Decimal, TimeUnit) -> Value

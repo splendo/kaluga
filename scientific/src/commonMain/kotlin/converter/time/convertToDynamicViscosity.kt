@@ -28,10 +28,21 @@ import com.splendo.kaluga.scientific.unit.UKImperialPressure
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricPressure")
-infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = pressure * this
+infix operator fun <PressureUnit : MetricPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+) = pressure * this
+
 @JvmName("timeTimesImperialPressure")
-infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = pressure * this
+infix operator fun <PressureUnit : ImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+) = pressure * this
+
 @JvmName("timeTimesUKImperialPressure")
-infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = pressure * this
+infix operator fun <PressureUnit : UKImperialPressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+) = pressure * this
+
 @JvmName("timeTimesPressure")
-infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = pressure * this
+infix operator fun <PressureUnit : Pressure, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+) = pressure * this

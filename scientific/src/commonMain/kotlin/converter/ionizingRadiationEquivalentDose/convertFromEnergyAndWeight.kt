@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     EquivalentDoseUnit : IonizingRadiationEquivalentDose
-> EquivalentDoseUnit.equivalentDose(
+    > EquivalentDoseUnit.equivalentDose(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
 ) = equivalentDose(energy, weight, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     EquivalentDoseUnit : IonizingRadiationEquivalentDose,
     Value : ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
-> EquivalentDoseUnit.equivalentDose(
+    > EquivalentDoseUnit.equivalentDose(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     factory: (Decimal, EquivalentDoseUnit) -> Value

@@ -28,6 +28,11 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abampere.current(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Abampere.current(this, time)
+
 @JvmName("chargeDivTime")
-infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ampere.current(this, time)
+infix operator fun <ChargeUnit : ElectricCharge, TimeUnit : Time> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Ampere.current(this, time)

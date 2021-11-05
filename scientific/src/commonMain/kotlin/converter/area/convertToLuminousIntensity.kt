@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Luminance
 import kotlin.jvm.JvmName
 
 @JvmName("areaTimesLuminance")
-infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = luminance * this
+infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = luminance * this

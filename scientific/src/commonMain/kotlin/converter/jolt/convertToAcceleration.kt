@@ -17,21 +17,26 @@
 
 package com.splendo.kaluga.scientific.converter.jolt
 
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.acceleration.acceleration
 import com.splendo.kaluga.scientific.unit.Acceleration
 import com.splendo.kaluga.scientific.unit.ImperialAcceleration
 import com.splendo.kaluga.scientific.unit.ImperialJolt
 import com.splendo.kaluga.scientific.unit.Jolt
-import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.unit.MetricAcceleration
 import com.splendo.kaluga.scientific.unit.MetricJolt
-import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.unit.Time
-import com.splendo.kaluga.scientific.converter.acceleration.acceleration
 import kotlin.jvm.JvmName
 
 @JvmName("metricJoltTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, MetricJolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) : ScientificValue<MeasurementType.Acceleration, MetricAcceleration> = (unit.acceleration).acceleration(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, MetricJolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Acceleration, MetricAcceleration> =
+    (unit.acceleration).acceleration(this, time)
+
 @JvmName("imperialJoltTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) : ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> = (unit.acceleration).acceleration(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Acceleration, ImperialAcceleration> =
+    (unit.acceleration).acceleration(this, time)
+
 @JvmName("speedTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, Jolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) : ScientificValue<MeasurementType.Acceleration, Acceleration> = (unit.acceleration).acceleration(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Jolt, Jolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>): ScientificValue<MeasurementType.Acceleration, Acceleration> =
+    (unit.acceleration).acceleration(this, time)

@@ -32,7 +32,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge
-> TimeUnit.duration(
+    > TimeUnit.duration(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) = duration(charge, current, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
     Value : ScientificValue<MeasurementType.Time, TimeUnit>
-> TimeUnit.duration(
+    > TimeUnit.duration(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, TimeUnit) -> Value

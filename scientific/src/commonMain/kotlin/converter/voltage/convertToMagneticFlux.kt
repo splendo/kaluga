@@ -28,6 +28,10 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Voltage, Abvolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Maxwell.flux(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Voltage, Abvolt>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+    Maxwell.flux(this, time)
+
 @JvmName("voltageTimesTime")
-infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Weber.flux(this, time)
+infix operator fun <VoltageUnit : Voltage, TimeUnit : Time> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Weber.flux(this, time)

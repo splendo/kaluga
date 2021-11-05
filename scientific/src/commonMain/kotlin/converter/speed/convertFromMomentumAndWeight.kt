@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     SpeedUnit : Speed,
     MomentumUnit : Momentum
-> SpeedUnit.speed(
+    > SpeedUnit.speed(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     mass: ScientificValue<MeasurementType.Weight, WeightUnit>
 ) = speed(momentum, mass, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     SpeedUnit : Speed,
     MomentumUnit : Momentum,
     Value : ScientificValue<MeasurementType.Speed, SpeedUnit>
-> SpeedUnit.speed(
+    > SpeedUnit.speed(
     momentum: ScientificValue<MeasurementType.Momentum, MomentumUnit>,
     mass: ScientificValue<MeasurementType.Weight, WeightUnit>,
     factory: (Decimal, SpeedUnit) -> Value

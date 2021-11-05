@@ -32,7 +32,7 @@ fun <
     FluxUnit : MagneticFlux,
     AreaUnit : Area,
     InductionUnit : MagneticInduction
-> FluxUnit.flux(
+    > FluxUnit.flux(
     induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = flux(induction, area, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     InductionUnit : MagneticInduction,
     Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
-> FluxUnit.flux(
+    > FluxUnit.flux(
     induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, FluxUnit) -> Value

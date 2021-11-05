@@ -30,10 +30,21 @@ import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureTimesMetricSpecificHeatCapacity")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>) = specificHeatCapacity * this
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+) = specificHeatCapacity * this
+
 @JvmName("metricAndUKImperialTemperatureTimesUKImperialSpecificHeatCapacity")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>) = specificHeatCapacity * this
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+) = specificHeatCapacity * this
+
 @JvmName("usCustomaryTemperatureTimesUSCustomarySpecificHeatCapacity")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>) = specificHeatCapacity * this
+infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
+) = specificHeatCapacity * this
+
 @JvmName("temperatureTimesHeatCapacity")
-infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>) = specificHeatCapacity * this
+infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.times(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+) = specificHeatCapacity * this

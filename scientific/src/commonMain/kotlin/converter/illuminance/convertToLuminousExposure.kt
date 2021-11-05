@@ -29,8 +29,16 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricIlluminanceTimesTime")
-infix operator fun <IlluminanceUnit : MetricIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).luminousExposure(this, time)
+infix operator fun <IlluminanceUnit : MetricIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).luminousExposure(this, time)
+
 @JvmName("imperialIlluminanceTimesTime")
-infix operator fun <IlluminanceUnit : ImperialIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).luminousExposure(this, time)
+infix operator fun <IlluminanceUnit : ImperialIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).luminousExposure(this, time)
+
 @JvmName("illuminanceTimesTime")
-infix operator fun <IlluminanceUnit : Illuminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Lux x time.unit).luminousExposure(this, time)
+infix operator fun <IlluminanceUnit : Illuminance, TimeUnit : Time> ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (Lux x time.unit).luminousExposure(this, time)

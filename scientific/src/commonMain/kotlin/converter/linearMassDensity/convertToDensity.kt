@@ -36,12 +36,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+
 @JvmName("imperialLinearMassDensityDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+
 @JvmName("ukImperialLinearMassDensityDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+
 @JvmName("usCustomaryLinearMassDensityDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (unit.weight per (1(unit.per) * 1(area.unit)).unit).density(this, area)
+
 @JvmName("linearMassDensityDivArea")
-infix operator fun <LinearMassDensityUnit : LinearMassDensity, AreaUnit : Area> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (Kilogram per CubicMeter).density(this, area)
+infix operator fun <LinearMassDensityUnit : LinearMassDensity, AreaUnit : Area> ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (Kilogram per CubicMeter).density(this, area)

@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("resistanceTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
+infix operator fun <CapacitanceUnit : ElectricCapacitance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+) = capacitance * this

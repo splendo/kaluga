@@ -33,14 +33,31 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyDivMetricSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+
 @JvmName("imperialSpecificEnergyDivUKImperialSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+
 @JvmName("imperialSpecificEnergyDivUSCustomarySpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
+) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+
 @JvmName("ukImperialSpecificEnergyDivUKImperialSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+
 @JvmName("usCustomarySpecificEnergyDivUSCustomarySpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
+) = specificHeatCapacity.unit.perTemperature.temperature(this, specificHeatCapacity)
+
 @JvmName("specificEnergyDivTemperature")
-infix operator fun <SpecificEnergyUnit : SpecificEnergy, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>) = Kelvin.temperature(this, specificHeatCapacity)
+infix operator fun <SpecificEnergyUnit : SpecificEnergy, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+) = Kelvin.temperature(this, specificHeatCapacity)

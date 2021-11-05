@@ -28,10 +28,21 @@ import com.splendo.kaluga.scientific.unit.MolarEnergy
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceTimesMetricAndImperialMolarEnergy")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>) = molarEnergy * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>
+) = molarEnergy * this
+
 @JvmName("amountOfSubstanceTimesMetricMolarEnergy")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MetricMolarEnergy>) = molarEnergy * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MetricMolarEnergy>
+) = molarEnergy * this
+
 @JvmName("amountOfSubstanceTimesImperialMolarEnergy")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarEnergy: ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>) = molarEnergy * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>
+) = molarEnergy * this
+
 @JvmName("amountOfSubstanceTimesMolarEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>) = molarEnergy * this
+infix operator fun <MolarEnergyUnit : MolarEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>
+) = molarEnergy * this

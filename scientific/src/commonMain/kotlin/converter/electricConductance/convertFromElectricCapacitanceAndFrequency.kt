@@ -32,7 +32,7 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     ConductanceUnit : ElectricConductance,
     FrequencyUnit : Frequency
-> ConductanceUnit.conductance(
+    > ConductanceUnit.conductance(
     capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
     frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
 ) = conductance(capacitance, frequency, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     ConductanceUnit : ElectricConductance,
     FrequencyUnit : Frequency,
     Value : ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
-> ConductanceUnit.conductance(
+    > ConductanceUnit.conductance(
     capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>,
     frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>,
     factory: (Decimal, ConductanceUnit) -> Value

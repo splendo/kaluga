@@ -31,10 +31,21 @@ import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityDivSquareCentimeter")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Stilb.luminance(this, area)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    area: ScientificValue<MeasurementType.Area, SquareCentimeter>
+) = Stilb.luminance(this, area)
+
 @JvmName("luminousIntensityDivMetricArea")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Nit.luminance(this, area)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : MetricArea> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Nit.luminance(this, area)
+
 @JvmName("luminousIntensityDivIMperialArea")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = FootLambert.luminance(this, area)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : ImperialArea> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = FootLambert.luminance(this, area)
+
 @JvmName("luminousIntensityDivArea")
-infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : Area> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Nit.luminance(this, area)
+infix operator fun <LuminousIntensityUnit : LuminousIntensity, AreaUnit : Area> ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Nit.luminance(this, area)

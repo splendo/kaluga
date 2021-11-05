@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivTime")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Katal.catalysticActivity(this, time)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, TimeUnit : Time> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Katal.catalysticActivity(this, time)

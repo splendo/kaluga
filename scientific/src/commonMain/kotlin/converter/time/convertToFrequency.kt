@@ -28,5 +28,7 @@ import kotlin.jvm.JvmName
 
 @JvmName("minuteFrequency")
 fun ScientificValue<MeasurementType.Time, Minute>.frequency() = BeatsPerMinute.frequency(this)
+
 @JvmName("frequency")
-fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.frequency() = Hertz.frequency(this)
+fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.frequency() =
+    Hertz.frequency(this)

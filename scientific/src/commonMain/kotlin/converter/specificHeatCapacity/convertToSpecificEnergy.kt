@@ -33,10 +33,21 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificHeatCapacityTimesMetricAndUKImperialTemperature")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>.times(
+    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+
 @JvmName("ukImperialSpecificHeatCapacityTimesMetricAndUKImperialTemperature")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>.times(
+    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+
 @JvmName("usCustomarySpecificHeatCapacityTimesUSCustomaryTemperature")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>.times(
+    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+) = (unit.energy per unit.perWeight).specificEnergy(this, temperature)
+
 @JvmName("heatCapacityTimesTemperature")
-infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>.times(temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>) = (Joule per Kilogram).specificEnergy(this, temperature)
+infix operator fun <SpecificHeatCapacityUnit : SpecificHeatCapacity, TemperatureUnit : Temperature> ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>.times(
+    temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>
+) = (Joule per Kilogram).specificEnergy(this, temperature)

@@ -32,7 +32,7 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolarMassUnit : MolarMass
-> MolarMassUnit.molarMass(
+    > MolarMassUnit.molarMass(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = molarMass(weight, amountOfSubstance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     MolarMassUnit : MolarMass,
     Value : ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
-> MolarMassUnit.molarMass(
+    > MolarMassUnit.molarMass(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     factory: (Decimal, MolarMassUnit) -> Value

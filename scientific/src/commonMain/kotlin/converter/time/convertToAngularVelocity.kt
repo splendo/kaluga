@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesAngularAcceleration")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>) = angularAcceleration * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>
+) = angularAcceleration * this

@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricSurfaceTension")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) = surfaceTension * this
+infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>
+) = surfaceTension * this
+
 @JvmName("imperialLengthTimesImperialSurfaceTension")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = surfaceTension * this
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = surfaceTension * this
+
 @JvmName("imperialLengthTimesUKImperialSurfaceTension")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>) = surfaceTension * this
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, UKImperialSurfaceTension>
+) = surfaceTension * this
+
 @JvmName("imperialLengthTimesUSCustomarySurfaceTension")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>) = surfaceTension * this
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, USCustomarySurfaceTension>
+) = surfaceTension * this
+
 @JvmName("lengthTimesSurfaceTension")
-infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>) = surfaceTension * this
+infix operator fun <SurfaceTensionUnit : SurfaceTension, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+) = surfaceTension * this

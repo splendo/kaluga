@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Pressure
 import kotlin.jvm.JvmName
 
 @JvmName("dynamicViscosityDivPressure")
-infix operator fun <DynamicViscosityUnit : DynamicViscosity, PressureUnit : Pressure> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.div(pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>) = unit.time.time(this, pressure)
+infix operator fun <DynamicViscosityUnit : DynamicViscosity, PressureUnit : Pressure> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.div(
+    pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
+) = unit.time.time(this, pressure)

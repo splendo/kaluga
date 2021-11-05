@@ -29,12 +29,26 @@ import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("solidAngleTimesStilb")
-infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, Stilb>) = luminance * this
+infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, Stilb>
+) = luminance * this
+
 @JvmName("solidAngleTimesLambertTimes")
-infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, Lambert>) = luminance * this
+infix operator fun <SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, Lambert>
+) = luminance * this
+
 @JvmName("solidAngleTimesMetricLuminance")
-infix operator fun <LuminanceUnit : MetricLuminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = luminance * this
+infix operator fun <LuminanceUnit : MetricLuminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = luminance * this
+
 @JvmName("solidAngleTimesImperialLuminance")
-infix operator fun <LuminanceUnit : ImperialLuminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = luminance * this
+infix operator fun <LuminanceUnit : ImperialLuminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = luminance * this
+
 @JvmName("solidAngleTimesLuminance")
-infix operator fun <LuminanceUnit : Luminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>) = luminance * this
+infix operator fun <LuminanceUnit : Luminance, SolidAngleUnit : SolidAngle> ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>.times(
+    luminance: ScientificValue<MeasurementType.Luminance, LuminanceUnit>
+) = luminance * this

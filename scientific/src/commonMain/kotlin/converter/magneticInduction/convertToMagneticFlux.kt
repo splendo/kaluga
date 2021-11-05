@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("gaussTimesSquareCentimeter")
-infix operator fun ScientificValue<MeasurementType.MagneticInduction, Gauss>.times(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) = Maxwell.flux(this, area)
+infix operator fun ScientificValue<MeasurementType.MagneticInduction, Gauss>.times(area: ScientificValue<MeasurementType.Area, SquareCentimeter>) =
+    Maxwell.flux(this, area)
+
 @JvmName("inductionTimesArea")
-infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.MagneticInduction, InductionUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Weber.flux(this, area)
+infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.MagneticInduction, InductionUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Weber.flux(this, area)

@@ -32,7 +32,7 @@ fun <
     MolarEnergyUnit : MolarEnergy,
     MolarMassUnit : MolarMass,
     SpecificEnergyUnit : SpecificEnergy
-> SpecificEnergyUnit.specificEnergy(
+    > SpecificEnergyUnit.specificEnergy(
     molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
 ) = specificEnergy(molarEnergy, molarMass, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     MolarMassUnit : MolarMass,
     SpecificEnergyUnit : SpecificEnergy,
     Value : ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
-> SpecificEnergyUnit.specificEnergy(
+    > SpecificEnergyUnit.specificEnergy(
     molarEnergy: ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>,
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value

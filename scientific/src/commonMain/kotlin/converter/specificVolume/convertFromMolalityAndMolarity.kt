@@ -32,7 +32,7 @@ fun <
     MolarityUnit : Molarity,
     SpecificVolumeUnit : SpecificVolume,
     MolalityUnit : Molality
-> SpecificVolumeUnit.specificVolume(
+    > SpecificVolumeUnit.specificVolume(
     molality: ScientificValue<MeasurementType.Molality, MolalityUnit>,
     molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
 ) = specificVolume(molality, molarity, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     MolalityUnit : Molality,
     Value : ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
-> SpecificVolumeUnit.specificVolume(
+    > SpecificVolumeUnit.specificVolume(
     molality: ScientificValue<MeasurementType.Molality, MolalityUnit>,
     molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>,
     factory: (Decimal, SpecificVolumeUnit) -> Value

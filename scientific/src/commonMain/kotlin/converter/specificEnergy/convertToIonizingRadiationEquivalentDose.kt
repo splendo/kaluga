@@ -23,4 +23,5 @@ import com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose.e
 import com.splendo.kaluga.scientific.unit.Sievert
 import com.splendo.kaluga.scientific.unit.SpecificEnergy
 
-fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.asEquivalentDose() = Sievert.equivalentDose(this)
+fun <SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.asEquivalentDose() =
+    Sievert.equivalentDose(this)

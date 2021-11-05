@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("ergSecondDivAbvolt")
-infix operator fun ScientificValue<MeasurementType.Power, ErgPerSecond>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) = Abampere.current(this, voltage)
+infix operator fun ScientificValue<MeasurementType.Power, ErgPerSecond>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+    Abampere.current(this, voltage)
+
 @JvmName("powerDivVoltage")
-infix operator fun <PowerUnit : Power, VoltageUnit : Voltage> ScientificValue<MeasurementType.Power, PowerUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Ampere.current(this, voltage)
+infix operator fun <PowerUnit : Power, VoltageUnit : Voltage> ScientificValue<MeasurementType.Power, PowerUnit>.div(
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+) = Ampere.current(this, voltage)

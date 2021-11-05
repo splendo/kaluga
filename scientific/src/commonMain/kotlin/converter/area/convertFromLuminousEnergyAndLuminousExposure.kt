@@ -31,7 +31,7 @@ import kotlin.jvm.JvmName
 fun <
     LuminousExposureUnit : LuminousExposure,
     AreaUnit : Area
-> AreaUnit.area(
+    > AreaUnit.area(
     luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>
 ) = area(luminousEnergy, luminousExposure, ::DefaultScientificValue)
@@ -41,7 +41,7 @@ fun <
     LuminousExposureUnit : LuminousExposure,
     AreaUnit : Area,
     Value : ScientificValue<MeasurementType.Area, AreaUnit>
-> AreaUnit.area(
+    > AreaUnit.area(
     luminousEnergy: ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>,
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
     factory: (Decimal, AreaUnit) -> Value

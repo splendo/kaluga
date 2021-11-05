@@ -32,11 +32,19 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbsiemens")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) = conductance * this
+infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, Absiemens>) =
+    conductance * this
+
 @JvmName("voltageTimesConductance")
-infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>) = conductance * this
+infix operator fun <ConductanceUnit : ElectricConductance, VoltageUnit : Voltage> ScientificValue<MeasurementType.Voltage, VoltageUnit>.times(
+    conductance: ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>
+) = conductance * this
 
 @JvmName("abvoltDivAbohm")
-infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) = Abampere.current(this, resistance)
+infix operator fun ScientificValue<MeasurementType.Voltage, Abvolt>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+    Abampere.current(this, resistance)
+
 @JvmName("voltageDivResistance")
-infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Ampere.current(this, resistance)
+infix operator fun <VoltageUnit : Voltage, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Voltage, VoltageUnit>.div(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) = Ampere.current(this, resistance)

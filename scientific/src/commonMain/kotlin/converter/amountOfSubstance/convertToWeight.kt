@@ -36,23 +36,51 @@ import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricMolality")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(molality: ScientificValue<MeasurementType.Molality, MetricMolality>) = molality.unit.per.weight(this, molality)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    molality: ScientificValue<MeasurementType.Molality, MetricMolality>
+) = molality.unit.per.weight(this, molality)
+
 @JvmName("amountOfSubstanceDivImperialMolality")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(molality: ScientificValue<MeasurementType.Molality, ImperialMolality>) = molality.unit.per.weight(this, molality)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    molality: ScientificValue<MeasurementType.Molality, ImperialMolality>
+) = molality.unit.per.weight(this, molality)
+
 @JvmName("amountOfSubstanceDivUKImperialMolality")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(molality: ScientificValue<MeasurementType.Molality, UKImperialMolality>) = molality.unit.per.weight(this, molality)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    molality: ScientificValue<MeasurementType.Molality, UKImperialMolality>
+) = molality.unit.per.weight(this, molality)
+
 @JvmName("amountOfSubstanceDivUSCustomaryMolality")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(molality: ScientificValue<MeasurementType.Molality, USCustomaryMolality>) = molality.unit.per.weight(this, molality)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    molality: ScientificValue<MeasurementType.Molality, USCustomaryMolality>
+) = molality.unit.per.weight(this, molality)
+
 @JvmName("amountOfSubstanceDivMolality")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, MolalityUnit : Molality> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(molality: ScientificValue<MeasurementType.Molality, MolalityUnit>) = Kilogram.weight(this, molality)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, MolalityUnit : Molality> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    molality: ScientificValue<MeasurementType.Molality, MolalityUnit>
+) = Kilogram.weight(this, molality)
 
 @JvmName("amountOfSubstanceTimesMetricMolarMass")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarMass: ScientificValue<MeasurementType.MolarMass, MetricMolarMass>) = molarMass * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarMass: ScientificValue<MeasurementType.MolarMass, MetricMolarMass>
+) = molarMass * this
+
 @JvmName("amountOfSubstanceTimesImperialMolarMass")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarMass: ScientificValue<MeasurementType.MolarMass, ImperialMolarMass>) = molarMass * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarMass: ScientificValue<MeasurementType.MolarMass, ImperialMolarMass>
+) = molarMass * this
+
 @JvmName("amountOfSubstanceTimesUKImperialMolarMass")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarMass: ScientificValue<MeasurementType.MolarMass, UKImperialMolarMass>) = molarMass * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarMass: ScientificValue<MeasurementType.MolarMass, UKImperialMolarMass>
+) = molarMass * this
+
 @JvmName("amountOfSubstanceTimesUSCustomaryMolarMass")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarMass: ScientificValue<MeasurementType.MolarMass, USCustomaryMolarMass>) = molarMass * this
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarMass: ScientificValue<MeasurementType.MolarMass, USCustomaryMolarMass>
+) = molarMass * this
+
 @JvmName("amountOfSubstanceTimesMolarMass")
-infix operator fun <MolarMassUnit : MolarMass, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>) = molarMass * this
+infix operator fun <MolarMassUnit : MolarMass, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.times(
+    molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>
+) = molarMass * this

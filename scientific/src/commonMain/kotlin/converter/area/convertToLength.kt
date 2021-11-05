@@ -59,38 +59,76 @@ import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.jvm.JvmName
 
 @JvmName("squareMeterDivMeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMeter>.div(length: ScientificValue<MeasurementType.Length, Meter>) = Meter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareMeter>.div(length: ScientificValue<MeasurementType.Length, Meter>) =
+    Meter.width(this, length)
+
 @JvmName("squareNanometerDivNanometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.div(length: ScientificValue<MeasurementType.Length, Nanometer>) = Nanometer.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareNanometer>.div(length: ScientificValue<MeasurementType.Length, Nanometer>) =
+    Nanometer.width(this, length)
+
 @JvmName("squareMicrometerDivMicrometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.div(length: ScientificValue<MeasurementType.Length, Micrometer>) = Micrometer.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareMicrometer>.div(length: ScientificValue<MeasurementType.Length, Micrometer>) =
+    Micrometer.width(this, length)
+
 @JvmName("squareMillimeterDivMillimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.div(length: ScientificValue<MeasurementType.Length, Millimeter>) = Millimeter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareMillimeter>.div(length: ScientificValue<MeasurementType.Length, Millimeter>) =
+    Millimeter.width(this, length)
+
 @JvmName("squareCentimeterDivCentimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.div(length: ScientificValue<MeasurementType.Length, Centimeter>) = Centimeter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.div(length: ScientificValue<MeasurementType.Length, Centimeter>) =
+    Centimeter.width(this, length)
+
 @JvmName("squareDecimeterDivDecimeter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.div(length: ScientificValue<MeasurementType.Length, Decimeter>) = Decimeter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareDecimeter>.div(length: ScientificValue<MeasurementType.Length, Decimeter>) =
+    Decimeter.width(this, length)
+
 @JvmName("squareDecameterDivDecameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.div(length: ScientificValue<MeasurementType.Length, Decameter>) = Decameter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareDecameter>.div(length: ScientificValue<MeasurementType.Length, Decameter>) =
+    Decameter.width(this, length)
+
 @JvmName("squareHectometerDivHectometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.div(length: ScientificValue<MeasurementType.Length, Hectometer>) = Hectometer.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareHectometer>.div(length: ScientificValue<MeasurementType.Length, Hectometer>) =
+    Hectometer.width(this, length)
+
 @JvmName("squareKilometerDivKilometer")
-infix operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.div(length: ScientificValue<MeasurementType.Length, Kilometer>) = Kilometer.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareKilometer>.div(length: ScientificValue<MeasurementType.Length, Kilometer>) =
+    Kilometer.width(this, length)
+
 @JvmName("squareMegameterDivMegameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMegameter>.div(length: ScientificValue<MeasurementType.Length, Megameter>) = Megameter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareMegameter>.div(length: ScientificValue<MeasurementType.Length, Megameter>) =
+    Megameter.width(this, length)
+
 @JvmName("squareGigameterDivGigameter")
-infix operator fun ScientificValue<MeasurementType.Area, SquareGigameter>.div(length: ScientificValue<MeasurementType.Length, Gigameter>) = Gigameter.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareGigameter>.div(length: ScientificValue<MeasurementType.Length, Gigameter>) =
+    Gigameter.width(this, length)
+
 @JvmName("metricAreaDivMetricLength")
-infix operator fun <AreaUnit : MetricArea, LengthUnit : MetricLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Meter.width(this, length)
+infix operator fun <AreaUnit : MetricArea, LengthUnit : MetricLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = Meter.width(this, length)
+
 @JvmName("squareInchDivInch")
-infix operator fun ScientificValue<MeasurementType.Area, SquareInch>.div(length: ScientificValue<MeasurementType.Length, Inch>) = Inch.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareInch>.div(length: ScientificValue<MeasurementType.Length, Inch>) =
+    Inch.width(this, length)
+
 @JvmName("squareFootDivFoot")
-infix operator fun ScientificValue<MeasurementType.Area, SquareFoot>.div(length: ScientificValue<MeasurementType.Length, Foot>) = Foot.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareFoot>.div(length: ScientificValue<MeasurementType.Length, Foot>) =
+    Foot.width(this, length)
+
 @JvmName("squareYardDivYard")
-infix operator fun ScientificValue<MeasurementType.Area, SquareYard>.div(length: ScientificValue<MeasurementType.Length, Yard>) = Yard.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareYard>.div(length: ScientificValue<MeasurementType.Length, Yard>) =
+    Yard.width(this, length)
+
 @JvmName("squareMileDivMile")
-infix operator fun ScientificValue<MeasurementType.Area, SquareMile>.div(length: ScientificValue<MeasurementType.Length, Mile>) = Mile.width(this, length)
+infix operator fun ScientificValue<MeasurementType.Area, SquareMile>.div(length: ScientificValue<MeasurementType.Length, Mile>) =
+    Mile.width(this, length)
+
 @JvmName("imperialAreaDivImperialLength")
-infix operator fun <AreaUnit : ImperialArea, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Foot.width(this, length)
+infix operator fun <AreaUnit : ImperialArea, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Area, AreaUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = Foot.width(this, length)
+
 @JvmName("areaDivLength")
-infix operator fun <AreaUnit : Area, LengthUnit : Length> ScientificValue<MeasurementType.Area, AreaUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = Meter.width(this, length)
+infix operator fun <AreaUnit : Area, LengthUnit : Length> ScientificValue<MeasurementType.Area, AreaUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = Meter.width(this, length)

@@ -32,7 +32,7 @@ fun <
     ResistanceUnit : ElectricResistance,
     ChargeUnit : ElectricCharge,
     FluxUnit : MagneticFlux
-> FluxUnit.flux(
+    > FluxUnit.flux(
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
 ) = flux(resistance, charge, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     ChargeUnit : ElectricCharge,
     FluxUnit : MagneticFlux,
     Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
-> FluxUnit.flux(
+    > FluxUnit.flux(
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     factory: (Decimal, FluxUnit) -> Value

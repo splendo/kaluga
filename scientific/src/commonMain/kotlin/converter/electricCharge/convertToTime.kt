@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("chargeDivCurrent")
-infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Second.duration(this, current)
+infix operator fun <ChargeUnit : ElectricCharge, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = Second.duration(this, current)

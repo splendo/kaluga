@@ -58,15 +58,15 @@ val ImperialVolumeUnits: Set<ImperialVolume> get() = setOf(
 
 val USCustomaryVolumeUnits: Set<USCustomaryVolume> get() = ImperialVolumeUnits.map { it.usCustomary }.toSet() +
     setOf(
-    AcreFoot,
-    UsFluidDram,
-    UsFluidOunce,
-    UsCustomaryCup,
-    UsLegalCup,
-    UsLiquidPint,
-    UsLiquidQuart,
-    UsLiquidGallon
-)
+        AcreFoot,
+        UsFluidDram,
+        UsFluidOunce,
+        UsCustomaryCup,
+        UsLegalCup,
+        UsLiquidPint,
+        UsLiquidQuart,
+        UsLiquidGallon
+    )
 
 val UKImperialVolumeUnits: Set<UKImperialVolume> get() = ImperialVolumeUnits.map { it.ukImperial }.toSet() +
     setOf(
@@ -104,7 +104,7 @@ sealed class UKImperialVolume : Volume(), UKImperialScientificUnit<MeasurementTy
 @Serializable
 sealed class ImperialVolume : Volume(), ImperialScientificUnit<MeasurementType.Volume>
 
-class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit : U) : SystemScientificUnit<S, MeasurementType.Volume> {
+class Cubic<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit: U) : SystemScientificUnit<S, MeasurementType.Volume> {
     override val symbol: String = "${unit.symbol}3"
     override val system: S = unit.system
     override val type = MeasurementType.Volume

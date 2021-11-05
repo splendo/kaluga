@@ -27,6 +27,10 @@ import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import kotlin.jvm.JvmName
 
 @JvmName("squareCentimeterTimesGauss")
-infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.times(induction: ScientificValue<MeasurementType.MagneticInduction, Gauss>) = induction * this
+infix operator fun ScientificValue<MeasurementType.Area, SquareCentimeter>.times(induction: ScientificValue<MeasurementType.MagneticInduction, Gauss>) =
+    induction * this
+
 @JvmName("areaTimesInduction")
-infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = induction * this
+infix operator fun <InductionUnit : MagneticInduction, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
+) = induction * this

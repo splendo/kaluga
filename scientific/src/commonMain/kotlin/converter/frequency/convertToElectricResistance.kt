@@ -26,6 +26,11 @@ import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesAbhenry")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(inductance: ScientificValue<MeasurementType.ElectricInductance, Abhenry>) = inductance * this
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(
+    inductance: ScientificValue<MeasurementType.ElectricInductance, Abhenry>
+) = inductance * this
+
 @JvmName("frequencyTimesInductance")
-infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>) = inductance * this
+infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(
+    inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
+) = inductance * this

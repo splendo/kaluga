@@ -32,7 +32,7 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity
-> LengthUnit.length(
+    > LengthUnit.length(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
 ) = length(specificVolume, areaDensity, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     LengthUnit : Length,
     AreaDensityUnit : AreaDensity,
     Value : ScientificValue<MeasurementType.Length, LengthUnit>
-> LengthUnit.length(
+    > LengthUnit.length(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
     areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>,
     factory: (Decimal, LengthUnit) -> Value

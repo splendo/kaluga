@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     ForceUnit : Force,
     LengthUnit : Length
-> EnergyUnit.energy(
+    > EnergyUnit.energy(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     distance: ScientificValue<MeasurementType.Length, LengthUnit>
 ) = energy(force, distance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     ForceUnit : Force,
     LengthUnit : Length,
     Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
-> EnergyUnit.energy(
+    > EnergyUnit.energy(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     distance: ScientificValue<MeasurementType.Length, LengthUnit>,
     factory: (Decimal, EnergyUnit) -> Value

@@ -32,12 +32,22 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivAbampere")
-infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) = Maxwell.flux(this, current)
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+    Maxwell.flux(this, current)
+
 @JvmName("ergMultipleDivAbampere")
-infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Maxwell.flux(this, current)
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    Maxwell.flux(this, current)
+
 @JvmName("ergDivBiot")
-infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) = Maxwell.flux(this, current)
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+    Maxwell.flux(this, current)
+
 @JvmName("ergMultipleDivBiot")
-infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Maxwell.flux(this, current)
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    Maxwell.flux(this, current)
+
 @JvmName("energyDivCurrent")
-infix operator fun <EnergyUnit : Energy, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Weber.flux(this, current)
+infix operator fun <EnergyUnit : Energy, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = Weber.flux(this, current)

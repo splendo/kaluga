@@ -30,10 +30,21 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyTimesTime")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).action(this, time)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).action(this, time)
+
 @JvmName("metricEnergyTimesTime")
-infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).action(this, time)
+infix operator fun <EnergyUnit : MetricEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).action(this, time)
+
 @JvmName("imperialEnergyTimesTime")
-infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit x time.unit).action(this, time)
+infix operator fun <EnergyUnit : ImperialEnergy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit x time.unit).action(this, time)
+
 @JvmName("energyTimesTime")
-infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Joule x time.unit).action(this, time)
+infix operator fun <EnergyUnit : Energy, TimeUnit : Time> ScientificValue<MeasurementType.Energy, EnergyUnit>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (Joule x time.unit).action(this, time)

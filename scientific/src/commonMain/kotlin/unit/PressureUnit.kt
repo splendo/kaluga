@@ -111,19 +111,19 @@ sealed class Pressure : AbstractScientificUnit<MeasurementType.Pressure>()
 sealed class MetricPressure : Pressure(), MetricScientificUnit<MeasurementType.Pressure>
 
 @Serializable
-sealed class ImperialPressure  : Pressure(), ImperialScientificUnit<MeasurementType.Pressure> {
+sealed class ImperialPressure : Pressure(), ImperialScientificUnit<MeasurementType.Pressure> {
     override val system = MeasurementSystem.Imperial
     override val type = MeasurementType.Pressure
 }
 
 @Serializable
-sealed class UKImperialPressure  : Pressure(), UKImperialScientificUnit<MeasurementType.Pressure> {
+sealed class UKImperialPressure : Pressure(), UKImperialScientificUnit<MeasurementType.Pressure> {
     override val system = MeasurementSystem.UKImperial
     override val type = MeasurementType.Pressure
 }
 
 @Serializable
-sealed class USCustomaryPressure  : Pressure(), USCustomaryScientificUnit<MeasurementType.Pressure> {
+sealed class USCustomaryPressure : Pressure(), USCustomaryScientificUnit<MeasurementType.Pressure> {
     override val system = MeasurementSystem.USCustomary
     override val type = MeasurementType.Pressure
 }
@@ -238,25 +238,25 @@ object Torr : MetricPressure(), MetricBaseUnit<MeasurementSystem.Metric, Measure
 }
 
 @Serializable
-object Nanotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Nano(Torr)
+object Nanotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Nano(Torr)
 @Serializable
-object Microtorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Micro(Torr)
+object Microtorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Micro(Torr)
 @Serializable
-object Millitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Milli(Torr)
+object Millitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Milli(Torr)
 @Serializable
-object Centitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Centi(Torr)
+object Centitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Centi(Torr)
 @Serializable
-object Decitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Deci(Torr)
+object Decitorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Deci(Torr)
 @Serializable
-object Decatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Deca(Torr)
+object Decatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Deca(Torr)
 @Serializable
-object Hectotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Hecto(Torr)
+object Hectotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Hecto(Torr)
 @Serializable
-object Kilotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Kilo(Torr)
+object Kilotorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Kilo(Torr)
 @Serializable
-object Megatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Mega(Torr)
+object Megatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Mega(Torr)
 @Serializable
-object Gigatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure,Torr> by Giga(Torr)
+object Gigatorr : MetricPressure(), MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Pressure, Torr> by Giga(Torr)
 
 @Serializable
 object MillimeterOfMercury : MetricPressure() {

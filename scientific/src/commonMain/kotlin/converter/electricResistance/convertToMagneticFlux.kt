@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abohmTimesAbcoulomb")
-infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(charge: ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>) = Maxwell.flux(this, charge)
+infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(charge: ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>) =
+    Maxwell.flux(this, charge)
+
 @JvmName("resistanceTimesCharge")
-infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>) = Weber.flux(this, charge)
+infix operator fun <ResistanceUnit : ElectricResistance, ChargeUnit : ElectricCharge> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
+    charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>
+) = Weber.flux(this, charge)

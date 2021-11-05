@@ -31,6 +31,10 @@ allprojects {
         }
         testLogging.exceptionFormat = 'full'
     }
+
+    tasks.withType(org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask).configureEach {
+        it.workerMaxHeapSize.set("512m")
+    }
 }
 
 apply from:"gradle/ext.gradle"

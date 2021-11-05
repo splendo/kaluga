@@ -32,7 +32,7 @@ fun <
     LuminousExposureUnit : LuminousExposure,
     TimeUnit : Time,
     IlluminanceUnit : Illuminance
-> IlluminanceUnit.illuminance(
+    > IlluminanceUnit.illuminance(
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = illuminance(luminousExposure, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     IlluminanceUnit : Illuminance,
     Value : ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
-> IlluminanceUnit.illuminance(
+    > IlluminanceUnit.illuminance(
     luminousExposure: ScientificValue<MeasurementType.LuminousExposure, LuminousExposureUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, IlluminanceUnit) -> Value

@@ -32,7 +32,7 @@ fun <
     ForceUnit : Force,
     SpeedUnit : Speed,
     PowerUnit : Power
-> ForceUnit.force(
+    > ForceUnit.force(
     power: ScientificValue<MeasurementType.Power, PowerUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
 ) = force(power, speed, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     SpeedUnit : Speed,
     PowerUnit : Power,
     Value : ScientificValue<MeasurementType.Force, ForceUnit>
-> ForceUnit.force(
+    > ForceUnit.force(
     power: ScientificValue<MeasurementType.Power, PowerUnit>,
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
     factory: (Decimal, ForceUnit) -> Value

@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension
-> SurfaceTensionUnit.surfaceTension(
+    > SurfaceTensionUnit.surfaceTension(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = surfaceTension(energy, area, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     SurfaceTensionUnit : SurfaceTension,
     Value : ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
-> SurfaceTensionUnit.surfaceTension(
+    > SurfaceTensionUnit.surfaceTension(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, SurfaceTensionUnit) -> Value

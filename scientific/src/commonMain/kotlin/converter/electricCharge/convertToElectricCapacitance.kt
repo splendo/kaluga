@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivAbVolt")
-infix operator fun ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) = Abfarad.capacitance(this, voltage)
+infix operator fun ScientificValue<MeasurementType.ElectricCharge, Abcoulomb>.div(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+    Abfarad.capacitance(this, voltage)
+
 @JvmName("chargeDivVoltage")
-infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Farad.capacitance(this, voltage)
+infix operator fun <ChargeUnit : ElectricCharge, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>.div(
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+) = Farad.capacitance(this, voltage)

@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricJoltTimesMetricWeight")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Jolt, MetricJolt>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Jolt, MetricJolt>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = weight * this
+
 @JvmName("imperialJoltTimesImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = weight * this
+
 @JvmName("imperialJoltTimesUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = weight * this
+
 @JvmName("imperialJoltTimesUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Jolt, ImperialJolt>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = weight * this
+
 @JvmName("joltTimesWeight")
-infix operator fun <WeightUnit : Weight, JoltUnit : Jolt> ScientificValue<MeasurementType.Jolt, JoltUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = weight * this
+infix operator fun <WeightUnit : Weight, JoltUnit : Jolt> ScientificValue<MeasurementType.Jolt, JoltUnit>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = weight * this

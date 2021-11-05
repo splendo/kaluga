@@ -32,7 +32,7 @@ fun <
     FluxUnit : LuminousFlux,
     AreaUnit : Area,
     IlluminanceUnit : Illuminance
-> IlluminanceUnit.illuminance(
+    > IlluminanceUnit.illuminance(
     flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = illuminance(flux, area, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     IlluminanceUnit : Illuminance,
     Value : ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
-> IlluminanceUnit.illuminance(
+    > IlluminanceUnit.illuminance(
     flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, IlluminanceUnit) -> Value

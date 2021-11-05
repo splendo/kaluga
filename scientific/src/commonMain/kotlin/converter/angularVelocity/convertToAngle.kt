@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityTimesTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.times(time: ScientificValue<MeasurementType.Time, TimeUnit>) = unit.angle.angle(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.times(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = unit.angle.angle(this, time)

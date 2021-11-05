@@ -33,7 +33,7 @@ fun <
     TemperatureUnit : Temperature,
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance
-> ThermalResistanceUnit.thermalResistance(
+    > ThermalResistanceUnit.thermalResistance(
     temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
     power: ScientificValue<MeasurementType.Power, PowerUnit>
 ) = thermalResistance(temperature, power, ::DefaultScientificValue)
@@ -44,7 +44,7 @@ fun <
     PowerUnit : Power,
     ThermalResistanceUnit : ThermalResistance,
     Value : ScientificValue<MeasurementType.ThermalResistance, ThermalResistanceUnit>
-> ThermalResistanceUnit.thermalResistance(
+    > ThermalResistanceUnit.thermalResistance(
     temperature: ScientificValue<MeasurementType.Temperature, TemperatureUnit>,
     power: ScientificValue<MeasurementType.Power, PowerUnit>,
     factory: (Decimal, ThermalResistanceUnit) -> Value

@@ -34,7 +34,7 @@ fun <
     HeightUnit : Length,
     AreaUnit : Area,
     VolumeUnit : Volume
-> HeightUnit.height(
+    > HeightUnit.height(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = height(volume, area, ::DefaultScientificValue)
@@ -45,7 +45,7 @@ fun <
     AreaUnit : Area,
     VolumeUnit : Volume,
     Value : ScientificValue<MeasurementType.Length, HeightUnit>
-> HeightUnit.height(
+    > HeightUnit.height(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, HeightUnit) -> Value

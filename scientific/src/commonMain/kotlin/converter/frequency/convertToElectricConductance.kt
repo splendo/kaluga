@@ -26,6 +26,11 @@ import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesAbfarad")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>) = capacitance * this
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>
+) = capacitance * this
+
 @JvmName("frequencyTimesCapacitance")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>) = capacitance * this
+infix operator fun <CapacitanceUnit : ElectricCapacitance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.Frequency, FrequencyUnit>.times(
+    capacitance: ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
+) = capacitance * this

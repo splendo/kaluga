@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("angularVelocityDivAngularAcceleration")
-infix operator fun ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.div(angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>) = Second.time(this, angularAcceleration)
+infix operator fun ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>.div(
+    angularAcceleration: ScientificValue<MeasurementType.AngularAcceleration, AngularAcceleration>
+) = Second.time(this, angularAcceleration)

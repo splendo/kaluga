@@ -30,7 +30,7 @@ import kotlin.jvm.JvmName
 fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume
-> MolarityUnit.molarity(
+    > MolarityUnit.molarity(
     molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
 ) = molarity(molarVolume, ::DefaultScientificValue)
 
@@ -39,7 +39,7 @@ fun <
     MolarityUnit : Molarity,
     MolarVolumeUnit : MolarVolume,
     Value : ScientificValue<MeasurementType.Molarity, MolarityUnit>
-> MolarityUnit.molarity(
+    > MolarityUnit.molarity(
     molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
     factory: (Decimal, MolarityUnit) -> Value
 ) = byInverting(molarVolume, factory)

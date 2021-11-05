@@ -29,11 +29,21 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abhenryTimesFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Abohm.resistance(this, frequency)
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.times(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Abohm.resistance(this, frequency)
+
 @JvmName("inductanceTimesFrequency")
-infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Ohm.resistance(this, frequency)
+infix operator fun <InductanceUnit : ElectricInductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.times(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Ohm.resistance(this, frequency)
 
 @JvmName("abhenryDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abohm.resistance(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, Abhenry>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Abohm.resistance(this, time)
+
 @JvmName("inductanceDivTime")
-infix operator fun <InductanceUnit : ElectricInductance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Ohm.resistance(this, time)
+infix operator fun <InductanceUnit : ElectricInductance, TimeUnit : Time> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Ohm.resistance(this, time)

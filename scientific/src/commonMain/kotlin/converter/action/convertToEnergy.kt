@@ -28,10 +28,20 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialActionDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, MetricAndImperialAction>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.energy).energy(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, MetricAndImperialAction>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit.energy).energy(this, time)
+
 @JvmName("metricActionDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, MetricAction>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.energy).energy(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, MetricAction>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+    (unit.energy).energy(this, time)
+
 @JvmName("imperialActionDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, ImperialAction>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.energy).energy(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Action, ImperialAction>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit.energy).energy(this, time)
+
 @JvmName("actionDivTime")
-infix operator fun <ActionUnit : Action, TimeUnit : Time> ScientificValue<MeasurementType.Action, ActionUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit.energy).energy(this, time)
+infix operator fun <ActionUnit : Action, TimeUnit : Time> ScientificValue<MeasurementType.Action, ActionUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit.energy).energy(this, time)

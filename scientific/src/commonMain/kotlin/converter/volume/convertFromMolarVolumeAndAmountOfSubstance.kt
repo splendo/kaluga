@@ -32,7 +32,7 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     VolumeUnit : Volume,
     MolarVolumeUnit : MolarVolume
-> VolumeUnit.volume(
+    > VolumeUnit.volume(
     molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
 ) = volume(molarVolume, amountOfSubstance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VolumeUnit : Volume,
     MolarVolumeUnit : MolarVolume,
     Value : ScientificValue<MeasurementType.Volume, VolumeUnit>
-> VolumeUnit.volume(
+    > VolumeUnit.volume(
     molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>,
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     factory: (Decimal, VolumeUnit) -> Value

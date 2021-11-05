@@ -56,7 +56,7 @@ sealed class MetricArea : Area(), MetricScientificUnit<MeasurementType.Area>
 @Serializable
 sealed class ImperialArea : Area(), ImperialScientificUnit<MeasurementType.Area>
 
-class Square<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit : U) : SystemScientificUnit<S, MeasurementType.Area> {
+class Square<S : MeasurementSystem, U : SystemScientificUnit<S, MeasurementType.Length>>(private val unit: U) : SystemScientificUnit<S, MeasurementType.Area> {
     override val symbol: String = "${unit.symbol}2"
     override val system: S = unit.system
     override val type = MeasurementType.Area

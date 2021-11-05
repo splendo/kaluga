@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     TimeUnit : Time,
     PowerUnit : Power
-> PowerUnit.power(
+    > PowerUnit.power(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = power(energy, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     PowerUnit : Power,
     Value : ScientificValue<MeasurementType.Power, PowerUnit>
-> PowerUnit.power(
+    > PowerUnit.power(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, PowerUnit) -> Value

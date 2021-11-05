@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.unit.MassFlowRate
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.MassFlowRate
 import com.splendo.kaluga.scientific.unit.Time
 import com.splendo.kaluga.scientific.unit.Weight
-import com.splendo.kaluga.scientific.byDividing
 import kotlin.jvm.JvmName
 
 @JvmName("timeFromWeightAndMassFlowRateDefault")
@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate
-> TimeUnit.time(
+    > TimeUnit.time(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>
 ) = time(weight, massFlowRate, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     MassFlowRateUnit : MassFlowRate,
     Value : ScientificValue<MeasurementType.Time, TimeUnit>
-> TimeUnit.time(
+    > TimeUnit.time(
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     massFlowRate: ScientificValue<MeasurementType.MassFlowRate, MassFlowRateUnit>,
     factory: (Decimal, TimeUnit) -> Value

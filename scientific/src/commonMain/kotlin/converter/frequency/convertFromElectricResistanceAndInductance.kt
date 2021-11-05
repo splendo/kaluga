@@ -32,7 +32,7 @@ fun <
     ResistanceUnit : ElectricResistance,
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance
-> FrequencyUnit.frequency(
+    > FrequencyUnit.frequency(
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
 ) = frequency(resistance, inductance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     FrequencyUnit : Frequency,
     InductanceUnit : ElectricInductance,
     Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
-> FrequencyUnit.frequency(
+    > FrequencyUnit.frequency(
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
     inductance: ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>,
     factory: (Decimal, FrequencyUnit) -> Value

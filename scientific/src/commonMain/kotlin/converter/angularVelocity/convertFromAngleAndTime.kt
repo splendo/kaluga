@@ -31,7 +31,7 @@ import kotlin.jvm.JvmName
 fun <
     AngleUnit : Angle,
     TimeUnit : Time
-> AngularVelocity.velocity(
+    > AngularVelocity.velocity(
     angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = velocity(angle, time, ::DefaultScientificValue)
@@ -41,7 +41,7 @@ fun <
     AngleUnit : Angle,
     TimeUnit : Time,
     Value : ScientificValue<MeasurementType.AngularVelocity, AngularVelocity>
-> AngularVelocity.velocity(
+    > AngularVelocity.velocity(
     angle: ScientificValue<MeasurementType.Angle, AngleUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, AngularVelocity) -> Value

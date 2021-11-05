@@ -29,8 +29,16 @@ import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivMetricExposure")
-infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
+infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>
+) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
+
 @JvmName("luminousEnergyDivImperialExposure")
-infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
+infix operator fun ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>
+) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
+
 @JvmName("luminousEnergyDivExposure")
-infix operator fun <ExposureUnit : LuminousExposure> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)
+infix operator fun <ExposureUnit : LuminousExposure> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
+    luminousExposure: ScientificValue<MeasurementType.LuminousExposure, ExposureUnit>
+) = (1(unit.luminousFlux) / 1(luminousExposure.unit.illuminance)).unit.area(this, luminousExposure)

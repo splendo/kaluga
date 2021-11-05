@@ -27,6 +27,9 @@ import com.splendo.kaluga.scientific.unit.Siemens
 import kotlin.jvm.JvmName
 
 @JvmName("abOhmConductance")
-fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.conductance() = Absiemens.conductance(this)
+fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.conductance() =
+    Absiemens.conductance(this)
+
 @JvmName("conductance")
-fun <ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.conductance() = Siemens.conductance(this)
+fun <ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.conductance() =
+    Siemens.conductance(this)

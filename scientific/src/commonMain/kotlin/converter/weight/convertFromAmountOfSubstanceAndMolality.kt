@@ -32,7 +32,7 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     WeightUnit : Weight,
     MolalityUnit : Molality
-> WeightUnit.weight(
+    > WeightUnit.weight(
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     molality: ScientificValue<MeasurementType.Molality, MolalityUnit>
 ) = weight(amountOfSubstance, molality, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     MolalityUnit : Molality,
     Value : ScientificValue<MeasurementType.Weight, WeightUnit>
-> WeightUnit.weight(
+    > WeightUnit.weight(
     amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>,
     molality: ScientificValue<MeasurementType.Molality, MolalityUnit>,
     factory: (Decimal, WeightUnit) -> Value

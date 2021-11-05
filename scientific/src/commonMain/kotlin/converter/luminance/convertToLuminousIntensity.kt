@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Luminance
 import kotlin.jvm.JvmName
 
 @JvmName("luminanceTimesArea")
-infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<MeasurementType.Luminance, LuminanceUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Candela.luminousIntensity(this, area)
+infix operator fun <LuminanceUnit : Luminance, AreaUnit : Area> ScientificValue<MeasurementType.Luminance, LuminanceUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Candela.luminousIntensity(this, area)

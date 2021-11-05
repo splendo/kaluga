@@ -29,12 +29,22 @@ import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, MetricYank>) = yank * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, MetricYank>) =
+    yank * this
+
 @JvmName("timeTimesImperialYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, ImperialYank>) = yank * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, ImperialYank>) =
+    yank * this
+
 @JvmName("timeTimesUKImperialYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, UKImperialYank>) = yank * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, UKImperialYank>) =
+    yank * this
+
 @JvmName("timeTimesUSCustomaryYank")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, USCustomaryYank>) = yank * this
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, USCustomaryYank>) =
+    yank * this
+
 @JvmName("timeTimesYank")
-infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(yank: ScientificValue<MeasurementType.Yank, YankUnit>) = yank * this
+infix operator fun <YankUnit : Yank, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    yank: ScientificValue<MeasurementType.Yank, YankUnit>
+) = yank * this

@@ -34,12 +34,26 @@ import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Momentum, MetricMomentum>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+
 @JvmName("imperialMomentumDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, ImperialMomentum>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+
 @JvmName("ukImperialMomentumDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, UKImperialMomentum>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+
 @JvmName("usCustomaryMomentumDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Momentum, USCustomaryMomentum>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+
 @JvmName("momentumDivArea")
-infix operator fun <MomentumUnit : Momentum, AreaUnit : Area> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)
+infix operator fun <MomentumUnit : Momentum, AreaUnit : Area> ScientificValue<MeasurementType.Momentum, MomentumUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = (((this / 1(unit.speed.per)) / area).unit x unit.speed.per).dynamicViscosity(this, area)

@@ -32,12 +32,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricWeight")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : MetricWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit per weight.unit).molality(this, weight)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : MetricWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit per weight.unit).molality(this, weight)
+
 @JvmName("amountOfSubstanceDivImperialWeight")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : ImperialWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit per weight.unit).molality(this, weight)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : ImperialWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit per weight.unit).molality(this, weight)
+
 @JvmName("amountOfSubstanceDivUKImperialWeight")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit per weight.unit).molality(this, weight)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit per weight.unit).molality(this, weight)
+
 @JvmName("amountOfSubstanceDivUSCustomaryWeight")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit per weight.unit).molality(this, weight)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit per weight.unit).molality(this, weight)
+
 @JvmName("amountOfSubstanceDivWeight")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : Weight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (Mole per Kilogram).molality(this, weight)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, WeightUnit : Weight> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (Mole per Kilogram).molality(this, weight)

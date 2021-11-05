@@ -32,7 +32,7 @@ fun <
     HeatCapacityUnit : HeatCapacity,
     WeightUnit : Weight,
     SpecificHeatCapacityUnit : SpecificHeatCapacity
-> WeightUnit.weight(
+    > WeightUnit.weight(
     heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
 ) = weight(heatCapacity, specificHeatCapacity, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     SpecificHeatCapacityUnit : SpecificHeatCapacity,
     Value : ScientificValue<MeasurementType.Weight, WeightUnit>
-> WeightUnit.weight(
+    > WeightUnit.weight(
     heatCapacity: ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>,
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
     factory: (Decimal, WeightUnit) -> Value

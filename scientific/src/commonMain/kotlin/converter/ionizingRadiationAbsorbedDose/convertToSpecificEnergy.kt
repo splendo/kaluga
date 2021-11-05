@@ -25,4 +25,5 @@ import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.Kilogram
 import com.splendo.kaluga.scientific.unit.per
 
-fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.asSpecificEnergy() = (Joule per Kilogram).specificEnergy(this)
+fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose> ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>.asSpecificEnergy() =
+    (Joule per Kilogram).specificEnergy(this)

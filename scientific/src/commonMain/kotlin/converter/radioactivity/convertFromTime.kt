@@ -36,7 +36,7 @@ import kotlin.jvm.JvmName
 fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity
-> RadioactivityUnit.radioactivity(
+    > RadioactivityUnit.radioactivity(
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = radioactivity(time, ::DefaultScientificValue)
 
@@ -45,7 +45,7 @@ fun <
     TimeUnit : Time,
     RadioactivityUnit : Radioactivity,
     Value : ScientificValue<MeasurementType.Radioactivity, RadioactivityUnit>
-> RadioactivityUnit.radioactivity(
+    > RadioactivityUnit.radioactivity(
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, RadioactivityUnit) -> Value
 ) = byInverting(time, factory)
@@ -53,7 +53,10 @@ fun <
 fun <
     RadioactivityUnit : Radioactivity,
     TimeUnit : Time
-    > RadioactivityUnit.radioactivity(decays: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>) = radioactivity(decays, per, ::DefaultScientificValue)
+    > RadioactivityUnit.radioactivity(
+    decays: Decimal,
+    per: ScientificValue<MeasurementType.Time, TimeUnit>
+) = radioactivity(decays, per, ::DefaultScientificValue)
 
 fun <
     RadioactivityUnit : Radioactivity,

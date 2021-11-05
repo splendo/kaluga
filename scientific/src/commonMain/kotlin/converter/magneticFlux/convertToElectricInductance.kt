@@ -30,8 +30,14 @@ import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivAbampere")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) = Abhenry.inductance(this, current)
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+    Abhenry.inductance(this, current)
+
 @JvmName("maxwellDivBiot")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) = Abhenry.inductance(this, current)
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+    Abhenry.inductance(this, current)
+
 @JvmName("fluxDivCurrent")
-infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Henry.inductance(this, current)
+infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = Henry.inductance(this, current)

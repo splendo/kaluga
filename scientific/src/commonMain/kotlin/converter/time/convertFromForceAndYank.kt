@@ -32,7 +32,7 @@ fun <
     ForceUnit : Force,
     TimeUnit : Time,
     YankUnit : Yank
-> TimeUnit.time(
+    > TimeUnit.time(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     yank: ScientificValue<MeasurementType.Yank, YankUnit>
 ) = time(force, yank, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     YankUnit : Yank,
     Value : ScientificValue<MeasurementType.Time, TimeUnit>
-> TimeUnit.time(
+    > TimeUnit.time(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     factory: (Decimal, TimeUnit) -> Value

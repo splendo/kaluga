@@ -32,7 +32,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance
-> ResistanceUnit.resistance(
+    > ResistanceUnit.resistance(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) = resistance(voltage, current, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     VoltageUnit : Voltage,
     ResistanceUnit : ElectricResistance,
     Value : ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
-> ResistanceUnit.resistance(
+    > ResistanceUnit.resistance(
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, ResistanceUnit) -> Value

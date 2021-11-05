@@ -36,20 +36,46 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificVolumeTimesMetricAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("imperialSpecificVolumeTimesImperialAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("imperialSpecificVolumeTimesUKImperialAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("imperialSpecificVolumeTimesUSCustomaryAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("ukImperialSpecificVolumeTimesImperialAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("ukImperialSpecificVolumeTimesUKImperialAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("usCustomarySpecificVolumeTimesImperialAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("usCustomarySpecificVolumeTimesUSCustomaryAreaDensity")
-infix operator fun ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+infix operator fun ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+) = (1(unit.volume) / 1(areaDensity.unit.per)).unit.length(this, areaDensity)
+
 @JvmName("specificVolumeTimesAreaDensity")
-infix operator fun <SpecificVolumeUnit : SpecificVolume, AreaDensityUnit : AreaDensity> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.times(areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>) = Meter.length(this, areaDensity)
+infix operator fun <SpecificVolumeUnit : SpecificVolume, AreaDensityUnit : AreaDensity> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.times(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
+) = Meter.length(this, areaDensity)

@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.VolumetricFlux
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricVolumetricFlux")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>) = volumetricFlux * this
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, MetricVolumetricFlux>
+) = volumetricFlux * this
+
 @JvmName("imperialAreaTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>) = volumetricFlux * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, ImperialVolumetricFlux>
+) = volumetricFlux * this
+
 @JvmName("imperialAreaTimesUKImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>) = volumetricFlux * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, UKImperialVolumetricFlux>
+) = volumetricFlux * this
+
 @JvmName("imperialAreaTimesUSCustomaryArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>) = volumetricFlux * this
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, USCustomaryVolumetricFlux>
+) = volumetricFlux * this
+
 @JvmName("areaTimesVolumetricFlux")
-infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>) = volumetricFlux * this
+infix operator fun <VolumetricFluxUnit : VolumetricFlux, AreaUnit : Area> ScientificValue<MeasurementType.Area, AreaUnit>.times(
+    volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>
+) = volumetricFlux * this

@@ -35,20 +35,46 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialMolarEnergyDivMetricSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("metricAndImperialMolarEnergyDivImperialSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("metricAndImperialMolarEnergyDivUKImperialSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("metricAndImperialMolarEnergyDivUSCustomarySpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricAndImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("metricMolarEnergyDivMetricSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, MetricMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("imperialMolarEnergyDivImperialSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("imperialMolarEnergyDivUKImperialSpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("imperialMolarEnergyDivUSCustomarySpecificEnergy")
-infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+infix operator fun ScientificValue<MeasurementType.MolarEnergy, ImperialMolarEnergy>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>
+) = (specificEnergy.unit.per per unit.per).molarMass(this, specificEnergy)
+
 @JvmName("molarEnergyDivSpecificEnergy")
-infix operator fun <MolarEnergyUnit : MolarEnergy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>.div(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>) = (Kilogram per Mole).molarMass(this, specificEnergy)
+infix operator fun <MolarEnergyUnit : MolarEnergy, SpecificEnergyUnit : SpecificEnergy> ScientificValue<MeasurementType.MolarEnergy, MolarEnergyUnit>.div(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+) = (Kilogram per Mole).molarMass(this, specificEnergy)

@@ -31,10 +31,21 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyDivAmountOfSubstance")
-infix operator fun <EnergyUnit : MetricAndImperialEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+infix operator fun <EnergyUnit : MetricAndImperialEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+
 @JvmName("metricEnergyDivAmountOfSubstance")
-infix operator fun <EnergyUnit : MetricEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+infix operator fun <EnergyUnit : MetricEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+
 @JvmName("imperialEnergyDivAmountOfSubstance")
-infix operator fun <EnergyUnit : ImperialEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+infix operator fun <EnergyUnit : ImperialEnergy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+) = (unit per amountOfSubstance.unit).molarEnergy(this, amountOfSubstance)
+
 @JvmName("energyDivAmountOfSubstance")
-infix operator fun <EnergyUnit : Energy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>) = (Joule per Mole).molarEnergy(this, amountOfSubstance)
+infix operator fun <EnergyUnit : Energy, AmountOfSubstanceUnit : AmountOfSubstance> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    amountOfSubstance: ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
+) = (Joule per Mole).molarEnergy(this, amountOfSubstance)

@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abfaradTimesAbvolt")
-infix operator fun ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>.times(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) = Abcoulomb.charge(this, voltage)
+infix operator fun ScientificValue<MeasurementType.ElectricCapacitance, Abfarad>.times(voltage: ScientificValue<MeasurementType.Voltage, Abvolt>) =
+    Abcoulomb.charge(this, voltage)
+
 @JvmName("capacitanceTimesVoltage")
-infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>) = Coulomb.charge(this, voltage)
+infix operator fun <CapacitanceUnit : ElectricCapacitance, VoltageUnit : Voltage> ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>.times(
+    voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
+) = Coulomb.charge(this, voltage)

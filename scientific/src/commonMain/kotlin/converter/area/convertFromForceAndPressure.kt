@@ -32,7 +32,7 @@ fun <
     ForceUnit : Force,
     AreaUnit : Area,
     PressureUnit : Pressure
-> AreaUnit.area(
+    > AreaUnit.area(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>
 ) = area(force, pressure, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     PressureUnit : Pressure,
     Value : ScientificValue<MeasurementType.Area, AreaUnit>
-> AreaUnit.area(
+    > AreaUnit.area(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     pressure: ScientificValue<MeasurementType.Pressure, PressureUnit>,
     factory: (Decimal, AreaUnit) -> Value

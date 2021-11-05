@@ -33,14 +33,31 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureDivMetricAndImperialPower")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>) = (unit per power.unit).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>
+) = (unit per power.unit).thermalResistance(this, power)
+
 @JvmName("metricAndUKImperialTemperatureDivMetricPower")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, MetricPower>) = (unit per power.unit).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, MetricPower>
+) = (unit per power.unit).thermalResistance(this, power)
+
 @JvmName("metricAndUKImperialTemperatureDivImperialPower")
-infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, ImperialPower>) = (unit per power.unit).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : MetricAndUKImperialTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, ImperialPower>
+) = (unit per power.unit).thermalResistance(this, power)
+
 @JvmName("usCustomaryTemperatureDivMetricAndImperialPower")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>) = (unit per power.unit).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, MetricAndImperialPower>
+) = (unit per power.unit).thermalResistance(this, power)
+
 @JvmName("usCustomaryTemperatureDivImperialPower")
-infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, ImperialPower>) = (unit per power.unit).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : USCustomaryTemperature> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, ImperialPower>
+) = (unit per power.unit).thermalResistance(this, power)
+
 @JvmName("temperatureDivPower")
-infix operator fun <TemperatureUnit : Temperature, PowerUnit : Power> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(power: ScientificValue<MeasurementType.Power, PowerUnit>) = (Kelvin per Watt).thermalResistance(this, power)
+infix operator fun <TemperatureUnit : Temperature, PowerUnit : Power> ScientificValue<MeasurementType.Temperature, TemperatureUnit>.div(
+    power: ScientificValue<MeasurementType.Power, PowerUnit>
+) = (Kelvin per Watt).thermalResistance(this, power)

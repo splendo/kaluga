@@ -31,13 +31,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryLinearMassDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricLinearMassDensity")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>) = linearMassDensity * this
-@JvmName("imperialLengthTimesImperialLinearMassDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>) = linearMassDensity * this
-@JvmName("imperialLengthUKImperialLinearMassDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>) = linearMassDensity * this
-@JvmName("imperialLengthTimesUSCustomaryLinearMassDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>) = linearMassDensity * this
-@JvmName("lengthTimesLinearMassDensity")
-infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>) = linearMassDensity * this
+infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, MetricLinearMassDensity>
+) = linearMassDensity * this
 
+@JvmName("imperialLengthTimesImperialLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, ImperialLinearMassDensity>
+) = linearMassDensity * this
+
+@JvmName("imperialLengthUKImperialLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, UKImperialLinearMassDensity>
+) = linearMassDensity * this
+
+@JvmName("imperialLengthTimesUSCustomaryLinearMassDensity")
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, USCustomaryLinearMassDensity>
+) = linearMassDensity * this
+
+@JvmName("lengthTimesLinearMassDensity")
+infix operator fun <LinearMassDensityUnit : LinearMassDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    linearMassDensity: ScientificValue<MeasurementType.LinearMassDensity, LinearMassDensityUnit>
+) = linearMassDensity * this

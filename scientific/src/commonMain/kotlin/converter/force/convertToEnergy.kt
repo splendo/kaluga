@@ -45,24 +45,52 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesCentimeter")
-infix operator fun ScientificValue<MeasurementType.Force, Dyne>.times(distance: ScientificValue<MeasurementType.Length, Centimeter>) = Erg.energy(this, distance)
+infix operator fun ScientificValue<MeasurementType.Force, Dyne>.times(distance: ScientificValue<MeasurementType.Length, Centimeter>) =
+    Erg.energy(this, distance)
+
 @JvmName("dyneMultipleTimesCentimeter")
-infix operator fun <DyneUnit> ScientificValue<MeasurementType.Force, DyneUnit>.times(distance: ScientificValue<MeasurementType.Length, Centimeter>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = Erg.energy(this, distance)
+infix operator fun <DyneUnit> ScientificValue<MeasurementType.Force, DyneUnit>.times(distance: ScientificValue<MeasurementType.Length, Centimeter>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+    Erg.energy(this, distance)
+
 @JvmName("metricForceTimesMetricLength")
-infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = Joule.energy(this, distance)
+infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = Joule.energy(this, distance)
+
 @JvmName("poundalTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, Poundal>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = FootPoundal.energy(this, distance)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, Poundal>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = FootPoundal.energy(this, distance)
+
 @JvmName("poundForceTimesInch")
-infix operator fun ScientificValue<MeasurementType.Force, PoundForce>.times(distance: ScientificValue<MeasurementType.Length, Inch>) = InchPoundForce.energy(this, distance)
+infix operator fun ScientificValue<MeasurementType.Force, PoundForce>.times(distance: ScientificValue<MeasurementType.Length, Inch>) =
+    InchPoundForce.energy(this, distance)
+
 @JvmName("ounceForceTimesInch")
-infix operator fun ScientificValue<MeasurementType.Force, OunceForce>.times(distance: ScientificValue<MeasurementType.Length, Inch>) = InchOunceForce.energy(this, distance)
+infix operator fun ScientificValue<MeasurementType.Force, OunceForce>.times(distance: ScientificValue<MeasurementType.Length, Inch>) =
+    InchOunceForce.energy(this, distance)
+
 @JvmName("poundForceTimesImperialLength")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, PoundForce>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = FootPoundForce.energy(this, distance)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, PoundForce>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = FootPoundForce.energy(this, distance)
+
 @JvmName("imperialForceTimesImperialLength")
-infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = FootPoundForce.energy(this, distance)
+infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = FootPoundForce.energy(this, distance)
+
 @JvmName("ukImperialForceTimesImperialLength")
-infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = FootPoundForce.energy(this, distance)
+infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = FootPoundForce.energy(this, distance)
+
 @JvmName("usCustomaryForceTimesImperialLength")
-infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = FootPoundForce.energy(this, distance)
+infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = FootPoundForce.energy(this, distance)
+
 @JvmName("forceTimesLength")
-infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.times(distance: ScientificValue<MeasurementType.Length, LengthUnit>) = Joule.energy(this, distance)
+infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.times(
+    distance: ScientificValue<MeasurementType.Length, LengthUnit>
+) = Joule.energy(this, distance)

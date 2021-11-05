@@ -29,6 +29,10 @@ import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivGauss")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(induction: ScientificValue<MeasurementType.MagneticInduction, Gauss>) = SquareCentimeter.area(this, induction)
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(induction: ScientificValue<MeasurementType.MagneticInduction, Gauss>) =
+    SquareCentimeter.area(this, induction)
+
 @JvmName("fluxDivInduction")
-infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>) = SquareMeter.area(this, induction)
+infix operator fun <FluxUnit : MagneticFlux, InductionUnit : MagneticInduction> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
+    induction: ScientificValue<MeasurementType.MagneticInduction, InductionUnit>
+) = SquareMeter.area(this, induction)

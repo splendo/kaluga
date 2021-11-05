@@ -32,7 +32,7 @@ fun <
     AmountOfSubstanceUnit : AmountOfSubstance,
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity
-> AmountOfSubstanceUnit.amountOfSubstance(
+    > AmountOfSubstanceUnit.amountOfSubstance(
     catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = amountOfSubstance(catalysis, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     CatalysisUnit : CatalysticActivity,
     Value : ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>
-> AmountOfSubstanceUnit.amountOfSubstance(
+    > AmountOfSubstanceUnit.amountOfSubstance(
     catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, AmountOfSubstanceUnit) -> Value

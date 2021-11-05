@@ -40,25 +40,30 @@ sealed class Acceleration : AbstractScientificUnit<MeasurementType.Acceleration>
     abstract val speed: Speed
     abstract val per: Time
     override val type = MeasurementType.Acceleration
-    override val symbol: String by lazy { if (speed.per == per) {
-        "${speed.distance.symbol} / ${per.symbol}2"
-    } else {
-        "${speed.distance.symbol} / (${speed.per.symbol} * ${per.symbol})"
-    }
+    override val symbol: String by lazy {
+        if (speed.per == per) {
+            "${speed.distance.symbol} / ${per.symbol}2"
+        } else {
+            "${speed.distance.symbol} / (${speed.per.symbol} * ${per.symbol})"
+        }
     }
     override fun fromSIUnit(value: Decimal): Decimal = per.toSIUnit(speed.fromSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = speed.toSIUnit(per.fromSIUnit(value))
 }
 
 @Serializable
-data class MetricAcceleration(override val speed: MetricSpeed, override val per: Time) : Acceleration(),
-    MetricScientificUnit<MeasurementType.Acceleration> {
+data class MetricAcceleration(
+    override val speed: MetricSpeed,
+    override val per: Time
+) : Acceleration(), MetricScientificUnit<MeasurementType.Acceleration> {
     override val system = MeasurementSystem.Metric
 }
 
 @Serializable
-data class ImperialAcceleration(override val speed: ImperialSpeed, override val per: Time) : Acceleration(),
-    ImperialScientificUnit<MeasurementType.Acceleration> {
+data class ImperialAcceleration(
+    override val speed: ImperialSpeed,
+    override val per: Time
+) : Acceleration(), ImperialScientificUnit<MeasurementType.Acceleration> {
     override val system = MeasurementSystem.Imperial
 }
 

@@ -33,20 +33,46 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyTimesMetricWeight")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("imperialSpecificEnergyTimesImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("imperialSpecificEnergyTimesUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("imperialSpecificEnergyTimesUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("ukImperialSpecificEnergyTimesImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("ukImperialSpecificEnergyTimesUKImperialWeight")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("usCustomarySpecificEnergyTimesImperialWeight")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("usCustomarySpecificEnergyTimesUSCustomaryWeight")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)
+
 @JvmName("specificEnergyTimesWeight")
-infix operator fun <SpecificEnergyUnit : SpecificEnergy, WeightUnit : Weight> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.times(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = (unit.energy).energy(this, weight)
+infix operator fun <SpecificEnergyUnit : SpecificEnergy, WeightUnit : Weight> ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>.times(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = (unit.energy).energy(this, weight)

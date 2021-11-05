@@ -32,7 +32,7 @@ fun <
     VolumetricFlowUnit : VolumetricFlow,
     AreaUnit : Area,
     VolumetricFluxUnit : VolumetricFlux
-> AreaUnit.area(
+    > AreaUnit.area(
     volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>,
     volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>
 ) = area(volumetricFlow, volumetricFlux, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     VolumetricFluxUnit : VolumetricFlux,
     Value : ScientificValue<MeasurementType.Area, AreaUnit>
-> AreaUnit.area(
+    > AreaUnit.area(
     volumetricFlow: ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>,
     volumetricFlux: ScientificValue<MeasurementType.VolumetricFlux, VolumetricFluxUnit>,
     factory: (Decimal, AreaUnit) -> Value

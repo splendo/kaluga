@@ -32,7 +32,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     TimeUnit : Time,
     ChargeUnit : ElectricCharge
-> CurrentUnit.current(
+    > CurrentUnit.current(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     per: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = current(charge, per, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     ChargeUnit : ElectricCharge,
     Value : ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
-> CurrentUnit.current(
+    > CurrentUnit.current(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     per: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, CurrentUnit) -> Value

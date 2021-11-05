@@ -34,12 +34,25 @@ import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("ergPerSecondDivMetricSpeed")
-infix operator fun ScientificValue<MeasurementType.Power, ErgPerSecond>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = Dyne.force(this, speed)
+infix operator fun ScientificValue<MeasurementType.Power, ErgPerSecond>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) =
+    Dyne.force(this, speed)
+
 @JvmName("metricPowerDivMetricSpeed")
-infix operator fun <PowerUnit : MetricPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(speed: ScientificValue<MeasurementType.Speed, MetricSpeed>) = Newton.force(this, speed)
+infix operator fun <PowerUnit : MetricPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(
+    speed: ScientificValue<MeasurementType.Speed, MetricSpeed>
+) = Newton.force(this, speed)
+
 @JvmName("imperialPowerDivImperialSpeed")
-infix operator fun <PowerUnit : ImperialPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = PoundForce.force(this, speed)
+infix operator fun <PowerUnit : ImperialPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(
+    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+) = PoundForce.force(this, speed)
+
 @JvmName("metricAndImperialPowerDivImperialSpeed")
-infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>) = PoundForce.force(this, speed)
+infix operator fun <PowerUnit : MetricAndImperialPower> ScientificValue<MeasurementType.Power, PowerUnit>.div(
+    speed: ScientificValue<MeasurementType.Speed, ImperialSpeed>
+) = PoundForce.force(this, speed)
+
 @JvmName("powerDivSpeed")
-infix operator fun <PowerUnit : Power, SpeedUnit : Speed> ScientificValue<MeasurementType.Power, PowerUnit>.div(speed: ScientificValue<MeasurementType.Speed, SpeedUnit>) = Newton.force(this, speed)
+infix operator fun <PowerUnit : Power, SpeedUnit : Speed> ScientificValue<MeasurementType.Power, PowerUnit>.div(
+    speed: ScientificValue<MeasurementType.Speed, SpeedUnit>
+) = Newton.force(this, speed)

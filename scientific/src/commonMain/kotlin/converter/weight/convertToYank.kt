@@ -33,12 +33,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightTimesMetricJolt")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, MetricJolt>) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    jolt: ScientificValue<MeasurementType.Jolt, MetricJolt>
+) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+
 @JvmName("imperialWeightTimesImperialJolt")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>
+) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+
 @JvmName("ukImperialWeightTimesImperialJolt")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>
+) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+
 @JvmName("usCustomaryWeightTimesImperialJolt")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    jolt: ScientificValue<MeasurementType.Jolt, ImperialJolt>
+) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+
 @JvmName("weightTimesJolt")
-infix operator fun <WeightUnit : Weight, JoltUnit : Jolt> ScientificValue<MeasurementType.Weight, WeightUnit>.times(jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)
+infix operator fun <WeightUnit : Weight, JoltUnit : Jolt> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
+) = ((this * 1.0(jolt.unit.acceleration)).unit per jolt.unit.per).yank(this, jolt)

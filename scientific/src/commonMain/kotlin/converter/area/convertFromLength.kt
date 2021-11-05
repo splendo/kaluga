@@ -31,7 +31,7 @@ fun <
     LengthUnit : Length,
     WidthUnit : Length,
     AreaUnit : Area
-> AreaUnit.area(
+    > AreaUnit.area(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     width: ScientificValue<MeasurementType.Length, WidthUnit>
 ) = area(length, width, ::DefaultScientificValue)
@@ -42,7 +42,7 @@ fun <
     WidthUnit : Length,
     AreaUnit : Area,
     Value : ScientificValue<MeasurementType.Area, AreaUnit>
-> AreaUnit.area(
+    > AreaUnit.area(
     length: ScientificValue<MeasurementType.Length, LengthUnit>,
     width: ScientificValue<MeasurementType.Length, WidthUnit>,
     factory: (Decimal, AreaUnit) -> Value

@@ -26,7 +26,8 @@ import com.splendo.kaluga.scientific.unit.Temperature
 
 fun <
     TemperatureUnit : Temperature
-    > ScientificValue<MeasurementType.Temperature, TemperatureUnit>.deltaValueInKelvin() = deltaValueInKelvin(::DefaultScientificValue)
+    > ScientificValue<MeasurementType.Temperature, TemperatureUnit>.deltaValueInKelvin() =
+    deltaValueInKelvin(::DefaultScientificValue)
 
 fun <
     TemperatureUnit : Temperature,

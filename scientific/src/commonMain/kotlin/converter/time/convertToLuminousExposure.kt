@@ -27,8 +27,16 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricIlluminance")
-infix operator fun <IlluminanceUnit : MetricIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = illuminance * this
+infix operator fun <IlluminanceUnit : MetricIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = illuminance * this
+
 @JvmName("timeTimesImperialIlluminance")
-infix operator fun <IlluminanceUnit : ImperialIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = illuminance * this
+infix operator fun <IlluminanceUnit : ImperialIlluminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = illuminance * this
+
 @JvmName("timeTimesIlluminance")
-infix operator fun <IlluminanceUnit : Illuminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = illuminance * this
+infix operator fun <IlluminanceUnit : Illuminance, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = illuminance * this

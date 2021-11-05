@@ -36,12 +36,38 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthDivMetricAreaDensity")
-infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(this, areaDensity)
+infix operator fun <LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>
+) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
+    this,
+    areaDensity
+)
+
 @JvmName("imperialLengthDivImperialAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(this, areaDensity)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
+    this,
+    areaDensity
+)
+
 @JvmName("imperialLengthDivUKImperialAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(this, areaDensity)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
+    this,
+    areaDensity
+)
+
 @JvmName("imperialLengthDivUSCustomaryAreaDensity")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(this, areaDensity)
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+) = ((1(areaDensity.unit.per) * 1(unit)).unit per areaDensity.unit.weight).specificVolume(
+    this,
+    areaDensity
+)
+
 @JvmName("lengthDivAreaDensity")
-infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>) = (CubicMeter per Kilogram).specificVolume(this, areaDensity)
+infix operator fun <AreaDensityUnit : AreaDensity, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
+) = (CubicMeter per Kilogram).specificVolume(this, areaDensity)

@@ -32,7 +32,7 @@ fun <
     ForceUnit : Force,
     TimeUnit : Time,
     MomentumUnit : Momentum
-> MomentumUnit.momentum(
+    > MomentumUnit.momentum(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = momentum(force, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     MomentumUnit : Momentum,
     Value : ScientificValue<MeasurementType.Momentum, MomentumUnit>
-> MomentumUnit.momentum(
+    > MomentumUnit.momentum(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, MomentumUnit) -> Value

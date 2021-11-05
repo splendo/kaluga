@@ -30,7 +30,7 @@ import kotlin.jvm.JvmName
 fun <
     SpecificVolumeUnit : SpecificVolume,
     DensityUnit : Density
-> DensityUnit.density(
+    > DensityUnit.density(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>
 ) = density(specificVolume, ::DefaultScientificValue)
 
@@ -39,7 +39,7 @@ fun <
     SpecificVolumeUnit : SpecificVolume,
     DensityUnit : Density,
     Value : ScientificValue<MeasurementType.Density, DensityUnit>
-> DensityUnit.density(
+    > DensityUnit.density(
     specificVolume: ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>,
     factory: (Decimal, DensityUnit) -> Value
 ) = byInverting(specificVolume, factory)

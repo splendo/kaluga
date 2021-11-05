@@ -32,7 +32,7 @@ fun <
     FluxUnit : MagneticFlux,
     CurrentUnit : ElectricCurrent,
     InductanceUnit : ElectricInductance
-> InductanceUnit.inductance(
+    > InductanceUnit.inductance(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) = inductance(flux, current, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     InductanceUnit : ElectricInductance,
     Value : ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>
-> InductanceUnit.inductance(
+    > InductanceUnit.inductance(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, InductanceUnit) -> Value

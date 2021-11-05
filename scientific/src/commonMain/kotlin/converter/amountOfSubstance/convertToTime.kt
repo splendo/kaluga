@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivCatalysticActivity")
-infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>) = Second.time(this, catalysis)
+infix operator fun <AmountOfSubstanceUnit : AmountOfSubstance, CatalysisUnit : CatalysticActivity> ScientificValue<MeasurementType.AmountOfSubstance, AmountOfSubstanceUnit>.div(
+    catalysis: ScientificValue<MeasurementType.CatalysticActivity, CatalysisUnit>
+) = Second.time(this, catalysis)

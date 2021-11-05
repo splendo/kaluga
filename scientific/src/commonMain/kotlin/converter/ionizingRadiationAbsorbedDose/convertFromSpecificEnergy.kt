@@ -46,4 +46,7 @@ fun <
     > AbsorbedDoseUnit.absorbedDose(
     absorbedDose: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
     factory: (Decimal, AbsorbedDoseUnit) -> Value
-) = DefaultScientificValue(absorbedDose.convert(Joule per Kilogram).value, Gray).convert(this, factory)
+) = DefaultScientificValue(absorbedDose.convert(Joule per Kilogram).value, Gray).convert(
+    this,
+    factory
+)

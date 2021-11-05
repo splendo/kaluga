@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank
-> WeightUnit.mass(
+    > WeightUnit.mass(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>
 ) = mass(yank, jolt, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     JoltUnit : Jolt,
     YankUnit : Yank,
     Value : ScientificValue<MeasurementType.Weight, WeightUnit>
-> WeightUnit.mass(
+    > WeightUnit.mass(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     jolt: ScientificValue<MeasurementType.Jolt, JoltUnit>,
     factory: (Decimal, WeightUnit) -> Value

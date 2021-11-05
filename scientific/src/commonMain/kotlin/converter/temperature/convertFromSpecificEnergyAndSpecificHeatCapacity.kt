@@ -33,7 +33,7 @@ fun <
     SpecificEnergyUnit : SpecificEnergy,
     TemperatureUnit : Temperature,
     SpecificHeatCapacityUnit : SpecificHeatCapacity
-> TemperatureUnit.temperature(
+    > TemperatureUnit.temperature(
     specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
 ) = temperature(specificEnergy, specificHeatCapacity, ::DefaultScientificValue)
@@ -44,8 +44,11 @@ fun <
     TemperatureUnit : Temperature,
     SpecificHeatCapacityUnit : SpecificHeatCapacity,
     Value : ScientificValue<MeasurementType.Temperature, TemperatureUnit>
-> TemperatureUnit.temperature(
+    > TemperatureUnit.temperature(
     specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>,
     specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>,
     factory: (Decimal, TemperatureUnit) -> Value
-) = deltaValue(Kelvin.byDividing(specificEnergy, specificHeatCapacity, ::DefaultScientificValue), factory)
+) = deltaValue(
+    Kelvin.byDividing(specificEnergy, specificHeatCapacity, ::DefaultScientificValue),
+    factory
+)

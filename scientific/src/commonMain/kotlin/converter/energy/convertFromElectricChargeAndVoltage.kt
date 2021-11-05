@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage
-> EnergyUnit.energy(
+    > EnergyUnit.energy(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>
 ) = energy(charge, voltage, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     ChargeUnit : ElectricCharge,
     VoltageUnit : Voltage,
     Value : ScientificValue<MeasurementType.Energy, EnergyUnit>
-> EnergyUnit.energy(
+    > EnergyUnit.energy(
     charge: ScientificValue<MeasurementType.ElectricCharge, ChargeUnit>,
     voltage: ScientificValue<MeasurementType.Voltage, VoltageUnit>,
     factory: (Decimal, EnergyUnit) -> Value

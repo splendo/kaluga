@@ -28,6 +28,11 @@ import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("absiemensDivFrequency")
-infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricConductance, Absiemens>.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Abfarad.capacitance(this, frequency)
+infix operator fun <FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricConductance, Absiemens>.div(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Abfarad.capacitance(this, frequency)
+
 @JvmName("conductanceDivFrequency")
-infix operator fun <ConductanceUnit : ElectricConductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>) = Farad.capacitance(this, frequency)
+infix operator fun <ConductanceUnit : ElectricConductance, FrequencyUnit : Frequency> ScientificValue<MeasurementType.ElectricConductance, ConductanceUnit>.div(
+    frequency: ScientificValue<MeasurementType.Frequency, FrequencyUnit>
+) = Farad.capacitance(this, frequency)

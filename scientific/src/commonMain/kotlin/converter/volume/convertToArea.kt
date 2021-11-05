@@ -78,44 +78,90 @@ import com.splendo.kaluga.scientific.unit.Yard
 import kotlin.jvm.JvmName
 
 @JvmName("cubicMeterDivMeter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicMeter>.div(height: ScientificValue<MeasurementType.Length, Meter>) = SquareMeter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicMeter>.div(height: ScientificValue<MeasurementType.Length, Meter>) =
+    SquareMeter.area(this, height)
+
 @JvmName("cubicNanometerDivNanometer")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicNanometer>.div(height: ScientificValue<MeasurementType.Length, Nanometer>) = SquareNanometer.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicNanometer>.div(height: ScientificValue<MeasurementType.Length, Nanometer>) =
+    SquareNanometer.area(this, height)
+
 @JvmName("cubicMicrometerDivMicrometer")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicMicrometer>.div(height: ScientificValue<MeasurementType.Length, Micrometer>) = SquareMicrometer.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicMicrometer>.div(height: ScientificValue<MeasurementType.Length, Micrometer>) =
+    SquareMicrometer.area(this, height)
+
 @JvmName("cubicMillimeterDivMillimeter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicMillimeter>.div(height: ScientificValue<MeasurementType.Length, Millimeter>) = SquareMillimeter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicMillimeter>.div(height: ScientificValue<MeasurementType.Length, Millimeter>) =
+    SquareMillimeter.area(this, height)
+
 @JvmName("cubicCentimeterDivCentimeter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicCentimeter>.div(height: ScientificValue<MeasurementType.Length, Centimeter>) = SquareCentimeter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicCentimeter>.div(height: ScientificValue<MeasurementType.Length, Centimeter>) =
+    SquareCentimeter.area(this, height)
+
 @JvmName("cubicDecimeterDivDecimeter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicDecimeter>.div(height: ScientificValue<MeasurementType.Length, Decimeter>) = SquareDecimeter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicDecimeter>.div(height: ScientificValue<MeasurementType.Length, Decimeter>) =
+    SquareDecimeter.area(this, height)
+
 @JvmName("cubicDecameterDivDecameter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicDecameter>.div(height: ScientificValue<MeasurementType.Length, Decameter>) = SquareDecameter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicDecameter>.div(height: ScientificValue<MeasurementType.Length, Decameter>) =
+    SquareDecameter.area(this, height)
+
 @JvmName("cubicHectometerDivHectometer")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicHectometer>.div(height: ScientificValue<MeasurementType.Length, Hectometer>) = SquareHectometer.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicHectometer>.div(height: ScientificValue<MeasurementType.Length, Hectometer>) =
+    SquareHectometer.area(this, height)
+
 @JvmName("cubicKilometerDivKilometer")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicKilometer>.div(height: ScientificValue<MeasurementType.Length, Kilometer>) = SquareKilometer.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicKilometer>.div(height: ScientificValue<MeasurementType.Length, Kilometer>) =
+    SquareKilometer.area(this, height)
+
 @JvmName("cubicMegameterDivMegameter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicMegameter>.div(height: ScientificValue<MeasurementType.Length, Megameter>) = SquareMegameter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicMegameter>.div(height: ScientificValue<MeasurementType.Length, Megameter>) =
+    SquareMegameter.area(this, height)
+
 @JvmName("cubicGigameterDivGigameter")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicGigameter>.div(height: ScientificValue<MeasurementType.Length, Gigameter>) = SquareGigameter.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicGigameter>.div(height: ScientificValue<MeasurementType.Length, Gigameter>) =
+    SquareGigameter.area(this, height)
+
 @JvmName("metricVolumeDivMetricLength")
-infix operator fun <VolumeUnit : MetricVolume, HeightUnit : MetricLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(height: ScientificValue<MeasurementType.Length, HeightUnit>) = SquareMeter.area(this, height)
+infix operator fun <VolumeUnit : MetricVolume, HeightUnit : MetricLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    height: ScientificValue<MeasurementType.Length, HeightUnit>
+) = SquareMeter.area(this, height)
+
 @JvmName("cubicInchDivInch")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicInch>.div(height: ScientificValue<MeasurementType.Length, Inch>) = SquareInch.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicInch>.div(height: ScientificValue<MeasurementType.Length, Inch>) =
+    SquareInch.area(this, height)
+
 @JvmName("cubicFootDivFoot")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicFoot>.div(height: ScientificValue<MeasurementType.Length, Foot>) = SquareFoot.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicFoot>.div(height: ScientificValue<MeasurementType.Length, Foot>) =
+    SquareFoot.area(this, height)
+
 @JvmName("cubicYardDivYard")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicYard>.div(height: ScientificValue<MeasurementType.Length, Yard>) = SquareYard.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicYard>.div(height: ScientificValue<MeasurementType.Length, Yard>) =
+    SquareYard.area(this, height)
+
 @JvmName("cubicMileDivMile")
-infix operator fun ScientificValue<MeasurementType.Volume, CubicMile>.div(height: ScientificValue<MeasurementType.Length, Mile>) = SquareMile.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, CubicMile>.div(height: ScientificValue<MeasurementType.Length, Mile>) =
+    SquareMile.area(this, height)
+
 @JvmName("acreFootDivFoot")
-infix operator fun ScientificValue<MeasurementType.Volume, AcreFoot>.div(height: ScientificValue<MeasurementType.Length, Foot>) = Acre.area(this, height)
+infix operator fun ScientificValue<MeasurementType.Volume, AcreFoot>.div(height: ScientificValue<MeasurementType.Length, Foot>) =
+    Acre.area(this, height)
+
 @JvmName("imperialVolumeDivImperialLength")
-infix operator fun <VolumeUnit : ImperialVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(height: ScientificValue<MeasurementType.Length, HeightUnit>) = SquareFoot.area(this, height)
+infix operator fun <VolumeUnit : ImperialVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    height: ScientificValue<MeasurementType.Length, HeightUnit>
+) = SquareFoot.area(this, height)
+
 @JvmName("ukImperialVolumeDivImperialLength")
-infix operator fun <VolumeUnit : UKImperialVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(height: ScientificValue<MeasurementType.Length, HeightUnit>) = SquareFoot.area(this, height)
+infix operator fun <VolumeUnit : UKImperialVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    height: ScientificValue<MeasurementType.Length, HeightUnit>
+) = SquareFoot.area(this, height)
+
 @JvmName("usCustomaryVolumeDivImperialLength")
-infix operator fun <VolumeUnit : USCustomaryVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(height: ScientificValue<MeasurementType.Length, HeightUnit>) = SquareFoot.area(this, height)
+infix operator fun <VolumeUnit : USCustomaryVolume, HeightUnit : ImperialLength> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    height: ScientificValue<MeasurementType.Length, HeightUnit>
+) = SquareFoot.area(this, height)
+
 @JvmName("volumeDivLength")
-infix operator fun <VolumeUnit : Volume, HeightUnit : Length> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(height: ScientificValue<MeasurementType.Length, HeightUnit>) = SquareMeter.area(this, height)
+infix operator fun <VolumeUnit : Volume, HeightUnit : Length> ScientificValue<MeasurementType.Volume, VolumeUnit>.div(
+    height: ScientificValue<MeasurementType.Length, HeightUnit>
+) = SquareMeter.area(this, height)

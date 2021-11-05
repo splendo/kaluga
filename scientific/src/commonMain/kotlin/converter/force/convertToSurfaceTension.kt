@@ -34,12 +34,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivMetricLength")
-infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).surfaceTension(this, length)
+infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).surfaceTension(this, length)
+
 @JvmName("imperialForceDivImperialLength")
-infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).surfaceTension(this, length)
+infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).surfaceTension(this, length)
+
 @JvmName("ukImperialForceDivImperialLength")
-infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).surfaceTension(this, length)
+infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).surfaceTension(this, length)
+
 @JvmName("usCustomaryForceDivImperialLength")
-infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (unit per length.unit).surfaceTension(this, length)
+infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (unit per length.unit).surfaceTension(this, length)
+
 @JvmName("forceDivLength")
-infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.div(length: ScientificValue<MeasurementType.Length, LengthUnit>) = (Newton per Meter).surfaceTension(this, length)
+infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    length: ScientificValue<MeasurementType.Length, LengthUnit>
+) = (Newton per Meter).surfaceTension(this, length)

@@ -28,6 +28,10 @@ import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Abvolt.voltage(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.MagneticFlux, Maxwell>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) =
+    Abvolt.voltage(this, time)
+
 @JvmName("fluxDivTime")
-infix operator fun <FluxUnit : MagneticFlux, TimeUnit : Time> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = Volt.voltage(this, time)
+infix operator fun <FluxUnit : MagneticFlux, TimeUnit : Time> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = Volt.voltage(this, time)

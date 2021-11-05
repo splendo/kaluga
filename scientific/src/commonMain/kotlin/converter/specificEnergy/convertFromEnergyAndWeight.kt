@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy
-> SpecificEnergyUnit.specificEnergy(
+    > SpecificEnergyUnit.specificEnergy(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
 ) = specificEnergy(energy, weight, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     WeightUnit : Weight,
     SpecificEnergyUnit : SpecificEnergy,
     Value : ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
-> SpecificEnergyUnit.specificEnergy(
+    > SpecificEnergyUnit.specificEnergy(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value

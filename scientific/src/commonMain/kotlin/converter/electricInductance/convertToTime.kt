@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("inductanceDivResistance")
-infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Second.time(this, resistance)
+infix operator fun <InductanceUnit : ElectricInductance, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricInductance, InductanceUnit>.div(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) = Second.time(this, resistance)

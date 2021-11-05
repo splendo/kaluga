@@ -32,7 +32,7 @@ fun <
     DynamicViscosityUnit : DynamicViscosity,
     TimeUnit : Time,
     PressureUnit : Pressure
-> PressureUnit.pressure(
+    > PressureUnit.pressure(
     dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = pressure(dynamicViscosity, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     PressureUnit : Pressure,
     Value : ScientificValue<MeasurementType.Pressure, PressureUnit>
-> PressureUnit.pressure(
+    > PressureUnit.pressure(
     dynamicViscosity: ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, PressureUnit) -> Value

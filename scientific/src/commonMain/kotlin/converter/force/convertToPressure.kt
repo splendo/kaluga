@@ -55,40 +55,90 @@ import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("dyneDivMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, Dyne>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Barye.pressure(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, Dyne>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) =
+    Barye.pressure(this, area)
+
 @JvmName("dyneMultipleDivMetricArea")
-infix operator fun <DyneUnit, AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, DyneUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = Barye.pressure(this, area)
+infix operator fun <DyneUnit, AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, DyneUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+    Barye.pressure(this, area)
+
 @JvmName("metricForceDivMetricArea")
-infix operator fun <ForceUnit : MetricForce, AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Pascal.pressure(this, area)
+infix operator fun <ForceUnit : MetricForce, AreaUnit : MetricArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Pascal.pressure(this, area)
+
 @JvmName("poundalDivSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFoot.pressure(this, area)
+infix operator fun ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    PoundSquareFoot.pressure(this, area)
+
 @JvmName("poundalDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, Poundal>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = PoundSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, Poundal>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = PoundSquareInch.pressure(this, area)
+
 @JvmName("poundForceDivSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = PoundSquareFoot.pressure(this, area)
+infix operator fun ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    PoundSquareFoot.pressure(this, area)
+
 @JvmName("poundForceDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, PoundForce>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = PoundSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, PoundForce>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = PoundSquareInch.pressure(this, area)
+
 @JvmName("ounceForceDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, OunceForce>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = OunceSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, OunceForce>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = OunceSquareInch.pressure(this, area)
+
 @JvmName("grainForceDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, GrainForce>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = OunceSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, GrainForce>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = OunceSquareInch.pressure(this, area)
+
 @JvmName("kipDivSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = KipSquareFoot.pressure(this, area)
+infix operator fun ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    KipSquareFoot.pressure(this, area)
+
 @JvmName("kipDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = KipSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, Kip>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) =
+    KipSquareInch.pressure(this, area)
+
 @JvmName("usTonForceDivSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = USTonSquareFoot.pressure(this, area)
+infix operator fun ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    USTonSquareFoot.pressure(this, area)
+
 @JvmName("usTonForceDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, UsTonForce>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = USTonSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, UsTonForce>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = USTonSquareInch.pressure(this, area)
+
 @JvmName("imperialTonForceDivSquareFoot")
-infix operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) = ImperialTonSquareFoot.pressure(this, area)
+infix operator fun ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, SquareFoot>) =
+    ImperialTonSquareFoot.pressure(this, area)
+
 @JvmName("imperialTonForceDivImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ImperialTonForce>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ImperialTonSquareInch.pressure(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ImperialTonForce>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ImperialTonSquareInch.pressure(this, area)
+
 @JvmName("imperialForceDivImperialArea")
-infix operator fun <ForceUnit : ImperialForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = PoundSquareInch.pressure(this, area)
+infix operator fun <ForceUnit : ImperialForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = PoundSquareInch.pressure(this, area)
+
 @JvmName("usCustomaryForceDivImperialArea")
-infix operator fun <ForceUnit : USCustomaryForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = PoundSquareInch.usCustomary.pressure(this, area)
+infix operator fun <ForceUnit : USCustomaryForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = PoundSquareInch.usCustomary.pressure(this, area)
+
 @JvmName("ukImperialForceDivImperialArea")
-infix operator fun <ForceUnit : UKImperialForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = PoundSquareInch.ukImperial.pressure(this, area)
+infix operator fun <ForceUnit : UKImperialForce, AreaUnit : ImperialArea> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = PoundSquareInch.ukImperial.pressure(this, area)
+
 @JvmName("forceDivArea")
-infix operator fun <ForceUnit : Force, AreaUnit : Area> ScientificValue<MeasurementType.Force, ForceUnit>.div(area: ScientificValue<MeasurementType.Area, AreaUnit>) = Pascal.pressure(this, area)
+infix operator fun <ForceUnit : Force, AreaUnit : Area> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = Pascal.pressure(this, area)

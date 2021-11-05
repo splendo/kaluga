@@ -32,7 +32,7 @@ fun <
     VoltageUnit : Voltage,
     TimeUnit : Time,
     FluxUnit : MagneticFlux
-> VoltageUnit.voltage(
+    > VoltageUnit.voltage(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = voltage(flux, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     FluxUnit : MagneticFlux,
     Value : ScientificValue<MeasurementType.Voltage, VoltageUnit>
-> VoltageUnit.voltage(
+    > VoltageUnit.voltage(
     flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, VoltageUnit) -> Value

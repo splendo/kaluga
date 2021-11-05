@@ -23,7 +23,6 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.MeasurementType
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 import kotlin.math.PI
 
 val MetricLuminanceUnits: Set<MetricLuminance> get() = setOf(
@@ -145,5 +144,3 @@ object FootLambert : ImperialLuminance() {
     override fun fromSIUnit(value: Decimal): Decimal = Apostilb.fromSIUnit(SquareFoot.toSIUnit(value))
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(Apostilb.toSIUnit(value))
 }
-
-

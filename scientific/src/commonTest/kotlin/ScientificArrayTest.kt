@@ -69,9 +69,9 @@ class ScientificArrayTest {
         assertEquals(listOf(1000.0, 2000.0, 3000.0, 4000.0, 5000.0), listOfLength.values.asList())
 
         val intListOfLength = listOfLength.convert(Meter, ::MockIntScientificArray)
-        assertEquals(listOf(1, 2, 3, 4 ,5), intListOfLength.values.asList())
+        assertEquals(listOf(1, 2, 3, 4, 5), intListOfLength.values.asList())
 
-        assertEquals(listOf(1, 2, 3, 4 ,5), listOfLength.convertValues(Meter).map { it.toInt() })
+        assertEquals(listOf(1, 2, 3, 4, 5), listOfLength.convertValues(Meter).map { it.toInt() })
     }
 
     @Test

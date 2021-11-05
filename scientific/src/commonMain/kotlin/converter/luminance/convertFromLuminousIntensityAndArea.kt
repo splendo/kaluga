@@ -32,7 +32,7 @@ fun <
     LuminousIntensityUnit : LuminousIntensity,
     AreaUnit : Area,
     LuminanceUnit : Luminance
-> LuminanceUnit.luminance(
+    > LuminanceUnit.luminance(
     luminousIntensity: ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>
 ) = luminance(luminousIntensity, area, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AreaUnit : Area,
     LuminanceUnit : Luminance,
     Value : ScientificValue<MeasurementType.Luminance, LuminanceUnit>
-> LuminanceUnit.luminance(
+    > LuminanceUnit.luminance(
     luminousIntensity: ScientificValue<MeasurementType.LuminousIntensity, LuminousIntensityUnit>,
     area: ScientificValue<MeasurementType.Area, AreaUnit>,
     factory: (Decimal, LuminanceUnit) -> Value

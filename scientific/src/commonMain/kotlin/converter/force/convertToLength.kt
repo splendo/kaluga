@@ -32,12 +32,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivMetricSurfaceTension")
-infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>) = surfaceTension.unit.per.length(this, surfaceTension)
+infix operator fun <ForceUnit : MetricForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, MetricSurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
 @JvmName("imperialForceDivImperialSurfaceTension")
-infix operator fun <ForceUnit : ImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = surfaceTension.unit.per.length(this, surfaceTension)
+infix operator fun <ForceUnit : ImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
 @JvmName("ukImperialForceDivImperialSurfaceTension")
-infix operator fun <ForceUnit : UKImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = surfaceTension.unit.per.length(this, surfaceTension)
+infix operator fun <ForceUnit : UKImperialForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
 @JvmName("usCustomaryForceDivImperialSurfaceTension")
-infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>) = surfaceTension.unit.per.length(this, surfaceTension)
+infix operator fun <ForceUnit : USCustomaryForce> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, ImperialSurfaceTension>
+) = surfaceTension.unit.per.length(this, surfaceTension)
+
 @JvmName("forceDivSurfaceTension")
-infix operator fun <ForceUnit : Force, SurfaceTensionUnit : SurfaceTension> ScientificValue<MeasurementType.Force, ForceUnit>.div(surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>) = Meter.length(this, surfaceTension)
+infix operator fun <ForceUnit : Force, SurfaceTensionUnit : SurfaceTension> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    surfaceTension: ScientificValue<MeasurementType.SurfaceTension, SurfaceTensionUnit>
+) = Meter.length(this, surfaceTension)

@@ -32,7 +32,7 @@ fun <
     MolarMassUnit : MolarMass,
     DensityUnit : Density,
     MolarVolumeUnit : MolarVolume
-> MolarVolumeUnit.molarVolume(
+    > MolarVolumeUnit.molarVolume(
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
     density: ScientificValue<MeasurementType.Density, DensityUnit>
 ) = molarVolume(molarMass, density, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     DensityUnit : Density,
     MolarVolumeUnit : MolarVolume,
     Value : ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
-> MolarVolumeUnit.molarVolume(
+    > MolarVolumeUnit.molarVolume(
     molarMass: ScientificValue<MeasurementType.MolarMass, MolarMassUnit>,
     density: ScientificValue<MeasurementType.Density, DensityUnit>,
     factory: (Decimal, MolarVolumeUnit) -> Value

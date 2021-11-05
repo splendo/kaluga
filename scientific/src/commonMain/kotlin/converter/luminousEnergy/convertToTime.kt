@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.LuminousFlux
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivLuminousFlux")
-infix operator fun <LuminousFluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>) = unit.time.time(this, luminousFlux)
+infix operator fun <LuminousFluxUnit : LuminousFlux> ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>.div(
+    luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>
+) = unit.time.time(this, luminousFlux)

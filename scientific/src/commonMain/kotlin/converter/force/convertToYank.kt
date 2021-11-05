@@ -31,12 +31,26 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivTime")
-infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).yank(this, time)
+infix operator fun <ForceUnit : MetricForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).yank(this, time)
+
 @JvmName("imperialForceDivTime")
-infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).yank(this, time)
+infix operator fun <ForceUnit : ImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).yank(this, time)
+
 @JvmName("ukImperialForceDivTime")
-infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).yank(this, time)
+infix operator fun <ForceUnit : UKImperialForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).yank(this, time)
+
 @JvmName("usCustomaryForceDivTime")
-infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).yank(this, time)
+infix operator fun <ForceUnit : USCustomaryForce, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).yank(this, time)
+
 @JvmName("forceDivTime")
-infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Newton per time.unit).yank(this, time)
+infix operator fun <ForceUnit : Force, TimeUnit : Time> ScientificValue<MeasurementType.Force, ForceUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (Newton per time.unit).yank(this, time)

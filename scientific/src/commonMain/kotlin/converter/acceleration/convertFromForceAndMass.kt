@@ -32,7 +32,7 @@ fun <
     MassUnit : Weight,
     AccelerationUnit : Acceleration,
     ForceUnit : Force
-> AccelerationUnit.acceleration(
+    > AccelerationUnit.acceleration(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     mass: ScientificValue<MeasurementType.Weight, MassUnit>
 ) = acceleration(force, mass, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     AccelerationUnit : Acceleration,
     ForceUnit : Force,
     Value : ScientificValue<MeasurementType.Acceleration, AccelerationUnit>
-> AccelerationUnit.acceleration(
+    > AccelerationUnit.acceleration(
     force: ScientificValue<MeasurementType.Force, ForceUnit>,
     mass: ScientificValue<MeasurementType.Weight, MassUnit>,
     factory: (Decimal, AccelerationUnit) -> Value

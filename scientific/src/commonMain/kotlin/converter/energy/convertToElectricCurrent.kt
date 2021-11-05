@@ -31,8 +31,14 @@ import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivMaxwell")
-infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) = Abampere.current(this, flux)
+infix operator fun ScientificValue<MeasurementType.Energy, Erg>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) =
+    Abampere.current(this, flux)
+
 @JvmName("ergMultipleDivMaxwell")
-infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = Abampere.current(this, flux)
+infix operator fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, Maxwell>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    Abampere.current(this, flux)
+
 @JvmName("energyDivFlux")
-infix operator fun <EnergyUnit : Energy, FluxUnit : MagneticFlux> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>) = Ampere.current(this, flux)
+infix operator fun <EnergyUnit : Energy, FluxUnit : MagneticFlux> ScientificValue<MeasurementType.Energy, EnergyUnit>.div(
+    flux: ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
+) = Ampere.current(this, flux)

@@ -39,24 +39,52 @@ import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("centimeterTimesDyne")
-infix operator fun ScientificValue<MeasurementType.Length, Centimeter>.times(force: ScientificValue<MeasurementType.Force, Dyne>) = force * this
+infix operator fun ScientificValue<MeasurementType.Length, Centimeter>.times(force: ScientificValue<MeasurementType.Force, Dyne>) =
+    force * this
+
 @JvmName("centimeterTimesDyneMultiple")
-infix operator fun <DyneUnit> ScientificValue<MeasurementType.Length, Centimeter>.times(force: ScientificValue<MeasurementType.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> = force * this
+infix operator fun <DyneUnit> ScientificValue<MeasurementType.Length, Centimeter>.times(force: ScientificValue<MeasurementType.Force, DyneUnit>) where DyneUnit : Force, DyneUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Force, Dyne> =
+    force * this
+
 @JvmName("metricLengthTimesMetricForce")
-infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : MetricForce, LengthUnit : MetricLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>
+) = force * this
+
 @JvmName("imperialLengthTimesPoundal")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, Poundal>) = force * this
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, Poundal>
+) = force * this
+
 @JvmName("inchTimesPoundForce")
-infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(force: ScientificValue<MeasurementType.Force, PoundForce>) = force * this
+infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(force: ScientificValue<MeasurementType.Force, PoundForce>) =
+    force * this
+
 @JvmName("inchTimesOunceForce")
-infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(force: ScientificValue<MeasurementType.Force, OunceForce>) = force * this
+infix operator fun ScientificValue<MeasurementType.Length, Inch>.times(force: ScientificValue<MeasurementType.Force, OunceForce>) =
+    force * this
+
 @JvmName("imperialLengthTimesPoundForce")
-infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, PoundForce>) = force * this
+infix operator fun <LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, PoundForce>
+) = force * this
+
 @JvmName("imperialLengthTimesImperialForce")
-infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : ImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>
+) = force * this
+
 @JvmName("imperialLengthTimesUKImperialForce")
-infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : UKImperialForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>
+) = force * this
+
 @JvmName("imperialLengthTimesUSCustomaryForce")
-infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : USCustomaryForce, LengthUnit : ImperialLength> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>
+) = force * this
+
 @JvmName("lengthTimesForce")
-infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(force: ScientificValue<MeasurementType.Force, ForceUnit>) = force * this
+infix operator fun <ForceUnit : Force, LengthUnit : Length> ScientificValue<MeasurementType.Length, LengthUnit>.times(
+    force: ScientificValue<MeasurementType.Force, ForceUnit>
+) = force * this

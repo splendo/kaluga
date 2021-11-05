@@ -31,13 +31,21 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensitySpecificVolume")
-fun ScientificValue<MeasurementType.Density, MetricDensity>.specificVolume() = (unit.per per unit.weight).specificVolume(this)
-@JvmName("imperialDensitySpecificVolume")
-fun ScientificValue<MeasurementType.Density, ImperialDensity>.specificVolume() = (unit.per per unit.weight).specificVolume(this)
-@JvmName("ukImperialDensitySpecificVolume")
-fun ScientificValue<MeasurementType.Density, UKImperialDensity>.specificVolume() = (unit.per per unit.weight).specificVolume(this)
-@JvmName("usCustomaryDensitySpecificVolume")
-fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.specificVolume() = (unit.per per unit.weight).specificVolume(this)
-@JvmName("densitySpecificVolume")
-fun <DensityUnit : Density> ScientificValue<MeasurementType.Density, DensityUnit>.specificVolume() = (CubicMeter per Kilogram).specificVolume(this)
+fun ScientificValue<MeasurementType.Density, MetricDensity>.specificVolume() =
+    (unit.per per unit.weight).specificVolume(this)
 
+@JvmName("imperialDensitySpecificVolume")
+fun ScientificValue<MeasurementType.Density, ImperialDensity>.specificVolume() =
+    (unit.per per unit.weight).specificVolume(this)
+
+@JvmName("ukImperialDensitySpecificVolume")
+fun ScientificValue<MeasurementType.Density, UKImperialDensity>.specificVolume() =
+    (unit.per per unit.weight).specificVolume(this)
+
+@JvmName("usCustomaryDensitySpecificVolume")
+fun ScientificValue<MeasurementType.Density, USCustomaryDensity>.specificVolume() =
+    (unit.per per unit.weight).specificVolume(this)
+
+@JvmName("densitySpecificVolume")
+fun <DensityUnit : Density> ScientificValue<MeasurementType.Density, DensityUnit>.specificVolume() =
+    (CubicMeter per Kilogram).specificVolume(this)

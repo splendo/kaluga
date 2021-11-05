@@ -46,4 +46,7 @@ fun <
     > SpecificEnergyUnit.specificEnergy(
     equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>,
     factory: (Decimal, SpecificEnergyUnit) -> Value
-) = DefaultScientificValue(equivalentDose.convert(Sievert).value, Joule per Kilogram).convert(this, factory)
+) = DefaultScientificValue(equivalentDose.convert(Sievert).value, Joule per Kilogram).convert(
+    this,
+    factory
+)

@@ -124,7 +124,7 @@ object Gigaphot : MetricIlluminance(), MetricMultipleUnit<MeasurementSystem.Metr
 object FootCandle : ImperialIlluminance() {
     override val symbol: String = "fc"
     override val system = MeasurementSystem.Imperial
-    override val type=  MeasurementType.Illuminance
+    override val type = MeasurementType.Illuminance
     override fun fromSIUnit(value: Decimal): Decimal = SquareFoot.toSIUnit(value)
     override fun toSIUnit(value: Decimal): Decimal = SquareFoot.fromSIUnit(value)
 }

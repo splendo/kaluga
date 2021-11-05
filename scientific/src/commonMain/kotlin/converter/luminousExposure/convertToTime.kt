@@ -29,8 +29,16 @@ import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
 import kotlin.jvm.JvmName
 
 @JvmName("metricLuminousExposureDivMetricIlluminance")
-infix operator fun <IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = unit.time.time(this, illuminance)
+infix operator fun <IlluminanceUnit : MetricIlluminance> ScientificValue<MeasurementType.LuminousExposure, MetricLuminousExposure>.div(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = unit.time.time(this, illuminance)
+
 @JvmName("imperialLuminousExposureDivImperialIlluminance")
-infix operator fun <IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = unit.time.time(this, illuminance)
+infix operator fun <IlluminanceUnit : ImperialIlluminance> ScientificValue<MeasurementType.LuminousExposure, ImperialLuminousExposure>.div(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = unit.time.time(this, illuminance)
+
 @JvmName("luminousExposureDivIlluminance")
-infix operator fun <IlluminanceUnit : Illuminance> ScientificValue<MeasurementType.LuminousExposure, LuminousExposure>.div(illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>) = unit.time.time(this, illuminance)
+infix operator fun <IlluminanceUnit : Illuminance> ScientificValue<MeasurementType.LuminousExposure, LuminousExposure>.div(
+    illuminance: ScientificValue<MeasurementType.Illuminance, IlluminanceUnit>
+) = unit.time.time(this, illuminance)

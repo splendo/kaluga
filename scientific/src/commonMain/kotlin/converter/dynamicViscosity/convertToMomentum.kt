@@ -34,12 +34,26 @@ import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
 import kotlin.jvm.JvmName
 
 @JvmName("metricDynamicViscosityTimesMetricArea")
-infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.DynamicViscosity, MetricDynamicViscosity>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+infix operator fun <AreaUnit : MetricArea> ScientificValue<MeasurementType.DynamicViscosity, MetricDynamicViscosity>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+
 @JvmName("imperialDynamicViscosityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, ImperialDynamicViscosity>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, ImperialDynamicViscosity>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+
 @JvmName("ukImperialDynamicViscosityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, UKImperialDynamicViscosity>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, UKImperialDynamicViscosity>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+
 @JvmName("usCustomaryDynamicViscosityTimesImperialArea")
-infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, USCustomaryDynamicViscosity>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+infix operator fun <AreaUnit : ImperialArea> ScientificValue<MeasurementType.DynamicViscosity, USCustomaryDynamicViscosity>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+
 @JvmName("dynamicViscosityTimesArea")
-infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.times(area: ScientificValue<MeasurementType.Area, AreaUnit>) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)
+infix operator fun <DynamicViscosityUnit : DynamicViscosity, AreaUnit : Area> ScientificValue<MeasurementType.DynamicViscosity, DynamicViscosityUnit>.times(
+    area: ScientificValue<MeasurementType.Area, AreaUnit>
+) = ((1(unit.pressure) * area) * 1(unit.time)).unit.momentum(this, area)

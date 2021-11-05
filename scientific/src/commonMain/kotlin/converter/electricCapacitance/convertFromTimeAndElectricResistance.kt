@@ -32,7 +32,7 @@ fun <
     CapacitanceUnit : ElectricCapacitance,
     TimeUnit : Time,
     ResistanceUnit : ElectricResistance
-> CapacitanceUnit.capacitance(
+    > CapacitanceUnit.capacitance(
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
 ) = capacitance(time, resistance, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     ResistanceUnit : ElectricResistance,
     Value : ScientificValue<MeasurementType.ElectricCapacitance, CapacitanceUnit>
-> CapacitanceUnit.capacitance(
+    > CapacitanceUnit.capacitance(
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>,
     factory: (Decimal, CapacitanceUnit) -> Value

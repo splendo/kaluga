@@ -26,4 +26,6 @@ import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.jvm.JvmName
 
 @JvmName("luminousFluxDivIntensity")
-infix operator fun <FluxUnit : LuminousFlux, IntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>) = Steradian.solidAngle(this, intensity)
+infix operator fun <FluxUnit : LuminousFlux, IntensityUnit : LuminousIntensity> ScientificValue<MeasurementType.LuminousFlux, FluxUnit>.div(
+    intensity: ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>
+) = Steradian.solidAngle(this, intensity)

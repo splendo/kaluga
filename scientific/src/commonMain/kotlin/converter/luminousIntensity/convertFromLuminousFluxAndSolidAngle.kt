@@ -32,7 +32,7 @@ fun <
     IntensityUnit : LuminousIntensity,
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux
-> IntensityUnit.luminousIntensity(
+    > IntensityUnit.luminousIntensity(
     flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
     solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>
 ) = luminousIntensity(flux, solidAngle, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     SolidAngleUnit : SolidAngle,
     FluxUnit : LuminousFlux,
     Value : ScientificValue<MeasurementType.LuminousIntensity, IntensityUnit>
-> IntensityUnit.luminousIntensity(
+    > IntensityUnit.luminousIntensity(
     flux: ScientificValue<MeasurementType.LuminousFlux, FluxUnit>,
     solidAngle: ScientificValue<MeasurementType.SolidAngle, SolidAngleUnit>,
     factory: (Decimal, IntensityUnit) -> Value

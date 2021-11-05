@@ -25,4 +25,6 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesLuminousFlux")
-infix operator fun <LuminousFluxUnit : LuminousFlux, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>) = luminousFlux * this
+infix operator fun <LuminousFluxUnit : LuminousFlux, TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.times(
+    luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>
+) = luminousFlux * this

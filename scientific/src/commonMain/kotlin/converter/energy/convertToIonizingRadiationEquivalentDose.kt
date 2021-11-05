@@ -31,8 +31,14 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("ergEquivalentDoseByGram")
-infix fun ScientificValue<MeasurementType.Energy, Erg>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) = RoentgenEquivalentMan.equivalentDose(this, gram)
+infix fun ScientificValue<MeasurementType.Energy, Erg>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) =
+    RoentgenEquivalentMan.equivalentDose(this, gram)
+
 @JvmName("ergMultipleEquivalentDoseByGram")
-infix fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> = RoentgenEquivalentMan.equivalentDose(this, gram)
+infix fun <ErgUnit> ScientificValue<MeasurementType.Energy, ErgUnit>.equivalentDoseBy(gram: ScientificValue<MeasurementType.Weight, Gram>) where ErgUnit : Energy, ErgUnit : MetricMultipleUnit<MeasurementSystem.Metric, MeasurementType.Energy, Erg> =
+    RoentgenEquivalentMan.equivalentDose(this, gram)
+
 @JvmName("energyEquivalentDoseByWeight")
-infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<MeasurementType.Energy, EnergyUnit>.equivalentDoseBy(weight: ScientificValue<MeasurementType.Weight, WeightUnit>) = Sievert.equivalentDose(this, weight)
+infix fun <EnergyUnit : Energy, WeightUnit : Weight> ScientificValue<MeasurementType.Energy, EnergyUnit>.equivalentDoseBy(
+    weight: ScientificValue<MeasurementType.Weight, WeightUnit>
+) = Sievert.equivalentDose(this, weight)

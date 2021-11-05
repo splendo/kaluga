@@ -30,8 +30,16 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAccelerationDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).jolt(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, MetricAcceleration>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).jolt(this, time)
+
 @JvmName("imperialAccelerationDivTime")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (unit per time.unit).jolt(this, time)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, ImperialAcceleration>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (unit per time.unit).jolt(this, time)
+
 @JvmName("speedDivTime")
-infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.div(time: ScientificValue<MeasurementType.Time, TimeUnit>) = (Meter per Second per Second per time.unit).jolt(this, time)
+infix operator fun <AccelerationUnit : Acceleration, TimeUnit : Time> ScientificValue<MeasurementType.Acceleration, AccelerationUnit>.div(
+    time: ScientificValue<MeasurementType.Time, TimeUnit>
+) = (Meter per Second per Second per time.unit).jolt(this, time)

@@ -32,7 +32,7 @@ fun <
     LengthUnit : Length,
     TimeUnit : Time,
     SpeedUnit : Speed
-> LengthUnit.distance(
+    > LengthUnit.distance(
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = distance(speed, time, ::DefaultScientificValue)
@@ -43,9 +43,8 @@ fun <
     TimeUnit : Time,
     SpeedUnit : Speed,
     Value : ScientificValue<MeasurementType.Length, LengthUnit>
-> LengthUnit.distance(
+    > LengthUnit.distance(
     speed: ScientificValue<MeasurementType.Speed, SpeedUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, LengthUnit) -> Value
 ) = byMultiplying(speed, time, factory)
-

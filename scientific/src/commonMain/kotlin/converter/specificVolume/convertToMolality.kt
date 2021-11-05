@@ -33,23 +33,51 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificVolumeDivMolarVolume")
-infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.div(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.div(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+
 @JvmName("imperialSpecificVolumeDivMolarVolume")
-infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.div(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.div(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+
 @JvmName("ukImperialSpecificVolumeDivMolarVolume")
-infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.div(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.div(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+
 @JvmName("usCustomarySpecificVolumeDivMolarVolume")
-infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.div(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+infix operator fun <MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.div(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = (molarVolume.unit.per per unit.per).molality(this, molarVolume)
+
 @JvmName("specificVolumeDivMolarVolume")
-infix operator fun <SpecificVolumeUnit : SpecificVolume, MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.div(molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>) = (molarVolume.unit.per per Kilogram).molality(this, molarVolume)
+infix operator fun <SpecificVolumeUnit : SpecificVolume, MolarVolumeUnit : MolarVolume> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.div(
+    molarVolume: ScientificValue<MeasurementType.MolarVolume, MolarVolumeUnit>
+) = (molarVolume.unit.per per Kilogram).molality(this, molarVolume)
 
 @JvmName("metricSpecificVolumeTimesMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.times(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = molarity * this
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>.times(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = molarity * this
+
 @JvmName("imperialSpecificVolumeTimesMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = molarity * this
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, ImperialSpecificVolume>.times(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = molarity * this
+
 @JvmName("ukImperialSpecificVolumeTimesMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = molarity * this
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, UKImperialSpecificVolume>.times(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = molarity * this
+
 @JvmName("usCustomarySpecificVolumeTimesMolarity")
-infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = molarity * this
+infix operator fun <MolarityUnit : Molarity> ScientificValue<MeasurementType.SpecificVolume, USCustomarySpecificVolume>.times(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = molarity * this
+
 @JvmName("specificVolumeTimesMolarity")
-infix operator fun <MolarityUnit : Molarity, SpecificVolumeUnit : SpecificVolume> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.times(molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>) = molarity * this
+infix operator fun <MolarityUnit : Molarity, SpecificVolumeUnit : SpecificVolume> ScientificValue<MeasurementType.SpecificVolume, SpecificVolumeUnit>.times(
+    molarity: ScientificValue<MeasurementType.Molarity, MolarityUnit>
+) = molarity * this

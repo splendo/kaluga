@@ -32,7 +32,7 @@ fun <
     VolumeUnit : Volume,
     TimeUnit : Time,
     VolumetricFlowUnit : VolumetricFlow
-> VolumetricFlowUnit.volumetricFlow(
+    > VolumetricFlowUnit.volumetricFlow(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = volumetricFlow(volume, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     VolumetricFlowUnit : VolumetricFlow,
     Value : ScientificValue<MeasurementType.VolumetricFlow, VolumetricFlowUnit>
-> VolumetricFlowUnit.volumetricFlow(
+    > VolumetricFlowUnit.volumetricFlow(
     volume: ScientificValue<MeasurementType.Volume, VolumeUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, VolumetricFlowUnit) -> Value

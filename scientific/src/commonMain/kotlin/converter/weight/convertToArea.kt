@@ -34,16 +34,36 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricAreaDensity")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("imperialWeightDivImperialAreaDensity")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("ukImperialWeightDivImperialAreaDensity")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("ukImperialWeightDivUKImperialAreaDensity")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, UKImperialAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("usCustomaryWeightDivImperialAreaDensity")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, ImperialAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("usCustomaryWeightDivUSCustomaryAreaDensity")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>) = areaDensity.unit.per.area(this, areaDensity)
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, USCustomaryAreaDensity>
+) = areaDensity.unit.per.area(this, areaDensity)
+
 @JvmName("weightDivAreaDensity")
-infix operator fun <WeightUnit : Weight, AreaDensityUnit : AreaDensity> ScientificValue<MeasurementType.Weight, WeightUnit>.div(areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>) = SquareMeter.area(this, areaDensity)
+infix operator fun <WeightUnit : Weight, AreaDensityUnit : AreaDensity> ScientificValue<MeasurementType.Weight, WeightUnit>.div(
+    areaDensity: ScientificValue<MeasurementType.AreaDensity, AreaDensityUnit>
+) = SquareMeter.area(this, areaDensity)

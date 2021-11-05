@@ -153,7 +153,7 @@ class ScientificUnitTest {
 
     @Test
     fun testEnergy() {
-        assertScientificUnit(1000, Joule, Electronvolt,  6.2415090744607621e+18, 10000.0)
+        assertScientificUnit(1000, Joule, Electronvolt, 6.2415090744607621e+18, 10000.0)
         assertScientificUnit(1000, Joule, FootPoundal, 23.730360404231938, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, HorsepowerHour, 3.72506136e-7, unitTranslationErrorTolerance)
         assertScientificUnit(1000, Joule, BritishThermalUnit, 0.000947817120313, unitTranslationErrorTolerance)
@@ -197,13 +197,13 @@ class ScientificUnitTest {
     @Test
     fun testHeatCapacity() {
         assertScientificUnit(1000, Joule per Kelvin, Joule per Celsius, 1.0)
-        assertScientificUnit(1000, WattHour per Kelvin, WattHour per Fahrenheit, 5.0/9.0)
+        assertScientificUnit(1000, WattHour per Kelvin, WattHour per Fahrenheit, 5.0 / 9.0)
     }
 
     @Test
     fun testThermalResistance() {
         assertScientificUnit(1000, Kelvin per Watt, Celsius per Watt, 1.0)
-        assertScientificUnit(1000, Kelvin per Watt, Fahrenheit per Watt, 9.0/5.0, unitTranslationErrorTolerance)
+        assertScientificUnit(1000, Kelvin per Watt, Fahrenheit per Watt, 9.0 / 5.0, unitTranslationErrorTolerance)
 
         val resistance = 1(Celsius) / 2(Watt)
         assertEquals(0.5, resistance.value)
@@ -235,11 +235,15 @@ sealed class UnitQuestion<
     Type : MeasurementType,
     MetricUnit,
     ImperialUnit
-    > where MetricUnit : ScientificUnit<Type>, MetricUnit : MeasurementUsage.UsedInMetric, ImperialUnit : ScientificUnit<Type>, ImperialUnit : MeasurementUsage.UsedInUSCustomary {
+    > where
+MetricUnit : ScientificUnit<Type>,
+MetricUnit : MeasurementUsage.UsedInMetric,
+ImperialUnit : ScientificUnit<Type>,
+ImperialUnit : MeasurementUsage.UsedInUSCustomary {
 
     abstract val metricScientificUnit: MetricUnit
     abstract val imperialScientificUnit: ImperialUnit
-    }
+}
 
 @Serializable
 data class LengthUnitQuestion(override val metricScientificUnit: MetricLength, override val imperialScientificUnit: ImperialLength) : UnitQuestion<MeasurementType.Length, MetricLength, ImperialLength>()

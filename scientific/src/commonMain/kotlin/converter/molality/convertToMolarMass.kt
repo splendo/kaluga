@@ -31,12 +31,21 @@ import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolalityMolarMass")
-fun ScientificValue<MeasurementType.Molality, MetricMolality>.molarMass() = (unit.per per unit.amountOfSubstance).molarMass(this)
+fun ScientificValue<MeasurementType.Molality, MetricMolality>.molarMass() =
+    (unit.per per unit.amountOfSubstance).molarMass(this)
+
 @JvmName("imperialMolalityMolarMass")
-fun ScientificValue<MeasurementType.Molality, ImperialMolality>.molarMass() = (unit.per per unit.amountOfSubstance).molarMass(this)
+fun ScientificValue<MeasurementType.Molality, ImperialMolality>.molarMass() =
+    (unit.per per unit.amountOfSubstance).molarMass(this)
+
 @JvmName("ukImperialMolalityMolarMass")
-fun ScientificValue<MeasurementType.Molality, UKImperialMolality>.molarMass() = (unit.per per unit.amountOfSubstance).molarMass(this)
+fun ScientificValue<MeasurementType.Molality, UKImperialMolality>.molarMass() =
+    (unit.per per unit.amountOfSubstance).molarMass(this)
+
 @JvmName("usCustomaryMolalityMolarMass")
-fun ScientificValue<MeasurementType.Molality, USCustomaryMolality>.molarMass() = (unit.per per unit.amountOfSubstance).molarMass(this)
+fun ScientificValue<MeasurementType.Molality, USCustomaryMolality>.molarMass() =
+    (unit.per per unit.amountOfSubstance).molarMass(this)
+
 @JvmName("molalityMolarMass")
-fun <MolalityUnit : Molality> ScientificValue<MeasurementType.Molality, MolalityUnit>.molarMass() = (Kilogram per Mole).molarMass(this)
+fun <MolalityUnit : Molality> ScientificValue<MeasurementType.Molality, MolalityUnit>.molarMass() =
+    (Kilogram per Mole).molarMass(this)

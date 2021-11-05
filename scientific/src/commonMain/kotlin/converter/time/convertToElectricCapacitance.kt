@@ -28,6 +28,10 @@ import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeDivAbohm")
-infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) = Abfarad.capacitance(this, resistance)
+infix operator fun <TimeUnit : Time> ScientificValue<MeasurementType.Time, TimeUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, Abohm>) =
+    Abfarad.capacitance(this, resistance)
+
 @JvmName("timeDivResistance")
-infix operator fun <TimeUnit : Time, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Time, TimeUnit>.div(resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>) = Farad.capacitance(this, resistance)
+infix operator fun <TimeUnit : Time, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.Time, TimeUnit>.div(
+    resistance: ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>
+) = Farad.capacitance(this, resistance)

@@ -33,14 +33,31 @@ import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialHeatCapacityDivMetricSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+
 @JvmName("metricAndUKImperialHeatCapacityDivUKImperialSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricAndUKImperialHeatCapacity>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+
 @JvmName("metricHeatCapacityDivMetricSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.HeatCapacity, MetricHeatCapacity>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, MetricSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+
 @JvmName("ukImperialHeatCapacityDivUKImperialSpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.HeatCapacity, UKImperialHeatCapacity>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, UKImperialSpecificHeatCapacity>
+) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+
 @JvmName("usCustomaryHeatCapacityDivUSCustomarySpecificHeatCapacity")
-infix operator fun ScientificValue<MeasurementType.HeatCapacity, USCustomaryHeatCapacity>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+infix operator fun ScientificValue<MeasurementType.HeatCapacity, USCustomaryHeatCapacity>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, USCustomarySpecificHeatCapacity>
+) = specificHeatCapacity.unit.perWeight.weight(this, specificHeatCapacity)
+
 @JvmName("heatCapacityDivSpecificHeatCapacity")
-infix operator fun <HeatCapacityUnit : HeatCapacity, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>.div(specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>) = Kilogram.weight(this, specificHeatCapacity)
+infix operator fun <HeatCapacityUnit : HeatCapacity, SpecificHeatCapacityUnit : SpecificHeatCapacity> ScientificValue<MeasurementType.HeatCapacity, HeatCapacityUnit>.div(
+    specificHeatCapacity: ScientificValue<MeasurementType.SpecificHeatCapacity, SpecificHeatCapacityUnit>
+) = Kilogram.weight(this, specificHeatCapacity)

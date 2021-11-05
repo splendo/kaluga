@@ -32,7 +32,7 @@ fun <
     AccelerationUnit : Acceleration,
     TimeUnit : Time,
     JoltUnit : Jolt
-> JoltUnit.jolt(
+    > JoltUnit.jolt(
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = jolt(acceleration, time, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     TimeUnit : Time,
     JoltUnit : Jolt,
     Value : ScientificValue<MeasurementType.Jolt, JoltUnit>
-> JoltUnit.jolt(
+    > JoltUnit.jolt(
     acceleration: ScientificValue<MeasurementType.Acceleration, AccelerationUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, JoltUnit) -> Value

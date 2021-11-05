@@ -41,34 +41,78 @@ import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("weightTimesRad")
-infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>) = absorbedDose * this
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, Rad>
+) = absorbedDose * this
+
 @JvmName("weightTimesRadMultiple")
-infix operator fun <AbsorbedDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad> = absorbedDose * this
+infix operator fun <AbsorbedDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) where AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, AbsorbedDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationAbsorbedDose, Rad> =
+    absorbedDose * this
+
 @JvmName("weightTimesAbsorbedDose")
-infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>) = absorbedDose * this
+infix operator fun <AbsorbedDoseUnit : IonizingRadiationAbsorbedDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    absorbedDose: ScientificValue<MeasurementType.IonizingRadiationAbsorbedDose, AbsorbedDoseUnit>
+) = absorbedDose * this
 
 @JvmName("weightTimesRoentgenEquivalentMan")
-infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>) = equivalentDose * this
+infix operator fun <WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan>
+) = equivalentDose * this
+
 @JvmName("weightTimesRoentgenEquivalentManMultiple")
-infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> = equivalentDose * this
+infix operator fun <EquivalentDoseUnit, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) where EquivalentDoseUnit : IonizingRadiationEquivalentDose, EquivalentDoseUnit : MetricMultipleUnit<MeasurementSystem.MetricAndImperial, MeasurementType.IonizingRadiationEquivalentDose, RoentgenEquivalentMan> =
+    equivalentDose * this
+
 @JvmName("weightTimesEquivalentDose")
-infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>) = equivalentDose * this
+infix operator fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    equivalentDose: ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>
+) = equivalentDose * this
 
 @JvmName("metricWeightTimesMetricSpecificEnergy")
-infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : MetricWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, MetricSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("imperialWeightTimesImperialSpecificEnergy")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("ukImperialWeightTimesImperialSpecificEnergy")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("usCustomaryWeightTimesImperialSpecificEnergy")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, ImperialSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("imperialWeightTimesUKImperialSpecificEnergy")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("ukImperialWeightTimesUKImperialSpecificEnergy")
-infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : UKImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, UKImperialSpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("imperialWeightTimesUSCustomarySpecificEnergy")
-infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : ImperialWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("usCustomaryWeightTimesUSCustomarySpecificEnergy")
-infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>) = specificEnergy * this
+infix operator fun <WeightUnit : USCustomaryWeight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, USCustomarySpecificEnergy>
+) = specificEnergy * this
+
 @JvmName("weightTimesSpecificEnergy")
-infix operator fun <SpecificEnergyUnit : SpecificEnergy, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>) = specificEnergy * this
+infix operator fun <SpecificEnergyUnit : SpecificEnergy, WeightUnit : Weight> ScientificValue<MeasurementType.Weight, WeightUnit>.times(
+    specificEnergy: ScientificValue<MeasurementType.SpecificEnergy, SpecificEnergyUnit>
+) = specificEnergy * this

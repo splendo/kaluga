@@ -32,7 +32,7 @@ fun <
     EnergyUnit : Energy,
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux
-> FluxUnit.flux(
+    > FluxUnit.flux(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
 ) = flux(energy, current, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     CurrentUnit : ElectricCurrent,
     FluxUnit : MagneticFlux,
     Value : ScientificValue<MeasurementType.MagneticFlux, FluxUnit>
-> FluxUnit.flux(
+    > FluxUnit.flux(
     energy: ScientificValue<MeasurementType.Energy, EnergyUnit>,
     current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>,
     factory: (Decimal, FluxUnit) -> Value

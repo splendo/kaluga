@@ -23,7 +23,6 @@ import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.scientific.MeasurementType
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmName
 
 val FrequencyUnits: Set<Frequency> get() = setOf(
     Hertz,

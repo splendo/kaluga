@@ -31,7 +31,7 @@ import kotlin.jvm.JvmName
 fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux
-> LuminousEnergy.luminousEnergy(
+    > LuminousEnergy.luminousEnergy(
     luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = luminousEnergy(luminousFlux, time, ::DefaultScientificValue)
@@ -41,7 +41,7 @@ fun <
     TimeUnit : Time,
     LuminousFluxUnit : LuminousFlux,
     Value : ScientificValue<MeasurementType.LuminousEnergy, LuminousEnergy>
-> LuminousEnergy.luminousEnergy(
+    > LuminousEnergy.luminousEnergy(
     luminousFlux: ScientificValue<MeasurementType.LuminousFlux, LuminousFluxUnit>,
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, LuminousEnergy) -> Value

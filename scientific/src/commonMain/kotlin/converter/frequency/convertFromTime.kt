@@ -36,7 +36,7 @@ import kotlin.jvm.JvmName
 fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
-> FrequencyUnit.frequency(
+    > FrequencyUnit.frequency(
     time: ScientificValue<MeasurementType.Time, TimeUnit>
 ) = frequency(time, ::DefaultScientificValue)
 
@@ -45,7 +45,7 @@ fun <
     TimeUnit : Time,
     FrequencyUnit : Frequency,
     Value : ScientificValue<MeasurementType.Frequency, FrequencyUnit>
-> FrequencyUnit.frequency(
+    > FrequencyUnit.frequency(
     time: ScientificValue<MeasurementType.Time, TimeUnit>,
     factory: (Decimal, FrequencyUnit) -> Value
 ) = byInverting(time, factory)
@@ -53,7 +53,10 @@ fun <
 fun <
     FrequencyUnit : Frequency,
     TimeUnit : Time
-    > FrequencyUnit.frequency(cycle: Decimal, per: ScientificValue<MeasurementType.Time, TimeUnit>) = frequency(cycle, per, ::DefaultScientificValue)
+    > FrequencyUnit.frequency(
+    cycle: Decimal,
+    per: ScientificValue<MeasurementType.Time, TimeUnit>
+) = frequency(cycle, per, ::DefaultScientificValue)
 
 fun <
     FrequencyUnit : Frequency,
@@ -62,4 +65,5 @@ fun <
     > FrequencyUnit.frequency(
     cycle: Decimal,
     per: ScientificValue<MeasurementType.Time, TimeUnit>,
-    factory: (Decimal, FrequencyUnit) -> Value) = (cycle / per.convertValue(Second))(Hertz).convert(this, factory)
+    factory: (Decimal, FrequencyUnit) -> Value
+) = (cycle / per.convertValue(Second))(Hertz).convert(this, factory)

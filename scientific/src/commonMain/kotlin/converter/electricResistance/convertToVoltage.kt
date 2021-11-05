@@ -28,8 +28,14 @@ import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("abohmTimesAbampere")
-infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) = current * this
+infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+    current * this
+
 @JvmName("abohmTimesBiot")
-infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) = current * this
+infix operator fun ScientificValue<MeasurementType.ElectricResistance, Abohm>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+    current * this
+
 @JvmName("resistanceTimesCurrent")
-infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = current * this
+infix operator fun <CurrentUnit : ElectricCurrent, ResistanceUnit : ElectricResistance> ScientificValue<MeasurementType.ElectricResistance, ResistanceUnit>.times(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = current * this

@@ -17,6 +17,9 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
+import com.splendo.kaluga.scientific.MeasurementType
+import com.splendo.kaluga.scientific.ScientificValue
+import com.splendo.kaluga.scientific.converter.energy.energy
 import com.splendo.kaluga.scientific.unit.Abampere
 import com.splendo.kaluga.scientific.unit.Biot
 import com.splendo.kaluga.scientific.unit.ElectricCurrent
@@ -24,14 +27,17 @@ import com.splendo.kaluga.scientific.unit.Erg
 import com.splendo.kaluga.scientific.unit.Joule
 import com.splendo.kaluga.scientific.unit.MagneticFlux
 import com.splendo.kaluga.scientific.unit.Maxwell
-import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.converter.energy.energy
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellTimesAbampere")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) = Erg.energy(this, current)
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Abampere>) =
+    Erg.energy(this, current)
+
 @JvmName("maxwellTimesBiot")
-infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) = Erg.energy(this, current)
+infix operator fun ScientificValue<MeasurementType.MagneticFlux, Maxwell>.times(current: ScientificValue<MeasurementType.ElectricCurrent, Biot>) =
+    Erg.energy(this, current)
+
 @JvmName("fluxTimesCurrent")
-infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.times(current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>) = Joule.energy(this, current)
+infix operator fun <FluxUnit : MagneticFlux, CurrentUnit : ElectricCurrent> ScientificValue<MeasurementType.MagneticFlux, FluxUnit>.times(
+    current: ScientificValue<MeasurementType.ElectricCurrent, CurrentUnit>
+) = Joule.energy(this, current)
