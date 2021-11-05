@@ -15,6 +15,7 @@
 
  */
 
+@file:JvmName("DecimalAndroid")
 package com.splendo.kaluga.base.utils
 
 import com.splendo.kaluga.base.utils.RoundingMode.RoundDown

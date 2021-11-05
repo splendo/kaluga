@@ -119,18 +119,18 @@ actual fun Decimal.div(value: Decimal, scale: Int, roundingMode: RoundingMode) =
 
 actual operator fun Decimal.times(value: Decimal) = copy(nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(value.nsDecimal))
 
-actual fun Decimal.times(value: Decimal, scale: Int) = copy(nsDecimal =
-nsDecimal.decimalNumberByMultiplyingBy(
-    decimalNumber = value.nsDecimal,
-    NSDecimalNumberHandler(
-        roundingMode = NSRoundingMode.NSRoundPlain,
-        scale = scale.toShort(),
-        raiseOnExactness = false,
-        raiseOnOverflow = false,
-        raiseOnUnderflow = false,
-        raiseOnDivideByZero = true
+actual fun Decimal.times(value: Decimal, scale: Int) = copy(
+    nsDecimal = nsDecimal.decimalNumberByMultiplyingBy(
+        decimalNumber = value.nsDecimal,
+        NSDecimalNumberHandler(
+            roundingMode = NSRoundingMode.NSRoundPlain,
+            scale = scale.toShort(),
+            raiseOnExactness = false,
+            raiseOnOverflow = false,
+            raiseOnUnderflow = false,
+            raiseOnDivideByZero = true
+        )
     )
-)
 )
 
 actual fun Decimal.times(value: Decimal, scale: Int, roundingMode: RoundingMode) = copy(
