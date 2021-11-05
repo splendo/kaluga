@@ -69,6 +69,9 @@ gradle.ext {
     mockito_version = "3.11.2"
     bytebuddy_version = "1.11.3"
 
+    // Javascript
+    js_bigdecimal_version="1.0.25"
+
     // used/modified at runtime.
     component_type_default = "default"
     component_type_compose = "compose"

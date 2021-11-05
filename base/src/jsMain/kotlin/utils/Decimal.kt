@@ -17,9 +17,9 @@
 
 package com.splendo.kaluga.base.utils
 
-actual data class Decimal(val double: Double)
+actual typealias Decimal = BigDecimal
 
-actual operator fun Decimal.plus(value: Decimal): Decimal = Decimal(this.double + value.double)
+actual operator fun Decimal.plus(value: Decimal): Decimal = this.add(this, value)
 
 actual fun Decimal.plus(value: Decimal, scale: Int): Decimal = this + value
 
@@ -29,7 +29,7 @@ actual fun Decimal.plus(
     roundingMode: RoundingMode
 ): Decimal = this + value
 
-actual operator fun Decimal.minus(value: Decimal): Decimal = Decimal(this.double - value.double)
+actual operator fun Decimal.minus(value: Decimal): Decimal = this.subtract(this, value)
 
 actual fun Decimal.minus(value: Decimal, scale: Int): Decimal = this - value
 
@@ -39,7 +39,7 @@ actual fun Decimal.minus(
     roundingMode: RoundingMode
 ): Decimal = this - value
 
-actual operator fun Decimal.div(value: Decimal): Decimal = Decimal(this.double / value.double)
+actual operator fun Decimal.div(value: Decimal): Decimal = this.divide(this, value)
 
 actual fun Decimal.div(value: Decimal, scale: Int): Decimal = this / value
 
@@ -49,7 +49,7 @@ actual fun Decimal.div(
     roundingMode: RoundingMode
 ): Decimal = this / value
 
-actual operator fun Decimal.times(value: Decimal): Decimal = Decimal(this.double * value.double)
+actual operator fun Decimal.times(value: Decimal): Decimal = this.multiply(this, value)
 
 actual fun Decimal.times(value: Decimal, scale: Int): Decimal = this * value
 
@@ -61,10 +61,10 @@ actual fun Decimal.times(
 
 actual fun Decimal.round(scale: Int, roundingMode: RoundingMode): Decimal = this
 
-actual fun Double.toDecimal(): Decimal = Decimal(this)
-actual fun Int.toDecimal(): Decimal = Decimal(this.toDouble())
-actual fun String.toDecimal(): Decimal = Decimal(this.toDouble())
+actual fun Double.toDecimal(): Decimal = BigDecimal().BigDecimal(this)
+actual fun Int.toDecimal(): Decimal = BigDecimal().BigDecimal(this)
+actual fun String.toDecimal(): Decimal = BigDecimal().BigDecimal(this)
 
-actual fun Decimal.toDouble(): Double = double
-actual fun Decimal.toInt(): Int = double.toInt()
-actual fun Decimal.toString(): String = double.toString()
+actual fun Decimal.toDouble(): Double = this.toNumber(this)
+actual fun Decimal.toInt(): Int = this.toFixed(0)
+actual fun Decimal.toString(): String = this.toString()
