@@ -14,8 +14,9 @@
     limitations under the License.
 
  */
-
 package com.splendo.kaluga.base.utils
+
+import kotlin.jvm.JvmName
 
 expect class Decimal : Comparable<Decimal>
 

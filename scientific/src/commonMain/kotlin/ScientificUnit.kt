@@ -46,7 +46,7 @@ sealed class AbstractScientificUnit<Type : MeasurementType> : ScientificUnit<Typ
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Number,
     to: ScientificUnit<Unit>
-) = convert(value.toDecimal(), to)
+) = convert(value.toDecimal(), to).toDouble()
 
 fun <Unit : MeasurementType> ScientificUnit<Unit>.convert(
     value: Decimal,

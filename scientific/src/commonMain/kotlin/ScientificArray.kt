@@ -22,6 +22,7 @@ import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDecimalList
 import com.splendo.kaluga.base.utils.toDoubleArray
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmName
 
 interface ScientificArray<ValueType : Number, Type : MeasurementType, Unit : ScientificUnit<Type>> {
     operator fun get(index: Int): ValueType
@@ -126,23 +127,27 @@ data class DefaultScientificArray<Type : MeasurementType, Unit : ScientificUnit<
 }
 
 // Creation
-
+@JvmName("scientificArrayFromListOfNumberDefault")
 operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>
     > List<Number>.invoke(unit: UnitType) = this.toDecimalList()(unit)
-operator fun <
 
+@JvmName("scientificArrayFromListOfNumber")
+operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>,
     NumberType : Number,
     ValueType : ScientificArray<NumberType, Type, UnitType>
     > List<Number>.invoke(unit: UnitType, factory: (List<Decimal>, UnitType) -> ValueType) = this.toDecimalList()(unit, factory)
 
+@JvmName("scientificArrayFromListOfDecimalDefault")
 operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>
     > List<Decimal>.invoke(unit: UnitType) = this(unit, ::DefaultScientificArray)
+
+@JvmName("scientificArrayFromListOfDecimal")
 operator fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>,
@@ -156,9 +161,9 @@ fun <
     Type : MeasurementType,
     UnitType : ScientificUnit<Type>,
     TargetUnitType : ScientificUnit<Type>
-    > List<ScientificValue<Type, UnitType>>.group(
+    > List<ScientificValue<Type, UnitType>>.toScientificArray(
     unit: TargetUnitType,
-) = group(unit, ::DefaultScientificArray)
+) = toScientificArray(unit, ::DefaultScientificArray)
 
 fun <
     Type : MeasurementType,
@@ -166,7 +171,7 @@ fun <
     TargetUnitType : ScientificUnit<Type>,
     NumberType : Number,
     ArrayType : ScientificArray<NumberType, Type, TargetUnitType>
-    > List<ScientificValue<Type, UnitType>>.group(
+    > List<ScientificValue<Type, UnitType>>.toScientificArray(
     unit: TargetUnitType,
     factory: (List<Decimal>, TargetUnitType) -> ArrayType
 ) = factory(map { it.unit.convert(it.decimalValue, unit) }, unit)
@@ -235,7 +240,7 @@ fun <
     > ScientificArray<NumberType, Type, Unit>.convertValues(target: TargetUnit) : List<Decimal> {
     val values = mutableListOf<Decimal>()
     iterator().forEach {
-        values.add(unit.convert(it, target))
+        values.add(unit.convert(it.toDecimal(), target))
     }
     return values
 }
@@ -365,3 +370,65 @@ fun <
     }
     return factory(newValues, targetUnit)
 }
+
+infix operator fun <
+    Type : MeasurementType,
+    NumberType : Number,
+    Unit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>
+    > ScientificArray<NumberType, Type, Unit>.plus(right: ScientificArray<NumberType, Type, RightUnit>) = concat(right)
+
+infix operator fun <
+    Type : MeasurementType,
+    NumberType : Number,
+    Unit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>
+    > ScientificArray<NumberType, Type, Unit>.plus(right: ScientificValue<Type, RightUnit>) = concat(listOf(right).toScientificArray(right.unit))
+
+infix operator fun <
+    Type : MeasurementType,
+    NumberType : Number,
+    Unit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>
+    > ScientificValue<Type, Unit>.plus(right: ScientificArray<NumberType, Type, RightUnit>) = listOf(this).toScientificArray(unit).concat(right)
+
+fun <
+    Type : MeasurementType,
+    Unit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>,
+    > ScientificArray<*, Type, Unit>.concat(
+    right: ScientificArray<*, Type, RightUnit>
+) = concat(right, unit)
+
+fun <
+    Type : MeasurementType,
+    NumberType : Number,
+    Unit : ScientificUnit<Type>,
+    ArrayType : ScientificArray<NumberType, Type, Unit>
+    > ScientificArray<*, Type, Unit>.concat(
+    right: ScientificArray<*, Type, Unit>,
+    factory: (List<Decimal>, Unit) -> ArrayType
+) = concat(right, unit, factory)
+
+fun <
+    Type : MeasurementType,
+    LeftUnit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>,
+    TargetUnit : ScientificUnit<Type>
+    > ScientificArray<*, Type, LeftUnit>.concat(
+    right: ScientificArray<*, Type, RightUnit>,
+    targetUnit: TargetUnit
+) = concat(right, targetUnit, ::DefaultScientificArray)
+
+fun <
+    Type : MeasurementType,
+    LeftUnit : ScientificUnit<Type>,
+    RightUnit : ScientificUnit<Type>,
+    TargetUnit : ScientificUnit<Type>,
+    TargetNumberType : Number,
+    ArrayType : ScientificArray<TargetNumberType, Type, TargetUnit>
+    > ScientificArray<*, Type, LeftUnit>.concat(
+    right: ScientificArray<*, Type, RightUnit>,
+    targetUnit: TargetUnit,
+    factory: (List<Decimal>, TargetUnit) -> ArrayType
+) = factory((convertValues(targetUnit) + right.convertValues(targetUnit)), targetUnit)
