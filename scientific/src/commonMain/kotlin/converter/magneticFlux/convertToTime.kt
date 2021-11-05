@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.MagneticFlux
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.MagneticFlux
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("fluxDivVoltage")

@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.frequency.times
 import com.splendo.kaluga.scientific.converter.radioactivity.times
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Radioactivity
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesFrequency")

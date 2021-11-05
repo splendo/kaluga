@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricAndUKImperialTemperature
-import com.splendo.kaluga.scientific.MetricEnergy
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.USCustomaryTemperature
 import com.splendo.kaluga.scientific.converter.heatCapacity.heatCapacity
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyDivMetricAndUKImperialTemperature")

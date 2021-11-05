@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.frequency
 
-import com.splendo.kaluga.scientific.BeatsPerMinute
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Minute
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.BeatsPerMinute
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("beatsPerMinuteTime")

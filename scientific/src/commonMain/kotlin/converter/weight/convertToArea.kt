@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.AreaDensity
-import com.splendo.kaluga.scientific.ImperialAreaDensity
-import com.splendo.kaluga.scientific.ImperialWeight
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAreaDensity
-import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SquareMeter
-import com.splendo.kaluga.scientific.UKImperialAreaDensity
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryAreaDensity
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.area.area
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.ImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.MetricAreaDensity
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.UKImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricAreaDensity")

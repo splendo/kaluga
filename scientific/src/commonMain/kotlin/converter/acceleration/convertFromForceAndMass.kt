@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.acceleration
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.Acceleration
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("accelerationFromForceAndMassDefault")

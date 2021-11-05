@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Meter
-import com.splendo.kaluga.scientific.MetricLength
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.per
 import com.splendo.kaluga.scientific.converter.speed.speed
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthDivTime")

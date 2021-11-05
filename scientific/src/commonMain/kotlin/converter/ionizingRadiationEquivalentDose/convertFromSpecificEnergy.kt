@@ -19,15 +19,15 @@ package com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.IonizingRadiationEquivalentDose
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Sievert
-import com.splendo.kaluga.scientific.SpecificEnergy
 import com.splendo.kaluga.scientific.convert
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Sievert
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("specificEnergyFromEquivalentDoseDefault")

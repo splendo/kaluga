@@ -19,13 +19,13 @@ package com.splendo.kaluga.scientific.converter.temperature
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.HeatCapacity
-import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Temperature
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.Temperature
 import kotlin.jvm.JvmName
 
 @JvmName("temperatureFromEnergyAndHeatCapacityDefault")

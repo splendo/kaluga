@@ -17,26 +17,26 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.BritishThermalUnit
-import com.splendo.kaluga.scientific.BritishThermalUnitPerHour
-import com.splendo.kaluga.scientific.BritishThermalUnitPerMinute
-import com.splendo.kaluga.scientific.BritishThermalUnitPerSecond
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.FootPoundForce
-import com.splendo.kaluga.scientific.FootPoundForcePerMinute
-import com.splendo.kaluga.scientific.Horsepower
-import com.splendo.kaluga.scientific.HorsepowerHour
-import com.splendo.kaluga.scientific.Hour
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.Minute
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Watt
-import com.splendo.kaluga.scientific.WattHour
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.BritishThermalUnit
+import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerHour
+import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerMinute
+import com.splendo.kaluga.scientific.unit.BritishThermalUnitPerSecond
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.FootPoundForcePerMinute
+import com.splendo.kaluga.scientific.unit.Horsepower
+import com.splendo.kaluga.scientific.unit.HorsepowerHour
+import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Minute
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.WattHour
 import kotlin.jvm.JvmName
 
 @JvmName("wattHourDivWatt")

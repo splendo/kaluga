@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.jolt
 
-import com.splendo.kaluga.scientific.ImperialJolt
-import com.splendo.kaluga.scientific.ImperialWeight
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricJolt
-import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.weight.times
+import com.splendo.kaluga.scientific.unit.ImperialJolt
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.MetricJolt
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("metricJoltTimesMetricWeight")

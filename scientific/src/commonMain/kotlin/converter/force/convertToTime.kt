@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("forceDivYank")

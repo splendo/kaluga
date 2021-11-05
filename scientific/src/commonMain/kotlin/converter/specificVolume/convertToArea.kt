@@ -17,22 +17,22 @@
 
 package com.splendo.kaluga.scientific.converter.specificVolume
 
-import com.splendo.kaluga.scientific.ImperialLinearMassDensity
-import com.splendo.kaluga.scientific.ImperialSpecificVolume
-import com.splendo.kaluga.scientific.LinearMassDensity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLinearMassDensity
-import com.splendo.kaluga.scientific.MetricSpecificVolume
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificVolume
-import com.splendo.kaluga.scientific.SquareMeter
-import com.splendo.kaluga.scientific.UKImperialLinearMassDensity
-import com.splendo.kaluga.scientific.UKImperialSpecificVolume
-import com.splendo.kaluga.scientific.USCustomaryLinearMassDensity
-import com.splendo.kaluga.scientific.USCustomarySpecificVolume
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.ImperialLinearMassDensity
+import com.splendo.kaluga.scientific.unit.ImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.LinearMassDensity
+import com.splendo.kaluga.scientific.unit.MetricLinearMassDensity
+import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.UKImperialLinearMassDensity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryLinearMassDensity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificVolumeTimesMetricLinearMassDensity")

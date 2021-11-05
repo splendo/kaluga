@@ -17,21 +17,21 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialWeight
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.specificEnergy.specificEnergy
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyDivMetricWeight")

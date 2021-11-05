@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.solidAngle
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Illuminance
-import com.splendo.kaluga.scientific.Luminance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.SolidAngle
 import kotlin.jvm.JvmName
 
 @JvmName("solidAngleFromIlluminanceAndLuminanceDefault")

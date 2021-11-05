@@ -19,13 +19,13 @@ package com.splendo.kaluga.scientific.converter.temperature
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.ThermalResistance
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.ThermalResistance
 import kotlin.jvm.JvmName
 
 @JvmName("temperatureFromThermalResistanceAndPowerDefault")

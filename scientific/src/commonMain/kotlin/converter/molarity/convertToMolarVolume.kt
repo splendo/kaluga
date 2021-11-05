@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.molarity
 
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.ImperialMolarity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMolarity
-import com.splendo.kaluga.scientific.Molarity
-import com.splendo.kaluga.scientific.Mole
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMolarity
-import com.splendo.kaluga.scientific.USCustomaryMolarity
 import com.splendo.kaluga.scientific.converter.molarVolume.molarVolume
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialMolarity
+import com.splendo.kaluga.scientific.unit.MetricMolarity
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Mole
+import com.splendo.kaluga.scientific.unit.UKImperialMolarity
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarity
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarityMolarVolume")

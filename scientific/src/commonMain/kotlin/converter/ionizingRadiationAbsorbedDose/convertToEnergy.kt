@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.ionizingRadiationAbsorbedDose
 
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.IonizingRadiationAbsorbedDose
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.Rad
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.energy.energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("radTimesWeight")

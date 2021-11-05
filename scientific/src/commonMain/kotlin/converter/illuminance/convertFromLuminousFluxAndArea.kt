@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.illuminance
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.Area
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Illuminance
-import com.splendo.kaluga.scientific.LuminousFlux
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.LuminousFlux
 import kotlin.jvm.JvmName
 
 @JvmName("illuminanceFromLuminousFluxAndAreaDefault")

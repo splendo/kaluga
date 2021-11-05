@@ -17,27 +17,27 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.Gram
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialSpecificEnergy
-import com.splendo.kaluga.scientific.IonizingRadiationAbsorbedDose
-import com.splendo.kaluga.scientific.IonizingRadiationEquivalentDose
-import com.splendo.kaluga.scientific.Kilogram
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MetricSpecificEnergy
-import com.splendo.kaluga.scientific.Rad
-import com.splendo.kaluga.scientific.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificEnergy
-import com.splendo.kaluga.scientific.UKImperialSpecificEnergy
-import com.splendo.kaluga.scientific.USCustomarySpecificEnergy
 import com.splendo.kaluga.scientific.converter.weight.weight
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.IonizingRadiationAbsorbedDose
+import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.Rad
+import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivRad")

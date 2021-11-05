@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlux
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialVolumetricFlux
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricVolumetricFlux
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialVolumetricFlux
-import com.splendo.kaluga.scientific.USCustomaryVolumetricFlux
-import com.splendo.kaluga.scientific.VolumetricFlux
 import com.splendo.kaluga.scientific.converter.volumetricFlow.volumetricFlow
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlux
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlux
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlux
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlux
+import com.splendo.kaluga.scientific.unit.VolumetricFlux
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFluxTimesMetricArea")

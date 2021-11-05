@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose
 
-import com.splendo.kaluga.scientific.IonizingRadiationEquivalentDose
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.specificEnergy.specificEnergy
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.per
 
 fun <EquivalentDoseUnit : IonizingRadiationEquivalentDose> ScientificValue<MeasurementType.IonizingRadiationEquivalentDose, EquivalentDoseUnit>.asSpecificEnergy() = (Joule per Kilogram).specificEnergy(this)

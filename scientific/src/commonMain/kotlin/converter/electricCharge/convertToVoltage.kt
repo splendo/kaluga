@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Abfarad
-import com.splendo.kaluga.scientific.Abvolt
-import com.splendo.kaluga.scientific.ElectricCapacitance
-import com.splendo.kaluga.scientific.ElectricCharge
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Volt
 import com.splendo.kaluga.scientific.converter.voltage.voltage
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivAbfarad")

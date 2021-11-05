@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.power
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abvolt
-import com.splendo.kaluga.scientific.Ampere
-import com.splendo.kaluga.scientific.ErgPerSecond
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.ErgPerSecond
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("ergSecondDivAbvolt")

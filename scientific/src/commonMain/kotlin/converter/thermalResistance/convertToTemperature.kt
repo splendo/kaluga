@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.thermalResistance
 
-import com.splendo.kaluga.scientific.ImperialPower
-import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialPower
-import com.splendo.kaluga.scientific.MetricAndUKImperialThermalResistance
-import com.splendo.kaluga.scientific.MetricPower
-import com.splendo.kaluga.scientific.MetricThermalResistance
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.ThermalResistance
-import com.splendo.kaluga.scientific.UKImperialThermalResistance
-import com.splendo.kaluga.scientific.USCustomaryThermalResistance
 import com.splendo.kaluga.scientific.converter.temperature.temperature
+import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricThermalResistance
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialThermalResistanceTimesPower")

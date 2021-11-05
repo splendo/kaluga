@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.ImperialForce
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricForce
-import com.splendo.kaluga.scientific.Newton
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialForce
-import com.splendo.kaluga.scientific.USCustomaryForce
 import com.splendo.kaluga.scientific.converter.yank.yank
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivTime")

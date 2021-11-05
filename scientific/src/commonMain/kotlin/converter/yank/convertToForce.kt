@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.yank
 
-import com.splendo.kaluga.scientific.ImperialYank
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricYank
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialYank
-import com.splendo.kaluga.scientific.USCustomaryYank
-import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.converter.force.force
+import com.splendo.kaluga.scientific.unit.ImperialYank
+import com.splendo.kaluga.scientific.unit.MetricYank
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialYank
+import com.splendo.kaluga.scientific.unit.USCustomaryYank
+import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("metricYankTimesTime")

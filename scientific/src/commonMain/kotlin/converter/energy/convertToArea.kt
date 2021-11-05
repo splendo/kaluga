@@ -17,27 +17,27 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialSurfaceTension
-import com.splendo.kaluga.scientific.InchOunceForce
-import com.splendo.kaluga.scientific.InchPoundForce
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MetricSurfaceTension
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SquareCentimeter
-import com.splendo.kaluga.scientific.SquareFoot
-import com.splendo.kaluga.scientific.SquareInch
-import com.splendo.kaluga.scientific.SquareMeter
-import com.splendo.kaluga.scientific.SurfaceTension
-import com.splendo.kaluga.scientific.UKImperialSurfaceTension
-import com.splendo.kaluga.scientific.USCustomarySurfaceTension
 import com.splendo.kaluga.scientific.converter.area.area
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.InchOunceForce
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricSurfaceTension
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareInch
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.SurfaceTension
+import com.splendo.kaluga.scientific.unit.UKImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivMetricSurfaceTension")

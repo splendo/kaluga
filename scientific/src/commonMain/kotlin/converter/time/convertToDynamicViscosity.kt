@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.ImperialPressure
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricPressure
-import com.splendo.kaluga.scientific.Pressure
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialPressure
 import com.splendo.kaluga.scientific.converter.pressure.times
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricPressure")

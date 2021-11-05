@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.electricCurrent
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.ElectricCurrent
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("currentFromVoltageAndResistanceDefault")

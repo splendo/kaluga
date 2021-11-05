@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.Abhenry
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.ElectricResistance
-import com.splendo.kaluga.scientific.Frequency
-import com.splendo.kaluga.scientific.Henry
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.electricInductance.inductance
+import com.splendo.kaluga.scientific.unit.Abhenry
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Henry
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abohmDivFrequency")

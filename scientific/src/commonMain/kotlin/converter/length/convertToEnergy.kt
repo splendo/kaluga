@@ -17,25 +17,25 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.Centimeter
-import com.splendo.kaluga.scientific.Dyne
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.ImperialForce
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.Inch
-import com.splendo.kaluga.scientific.Length
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricForce
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.OunceForce
-import com.splendo.kaluga.scientific.PoundForce
-import com.splendo.kaluga.scientific.Poundal
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialForce
-import com.splendo.kaluga.scientific.USCustomaryForce
 import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.Inch
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
 import kotlin.jvm.JvmName
 
 @JvmName("centimeterTimesDyne")

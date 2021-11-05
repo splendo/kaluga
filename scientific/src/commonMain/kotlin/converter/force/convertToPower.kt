@@ -17,24 +17,24 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.Dyne
-import com.splendo.kaluga.scientific.ErgPerSecond
-import com.splendo.kaluga.scientific.FootPoundForcePerSecond
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.ImperialForce
-import com.splendo.kaluga.scientific.ImperialSpeed
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricForce
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MetricSpeed
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Speed
-import com.splendo.kaluga.scientific.UKImperialForce
-import com.splendo.kaluga.scientific.USCustomaryForce
-import com.splendo.kaluga.scientific.Watt
-import com.splendo.kaluga.scientific.metric
 import com.splendo.kaluga.scientific.converter.power.power
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.ErgPerSecond
+import com.splendo.kaluga.scientific.unit.FootPoundForcePerSecond
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricSpeed
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
+import com.splendo.kaluga.scientific.unit.Watt
+import com.splendo.kaluga.scientific.unit.metric
 import kotlin.jvm.JvmName
 
 @JvmName("dyneTimesMetricSpeed")

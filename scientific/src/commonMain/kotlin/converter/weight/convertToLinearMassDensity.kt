@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.ImperialWeight
-import com.splendo.kaluga.scientific.Kilogram
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Meter
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.linearMassDensity.linearMassDensity
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightDivMetricLength")

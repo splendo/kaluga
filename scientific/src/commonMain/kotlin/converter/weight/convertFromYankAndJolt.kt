@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
-import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("massFromYankAndJoltDefault")

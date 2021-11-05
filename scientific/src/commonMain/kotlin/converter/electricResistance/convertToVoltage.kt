@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.Biot
-import com.splendo.kaluga.scientific.ElectricCurrent
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.times
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("abohmTimesAbampere")

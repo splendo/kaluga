@@ -18,12 +18,12 @@
 package com.splendo.kaluga.scientific.converter.weight
 
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.amountOfSubstance
 import com.splendo.kaluga.scientific.converter.molality.times
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("weightTimesMolality")

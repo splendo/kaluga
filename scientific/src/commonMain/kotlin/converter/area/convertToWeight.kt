@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.AreaDensity
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialAreaDensity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricAreaDensity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialAreaDensity
-import com.splendo.kaluga.scientific.USCustomaryAreaDensity
 import com.splendo.kaluga.scientific.converter.areaDensity.times
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricAreaDensity
+import com.splendo.kaluga.scientific.unit.UKImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricAreaDenisty")

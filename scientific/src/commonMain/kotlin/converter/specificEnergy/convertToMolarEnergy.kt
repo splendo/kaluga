@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.specificEnergy
 
-import com.splendo.kaluga.scientific.ImperialSpecificEnergy
-import com.splendo.kaluga.scientific.Joule
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricSpecificEnergy
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificEnergy
-import com.splendo.kaluga.scientific.UKImperialSpecificEnergy
-import com.splendo.kaluga.scientific.USCustomarySpecificEnergy
 import com.splendo.kaluga.scientific.converter.molarEnergy.molarEnergy
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyTimesMolarMass")

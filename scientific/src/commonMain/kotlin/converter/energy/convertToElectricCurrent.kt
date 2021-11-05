@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Ampere
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.MagneticFlux
-import com.splendo.kaluga.scientific.Maxwell
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.MagneticFlux
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivMaxwell")

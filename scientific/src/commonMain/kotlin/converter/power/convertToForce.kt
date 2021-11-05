@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.power
 
-import com.splendo.kaluga.scientific.Dyne
-import com.splendo.kaluga.scientific.ErgPerSecond
-import com.splendo.kaluga.scientific.ImperialPower
-import com.splendo.kaluga.scientific.ImperialSpeed
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialPower
-import com.splendo.kaluga.scientific.MetricPower
-import com.splendo.kaluga.scientific.MetricSpeed
-import com.splendo.kaluga.scientific.Newton
-import com.splendo.kaluga.scientific.PoundForce
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Speed
 import com.splendo.kaluga.scientific.converter.force.force
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.ErgPerSecond
+import com.splendo.kaluga.scientific.unit.ImperialPower
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.MetricAndImperialPower
+import com.splendo.kaluga.scientific.unit.MetricPower
+import com.splendo.kaluga.scientific.unit.MetricSpeed
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("ergPerSecondDivMetricSpeed")

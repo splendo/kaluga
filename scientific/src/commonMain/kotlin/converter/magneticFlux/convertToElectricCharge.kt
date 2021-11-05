@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.Coulomb
-import com.splendo.kaluga.scientific.ElectricResistance
-import com.splendo.kaluga.scientific.MagneticFlux
-import com.splendo.kaluga.scientific.Maxwell
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Coulomb
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.MagneticFlux
+import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivAbohm")

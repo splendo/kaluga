@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
-import com.splendo.kaluga.scientific.Illuminance
-import com.splendo.kaluga.scientific.Luminance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Steradian
 import com.splendo.kaluga.scientific.converter.solidAngle.solidAngle
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.jvm.JvmName
 
 @JvmName("illuminanceDivLuminance")

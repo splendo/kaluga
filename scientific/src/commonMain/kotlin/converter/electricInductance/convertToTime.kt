@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.electricInductance
 
-import com.splendo.kaluga.scientific.ElectricInductance
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("inductanceDivResistance")

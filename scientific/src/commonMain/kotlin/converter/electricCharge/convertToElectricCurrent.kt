@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Ampere
-import com.splendo.kaluga.scientific.ElectricCharge
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombDivTime")

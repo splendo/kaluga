@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialMolarEnergy
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricAndImperialMolarEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricMolarEnergy
-import com.splendo.kaluga.scientific.MolarEnergy
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.amountOfSubstance
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarEnergy
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialEnergyDivMetricAndImperialMolarEnergy")

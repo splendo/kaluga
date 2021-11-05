@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.molarMass
 
-import com.splendo.kaluga.scientific.ImperialMolarMass
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMolarMass
-import com.splendo.kaluga.scientific.MolarMass
-import com.splendo.kaluga.scientific.Mole
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMolarMass
-import com.splendo.kaluga.scientific.USCustomaryMolarMass
 import com.splendo.kaluga.scientific.converter.molality.molality
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialMolarMass
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MetricMolarMass
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.Mole
+import com.splendo.kaluga.scientific.unit.UKImperialMolarMass
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarMassMolality")

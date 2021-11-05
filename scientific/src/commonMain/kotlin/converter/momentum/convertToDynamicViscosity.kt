@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialMomentum
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricMomentum
-import com.splendo.kaluga.scientific.Momentum
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMomentum
-import com.splendo.kaluga.scientific.USCustomaryMomentum
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.dynamicViscosity
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialMomentum
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricMomentum
+import com.splendo.kaluga.scientific.unit.Momentum
+import com.splendo.kaluga.scientific.unit.UKImperialMomentum
+import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricArea")

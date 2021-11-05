@@ -17,21 +17,21 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialVolumetricFlow
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricVolumetricFlow
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.SquareMeter
-import com.splendo.kaluga.scientific.UKImperialVolumetricFlow
-import com.splendo.kaluga.scientific.USCustomaryVolumetricFlow
-import com.splendo.kaluga.scientific.VolumetricFlow
 import com.splendo.kaluga.scientific.converter.volumetricFlux.volumetricFlux
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlow
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlow
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowDivMetricArea")

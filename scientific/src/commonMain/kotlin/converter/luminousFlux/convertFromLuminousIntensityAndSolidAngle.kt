@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.luminousFlux
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.LuminousFlux
-import com.splendo.kaluga.scientific.LuminousIntensity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.LuminousIntensity
+import com.splendo.kaluga.scientific.unit.SolidAngle
 import kotlin.jvm.JvmName
 
 @JvmName("luminousFluxFromIntensityAndSolidAngleDefault")

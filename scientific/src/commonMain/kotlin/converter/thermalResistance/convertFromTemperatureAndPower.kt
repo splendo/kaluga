@@ -20,12 +20,12 @@ package com.splendo.kaluga.scientific.converter.thermalResistance
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.ThermalResistance
 import com.splendo.kaluga.scientific.byDividing
 import com.splendo.kaluga.scientific.converter.temperature.deltaValueInKelvin
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.ThermalResistance
 import kotlin.jvm.JvmName
 
 @JvmName("thermalResistanceFromTemperatureAndPowerDefault")

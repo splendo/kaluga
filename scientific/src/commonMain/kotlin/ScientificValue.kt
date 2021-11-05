@@ -24,6 +24,8 @@ import com.splendo.kaluga.base.utils.plus
 import com.splendo.kaluga.base.utils.times
 import com.splendo.kaluga.base.utils.toDecimal
 import com.splendo.kaluga.base.utils.toDouble
+import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.convert
 import kotlinx.serialization.Serializable
 
 interface ScientificValue<Type : MeasurementType, Unit : ScientificUnit<Type>> : Comparable<ScientificValue<Type, *>> {

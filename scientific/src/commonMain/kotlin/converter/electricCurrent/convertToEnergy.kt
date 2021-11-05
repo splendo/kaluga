@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Biot
-import com.splendo.kaluga.scientific.ElectricCurrent
-import com.splendo.kaluga.scientific.MagneticFlux
-import com.splendo.kaluga.scientific.Maxwell
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.magneticFlux.times
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.MagneticFlux
+import com.splendo.kaluga.scientific.unit.Maxwell
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesMaxwell")

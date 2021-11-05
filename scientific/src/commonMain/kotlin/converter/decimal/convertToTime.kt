@@ -19,14 +19,14 @@ package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.BeatsPerMinute
-import com.splendo.kaluga.scientific.Frequency
-import com.splendo.kaluga.scientific.Hour
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.BeatsPerMinute
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Hour
+import com.splendo.kaluga.scientific.unit.Radioactivity
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("numberDivBPM")

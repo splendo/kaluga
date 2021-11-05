@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.luminousEnergy
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.LuminousEnergy
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminousExposure.luminousExposure
 import com.splendo.kaluga.scientific.converter.luminousFlux.div
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.LuminousEnergy
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivMetricArea")

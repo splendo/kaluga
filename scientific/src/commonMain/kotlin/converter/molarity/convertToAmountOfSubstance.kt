@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.molarity
 
-import com.splendo.kaluga.scientific.ImperialMolarity
-import com.splendo.kaluga.scientific.ImperialVolume
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMolarity
-import com.splendo.kaluga.scientific.MetricVolume
-import com.splendo.kaluga.scientific.Molarity
-import com.splendo.kaluga.scientific.Mole
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMolarity
-import com.splendo.kaluga.scientific.UKImperialVolume
-import com.splendo.kaluga.scientific.USCustomaryMolarity
-import com.splendo.kaluga.scientific.USCustomaryVolume
-import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.converter.amountOfSubstance.amountOfSubstance
+import com.splendo.kaluga.scientific.unit.ImperialMolarity
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.MetricMolarity
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Mole
+import com.splendo.kaluga.scientific.unit.UKImperialMolarity
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarity
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarityTimesMetricVolume")

@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.Luminance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.luminance.times
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.Luminance
 import kotlin.jvm.JvmName
 
 @JvmName("areaTimesLuminance")

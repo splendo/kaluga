@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.force
 
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.ImperialForce
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Meter
-import com.splendo.kaluga.scientific.MetricForce
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.Newton
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialForce
-import com.splendo.kaluga.scientific.USCustomaryForce
 import com.splendo.kaluga.scientific.converter.surfaceTension.surfaceTension
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricForceDivMetricLength")

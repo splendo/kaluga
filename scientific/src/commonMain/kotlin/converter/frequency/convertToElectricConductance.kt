@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.frequency
 
-import com.splendo.kaluga.scientific.Abfarad
-import com.splendo.kaluga.scientific.ElectricCapacitance
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesAbfarad")

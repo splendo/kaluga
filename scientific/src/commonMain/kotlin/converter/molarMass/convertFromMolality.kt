@@ -20,10 +20,10 @@ package com.splendo.kaluga.scientific.converter.molarMass
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byInverting
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarMass
 import kotlin.jvm.JvmName
 
 @JvmName("molarMassFromInvertedMolalityDefault")

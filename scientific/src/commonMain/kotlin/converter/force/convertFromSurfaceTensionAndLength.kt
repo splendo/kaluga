@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SurfaceTension
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.SurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("forceFromSurfaceTensionAndLengthDefault")

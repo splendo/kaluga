@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.Acceleration
-import com.splendo.kaluga.scientific.ImperialAcceleration
-import com.splendo.kaluga.scientific.ImperialJolt
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAcceleration
-import com.splendo.kaluga.scientific.MetricJolt
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.jolt.times
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.ImperialAcceleration
+import com.splendo.kaluga.scientific.unit.ImperialJolt
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricJolt
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesMetricJolt")

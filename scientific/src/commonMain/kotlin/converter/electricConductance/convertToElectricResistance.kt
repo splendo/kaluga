@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.Absiemens
-import com.splendo.kaluga.scientific.ElectricConductance
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Ohm
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Absiemens
+import com.splendo.kaluga.scientific.unit.ElectricConductance
+import com.splendo.kaluga.scientific.unit.Ohm
 import kotlin.jvm.JvmName
 
 @JvmName("abSiemensResistance")

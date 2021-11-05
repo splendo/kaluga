@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.time
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Speed
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeFromDistanceAndSpeedDefault")

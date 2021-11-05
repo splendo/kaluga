@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
-import com.splendo.kaluga.scientific.AmountOfSubstance
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.ImperialVolume
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricVolume
-import com.splendo.kaluga.scientific.Mole
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialVolume
-import com.splendo.kaluga.scientific.USCustomaryVolume
-import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.converter.molarity.molarity
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.Mole
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivMetricVolume")

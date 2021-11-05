@@ -21,10 +21,10 @@ import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.Volume
-import com.splendo.kaluga.scientific.VolumetricFlow
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.Volume
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
 import kotlin.jvm.JvmName
 
 @JvmName("volumeFromVolumetricFlowAndTimeDefault")

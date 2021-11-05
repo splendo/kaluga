@@ -19,11 +19,11 @@ package com.splendo.kaluga.scientific.converter.density
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Density
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.byInverting
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.SpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("densityFromInverseSpecificVolumeDefault")

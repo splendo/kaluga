@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.electricCapacitance
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.ElectricCapacitance
-import com.splendo.kaluga.scientific.ElectricConductance
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.ElectricConductance
+import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("capacitanceFromConductanceAndFrequencyDefault")

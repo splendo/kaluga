@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.areaDensity
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.AreaDensity
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Density
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.Length
 import kotlin.jvm.JvmName
 
 @JvmName("areaDensityFromDensityAndLengthDefault")

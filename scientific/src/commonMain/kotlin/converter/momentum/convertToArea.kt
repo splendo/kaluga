@@ -17,21 +17,21 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
-import com.splendo.kaluga.scientific.DynamicViscosity
-import com.splendo.kaluga.scientific.ImperialDynamicViscosity
-import com.splendo.kaluga.scientific.ImperialMomentum
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricDynamicViscosity
-import com.splendo.kaluga.scientific.MetricMomentum
-import com.splendo.kaluga.scientific.Momentum
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialDynamicViscosity
-import com.splendo.kaluga.scientific.UKImperialMomentum
-import com.splendo.kaluga.scientific.USCustomaryDynamicViscosity
-import com.splendo.kaluga.scientific.USCustomaryMomentum
 import com.splendo.kaluga.scientific.converter.area.area
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.ImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.ImperialMomentum
+import com.splendo.kaluga.scientific.unit.MetricDynamicViscosity
+import com.splendo.kaluga.scientific.unit.MetricMomentum
+import com.splendo.kaluga.scientific.unit.Momentum
+import com.splendo.kaluga.scientific.unit.UKImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.UKImperialMomentum
+import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
+import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivMetricDynamicViscosity")

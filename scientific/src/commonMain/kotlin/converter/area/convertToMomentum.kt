@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.area
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.DynamicViscosity
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialDynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricDynamicViscosity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialDynamicViscosity
-import com.splendo.kaluga.scientific.USCustomaryDynamicViscosity
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.times
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricDynamicViscosity
+import com.splendo.kaluga.scientific.unit.UKImperialDynamicViscosity
+import com.splendo.kaluga.scientific.unit.USCustomaryDynamicViscosity
 import kotlin.jvm.JvmName
 
 @JvmName("metricAreaTimesMetricDynamicViscosity")

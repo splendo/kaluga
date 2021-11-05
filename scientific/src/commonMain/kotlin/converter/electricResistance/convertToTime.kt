@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.ElectricCapacitance
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCapacitance.times
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("resistanceTimesCapacitance")

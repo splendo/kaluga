@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.electricInductance
 
-import com.splendo.kaluga.scientific.Abhenry
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.ElectricInductance
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Ohm
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
+import com.splendo.kaluga.scientific.unit.Abhenry
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abhenryTimesFrequency")

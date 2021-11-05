@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.molarMass
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.AmountOfSubstance
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("molarMassFromWeightAndAmountOfSubstanceDefault")

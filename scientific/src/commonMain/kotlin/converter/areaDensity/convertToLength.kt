@@ -17,29 +17,28 @@
 
 package com.splendo.kaluga.scientific.converter.areaDensity
 
-import com.splendo.kaluga.scientific.AreaDensity
-import com.splendo.kaluga.scientific.Density
-import com.splendo.kaluga.scientific.ImperialAreaDensity
-import com.splendo.kaluga.scientific.ImperialDensity
-import com.splendo.kaluga.scientific.ImperialSpecificVolume
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAreaDensity
-import com.splendo.kaluga.scientific.MetricDensity
-import com.splendo.kaluga.scientific.MetricSpecificVolume
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificVolume
-import com.splendo.kaluga.scientific.UKImperialAreaDensity
-import com.splendo.kaluga.scientific.UKImperialDensity
-import com.splendo.kaluga.scientific.UKImperialSpecificVolume
-import com.splendo.kaluga.scientific.USCustomaryAreaDensity
-import com.splendo.kaluga.scientific.USCustomaryDensity
-import com.splendo.kaluga.scientific.USCustomarySpecificVolume
 import com.splendo.kaluga.scientific.converter.length.length
 import com.splendo.kaluga.scientific.converter.specificVolume.times
 import com.splendo.kaluga.scientific.converter.volume.div
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.ImperialDensity
+import com.splendo.kaluga.scientific.unit.ImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.MetricAreaDensity
+import com.splendo.kaluga.scientific.unit.MetricDensity
+import com.splendo.kaluga.scientific.unit.MetricSpecificVolume
+import com.splendo.kaluga.scientific.unit.SpecificVolume
+import com.splendo.kaluga.scientific.unit.UKImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.UKImperialDensity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryDensity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificVolume
 import kotlin.jvm.JvmName
-
 
 @JvmName("metricAreaDensityTimesMetricSpecificVolume")
 infix operator fun ScientificValue<MeasurementType.AreaDensity, MetricAreaDensity>.times(specificVolume: ScientificValue<MeasurementType.SpecificVolume, MetricSpecificVolume>) = specificVolume * this

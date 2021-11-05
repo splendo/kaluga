@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.ImperialSurfaceTension
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.MetricSurfaceTension
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SurfaceTension
-import com.splendo.kaluga.scientific.UKImperialSurfaceTension
-import com.splendo.kaluga.scientific.USCustomarySurfaceTension
 import com.splendo.kaluga.scientific.converter.surfaceTension.times
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.ImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricSurfaceTension
+import com.splendo.kaluga.scientific.unit.SurfaceTension
+import com.splendo.kaluga.scientific.unit.UKImperialSurfaceTension
+import com.splendo.kaluga.scientific.unit.USCustomarySurfaceTension
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthTimesMetricSurfaceTension")

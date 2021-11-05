@@ -17,22 +17,22 @@
 
 package com.splendo.kaluga.scientific.converter.weight
 
-import com.splendo.kaluga.scientific.ImperialSpeed
-import com.splendo.kaluga.scientific.ImperialWeight
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Meter
-import com.splendo.kaluga.scientific.MetricSpeed
-import com.splendo.kaluga.scientific.MetricWeight
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Speed
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.momentum.momentum
-import com.splendo.kaluga.scientific.per
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricSpeed
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.per
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricWeightTimesMetricSpeed")

@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.massFlowRate
 
-import com.splendo.kaluga.scientific.ImperialMassFlowRate
-import com.splendo.kaluga.scientific.Kilogram
-import com.splendo.kaluga.scientific.MassFlowRate
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMassFlowRate
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialMassFlowRate
-import com.splendo.kaluga.scientific.USCustomaryMassFlowRate
 import com.splendo.kaluga.scientific.converter.weight.mass
+import com.splendo.kaluga.scientific.unit.ImperialMassFlowRate
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MassFlowRate
+import com.splendo.kaluga.scientific.unit.MetricMassFlowRate
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialMassFlowRate
+import com.splendo.kaluga.scientific.unit.USCustomaryMassFlowRate
 import kotlin.jvm.JvmName
 
 @JvmName("metricMassFlowRateTimesTime")

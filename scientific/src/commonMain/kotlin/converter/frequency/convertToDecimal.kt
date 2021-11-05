@@ -19,13 +19,13 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.times
-import com.splendo.kaluga.scientific.Frequency
-import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.convertValue
+import com.splendo.kaluga.scientific.unit.Frequency
+import com.splendo.kaluga.scientific.unit.Hertz
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyTimesTime")

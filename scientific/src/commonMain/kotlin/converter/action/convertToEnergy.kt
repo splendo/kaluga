@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.action
 
-import com.splendo.kaluga.scientific.Action
-import com.splendo.kaluga.scientific.ImperialAction
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAction
-import com.splendo.kaluga.scientific.MetricAndImperialAction
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.energy.energy
+import com.splendo.kaluga.scientific.unit.Action
+import com.splendo.kaluga.scientific.unit.ImperialAction
+import com.splendo.kaluga.scientific.unit.MetricAction
+import com.splendo.kaluga.scientific.unit.MetricAndImperialAction
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialActionDivTime")

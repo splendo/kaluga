@@ -17,20 +17,20 @@
 
 package com.splendo.kaluga.scientific.converter.density
 
-import com.splendo.kaluga.scientific.Density
-import com.splendo.kaluga.scientific.ImperialDensity
-import com.splendo.kaluga.scientific.ImperialVolume
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricDensity
-import com.splendo.kaluga.scientific.MetricVolume
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialDensity
-import com.splendo.kaluga.scientific.UKImperialVolume
-import com.splendo.kaluga.scientific.USCustomaryDensity
-import com.splendo.kaluga.scientific.USCustomaryVolume
-import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.converter.weight.mass
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialDensity
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MetricDensity
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.UKImperialDensity
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMetricVolume")

@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.density
 
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.Density
-import com.splendo.kaluga.scientific.ImperialDensity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricDensity
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialDensity
-import com.splendo.kaluga.scientific.USCustomaryDensity
 import com.splendo.kaluga.scientific.converter.molality.times
 import com.splendo.kaluga.scientific.converter.molarity.molarity
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Density
+import com.splendo.kaluga.scientific.unit.ImperialDensity
+import com.splendo.kaluga.scientific.unit.MetricDensity
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.UKImperialDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryDensity
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricDensityTimesMolality")

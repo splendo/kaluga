@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.amountOfSubstance
 
-import com.splendo.kaluga.scientific.AmountOfSubstance
-import com.splendo.kaluga.scientific.CatalysticActivity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.CatalysticActivity
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("amountOfSubstanceDivCatalysticActivity")

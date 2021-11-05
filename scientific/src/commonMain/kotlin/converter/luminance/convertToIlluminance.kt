@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.luminance
 
-import com.splendo.kaluga.scientific.FootCandle
-import com.splendo.kaluga.scientific.ImperialLuminance
-import com.splendo.kaluga.scientific.Lambert
-import com.splendo.kaluga.scientific.Luminance
-import com.splendo.kaluga.scientific.Lux
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLuminance
-import com.splendo.kaluga.scientific.Phot
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SolidAngle
-import com.splendo.kaluga.scientific.Stilb
 import com.splendo.kaluga.scientific.converter.illuminance.illuminance
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.ImperialLuminance
+import com.splendo.kaluga.scientific.unit.Lambert
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.MetricLuminance
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.SolidAngle
+import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("stilbTimesSolidAngle")

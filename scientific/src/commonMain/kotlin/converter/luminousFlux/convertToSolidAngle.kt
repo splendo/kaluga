@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.LuminousFlux
-import com.splendo.kaluga.scientific.LuminousIntensity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Steradian
 import com.splendo.kaluga.scientific.converter.solidAngle.solidAngle
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.LuminousIntensity
+import com.splendo.kaluga.scientific.unit.Steradian
 import kotlin.jvm.JvmName
 
 @JvmName("luminousFluxDivIntensity")

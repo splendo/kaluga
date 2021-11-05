@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.Abfarad
-import com.splendo.kaluga.scientific.Absiemens
-import com.splendo.kaluga.scientific.ElectricConductance
-import com.splendo.kaluga.scientific.Farad
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricCapacitance.capacitance
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Absiemens
+import com.splendo.kaluga.scientific.unit.ElectricConductance
+import com.splendo.kaluga.scientific.unit.Farad
+import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("absiemensDivFrequency")

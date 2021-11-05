@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.solidAngle
 
-import com.splendo.kaluga.scientific.LuminousIntensity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SolidAngle
 import com.splendo.kaluga.scientific.converter.luminousIntensity.times
+import com.splendo.kaluga.scientific.unit.LuminousIntensity
+import com.splendo.kaluga.scientific.unit.SolidAngle
 import kotlin.jvm.JvmName
 
 @JvmName("solidAngleTimesLuminousIntensity")

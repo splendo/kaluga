@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.pressure
 
-import com.splendo.kaluga.scientific.ImperialPressure
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricPressure
-import com.splendo.kaluga.scientific.Pascal
-import com.splendo.kaluga.scientific.Pressure
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialPressure
-import com.splendo.kaluga.scientific.USCustomaryPressure
 import com.splendo.kaluga.scientific.converter.dynamicViscosity.dynamicViscosity
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.Pascal
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricPressureTimesTime")

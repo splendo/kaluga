@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.ElectricCharge
-import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.duration
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("chargeDivCurrent")

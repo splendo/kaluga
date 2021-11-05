@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.specificHeatCapacity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.HeatCapacity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificHeatCapacity
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.HeatCapacity
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("specificHeatCapacityFromHeatCapacityAndWeightDefault")

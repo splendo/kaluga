@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.luminousEnergy
 
-import com.splendo.kaluga.scientific.LuminousEnergy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.luminousFlux.luminousFlux
+import com.splendo.kaluga.scientific.unit.LuminousEnergy
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("luminousEnergyDivTime")

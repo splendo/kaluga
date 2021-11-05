@@ -19,11 +19,11 @@ package com.splendo.kaluga.scientific.converter.decimal
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.toDecimal
-import com.splendo.kaluga.scientific.Becquerel
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.radioactivity.radioactivity
+import com.splendo.kaluga.scientific.unit.Becquerel
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("numberDivTime")

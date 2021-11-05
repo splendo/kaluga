@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.ElectricInductance
-import com.splendo.kaluga.scientific.ElectricResistance
-import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.frequency.frequency
+import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Hertz
 import kotlin.jvm.JvmName
 
 @JvmName("resistanceDivInductance")

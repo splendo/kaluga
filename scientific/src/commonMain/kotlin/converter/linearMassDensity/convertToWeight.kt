@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.linearMassDensity
 
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.ImperialLinearMassDensity
-import com.splendo.kaluga.scientific.Kilogram
-import com.splendo.kaluga.scientific.Length
-import com.splendo.kaluga.scientific.LinearMassDensity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.MetricLinearMassDensity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialLinearMassDensity
-import com.splendo.kaluga.scientific.USCustomaryLinearMassDensity
 import com.splendo.kaluga.scientific.converter.weight.mass
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.ImperialLinearMassDensity
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.LinearMassDensity
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricLinearMassDensity
+import com.splendo.kaluga.scientific.unit.UKImperialLinearMassDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryLinearMassDensity
 import kotlin.jvm.JvmName
 
 @JvmName("metricLinearMassDensityTimesMetricLength")

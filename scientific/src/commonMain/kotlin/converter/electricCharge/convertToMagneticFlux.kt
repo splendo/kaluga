@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.electricCharge
 
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.ElectricCharge
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.electricResistance.times
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.ElectricResistance
 import kotlin.jvm.JvmName
 
 @JvmName("abcoulombTimesAbohm")

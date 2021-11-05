@@ -17,28 +17,28 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.Dyne
-import com.splendo.kaluga.scientific.Force
-import com.splendo.kaluga.scientific.GrainForce
-import com.splendo.kaluga.scientific.GramForce
-import com.splendo.kaluga.scientific.ImperialForce
-import com.splendo.kaluga.scientific.ImperialTonForce
-import com.splendo.kaluga.scientific.Kip
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricForce
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MilligramForce
-import com.splendo.kaluga.scientific.OunceForce
-import com.splendo.kaluga.scientific.PoundForce
-import com.splendo.kaluga.scientific.Poundal
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.TonneForce
-import com.splendo.kaluga.scientific.UKImperialForce
-import com.splendo.kaluga.scientific.USCustomaryForce
-import com.splendo.kaluga.scientific.UsTonForce
 import com.splendo.kaluga.scientific.converter.force.times
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.GrainForce
+import com.splendo.kaluga.scientific.unit.GramForce
+import com.splendo.kaluga.scientific.unit.ImperialForce
+import com.splendo.kaluga.scientific.unit.ImperialTonForce
+import com.splendo.kaluga.scientific.unit.Kip
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricForce
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MilligramForce
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Poundal
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.TonneForce
+import com.splendo.kaluga.scientific.unit.UKImperialForce
+import com.splendo.kaluga.scientific.unit.USCustomaryForce
+import com.splendo.kaluga.scientific.unit.UsTonForce
 import kotlin.jvm.JvmName
 
 @JvmName("timeTimesDyne")

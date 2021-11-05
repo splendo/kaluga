@@ -20,11 +20,11 @@ package com.splendo.kaluga.scientific.converter.molality
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarVolume
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificVolume
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarVolume
+import com.splendo.kaluga.scientific.unit.SpecificVolume
 import kotlin.jvm.JvmName
 
 @JvmName("molalityFromSpecificVolumeAndMolarVolumeDefault")

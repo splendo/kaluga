@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.jolt
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
-import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.Yank
 import kotlin.jvm.JvmName
 
 @JvmName("joltFromYankAndMassDefault")
@@ -32,7 +32,7 @@ fun <
     WeightUnit : Weight,
     JoltUnit : Jolt,
     YankUnit : Yank
-> JoltUnit.jolt(
+    > JoltUnit.jolt(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>
 ) = jolt(yank, weight, ::DefaultScientificValue)
@@ -43,7 +43,7 @@ fun <
     JoltUnit : Jolt,
     YankUnit : Yank,
     Value : ScientificValue<MeasurementType.Jolt, JoltUnit>
-> JoltUnit.jolt(
+    > JoltUnit.jolt(
     yank: ScientificValue<MeasurementType.Yank, YankUnit>,
     weight: ScientificValue<MeasurementType.Weight, WeightUnit>,
     factory: (Decimal, JoltUnit) -> Value

@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.illuminance
 
-import com.splendo.kaluga.scientific.FootLambert
-import com.splendo.kaluga.scientific.Illuminance
-import com.splendo.kaluga.scientific.ImperialIlluminance
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricIlluminance
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.Nit
-import com.splendo.kaluga.scientific.Phot
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SolidAngle
-import com.splendo.kaluga.scientific.Stilb
 import com.splendo.kaluga.scientific.converter.luminance.luminance
+import com.splendo.kaluga.scientific.unit.FootLambert
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.ImperialIlluminance
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricIlluminance
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Nit
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.SolidAngle
+import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("photDivSolidAngle")

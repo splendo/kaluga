@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.angle
 
-import com.splendo.kaluga.scientific.Angle
-import com.splendo.kaluga.scientific.AngularVelocity
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.Angle
+import com.splendo.kaluga.scientific.unit.AngularVelocity
+import com.splendo.kaluga.scientific.unit.Second
 import kotlin.jvm.JvmName
 
 @JvmName("angleDivAngularVelocity")

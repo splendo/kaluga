@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.luminousExposure
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.ImperialLuminousExposure
-import com.splendo.kaluga.scientific.LuminousExposure
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.MetricLuminousExposure
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.illuminance.times
 import com.splendo.kaluga.scientific.converter.luminousEnergy.luminousEnergy
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.ImperialLuminousExposure
+import com.splendo.kaluga.scientific.unit.LuminousExposure
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("metricExposureTimesMetricArea")

@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.momentum
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.Area
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Momentum
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byMultiplying
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.Momentum
 import kotlin.jvm.JvmName
 
 @JvmName("momentumFromDynamicViscosityAndAreaDefault")

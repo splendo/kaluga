@@ -19,17 +19,17 @@ package com.splendo.kaluga.scientific.converter.radioactivity
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.base.utils.div
-import com.splendo.kaluga.scientific.Becquerel
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Radioactivity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byInverting
 import com.splendo.kaluga.scientific.convert
 import com.splendo.kaluga.scientific.convertValue
 import com.splendo.kaluga.scientific.invoke
+import com.splendo.kaluga.scientific.unit.Becquerel
+import com.splendo.kaluga.scientific.unit.Radioactivity
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("radioactivityFromInvertedTimeDefault")

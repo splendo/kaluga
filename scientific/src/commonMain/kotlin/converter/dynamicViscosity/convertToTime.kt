@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.dynamicViscosity
 
-import com.splendo.kaluga.scientific.DynamicViscosity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Pressure
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.DynamicViscosity
+import com.splendo.kaluga.scientific.unit.Pressure
 import kotlin.jvm.JvmName
 
 @JvmName("dynamicViscosityDivPressure")

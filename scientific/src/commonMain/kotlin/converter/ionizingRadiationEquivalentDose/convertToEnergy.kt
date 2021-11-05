@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.ionizingRadiationEquivalentDose
 
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.IonizingRadiationEquivalentDose
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.RoentgenEquivalentMan
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.energy.energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.IonizingRadiationEquivalentDose
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.RoentgenEquivalentMan
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("roentgenEquivalentManTimesWeight")

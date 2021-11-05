@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.molarity
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.AmountOfSubstance
 import com.splendo.kaluga.scientific.DefaultScientificValue
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Molarity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.Molarity
+import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("molarityFromAmountOfSubstanceAndVolumeDefault")

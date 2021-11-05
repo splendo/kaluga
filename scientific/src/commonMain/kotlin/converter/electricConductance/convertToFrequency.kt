@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.electricConductance
 
-import com.splendo.kaluga.scientific.ElectricCapacitance
-import com.splendo.kaluga.scientific.ElectricConductance
-import com.splendo.kaluga.scientific.Hertz
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.frequency.frequency
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.ElectricConductance
+import com.splendo.kaluga.scientific.unit.Hertz
 import kotlin.jvm.JvmName
 
 @JvmName("conductanceDivCapacitance")

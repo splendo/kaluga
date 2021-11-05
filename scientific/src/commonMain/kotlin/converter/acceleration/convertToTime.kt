@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
-import com.splendo.kaluga.scientific.Acceleration
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Jolt
 import kotlin.jvm.JvmName
 
 @JvmName("speedDivAcceleration")

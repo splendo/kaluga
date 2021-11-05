@@ -18,13 +18,13 @@
 package com.splendo.kaluga.scientific.converter.jolt
 
 import com.splendo.kaluga.base.utils.Decimal
-import com.splendo.kaluga.scientific.Acceleration
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Jolt
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Jolt
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("joltFromAccelerationAndTimeDefault")

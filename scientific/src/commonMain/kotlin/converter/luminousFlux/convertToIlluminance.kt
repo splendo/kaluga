@@ -17,17 +17,17 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.Area
-import com.splendo.kaluga.scientific.FootCandle
-import com.splendo.kaluga.scientific.ImperialArea
-import com.splendo.kaluga.scientific.LuminousFlux
-import com.splendo.kaluga.scientific.Lux
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricArea
-import com.splendo.kaluga.scientific.Phot
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SquareCentimeter
 import com.splendo.kaluga.scientific.converter.illuminance.illuminance
+import com.splendo.kaluga.scientific.unit.Area
+import com.splendo.kaluga.scientific.unit.FootCandle
+import com.splendo.kaluga.scientific.unit.ImperialArea
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.Lux
+import com.splendo.kaluga.scientific.unit.MetricArea
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
 import kotlin.jvm.JvmName
 
 @JvmName("lumenDivSquareCentimeter")

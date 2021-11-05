@@ -18,17 +18,17 @@
 package com.splendo.kaluga.scientific.converter.temperature
 
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndUKImperialTemperature
-import com.splendo.kaluga.scientific.MetricAndUKImperialThermalResistance
-import com.splendo.kaluga.scientific.MetricThermalResistance
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.ThermalResistance
-import com.splendo.kaluga.scientific.UKImperialThermalResistance
-import com.splendo.kaluga.scientific.USCustomaryTemperature
-import com.splendo.kaluga.scientific.USCustomaryThermalResistance
-import com.splendo.kaluga.scientific.Watt
 import com.splendo.kaluga.scientific.converter.power.power
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.MetricThermalResistance
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.ThermalResistance
+import com.splendo.kaluga.scientific.unit.UKImperialThermalResistance
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
+import com.splendo.kaluga.scientific.unit.USCustomaryThermalResistance
+import com.splendo.kaluga.scientific.unit.Watt
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureDivMetricAndUKImperialThermalResistance")

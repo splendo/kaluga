@@ -17,22 +17,22 @@
 
 package com.splendo.kaluga.scientific.converter.yank
 
-import com.splendo.kaluga.scientific.ImperialWeight
-import com.splendo.kaluga.scientific.ImperialYank
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricWeight
-import com.splendo.kaluga.scientific.MetricYank
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.UKImperialYank
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.USCustomaryYank
-import com.splendo.kaluga.scientific.Weight
-import com.splendo.kaluga.scientific.Yank
 import com.splendo.kaluga.scientific.converter.force.div
 import com.splendo.kaluga.scientific.converter.jolt.jolt
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.ImperialYank
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.MetricYank
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.UKImperialYank
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryYank
+import com.splendo.kaluga.scientific.unit.Weight
+import com.splendo.kaluga.scientific.unit.Yank
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricYankDivMetricWeight")

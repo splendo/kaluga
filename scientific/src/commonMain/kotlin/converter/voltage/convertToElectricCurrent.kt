@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.Absiemens
-import com.splendo.kaluga.scientific.Abvolt
-import com.splendo.kaluga.scientific.Ampere
-import com.splendo.kaluga.scientific.ElectricConductance
-import com.splendo.kaluga.scientific.ElectricResistance
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Voltage
 import com.splendo.kaluga.scientific.converter.electricConductance.times
 import com.splendo.kaluga.scientific.converter.electricCurrent.current
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.Absiemens
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Ampere
+import com.splendo.kaluga.scientific.unit.ElectricConductance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Voltage
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbsiemens")

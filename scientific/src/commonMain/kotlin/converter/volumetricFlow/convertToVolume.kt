@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.volumetricFlow
 
-import com.splendo.kaluga.scientific.ImperialVolumetricFlow
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricVolumetricFlow
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialVolumetricFlow
-import com.splendo.kaluga.scientific.USCustomaryVolumetricFlow
-import com.splendo.kaluga.scientific.VolumetricFlow
 import com.splendo.kaluga.scientific.converter.volume.volume
+import com.splendo.kaluga.scientific.unit.ImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.MetricVolumetricFlow
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialVolumetricFlow
+import com.splendo.kaluga.scientific.unit.USCustomaryVolumetricFlow
+import com.splendo.kaluga.scientific.unit.VolumetricFlow
 import kotlin.jvm.JvmName
 
 @JvmName("metricVolumetricFlowTimesTime")

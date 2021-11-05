@@ -22,6 +22,12 @@ import com.splendo.kaluga.base.utils.toDouble
 import com.splendo.kaluga.base.utils.toInt
 import com.splendo.kaluga.base.utils.toIntArray
 import com.splendo.kaluga.scientific.converter.length.times
+import com.splendo.kaluga.scientific.unit.Decimeter
+import com.splendo.kaluga.scientific.unit.Kilometer
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.Millimeter
+import com.splendo.kaluga.scientific.unit.ScientificUnit
+import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

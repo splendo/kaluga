@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.magneticFlux
 
-import com.splendo.kaluga.scientific.Abvolt
-import com.splendo.kaluga.scientific.MagneticFlux
-import com.splendo.kaluga.scientific.Maxwell
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.Volt
 import com.splendo.kaluga.scientific.converter.voltage.voltage
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.MagneticFlux
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.Volt
 import kotlin.jvm.JvmName
 
 @JvmName("maxwellDivTime")

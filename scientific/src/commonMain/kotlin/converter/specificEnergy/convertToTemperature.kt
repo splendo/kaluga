@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.specificEnergy
 
-import com.splendo.kaluga.scientific.ImperialSpecificEnergy
-import com.splendo.kaluga.scientific.Kelvin
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricSpecificEnergy
-import com.splendo.kaluga.scientific.MetricSpecificHeatCapacity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificEnergy
-import com.splendo.kaluga.scientific.SpecificHeatCapacity
-import com.splendo.kaluga.scientific.UKImperialSpecificEnergy
-import com.splendo.kaluga.scientific.UKImperialSpecificHeatCapacity
-import com.splendo.kaluga.scientific.USCustomarySpecificEnergy
-import com.splendo.kaluga.scientific.USCustomarySpecificHeatCapacity
 import com.splendo.kaluga.scientific.converter.temperature.temperature
+import com.splendo.kaluga.scientific.unit.ImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.Kelvin
+import com.splendo.kaluga.scientific.unit.MetricSpecificEnergy
+import com.splendo.kaluga.scientific.unit.MetricSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.SpecificEnergy
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificEnergy
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificEnergy
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpecificEnergyDivMetricSpecificHeatCapacity")

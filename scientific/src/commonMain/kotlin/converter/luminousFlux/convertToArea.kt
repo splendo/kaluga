@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.Illuminance
-import com.splendo.kaluga.scientific.ImperialIlluminance
-import com.splendo.kaluga.scientific.LuminousFlux
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricIlluminance
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.Phot
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SquareCentimeter
-import com.splendo.kaluga.scientific.SquareFoot
-import com.splendo.kaluga.scientific.SquareMeter
 import com.splendo.kaluga.scientific.converter.area.area
+import com.splendo.kaluga.scientific.unit.Illuminance
+import com.splendo.kaluga.scientific.unit.ImperialIlluminance
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricIlluminance
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Phot
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
 import kotlin.jvm.JvmName
 
 @JvmName("fluxDivPhot")

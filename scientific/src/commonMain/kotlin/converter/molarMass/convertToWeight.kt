@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.molarMass
 
-import com.splendo.kaluga.scientific.AmountOfSubstance
-import com.splendo.kaluga.scientific.ImperialMolarMass
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMolarMass
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMolarMass
-import com.splendo.kaluga.scientific.USCustomaryMolarMass
 import com.splendo.kaluga.scientific.converter.weight.mass
+import com.splendo.kaluga.scientific.unit.AmountOfSubstance
+import com.splendo.kaluga.scientific.unit.ImperialMolarMass
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MetricMolarMass
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.UKImperialMolarMass
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
 import kotlin.jvm.JvmName
 
 @JvmName("metricMolarMassTimesAmountOfSubstance")

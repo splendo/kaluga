@@ -17,26 +17,26 @@
 
 package com.splendo.kaluga.scientific.converter.molarEnergy
 
-import com.splendo.kaluga.scientific.ImperialMolality
-import com.splendo.kaluga.scientific.ImperialMolarEnergy
-import com.splendo.kaluga.scientific.ImperialMolarMass
-import com.splendo.kaluga.scientific.Joule
-import com.splendo.kaluga.scientific.Kilogram
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialMolarEnergy
-import com.splendo.kaluga.scientific.MetricMolality
-import com.splendo.kaluga.scientific.MetricMolarEnergy
-import com.splendo.kaluga.scientific.MetricMolarMass
-import com.splendo.kaluga.scientific.Molality
-import com.splendo.kaluga.scientific.MolarEnergy
-import com.splendo.kaluga.scientific.MolarMass
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialMolality
-import com.splendo.kaluga.scientific.UKImperialMolarMass
-import com.splendo.kaluga.scientific.USCustomaryMolality
-import com.splendo.kaluga.scientific.USCustomaryMolarMass
 import com.splendo.kaluga.scientific.converter.specificEnergy.specificEnergy
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialMolality
+import com.splendo.kaluga.scientific.unit.ImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.ImperialMolarMass
+import com.splendo.kaluga.scientific.unit.Joule
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.MetricAndImperialMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolality
+import com.splendo.kaluga.scientific.unit.MetricMolarEnergy
+import com.splendo.kaluga.scientific.unit.MetricMolarMass
+import com.splendo.kaluga.scientific.unit.Molality
+import com.splendo.kaluga.scientific.unit.MolarEnergy
+import com.splendo.kaluga.scientific.unit.MolarMass
+import com.splendo.kaluga.scientific.unit.UKImperialMolality
+import com.splendo.kaluga.scientific.unit.UKImperialMolarMass
+import com.splendo.kaluga.scientific.unit.USCustomaryMolality
+import com.splendo.kaluga.scientific.unit.USCustomaryMolarMass
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndImperialMolarEnergyDivMetricMolarMass")

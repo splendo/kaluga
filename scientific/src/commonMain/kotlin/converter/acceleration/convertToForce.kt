@@ -17,29 +17,29 @@
 
 package com.splendo.kaluga.scientific.converter.acceleration
 
-import com.splendo.kaluga.scientific.Acceleration
-import com.splendo.kaluga.scientific.Grain
-import com.splendo.kaluga.scientific.GrainForce
-import com.splendo.kaluga.scientific.Gram
-import com.splendo.kaluga.scientific.ImperialAcceleration
-import com.splendo.kaluga.scientific.ImperialTon
-import com.splendo.kaluga.scientific.ImperialTonForce
-import com.splendo.kaluga.scientific.ImperialWeight
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAcceleration
-import com.splendo.kaluga.scientific.MetricWeight
-import com.splendo.kaluga.scientific.Ounce
-import com.splendo.kaluga.scientific.OunceForce
-import com.splendo.kaluga.scientific.Pound
-import com.splendo.kaluga.scientific.PoundForce
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialWeight
-import com.splendo.kaluga.scientific.USCustomaryWeight
-import com.splendo.kaluga.scientific.UsTon
-import com.splendo.kaluga.scientific.UsTonForce
-import com.splendo.kaluga.scientific.Weight
 import com.splendo.kaluga.scientific.converter.force.force
 import com.splendo.kaluga.scientific.converter.weight.times
+import com.splendo.kaluga.scientific.unit.Acceleration
+import com.splendo.kaluga.scientific.unit.Grain
+import com.splendo.kaluga.scientific.unit.GrainForce
+import com.splendo.kaluga.scientific.unit.Gram
+import com.splendo.kaluga.scientific.unit.ImperialAcceleration
+import com.splendo.kaluga.scientific.unit.ImperialTon
+import com.splendo.kaluga.scientific.unit.ImperialTonForce
+import com.splendo.kaluga.scientific.unit.ImperialWeight
+import com.splendo.kaluga.scientific.unit.MetricAcceleration
+import com.splendo.kaluga.scientific.unit.MetricWeight
+import com.splendo.kaluga.scientific.unit.Ounce
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.Pound
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.UKImperialWeight
+import com.splendo.kaluga.scientific.unit.USCustomaryWeight
+import com.splendo.kaluga.scientific.unit.UsTon
+import com.splendo.kaluga.scientific.unit.UsTonForce
+import com.splendo.kaluga.scientific.unit.Weight
 import kotlin.jvm.JvmName
 
 @JvmName("accelerationTimesGram")

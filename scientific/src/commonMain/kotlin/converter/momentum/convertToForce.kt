@@ -17,19 +17,19 @@
 
 package com.splendo.kaluga.scientific.converter.momentum
 
-import com.splendo.kaluga.scientific.ImperialMomentum
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMomentum
-import com.splendo.kaluga.scientific.Momentum
-import com.splendo.kaluga.scientific.Newton
-import com.splendo.kaluga.scientific.PoundForce
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
-import com.splendo.kaluga.scientific.UKImperialMomentum
-import com.splendo.kaluga.scientific.USCustomaryMomentum
 import com.splendo.kaluga.scientific.converter.force.force
-import com.splendo.kaluga.scientific.ukImperial
-import com.splendo.kaluga.scientific.usCustomary
+import com.splendo.kaluga.scientific.unit.ImperialMomentum
+import com.splendo.kaluga.scientific.unit.MetricMomentum
+import com.splendo.kaluga.scientific.unit.Momentum
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.UKImperialMomentum
+import com.splendo.kaluga.scientific.unit.USCustomaryMomentum
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("metricMomentumDivTime")

@@ -17,11 +17,11 @@
 
 package com.splendo.kaluga.scientific.converter.action
 
-import com.splendo.kaluga.scientific.Action
-import com.splendo.kaluga.scientific.Energy
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.time.time
+import com.splendo.kaluga.scientific.unit.Action
+import com.splendo.kaluga.scientific.unit.Energy
 import kotlin.jvm.JvmName
 
 @JvmName("actionDivEnergy")

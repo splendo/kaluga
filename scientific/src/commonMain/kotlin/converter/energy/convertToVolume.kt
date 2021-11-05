@@ -17,33 +17,33 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Barye
-import com.splendo.kaluga.scientific.CubicCentimeter
-import com.splendo.kaluga.scientific.CubicFoot
-import com.splendo.kaluga.scientific.CubicInch
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.FootPoundal
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialPressure
-import com.splendo.kaluga.scientific.InchOunceForce
-import com.splendo.kaluga.scientific.InchPoundForce
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MetricPressure
-import com.splendo.kaluga.scientific.PoundSquareFoot
-import com.splendo.kaluga.scientific.PoundSquareInch
-import com.splendo.kaluga.scientific.Pressure
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialPressure
-import com.splendo.kaluga.scientific.USCustomaryPressure
-import com.splendo.kaluga.scientific.ukImperial
-import com.splendo.kaluga.scientific.usCustomary
 import com.splendo.kaluga.scientific.converter.volume.volume
+import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.CubicCentimeter
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicInch
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.FootPoundal
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.InchOunceForce
+import com.splendo.kaluga.scientific.unit.InchPoundForce
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.PoundSquareInch
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.ukImperial
+import com.splendo.kaluga.scientific.unit.usCustomary
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivBarye")

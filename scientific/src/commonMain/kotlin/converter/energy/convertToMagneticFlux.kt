@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Biot
-import com.splendo.kaluga.scientific.ElectricCurrent
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.Maxwell
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weber
 import com.splendo.kaluga.scientific.converter.magneticFlux.flux
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivAbampere")

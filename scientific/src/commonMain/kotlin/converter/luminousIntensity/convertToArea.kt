@@ -17,18 +17,18 @@
 
 package com.splendo.kaluga.scientific.converter.luminousIntensity
 
-import com.splendo.kaluga.scientific.ImperialLuminance
-import com.splendo.kaluga.scientific.Lambert
-import com.splendo.kaluga.scientific.Luminance
-import com.splendo.kaluga.scientific.LuminousIntensity
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLuminance
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SquareCentimeter
-import com.splendo.kaluga.scientific.SquareFoot
-import com.splendo.kaluga.scientific.SquareMeter
-import com.splendo.kaluga.scientific.Stilb
 import com.splendo.kaluga.scientific.converter.area.area
+import com.splendo.kaluga.scientific.unit.ImperialLuminance
+import com.splendo.kaluga.scientific.unit.Lambert
+import com.splendo.kaluga.scientific.unit.Luminance
+import com.splendo.kaluga.scientific.unit.LuminousIntensity
+import com.splendo.kaluga.scientific.unit.MetricLuminance
+import com.splendo.kaluga.scientific.unit.SquareCentimeter
+import com.splendo.kaluga.scientific.unit.SquareFoot
+import com.splendo.kaluga.scientific.unit.SquareMeter
+import com.splendo.kaluga.scientific.unit.Stilb
 import kotlin.jvm.JvmName
 
 @JvmName("luminousIntensityDivStilb")

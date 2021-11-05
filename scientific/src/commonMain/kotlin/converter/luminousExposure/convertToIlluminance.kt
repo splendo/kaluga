@@ -17,13 +17,13 @@
 
 package com.splendo.kaluga.scientific.converter.luminousExposure
 
-import com.splendo.kaluga.scientific.ImperialLuminousExposure
-import com.splendo.kaluga.scientific.LuminousExposure
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricLuminousExposure
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.illuminance.illuminance
+import com.splendo.kaluga.scientific.unit.ImperialLuminousExposure
+import com.splendo.kaluga.scientific.unit.LuminousExposure
+import com.splendo.kaluga.scientific.unit.MetricLuminousExposure
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("metricLuminousExposureDivTime")

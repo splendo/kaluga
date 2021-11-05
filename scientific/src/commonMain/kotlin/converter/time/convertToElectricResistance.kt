@@ -17,14 +17,14 @@
 
 package com.splendo.kaluga.scientific.converter.time
 
-import com.splendo.kaluga.scientific.Abfarad
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.ElectricCapacitance
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Ohm
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.electricResistance.resistance
+import com.splendo.kaluga.scientific.unit.Abfarad
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.ElectricCapacitance
+import com.splendo.kaluga.scientific.unit.Ohm
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("timeDivAbfarad")

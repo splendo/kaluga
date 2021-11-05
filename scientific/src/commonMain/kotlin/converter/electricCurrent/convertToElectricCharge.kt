@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.electricCurrent
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Biot
-import com.splendo.kaluga.scientific.Coulomb
-import com.splendo.kaluga.scientific.ElectricCurrent
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.electricCharge.charge
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.Coulomb
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.Time
 import kotlin.jvm.JvmName
 
 @JvmName("abampereTimesTime")

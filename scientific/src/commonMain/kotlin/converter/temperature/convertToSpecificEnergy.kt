@@ -18,15 +18,15 @@
 package com.splendo.kaluga.scientific.converter.temperature
 
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndUKImperialTemperature
-import com.splendo.kaluga.scientific.MetricSpecificHeatCapacity
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.SpecificHeatCapacity
-import com.splendo.kaluga.scientific.Temperature
-import com.splendo.kaluga.scientific.UKImperialSpecificHeatCapacity
-import com.splendo.kaluga.scientific.USCustomarySpecificHeatCapacity
-import com.splendo.kaluga.scientific.USCustomaryTemperature
 import com.splendo.kaluga.scientific.converter.specificHeatCapacity.times
+import com.splendo.kaluga.scientific.unit.MetricAndUKImperialTemperature
+import com.splendo.kaluga.scientific.unit.MetricSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.SpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.Temperature
+import com.splendo.kaluga.scientific.unit.UKImperialSpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomarySpecificHeatCapacity
+import com.splendo.kaluga.scientific.unit.USCustomaryTemperature
 import kotlin.jvm.JvmName
 
 @JvmName("metricAndUKImperialTemperatureTimesMetricSpecificHeatCapacity")

@@ -17,15 +17,15 @@
 
 package com.splendo.kaluga.scientific.converter.electricResistance
 
-import com.splendo.kaluga.scientific.Abcoulomb
-import com.splendo.kaluga.scientific.Abohm
-import com.splendo.kaluga.scientific.ElectricCharge
-import com.splendo.kaluga.scientific.ElectricResistance
-import com.splendo.kaluga.scientific.Maxwell
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Weber
 import com.splendo.kaluga.scientific.converter.magneticFlux.flux
+import com.splendo.kaluga.scientific.unit.Abcoulomb
+import com.splendo.kaluga.scientific.unit.Abohm
+import com.splendo.kaluga.scientific.unit.ElectricCharge
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Maxwell
+import com.splendo.kaluga.scientific.unit.Weber
 import kotlin.jvm.JvmName
 
 @JvmName("abohmTimesAbcoulomb")

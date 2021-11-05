@@ -17,32 +17,32 @@
 
 package com.splendo.kaluga.scientific.converter.volume
 
-import com.splendo.kaluga.scientific.Barye
-import com.splendo.kaluga.scientific.CubicCentimeter
-import com.splendo.kaluga.scientific.CubicFoot
-import com.splendo.kaluga.scientific.CubicInch
-import com.splendo.kaluga.scientific.ImperialPressure
-import com.splendo.kaluga.scientific.ImperialTonSquareInch
-import com.splendo.kaluga.scientific.ImperialVolume
-import com.splendo.kaluga.scientific.KiloPoundSquareInch
-import com.splendo.kaluga.scientific.KipSquareInch
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.MetricPressure
-import com.splendo.kaluga.scientific.MetricVolume
-import com.splendo.kaluga.scientific.OunceSquareInch
-import com.splendo.kaluga.scientific.PoundSquareFoot
-import com.splendo.kaluga.scientific.PoundSquareInch
-import com.splendo.kaluga.scientific.Pressure
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialPressure
-import com.splendo.kaluga.scientific.UKImperialVolume
-import com.splendo.kaluga.scientific.USCustomaryPressure
-import com.splendo.kaluga.scientific.USCustomaryVolume
-import com.splendo.kaluga.scientific.USTonSquareInch
-import com.splendo.kaluga.scientific.Volume
 import com.splendo.kaluga.scientific.converter.pressure.times
+import com.splendo.kaluga.scientific.unit.Barye
+import com.splendo.kaluga.scientific.unit.CubicCentimeter
+import com.splendo.kaluga.scientific.unit.CubicFoot
+import com.splendo.kaluga.scientific.unit.CubicInch
+import com.splendo.kaluga.scientific.unit.ImperialPressure
+import com.splendo.kaluga.scientific.unit.ImperialTonSquareInch
+import com.splendo.kaluga.scientific.unit.ImperialVolume
+import com.splendo.kaluga.scientific.unit.KiloPoundSquareInch
+import com.splendo.kaluga.scientific.unit.KipSquareInch
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.MetricPressure
+import com.splendo.kaluga.scientific.unit.MetricVolume
+import com.splendo.kaluga.scientific.unit.OunceSquareInch
+import com.splendo.kaluga.scientific.unit.PoundSquareFoot
+import com.splendo.kaluga.scientific.unit.PoundSquareInch
+import com.splendo.kaluga.scientific.unit.Pressure
+import com.splendo.kaluga.scientific.unit.UKImperialPressure
+import com.splendo.kaluga.scientific.unit.UKImperialVolume
+import com.splendo.kaluga.scientific.unit.USCustomaryPressure
+import com.splendo.kaluga.scientific.unit.USCustomaryVolume
+import com.splendo.kaluga.scientific.unit.USTonSquareInch
+import com.splendo.kaluga.scientific.unit.Volume
 import kotlin.jvm.JvmName
 
 @JvmName("cubicCentimeterTimesBarye")

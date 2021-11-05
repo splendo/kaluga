@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.frequency
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.ElectricInductance
-import com.splendo.kaluga.scientific.ElectricResistance
-import com.splendo.kaluga.scientific.Frequency
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.ElectricInductance
+import com.splendo.kaluga.scientific.unit.ElectricResistance
+import com.splendo.kaluga.scientific.unit.Frequency
 import kotlin.jvm.JvmName
 
 @JvmName("frequencyFromResistanceAndInductanceDefault")

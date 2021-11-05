@@ -17,29 +17,29 @@
 
 package com.splendo.kaluga.scientific.converter.energy
 
-import com.splendo.kaluga.scientific.Centimeter
-import com.splendo.kaluga.scientific.Dyne
-import com.splendo.kaluga.scientific.Energy
-import com.splendo.kaluga.scientific.Erg
-import com.splendo.kaluga.scientific.FootPoundForce
-import com.splendo.kaluga.scientific.FootPoundal
-import com.splendo.kaluga.scientific.ImperialEnergy
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.Inch
-import com.splendo.kaluga.scientific.InchOunceForce
-import com.splendo.kaluga.scientific.Length
-import com.splendo.kaluga.scientific.MeasurementSystem
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAndImperialEnergy
-import com.splendo.kaluga.scientific.MetricEnergy
-import com.splendo.kaluga.scientific.MetricLength
-import com.splendo.kaluga.scientific.MetricMultipleUnit
-import com.splendo.kaluga.scientific.Newton
-import com.splendo.kaluga.scientific.OunceForce
-import com.splendo.kaluga.scientific.PoundForce
-import com.splendo.kaluga.scientific.Poundal
 import com.splendo.kaluga.scientific.ScientificValue
 import com.splendo.kaluga.scientific.converter.force.force
+import com.splendo.kaluga.scientific.unit.Centimeter
+import com.splendo.kaluga.scientific.unit.Dyne
+import com.splendo.kaluga.scientific.unit.Energy
+import com.splendo.kaluga.scientific.unit.Erg
+import com.splendo.kaluga.scientific.unit.FootPoundForce
+import com.splendo.kaluga.scientific.unit.FootPoundal
+import com.splendo.kaluga.scientific.unit.ImperialEnergy
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.Inch
+import com.splendo.kaluga.scientific.unit.InchOunceForce
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.MeasurementSystem
+import com.splendo.kaluga.scientific.unit.MetricAndImperialEnergy
+import com.splendo.kaluga.scientific.unit.MetricEnergy
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.MetricMultipleUnit
+import com.splendo.kaluga.scientific.unit.Newton
+import com.splendo.kaluga.scientific.unit.OunceForce
+import com.splendo.kaluga.scientific.unit.PoundForce
+import com.splendo.kaluga.scientific.unit.Poundal
 import kotlin.jvm.JvmName
 
 @JvmName("ergDivCentimeter")

@@ -19,12 +19,12 @@ package com.splendo.kaluga.scientific.converter.force
 
 import com.splendo.kaluga.base.utils.Decimal
 import com.splendo.kaluga.scientific.DefaultScientificValue
-import com.splendo.kaluga.scientific.Force
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Power
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Speed
 import com.splendo.kaluga.scientific.byDividing
+import com.splendo.kaluga.scientific.unit.Force
+import com.splendo.kaluga.scientific.unit.Power
+import com.splendo.kaluga.scientific.unit.Speed
 import kotlin.jvm.JvmName
 
 @JvmName("forceFromPowerAndSpeedDefault")

@@ -17,12 +17,12 @@
 
 package com.splendo.kaluga.scientific.converter.luminousFlux
 
-import com.splendo.kaluga.scientific.LuminousFlux
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.luminousEnergy.luminousEnergy
-import com.splendo.kaluga.scientific.x
+import com.splendo.kaluga.scientific.unit.LuminousFlux
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.x
 import kotlin.jvm.JvmName
 
 @JvmName("LuminousFluxTimesTime")

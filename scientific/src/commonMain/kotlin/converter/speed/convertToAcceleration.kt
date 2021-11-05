@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.speed
 
-import com.splendo.kaluga.scientific.ImperialSpeed
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.Meter
-import com.splendo.kaluga.scientific.MetricSpeed
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Second
-import com.splendo.kaluga.scientific.Speed
-import com.splendo.kaluga.scientific.Time
 import com.splendo.kaluga.scientific.converter.acceleration.acceleration
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.ImperialSpeed
+import com.splendo.kaluga.scientific.unit.Meter
+import com.splendo.kaluga.scientific.unit.MetricSpeed
+import com.splendo.kaluga.scientific.unit.Second
+import com.splendo.kaluga.scientific.unit.Speed
+import com.splendo.kaluga.scientific.unit.Time
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricSpeedDivTime")

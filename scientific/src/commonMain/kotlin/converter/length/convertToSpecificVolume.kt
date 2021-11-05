@@ -17,22 +17,22 @@
 
 package com.splendo.kaluga.scientific.converter.length
 
-import com.splendo.kaluga.scientific.AreaDensity
-import com.splendo.kaluga.scientific.CubicMeter
-import com.splendo.kaluga.scientific.ImperialAreaDensity
-import com.splendo.kaluga.scientific.ImperialLength
-import com.splendo.kaluga.scientific.Kilogram
-import com.splendo.kaluga.scientific.Length
 import com.splendo.kaluga.scientific.MeasurementType
-import com.splendo.kaluga.scientific.MetricAreaDensity
-import com.splendo.kaluga.scientific.MetricLength
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.UKImperialAreaDensity
-import com.splendo.kaluga.scientific.USCustomaryAreaDensity
 import com.splendo.kaluga.scientific.converter.area.times
 import com.splendo.kaluga.scientific.converter.specificVolume.specificVolume
 import com.splendo.kaluga.scientific.invoke
-import com.splendo.kaluga.scientific.per
+import com.splendo.kaluga.scientific.unit.AreaDensity
+import com.splendo.kaluga.scientific.unit.CubicMeter
+import com.splendo.kaluga.scientific.unit.ImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.ImperialLength
+import com.splendo.kaluga.scientific.unit.Kilogram
+import com.splendo.kaluga.scientific.unit.Length
+import com.splendo.kaluga.scientific.unit.MetricAreaDensity
+import com.splendo.kaluga.scientific.unit.MetricLength
+import com.splendo.kaluga.scientific.unit.UKImperialAreaDensity
+import com.splendo.kaluga.scientific.unit.USCustomaryAreaDensity
+import com.splendo.kaluga.scientific.unit.per
 import kotlin.jvm.JvmName
 
 @JvmName("metricLengthDivMetricAreaDensity")

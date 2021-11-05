@@ -17,16 +17,16 @@
 
 package com.splendo.kaluga.scientific.converter.voltage
 
-import com.splendo.kaluga.scientific.Abampere
-import com.splendo.kaluga.scientific.Abvolt
-import com.splendo.kaluga.scientific.Biot
-import com.splendo.kaluga.scientific.ElectricCurrent
-import com.splendo.kaluga.scientific.ErgPerSecond
 import com.splendo.kaluga.scientific.MeasurementType
 import com.splendo.kaluga.scientific.ScientificValue
-import com.splendo.kaluga.scientific.Voltage
-import com.splendo.kaluga.scientific.Watt
 import com.splendo.kaluga.scientific.converter.power.power
+import com.splendo.kaluga.scientific.unit.Abampere
+import com.splendo.kaluga.scientific.unit.Abvolt
+import com.splendo.kaluga.scientific.unit.Biot
+import com.splendo.kaluga.scientific.unit.ElectricCurrent
+import com.splendo.kaluga.scientific.unit.ErgPerSecond
+import com.splendo.kaluga.scientific.unit.Voltage
+import com.splendo.kaluga.scientific.unit.Watt
 import kotlin.jvm.JvmName
 
 @JvmName("abvoltTimesAbampere")
